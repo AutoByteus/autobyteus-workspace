@@ -1,0 +1,249 @@
+{
+  "steps": [
+    {
+      "name": "DSK-003a board 1440×900: key line on every card of the upgraded Project, no badges yet",
+      "result": "Pass",
+      "observed": {
+        "1": "autobyteus-1",
+        "2": "autobyteus-2",
+        "3": "autobyteus-3",
+        "5": "autobyteus-5",
+        "6": "autobyteus-6"
+      }
+    },
+    {
+      "name": "DSK-003b Edit autobyteus-5 by the picker: depends on autobyteus-3 (In Progress) and autobyteus-2 (Done) → Blocked by autobyteus-3",
+      "result": "Pass",
+      "observed": {
+        "opts": [
+          {
+            "key": "autobyteus-6",
+            "disabled": false,
+            "text": "autobyteus-6 Prepare the beta release notes To Do"
+          },
+          {
+            "key": "autobyteus-4",
+            "disabled": false,
+            "text": "autobyteus-4 Prototype the old sync service Cancelled"
+          },
+          {
+            "key": "autobyteus-3",
+            "disabled": false,
+            "text": "autobyteus-3 Ship the board UI In Progress"
+          },
+          {
+            "key": "autobyteus-2",
+            "disabled": false,
+            "text": "autobyteus-2 Design the Task board schema Done"
+          },
+          {
+            "key": "autobyteus-1",
+            "disabled": false,
+            "text": "autobyteus-1 Set up the repository layout To Do"
+          }
+        ],
+        "stored": [
+          "project_task_211f5295-d80d-4b3a-8dd3-3787390b408c",
+          "project_task_9e63d05f-0f68-4a0c-94d5-e6a6b52579e2"
+        ],
+        "badge": {
+          "kind": "blocked",
+          "text": "Blocked by autobyteus-3",
+          "title": "Depends on: autobyteus-2 (Done), autobyteus-3 (In Progress)"
+        }
+      }
+    },
+    {
+      "name": "DSK-003c Edit autobyteus-6: depends on the Cancelled autobyteus-4 → Dependency cancelled: autobyteus-4",
+      "result": "Pass",
+      "observed": {
+        "selectedRow": "autobyteus-4 Prototype the old sync service Cancelled",
+        "badge": {
+          "kind": "cancelled",
+          "text": "Dependency cancelled: autobyteus-4",
+          "title": "Depends on: autobyteus-4 (Cancelled)"
+        }
+      }
+    },
+    {
+      "name": "DSK-003d New task with a dependency: next key autobyteus-7, Blocked by autobyteus-5 (VIS-009a/b)",
+      "result": "Pass",
+      "observed": {
+        "t7": {
+          "taskId": "project_task_edae28b3-e4f4-4a7c-b37c-952116409f06",
+          "taskKey": "autobyteus-7",
+          "description": "Publish the API reference",
+          "status": "TODO",
+          "dependsOnTaskIds": [
+            "project_task_2eaa36fc-783d-440f-889c-9a456261fcc8"
+          ]
+        },
+        "badge": {
+          "kind": "blocked",
+          "text": "Blocked by autobyteus-5",
+          "title": "Depends on: autobyteus-5 (To Do)"
+        }
+      }
+    },
+    {
+      "name": "DSK-003e Task page autobyteus-5: chip, copy, Depends on (key order, Done ✓), informs note, Required by; a row opens by key URL",
+      "result": "Pass",
+      "observed": {
+        "depRows": [
+          "autobyteus-2 Done Design the Task board schema",
+          "autobyteus-3 In Progress Ship the board UI"
+        ],
+        "informs": "Only informs: work on this Task can start at any time.",
+        "requiredBy": [
+          "autobyteus-7 To Do Publish the API reference"
+        ],
+        "copiedText": "Copied",
+        "clipboard": "autobyteus-5"
+      }
+    },
+    {
+      "name": "DSK-003f Loop prevention: editing autobyteus-3, its dependents autobyteus-5 and autobyteus-7 are greyed \"Depends on this Task\" (VIS-008)",
+      "result": "Pass",
+      "observed": {
+        "opts": [
+          {
+            "key": "autobyteus-7",
+            "disabled": true,
+            "text": "autobyteus-7 Publish the API reference Depends on this Task"
+          },
+          {
+            "key": "autobyteus-6",
+            "disabled": false,
+            "text": "autobyteus-6 Prepare the beta release notes To Do"
+          },
+          {
+            "key": "autobyteus-5",
+            "disabled": true,
+            "text": "autobyteus-5 Write the API reference Depends on this Task"
+          },
+          {
+            "key": "autobyteus-4",
+            "disabled": false,
+            "text": "autobyteus-4 Prototype the old sync service Cancelled"
+          },
+          {
+            "key": "autobyteus-2",
+            "disabled": false,
+            "text": "autobyteus-2 Design the Task board schema Done"
+          },
+          {
+            "key": "autobyteus-1",
+            "disabled": false,
+            "text": "autobyteus-1 Set up the repository layout To Do"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DSK-003g Long-ID Task and Edit URLs open the Task and switch to the key URL; an upper-case key too (AC-026)",
+      "result": "Pass",
+      "observed": {
+        "final": "#/projects/project_14b75dca-5eb9-4bc4-a687-9321702d9639/tasks/autobyteus-6"
+      }
+    },
+    {
+      "name": "DSK-003h Long keys (VIS-013/014): onboarding-3 depends on onboarding-2; whole keys on cards/chip/rows where they fit, number always visible",
+      "result": "Pass",
+      "observed": {
+        "detail": [
+          {
+            "key": "customer-onboarding-experience-redesign-3",
+            "title": "customer-onboarding-experience-redesign-3",
+            "text": "customer-onboarding-experience-redesign-3",
+            "clipped": false,
+            "width": 302
+          },
+          {
+            "key": "customer-onboarding-experience-redesign-2",
+            "title": "customer-onboarding-experience-redesign-2",
+            "text": "customer-onboarding-experience-redesign-2",
+            "clipped": false,
+            "width": 302
+          }
+        ],
+        "card": [
+          {
+            "key": "customer-onboarding-experience-redesign-3",
+            "title": "customer-onboarding-experience-redesign-3",
+            "text": "customer-onboarding-experience-redesign-3",
+            "clipped": false,
+            "width": 264
+          },
+          {
+            "key": "customer-onboarding-experience-redesign-2",
+            "title": "customer-onboarding-experience-redesign-2",
+            "text": "customer-onboarding-experience-redesign-2",
+            "clipped": false,
+            "width": 205
+          }
+        ],
+        "badge": {
+          "kind": "blocked",
+          "text": "Blocked by customer-onboarding-experience-redesign -2",
+          "title": "Depends on: customer-onboarding-experience-redesign-2 (In Progress)"
+        }
+      }
+    },
+    {
+      "name": "DSK-003i Narrow 760×900 (VIS-015): one column; keys and badges",
+      "result": "Pass",
+      "observed": {
+        "lanes": [
+          {
+            "top": 258,
+            "left": 74,
+            "width": 662
+          },
+          {
+            "top": 736,
+            "left": 74,
+            "width": 662
+          },
+          {
+            "top": 876,
+            "left": 74,
+            "width": 662
+          }
+        ],
+        "badges": {
+          "t5": {
+            "kind": "blocked",
+            "text": "Blocked by autobyteus-3",
+            "title": "Depends on: autobyteus-2 (Done), autobyteus-3 (In Progress)"
+          },
+          "t6": {
+            "kind": "cancelled",
+            "text": "Dependency cancelled: autobyteus-4",
+            "title": "Depends on: autobyteus-4 (Cancelled)"
+          },
+          "t7": {
+            "kind": "blocked",
+            "text": "Blocked by autobyteus-5",
+            "title": "Depends on: autobyteus-5 (To Do)"
+          }
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "desktop-r2/dsk-003a-board-upgraded-1440x900.png",
+    "desktop-r2/dsk-003b-picker-open-1440x900.png",
+    "desktop-r2/dsk-003b-picker-chosen-1440x900.png",
+    "desktop-r2/dsk-003d-new-task-chosen-1440x900.png",
+    "desktop-r2/dsk-003d-board-keys-badges-1440x900.png",
+    "desktop-r2/dsk-003e-task-page-dependencies-1440x900.png",
+    "desktop-r2/dsk-003e-task-key-copied-1440x900.png",
+    "desktop-r2/dsk-003f-picker-loop-1440x900.png",
+    "desktop-r2/dsk-003h-long-key-detail-1440x900.png",
+    "desktop-r2/dsk-003h-long-keys-board-1440x900.png",
+    "desktop-r2/dsk-003i-board-narrow-760x900.png"
+  ],
+  "renderer": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html",
+  "result": "Pass"
+}

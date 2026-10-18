@@ -456,11 +456,17 @@ Standalone agent persisted files:
   `"server_helper"` for server-owned helper runs such as the memory compactor
   and the skill improver; those runs never host delegated copies)
 - optional collaboration package (created lazily with the first delegated copy):
-  `memory/agents/<runId>/collaboration/collaboration_tree.json` (host identity,
-  `taskExecutions`, each with its catalog `source`) and `communication_messages.json`;
-  each child's runtime memory lives in `collaboration/<childRunId>/...` (task Team
-  members below their task TeamRun IDs). See
+  `memory/agents/<runId>/collaboration/collaboration_tree.json` (host identity and
+  a link per task agent) and `communication_messages.json` (the host's own log).
+  Each task agent is a run of its own: an agent at `memory/agents/<childRunId>/`
+  (its `run_metadata.json` carries a `taskAgent` section and its catalog source,
+  plus its own `communication_messages.json`), a task Team at
+  `memory/agent_teams/<taskTeamRunId>/` (its own tree and log, members inside).
+  The standalone metadata reader treats a task agent's `run_metadata.json` as
+  absent (G1), so task agents never appear as their own history rows. See
   [Standalone Agent Run Root](./standalone_agent_run_root.md).
+- deleting a run from history removes only its own folder: its task agents'
+  folders are kept (they become detached: not listed, not restored, not reported).
 - runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 

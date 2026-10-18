@@ -1,3 +1,5 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CommittedTaskExecution, TaskExecutionPreparationOperation } from "../domain/prepared-task-execution.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -17,8 +19,9 @@ import { restoreTaskAgentNode, restoreTaskTeamNode } from "../../agent-collabora
 import {
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
+  type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { getAgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
@@ -49,12 +52,12 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   private readonly registrations = new Map<string, RegisteredTaskActivation>();
   get root() { return createTeamRootExecutionIdentity(this.options.rootTeamRunId); }
   private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
-  private readonly memoryLocator: RootedAgentMemoryLocator;
+  private readonly memoryLocator: AgentRunMemoryLocator;
   private readonly sources: TeamTaskSourceResolver;
 
   constructor(private readonly options: TeamTaskExecutionServiceOptions) {
     this.tokenUsageReadiness = options.tokenUsageMigrationReadiness ?? new TokenUsageMigrationReadiness();
-    this.memoryLocator = options.memoryLocator ?? new RootedAgentMemoryLocator();
+    this.memoryLocator = options.memoryLocator ?? new AgentRunMemoryLocator();
     this.sources = new TeamTaskSourceResolver({ config: options.config });
   }
 
@@ -77,9 +80,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     } else {
       const source = this.sources.requireTeam(input.placement.address, input.placement.source);
       const materialized = await this.options.taskExecutionIdentity.taskTeams.create({ source: source.node });
-      const coordinator = materialized.teamNode.children.find(node => node.kind === "agent" && node.address === materialized.teamNode.coordinatorAddress);
-      if (!coordinator || coordinator.kind !== "agent") throw new Error("Planned Team has no exact coordinator.");
-      execution = { teamRunId: materialized.teamNode.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = materialized.teamNode.children.flatMap(node => node.kind === "agent" ? [node.agentRunId] : []);
+      const coordinator = materialized.teamNode.children.find((node) => node.address === materialized.teamNode.coordinatorAddress);
+      if (!coordinator) throw new Error("Planned Team has no exact coordinator.");
+      execution = { teamRunId: materialized.teamNode.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = materialized.teamNode.children.map((node) => node.agentRunId);
       command = { address: input.placement.address, teamRunId: materialized.teamNode.teamRunId,
         handoffs: source.handoffs, teamNode: materialized.teamNode, message: input.workPacket };
     }
@@ -134,7 +137,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   taskExecutionTargetOf(reference: TaskExecutionReference) {
     // The index is keyed by run ID alone: the copy must also be of the requested kind.
     const entry = this.options.getIndex().getTaskExecution(reference);
-    return entry && taskExecutionReferenceKey(referenceOf(entry)) === taskExecutionReferenceKey(reference) ? Object.freeze({ root: this.root, execution: referenceOf(entry), ingressAgentRunId: this.ingressOf(entry).agentRunId }) : null;
+    return entry && taskExecutionReferenceKey(referenceOf(entry)) === taskExecutionReferenceKey(reference) ? Object.freeze({ root: this.root, execution: referenceOf(entry), ingressAgentRunId: this.ingressAgentRunId(entry) }) : null;
   }
   cancelOwnedExecution(reference: TaskExecutionReference): void {
     const entry = this.options.getIndex().getTaskExecution(reference);
@@ -151,9 +154,12 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     this.options.teamRunResolver.getManaged(entry.ownerTeamRunId)?.discardReleasedDirectTaskExecution(reference);
     if ("teamRunId" in reference) this.options.teamRunResolver.retireTerminated(reference.teamRunId);
   }
+  reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null {
+    return reachingAddressOf(this.options.getIndex(), null, agent);
+  }
   taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null {
     const innermost = this.options.getIndex().listTaskExecutionChainForAgent(agentRunId)[0];
-    return innermost && this.ingressOf(innermost).agentRunId === agentRunId ? referenceOf(innermost) : null;
+    return innermost && this.ingressAgentRunId(innermost) === agentRunId ? referenceOf(innermost) : null;
   }
 
   containsTaskExecution(reference: TaskExecutionReference): boolean { return this.options.getIndex().getTaskExecution(reference) !== null; }
@@ -187,13 +193,10 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     const index = this.options.getIndex();
     for (const indexed of index.listTaskExecutionChainForAgent(agentRunId)) {
       if (this.isLive(referenceOf(indexed))) continue;
-      const ingress = this.ingressOf(indexed);
-      const memoryDir = this.memoryLocator.getLocation(
-        index.getTeamRunPhysicalScope(ingress.scopeTeamRunId),
-        ingress.agentRunId,
-      ).memoryDir;
+      const ingressAgentRunId = this.ingressAgentRunId(indexed);
+      const memoryDir = this.memoryLocator.getMemoryDir(index.getMemoryPlacementForAgent(ingressAgentRunId), ingressAgentRunId);
       const activity = (this.options.activityInspector ?? getAgentConversationActivityInspector())
-        .inspect({ agentRunId: ingress.agentRunId, memoryDir });
+        .inspect({ agentRunId: ingressAgentRunId, memoryDir });
       if (activity.kind !== "present") {
         throw new TaskDelegationError(
           "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
@@ -265,8 +268,8 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     return true;
   }
 
-  private ingressOf(indexed: IndexedTaskExecution): Readonly<{ agentRunId: string; scopeTeamRunId: string }> {
-    if (indexed.kind === "agent") return Object.freeze({ agentRunId: indexed.agentRunId, scopeTeamRunId: indexed.ownerTeamRunId });
+  private ingressAgentRunId(indexed: IndexedTaskExecution): string {
+    if (indexed.kind === "agent") return indexed.agentRunId;
     const source = this.sources.resolve(indexed.address, indexed.source.source);
     if (!source || source.kind !== "agent_team") {
       throw new TaskDelegationError("TASK_EXECUTION_CONTEXT_UNAVAILABLE", `AgentTeam '${indexed.address}' is not configured in this run.`);
@@ -280,7 +283,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
         `Task TeamRun '${indexed.teamRunId}' has no coordinator AgentRun at '${coordinatorAddress}'.`,
       );
     }
-    return Object.freeze({ agentRunId: coordinator.agentRunId, scopeTeamRunId: indexed.teamRunId });
+    return coordinator.agentRunId;
   }
 
   private async commitActivation(input: {
@@ -294,11 +297,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     let nextTreeAtCommit: TeamRunExecutionTreeSnapshot | null = null;
     const result = await this.options.commitTaskActivation({
       prepareAgainstCurrent: () => {
-        let nextTree = addTaskExecutionToTree({
-          tree: this.options.getTree(),
-          ownerTeamRunId: input.hostTeamRunId,
-          execution: input.execution,
-        });
+        let nextTree = addTaskExecutionToTree({ tree: this.options.getTree(), execution: input.execution });
         for (const binding of input.prepared.stagedPlatformBindings) {
           nextTree = adoptAgentPlatformBindingInTree({ tree: nextTree, binding }).tree;
         }

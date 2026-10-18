@@ -1,0 +1,705 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:31386) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: dtl-manager-0345b2
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: dtl-worker-0345b2
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: dtl-squad-0345b2
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: dtl-squad-two-0345b2
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: dtl-team-0345b2
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreated and registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent team websocket attached for team run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+Created agent session d43ddf4b-e19f-42a9-87c5-b2cbd6853805 for run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent Team WebSocket connected: session=d43ddf4b-e19f-42a9-87c5-b2cbd6853805, run=dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_teams/dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043/dtl_manager_0345b2_208a780e51a349f1adc35ef0a344cc5c/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_teams/dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043/dtl_manager_0345b2_208a780e51a349f1adc35ef0a344cc5c/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_teams/dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043/dtl_manager_0345b2_208a780e51a349f1adc35ef0a344cc5c/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_90876091610946f980ccb14621063514/dtl_manager_0345b2_44155c27e49449709773b8e175212559/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_90876091610946f980ccb14621063514/dtl_manager_0345b2_44155c27e49449709773b8e175212559/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_teams/dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043/dtl_manager_0345b2_208a780e51a349f1adc35ef0a344cc5c/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_manager_0345b2_cc0d4e074b124d78aa2fa8a22dcd4d44: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_90876091610946f980ccb14621063514/dtl_manager_0345b2_44155c27e49449709773b8e175212559/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_manager_0345b2_208a780e51a349f1adc35ef0a344cc5c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_teams/dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043/dtl_manager_0345b2_208a780e51a349f1adc35ef0a344cc5c/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_90876091610946f980ccb14621063514/dtl_manager_0345b2_44155c27e49449709773b8e175212559/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_manager_0345b2_44155c27e49449709773b8e175212559: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent websocket attached for run dtl_manager_0345b2_cc0d4e074b124d78aa2fa8a22dcd4d44
+Created agent session a63e6395-e1ab-4f20-8dd1-858e44ea40c2 for run dtl_manager_0345b2_cc0d4e074b124d78aa2fa8a22dcd4d44
+Agent WebSocket connected: session=a63e6395-e1ab-4f20-8dd1-858e44ea40c2, run=dtl_manager_0345b2_cc0d4e074b124d78aa2fa8a22dcd4d44
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_90876091610946f980ccb14621063514/dtl_manager_0345b2_44155c27e49449709773b8e175212559/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_90876091610946f980ccb14621063514/dtl_manager_0345b2_44155c27e49449709773b8e175212559/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agents/dtl_manager_0345b2_cc0d4e074b124d78aa2fa8a22dcd4d44/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_a80c95ecaa5642aba43d0d6c12e44fd0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_b932490d841e48719f6c50440084e4a7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_b3e5403aed884754874d8649fe3c1a35: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent team websocket attached for team run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+Created agent session 0c75f1ca-afda-43cf-a25d-f0117636a291 for run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent Team WebSocket connected: session=0c75f1ca-afda-43cf-a25d-f0117636a291, run=dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session 0c75f1ca-afda-43cf-a25d-f0117636a291
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_334502815aac47d29337038d270bacb8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_d6789785bd034cae837e65fb941be23a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_08e911229b524ef3ac2906162118f007: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent team websocket attached for team run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+Created agent session df70c77a-c26a-406b-9fea-5cbd9fa30e6c for run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent Team WebSocket connected: session=df70c77a-c26a-406b-9fea-5cbd9fa30e6c, run=dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session df70c77a-c26a-406b-9fea-5cbd9fa30e6c
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_f53a98d65a27445e97437d336063ab3a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_a039e25aca60421ab87102c7cda3f3c2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent team websocket attached for team run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+Created agent session 339d0a89-5d73-44b5-aeed-a07199973597 for run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent Team WebSocket connected: session=339d0a89-5d73-44b5-aeed-a07199973597, run=dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session 339d0a89-5d73-44b5-aeed-a07199973597
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_b932490d841e48719f6c50440084e4a7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_a80c95ecaa5642aba43d0d6c12e44fd0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_b3e5403aed884754874d8649fe3c1a35: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent team websocket attached for team run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+Created agent session 96eaa17f-629e-4650-99e9-204bff5b531f for run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent Team WebSocket connected: session=96eaa17f-629e-4650-99e9-204bff5b531f, run=dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session 96eaa17f-629e-4650-99e9-204bff5b531f
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_b932490d841e48719f6c50440084e4a7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_a80c95ecaa5642aba43d0d6c12e44fd0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_b3e5403aed884754874d8649fe3c1a35: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session d43ddf4b-e19f-42a9-87c5-b2cbd6853805
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session a63e6395-e1ab-4f20-8dd1-858e44ea40c2
+Agent WebSocket disconnected: a63e6395-e1ab-4f20-8dd1-858e44ea40c2
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent team websocket attached for team run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent websocket attached for run dtl_manager_0345b2_cc0d4e074b124d78aa2fa8a22dcd4d44
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreated agent session ab5c0f35-0a6b-4180-9250-deab47ebc179 for run dtl_manager_0345b2_cc0d4e074b124d78aa2fa8a22dcd4d44
+Agent WebSocket connected: session=ab5c0f35-0a6b-4180-9250-deab47ebc179, run=dtl_manager_0345b2_cc0d4e074b124d78aa2fa8a22dcd4d44
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreated agent session cdfc4ab6-fc4a-4532-93b8-72e8485153c8 for run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent Team WebSocket connected: session=cdfc4ab6-fc4a-4532-93b8-72e8485153c8, run=dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_manager_0345b2_cc0d4e074b124d78aa2fa8a22dcd4d44: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_manager_0345b2_208a780e51a349f1adc35ef0a344cc5c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_manager_0345b2_44155c27e49449709773b8e175212559: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_b3e5403aed884754874d8649fe3c1a35: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_b932490d841e48719f6c50440084e4a7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_a80c95ecaa5642aba43d0d6c12e44fd0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent team websocket attached for team run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+Created agent session 47d7669b-04fc-4172-afbe-448034314306 for run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent Team WebSocket connected: session=47d7669b-04fc-4172-afbe-448034314306, run=dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session 47d7669b-04fc-4172-afbe-448034314306
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_f5636d6598d04067b95405ea7bae5018: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_6ab4092b2c3342ff8f0e12250551efb9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAGY compaction detection off for run dtl_worker_0345b2_78f86ed56e66450989b13cbf89a29181: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session ab5c0f35-0a6b-4180-9250-deab47ebc179
+Agent WebSocket disconnected: ab5c0f35-0a6b-4180-9250-deab47ebc179
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent team websocket attached for team run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+Created agent session 79d6ecce-a317-4a50-81cc-645f4477ba76 for run dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mAgent Team WebSocket connected: session=79d6ecce-a317-4a50-81cc-645f4477ba76, run=dtl_team_0345b2_80cb52ccd4ae45bc8c2275c090356043
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session cdfc4ab6-fc4a-4532-93b8-72e8485153c8
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2min every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+[22m[39mClosed agent session 79d6ecce-a317-4a50-81cc-645f4477ba76
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_71650efd2c21456c9691f7f9eebff561/dtl_manager_0345b2_97f782c0049d4bb2b3cb4e4f0fc01f12/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_71650efd2c21456c9691f7f9eebff561/dtl_manager_0345b2_97f782c0049d4bb2b3cb4e4f0fc01f12/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_71650efd2c21456c9691f7f9eebff561/dtl_manager_0345b2_97f782c0049d4bb2b3cb4e4f0fc01f12/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mAGY compaction detection off for run dtl_manager_0345b2_97f782c0049d4bb2b3cb4e4f0fc01f12: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/memory/agent_orgs/dtl_org_0345b2_71650efd2c21456c9691f7f9eebff561/dtl_manager_0345b2_97f782c0049d4bb2b3cb4e4f0fc01f12/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-MyNVMv/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts[2m > [22m[2mDelegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)[2m > [22m[2mOrg root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)
+[22m[39mReusing registered workspace ID: agent_ws_7e0dfd2d4291133c27fb64e21fc85ceff0f0f209a1c813f13ed258ec411ae883
+
+ [32m✓[39m tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[33m1 skipped[39m[2m)[22m[33m 110731[2mms[22m[39m
+     [33m[2m✓[22m[39m in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree [33m 107174[2mms[22m[39m
+     [33m[2m✓[22m[39m Org root: a coordinator that cannot start fails delegate_task and starts no member (AC-004) [33m 2645[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m2 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (3)[39m
+[2m   Start at [22m 10:06:07
+[2m   Duration [22m 131.00s[2m (transform 14.61s, setup 68ms, import 19.18s, tests 110.73s, environment 0ms)[22m
+

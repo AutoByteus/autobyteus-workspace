@@ -1,0 +1,233 @@
+{
+  "instanceId": "iso-55445-b74c",
+  "controlPort": 55445,
+  "backendUrl": "http://127.0.0.1:55446",
+  "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+  "startedAt": "2026-10-17T07:38:15.215Z",
+  "steps": {
+    "A1-idle": {
+      "result": "Pass",
+      "expanded": {
+        "count": 1,
+        "status": "idle",
+        "ariaLabel": "Team status: Idle",
+        "title": "Team status: Idle",
+        "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+        "backgroundColor": "rgb(34, 197, 94)",
+        "animationName": "none",
+        "rowLabel": "Temporary task team, status check team agy, level 1, idle, Started by status manager agy, /status_check_team_agy, Task: Review the docs site.",
+        "beforeIcon": true
+      },
+      "collapsed": {
+        "count": 1,
+        "status": "idle",
+        "ariaLabel": "Team status: Idle",
+        "title": "Team status: Idle",
+        "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+        "backgroundColor": "rgb(34, 197, 94)",
+        "animationName": "none",
+        "rowLabel": "Temporary task team, status check team agy, level 1, idle, Started by status manager agy, /status_check_team_agy, Task: Review the docs site.",
+        "beforeIcon": true
+      },
+      "members": [
+        {
+          "agentRunId": "status_lead_agy_3596bf1895ae4ce4acfdf7d9b5099a6e",
+          "address": "/status_check_team_agy/lead"
+        },
+        {
+          "agentRunId": "status_helper_agy_5bf7ad458a744024b6006c2ae7807e43",
+          "address": "/status_check_team_agy/helper"
+        }
+      ],
+      "memberStatuses": {
+        "/status_check_team_agy/lead": "idle",
+        "/status_check_team_agy/helper": "offline"
+      },
+      "layout": {
+        "dot": {
+          "left": 76,
+          "right": 84,
+          "top": 487,
+          "bottom": 495,
+          "height": 8
+        },
+        "icon": {
+          "left": 90,
+          "right": 106,
+          "top": 483,
+          "bottom": 499,
+          "height": 16
+        },
+        "name": {
+          "left": 112,
+          "right": 280,
+          "top": 481,
+          "bottom": 501,
+          "height": 20
+        },
+        "summary": {
+          "left": 108,
+          "right": 227.1875,
+          "top": 503,
+          "bottom": 519,
+          "height": 16
+        },
+        "stop": {
+          "left": 288,
+          "right": 312,
+          "top": 488,
+          "bottom": 512,
+          "height": 24
+        }
+      }
+    },
+    "A2-busy-collapsed": {
+      "result": "Pass",
+      "dot": {
+        "count": 1,
+        "status": "running",
+        "ariaLabel": "Team status: Running",
+        "title": "Team status: Running",
+        "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+        "backgroundColor": "rgb(59, 130, 246)",
+        "animationName": "pulse",
+        "rowLabel": "Temporary task team, status check team agy, level 1, running, Started by status manager agy, /status_check_team_agy, Task: Review the docs site.",
+        "beforeIcon": true
+      },
+      "latencyMs": 265,
+      "layout": {
+        "dot": {
+          "left": 76,
+          "right": 84,
+          "top": 487,
+          "bottom": 495,
+          "height": 8
+        },
+        "icon": {
+          "left": 90,
+          "right": 106,
+          "top": 483,
+          "bottom": 499,
+          "height": 16
+        },
+        "name": {
+          "left": 112,
+          "right": 280,
+          "top": 481,
+          "bottom": 501,
+          "height": 20
+        },
+        "summary": {
+          "left": 108,
+          "right": 227.1875,
+          "top": 503,
+          "bottom": 519,
+          "height": 16
+        },
+        "stop": {
+          "left": 288,
+          "right": 312,
+          "top": 488,
+          "bottom": 512,
+          "height": 24
+        }
+      }
+    },
+    "A3-busy-expanded": {
+      "result": "Pass",
+      "dot": {
+        "count": 1,
+        "status": "running",
+        "ariaLabel": "Team status: Running",
+        "title": "Team status: Running",
+        "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+        "backgroundColor": "rgb(59, 130, 246)",
+        "animationName": "pulse",
+        "rowLabel": "Temporary task team, status check team agy, level 1, running, Started by status manager agy, /status_check_team_agy, Task: Review the docs site.",
+        "beforeIcon": true
+      },
+      "memberStatuses": {
+        "/status_check_team_agy/lead": "running",
+        "/status_check_team_agy/helper": "offline"
+      }
+    },
+    "B1-idle-team-run": {
+      "result": "Pass",
+      "run": {
+        "count": 1,
+        "status": "idle",
+        "ariaLabel": "Team status: Idle",
+        "title": "Team status: Idle",
+        "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+        "backgroundColor": "rgb(34, 197, 94)",
+        "animationName": "none",
+        "rowLabel": null,
+        "beforeIcon": null
+      },
+      "group": {
+        "count": 1,
+        "status": "idle",
+        "ariaLabel": "Team status: Idle",
+        "title": "Team status: Idle",
+        "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+        "backgroundColor": "rgb(34, 197, 94)",
+        "animationName": "none",
+        "rowLabel": null,
+        "beforeIcon": null
+      },
+      "stopPresent": true
+    },
+    "C1-team-run-stopped": {
+      "result": "Fail",
+      "message": "stopped run row: colour",
+      "details": {
+        "count": 1,
+        "status": "offline",
+        "ariaLabel": "Team status: Offline",
+        "title": "Team status: Offline",
+        "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+        "backgroundColor": "rgb(153, 153, 153)",
+        "animationName": "none",
+        "rowLabel": null,
+        "beforeIcon": null
+      }
+    }
+  },
+  "timeline": [
+    {
+      "at": "2026-10-17T07:38:16.589Z",
+      "delegatedTeam": "running"
+    },
+    {
+      "at": "2026-10-17T07:38:16.792Z",
+      "delegatedTeam": "idle"
+    },
+    {
+      "at": "2026-10-17T07:38:17.467Z",
+      "delegatedTeam": "running"
+    }
+  ],
+  "failures": [
+    {
+      "id": "C1-team-run-stopped",
+      "message": "stopped run row: colour"
+    }
+  ],
+  "setup": {
+    "ids": {
+      "manager": "status-manager-agy",
+      "lead": "status-lead-agy",
+      "helper": "status-helper-agy",
+      "team": "status-check-team-agy"
+    },
+    "wsRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-xmKFDH/ac011-agy",
+    "hostRunId": "status_manager_agy_44aad40b0a99409aa9433c00e72fdadb",
+    "model": "gemini-3.8-flash-low",
+    "runtime": "antigravity_cli",
+    "teamRunId": "status_check_team_agy_4e825f61c7ee4ebf992a06edcd5b8c53"
+  },
+  "sentAt": "2026-10-17T07:38:16.113Z",
+  "result": "Fail",
+  "pageErrors": [],
+  "finishedAt": "2026-10-17T07:38:20.786Z"
+}

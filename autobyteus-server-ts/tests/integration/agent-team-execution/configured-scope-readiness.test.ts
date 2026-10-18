@@ -13,10 +13,10 @@ import { buildInitialTeamRunExecutionTree } from '../../../src/agent-team-execut
 import { AgentOrgExecutionScopeBuilder } from '../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js';
 import { AgentOrgRunPersistenceCoordinator } from '../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js';
 import { validateAgentOrgStatePackage } from '../../../src/agent-org-execution/services/agent-org-state-package-validator.js';
-import { AgentOrgCommunicationMessagesV1Store } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
+import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../src/run-history/store/agent-org-run-execution-tree-store.js';
 import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
-import { TeamCommunicationV1Store } from '../../../src/services/team-communication/team-communication-v1-store.js';
+import { TeamCommunicationStore } from '../../../src/services/team-communication/team-communication-store.js';
 import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { testAgentNode, testTeamRunConfig } from '../../fixtures/current-team-run-fixtures.js';
@@ -73,7 +73,7 @@ const fixture = () => {
     prepareAgentRunTermination: async (run: any) => termination(run) });
   const dependencies = { agentRunManager: agentRunManager as never,
     activityInspector: { inspect: () => ({ kind: 'none' }) } as never,
-    memoryLocator: { getLocation: () => ({ memoryDir: dir }) } as never,
+    memoryLocator: { getMemoryDir: () => dir } as never,
     workspaceManager: { ensureWorkspaceByRootPath: async () => ({ workspaceId: 'ws' }) } as never };
   return { dir, order, inputs, active, prepareNewAgentRun, dependencies,
     useTeamTree() { treeFile = 'team_run_execution_tree.json'; },
@@ -93,7 +93,7 @@ const org = async (f: ReturnType<typeof fixture>) => {
     communicationMessages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-lazy', messages: [] } });
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: 'org-lazy', orgMemoryDir: f.dir,
     executionTreeStore: new AgentOrgRunExecutionTreeStore(),
-    communicationStore: new AgentOrgCommunicationMessagesV1Store(), enterPersistenceFailStop: vi.fn() });
+    communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
   return new AgentOrgExecutionScopeBuilder({ ...f.dependencies, flatTeamExecutionFactory: f.factory,
     taskExecutionIdentity: tasks, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
   }).build({ state, persistence, activationMode: 'fresh', persistInitialPackage: true });
@@ -107,7 +107,7 @@ const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') =>
     mode, persistInitialPackage: true, teamMemoryDir: f.dir, factory: f.factory,
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never),
     taskExecutionIdentity: tasks, executionTreeStore: new TeamRunExecutionTreeStore(),
-    communicationStore: new TeamCommunicationV1Store(), onTerminated: vi.fn(),
+    communicationStore: new TeamCommunicationStore(), onTerminated: vi.fn(),
   });
 };
 const identity = (id: string) => createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity('org-lazy'), agentRunId: id, memberAddress: `/${id}` });

@@ -1,11 +1,12 @@
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
+import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
 import {
   createTeamAgentStatusDetails,
@@ -41,7 +42,8 @@ import {
   type TaskDelegationContext,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { messageLogOwnerOf } from "../../run-history/store/task-agent-message-logs.js";
+import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { TeamTaskExecutionService } from "../task-delegation/team-task-execution-service.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
@@ -103,7 +105,7 @@ export class RootTeamRun {
     publisher: TeamRunEventPublisher<TeamRunEvent>;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
     taskExecutionResources?: TaskExecutionResourcePort;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
@@ -150,6 +152,7 @@ export class RootTeamRun {
       initial: options.messages,
       assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
+      messageLogOwnerOf: (agentRunId) => messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
       commit: (plan) => options.persistence.commitReservedMessageAppend(plan),
       publish: (event) => options.publisher.publish(event),
@@ -274,7 +277,7 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => {
       this.assertAdmitting();
       return this.index.getAgent(input.focusedAgentRunId)
-        ? this.collaborators.resolveMentions(input.mentions)
+        ? this.collaborators.resolveMentions(input.mentions, mentionViewerOf(this.index, input.focusedAgentRunId))
         : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in root '${this.teamRunId}'.` };
     });
   }

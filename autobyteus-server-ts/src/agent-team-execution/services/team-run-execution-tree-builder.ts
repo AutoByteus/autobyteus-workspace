@@ -46,10 +46,7 @@ export const buildInitialTeamRunExecutionTree = (input: {
     teamRunId: input.config.rootTeam.teamRunId,
     coordinatorAddress: input.config.rootTeam.coordinatorAddress,
     defaultLaunchConfiguration: launchConfiguration(input.config.rootTeam.defaultLaunchConfiguration),
-    members: input.config.rootTeam.children.map((member) => {
-      if (member.kind !== "agent") throw new Error(`Team V2 cannot contain configured Team '${member.address}'.`);
-      return toAgent(member);
-    }),
+    members: input.config.rootTeam.children.map(toAgent),
     taskExecutions: [],
   },
 }, input.config.rootTeam.teamRunId);

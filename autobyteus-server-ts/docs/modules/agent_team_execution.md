@@ -56,13 +56,15 @@ local AgentRun identity. For current Team execution trees,
 continuation uses the local AgentRun ID plus its persisted memory state, and new
 native nodes keep `platformAgentRunId: null`.
 
-Member memory is root-hierarchical. A standalone Team begins with the Team root
-identity and an empty task-Team ancestor chain. Direct configured Agents use the
-root TeamRun ID plus their AgentRun ID. A task Team appends its concrete
-TeamRun ID to the immutable `RootExecutionPhysicalScope`; its Agent and deeper
-task-Team descendants use that task ancestry. `RootedAgentMemoryLocator` owns
-physical path resolution. Consumers do not derive paths from logical addresses
-or provider IDs.
+Member memory follows one placement rule (`AgentRunMemoryPlacement`). Direct
+configured Agents are parts of the team run: the root TeamRun ID plus their
+AgentRun ID. A task agent is a normal run: `memory/agents/<taskAgentRunId>/`.
+A task agent team is a run of its own: `memory/agent_teams/<taskTeamRunId>/`,
+its members inside it. A task Team still appends its concrete TeamRun ID to the
+immutable `RootExecutionPhysicalScope` (its logical identity); the memory folder
+comes from the placement, which `TeamRunContext.teamKind` (`configured` or
+`task`) decides for a team's members. `AgentRunMemoryLocator` resolves the path.
+Consumers do not derive paths from logical addresses or provider IDs.
 
 Required startup migration `20260823_repair_team_agent_memory_layout` contains
 the only knowledge of the previously released nested-member memory defect. The
@@ -416,6 +418,11 @@ legacy configured tool names are ignored.
 ```
 
 Alternatively, `{recipient_address, task_id}` selects saved Project Task work.
+`task_id` names a Project Task by its key (`autobyteus-42`, any letter case) or
+its stored long ID. The Task side resolves it once in `resolveAssignment`, which
+returns the stored `taskId` (the only identity used for linking, assignment and
+run resources) and the key (`taskReference`, used in agent-facing texts). A Task
+with no Project or an unknown reference fails with `TASK_NOT_FOUND`.
 The parser rejects mixed description/reference overrides and a caller
 `project_id`. Described delegation without an ID keeps the contract above. Only
 non-owned runs, such as the Manager, may pass a `task_id`. A Task-owned run
@@ -501,7 +508,8 @@ the tool layer serializes it.
 `delegate_task` can also give a saved Task to an **existing** copy by its own ID
 (`{target_team_run_id | target_agent_run_id, task_id}`): each root's
 `assignToExistingCopy` hands it to `RootTaskExecutionLifecycle.assignToExistingCopy`
-together with the root's exact delivery, so the copy is woken or restored with
+together with the root's exact delivery (the named Task is resolved first, so its
+refusals come before the copy's), so the copy is woken or restored with
 its conversation and receives the Task's work as a `task_assignment` message
 from the delegator. The address path is `delegateToNewCopy`. See
 [Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy).
@@ -633,26 +641,25 @@ Each Agent receives one `MemberTeamContext` containing:
 - optional Team instruction; and
 - active delivery/tool service bindings.
 
-After optional authored `Team Instruction`, the Carpenter prompt renders one
-`AgentTeam Addressing` section followed by one `AgentTeam Collaboration`
-section, before `Working Environment`. The shared exact renderer supplies the
-canonical member address, logical directory/file analogy, absolute non-root
-address rule, Team coordinator ingress rule, and the complete intent-first
-collaboration contract (REQ-009 wording). The exact copy distinguishes ordinary
-communication with the one instance at an address in the sender's run
-(its "Ordinary Communication" section), where a teammate's address reaches the
-member of the sender's own team instance and an address not in the run is not
-found (messaging never creates a run), from spawning a new copy with every `delegate_task` call (its
-"Delegated Agents" section). It also prohibits duplicate work-packet delivery,
-tells the Agent to follow up on a copy only through its returned run ID, states
-that a quiet copy is shut down (but not while it has a running background task)
-and restored with its conversation on the next message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
-Agent selects the single rule whose condition most specifically applies and
-notifies only that rule's recipient; it does not fan out one outcome to
-additional recipients. The renderer injects no flat recipient, representative,
-or delegation roster. Runtime exposure automatically includes `get_handoff_rules`,
-`send_message_to` and `delegate_task` for a valid Team
-context, with identical copy across AutoByteus, Codex, and Claude.
+After optional authored `Team Instruction`, the Carpenter prompt renders the
+collaboration sections for the member's `collaborationRole`
+(`src/agent-execution/prompt/collaboration-prompt-sections.ts`; see
+[Prompt Engineering](./prompt_engineering.md#collaboration-sections-by-role)). A
+member of a user-started team (`team_member`) gets `AgentTeam Addressing`
+(the absolute non-root address rule and the Team coordinator ingress rule) and
+`Working With Other Agents` for a team member: its teammates are reached by
+address with `send_message_to`; a task is delegated with `delegate_task`; every
+message received names its sender and ID and is answered by ID. A `Handoffs`
+subsection with the agent's possible rule-based handoffs is added only when the
+agent has handoff rules; the agent selects the single rule whose condition most
+specifically applies and notifies only that rule's recipient. No section tells
+an agent its own address, and none injects a flat recipient, representative, or
+delegation roster. The role is decided once by
+`resolveMemberCollaborationScope` and stored on the member context; a task agent
+inside a task team is a `task_agent` even when it sits at a configured address.
+Runtime exposure automatically includes `get_handoff_rules`, `send_message_to`
+and `delegate_task` for a valid Team context, with identical copy across
+AutoByteus, Codex, and Claude.
 
 `send_message_to.recipient_address` resolves through the root logical placement
 service, the sender's own Team instance first: a teammate address inside a
@@ -775,6 +782,18 @@ validated current package per root TeamRun:
 - `team_run_execution_tree.json`; and
 - versioned `team_communication_messages.json`.
 
+On disk a team run's tree links its task agents (`{address, agentRunId |
+teamRunId, delegatorAgentRunId?, startedAt}`); each task agent's facts are in its
+own file (`agents/<id>/run_metadata.json` or `agent_teams/<id>/team_run_execution_tree.json`,
+each with a `taskAgent` section). `TeamRunExecutionTreeStore` composes today's
+records on load and splits them on save (a task agent's own file first, then its
+link; only changed own files are written; records it did not load are written
+back unchanged). A tree with a `taskAgent` section is a task agent team's own
+tree and is never read or admitted as a team run (G2). Messages are stored with
+the run(s) they belong to: a message between the team run's parts in its own log,
+a message with a task agent in both logs (receiver's first); the stored view
+composes the run's log with its loaded task agents' logs.
+
 The execution tree is **read tolerantly and written exactly** (see the
 [data migration guideline](../design/data_migration_guideline.md) section 3).
 The reader requires the known required fields (`createdAt`, `archivedAt`,
@@ -870,8 +889,7 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/agent-team-execution/services/team-run-execution-tree-mutator.ts`
 - `src/agent-team-execution/services/team-run-persistence-coordinator.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`
-- `src/agent-team-execution/services/member-collaboration-instruction-renderer.ts`
-- `src/agent-team-execution/services/team-collaboration-instruction-renderer.ts`
+- `src/agent-execution/prompt/collaboration-prompt-sections.ts`
 - `src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.ts`
 - `src/agent-team-execution/services/member-command-status-overlay-store.ts`
 - `src/agent-team-execution/services/team-agent-event-adapter.ts`

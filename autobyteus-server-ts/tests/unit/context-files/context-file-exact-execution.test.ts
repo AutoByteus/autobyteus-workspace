@@ -10,6 +10,8 @@ import { ContextFileReadService } from "../../../src/context-files/services/cont
 import { ContextFileLocalPathResolver } from "../../../src/context-files/services/context-file-local-path-resolver.js";
 import { ContextFileDraftCleanupService } from "../../../src/context-files/services/context-file-draft-cleanup-service.js";
 import { ContextFileLayout } from "../../../src/context-files/store/context-file-layout.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
 
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true }))); });
@@ -19,9 +21,10 @@ it("finalizes and reads only the selected execution despite repeated address and
   const teamDir = path.join(memoryDir, "agent_teams", "team");
   await fs.mkdir(teamDir, { recursive: true });
   const tree = testExecutionTree({ rootTeamRunId: "team", children: [testAgentNode("/worker", { agentRunId: "configured" })], coordinatorAddress: "/worker" });
-  await fs.writeFile(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions: [
+  // Written as the app writes it: the task agent's own file at `agents/task/`, its link in the team tree.
+  await new TeamRunExecutionTreeStore().write(teamDir, validateTeamRunExecutionTreePayload({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions: [
     { address: "/worker", agentRunId: "task", platformAgentRunId: null, delegatorAgentRunId: "configured", startedAt: "2026-09-01T00:00:00.000Z" },
-  ] } }));
+  ] } }, "team"));
   await fs.writeFile(path.join(teamDir, "team_communication_messages.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId: "team", messages: []}));
   const layout = new ContextFileLayout({ appDataDir: root, memoryDir });
   const resolver = () => new ContextFileOwnerResolver({ memoryDir, locations: createStoredTeamRunExecutionTreeLocationService(memoryDir) });
@@ -30,7 +33,8 @@ it("finalizes and reads only the selected execution despite repeated address and
   const filename = "ctx_unique__notes.txt";
   const draftFile = layout.getDraftFilePath(draftOwner, filename);
   await fs.mkdir(path.dirname(draftFile), { recursive: true }); await fs.writeFile(draftFile, "configured bytes");
-  const otherFile = path.join(teamDir, "task", "context_files", filename);
+  // The task agent is a normal run: its memory (and context files) at `agents/<agentRunId>/` (contract L1).
+  const otherFile = path.join(memoryDir, "agents", "task", "context_files", filename);
   await fs.mkdir(path.dirname(otherFile), { recursive: true }); await fs.writeFile(otherFile, "retained task bytes");
   const finalOwner = { kind: "team_member_final" as const, teamRunId: "team", agentRunId: "configured" };
   const finalizer = new ContextFileFinalizationService(layout, cleanup, resolver());

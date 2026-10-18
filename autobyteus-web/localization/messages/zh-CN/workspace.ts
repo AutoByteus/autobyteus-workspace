@@ -2,6 +2,7 @@ import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "发送给智能体的内容",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "技能已更新",
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
   "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
   "workspace.runModelConfig.modelRequired": "启动前请选择模型。",
@@ -56,7 +57,7 @@ const messages = {
   "workspace.agentOrg.history.stopLabel": "停止智能体组织",
   "workspace.agentOrg.history.archiveLabel": "归档智能体组织历史记录",
   "workspace.agentOrg.history.deleteLabel": "永久删除智能体组织历史记录",
-  "workspace.agentOrg.history.deleteConfirmation": "要永久删除此智能体组织历史记录吗？此操作仅删除本次运行，且无法撤销。",
+  "workspace.agentOrg.history.deleteConfirmation": "要永久删除此智能体组织历史记录吗？此操作仅删除本次运行，且无法撤销；其任务智能体的记忆将保留。",
   "workspace.agentOrg.history.archived": "智能体组织历史记录已归档。",
   "workspace.agentOrg.history.archiveFailed": "无法归档智能体组织历史记录，请重试。",
   "workspace.agentOrg.history.deleted": "智能体组织历史记录已永久删除。",
@@ -196,14 +197,10 @@ const messages = {
     "最大化查看",
   "workspace.components.workspace.team.TeamCommunicationPanel.restore_view":
     "恢复视图",
-  "workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam":
-    "代表",
   "workspace.components.workspace.team.TeamCommunicationPanel.reference_count_label":
     "{{count}} 个引用文件",
   "workspace.components.workspace.team.TeamCommunicationPanel.show_all_references":
     "显示全部 {{count}} 个文件",
-  "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
-    "当前聚焦的子团队",
   "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
     "还没有活动。",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
@@ -222,8 +219,6 @@ const messages = {
     "临时任务执行",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running":
     "团队状态：运行中",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_initializing":
-    "团队状态：正在初始化",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_error":
     "团队状态：错误",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_idle":
@@ -231,7 +226,6 @@ const messages = {
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_offline":
     "团队状态：离线",
   "workspace.history.hierarchy.tree_label": "{{name}}组织树",
-  "workspace.history.hierarchy.role.agent_team": "智能体团队",
   "workspace.history.hierarchy.role.agent": "智能体",
   "workspace.history.copyTask.locate": "在项目中显示任务：{{title}}",
   "workspace.history.copyTask.accessible": "任务：{{title}}",
@@ -251,10 +245,6 @@ const messages = {
   "workspace.task_monitor.load_error": "无法加载活动。",
   "workspace.task_monitor.retry": "重试",
   "workspace.task_monitor.retry_accessible": "重试加载活动",
-  "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
-    "向此子团队发送消息",
-  "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
-    "发送给子团队",
   "workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet":
     "内容暂不可用",
   "workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable":

@@ -23,6 +23,7 @@ const buildBuilder = (definitions: Record<string, { name?: string; instructions?
   } as never);
 
 const buildContext = (config: TeamRunConfig, agents: readonly TeamRunAgentNode[]) => new TeamRunContext({
+  teamKind: "configured",
   physicalScope: createRootExecutionPhysicalScope({
     root: createTeamRootExecutionIdentity(config.rootTeam.teamRunId),
     ancestorTeamRunIds: [],

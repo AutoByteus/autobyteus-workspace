@@ -1,5 +1,5 @@
 import type {
-  ConfiguredMemberExecutionDto,
+  ConfiguredAgentExecutionDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -14,31 +14,12 @@ const isActiveStatus = (status: AgentStatus): boolean => (
 
 const projectConfiguredRows = (input: {
   rootTeamRunId: string;
-  members: readonly ConfiguredMemberExecutionDto[];
+  members: readonly ConfiguredAgentExecutionDto[];
   summary: string;
   lastActivityAt: string;
   statusByAgentRunId: ReadonlyMap<string, AgentStatus>;
   workspaceByAgentRunId: ReadonlyMap<string, string | null>;
 }): TeamMemberTreeRow[] => input.members.map((member): TeamMemberTreeRow => {
-  if (member.kind === 'configured_team') {
-    return {
-      teamRunId: input.rootTeamRunId,
-      kind: 'agent_team',
-      memberAddress: member.address,
-      displayName: memberAddressBasename(member.address),
-      agentRunId: null,
-      teamDefinitionId: member.team_definition_id,
-      teamRunIdForNode: member.team_run_id,
-      coordinatorAddress: member.coordinator_address,
-      workspaceRootPath: null,
-      summary: input.summary,
-      lastActivityAt: input.lastActivityAt,
-      currentStatus: null,
-      isActive: false,
-      deleteLifecycle: 'READY',
-      children: projectConfiguredRows({ ...input, members: member.members }),
-    };
-  }
   const currentStatus = normalizeAgentRuntimeStatus(
     input.statusByAgentRunId.get(member.agent_run_id) ?? AgentStatus.Offline,
   );

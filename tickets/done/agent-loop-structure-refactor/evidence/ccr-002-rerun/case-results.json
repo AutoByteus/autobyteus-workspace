@@ -1,0 +1,155 @@
+[
+  {
+    "case": "CCR-E2E-002",
+    "name": "CCR-E2E-002: tools changed in Settings before the compaction turn: the summary request carries no thinking and is accepted (strict)",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "settingMessage": "Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' has been updated successfully.",
+      "compactionInT3": 0,
+      "thinkingBlocksInLastRequestBefore": 13,
+      "summaryCalls": [
+        {
+          "index": 24,
+          "phase": "CCR2-T4",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 2007,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 28790,
+            "cacheRead": 0,
+            "cacheWrite": 28786,
+            "output": 2007
+          },
+          "strictInjected": true,
+          "thinkingBlocks": 0,
+          "cacheShare": 0
+        }
+      ],
+      "toolsChanged": true,
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv45j68i_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 20,
+          "raw_trace_count": 69,
+          "phase": "started"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv45j68i_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 20,
+          "raw_trace_count": 69,
+          "compaction_model_identifier": "claude-opus-5-5",
+          "summarizer_provider": "ANTHROPIC",
+          "compaction_invocation_id": "compaction_compaction_operation_mv45j68i_1_1",
+          "completion_status": "complete",
+          "completion_reason": "end_turn",
+          "summary_char_count": 3363,
+          "summary_token_count": 854,
+          "phase": "completed",
+          "compacted_block_count": 20
+        }
+      ],
+      "agentCalls": [
+        {
+          "index": 25,
+          "phase": "CCR2-T4",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 134,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": false,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 13649,
+            "cacheRead": 8284,
+            "cacheWrite": 5361,
+            "output": 134
+          },
+          "strictInjected": true
+        },
+        {
+          "index": 26,
+          "phase": "CCR2-T4",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 156,
+          "responseHasToolCall": true,
+          "responseHasVisibleText": false,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 14494,
+            "cacheRead": 13645,
+            "cacheWrite": 847,
+            "output": 156
+          },
+          "strictInjected": true
+        },
+        {
+          "index": 27,
+          "phase": "CCR2-T4",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 295,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 15361,
+            "cacheRead": 14492,
+            "cacheWrite": 867,
+            "output": 295
+          },
+          "strictInjected": true
+        }
+      ]
+    },
+    "at": "2026-10-11T18:24:13.376Z"
+  }
+]

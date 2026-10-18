@@ -1,0 +1,51 @@
+## git diff --stat origin/personal(516e592d7b)..HEAD excluding tickets
+ .../agent-command-correlated-status.e2e.test.ts    |  13 +-
+ ...ndalone-error-termination-lifecycle.e2e.test.ts |  30 +-
+ .../team-run-v1-production-upgrade.e2e.test.ts     | 418 ++++++++++++++++-----
+ .../memory-sync-multiprocess.e2e.test.ts           | 224 +++--------
+ .../configured-skill-on-demand-loading.e2e.test.ts |  32 +-
+ autobyteus-web/package.json                        |   1 +
+ .../tests/e2e/existing-run-model-config-probe.mjs  |  12 +-
+ .../interrupt-result-presentation.page.vue         |   8 +-
+ .../e2e/interrupt-result-presentation-probe.mjs    | 135 ++++---
+ .../tests/e2e/run-settings-live-probe.mjs          |  33 +-
+ 10 files changed, 559 insertions(+), 347 deletions(-)
+
+## non-test, non-package.json files in diff (expect none)
+NONE
+
+## package.json diff
++    "test:e2e:interrupt-result-presentation": "node tests/e2e/interrupt-result-presentation-probe.mjs",
+
+## commits
+3108bb9ef8 docs(tickets): baseline-e2e-probe-repair IR-002 handoff on the SR-003 basis (UC-006 withdrawn)
+48dec15def docs(tickets): baseline-e2e-probe-repair SR-003 withdraw UC-006 (removed upstream) and classify the UC-004 warning case
+989503dcfa docs(tickets): baseline-e2e-probe-repair IR-001 implementation handoff and evidence
+40e39d7235 test(web): baseline fix — run-settings-live R03: client readiness now pre-empts the deletion trigger
+dc4110b1c6 test(app-data-migrations): baseline fix — team-run-v1-production-upgrade: asserted the TeamRun V2 intermediate, not the AgentOrg end state
+7ffd6c3c27 docs(tickets): baseline-e2e-probe-repair SR-002 upstream overlap (UC-001, UC-007 fixed upstream; UC-004 ledger in fa49138794)
+c2347175ae test(web): baseline fix — interrupt-result-presentation probe: retired stream shapes, unserved boundaries, no script
+3052b836ad test(web): baseline fix — existing-run-model-config probe: harness missing current boundaries
+42965d5043 test(memory-sync): baseline fix — memory-sync-multiprocess: seeded a nested current Team package
+3aa6eaa717 test(runtime): baseline fix — configured-skill-on-demand-loading: private createBackend signature changed
+5f812baa57 test(agent): baseline fix — standalone-error-termination-lifecycle: removed prepareNewAgentRun and leaked manager singleton
+6d106cb2e4 test(agent): baseline fix — agent-command-correlated-status: stale AGENT_STATUS payload and backend double
+e4838eef76 docs(tickets): baseline-e2e-probe-repair SR-001 handoff route
+f48fe3371e docs(tickets): baseline-e2e-probe-repair SR-001 requirements, investigation and design
+
+## files per commit
+6d106cb2e4: autobyteus-server-ts/tests/e2e/agent/agent-command-correlated-status.e2e.test.ts 
+5f812baa57: autobyteus-server-ts/tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts 
+3aa6eaa717: autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts 
+42965d5043: autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts 
+dc4110b1c6: autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts 
+3052b836ad: autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs 
+c2347175ae: autobyteus-web/package.json autobyteus-web/tests/e2e/fixtures/interrupt-result-presentation.page.vue autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs 
+40e39d7235: autobyteus-web/tests/e2e/run-settings-live-probe.mjs 
+
+## AC-006: nested-team-history-restart absent
+516e592d7b matches: 207
+HEAD matches: 207
+remove-nested-task-team
+
+## AC-001 header

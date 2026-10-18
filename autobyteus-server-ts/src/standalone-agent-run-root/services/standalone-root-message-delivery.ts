@@ -1,4 +1,6 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import type { StandaloneRunPostInput, StandaloneRunPostResult } from "../../agent-execution/services/standalone-run-ports.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -15,7 +17,7 @@ import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegatio
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
 import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
-import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
@@ -66,7 +68,7 @@ export class StandaloneRootMessageDelivery {
   /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
   resolveMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.options.getIndex().getAgent(input.focusedAgentRunId)
-      ? this.options.collaborators.resolveMentions(input.focusedAgentRunId, input.mentions)
+      ? this.options.collaborators.resolveMentions(input.focusedAgentRunId, input.mentions, mentionViewerOf(this.options.getIndex(), input.focusedAgentRunId))
       : Promise.resolve({ admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in Agent root '${this.options.hostRunId}'.` });
   }
 
@@ -165,7 +167,7 @@ export class StandaloneRootMessageDelivery {
       : this.options.teams.require(agent.host.hostRunId).reserveDirectAgentInput(agentRunId, message);
   }
 
-  presentCommittedCommunication(message: CollaborationCommunicationMessageV1, receiverInput: AgentInputUserMessage): void {
+  presentCommittedCommunication(message: CollaborationCommunicationMessage, receiverInput: AgentInputUserMessage): void {
     const index = this.options.getIndex();
     const receiver = index.requireAgent(message.receiverAgentRunId);
     if (receiver.executionKind === "host") {
@@ -227,6 +229,7 @@ export class StandaloneRootMessageDelivery {
     const receiver = this.options.getIndex().requireAgent(targetAgentRunId);
     const deliver = () => this.options.getCommunication().deliver({
       ...input,
+      senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.senderIdentity),
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
     });

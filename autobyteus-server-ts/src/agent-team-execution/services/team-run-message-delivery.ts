@@ -1,3 +1,4 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import {
@@ -62,6 +63,7 @@ export class TeamRunMessageDelivery {
       intent,
       receiverIdentity: this.identityFor(target.address, target.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(target.address) ?? target.agentRunId,
+      senderAddress: reachingAddressOf(this.options.getIndex(), target.agentRunId, sender),
     }));
   }
 
@@ -84,6 +86,7 @@ export class TeamRunMessageDelivery {
       },
       receiverIdentity: receiver,
       receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
+      senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.sender.identity),
     }));
   }
 

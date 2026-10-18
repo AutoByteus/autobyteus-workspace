@@ -87,4 +87,25 @@ describe("AgentRunResourceManager", () => {
     expect(manager.release(run.runId, run as never).state).toBe("already_released");
     for (const close of [deactivateForRun, fileDispose, relayDispose, memoryDispose]) expect(close).toHaveBeenCalledTimes(3);
   });
+
+  it("tells the lifecycle observer once a run's resources are released, never on a failed release", () => {
+    const runReleased = vi.fn();
+    const memoryDispose = vi.fn(() => { throw new Error("memory failed"); });
+    const manager = new AgentRunResourceManager({
+      runSessions: { deactivateForRun: vi.fn(() => 0) },
+      runFileChangeService: { attachToRun: vi.fn(() => vi.fn()) },
+      publishedArtifactRelayService: { attachToRun: vi.fn(() => vi.fn()) },
+      memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
+      lifecycleObserver: { runReleased },
+    } as never);
+    const run = createRun("run-observed");
+    manager.attach(run as never);
+
+    expect(manager.release(run.runId, run as never).state).toBe("failed");
+    expect(runReleased).not.toHaveBeenCalled();
+    memoryDispose.mockImplementation(() => undefined);
+    expect(manager.release(run.runId, run as never).state).toBe("released");
+    expect(manager.release(run.runId, run as never).state).toBe("already_released");
+    expect(runReleased).toHaveBeenCalledExactlyOnceWith(run);
+  });
 });

@@ -16,7 +16,7 @@ import { materializeTeamRoot } from "../../../../src/agent-team-execution/servic
 import { buildTeamRunConfigFromExecutionTree } from "../../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
-import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
@@ -50,7 +50,7 @@ export const admission = (runnable = true) => createCollaboratorAdmission({
     : { kind: "model_unavailable" as const }),
 } as unknown as RunModelSelectionValidator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 
-export const harness = async (options: { runnable?: boolean; withTeammate?: boolean } = {}) => {
+export const harness = async (options: { runnable?: boolean; withTeammate?: boolean; teammateDefinitionId?: string } = {}) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-root-collaborators-")); directories.push(memoryDir);
@@ -63,7 +63,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     } as never),
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
     executionTreeStore: new TeamRunExecutionTreeStore(),
-    communicationStore: new TeamCommunicationV1Store(),
+    communicationStore: new TeamCommunicationStore(),
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.
     taskExecutionResources: new InMemoryTaskExecutionResources(),
@@ -73,7 +73,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     rootTeamRunId: ROOT, rootTeamDefinitionId: "se-team", coordinatorAddress: "/coordinator",
     children: [
       testAgentNode("/coordinator", { agentRunId: "run-coordinator", runtimeKind: RuntimeKind.CODEX_APP_SERVER }),
-      ...(options.withTeammate ? [testAgentNode("/worker", { agentRunId: "run-worker", runtimeKind: RuntimeKind.CODEX_APP_SERVER })] : []),
+      ...(options.withTeammate ? [testAgentNode("/worker", { agentRunId: "run-worker", runtimeKind: RuntimeKind.CODEX_APP_SERVER, ...(options.teammateDefinitionId ? { agentDefinitionId: options.teammateDefinitionId } : {}) })] : []),
     ],
   });
   const root = await materializeTeamRoot({
@@ -84,7 +84,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   });
   const reopen = async () => {
     const tree = (await dependencies.executionTreeStore.read(teamMemoryDir, ROOT))!;
-    const messages = (await dependencies.communicationStore.read(teamMemoryDir, ROOT))!;
+    const messages = (await dependencies.communicationStore.read(teamMemoryDir, tree))!;
     return materializeTeamRoot({
       config: buildTeamRunConfigFromExecutionTree(tree), tree, messages,
       teamMemoryDir, mode: "restore", persistInitialPackage: false, ...dependencies,

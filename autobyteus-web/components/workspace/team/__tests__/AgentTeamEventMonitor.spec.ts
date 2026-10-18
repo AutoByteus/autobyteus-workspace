@@ -5,7 +5,6 @@ import {
   buildTestTeamContext,
   testAgentContext,
   testAgentNode,
-  testSubTeamNode,
   testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
@@ -44,10 +43,10 @@ describe('AgentTeamEventMonitor exact AgentRun focus', () => {
     const professor = testAgentContext({ runId: 'professor-run', displayName: 'Professor', agentDefinitionId: 'agent-professor-def' });
     const student = testAgentContext({ runId: 'student-run', displayName: 'Student', agentDefinitionId: 'agent-student-def' });
     const professorNode = testAgentNode('/Professor', { agentRunId: 'professor-run', agentDefinitionId: 'agent-professor-def' });
-    const studentNode = testAgentNode('/sub-team/Student', { agentRunId: 'student-run', agentDefinitionId: 'agent-student-def' });
+    const studentNode = testAgentNode('/Student', { agentRunId: 'student-run', agentDefinitionId: 'agent-student-def' });
     state.activeTeamContext = buildTestTeamContext({
       teamRunId: 'team-1', coordinatorAddress: '/Professor', focusedAgentRunId: 'professor-run',
-      rootChildren: [professorNode, testSubTeamNode('/sub-team', [studentNode], { coordinatorAddress: '/sub-team/Student' })],
+      rootChildren: [professorNode, studentNode],
       contexts: [
         { agentRunId: 'professor-run', context: professor },
         { agentRunId: 'student-run', context: student },
@@ -69,7 +68,7 @@ describe('AgentTeamEventMonitor exact AgentRun focus', () => {
     });
   });
 
-  it('switches to the exact nested configured AgentRun', async () => {
+  it('switches to the exact configured AgentRun', async () => {
     expect(state.activeTeamContext.view.focusAgent('student-run').disposition).toBe('applied');
     const wrapper = mountSubject();
     await wrapper.vm.$nextTick();
@@ -85,9 +84,9 @@ describe('AgentTeamEventMonitor exact AgentRun focus', () => {
       teamRunId: 'team-1', coordinatorAddress: '/Professor', focusedAgentRunId: 'task-student-run',
       rootChildren: [
         testAgentNode('/Professor', { agentRunId: 'professor-run', agentDefinitionId: 'agent-professor-def' }),
-        testSubTeamNode('/sub-team', [testAgentNode('/sub-team/Student', { agentRunId: 'student-run' })], { coordinatorAddress: '/sub-team/Student' }),
+        testAgentNode('/Student', { agentRunId: 'student-run' }),
       ],
-      delegations: [testDelegation({ delegatorAgentRunId: 'professor-run', recipientAddress: '/sub-team/Student', target: { agentRunId: 'task-student-run' } })],
+      delegations: [testDelegation({ delegatorAgentRunId: 'professor-run', recipientAddress: '/Student', target: { agentRunId: 'task-student-run' } })],
       contexts: [{ agentRunId: 'task-student-run', context: testAgentContext({
         runId: 'task-student-run', displayName: 'Student', messages: [{
           type: 'user', text: 'Dedicated task packet', timestamp: new Date('2026-08-15T00:00:00.000Z'),

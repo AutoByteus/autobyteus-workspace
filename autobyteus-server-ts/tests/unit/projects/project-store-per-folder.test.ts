@@ -6,9 +6,9 @@ import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import type { Project, ProjectTask } from "../../../src/projects/domain/models.js";
 
-const project = (projectId: string): Project => ({ projectId, name: projectId, description: "", createdAt: "2026-10-05T00:00:00.000Z",
-  updatedAt: "2026-10-05T00:00:00.000Z", workspaces: [] });
-const task = (taskId: string): ProjectTask => ({ taskId, description: `Task ${taskId}`, status: "TODO",
+const project = (projectId: string, lastNumber = 0): Project => ({ projectId, name: projectId, description: "", createdAt: "2026-10-05T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z", workspaces: [], taskKeys: { prefix: "project-a", lastNumber } });
+const task = (taskId: string): Omit<ProjectTask, "taskKey"> => ({ taskId, description: `Task ${taskId}`, status: "TODO", dependsOnTaskIds: [],
   createdAt: "2026-10-05T00:00:00.000Z", updatedAt: "2026-10-05T00:00:00.000Z", contextFiles: [] });
 
 describe("per-Project folder ProjectStore (SR-024)", () => {
@@ -27,9 +27,9 @@ describe("per-Project folder ProjectStore (SR-024)", () => {
 
   it("writes exactly the documented layout: project.json, tasks/<taskId>/task.json with projectId", async () => {
     await seed();
-    expect(JSON.parse(await fs.readFile(path.join(layout.root, "project_A", "project.json"), "utf8"))).toEqual(project("project_A"));
+    expect(JSON.parse(await fs.readFile(path.join(layout.root, "project_A", "project.json"), "utf8"))).toEqual(project("project_A", 2));
     expect(JSON.parse(await fs.readFile(path.join(layout.root, "project_A", "tasks", "task_1", "task.json"), "utf8")))
-      .toEqual({ ...task("task_1"), projectId: "project_A" });
+      .toEqual({ ...task("task_1"), projectId: "project_A", taskKey: "project-a-1" });
     expect((await store.findTask("task_2")).map(m => m.projectId)).toEqual(["project_A"]);
   });
 

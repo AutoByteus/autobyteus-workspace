@@ -5,8 +5,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testSubTeamNode,
   testDelegation,
+  testTaskTeamLayout,
 } from '~/test-support/currentTeamTestFixtures';
 import { createPinia, setActivePinia } from 'pinia';
 import { markTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
@@ -156,18 +156,20 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(copyTeamRun).toHaveBeenCalledWith(expect.objectContaining({ teamRunId: 'team-1', teamDefinitionId: 'team-def-1' }));
   });
 
-  it('keeps configured Team placement non-focusable while retaining its exact Agent child focus', () => {
+  it('focuses an exact Agent of a delegated task Team copy', () => {
     const professor = buildAgent('/Professor', 'Professor', 'professor-run', 'agent-professor-def');
     const student = buildAgent('/subteam/student', 'Student', 'student-run', 'agent-student-def');
     state.activeTeamContext = buildTestTeamContext({
       teamRunId: 'team-1', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Class Room Simulation',
-      rootChildren: [professor, testSubTeamNode('/subteam', [student], {
-        displayName: 'Review Subteam', teamRunId: 'subteam-run', coordinatorAddress: '/subteam/student',
+      rootChildren: [professor],
+      delegations: [testDelegation({
+        delegatorAgentRunId: 'professor-run', recipientAddress: '/subteam',
+        target: { teamRunId: 'subteam-run', team: testTaskTeamLayout('/subteam', [student]) },
       })],
-      coordinatorAddress: '/Professor', focusedAgentRunId: 'student-run',
+      coordinatorAddress: '/Professor', focusedAgentRunId: 'subteam-run:student-run',
     });
     const wrapper = mountComponent();
     expect(wrapper.find('h4').text()).toBe('student');
-    expect(wrapper.get('[data-test="skill-improvement-cta"]').attributes('data-agent-run-id')).toBe('student-run');
+    expect(wrapper.get('[data-test="skill-improvement-cta"]').attributes('data-agent-run-id')).toBe('subteam-run:student-run');
   });
 });

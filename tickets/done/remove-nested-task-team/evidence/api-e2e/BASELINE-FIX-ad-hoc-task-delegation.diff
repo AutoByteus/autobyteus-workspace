@@ -1,0 +1,22 @@
+diff --git a/autobyteus-server-ts/tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts b/autobyteus-server-ts/tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts
+index d2fc78bf96..51e9aa6ded 100644
+--- a/autobyteus-server-ts/tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts
+@@ -288,11 +288,12 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
+     const stored = await readAdHocTask(adHocTaskId!);
+     expect(stored).toMatchObject({ taskId: adHocTaskId, description: subDelegation, referenceFiles: [referenceFile] });
+     expect(stored).not.toHaveProperty("projectId");
+-    // Only the two text records (transient `*.lock` files of the per-file writer are not Task content).
+-    await until(async () => (await fs.readdir(path.join(adHocRoot(), adHocTaskId!))).filter((name) => !name.endsWith(".lock")).length === 2,
+-      "ad-hoc Task folder settled", 10_000);
+-    expect((await fs.readdir(path.join(adHocRoot(), adHocTaskId!))).filter((name) => !name.endsWith(".lock")).sort())
+-      .toEqual(["agent_run_resources.json", "task.json"]);
++    // Only the two text records (transient `*.lock` and atomic-write `*.tmp` files of the per-file writer are not
++    // Task content; a write can still be in flight when the folder is listed).
++    const taskRecords = async () => (await fs.readdir(path.join(adHocRoot(), adHocTaskId!)))
++      .filter((name) => !name.endsWith(".lock") && !name.endsWith(".tmp")).sort();
++    await until(async () => (await taskRecords()).length === 2, "ad-hoc Task folder settled", 10_000);
++    expect(await taskRecords()).toEqual(["agent_run_resources.json", "task.json"]);
+     const folderBytes = spawnSync("grep", ["-rl", "REFERENCE_FILE_BYTES_MUST_NOT_BE_COPIED", adHocRoot()], { encoding: "utf8" }).stdout.trim();
+     expect(folderBytes, "reference file bytes copied into ad-hoc-tasks").toBe("");
+     const resources = await fs.readFile(path.join(adHocRoot(), adHocTaskId!, "agent_run_resources.json"), "utf8");

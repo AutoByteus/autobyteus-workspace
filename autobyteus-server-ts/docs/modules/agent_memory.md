@@ -24,18 +24,25 @@ for the scoped primary-key rule used to join new saved and live presentation.
 
 ## Storage Layout
 
-The target run storage shape (every run, including a delegated run, in its own folder) is defined in the [Collaboration Model](../design/collaboration_model.md#3-run-storage-shape); the layout below is the current one.
+Every run keeps its memory in its own folder, including a task agent (a delegated run): see the [Collaboration Model](../design/collaboration_model.md#3-run-storage-shape) and the memory-layout contract of task-agent-own-run (L1).
 
 Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
-- Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper nesting appends each physical ancestor TeamRun id before the AgentRun id
-- Task-Agent runs: `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<taskAgentRunId>/...` using the logical member's physical Team memory scope
-- Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (composed by `AgentMemoryLayout`, resolved by `AgentOrgExecutionTreeLocationService`)
+- Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (an organization's own agents and its mounted teams' members)
+- Task agents (delegated agents of any coordinating run): `memory/agents/<taskAgentRunId>/...` — a normal run folder with its own `run_metadata.json` (with a `taskAgent` section) and its own `communication_messages.json`
+- Task agent teams: `memory/agent_teams/<taskTeamRunId>/` with their own `team_run_execution_tree.json` (with a `taskAgent` section) and `team_communication_messages.json`; their members at `memory/agent_teams/<taskTeamRunId>/<memberRunId>/...` (teams are flat)
 - Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and
   `memory/imports/<sourceNodeId>/agent_teams/...`, with source metadata in
   `source-node.json` and sync state in `sync-manifest.json`.
+
+One placement rule decides an agent's memory folder (`agent-memory/domain/agent-run-memory-placement.ts`):
+a part of a run (`run_part`, by its physical scope), a task agent (`task_agent`) or a task agent team's
+member (`task_agent_team_member`). Writers decide it when they build an agent; readers derive it from the
+execution index (`getMemoryPlacementForAgent`); both resolve the path through
+`AgentMemoryLayout.getAgentRunMemoryDirPath`. A task agent's folder is not a run the user started: the
+standalone metadata reader and the team-tree reader treat its own file as absent (G1, G2).
 
 The `runId`, `memberRunId`, `taskAgentRunId`, `teamRunId`, and `ancestorTeamRunIds`
 segments are opaque stored identifiers. Readers must not parse generated id
@@ -63,6 +70,7 @@ Common files/directories:
 - `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them.
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
 - `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it.
+- `seen_skill_versions.json` — the skill file versions this run was last given, used by [Skill Update Notices](./skill_update_notices.md) on every runtime. It is additive and disposable: missing or invalid means "nothing seen", and the root-package validators tolerate it.
 
 There is no current compacted-memory manifest or pointer. The destructive
 `20260730_reset_pre_lineage_memory` path is removed. Normal restore accepts

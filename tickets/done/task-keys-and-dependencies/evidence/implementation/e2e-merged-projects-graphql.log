@@ -1,0 +1,345 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:29259) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-001: Projects is always on: no capability API, and a stored retired flag (false) is not read (projects-always-on AC-002/003)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-ZzUD77
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-ZzUD77/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-001: Projects is always on: no capability API, and a stored retired flag (false) is not read (projects-always-on AC-002/003)
+[22m[39mInitialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-002: creates, lists, edits and rejects invalid or duplicate Project names
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-1hTY3B
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-1hTY3B/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-hQN7PN
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-hQN7PN/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-hQN7PN/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-hQN7PN/roots/autobyteus-web-prototype.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mCreated and registered workspace ID: agent_ws_c7503d89b54c933932731a83291020aec37019c0233951ad0583b46e6fb7a9a9
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-hQN7PN/roots/autobyteus-marketing
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-hQN7PN/roots/autobyteus-marketing.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mCreated and registered workspace ID: agent_ws_1b8606c2eb3d4feb493d551eb7fe69b6bb1e19713f592ee32aab087f2e6af0ac
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-hQN7PN/roots/new-root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-hQN7PN/roots/new-root.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mCreated and registered workspace ID: agent_ws_9a747f801c314fb4b61f2c2c6446bf86bae156c0b9a546adcabd7223619618e5
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mClosing FileSystemWorkspace agent_ws_c7503d89b54c933932731a83291020aec37019c0233951ad0583b46e6fb7a9a9
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mClosing FileSystemWorkspace agent_ws_1b8606c2eb3d4feb493d551eb7fe69b6bb1e19713f592ee32aab087f2e6af0ac
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-003: links paths with registry availability and rejects relative and duplicate links
+[22m[39mClosing FileSystemWorkspace agent_ws_9a747f801c314fb4b61f2c2c6446bf86bae156c0b9a546adcabd7223619618e5
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mPATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-oRPM0x
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-oRPM0x/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mPATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-oRPM0x/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-oRPM0x/roots/autobyteus-web-prototype.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mPATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic
+[22m[39mCreated and registered workspace ID: agent_ws_8f14e9d2ed37cbbaa67994cb2de4387a6c6dc5551a01659a8d7c9b1b84040a78
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mPATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic
+[22m[39mClosing FileSystemWorkspace agent_ws_8f14e9d2ed37cbbaa67994cb2de4387a6c6dc5551a01659a8d7c9b1b84040a78
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-r8RfSw
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-r8RfSw/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-r8RfSw/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-r8RfSw/roots/autobyteus-web-prototype.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mCreated and registered workspace ID: agent_ws_cc55696369adf17850a57baa347917a81648d6a0c67c7589e41986e2dacb3be2
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-r8RfSw/roots/autobyteus-marketing
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-r8RfSw/roots/autobyteus-marketing.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mCreated and registered workspace ID: agent_ws_407935e27807497c223fc10db059959ddcd6685194154957cd235b1409847640
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mGraphQL mutation to remove registered workspace
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mClosing FileSystemWorkspace agent_ws_cc55696369adf17850a57baa347917a81648d6a0c67c7589e41986e2dacb3be2
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-r8RfSw/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-r8RfSw/roots/autobyteus-web-prototype.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mCreated and registered workspace ID: agent_ws_cc55696369adf17850a57baa347917a81648d6a0c67c7589e41986e2dacb3be2
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mGraphQL mutation to remove registered workspace
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mClosing FileSystemWorkspace agent_ws_407935e27807497c223fc10db059959ddcd6685194154957cd235b1409847640
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+[22m[39mClosing FileSystemWorkspace agent_ws_cc55696369adf17850a57baa347917a81648d6a0c67c7589e41986e2dacb3be2
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-FXuklo
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-FXuklo/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-FXuklo/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-FXuklo/roots/autobyteus-web-prototype.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+[22m[39mCreated and registered workspace ID: agent_ws_9aaecf56c41d236fb9abff4b2b6b3257dfee83665f4271e4976a19c2d6078cbf
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-FXuklo/roots/autobyteus-superrepo
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-FXuklo/roots/autobyteus-superrepo.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+[22m[39mCreated and registered workspace ID: agent_ws_f382167bba8354730adb0575b77f5a2b8fdc78834109b85b0e3d0cf8476e698f
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-FXuklo/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-FXuklo/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-FXuklo/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+[22m[39mClosing FileSystemWorkspace agent_ws_9aaecf56c41d236fb9abff4b2b6b3257dfee83665f4271e4976a19c2d6078cbf
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+[22m[39mClosing FileSystemWorkspace agent_ws_f382167bba8354730adb0575b77f5a2b8fdc78834109b85b0e3d0cf8476e698f
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-006: a restarted Projects subsystem reads the same persisted Projects
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-uGhNQO
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-uGhNQO/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-006: a restarted Projects subsystem reads the same persisted Projects
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-uGhNQO/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-uGhNQO/roots/autobyteus-web-prototype.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-006: a restarted Projects subsystem reads the same persisted Projects
+[22m[39mCreated and registered workspace ID: agent_ws_a04258f0ba46b1528d63a3b5448f68926f2787c2b573f4d3f604ff1f3d2537c8
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-006: a restarted Projects subsystem reads the same persisted Projects
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-uGhNQO
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-uGhNQO/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-006: a restarted Projects subsystem reads the same persisted Projects
+[22m[39mClosing FileSystemWorkspace agent_ws_a04258f0ba46b1528d63a3b5448f68926f2787c2b573f4d3f604ff1f3d2537c8
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-007: creates, lists, edits and deletes Tasks through the real store without touching the Project or offering a status mutation
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-S6307A
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-S6307A/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-ZVXKU9
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-ZVXKU9/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-ZVXKU9/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-ZVXKU9/roots/autobyteus-web-prototype.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged
+[22m[39mCreated and registered workspace ID: agent_ws_9f33a6c8c08606da134fc9cc8450cdcf70d3b06ed318f7946f1e2202888922c6
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged
+[22m[39mClosing FileSystemWorkspace agent_ws_9f33a6c8c08606da134fc9cc8450cdcf70d3b06ed318f7946f1e2202888922c6
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-010: Task keys and depends on: keys in creation order, never reused, kept on rename; dependencies validated, replaced, cleared and dropped on delete
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-Uv6CzH
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-Uv6CzH/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-YkIhQn
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-YkIhQn/.env
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-YkIhQn/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-YkIhQn/roots/autobyteus-web-prototype.
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value
+[22m[39mCreated and registered workspace ID: agent_ws_4a1d0a12a630eca2a521970f98b1877ba11be79232f644d06d2a37f38ac01c72
+
+[90mstdout[2m | tests/e2e/projects/projects-graphql.e2e.test.ts[2m > [22m[2mProjects GraphQL e2e (un-mocked)[2m > [22m[2mAPI-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value
+[22m[39mClosing FileSystemWorkspace agent_ws_4a1d0a12a630eca2a521970f98b1877ba11be79232f644d06d2a37f38ac01c72
+
+ [32m✓[39m tests/e2e/projects/projects-graphql.e2e.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 1147[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m11 passed[39m[22m[90m (11)[39m
+[2m   Start at [22m 15:24:41
+[2m   Duration [22m 6.88s[2m (transform 3.74s, setup 26ms, import 5.23s, tests 1.15s, environment 0ms)[22m
+
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

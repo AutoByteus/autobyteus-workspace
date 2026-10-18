@@ -1,0 +1,41 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "launch": {
+    "success": true,
+    "message": "Agent run created successfully.",
+    "runId": "pts_no_project_tool_88796b34f7e14845a0201cfd416ed8d6"
+  },
+  "outcome": {
+    "noProjectCreated": true
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "content": "Create a Project named \"PTS Real None 3044\". If you have no tool that can create a Project, say so.",
+      "media": null,
+      "ts": 1792224566.528
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "I can't create a Project. My tools include `list_projects`, which only lists existing Projects on the node, and none of my tools can create or modify one. I haven't created \"PTS Real None 3044\" or changed anything.\n\nTo create it, use a Project-capable agent or the Project management interface.",
+      "media": null,
+      "ts": 1792224570.384
+    }
+  ],
+  "frameTypes": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "TURN_STARTED",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+    "TOKEN_USAGE_UPDATED",
+    "TURN_COMPLETED"
+  ]
+}

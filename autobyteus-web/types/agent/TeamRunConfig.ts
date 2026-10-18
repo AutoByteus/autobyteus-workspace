@@ -86,17 +86,6 @@ export interface StoredTeamRunAgentNode {
   readonly agentDefinitionId: string
 }
 
-export interface StoredTeamRunTeamNode {
-  readonly kind: 'agent_team'
-  readonly address: AgentTeamAddress
-  readonly displayName: string
-  readonly teamDefinitionId: string
-  readonly coordinatorAddress: AgentTeamAddress
-  readonly children: readonly StoredTeamRunMemberNode[]
-}
-
-export type StoredTeamRunMemberNode = StoredTeamRunAgentNode | StoredTeamRunTeamNode
-
 export type EditableTeamRunConfigurationView = TeamRunConfigurationViewBase & Readonly<{
   source: 'EDITABLE_INTENT'
 }>
@@ -104,7 +93,8 @@ export type EditableTeamRunConfigurationView = TeamRunConfigurationViewBase & Re
 export type StoredTeamRunConfigurationView = TeamRunConfigurationViewBase & Readonly<{
   source: 'STORED_SNAPSHOT'
   coordinatorAddress: AgentTeamAddress
-  memberNodes: readonly StoredTeamRunMemberNode[]
+  /** Teams are flat: the root Team's members are its Agents. */
+  memberNodes: readonly StoredTeamRunAgentNode[]
 }>
 
 export type TeamRunConfigurationView =

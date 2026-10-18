@@ -39,6 +39,7 @@ const createBackend = (): TeamRunBackend => ({
 
 const createRun = (backend: TeamRunBackend): TeamRun => new TeamRun(
   new TeamRunContext({
+    teamKind: "configured",
     physicalScope: createRootExecutionPhysicalScope({
       root: createTeamRootExecutionIdentity("team-run-1"),
       ancestorTeamRunIds: [],

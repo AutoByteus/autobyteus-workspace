@@ -90,6 +90,8 @@ try {
   browser = await chromium.launch({ headless: true, executablePath: executable });
   evidence.browser = browser.version();
   const page = await browser.newPage({ viewport: { width: 1440, height: 1200 }, locale: 'en-US' });
+  // app.vue opens the node's agent-package definition change feed on every page; the fixture has no backend.
+  await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   page.on('response', response => { if (response.status() >= 400) evidence.events.push({ kind: 'http-error', status: response.status(), url: response.url() }); });
   page.on('pageerror', error => evidence.events.push({ kind: 'pageerror', text: error.message }));
   page.on('console', message => { if (['error', 'warning'].includes(message.type())) evidence.events.push({ kind: message.type(), text: message.text() }); });
@@ -102,6 +104,8 @@ try {
   });
   // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
   await routeTaskWorkerBoundaries(page);
+  // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
+  await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   await page.goto(url);
   await page.locator('[data-preview="team-icons"]').waitFor();
   await page.locator('[data-team-icon="temporary-task-team"] svg').first().waitFor();
@@ -133,7 +137,7 @@ try {
       await page.setViewportSize({ width, height: 1200 });
       widths.push({ width, shared: await checkIcons('[data-preview="transient"] [data-team-icon] svg', [16,16,16]),
         agent: await checkIcons('[data-preview="agent-parent"] [data-team-icon] svg', [16,16]),
-        team: await checkIcons('[data-preview="team-parent"] [data-team-icon] svg', [16,16,16]) });
+        team: await checkIcons('[data-preview="team-parent"] [data-team-icon] svg', [16,16]) });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       await page.screenshot({ path: path.join(out, `icons-${width}.png`), fullPage: true });
     }
@@ -181,7 +185,7 @@ try {
     assert.match(await page.locator('[data-preview="worker-failed"]').innerText(), /No model configured/);
     assert.deepEqual(errors(), []); return { icons, navigation: 'Intent covered by component spec; full worker navigation not run' };
   });
-  await runCase('B04', 'Memory configured/task/nested group paths, role boxes and inspect-member', async () => {
+  await runCase('B04', 'Memory configured/task/delegated group paths, role boxes and inspect-member', async () => {
     const icons = await checkIcons('[data-test="memory-member-group-header"] svg', [16,12,12]);
     assert.equal(await page.locator('[data-test="memory-member-group-header"] .border-dashed').count(), 2);
     await page.locator('[data-preview="memory"] article button').last().click();

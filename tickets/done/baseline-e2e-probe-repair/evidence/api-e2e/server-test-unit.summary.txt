@@ -1,0 +1,6 @@
+# Summary of pnpm -C autobyteus-server-ts test:unit at 3108bb9ef8 (full log 1080934 bytes, not retained)
+no FAIL lines
+ Test Files  715 passed | 4 skipped (719)
+      Tests  5811 passed | 7 skipped (5818)
+   Duration  523.18s (transform 14.91s, setup 6.43s, import 273.10s, tests 175.32s, environment 904ms)
+exit=0

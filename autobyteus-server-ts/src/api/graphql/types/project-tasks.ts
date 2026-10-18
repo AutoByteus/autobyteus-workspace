@@ -78,11 +78,19 @@ export class ProjectTask {
   @Field(() => String)
   projectId!: string;
 
+  /** The readable key `<prefix>-<number>`; display only (the identity stays `taskId`). */
+  @Field(() => String)
+  taskKey!: string;
+
   @Field(() => String)
   description!: string;
 
   @Field(() => ProjectTaskStatus)
   status!: ProjectTaskStatus;
+
+  /** Other Tasks of the same Project this Task depends on (informs only). */
+  @Field(() => [String])
+  dependsOnTaskIds!: string[];
 
   @Field(() => String)
   createdAt!: string;
@@ -99,6 +107,10 @@ export class CreateProjectTaskInput {
 
   @Field(() => String)
   description!: string;
+
+  /** Same-Project Task IDs; omitted means none. */
+  @Field(() => [String], { nullable: true })
+  dependsOnTaskIds?: string[] | null;
 }
 
 @InputType()
@@ -112,6 +124,10 @@ export class UpdateProjectTaskInput {
 
   @Field(() => String)
   description!: string;
+
+  /** Replaces the stored list when supplied (`[]` clears it); omitted keeps it. */
+  @Field(() => [String], { nullable: true })
+  dependsOnTaskIds?: string[] | null;
 }
 
 @InputType()
@@ -161,8 +177,10 @@ const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
   contextFiles: task.contextFiles,
   taskId: task.taskId,
   projectId: task.projectId,
+  taskKey: task.taskKey,
   description: task.description,
   status: task.status as ProjectTaskStatus,
+  dependsOnTaskIds: [...task.dependsOnTaskIds],
   createdAt: task.createdAt,
   updatedAt: task.updatedAt,
 });

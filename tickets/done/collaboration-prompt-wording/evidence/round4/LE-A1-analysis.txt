@@ -1,0 +1,51 @@
+run                      helper first reply helperSends pmUnpromptedSends
+base-claude-run1         by run ID                  1   0
+base-claude-run2         by run ID                  1   0
+base-claude-run3         by run ID                  1   0
+base-claude-run4         by run ID                  1   0
+base-claude-run5         by run ID                  1   0
+base-codex-run1          by run ID                  1   0
+base-codex-run2          by run ID                  1   0
+base-codex-run3          by run ID                  1   0
+base-codex-run4          by run ID                  2   1
+base-codex-run5          by run ID                  2   1
+base-codex-run6          by run ID                  1   0
+base-codex-run7          by run ID                  1   0
+base-codex-run8          by run ID                  1   0
+base-codex-run9          by run ID                  1   0
+base-codex-run10         by run ID                  1   0
+base-codex-run11         by run ID                  1   0
+base-codex-run12         by run ID                  1   0
+base-codex-run13         by run ID                  1   0
+base-codex-run14         by run ID                  1   0
+base-codex-run15         by run ID                  1   0
+base-deepseek-run1       none (no send)             0   0
+base-deepseek-run2       by run ID                  1   0
+base-deepseek-run3       by run ID                  1   0
+base-deepseek-run4       by run ID                  1   0
+base-deepseek-run5       by run ID                  1   0
+branch-claude-run1       by run ID                  1   0
+branch-claude-run2       by run ID                  1   0
+branch-claude-run3       by run ID                  1   0
+branch-claude-run4       by run ID                  1   0
+branch-claude-run5       by run ID                  1   0
+branch-codex-run1        by run ID                  1   1
+branch-codex-run2        by run ID                  1   1
+branch-codex-run3        by run ID                 89  89   <-- LOOP
+branch-codex-run4        by run ID                  1   1
+branch-codex-run5        by run ID                  1   0
+branch-codex-run6        by run ID                  1   1
+branch-codex-run7        by run ID                 92  92   <-- LOOP
+branch-codex-run8        by run ID                 86  86   <-- LOOP
+branch-codex-run9        by run ID                 89  89   <-- LOOP
+branch-codex-run10       by run ID                  1   0
+branch-codex-run11       by run ID                  1   1
+branch-codex-run12       by run ID                 64  64   <-- LOOP
+branch-codex-run13       by run ID                  1   0
+branch-codex-run14       by run ID                  1   1
+branch-codex-run15       by run ID                  1   1
+branch-deepseek-run1     none (no send)             0   0
+branch-deepseek-run2     by run ID                  1   0
+branch-deepseek-run3     by run ID                  1   0
+branch-deepseek-run4     none (no send)             0   0
+branch-deepseek-run5     by run ID                  1   0

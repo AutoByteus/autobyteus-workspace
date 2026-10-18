@@ -53,7 +53,7 @@ runtime prompt:
 
 Keep the body specific to the agent's responsibilities and boundaries. Do not
 copy the platform-owned native Working Environment, Bash Operating Practice,
-File And Directory Practice, AgentTeam Addressing/Collaboration guidance,
+File And Directory Practice, collaboration guidance (`Working With Other Agents`),
 configured skill bodies, or tool schemas into `agent.md`. Authored Markdown
 headings are deterministically nested below `Responsibilities and Boundaries`
 during composition.
@@ -168,7 +168,7 @@ Manager (`autobyteus-project-task-manager`) was retired this way by migration
 ## Notes
 
 - Canonical ids encode ownership provenance so callers can resolve application-owned and team-local agents deterministically.
-- Team-local agent ids use the subject-specific nested-safe shape `team-local-agent:<encoded-owner-team-id>:<encoded-local-agent-id>`. The owner team id can itself be a canonical team-local team id, so local agents owned by local subteams resolve under the local subteam's `agents/` folder rather than the root parent team's `agents/` folder.
+- Team-local agent ids use the shape `team-local-agent:<encoded-owner-team-id>:<encoded-local-agent-id>`. Both parts are encoded, so any canonical owner team id is safe inside it. Teams are flat: a team-local agent is owned by its one Team, and there are no team-local subteams.
 - `AgentDefinitionService` is the authoritative read/write boundary; callers should not reimplement ownership-path resolution or read files for a "fresher" copy. Shared, team-local and org-owned agents of registered agent packages are served from the [agent package definitions](./agent_package_definitions.md), which apply pending file changes before every read and keep the last working version of a broken definition (`AgentDefinition.loadIssue` explains why). Application-package agents are not agent package definitions: list results and exact-ID reads read them on demand from their application packages, and a malformed one is logged and skipped without failing the list. Writes go through the file provider and the owning definition folder is reloaded immediately. There is no separate cached or fresh read path.
 - Application-owned agents can be edited in place when the owning bundle source is writable.
 - Agents of registered agent packages are saved into their package folder; Teams and Orgs of those packages follow the same rule (source class `registered_package`).

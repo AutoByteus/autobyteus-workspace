@@ -118,8 +118,8 @@ const TOOL_HINT = {
 // (delegate_task, then update_task with the returned task_id when the work is finished). An agent may close
 // on its own once a copy reports (supported, SCN-002); the user-driven close is asserted with a copy that never
 // reports back (Note Taker).
-const HOST_RULE = 'When the user message ends with a "[Mentioned collaborators]" section, follow that section for each listed '
-  + 'collaborator, using the user request as the work description, then tell the user in one short sentence. '
+const HOST_RULE = 'When the user message ends with a "[Mentioned agents]" section, follow that section for each listed '
+  + 'agent, using the user request as the work description, then tell the user in one short sentence. '
   + 'When the user says some delegated work is finished, mark exactly that delegated work as done as the delegation told you, '
   + 'then reply in one short sentence. When the user asks you to use a specific tool, do exactly that. '
   + 'Otherwise reply in one short sentence. Never call get_handoff_rules.' + TOOL_HINT
@@ -441,9 +441,9 @@ const conversationJson = async (kind, rootId, agentRunId, address) => {
   if (kind === 'team') return JSON.stringify((await gql('query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}', { id: rootId, a: agentRunId })).getTeamMemberRunProjection.conversation)
   return JSON.stringify((await gql('query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}', { id: rootId, a: agentRunId, m: address })).getAgentOrgMemberRunProjection.conversation)
 }
-const NOTE_GUIDANCE_START = 'Delegate the work with delegate_task to its address'
+const NOTE_GUIDANCE_START = ': delegate the task to it with delegate_task; it returns a run id to follow up with.'
 const assertStoredNote = (text, entries) => {
-  assert(text.includes('[Mentioned collaborators]') && text.includes(NOTE_GUIDANCE_START), 'stored message lacks the delegate_task note (AC-002)', text.slice(0, 1500))
+  assert(text.includes('[Mentioned agents]') && text.includes(NOTE_GUIDANCE_START), 'stored message lacks the delegate_task note (AC-002)', text.slice(0, 1500))
   for (const entry of entries) assert(text.includes(entry), `stored note lacks "${entry}"`, text.slice(0, 1500))
   assert(!text.includes('Message a collaborator with send_message_to'), 'stored note still has the old collaborator guidance', text.slice(0, 1500))
 }
@@ -460,7 +460,7 @@ const memberRunIdIn = (tree, address) => {
   visit(tree)
   return found
 }
-const conversationShowsNote = async (page) => /\[Mentioned collaborators\]/.test(await conversationText(page))
+const conversationShowsNote = async (page) => /\[Mentioned agents\]/.test(await conversationText(page))
 const markDone = async (page, what) => sendInComposer(page, `The ${what} work is finished. Mark that delegated work as done.`)
 const REVIEWER_ADDRESS = '/code_reviewer'
 const PRODUCT_TEAM_ADDRESS = '/product_team'
@@ -536,7 +536,7 @@ defineCase('A01', 'SCN-001 standalone run: menu (VIS-011, a11y), inline mention;
   await page.locator(sel('user-message-mention')).first().waitFor({ timeout: 30000 })
   assert(!(await conversationShowsNote(page)), 'the note is shown as text instead of a chip (AC-002)')
   assert((await input.inputValue()) === '' && !(await page.locator('[data-test="composer-mention-mirror"] .mention-highlight').count()), 'composer not cleared after an accepted send')
-  assertStoredNote(await conversationJson('agent', state.agentRunId, state.agentRunId), [`- Code Reviewer (Agent) at ${REVIEWER_ADDRESS}`])
+  assertStoredNote(await conversationJson('agent', state.agentRunId, state.agentRunId), [`- Code Reviewer (agent) at ${REVIEWER_ADDRESS}`])
   r.rowSeen = await waitFor('delegated Code Reviewer row', async () => {
     const rows = await rowFacts(taskRowsUnder(page, state.agentRunId))
     return rows.find((row) => /code reviewer/i.test(row.text)) ?? null
@@ -721,7 +721,7 @@ defineCase('S01', 'AC-005 / SCN-004 (collaboration-model-contract): a send_messa
   // Only some runtimes show a tool result in the conversation (Claude does; Codex does not): where it is shown it must be the
   // not-found answer; on every runtime the server facts below (nothing created) must hold. The live server suite
   // agent-initiated-collaborators proves the not-found answer on each enabled runtime.
-  if (runtime === 'claude_agent_sdk') await waitFor('the not-found answer', async () => /COLLABORATION_TARGET_NOT_FOUND|is not in this run/.test(await conversationJson('agent', runId, runId)), 240000, 1500)
+  if (runtime === 'claude_agent_sdk') await waitFor('the not-found answer', async () => /COLLABORATION_TARGET_NOT_FOUND|No agent or agent team you can talk with has the address/.test(await conversationJson('agent', runId, runId)), 240000, 1500)
   else await delay(20000)
   await waitHostIdle(page)
   const afterMessage = await agentRootView(runId)
@@ -817,7 +817,7 @@ defineCase('T01', 'SCN-001 Team run: VIS-001 menu; @Product Team → no Team col
   state.teamChildren = { productTeam: t.node.runId }; state.teamTasks = { productTeam: t.task.id }
   r.teamDelegation = { copyRunId: t.node.runId, kind: t.node.kind, taskId: t.task.id, maxCollaborators: t.maxCollaborators }
   assert(r.collaboratorsRightAfterSend === 0 && t.maxCollaborators === 0 && t.node.kind === 'team', 'Team root: no collaborator; a Team copy (AC-001, AC-003)', r)
-  assertStoredNote(await conversationJson('team', state.teamRunId, researcherRunId), [`- Product Team (Agent Team) at ${PRODUCT_TEAM_ADDRESS}`])
+  assertStoredNote(await conversationJson('team', state.teamRunId, researcherRunId), [`- Product Team (agent team) at ${PRODUCT_TEAM_ADDRESS}`])
   const teamRows = page.locator(sel('workspace-team-transient-execution-row'))
   await waitFor('delegated Team row', async () => (await rowFacts(teamRows)).some((row) => row.kind === 'task_team'), 60000)
   await shot(page, 'T01-02-team-copy-delegated')
@@ -914,7 +914,7 @@ defineCase('O01', 'SCN-001 Org run: VIS-008 menu; two mentions → no Org collab
   r.delegations = { notes: { runId: d.node.runId, taskId: d.task.id }, productTeam: { runId: t.node.runId, kind: t.node.kind, taskId: t.task.id } }
   assert(r.collaboratorsRightAfterSend === 0 && d.maxCollaborators === 0 && t.maxCollaborators === 0 && d.task.id !== t.task.id && t.node.kind === 'team', 'Org: two copies with two ad-hoc Tasks and no collaborator', r)
   assertStoredNote(await conversationJson('org', state.orgRunId, analystRunId, '/analyst'),
-    [`- Note Taker (Agent) at ${NOTE_TAKER_ADDRESS}`, `- Product Team (Agent Team) at ${PRODUCT_TEAM_ADDRESS}`])
+    [`- Note Taker (agent) at ${NOTE_TAKER_ADDRESS}`, `- Product Team (agent team) at ${PRODUCT_TEAM_ADDRESS}`])
   await page.locator('[data-test^="agent-org-task-agent-row-"]').first().waitFor({ timeout: 60000 })
   await page.locator('[data-test^="agent-org-task-team-row-"]').first().waitFor({ timeout: 60000 })
   await shot(page, 'O01-02-org-two-copies')
@@ -1196,7 +1196,7 @@ defineCase('N02', 'AF-009 + AC-001/003: an Agent New chat first send with an `@T
   await page.locator(sel('user-message-mention')).first().waitFor({ timeout: 30000 })
   r.userMention = await page.locator(sel('user-message-mention')).first().innerText()
   assert(/Product Team/.test(r.userMention), 'stored first message does not show the mention', r.userMention)
-  assertStoredNote(await conversationJson('agent', r.runId, r.runId), [`- Product Team (Agent Team) at ${PRODUCT_TEAM_ADDRESS}`])
+  assertStoredNote(await conversationJson('agent', r.runId, r.runId), [`- Product Team (agent team) at ${PRODUCT_TEAM_ADDRESS}`])
   await waitHostIdle(page, 420000); await delay(1500)
   await shot(page, 'N02-agent-first-send-delegated')
   return r

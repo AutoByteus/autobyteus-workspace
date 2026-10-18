@@ -6,6 +6,7 @@ import { CollaborationAgentPresentationEventAdapter } from "../../../src/agent-c
 import { describe, expect, it, vi } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { ConfiguredAgentExecutionHandle } from "../../../src/agent-collaboration/execution/backends/configured-agent-execution-handle.js";
+import { runPartPlacement, type AgentRunMemoryPlacement } from "../../../src/agent-memory/domain/agent-run-memory-placement.js";
 import {
   createAgentOrgRootExecutionIdentity,
   createCollaborationMemberExecutionIdentity,
@@ -42,7 +43,7 @@ const build = (
     ancestorTeamRunIds: kind === "agent_team" ? [] : ["mounted-team-run"],
   });
   const memberExecutionContext = new MemberExecutionContext({
-    teamScoped: true,
+    teamScoped: true, collaborationRole: "team_member",
     identity,
     authoredEnclosingScopeInstruction: "Stay in scope.",
     collaboration: new MemberCollaborationContext({
@@ -92,6 +93,7 @@ const build = (
   const handle = new ConfiguredAgentExecutionHandle({
     identity,
     physicalScope: scope,
+    memoryPlacement: runPartPlacement(scope),
     execution: {
       agentDefinitionId: "agent-definition",
       llmModelIdentifier: "model",
@@ -110,11 +112,9 @@ const build = (
       releaseExactRun,
     }) as never,
     memoryLocator: {
-      getLocation: (physicalScope: typeof scope, agentRunId: string) => ({
-        scope: physicalScope,
-        agentRunId,
-        memoryDir: `/memory/${physicalScope.root.rootSubjectKind}/${physicalScope.root.rootRunId}/${physicalScope.ancestorTeamRunIds.join("/")}/${agentRunId}`,
-      }),
+      getMemoryDir: (placement: AgentRunMemoryPlacement, agentRunId: string) => placement.kind === "run_part"
+        ? `/memory/${placement.scope.root.rootSubjectKind}/${placement.scope.root.rootRunId}/${placement.scope.ancestorTeamRunIds.join("/")}/${agentRunId}`
+        : `/memory/${placement.kind}/${agentRunId}`,
     } as never,
     activityInspector: { inspect: () => activity } as never,
     ...(assertInputAllowed ? { assertInputAllowed } : {}),
@@ -162,6 +162,7 @@ describe("ConfiguredAgentExecutionHandle", () => {
     expect(() => new ConfiguredAgentExecutionHandle({
       identity: fixture.identity,
       physicalScope: createRootExecutionPhysicalScope({ root: otherRoot, ancestorTeamRunIds: [] }),
+      memoryPlacement: runPartPlacement(fixture.scope),
       execution: {} as never,
       activationMode: "fresh",
       memberExecutionContext: fixture.memberExecutionContext,

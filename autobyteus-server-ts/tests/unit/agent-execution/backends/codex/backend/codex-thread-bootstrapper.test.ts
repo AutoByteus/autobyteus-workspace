@@ -1,4 +1,3 @@
-import { WORK_REQUEST_EXECUTION_LLM_INSTRUCTION } from "../../../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -215,7 +214,7 @@ describe("CodexThreadBootstrapper", () => {
           identity: createCollaborationMemberExecutionIdentity({
             root, memberAddress: "/collaborator", agentRunId: "run-1",
           }),
-          teamScoped: false,
+          teamScoped: false, collaborationRole: "standalone_agent",
           collaboration: new MemberCollaborationContext({
             deliverLogicalMessage: async () => ({ accepted: true }),
           }),
@@ -232,11 +231,11 @@ describe("CodexThreadBootstrapper", () => {
       const restored = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ memberExecutionContext }), { assertAccepting: () => undefined });
       for (const context of [created, restored]) {
         const prompt = context.runtimeContext.codexThreadConfig.baseInstructions!;
-        expect(prompt.split(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toHaveLength(scope === "no-context" ? 1 : 2);
+        expect(prompt.split("## Working With Other Agents")).toHaveLength(scope === "no-context" ? 1 : 2);
         if (scope !== "no-context") {
-          expect(prompt).toContain("only at a workflow-defined handoff point or when blocked and needing external input");
-          expect(prompt).toContain("return the result or specific blocker to the requesting agent");
-          expect(prompt.indexOf(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toBeLessThan(prompt.indexOf("`delegate_task`"));
+          expect(prompt).toContain("On receiving a request, follow your own instructions and skills.");
+          expect(prompt).toContain("Don't send acknowledgements, status chatter or promises to work.");
+          expect(prompt).toContain("`delegate_task`");
         }
         if (scope !== "team") expect(prompt).not.toContain("get_handoff_rules");
       }
@@ -312,7 +311,7 @@ describe("CodexThreadBootstrapper", () => {
       "## AgentTeam Addressing",
     );
     expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).toContain(
-      "## AgentTeam Collaboration",
+      "## Working With Other Agents",
     );
     expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain(
       "## Team Runtime",

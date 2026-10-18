@@ -1,9 +1,10 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { InterAgentMessageDeliveryIntent } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { TeamCommunicationAdapter, type TeamCommunicationAdapterOptions } from "./team-communication-adapter.js";
-import type { TeamCommunicationMessagesSnapshot } from "./team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
 
 /** Team-private facade over the root-neutral accepted-message engine. */
 export class TeamCommunicationService {
@@ -27,13 +28,16 @@ export class TeamCommunicationService {
     intent: InterAgentMessageDeliveryIntent;
     receiverIdentity: CollaborationMemberExecutionIdentity;
     receiverDisplayName: string;
+    /** The sender's address as the receiver can use it (design T-5); null otherwise. */
+    senderAddress: string | null;
   }): Promise<AgentOperationResult> {
     if (!this.accepting) {
-      return Promise.resolve({ accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES", message: `Root TeamRun '${this.options.rootTeamRunId}' is not accepting messages.` });
+      return Promise.resolve({ accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES", message: ROOT_NOT_ACTIVE_MESSAGE });
     }
     return this.engine.deliver({
       senderIdentity: input.intent.sender.participant.identity,
       senderDisplayName: input.intent.sender.participant.displayName,
+      senderAddress: input.senderAddress,
       receiverIdentity: input.receiverIdentity,
       receiverDisplayName: input.receiverDisplayName,
       content: input.intent.content,

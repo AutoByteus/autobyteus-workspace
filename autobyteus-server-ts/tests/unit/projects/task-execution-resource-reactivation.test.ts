@@ -62,7 +62,7 @@ describe("Task agent run resource reactivation", () => {
     for (const call of [() => tasks.assertReopenable({ execution: worker, requestedBy: "manager" }),
       () => tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })]) {
       await expect(call()).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED",
-        message: "This Task is DONE. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again." });
+        message: "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again." });
     }
     expect(await resourcesFile(taskId)).toBe(closedFile);
     // AC-014: the agent's own status change opens and lists nothing.
@@ -112,7 +112,7 @@ describe("Task agent run resource reactivation", () => {
     await setStatus(taskId, "DONE");
     await setStatus(taskId, "TODO");
     const before = await resourcesFile(taskId);
-    const assignerOnly = { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the run that assigned it can reactivate it") };
+    const assignerOnly = { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the agent that assigned the Task can continue it") };
     await expect(tasks.reopenAssignment({ execution: worker, requestedBy: "someone-else" })).rejects.toMatchObject(assignerOnly);
     await expect(tasks.reopenAssignment({ execution: helper, requestedBy: "worker" })).rejects.toMatchObject(assignerOnly);
     await expect(tasks.reopenAssignment({ execution: helper, requestedBy: "manager" })).rejects.toMatchObject(assignerOnly);
@@ -122,7 +122,7 @@ describe("Task agent run resource reactivation", () => {
     // AC-008: the Task was deleted after DONE; its resource records stay and stay closed.
     await tasks.deleteTask({ projectId, taskId });
     await expect(tasks.assertReopenable({ execution: worker, requestedBy: "manager" }))
-      .rejects.toMatchObject({ code: "TASK_NOT_FOUND", message: "The Task was deleted; its work cannot be reactivated." });
+      .rejects.toMatchObject({ code: "TASK_NOT_FOUND", message: "The Task was deleted, so its task agent cannot continue." });
     await expect(tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
     expect(tasks.isOpen(worker)).toBe(false);
   });

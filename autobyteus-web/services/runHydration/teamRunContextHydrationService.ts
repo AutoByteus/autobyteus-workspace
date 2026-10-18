@@ -37,7 +37,6 @@ import {
 } from '~/services/teamExecution/teamExecutionContextFactory';
 import {
   collectConfiguredAgents,
-  collectConfiguredTeams,
   collectAgentExecutionLocations,
   findConfiguredAgentByAddress,
 } from '~/services/teamExecution/teamExecutionTreeSelectors';
@@ -150,10 +149,7 @@ const resolveWorkspaces = async (input: {
 }): Promise<ReadonlyMap<AgentTeamAddress, WorkspaceMetadata>> => {
   const result = new Map<AgentTeamAddress, WorkspaceMetadata>();
   const placements = [
-    ...collectConfiguredTeams(input.tree).map((team) => ({
-      address: team === input.tree.root_team ? '/' : team.address,
-      rootPath: team.default_launch_configuration.workspace_root_path,
-    })),
+    { address: '/' as AgentTeamAddress, rootPath: input.tree.root_team.default_launch_configuration.workspace_root_path },
     ...collectConfiguredAgents(input.tree).map((agent) => ({
       address: agent.address,
       rootPath: agent.launch_configuration.workspace_root_path,

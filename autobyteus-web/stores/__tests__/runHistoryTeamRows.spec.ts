@@ -4,7 +4,6 @@ import {
   buildTestTeamContext,
   testAgentContext,
   testAgentNode,
-  testSubTeamNode,
   testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import { buildTeamRowsFromContext } from '../runHistoryTeamRows';
@@ -43,26 +42,24 @@ describe('runHistoryTeamRows current execution tree', () => {
 
   it('derives labels from logical placement rather than Agent definition names', () => {
     const programManager = testAgentNode('/program_manager', { agentRunId: 'program-manager-run' });
-    const reviewLead = testAgentNode('/BuildSquad/review_lead', { agentRunId: 'review-lead-run' });
-    const buildSquad = testSubTeamNode('/BuildSquad', [reviewLead], {
-      teamDefinitionId: 'build-squad', teamRunId: 'build-squad-run', coordinatorAddress: reviewLead.address,
-    });
+    const reviewLead = testAgentNode('/review_lead', { agentRunId: 'review-lead-run' });
     const team = buildTestTeamContext({
       teamRunId: 'team-1', coordinatorAddress: programManager.address,
-      rootChildren: [programManager, buildSquad], workspaceRootPath: '/workspace',
+      rootChildren: [programManager, reviewLead], workspaceRootPath: '/workspace',
       contexts: [
         { agentRunId: programManager.agentRunId, context: testAgentContext({
           runId: programManager.agentRunId, displayName: 'Different Agent definition', workspaceRootPath: '/workspace',
         }) },
         { agentRunId: reviewLead.agentRunId, context: testAgentContext({
-          runId: reviewLead.agentRunId, displayName: 'Different nested definition', workspaceRootPath: '/workspace',
+          runId: reviewLead.agentRunId, displayName: 'Another Agent definition', workspaceRootPath: '/workspace',
         }) },
       ],
     });
 
     const rows = buildTeamRowsFromContext(team, 'summary', '2026-05-13T00:00:00.000Z', () => '/workspace');
-    expect(rows[0]?.displayName).toBe('program_manager');
-    expect(rows[1]?.displayName).toBe('BuildSquad');
-    expect(rows[1]?.children[0]?.displayName).toBe('review_lead');
+    expect(rows.map((row) => [row.kind, row.displayName, row.children.length])).toEqual([
+      ['agent', 'program_manager', 0],
+      ['agent', 'review_lead', 0],
+    ]);
   });
 });

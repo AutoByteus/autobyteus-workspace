@@ -11,7 +11,8 @@ import { AppDataMigrationRecordRepository } from "../../../src/app-data-migratio
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID as FAMILY } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import { TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID as LOCATORS } from "../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import { AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID as SUMMARY } from "../../../src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
-import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID as TASK_AGENT_OWN_RUN } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
@@ -120,17 +121,23 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   const results = await runner.runPending();
   // Migrations released earlier are not re-run.
   for (const id of released) expect((await repository.getRecord(id))?.summary).toBe("earlier release");
-  for (const id of [FAMILY, LOCATORS, SUMMARY]) {
+  for (const id of [FAMILY, LOCATORS, SUMMARY, TASK_AGENT_OWN_RUN]) {
     const result = results.find((candidate) => candidate.migrationId === id)!;
     expect(result.status, `${id}: ${result.logPath ? await fs.readFile(result.logPath, "utf8") : result.errorMessage}`)
       .toMatch(/^SUCCEEDED/);
   }
   expect(ids.some((id) => id.includes("delegator"))).toBe(false);
 
-  // (1) No startup rewrite of this change: the released Team tree keeps its bytes (V2, settledAt)…
-  expect(await sha(path.join(teamDir, "team_run_execution_tree.json"))).toBe(teamTreeHash);
-  // …and the current tolerant reader loads it; the old child carries no delegator.
-  const teamTree = validateTeamRunExecutionTreePayload(JSON.parse(await fs.readFile(path.join(teamDir, "team_run_execution_tree.json"), "utf8")), "team-a");
+  // (1) 20261017 (last) gave the task agent its own run: the released Team tree keeps everything else and
+  // links the task agent; it never wrote memory, so its own file is written at L1 (SKIPPED_UNMATERIALIZED).
+  expect(await sha(path.join(teamDir, "team_run_execution_tree.json"))).not.toBe(teamTreeHash);
+  const rawTeamTree = JSON.parse(await fs.readFile(path.join(teamDir, "team_run_execution_tree.json"), "utf8"));
+  expect(rawTeamTree.rootTeam.taskExecutions).toEqual([{ address: "/worker", agentRunId: "task-run", startedAt: T0 }]);
+  const own = JSON.parse(await fs.readFile(path.join(memory, "agents", "task-run", "run_metadata.json"), "utf8"));
+  expect(own).toMatchObject({ runId: "task-run", llmModelIdentifier: null, runtimeKind: null,
+    taskAgent: { coordinatingRun: { kind: "agent_team", runId: "team-a" }, address: "/worker", origin: "configured_place" } });
+  // …and the current store composes today's record; the old child carries no delegator.
+  const teamTree = (await new TeamRunExecutionTreeStore().read(teamDir, "team-a"))!;
   expect(teamTree.rootTeam.taskExecutions).toEqual([{ address: "/worker", agentRunId: "task-run", platformAgentRunId: null, startedAt: T0 }]);
   // (2) 20260901 produced the Org exactly as released (Org tree V1); the current reader loads it.
   const orgTreeRaw = JSON.parse(await fs.readFile(path.join(memory, "agent_orgs", "org-a", "agent_org_run_execution_tree.json"), "utf8"));

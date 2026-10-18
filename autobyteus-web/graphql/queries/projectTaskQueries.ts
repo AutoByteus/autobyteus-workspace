@@ -24,6 +24,8 @@ export const ProjectTaskFields = gql`
     contextFiles { storedFilename displayName mimeType sizeBytes locator }
     updatedAt
     root { ...TaskRootFields }
+    taskKey
+    dependsOnTaskIds
   }
   ${TaskRootFields}
 `

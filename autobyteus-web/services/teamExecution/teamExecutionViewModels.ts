@@ -13,7 +13,6 @@ export type TeamExecutionRowKind =
   | 'configured_agent'
   | 'task_agent'
   | 'task_team'
-  | 'task_team_member'
   | 'task_team_agent';
 
 export interface TeamExecutionNavigationRow {

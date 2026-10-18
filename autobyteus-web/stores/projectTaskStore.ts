@@ -182,10 +182,11 @@ export const useProjectTaskStore = defineStore('projectTasks', () => {
     } catch (cause) { throw toProjectRequestError(cause) }
     finally { owner.write++; if (current()) releaseRead(id) }
   }
-  const createTask = (projectId: string, description: string, contextDraft?: ProjectTaskContextDraft, eligible?: () => boolean) => mutate<ProjectTask>(projectId, CreateProjectTask,
-    {projectId, description, ...(contextDraft ? {contextDraft} : {})}, 'createProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== result.taskId), result], eligible)
-  const updateTask = (projectId: string, taskId: string, description: string, contextChanges?: ProjectTaskContextChanges, eligible?: () => boolean) => mutate<ProjectTask>(projectId, UpdateProjectTask,
-    {projectId, taskId, description, ...(contextChanges ? {contextChanges} : {})}, 'updateProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== taskId), result], eligible)
+  // "Depends on" is saved with the Task (same-Project Task IDs); on update a supplied list replaces the stored one.
+  const createTask = (projectId: string, description: string, contextDraft?: ProjectTaskContextDraft, eligible?: () => boolean, dependsOnTaskIds?: string[]) => mutate<ProjectTask>(projectId, CreateProjectTask,
+    {projectId, description, ...(contextDraft ? {contextDraft} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {})}, 'createProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== result.taskId), result], eligible)
+  const updateTask = (projectId: string, taskId: string, description: string, contextChanges?: ProjectTaskContextChanges, eligible?: () => boolean, dependsOnTaskIds?: string[]) => mutate<ProjectTask>(projectId, UpdateProjectTask,
+    {projectId, taskId, description, ...(contextChanges ? {contextChanges} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {})}, 'updateProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== taskId), result], eligible)
   const deleteTask = (projectId: string, taskId: string, eligible?: () => boolean) => mutate<boolean>(projectId, DeleteProjectTask, {projectId, taskId}, 'deleteProjectTask', (tasks) => tasks.filter((t) => t.taskId !== taskId), eligible)
   watch(() => node.bindingRevision, invalidate, {flush: 'sync'})
   return {listsByProjectId, searchByProjectId, liveChanges, getList, getTempList, setSearch, invalidate, forget, releaseRead, fetchTasks, refreshTasks,

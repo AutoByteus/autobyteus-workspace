@@ -1,0 +1,81 @@
+{
+  "startedAt": "2026-10-17T16:06:16.018Z",
+  "cases": {
+    "R03": {
+      "title": "S2 AC-003: the server rejects the Org launch → \"Couldn't start this Agent Org. Try again.\", values kept, Run enabled, no run created",
+      "result": "Pass",
+      "ms": 6512,
+      "details": {
+        "before": {
+          "model": "claude-sonnet-5-5\nClaude SDK",
+          "approval": "Ask first"
+        },
+        "launchRequests": [
+          "fragile-org"
+        ],
+        "runEnabledBefore": true,
+        "status": "Couldn't start this Agent Org. Try again.",
+        "after": {
+          "model": "claude-sonnet-5-5\nClaude SDK",
+          "approval": "Ask first",
+          "url": "http://127.0.0.1:50962/workspace?rootSubjectKind=agent_org&definitionId=fragile-org&mode=configuration",
+          "runDisabled": false
+        },
+        "historyUnchanged": true
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 78578
+    },
+    {
+      "label": "frontend",
+      "pid": 78613
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 78613,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 78578,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ahplhD"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ahplhD",
+  "backendUrl": "http://127.0.0.1:50961",
+  "frontUrl": "http://127.0.0.1:50962",
+  "definitions": {
+    "planner": "planner",
+    "drafter": "drafter",
+    "checker": "checker",
+    "scout": "scout",
+    "fragile": "fragile-helper",
+    "docsTeam": "docs-team",
+    "org": "docs-org",
+    "fragileOrg": "fragile-org"
+  },
+  "fastCandidates": [
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "gpt-6-luna",
+    "gpt-6-sol",
+    "gpt-6.1-sol"
+  ],
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0,
+    "blocked": 0
+  },
+  "completedAt": "2026-10-17T16:07:16.113Z"
+}

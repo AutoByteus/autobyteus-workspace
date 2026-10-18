@@ -27,14 +27,14 @@ describe('existing-copy mode: a copy\'s own ID with task_id (REQ-002)', () => {
   });
   it('requires exactly one copy ID', () => {
     expect(() => parseDelegateTaskInput({ target_team_run_id: 't', target_agent_run_id: 'a', task_id: 'B' }))
-      .toThrow('supply exactly one of target_team_run_id (a Team copy) or target_agent_run_id (an Agent copy)');
+      .toThrow('supply exactly one of target_team_run_id (a task agent team) or target_agent_run_id (a task agent)');
   });
   it.each([{}, { task_id: '' }, { task_id: '  ' }, { task_id: null }])('requires a saved Task (%j): description-only work goes to a new copy', extra => {
     expect(() => parseDelegateTaskInput({ target_team_run_id: 't', ...extra })).toThrow('Invalid delegate_task input');
   });
   it.each([{ recipient_address: '/team' }, { description: 'work' }, { reference_files: [] }, { project_id: 'P' }])('takes nothing else with the copy ID (%j)', extra => {
     expect(() => parseDelegateTaskInput({ target_agent_run_id: 'a', task_id: 'B', ...extra }))
-      .toThrow('with target_team_run_id or target_agent_run_id, supply only that ID and task_id');
+      .toThrow('with target_team_run_id or target_agent_run_id, supply only that run id and task_id');
   });
   it.each([{ target_team_run_id: '' }, { target_agent_run_id: ' ' }])('rejects a blank copy ID (%j)', id => {
     expect(() => parseDelegateTaskInput({ ...id, task_id: 'B' })).toThrow('Invalid delegate_task input');

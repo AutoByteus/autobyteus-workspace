@@ -6,8 +6,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryLayout } from "../../../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../../../../src/run-history/store/team-run-execution-tree-store.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
-import { TeamCommunicationV1Store } from "../../../../../src/services/team-communication/team-communication-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { TeamCommunicationStore } from "../../../../../src/services/team-communication/team-communication-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../../fixtures/current-agent-org-run-fixtures.js";
 import { testAgentNode, testExecutionTree } from "../../../../fixtures/current-team-run-fixtures.js";
 
@@ -41,13 +41,13 @@ describe("MemoryViewResolver member run views", () => {
       members: [testOrgTeamNode({ address: "/delivery", teamRunId: "org-delivery-team", coordinatorAddress: lead.address, members: [lead] })],
     }));
     // A current root package also carries its communication authority.
-    await new AgentOrgCommunicationMessagesV1Store().write(layout.getOrgDirPath("org-root"), {
+    await new AgentOrgCommunicationMessagesStore().write(layout.getOrgDirPath("org-root"), {
       schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [],
     });
     await writeSemantic(path.join(memoryDir, "agent_orgs", "org-root", "org-delivery-team", "org-lead-run"), "org fact");
 
     const teamDir = layout.getTeamDirPath({ rootTeamRunId: "team-root", ancestorTeamRunIds: [] });
-    await new TeamCommunicationV1Store().write(teamDir, { schemaVersion: 1, rootTeamRunId: "team-root", messages: [] });
+    await new TeamCommunicationStore().write(teamDir, { schemaVersion: 1, rootTeamRunId: "team-root", messages: [] });
     await new TeamRunExecutionTreeStore().write(
       teamDir,
       testExecutionTree({

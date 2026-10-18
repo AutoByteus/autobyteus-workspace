@@ -41,6 +41,27 @@ how to apply them; they do not replace user-approved product requirements.
    as a speculative optimization program. Retain failure/environment limits;
    an API timing does not prove UI readiness, and a pre-change installed binary
    does not validate changed source.
+7. **Contain bad data to its own run.** When one run's saved data is broken or
+   in a shape current code no longer reads, the app keeps starting and working,
+   and every other run stays unaffected. Only that run is left out, or reports
+   that its data cannot be read. Record it with a logged warning that names the
+   run and the reason, and never change or delete the data, so it can still be
+   recovered. Put this containment at the boundary of one run: a startup
+   admission check, or a lookup or scan across many runs that skips the
+   unreadable run. It is not permission to swallow errors inside normal work.
+   Historical data must never lock users out (see the
+   [Data Migration Guideline](autobyteus-server-ts/docs/design/data_migration_guideline.md)).
+8. **No version numbers in the names of current code.** Current files, types,
+   functions and constants describe the one current shape, so they carry no
+   `V1`/`V2`/`v3` (for example `team-communication-store.ts`, not
+   `team-communication-v1-store.ts`). A version in a current name implies several
+   shapes living side by side, which current code forbids, and it goes stale when
+   the shape changes. Old shapes live only inside migrations: name a frozen copy
+   after the migration that owns it or the period it comes from (for example
+   `released-trees-before-task-agent-own-run.ts`), not after an invented shape
+   number. Renaming code never renames a file or value on disk. Product or
+   external names that contain a number (a model name, an external API version)
+   are not schema versions.
 
 ## Work in two phases: clean functionality, then evidence-led refinement
 

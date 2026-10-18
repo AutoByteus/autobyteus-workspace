@@ -46,7 +46,7 @@ import { getTaskDelegationToolManifestEntry } from "../../../src/agent-tools/tas
 import { TaskDelegationToolService } from "../../../src/agent-tools/task-delegation/task-delegation-tool-service.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
-import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
@@ -140,6 +140,8 @@ class TestTeamBackend implements TeamRunBackend {
     });
     this.context = new TeamRunContext({
       physicalScope,
+      // The test root is a team run; every child backend models a task agent team it delegated.
+      teamKind: physicalScope.ancestorTeamRunIds.length > 0 ? "task" : "configured",
       teamRunId: teamNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
       teamNode,
@@ -291,7 +293,7 @@ const createHarness = async () => {
   const messages = Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) });
   const rootDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
   const treeStore = new TeamRunExecutionTreeStore();
-  const communicationStore = new TeamCommunicationV1Store();
+  const communicationStore = new TeamCommunicationStore();
   await Promise.all([treeStore.write(rootDir, tree), communicationStore.write(rootDir, messages)]);
   const backend = new TestTeamBackend(
     createRootExecutionPhysicalScope({ root: createTeamRootExecutionIdentity(rootTeamRunId), ancestorTeamRunIds: [] }),
@@ -491,7 +493,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     expect(harness.backend.preparedAgents[0]).toMatchObject({
       address: "/scope_helper",
       agentRunId: taskAgentRunId,
-      message: expect.objectContaining({ content: expect.stringContaining("Task delegator AgentRun ID: run-coordinator") }),
+      message: expect.objectContaining({ content: expect.stringContaining('sender run id "run-coordinator"') }),
     });
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([expect.objectContaining({
       address: "/scope_helper",
@@ -621,7 +623,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       recipient_address: "/design_team", description: "Coordinate a design exercise", reference_files: [],
     })).resolves.toEqual({
       delegated: false,
-      message: expect.stringContaining("is not a mounted Agent or Agent Team or an available agent"),
+      message: expect.stringContaining("is not the address of an available agent or agent team"),
     });
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
   });

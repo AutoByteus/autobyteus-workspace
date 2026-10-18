@@ -24,7 +24,7 @@ const enabled = process.env.RUN_AGY_FAILURE_E2E === "1"
 const suite = enabled ? describe : describe.skip;
 
 type Frame = { type: string; payload: Record<string, any> };
-const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_or_update_project", "create_task", "update_task"];
+const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
 const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
@@ -83,8 +83,8 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     active.splice(active.indexOf(rootId), 1);
   };
   const projectTask = async (projectId: string, taskId: string) => ((await graphql(
-    `query($id:String!){projectTasks(projectId:$id){taskId description status contextFiles{storedFilename displayName mimeType sizeBytes locator}}}`,
-    { id: projectId })).projectTasks as any[]).find((task) => task.taskId === taskId);
+    `query($id:String!){projectTasks(projectId:$id){taskId taskKey description status contextFiles{storedFilename displayName mimeType sizeBytes locator}}}`,
+    { id: projectId })).projectTasks as any[]).find((task) => task.taskId === taskId || task.taskKey === taskId);
   const taskDir = (projectId: string, taskId: string) => path.join(dataDir, "projects", projectId, "tasks", taskId);
 
   beforeAll(async () => {
@@ -156,11 +156,13 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
 
     // 1. AC-001/AC-002 through the Manager's own MCP session: create with [png, md], then a files-only patch.
     const create = await managerCalls(callTool("create_task", { project_id: projectId, description: "READ_REFERENCE_FILES", context_files: [shot, notes] }));
-    expect(create).toEqual({ task: { projectId, taskId: expect.stringMatching(/^project_task_/), status: "TODO",
+    // Tool results name the Project Task by its key; its saved files stay under the stored long ID.
+    expect(create).toEqual({ task: { projectId, taskId: expect.stringMatching(/^task-context-files-[0-9a-f]+-1$/), status: "TODO", dependsOn: [],
       attachedContextFiles: [{ storedFilename: expect.any(String), displayName: path.basename(shot) }, { storedFilename: expect.any(String), displayName: "notes.md" }] } });
-    const taskId = create.task.taskId as string;
-    const patch = await managerCalls(callTool("update_task", { task_id: taskId, context_files: [log] }));
-    expect(patch).toEqual({ task: { projectId, taskId, status: "TODO", attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "server.log.txt" }] } });
+    const taskKey = create.task.taskId as string;
+    const taskId = (await projectTask(projectId, taskKey)).taskId as string;
+    const patch = await managerCalls(callTool("update_task", { task_id: taskKey, context_files: [log] }));
+    expect(patch).toEqual({ task: { projectId, taskId: taskKey, status: "TODO", dependsOn: [], attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "server.log.txt" }] } });
     // AC-006: the sources go away (temp screenshot cleaned up); the Task keeps its copies.
     await fs.rm(shot); await fs.rm(notes); await fs.rm(log);
     const saved = await projectTask(projectId, taskId);
@@ -171,7 +173,7 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     expect(localPaths).toEqual(saved.contextFiles.map((file: any) => path.join(taskDir(projectId, taskId), "context", file.storedFilename)));
 
     // 2. AC-010: linked delegation hands the saved copies to the worker, which opens them in its own process.
-    const delegated = await managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskId }));
+    const delegated = await managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskKey }));
     expect(delegated).toMatchObject({ target_kind: "agent" });
     const worker = delegated.target_agent_run_id as string;
     expect(worker).toBeTruthy();
@@ -180,7 +182,7 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
       "worker read its reference files", 60_000);
     const firstMessage = workerTexts.find((text) => text.includes("Reference files:"))!;
     expect(firstMessage, JSON.stringify(workerTexts).slice(0, 2000)).toBeTruthy();
-    expect(firstMessage).toContain(`Task delegator AgentRun ID: ${rootId}`);
+    expect(firstMessage).toContain(`sender run id "${rootId}"`);
     expect(firstMessage).toContain("Description:\nREAD_REFERENCE_FILES\n\nReference files:");
     expect(firstMessage.slice(firstMessage.indexOf("Reference files:")).trim()).toBe(["Reference files:", ...localPaths.map((file) => `- ${file}`)].join("\n"));
     const reply = workerTexts.find((text) => text.includes("REFERENCES:"))!;
@@ -206,8 +208,8 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
 
     // 4. The corrected DONE attaches the file and closes the worker as today (AC-003 alternate).
     const doneFrom = view.frames.length;
-    const done = await managerCalls(callTool("update_task", { task_id: taskId, status: "DONE", context_files: [final] }));
-    expect(done).toEqual({ task: { projectId, taskId, status: "DONE", attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "final.md" }] } });
+    const done = await managerCalls(callTool("update_task", { task_id: taskKey, status: "DONE", context_files: [final] }));
+    expect(done).toEqual({ task: { projectId, taskId: taskKey, status: "DONE", dependsOn: [], attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "final.md" }] } });
     await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
     const closedRefs = view.frames.slice(doneFrom).find(closedFrame)!.payload.event.task_executions as any[];
     expect(closedRefs.map((ref) => ref.agentRunId ?? ref.agent_run_id)).toContain(worker);

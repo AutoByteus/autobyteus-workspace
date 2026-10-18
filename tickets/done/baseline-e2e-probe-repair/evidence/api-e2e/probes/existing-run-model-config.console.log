@@ -1,0 +1,7 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.5-beta.3 test:e2e:existing-run-model-config /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-web
+> node tests/e2e/existing-run-model-config-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/tickets/in-progress/baseline-e2e-probe-repair/evidence/api-e2e/probes/existing-run-model-config
+
+Existing run model-config probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/tickets/in-progress/baseline-e2e-probe-repair/evidence/api-e2e/probes/existing-run-model-config/existing-run-model-config-evidence.json
+exit=0

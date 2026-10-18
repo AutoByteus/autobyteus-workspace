@@ -1,0 +1,350 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/.env
+[dotenv@17.3.1] injecting env (2) from ../../cpw-base-data/server-data/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/db/production.db"
+
+SQLite database production.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/db/production.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:45292) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1792105695559,"pid":45292,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57960"}
+{"level":30,"time":1792105695583,"pid":45292,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55300"}
+[2026-10-15T23:08:15.583Z] [INFO] [server.runtime] Server listening on 127.0.0.1:55300
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: research-lead
+Agent Definition created successfully with ID: research-helper
+Agent Definition created successfully with ID: writer
+Agent Definition created successfully with ID: reviewer
+Agent Team Definition created successfully with ID: review-crew
+Agent Definition created successfully with ID: project-task-manager
+Agent Definition created successfully with ID: coordinator
+Agent Definition created successfully with ID: builder
+Agent Team Definition created successfully with ID: delivery-squad
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Created and registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Agent websocket attached for run research_lead_ef308e250f724209a2bf95cc623f0d44
+Created agent session 933062aa-8787-41f4-86b2-4fc6f58c4727 for run research_lead_ef308e250f724209a2bf95cc623f0d44
+Agent WebSocket connected: session=933062aa-8787-41f4-86b2-4fc6f58c4727, run=research_lead_ef308e250f724209a2bf95cc623f0d44
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105702920,"pid":45292,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_YQsYyI5u0XLZuN-dbo6KL7w_XqNHjw7MWhAUTWbyxUk","statusCode":400,"elapsedMs":0.8884580135345459,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105704690,"pid":45292,"hostname":"MacBookPro","reqId":"req-8","method":"POST","url":"/mcp/agent-tools/agtrun_5iy8c3yXy4cerdibb17CpxYl3tCEljSTfA-LGu5u56I","statusCode":400,"elapsedMs":0.37637507915496826,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105706457,"pid":45292,"hostname":"MacBookPro","reqId":"req-i","method":"POST","url":"/mcp/agent-tools/agtrun_P6rfodLoxT7j8AepJIcbD95LyUC-WUmNSjYp93yN22M","statusCode":400,"elapsedMs":0.28679192066192627,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105707399,"pid":45292,"hostname":"MacBookPro","reqId":"req-r","method":"POST","url":"/mcp/agent-tools/agtrun_Skisw0bGtplTXvGpA4v2Kmde3tGvpmjuEKMyZxfYZoc","statusCode":400,"elapsedMs":0.3510829210281372,"msg":"http request completed"}
+Closed agent session 933062aa-8787-41f4-86b2-4fc6f58c4727
+Agent WebSocket disconnected: 933062aa-8787-41f4-86b2-4fc6f58c4727
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Agent websocket attached for run research_lead_79d3d769329748a6a538886c7b5c5b70
+Created agent session 62f415af-7191-49bc-a348-882d05ad5522 for run research_lead_79d3d769329748a6a538886c7b5c5b70
+Agent WebSocket connected: session=62f415af-7191-49bc-a348-882d05ad5522, run=research_lead_79d3d769329748a6a538886c7b5c5b70
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+{"level":40,"time":1792105804438,"pid":45292,"hostname":"MacBookPro","reqId":"req-bp","method":"POST","url":"/mcp/agent-tools/agtrun_MoD9tVjfr3BzuVBFl1fgxL9zgWcCY3yNsE0GC4O60eg","statusCode":400,"elapsedMs":0.2252500057220459,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105807846,"pid":45292,"hostname":"MacBookPro","reqId":"req-cb","method":"POST","url":"/mcp/agent-tools/agtrun_YtNdO5dJy9QL5MdDvANDRGADl4Yo8IqUigMQnNAkUew","statusCode":400,"elapsedMs":0.2562919855117798,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105808459,"pid":45292,"hostname":"MacBookPro","reqId":"req-cm","method":"POST","url":"/mcp/agent-tools/agtrun_ij2CE6FbUbIeincK9OT3BNs7n2dkQGWSjbyaFv6l_P8","statusCode":400,"elapsedMs":0.12354099750518799,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105810687,"pid":45292,"hostname":"MacBookPro","reqId":"req-d7","method":"POST","url":"/mcp/agent-tools/agtrun_supCUSeSUWucwnQWISkyTLI5e3wkv_mnpLDqyqstXE0","statusCode":400,"elapsedMs":0.234125018119812,"msg":"http request completed"}
+Closed agent session 62f415af-7191-49bc-a348-882d05ad5522
+Agent WebSocket disconnected: 62f415af-7191-49bc-a348-882d05ad5522
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Agent websocket attached for run research_lead_e4680901fc4f4ae4a122a05cbc62c449
+Created agent session 1dcf0240-a267-4b7d-b254-82315d413d18 for run research_lead_e4680901fc4f4ae4a122a05cbc62c449
+Agent WebSocket connected: session=1dcf0240-a267-4b7d-b254-82315d413d18, run=research_lead_e4680901fc4f4ae4a122a05cbc62c449
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105906037,"pid":45292,"hostname":"MacBookPro","reqId":"req-yh","method":"POST","url":"/mcp/agent-tools/agtrun_3tj2FSzJuahZ_pehVIGZZ-PY0zBgANDYiUN7JtIu_V4","statusCode":400,"elapsedMs":0.24950003623962402,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105909283,"pid":45292,"hostname":"MacBookPro","reqId":"req-zg","method":"POST","url":"/mcp/agent-tools/agtrun_LpmLBytAyXofFCEGH5ukocVeTveOkDDt-T8Yl1n7m1k","statusCode":400,"elapsedMs":0.2170419692993164,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105911122,"pid":45292,"hostname":"MacBookPro","reqId":"req-104","method":"POST","url":"/mcp/agent-tools/agtrun_9GNCVWlEGes5qWbDEAs_PnTh01M2Q7aoElWxZ5MvbjM","statusCode":400,"elapsedMs":0.23970794677734375,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792105915582,"pid":45292,"hostname":"MacBookPro","reqId":"req-11o","method":"POST","url":"/mcp/agent-tools/agtrun_8C84ozijVb8yd05zSKXQjUjZ36AJC1ckqWa24_PNO1I","statusCode":400,"elapsedMs":0.22587502002716064,"msg":"http request completed"}
+Closed agent session 1dcf0240-a267-4b7d-b254-82315d413d18
+Agent WebSocket disconnected: 1dcf0240-a267-4b7d-b254-82315d413d18
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Agent websocket attached for run research_lead_eeb26c7283c049bda444c584d7153f16
+Created agent session b1fa6c92-8133-427a-960a-1adafe3399f8 for run research_lead_eeb26c7283c049bda444c584d7153f16
+Agent WebSocket connected: session=b1fa6c92-8133-427a-960a-1adafe3399f8, run=research_lead_eeb26c7283c049bda444c584d7153f16
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792106007635,"pid":45292,"hostname":"MacBookPro","reqId":"req-1wc","method":"POST","url":"/mcp/agent-tools/agtrun_cjqYrdPejXcf3-HQ7Jyo6Y9aIzu8fTkVjsz3CKM4KJg","statusCode":400,"elapsedMs":0.19249999523162842,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792106010541,"pid":45292,"hostname":"MacBookPro","reqId":"req-1xl","method":"POST","url":"/mcp/agent-tools/agtrun_-WG4etx_R08apWru0m4IDB4Y6k3LU4p3FlYGTTwgP4g","statusCode":400,"elapsedMs":0.15241599082946777,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792106014333,"pid":45292,"hostname":"MacBookPro","reqId":"req-1z8","method":"POST","url":"/mcp/agent-tools/agtrun_-d2-l3c2xfsEr0K4V51OWj5F8JNcMgiYoJfvPjUz20A","statusCode":400,"elapsedMs":0.1954590082168579,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792106018913,"pid":45292,"hostname":"MacBookPro","reqId":"req-21c","method":"POST","url":"/mcp/agent-tools/agtrun_UQ4Qg_UJGw1T3L9Oxm3VjzynIYj7FGaDS5nHWwo2WTg","statusCode":400,"elapsedMs":0.27945804595947266,"msg":"http request completed"}
+Closed agent session b1fa6c92-8133-427a-960a-1adafe3399f8
+Agent WebSocket disconnected: b1fa6c92-8133-427a-960a-1adafe3399f8
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+Agent websocket attached for run research_lead_bf736c8d9d2f4d09ac8d6ecf9e949adf
+Created agent session ec8f8295-0ee7-4e38-b99b-bbeed8272018 for run research_lead_bf736c8d9d2f4d09ac8d6ecf9e949adf
+Agent WebSocket connected: session=ec8f8295-0ee7-4e38-b99b-bbeed8272018, run=research_lead_bf736c8d9d2f4d09ac8d6ecf9e949adf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792106743908,"pid":45292,"hostname":"MacBookPro","reqId":"req-98l","method":"POST","url":"/mcp/agent-tools/agtrun_hz-3eJsc2G1ItqN4bql6ihHxUh3BG8WkBT_orq-VU88","statusCode":400,"elapsedMs":0.23495793342590332,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-data/workspace.
+Reusing registered workspace ID: agent_ws_f1f509de4ca8a43c61e41588fc7a59b1be2f2eb61497f81ad5e6b407ee7c50cf
+(node:45292) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792106747416,"pid":45292,"hostname":"MacBookPro","reqId":"req-99l","method":"POST","url":"/mcp/agent-tools/agtrun_ebbRj_0AJ7iP0MlRfQusqmyey7wZ1oYI3jIIWtBXwI8","statusCode":400,"elapsedMs":0.20354199409484863,"msg":"http request completed"}
+Closed agent session ec8f8295-0ee7-4e38-b99b-bbeed8272018
+Agent WebSocket disconnected: ec8f8295-0ee7-4e38-b99b-bbeed8272018
+[2026-10-15T23:26:49.797Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-15T23:26:54.686Z] [INFO] [server.runtime] Server closed cleanly.

@@ -22,6 +22,8 @@ export interface InterAgentMessageDeliveryIntent {
 
 export interface ResolvedInterAgentMessageDeliveryRequest extends InterAgentMessageDeliveryIntent {
   recipient: InterAgentMessageDeliveryEndpoint;
+  /** The sender's address when, from the receiver, it reaches the sender (design T-5); null otherwise. */
+  senderAddress: string | null;
   senderIdentity: CollaborationMemberExecutionIdentity;
   receiverIdentity: CollaborationMemberExecutionIdentity;
   parentCommunicationMessageId?: string | null;

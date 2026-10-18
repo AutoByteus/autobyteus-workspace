@@ -1,11 +1,11 @@
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
-import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
+import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 
 /** Current Org package: execution tree (read tolerantly) + communication messages. Task-records files are not read. */
 export type AgentOrgStatePackage = Readonly<{
   executionTree: AgentOrgRunExecutionTreeSnapshot;
-  communicationMessages: AgentOrgCommunicationMessagesFileV1;
+  communicationMessages: AgentOrgCommunicationMessagesFile;
 }>;
 export type ValidatedAgentOrgStatePackage = AgentOrgStatePackage & Readonly<{ index: AgentOrgExecutionIndex }>;
 

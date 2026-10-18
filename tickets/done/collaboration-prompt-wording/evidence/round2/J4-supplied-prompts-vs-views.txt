@@ -1,0 +1,25 @@
+PASS team (org line) no-handoffs | agent_orgs/studio_37df7c6970194cd58a3b4e5b8d6235d0/delivery_squad_40bd8f26e1174bdf86f48446
+PASS org no-handoffs | agent_orgs/studio_37df7c6970194cd58a3b4e5b8d6235d0/project_task_manager_7664895beca9428786
+PASS team (org line) no-handoffs | agent_orgs/studio_5b1fe5bd4b734211b901b015c9dc0409/delivery_squad_4cd18381da7a4fc7a196284e
+PASS org no-handoffs | agent_orgs/studio_5b1fe5bd4b734211b901b015c9dc0409/project_task_manager_a226d5f1e36c4ed28a
+PASS team (org line) no-handoffs | agent_orgs/studio_77e6539f33f04f719e18edf274c5bd18/delivery_squad_8354f343ca8f4a308eed3e91
+PASS org no-handoffs | agent_orgs/studio_77e6539f33f04f719e18edf274c5bd18/project_task_manager_280270ae279d448cab
+PASS team (org line) no-handoffs | agent_orgs/studio_8029c53b418c4fc081a71114b63311a7/delivery_squad_ce0e58041a8c4b3ba69ad749
+PASS org no-handoffs | agent_orgs/studio_8029c53b418c4fc081a71114b63311a7/project_task_manager_5518338cd06f4c0ca1
+PASS team (org line) no-handoffs | agent_orgs/studio_c77dbd5e6d164ed386f5006f76685e79/delivery_squad_a3cc8327944a439c8a71a264
+PASS org no-handoffs | agent_orgs/studio_c77dbd5e6d164ed386f5006f76685e79/project_task_manager_6e750996a033456ea6
+PASS team no-handoffs | agent_teams/review_crew_acb1f8ae00ee4f3f9fd8d6cd84d4b5e4/reviewer_06d08f7f033644bc867e86dd
+PASS team handoffs | agent_teams/review_crew_acb1f8ae00ee4f3f9fd8d6cd84d4b5e4/writer_0dc38d3b76b74dab971b3ed723
+PASS standalone no-handoffs | agents/research_lead_586208fb55014ea3a36fcdc70070c4a6/raw_traces_active.jsonl
+PASS task no-handoffs | agents/research_lead_64efa0a807504bc0a511d8da8a538e6e/collaboration/research_helper_57c0db
+PASS standalone no-handoffs | agents/research_lead_64efa0a807504bc0a511d8da8a538e6e/raw_traces_active.jsonl
+PASS standalone no-handoffs | agents/research_lead_850d9630b7164651b1ccff0a988c0b0d/raw_traces_active.jsonl
+PASS task no-handoffs | agents/research_lead_9001a76b8790469c93de22e9a317d0cc/collaboration/research_helper_732167
+PASS standalone no-handoffs | agents/research_lead_9001a76b8790469c93de22e9a317d0cc/raw_traces_active.jsonl
+PASS task no-handoffs | agents/research_lead_934b197abbf74ac388c670c52aa9b76e/collaboration/research_helper_71c7dd
+PASS standalone no-handoffs | agents/research_lead_934b197abbf74ac388c670c52aa9b76e/raw_traces_active.jsonl
+PASS task no-handoffs | agents/research_lead_9aaaa34ab5244753834bff82b7cfceef/collaboration/research_helper_e38b71
+PASS standalone no-handoffs | agents/research_lead_9aaaa34ab5244753834bff82b7cfceef/raw_traces_active.jsonl
+PASS task no-handoffs | agents/research_lead_bfffdb575fc047d19b3f7c244eb205d4/collaboration/research_helper_4dadbf
+PASS standalone no-handoffs | agents/research_lead_bfffdb575fc047d19b3f7c244eb205d4/raw_traces_active.jsonl
+ALL PASS

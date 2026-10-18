@@ -1,0 +1,26 @@
+[2026-10-17T08:12:56.466Z] package imported {"packageId":"local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fproject-tool-split%2Ftickets%2Fin-progress%2Fproject-tool-split%2Fevidence%2Fapi-e2e%2Ftest-package","displayName":"test-package","path":"/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/test-package","sourceKind":"LOCAL_PATH","sharedAgentCount":4}
+[2026-10-17T08:12:56.469Z] package agent definitions [{"id":"pts-new-tools","name":"PTS New Tools","toolNames":["list_projects","create_project","update_project"]},{"id":"pts-no-project-tool","name":"PTS No Project Tool","toolNames":["list_projects"]},{"id":"pts-old-tool","name":"PTS Old Tool","toolNames":["list_projects","create_or_update_project"]},{"id":"pts-transition","name":"PTS Transition","toolNames":["list_projects","create_or_update_project","create_project","update_project"]}]
+[2026-10-17T08:12:56.474Z] CASE REL-MIX START
+[2026-10-17T08:12:56.686Z] launch PTS Transition (antigravity_cli) {"success":true,"message":"Agent run created successfully.","runId":"pts_transition_ee00d817a5934295a4d7c8a17f7eaa35"}
+[2026-10-17T08:12:57.206Z]   list_projects({}) -> ok {"projects":[]}
+[2026-10-17T08:12:57.350Z]   exposed tools for PTS Transition: ["create_or_update_project","delegate_task","list_projects","send_message_to"]
+[2026-10-17T08:12:57.863Z]   create_or_update_project({"name":"PTS Rel Mix e46e"}) -> ok {"project":{"projectId":"project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45","name":"PTS Rel Mix e46e","description":"","workspaces":[]}}
+[2026-10-17T08:12:58.376Z]   create_or_update_project({"project_id":"project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45","description":"patched on release"}) -> ok {"project":{"projectId":"project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45","name":"PTS Rel Mix e46e","description":"patched on release","workspaces":[]}}
+[2026-10-17T08:12:58.888Z]   create_project -> agent turn error [{"type":"ERROR","payload":{"code":"AGY_TURN_ERROR","message":"MCP error -32602: Unknown MCP tool","error_scope":"turn","error_effect":"terminal","turn_id":"b62b1a9b-95f5-47b5-8b26-2fde15362105"}}]
+[2026-10-17T08:12:58.972Z] CASE REL-MIX PASS
+[2026-10-17T08:12:58.973Z] CASE REL-OLD START
+[2026-10-17T08:12:59.151Z] launch PTS Old Tool (antigravity_cli) {"success":true,"message":"Agent run created successfully.","runId":"pts_old_tool_027e4a5c1ad14d81b32ba7de393bc573"}
+[2026-10-17T08:12:59.660Z]   list_projects({}) -> ok {"projects":[{"projectId":"project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45","name":"PTS Rel Mix e46e","description":"patched on release"}]}
+[2026-10-17T08:12:59.668Z]   exposed tools for PTS Old Tool: ["create_or_update_project","delegate_task","list_projects","send_message_to"]
+[2026-10-17T08:13:00.178Z]   create_or_update_project({"name":"PTS Rel Old 9117"}) -> ok {"project":{"projectId":"project_4044749b-c881-464f-aa10-7abd8af9f35d","name":"PTS Rel Old 9117","description":"","workspaces":[]}}
+[2026-10-17T08:13:00.247Z] CASE REL-OLD PASS
+[2026-10-17T08:13:00.248Z] CASE REL-NEW START
+[2026-10-17T08:13:00.412Z] launch PTS New Tools (antigravity_cli) {"success":true,"message":"Agent run created successfully.","runId":"pts_new_tools_4e1b6f0f0e9245598dd5206ab70b0607"}
+[2026-10-17T08:13:00.921Z]   list_projects({}) -> ok {"projects":[{"projectId":"project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45","name":"PTS Rel Mix e46e","description":"patched on release"},{"projectId":"project_4044749b-c881-464f-aa10-7abd8af9f35d","name":"PTS Rel Old 9117","description":""}]}
+[2026-10-17T08:13:00.929Z]   exposed tools for PTS New Tools: ["delegate_task","list_projects","send_message_to"]
+[2026-10-17T08:13:00.997Z] CASE REL-NEW PASS
+[2026-10-17T08:13:00.997Z] CASE REL-REAL-MIX START
+[2026-10-17T08:13:01.039Z] launch PTS Transition (claude_agent_sdk) {"success":true,"message":"Agent run created successfully.","runId":"pts_transition_a29a976ad0aa408d82e47ae346fd19e2"}
+[2026-10-17T08:13:06.906Z] CASE REL-REAL-MIX PASS
+[2026-10-17T08:13:06.907Z] SUMMARY 4 cases, 0 failed []
+exit 0

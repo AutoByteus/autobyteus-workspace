@@ -1,8 +1,10 @@
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import type { MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 import type {
-  StandaloneRootMessagesFileV1,
+  StandaloneRootMessagesFile,
   StandaloneRootTreeSnapshot,
 } from "../domain/standalone-root-tree.js";
 
@@ -29,7 +31,7 @@ export class StandaloneRootPersistenceCoordinator {
     collaborationDir: string;
     store: StandaloneRootPackageStore;
     packageExists: boolean;
-    getMessages(): StandaloneRootMessagesFileV1;
+    getMessages(): StandaloneRootMessagesFile;
     onPackageCreated(): Promise<void>;
     enterPersistenceFailStop(error: Error): void;
   }>) {
@@ -103,12 +105,16 @@ export class StandaloneRootPersistenceCoordinator {
   }
 
   commitCommunication(input: Readonly<{
-    nextMessages: StandaloneRootMessagesFileV1;
+    nextMessages: StandaloneRootMessagesFile;
+    /** The one message this commit adds, and the logs it belongs to (receiver's first; D-4). */
+    message: CollaborationCommunicationMessage;
+    logOwners: readonly MessageLogOwner[];
     commitAfterDurability(): void;
     cancelBeforeDurability(): void;
   }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {
     return this.withLock(async () => {
-      const result = await this.options.store.writeMessages(this.options.collaborationDir, input.nextMessages);
+      const result = await this.options.store.appendMessage(
+        this.options.collaborationDir, this.options.hostRunId, input.message, input.logOwners);
       if (result.outcome === "not_renamed") {
         input.cancelBeforeDurability();
         return { committed: false, code: "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED", message: result.cause.message };

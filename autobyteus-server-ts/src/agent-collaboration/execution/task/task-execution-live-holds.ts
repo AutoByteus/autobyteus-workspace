@@ -35,7 +35,7 @@ export class TaskExecutionLiveHolds {
   /** Refuses a new lease on a chain that contains an execution being stopped. */
   assertNotStopping(chainKeys: readonly string[]): void {
     if (this.stopping.size && chainKeys.some((key) => this.stopping.has(key))) {
-      throw new TaskDelegationError("TASK_EXECUTION_STOPPING", "This copy is being stopped by the user.");
+      throw new TaskDelegationError("TASK_EXECUTION_STOPPING", "The user is stopping this task agent.");
     }
   }
 

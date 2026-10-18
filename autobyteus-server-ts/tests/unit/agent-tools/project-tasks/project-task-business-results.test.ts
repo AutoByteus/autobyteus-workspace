@@ -22,6 +22,8 @@ const mcp = async (name: string, args: Record<string, unknown>) => {
   if (result.kind !== "mcp_tool_result") throw new Error("Expected structured result");
   return result.result;
 };
+/** The stored ID behind a key a tool returned (tool results carry only keys for Project Tasks). */
+const idOfKey = async (taskKey: string) => (await store.listTasks(projectId)).find((task) => task.taskKey === taskKey)!.taskId;
 const root = (kind: RootSubjectKind) => createRootExecutionIdentity({ rootSubjectKind: kind, rootRunId: `root-${kind}` });
 let dir: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, projectId: string;
 let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
@@ -63,7 +65,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
 
     const native = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
     expect((await mcp("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(native);
-    expect(native).toEqual({ projectId, tasks: [{ projectId, taskId: task.taskId, description: task.description, status: "TODO",
+    expect(native).toEqual({ projectId, tasks: [{ projectId, taskId: task.taskKey, description: task.description, status: "TODO", dependsOn: [],
       contextFiles: task.contextFiles, assignments: [
         { kind: "agent", agentRunId: "accepted-agent", assignedBy: "manager-agent", outcome: "accepted" },
         { kind: "team", teamRunId: "failed-team", teamCoordinatorAgentRunId: "failed-team-lead", assignedBy: "manager-agent_team", outcome: "failed" },
@@ -77,9 +79,10 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     for (const privateDetail of ["internal-delegate", "owned-helper", "hostRoot", "closedAt", "Internal dispatch detail", "linkedAt"]) {
       expect(JSON.stringify(native)).not.toContain(privateDetail);
     }
+    // The stored long ID is still accepted as task_id; results name the Task by key.
     const patch = { task_id: task.taskId, description: "Revised saved work" };
-    expect(JSON.parse(await new UpdateTaskTool().execute(null, patch))).toEqual({ task: { projectId, taskId: task.taskId, status: "TODO" } });
-    expect((await mcp("update_task", patch)).structuredContent).toEqual({ task: { projectId, taskId: task.taskId, status: "TODO" } });
+    expect(JSON.parse(await new UpdateTaskTool().execute(null, patch))).toEqual({ task: { projectId, taskId: task.taskKey, status: "TODO", dependsOn: [] } });
+    expect((await mcp("update_task", patch)).structuredContent).toEqual({ task: { projectId, taskId: task.taskKey, status: "TODO", dependsOn: [] } });
     const reread = (await mcp("list_project_tasks", { project_id: projectId })).structuredContent as typeof native;
     expect(reread.tasks[0]).toEqual({ ...native.tasks[0], description: "Revised saved work" });
   });
@@ -90,24 +93,24 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     const file = async (name: string) => { const p = path.join(sourceDir, name); await fs.writeFile(p, `bytes of ${name}`); return p; };
     const shot = await file("shot1.png"), notes = await file("notes.md");
     const created = JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, description: "Fix green status", context_files: [shot, notes] }));
-    const taskId = created.task.taskId;
+    const key = created.task.taskId, taskId = await idOfKey(key);
     const saved = (await store.readTask(projectId, taskId))!.contextFiles!;
-    expect(created).toEqual({ task: { projectId, taskId: expect.any(String), status: "TODO", attachedContextFiles: [
+    expect(created).toEqual({ task: { projectId, taskId: "business-fixture-1", status: "TODO", dependsOn: [], attachedContextFiles: [
       { storedFilename: saved[0]!.storedFilename, displayName: "shot1.png" }, { storedFilename: saved[1]!.storedFilename, displayName: "notes.md" }] } });
-    const patch = { task_id: taskId, context_files: [await file("shot2.png")] };
+    const patch = { task_id: key, context_files: [await file("shot2.png")] };
     const viaMcp = (await mcp("update_task", patch)).structuredContent as typeof created;
     const viaNative = JSON.parse(await new UpdateTaskTool().execute(null, patch));
     const files = (await store.readTask(projectId, taskId))!.contextFiles!;
     expect(files.map(f => f.displayName)).toEqual(["shot1.png", "notes.md", "shot2.png", "shot2.png"]);
-    expect(viaMcp).toEqual({ task: { projectId, taskId, status: "TODO", attachedContextFiles: [{ storedFilename: files[2]!.storedFilename, displayName: "shot2.png" }] } });
-    expect(viaNative).toEqual({ task: { projectId, taskId, status: "TODO", attachedContextFiles: [{ storedFilename: files[3]!.storedFilename, displayName: "shot2.png" }] } });
+    expect(viaMcp).toEqual({ task: { projectId, taskId: key, status: "TODO", dependsOn: [], attachedContextFiles: [{ storedFilename: files[2]!.storedFilename, displayName: "shot2.png" }] } });
+    expect(viaNative).toEqual({ task: { projectId, taskId: key, status: "TODO", dependsOn: [], attachedContextFiles: [{ storedFilename: files[3]!.storedFilename, displayName: "shot2.png" }] } });
     // The Task's full list (with locators and saved paths) stays on list_project_tasks.
     const listed = (await mcp("list_project_tasks", { project_id: projectId })).structuredContent as { tasks: Array<{ contextFiles: Array<{ localPath: string }> }> };
     expect(await fs.readFile(listed.tasks[0]!.contextFiles[0]!.localPath, "utf8")).toBe("bytes of shot1.png");
     // Calls that attach nothing keep the exact plain acknowledgement.
     expect(JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, description: "Plain", context_files: [] })))
-      .toEqual({ task: { projectId, taskId: expect.any(String), status: "TODO" } });
-    expect((await mcp("update_task", { task_id: taskId, status: "IN_PROGRESS" })).structuredContent).toEqual({ task: { projectId, taskId, status: "IN_PROGRESS" } });
+      .toEqual({ task: { projectId, taskId: "business-fixture-2", status: "TODO", dependsOn: [] } });
+    expect((await mcp("update_task", { task_id: key, status: "IN_PROGRESS" })).structuredContent).toEqual({ task: { projectId, taskId: key, status: "IN_PROGRESS", dependsOn: [] } });
   });
 
   it.each(["native", "mcp"] as const)("reports an invalid context file through %s with its path and changes nothing (AC-005)", async mode => {
@@ -136,10 +139,10 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     tasks = await service();
     const listed = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
-    const damaged = listed.tasks.find((t: { taskId: string }) => t.taskId === a.taskId);
+    const damaged = listed.tasks.find((t: { taskId: string }) => t.taskId === a.taskKey);
     expect(damaged).toMatchObject({ assignmentsUnavailable: true });
     expect(damaged).not.toHaveProperty("assignments");
-    expect(listed.tasks.find((t: { taskId: string }) => t.taskId !== a.taskId)).toMatchObject({ assignments: [] });
+    expect(listed.tasks.find((t: { taskId: string }) => t.taskId !== a.taskKey)).toMatchObject({ assignments: [] });
     const done = await new UpdateTaskTool().execute(null, { task_id: a.taskId, status: "DONE" })
       .then(() => { throw new Error("Must reject"); }, e => JSON.parse(e.message));
     expect(done).toEqual({ error: { code: "TASK_AGENT_RESOURCES_UNAVAILABLE", message: expect.stringContaining("Fix or restore the file and restart the app") } });
@@ -147,14 +150,14 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
 
   it.each(["agent", "agent_team", "agent_org"] as const)("acknowledges recorded DONE only; stops under %s are requested again by repeated DONE and Task B is untouched", async kind => {
     const created = JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, description: "A" }));
-    expect(created).toEqual({ task: { projectId, taskId: expect.any(String), status: "TODO" } });
-    const taskId = created.task.taskId;
+    expect(created).toEqual({ task: { projectId, taskId: "business-fixture-1", status: "TODO", dependsOn: [] } });
+    const key = created.task.taskId, taskId = await idOfKey(key);
     await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root(kind), execution: { teamRunId: "A" }, teamCoordinatorAgentRunId: "A-lead" });
     const b = await tasks.createTask({ projectId, description: "B protected" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: b.taskId, assignedBy: "manager", hostRoot: root(kind), execution: { agentRunId: "B" } });
     const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
     release.mockResolvedValueOnce([{ execution: { teamRunId: "A" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } }]);
-    const done = { task: { projectId, taskId, status: "DONE" } }, args = { task_id: taskId, status: "DONE" };
+    const done = { task: { projectId, taskId: key, status: "DONE", dependsOn: [] } }, args = { task_id: key, status: "DONE" };
     expect(JSON.parse(await new UpdateTaskTool().execute(null, args))).toEqual(done);
     await tasks.drainRuntimeReleases();
     expect(errors).toHaveBeenCalledWith("TASK_AGENT_RESOURCE_STOP_FAILED", expect.objectContaining({ taskId }));

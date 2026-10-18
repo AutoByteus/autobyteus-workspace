@@ -13,7 +13,7 @@ import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-ru
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
@@ -435,7 +435,7 @@ describe("Archive run history GraphQL e2e", () => {
         teamRun.summary,
       );
       expect((await teamExecutionTreeStore.write(teamDir, tree)).outcome).toBe("committed");
-      await new TeamCommunicationV1Store().write(teamDir, {
+      await new TeamCommunicationStore().write(teamDir, {
         schemaVersion: 1, rootTeamRunId: teamRun.teamRunId, messages: [],
       });
     }

@@ -14,10 +14,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
-import type { AgentStatus } from '~/types/agent/AgentStatus';
+import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
 const props = defineProps<{
-  status: AgentStatus;
+  status: TeamStatus;
 }>();
 
 const statusLabelKey = computed(() => (

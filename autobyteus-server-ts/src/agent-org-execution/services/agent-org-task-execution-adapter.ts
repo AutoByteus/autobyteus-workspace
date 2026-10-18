@@ -1,3 +1,5 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { CommittedTaskExecution, TaskExecutionPreparationOperation } from "../../agent-team-execution/domain/prepared-task-execution.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -24,7 +26,7 @@ import {
   createTaskExecutionHostIdentity,
   type TaskExecutionHostIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import {
   getAgentConversationActivityInspector,
   type AgentConversationActivityInspector,
@@ -67,7 +69,7 @@ export type AgentOrgTaskExecutionAdapterOptions = Readonly<{
   publishTaskExecutionsReopened(taskExecutions: readonly TaskExecutionReference[]): void;
   publishAgentOffline(identity: CollaborationMemberExecutionIdentity): void;
   enterLifecycleFailStop(): void;
-  memoryLocator?: RootedAgentMemoryLocator;
+  memoryLocator?: AgentRunMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
   tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
 }>;
@@ -78,12 +80,12 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   private readonly registrations = new Map<string, RegisteredTaskActivation>();
   get root(): RootExecutionIdentity { return this.options.root; }
   private readonly readiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
-  private readonly memoryLocator: RootedAgentMemoryLocator;
+  private readonly memoryLocator: AgentRunMemoryLocator;
   private readonly sources: AgentOrgTaskSourceResolver;
 
   constructor(private readonly options: AgentOrgTaskExecutionAdapterOptions) {
     this.readiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
-    this.memoryLocator = options.memoryLocator ?? new RootedAgentMemoryLocator();
+    this.memoryLocator = options.memoryLocator ?? new AgentRunMemoryLocator();
     this.sources = new AgentOrgTaskSourceResolver(() => options.getTree());
   }
 
@@ -109,9 +111,9 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
       const materialized = await this.options.taskExecutionIdentity.taskTeams.create({ source: source.node });
       const command = { address: input.placement.address, teamRunId: materialized.teamNode.teamRunId,
         handoffs: source.handoffs, teamNode: materialized.teamNode, message: input.workPacket };
-      const coordinator = command.teamNode.children.find((node) => node.kind === "agent" && node.address === command.teamNode.coordinatorAddress);
-      if (!coordinator || coordinator.kind !== "agent") throw new Error("Planned Team has no exact coordinator ingress.");
-      execution = { teamRunId: command.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = command.teamNode.children.flatMap(node => node.kind === "agent" ? [node.agentRunId] : []);
+      const coordinator = command.teamNode.children.find((node) => node.address === command.teamNode.coordinatorAddress);
+      if (!coordinator) throw new Error("Planned Team has no exact coordinator ingress.");
+      execution = { teamRunId: command.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = command.teamNode.children.map((node) => node.agentRunId);
       beginLocal = () => this.options.teams.beginRootTaskTeam({
         task: command, physicalScope: createRootExecutionPhysicalScope({ root: this.root, ancestorTeamRunIds: [command.teamRunId] }),
         callbacks: this.options.callbacks,
@@ -189,6 +191,9 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     // A task TeamRun is registered in the directory wherever it is hosted.
     if (entry.kind === "team") this.options.teams.discardReleasedTask(entry.teamRunId);
   }
+  reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null {
+    return reachingAddressOf(this.options.getIndex(), null, agent);
+  }
   taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null {
     const innermost = this.options.getIndex().listTaskExecutionChainForAgent(agentRunId)[0];
     return innermost && this.ingressAgentRunId(innermost) === agentRunId ? referenceOf(innermost) : null;
@@ -234,10 +239,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     for (const indexed of index.listTaskExecutionChainForAgent(agentRunId)) {
       if (this.isLive(referenceOf(indexed))) continue;
       const ingressAgentRunId = this.ingressAgentRunId(indexed);
-      const memoryDir = this.memoryLocator.getLocation(
-        index.getPhysicalScopeForAgent(ingressAgentRunId),
-        ingressAgentRunId,
-      ).memoryDir;
+      const memoryDir = this.memoryLocator.getMemoryDir(index.getMemoryPlacementForAgent(ingressAgentRunId), ingressAgentRunId);
       const activity = (this.options.activityInspector ?? getAgentConversationActivityInspector())
         .inspect({ agentRunId: ingressAgentRunId, memoryDir });
       if (activity.kind !== "present") {
@@ -380,7 +382,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     let nextTreeAtCommit: AgentOrgRunExecutionTreeSnapshot | null = null;
     return this.options.persistence.commitTaskActivation({
       prepareAgainstCurrent: () => {
-        let nextTree = addAgentOrgTaskExecution({ tree: this.options.getTree(), host: input.host, execution });
+        let nextTree = addAgentOrgTaskExecution({ tree: this.options.getTree(), execution });
         for (const binding of input.prepared.stagedPlatformBindings) {
           nextTree = adoptAgentOrgPlatformBinding({ tree: nextTree, binding }).tree;
         }

@@ -1,16 +1,18 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { StandaloneRootPackageStore } from "../../../standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../standalone-agent-run-root/persistence/standalone-root-tree-path.js";
 import { getTeamRunExecutionTreePath } from "../../../run-history/store/team-run-execution-tree-path.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
-import { TeamRunExecutionTreeStore } from "../../../run-history/store/team-run-execution-tree-store.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../run-history/store/agent-org-run-execution-tree-store.js";
-import { validateStandaloneRootTreePayload } from "../../../standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
-import { validateTeamRunExecutionTreePayload } from "../../../run-history/store/team-run-execution-tree-schema.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../../run-history/store/agent-org-run-execution-tree-schema.js";
-import type { RunPackageFileWriteResult } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
+import {
+  getAtomicRunPackageFileCommitWriter,
+  type RunPackageFileWriteResult,
+} from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
+import {
+  validateAgentOrgRunExecutionTreePayload,
+  validateStandaloneRootTreePayload,
+  validateTeamRunExecutionTreePayload,
+} from "../../legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -51,8 +53,11 @@ const isMissing = (error: unknown): boolean => (error as NodeJS.ErrnoException |
  * Only the execution tree JSON of each Agent, Team and Org root changes: no memory, message,
  * context-file or token record moves, because a collaborator's memory already sits where a
  * root-level copy's memory sits in every family. Frozen knowledge of the released collaborator
- * shape lives in `released-collaborator-entry-v1.ts`; the result is committed through the current
- * stores (atomic replace) and re-read with the current readers.
+ * shape lives in `released-collaborator-entry-v1.ts`. The result is validated with the frozen tree
+ * readers this migration was released with (`released-trees-before-task-agent-own-run.ts`),
+ * committed with the atomic file writer and re-read with the same frozen readers: the current
+ * tree stores split task records into their own files (task-agent-own-run), which this
+ * migration must not do (contract §5.4, S27).
  */
 export class CollaboratorsToDelegatedRunsV1AppDataMigration implements AppDataMigrationDefinition {
   readonly id = COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID;
@@ -144,43 +149,45 @@ export class CollaboratorsToDelegatedRunsV1AppDataMigration implements AppDataMi
     }
     if (converted.kind === "already_current") return { disposition: "SKIPPED_ALREADY_CURRENT" };
     try {
-      this.validateWithCurrentReader(candidate, converted.tree);
+      this.validateWithReleasedReader(candidate, converted.tree);
     } catch (error) {
       return { disposition: "FAILED_CONVERTED_TREE_INVALID", message: messageOf(error) };
     }
     try {
-      const write = await this.writeWithCurrentStore(candidate, converted.tree);
+      const write = await this.writeTree(candidate, converted.tree);
       if (write.outcome === "not_renamed") return { disposition: "FAILED_OPERATION", message: write.cause.message };
-      // A committed or indeterminate rename is settled by reading the file back with the current reader.
-      await this.readWithCurrentStore(candidate);
+      // A committed or indeterminate rename is settled by reading the file back with the released reader.
+      await this.readBack(candidate);
     } catch (error) {
       return { disposition: "FAILED_CONVERTED_TREE_INVALID", message: messageOf(error) };
     }
     return { disposition: "MIGRATED", message: `${converted.collaboratorCount} collaborator(s) converted, ${converted.stampedCopyCount} copy source(s) stamped` };
   }
 
-  private validateWithCurrentReader(candidate: TreeCandidate, tree: Record<string, unknown>): void {
+  private validateWithReleasedReader(candidate: TreeCandidate, tree: unknown): Record<string, unknown> {
     switch (candidate.family) {
-      case "agent": validateStandaloneRootTreePayload(tree, candidate.runId); return;
-      case "agent_team": validateTeamRunExecutionTreePayload(tree, candidate.runId); return;
-      case "agent_org": validateAgentOrgRunExecutionTreePayload(tree, candidate.runId); return;
+      case "agent": return validateStandaloneRootTreePayload(tree, candidate.runId) as unknown as Record<string, unknown>;
+      case "agent_team": return validateTeamRunExecutionTreePayload(tree, candidate.runId) as unknown as Record<string, unknown>;
+      case "agent_org": return validateAgentOrgRunExecutionTreePayload(tree, candidate.runId) as unknown as Record<string, unknown>;
     }
   }
 
-  private writeWithCurrentStore(candidate: TreeCandidate, tree: Record<string, unknown>): Promise<RunPackageFileWriteResult> {
-    switch (candidate.family) {
-      case "agent": return new StandaloneRootPackageStore().writeTree(candidate.storeDir, validateStandaloneRootTreePayload(tree, candidate.runId));
-      case "agent_team": return new TeamRunExecutionTreeStore().write(candidate.storeDir, validateTeamRunExecutionTreePayload(tree, candidate.runId));
-      case "agent_org": return new AgentOrgRunExecutionTreeStore().write(candidate.storeDir, validateAgentOrgRunExecutionTreePayload(tree, candidate.runId));
-    }
+  private writeTree(candidate: TreeCandidate, tree: Record<string, unknown>): Promise<RunPackageFileWriteResult> {
+    return getAtomicRunPackageFileCommitWriter().write({
+      file: "execution_tree",
+      filePath: candidate.filePath,
+      payload: this.validateWithReleasedReader(candidate, tree),
+    });
   }
 
-  private async readWithCurrentStore(candidate: TreeCandidate): Promise<void> {
-    const tree = candidate.family === "agent"
-      ? await new StandaloneRootPackageStore().readTree(candidate.storeDir, candidate.runId)
-      : candidate.family === "agent_team"
-        ? await new TeamRunExecutionTreeStore().read(candidate.storeDir, candidate.runId)
-        : await new AgentOrgRunExecutionTreeStore().read(candidate.storeDir, candidate.runId);
-    if (!tree) throw new Error(`The converted tree of '${path.basename(candidate.storeDir)}' is missing after the write.`);
+  private async readBack(candidate: TreeCandidate): Promise<void> {
+    let value: unknown;
+    try {
+      value = JSON.parse(await fs.readFile(candidate.filePath, "utf8")) as unknown;
+    } catch (error) {
+      if (isMissing(error)) throw new Error(`The converted tree of '${path.basename(candidate.storeDir)}' is missing after the write.`);
+      throw error;
+    }
+    this.validateWithReleasedReader(candidate, value);
   }
 }

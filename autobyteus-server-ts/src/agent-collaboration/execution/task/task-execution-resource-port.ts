@@ -6,6 +6,9 @@ import type { TaskExecutionReference } from "./task-execution-reference.js";
  * business Task; `taskId` is opaque to the runtime (equality/dedupe only). The runtime stores no
  * Task facts: it asks this port, which answers from the Task side's loaded agent run resources.
  */
+/** Refusal text when someone other than the assigner tries to continue a closed task agent (wording §7.3). */
+export const ASSIGNER_ONLY_REACTIVATION_MESSAGE = "This task agent's Task is closed. Only the agent that assigned the Task can continue it: "
+  + "set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).";
 export type TaskExecutionRole = "assigned" | "delegated" | "broughtIn";
 export type TaskExecutionOwner = Readonly<{ taskId: string; execution: TaskExecutionReference; open: boolean }>;
 /** The text of a Task with no Project that an assignment creates (description-only delegation by an unowned sender). */
@@ -31,8 +34,12 @@ export type ExistingTaskExecutionAssignInput = Readonly<{
 }>;
 
 export interface TaskExecutionResourcePort {
-  /** Saved work for a non-owned assignment of a Project Task; unknown, DONE, CANCELLED or unreadable Tasks reject. */
-  resolveAssignment(taskId: string): Promise<Readonly<{ description: string; referenceFiles: string[] }>>;
+  /**
+   * Saved work for a non-owned assignment of a Project Task named by `reference` (the agent's `task_id`: its key
+   * or ID): its `taskId` (the only identity used afterwards), its agent-facing `taskReference` (for texts), and
+   * its description and files. Unknown, DONE, CANCELLED or unreadable Tasks, and Tasks with no Project, reject.
+   */
+  resolveAssignment(reference: string): Promise<Readonly<{ taskId: string; taskReference: string; description: string; referenceFiles: string[] }>>;
   /**
    * Records the agent run `starting` before any of its resources are acquired; returns the Task it
    * joined. An `adHocTask` assignment first creates that Task (no Project) and returns its new ID.

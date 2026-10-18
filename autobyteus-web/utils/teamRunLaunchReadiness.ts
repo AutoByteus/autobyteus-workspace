@@ -2,7 +2,7 @@ import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { TeamWorkspaceAuthoringState } from '~/types/agent/TeamLaunchDraft'
 import type { TeamRunConfig, TeamRunConfigurationView } from '~/types/agent/TeamRunConfig'
-import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
+import type { TeamDefinitionAgentNode } from '~/utils/teamDefinitionMembers'
 import { indexTeamLaunchTopology, resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
 
 export type TeamRunLaunchBlockingIssueCode =
@@ -32,7 +32,7 @@ const ownsWorkspaceSelection = (scope: TeamRunConfigurationView['root']): boolea
 export const applyTeamWorkspaceAuthoringReadiness = (
   issues: readonly TeamRunLaunchBlockingIssue[],
   values: Readonly<Partial<Record<AgentTeamAddress, TeamWorkspaceAuthoringState>>>,
-  memberTree: readonly TeamDefinitionMemberNode[] | null | undefined,
+  memberTree: readonly TeamDefinitionAgentNode[] | null | undefined,
 ): TeamRunLaunchBlockingIssue[] => {
   const currentTeamAddresses = new Set(memberTree ? indexTeamLaunchTopology(memberTree).teams.keys() : [])
   const pendingNewEntries = (Object.entries(values) as Array<[AgentTeamAddress, TeamWorkspaceAuthoringState | undefined]>)
@@ -58,7 +58,7 @@ export const applyTeamWorkspaceAuthoringReadiness = (
 export const evaluateTeamRunLaunchReadiness = (
   config: TeamRunConfig | null | undefined,
   runtimeModelCatalogs: RuntimeModelCatalogs,
-  memberTree?: readonly TeamDefinitionMemberNode[] | null,
+  memberTree?: readonly TeamDefinitionAgentNode[] | null,
 ): TeamRunLaunchReadiness => {
   if (!config) return { canLaunch: false, blockingIssues: [], unresolvedMembers: [] }
   if (!memberTree) return {

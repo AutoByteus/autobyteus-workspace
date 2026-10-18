@@ -1,6 +1,6 @@
 import type { RootCommunicationAdapter } from "../../agent-collaboration/execution/communication/root-communication-adapter.js";
 import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
 import { buildDeliveryEndpointForParticipant } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
@@ -12,12 +12,15 @@ import {
 } from "../../agent-team-execution/services/team-run-persistence-contract.js";
 import { buildInterAgentDeliveryInputMessage } from "../../agent-team-execution/services/inter-agent-message-runtime-builders.js";
 import { createTeamCommunicationMessageAppendPlan } from "./team-communication-message-append-plan.js";
-import type { TeamCommunicationMessagesSnapshot } from "./team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 
 export type TeamCommunicationAdapterOptions = Readonly<{
   rootTeamRunId: string;
   initial: TeamCommunicationMessagesSnapshot;
   isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+  /** The log an endpoint's messages belong to (its memory placement, D-4). */
+  messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
   requireContainingTeamRun(agentRunId: string): Promise<TeamRun>;
   commit(plan: PreparedTeamMessageAppend): Promise<TeamMessageCommitResult>;
@@ -58,6 +61,7 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
         identity: input.delivery.receiverIdentity,
         displayName: input.delivery.receiverDisplayName,
       })),
+      senderAddress: input.delivery.senderAddress,
       senderIdentity: input.delivery.senderIdentity,
       receiverIdentity: input.delivery.receiverIdentity,
       content: input.message.content,
@@ -78,6 +82,7 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
       reservation: input.reservation,
       isAccepting: this.isAccepting,
       getCurrent: () => this.envelope(input.getCurrentMessages()),
+      resolveLogOwners: () => messageLogOwners(input.message, (agentRunId) => this.options.messageLogOwnerOf(agentRunId)),
       replaceCurrent: (messages) => {
         input.commitMessages(messages.messages);
         this.options.replaceSnapshot(messages);
@@ -100,7 +105,7 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
     throw new Error(`Team message finalization is indeterminate at '${result.stage}'.`);
   }
 
-  private envelope(messages: readonly CollaborationCommunicationMessageV1[]): TeamCommunicationMessagesSnapshot {
+  private envelope(messages: readonly CollaborationCommunicationMessage[]): TeamCommunicationMessagesSnapshot {
     return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.options.rootTeamRunId, messages });
   }
 }

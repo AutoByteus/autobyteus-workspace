@@ -1,0 +1,33 @@
+
+> autobyteus@1.5.4 test:e2e:task-closure-tree /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-web
+> node tests/e2e/task-closure-tree-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/round5/probes/P4-task-closure-tree
+
+node:events:497
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: spawn /Users/normy/.hermes/node/bin/node ENFILE
+    at ChildProcess._handle.onexit (node:internal/child_process:285:19)
+    at onErrorNT (node:internal/child_process:483:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+Emitted 'error' event on ChildProcess instance at:
+    at ChildProcess._handle.onexit (node:internal/child_process:291:12)
+    at onErrorNT (node:internal/child_process:483:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  errno: -23,
+  code: 'ENFILE',
+  syscall: 'spawn /Users/normy/.hermes/node/bin/node',
+  path: '/Users/normy/.hermes/node/bin/node',
+  spawnargs: [
+    '/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/app.js',
+    '--host',
+    '127.0.0.1',
+    '--port',
+    '55516',
+    '--data-dir',
+    '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-D8VzBB'
+  ]
+}
+
+Node.js v22.23.1
+ ELIFECYCLE  Command failed with exit code 1.

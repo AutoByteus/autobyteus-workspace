@@ -1,0 +1,329 @@
+{
+  "startedAt": "2026-10-09T19:16:11.806Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "TS-001": {
+      "result": "Pass",
+      "description": "Agent run: delegated Team idle → busy while collapsed → busy+error → error after Stop generation → gray when the run stops",
+      "startedAt": "2026-10-09T19:16:19.463Z",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_tsagent_6d87_d4d7bc99e2f143e2aef7c1dce0beee36",
+          "managerRunId": "manager_tsagent_6d87_d4d7bc99e2f143e2aef7c1dce0beee36"
+        },
+        "team": "docs_review_team_tsagent_6d87_c68ce792ed824c129083fdf5d6c0cbf5",
+        "idle": {
+          "members": {
+            "coordinator": "idle",
+            "member": "offline"
+          },
+          "dot": {
+            "count": 1,
+            "status": "idle",
+            "ariaLabel": "Team status: Idle",
+            "title": "Team status: Idle",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+            "rowLabel": "Temporary task team, docs review team tsagent 6d87, level 1, idle, Started by manager tsagent 6d87, /docs_review_team_tsagent_6d87",
+            "beforeIcon": true
+          }
+        },
+        "busyLatencyMs": 116,
+        "requestsDuringChange": [],
+        "busyCollapsed": {
+          "count": 1,
+          "status": "running",
+          "ariaLabel": "Team status: Running",
+          "title": "Team status: Running",
+          "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+          "rowLabel": "Temporary task team, docs review team tsagent 6d87, level 1, running, Started by manager tsagent 6d87, /docs_review_team_tsagent_6d87",
+          "beforeIcon": true
+        },
+        "busyAndError": {
+          "members": {
+            "coordinator": "running",
+            "member": "error"
+          },
+          "dot": {
+            "count": 1,
+            "status": "running",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "rowLabel": "Temporary task team, docs review team tsagent 6d87, level 1, running, Started by manager tsagent 6d87, /docs_review_team_tsagent_6d87",
+            "beforeIcon": true
+          }
+        },
+        "errorAfterStop": {
+          "members": {
+            "coordinator": "offline",
+            "member": "error"
+          },
+          "dot": {
+            "count": 1,
+            "status": "error",
+            "ariaLabel": "Team status: Error",
+            "title": "Team status: Error",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-red-500",
+            "rowLabel": "Temporary task team, docs review team tsagent 6d87, level 1, error, Started by manager tsagent 6d87, /docs_review_team_tsagent_6d87",
+            "beforeIcon": true
+          }
+        },
+        "stopped": {
+          "count": 1,
+          "status": "offline",
+          "ariaLabel": "Team status: Offline",
+          "title": "Team status: Offline",
+          "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "rowLabel": "Temporary task team, docs review team tsagent 6d87, level 1, offline, Started by manager tsagent 6d87, /docs_review_team_tsagent_6d87",
+          "beforeIcon": true
+        }
+      }
+    },
+    "TS-002": {
+      "result": "Pass",
+      "description": "TEAMS rows: idle run green, alive unstarted gray with Stop, group = highest run, Stop button → gray, all stopped → gray",
+      "startedAt": "2026-10-09T19:16:26.651Z",
+      "details": {
+        "runs": {
+          "idle": "delivery_team_tsteams_be31_6aaee03bcd9f4e9e88d7e346afd1d9fb",
+          "busy": "delivery_team_tsteams_be31_8ae43c0d476e467ea1e1abceedb0dd98",
+          "unstarted": "delivery_team_tsteams_be31_eb84041d62724088b40411d2998abb78"
+        },
+        "groupBusyCollapsed": {
+          "count": 1,
+          "status": "running",
+          "ariaLabel": "Team status: Running",
+          "title": "Team status: Running",
+          "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+          "rowLabel": null,
+          "beforeIcon": null
+        },
+        "alive": {
+          "idle": {
+            "count": 1,
+            "status": "idle",
+            "ariaLabel": "Team status: Idle",
+            "title": "Team status: Idle",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+            "rowLabel": null,
+            "beforeIcon": null
+          },
+          "busy": {
+            "count": 1,
+            "status": "running",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "rowLabel": null,
+            "beforeIcon": null
+          },
+          "unstarted": {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": null,
+            "beforeIcon": null
+          }
+        },
+        "afterBusyStopped": {
+          "group": {
+            "count": 1,
+            "status": "idle",
+            "ariaLabel": "Team status: Idle",
+            "title": "Team status: Idle",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+            "rowLabel": null,
+            "beforeIcon": null
+          },
+          "busy": {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": null,
+            "beforeIcon": null
+          }
+        },
+        "allStopped": {
+          "group": {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": null,
+            "beforeIcon": null
+          }
+        },
+        "archiveDeleteOnStoppedRuns": true
+      }
+    },
+    "TS-003": {
+      "result": "Pass",
+      "description": "Team run: member-delegated Team row and the run row count the delegated agents; Stop → gray",
+      "startedAt": "2026-10-09T19:16:31.995Z",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_tsteamroot_b619_05fe725f8062472793b71f1f5c6a6320",
+          "managerRunId": "manager_tsteamroot_b619_0abed10b1a384125a3aa29c925e15d40"
+        },
+        "team": "docs_review_team_tsteamroot_b619_2ab8a2be0f534d88aae331cb1227c1cb",
+        "idle": {
+          "members": {
+            "coordinator": "idle",
+            "member": "offline"
+          },
+          "dot": {
+            "count": 1,
+            "status": "idle",
+            "ariaLabel": "Team status: Idle",
+            "title": "Team status: Idle",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+            "rowLabel": "Temporary task team, docs review team tsteamroot b619, level 1, idle, Started by manager, /docs_review_team_tsteamroot_b619",
+            "beforeIcon": true
+          }
+        },
+        "busy": {
+          "team": {
+            "count": 1,
+            "status": "running",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "rowLabel": "Temporary task team, docs review team tsteamroot b619, level 1, running, Started by manager, /docs_review_team_tsteamroot_b619",
+            "beforeIcon": true
+          },
+          "run": {
+            "count": 1,
+            "status": "running",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "rowLabel": null,
+            "beforeIcon": null
+          },
+          "group": {
+            "count": 1,
+            "status": "running",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "rowLabel": null,
+            "beforeIcon": null
+          }
+        },
+        "stopped": {
+          "team": {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": "Temporary task team, docs review team tsteamroot b619, level 1, offline, Started by manager, /docs_review_team_tsteamroot_b619",
+            "beforeIcon": true
+          },
+          "run": {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": null,
+            "beforeIcon": null
+          }
+        }
+      }
+    },
+    "TS-004": {
+      "result": "Pass",
+      "description": "Org run: delegated and Org-internal Team rows, Org root row unchanged; stop → gray",
+      "startedAt": "2026-10-09T19:16:34.918Z",
+      "details": {
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_tsorg_d9a3_00145e5bd145460d8780faf944508f31",
+          "managerRunId": "manager_tsorg_d9a3_d7a737d4e18c4d30b0a904ad03b11206"
+        },
+        "team": "docs_review_team_tsorg_d9a3_3056e9b45a374850b23d385ad6e7c6f7",
+        "idle": {
+          "members": {
+            "coordinator": "idle",
+            "member": "offline"
+          },
+          "dot": {
+            "count": 1,
+            "status": "idle",
+            "ariaLabel": "Team status: Idle",
+            "title": "Team status: Idle",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+            "rowLabel": "squad. Team status: Idle, Started by manager, /squad, docs_review_team_tsorg_d9a3_3056e9b45a374850b23d385ad6e7c6f7",
+            "beforeIcon": true
+          }
+        },
+        "configured": [
+          {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": "squad. Team status: Offline",
+            "beforeIcon": true
+          }
+        ],
+        "busy": {
+          "members": {
+            "coordinator": "running",
+            "member": "offline"
+          },
+          "dot": {
+            "count": 1,
+            "status": "running",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "rowLabel": "squad. Team status: Running, Started by manager, /squad, docs_review_team_tsorg_d9a3_3056e9b45a374850b23d385ad6e7c6f7",
+            "beforeIcon": true
+          }
+        },
+        "stopped": {
+          "count": 1,
+          "status": "offline",
+          "ariaLabel": "Team status: Offline",
+          "title": "Team status: Offline",
+          "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "rowLabel": "squad. Team status: Offline, Started by manager, /squad, docs_review_team_tsorg_d9a3_3056e9b45a374850b23d385ad6e7c6f7",
+          "beforeIcon": true
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 25552,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 25506,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:50044",
+    "frontendUrl": "http://127.0.0.1:50045",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-status-live-NbgPsN"
+  },
+  "browserVersion": "154.0.8037.98",
+  "result": "Pass",
+  "finishedAt": "2026-10-09T19:16:43.839Z"
+}

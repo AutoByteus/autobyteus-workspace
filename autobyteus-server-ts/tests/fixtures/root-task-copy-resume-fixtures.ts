@@ -53,6 +53,7 @@ export function fixture() {
       if (authority.get(key(reference)) === "fenced") authority.delete(key(reference));
     }),
     taskExecutionTargetOf: reference => inTree(reference) ? { root, execution: reference, ingressAgentRunId: ingress[key(reference)]! } : null,
+    reachingAddressOf: () => null,
     taskExecutionWithIngress: agentRunId => {
       const innermost = chainOf(agentRunId)[0];
       return innermost && ingress[key(innermost)] === agentRunId ? innermost : null;

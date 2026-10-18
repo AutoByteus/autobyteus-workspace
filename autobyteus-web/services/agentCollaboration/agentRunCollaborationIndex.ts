@@ -102,17 +102,11 @@ export class AgentRunCollaborationIndex {
   private addTeam(team: AgentRootChildTeam['execution'], delegatorAgentRunId: string | null): void {
     this.register(team.teamRunId)
     const source = catalogTeamSourceAt(collaborationTaskExecutionLists(this.tree), team.address)
-    // A nested Team inside a task Team takes its coordinator from its first member.
-    const coordinatorAddress = source?.coordinatorAddress
-      ?? team.members.find((member) => 'agentRunId' in member)?.address
-      ?? team.address
+    const coordinatorAddress = source?.coordinatorAddress ?? team.members[0]?.address ?? team.address
     this.teams.set(team.teamRunId, Object.freeze({
       teamRunId: team.teamRunId, address: parseAgentTeamAddress(team.address), coordinatorAddress, delegatorAgentRunId, execution: team,
     }))
-    for (const member of team.members) {
-      if ('agentRunId' in member) this.addAgent(member.agentRunId, member.address, 'task_team_member', team.teamRunId, null)
-      else this.addTeam(member, null)
-    }
+    for (const member of team.members) this.addAgent(member.agentRunId, member.address, 'task_team_member', team.teamRunId, null)
     team.taskExecutions.forEach((task) => this.addTask(task, team.teamRunId))
   }
 

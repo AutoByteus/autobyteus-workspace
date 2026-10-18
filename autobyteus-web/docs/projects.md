@@ -54,8 +54,8 @@ redock and narrow transient-drawer interactions. Mobile support is not added.
 | `/projects/:id` | ProjectDetail, Tasks default; `?tab=workspaces` selects links |
 | `/projects/:id/edit` | ProjectEditor; return to originating Project tab |
 | `/projects/:id/tasks/new` | ProjectTaskEditor/ProjectTaskDraftEditor |
-| `/projects/:id/tasks/:taskId` | Concise ProjectTaskDetail |
-| `/projects/:id/tasks/:taskId/edit` | Ordinary Task edit page |
+| `/projects/:id/tasks/:taskId` | Concise ProjectTaskDetail; `:taskId` is a Task reference, canonically the key (see Key URLs) |
+| `/projects/:id/tasks/:taskId/edit` | Ordinary Task edit page (key URL) |
 | `/projects/temp-tasks` | TempTaskBoard: Tasks with no Project (Temp tasks), read only |
 | `/projects/temp-tasks/tasks/:taskId` | TempTaskDetail: one Temp task, read only |
 
@@ -133,6 +133,62 @@ unbroken token wraps inside the card. One-line labels (the card's
 accessible name and the Task delete confirmation) use the summary shortened to 120
 characters with "…". Search still matches the full description, and the Task page
 (and Temp task page) shows the full text. The Temp tasks board uses the same row.
+
+### Task keys and "Depends on"
+
+Every Project Task has a readable key (`autobyteus-42`, server-assigned,
+permanent; the long `taskId` stays the identity in requests and the change feed).
+The key is shown where it links to or refers to a Task: the Task page chip,
+dependency rows, the picker, badges and URLs. Board cards and the Workspaces-tree
+Task summary show no key.
+Temp tasks have no key and no dependencies.
+
+- **Key URLs**: Task page and Edit task URLs use the key
+  (`/projects/<projectId>/tasks/autobyteus-42`, `…/edit`); every in-app link to a
+  Project Task is built by `utils/projects/taskPagePath.ts`. The route parameter is
+  a Task reference: `useProjectTaskPage` is its only resolver (key in any letter
+  case, or long ID), and the page, its context client, delete and the editor use
+  the resolved Task's `taskId`. A long-ID URL (old links) opens the Task and is
+  replaced by the key URL, keeping the query. Temp-task URLs are unchanged.
+
+- **Card** (`ProjectTaskRow`): no key line; the card starts with the summary
+  (keys appear only where they link or refer to a Task, task-keys-declutter).
+  On To Do / In Progress cards with dependencies,
+  `TaskDependencyBadge` shows "Blocked by <key>" (amber, link icon) while any
+  dependency is To Do or In Progress (the lowest key, "+N" for the other open
+  ones), otherwise "Dependency cancelled: <key>" (grey, x-circle) when one was
+  cancelled, and nothing when all are Done. Done and Cancelled cards never show
+  one. The tooltip lists every dependency with its status.
+- **Task page / tab Task view**: `TaskKeyChip` (key with a copy button; "✓ Copied"
+  for 1.5 s; a failed clipboard write is logged like the app's other copy buttons)
+  sits after the status pill (in the tab, at the right of the Description label).
+  `TaskDependenciesSection` (labelled "Dependencies") lists **Depends on** (every
+  dependency, Done ones too, in key order: key · status pill, Done with ✓ ·
+  summary), the note "Only informs: work on this Task can start at any time."
+  while blocked, and **Required by** (the Tasks that depend on this one);
+  an empty list reads "None". Rows link to the Task page; in the tab they open
+  the Task inside the tab.
+- **New / Edit task**: `TaskDependencyPicker`, "Depends on (optional)" below the
+  description. A combobox search ("Add a Task · Search by key or text") lists at
+  most 8 Tasks of this Project, newest key first, never the Task itself or one
+  already chosen. A Task that already depends on this one, directly or not, is
+  greyed with "Depends on this Task" and cannot be chosen (arrows skip it).
+  Enter or a click adds; the list closes after a choice and focus stays in the
+  search; Esc closes; "No other Tasks in this Project match." when nothing
+  matches. Chosen Tasks are rows with a "Remove <key>" button. Edit starts from
+  the dependencies that still exist; Save sends the whole list. A server
+  rejection shows in the editor's existing error line.
+- **Long keys** (`TaskKey`): shown whole where they fit; otherwise the Project
+  part is shortened with "…" and the number stays visible. The full key is the
+  tooltip and copies as one string.
+- **Derivation** (`utils/projects/taskDependencies.ts`): only `dependsOnTaskIds`
+  is stored; the badge, Depends on, Required by and the loop set are computed
+  from the Project's Task list the store already holds, so they update live from
+  the change feed (a dependency becoming Done clears its dependents' badges). A
+  dependency ID that names no current Task is never shown or counted; deleting
+  a Task also removes it from its dependents on the server.
+- Dependencies only inform: nothing in the app stops starting, delegating or
+  finishing a blocked Task. Board search still matches descriptions only.
 
 Search is a case-insensitive description substring across all statuses, transient
 per Project. Cancel/back/detail preserves it; successful creation clears it before
@@ -253,7 +309,8 @@ Under Agent runs (`AgentRunTaskRows`) and Team runs
 (`WorkspaceTeamExecutionTree`), a delegated copy row that is a **Task worker**
 (its Task's root) shows a second line under its name: the summary of its current
 Task (`TaskWorkerTaskSummary`, text from `taskSummaryLabel`), gray, indigo when
-the row is selected or on hover. Team members, sub-work copies and converted
+the row is selected or on hover. It shows no Task key; its tooltip and
+accessible name read "Show Task in Projects: <summary>". Team members, sub-work copies and converted
 unowned runs keep one line. Agent Org rows are unchanged (not in scope). The
 row's elbow and chevron align with the name line
 (`WorkspaceHierarchyBranches` `anchor="name-line"`). Summaries exist only where
@@ -394,9 +451,11 @@ extension, microphone/permission/device or live transcription capability.
 
 ## Agent Tools / Scope Exclusions
 
-Exactly `list_projects`, `list_project_tasks`, `create_or_update_project`, `create_task`, `update_task` are selected
-independently per agent/node; none is added automatically (not even where `delegate_task` is). Project authoring uses a required name to create
-or a known project_id to patch: omitted fields persist, blank description clears.
+`list_projects`, `list_project_tasks`, `create_project`, `update_project`, `create_task`, `update_task` are selected
+independently per agent/node; none is added automatically (not even where `delegate_task` is). `create_project` creates a
+Project with a required name; `update_project` patches a known project_id: omitted fields persist, blank description clears.
+`create_or_update_project` is deprecated: it still works unchanged for agents that list it (create without project_id,
+patch with it), but select `create_project` and/or `update_project` instead; it will be removed in a later release.
 Optional workspaces [{workspace_path, description?}] reference absolute folder paths
 on the selected node: a supplied list replaces all links, [] unlinks only, omission
 preserves. Retained descriptions persist if omitted. Registration and folder
@@ -405,6 +464,9 @@ The saved acknowledgement contains Project metadata and workspaceRootPath/descri
 not workspace IDs, per-link timestamps, Task counts or availability. List requires explicit Project ID after discovery;
 create (`project_id` + text, no Task ID) makes a TODO Task with no status; update takes
 the Task ID alone (no `project_id`) and patches text and/or exact status; unknown ID fails.
+For a Project Task the agent-facing Task ID is its key: results show it as `taskId`, and
+`task_id` accepts the key (any letter case) or the long ID. Both create and update take
+optional `depends_on` (Tasks of the same Project, by key or ID); results show `dependsOn` as keys.
 Both modes take optional `context_files` (absolute node-local file paths). The server
 copies each file into the Task's saved context under the same upload policy as the
 Task page (allowed types by extension, 25 MiB), so agent-attached files appear in
@@ -422,7 +484,7 @@ fields and files persist. A mutation returns a compact recorded-status
 acknowledgement, not raw resource diagnostics or a work assessment (plus
 `attachedContextFiles` only when the call attached files). There is no batch tool
 and no separate attachment tool; files are never removed through agent tools. See the
-[server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-five-agent-tools).
+[server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#project-and-task-agent-tools).
 
 No Project manager agent is shipped with the app. Any Agent that selects the
 Project tools can manage Projects through existing Chat/`@`, for example the

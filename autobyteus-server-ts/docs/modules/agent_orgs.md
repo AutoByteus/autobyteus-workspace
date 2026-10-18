@@ -321,10 +321,11 @@ The rules are defined in the [Collaboration Model](../design/collaboration_model
   Team execution directory remains an exact lookup/lifecycle index and is not
   walked as a second set of recursive roots, preventing duplicate Agent status
   identities for nested task Teams.
-- A mounted Team row may show a presentation-only aggregate over its descendant
-  Agent statuses with precedence
-  `running > initializing > error > idle > offline`. The aggregate is not a
-  persisted Team status or lifecycle authority.
+- The web shows a presentation-only universal Team status on every Team row
+  (mounted and task Teams). It is derived on the client from these Agent
+  statuses: busy (running or initializing) > error > idle > offline, and offline
+  when the Org is not live. The server sends no Team status, and the Team status
+  is not a persisted Team status or lifecycle authority.
 - Root lifecycle, WebSocket connection, Agent status, delegated-child liveness,
   and command overlays are separate facts.
 - Stop Org fences new work, drains or interrupts admitted work according to the
@@ -351,8 +352,16 @@ memory/agent_org_run_history_index.json
 memory/agent_orgs/<org-run-id>/
   agent_org_run_execution_tree.json
   agent_org_communication_messages.json
-  <rooted member memory...>
+  <rooted member memory...>        # direct agents and mounted teams' members
+memory/agents/<task-agent-run-id>/       # a task agent of the org: a run of its own (own run_metadata.json with taskAgent, own log)
+memory/agent_teams/<task-team-run-id>/   # a task agent team of the org: its own tree (with taskAgent), log and members
 ```
+
+Task agents are not part of the org's folder: the org tree keeps a link per task agent
+(`rootOrg.taskExecutions`, and older links under a configured team's `taskExecutions`), and
+`AgentOrgRunExecutionTreeStore` composes their records from their own files (task-agent-own-run,
+D-1). A task agent created from a configured place records `origin: "configured_place"` and
+keeps following that place. Messages with a task agent are stored in both logs.
 
 `AgentOrgRunExecutionTreeFile` has `subjectKind: "agent_org"` and a
 coordinator-free `rootOrg`. It stores direct Agent placements, direct

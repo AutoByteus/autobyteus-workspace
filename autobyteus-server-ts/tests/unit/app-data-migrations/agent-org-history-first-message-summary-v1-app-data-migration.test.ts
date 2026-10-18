@@ -1,11 +1,12 @@
 import fs from "node:fs/promises";
+import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgExecutionIndex } from "../../../src/agent-org-execution/services/agent-org-execution-index.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import {
@@ -55,7 +56,8 @@ const createPackage = async (options: { summary?: string; tie?: boolean; taskEvi
   const orgDir = layout.getOrgDirPath(orgRunId);
   await fs.mkdir(orgDir, { recursive: true });
   await Promise.all([
-    new AgentOrgRunExecutionTreeStore().write(orgDir, tree),
+    // The released shape this migration meets: the tree as the released app wrote it (full task records).
+    fs.writeFile(getAgentOrgRunExecutionTreePath(orgDir), `${JSON.stringify(tree, null, 2)}\n`),
     // Released records sidecar retained on disk after the delegator-tree migration.
     fs.writeFile(path.join(orgDir, "agent_org_task_delegation_records.json"), JSON.stringify({
       schemaVersion: 1,
@@ -78,7 +80,7 @@ const createPackage = async (options: { summary?: string; tie?: boolean; taskEvi
         createdAt: taskExecution.startedAt,
       }] : [],
     })),
-    new AgentOrgCommunicationMessagesV1Store().write(orgDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] }),
+    new AgentOrgCommunicationMessagesStore().write(orgDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] }),
   ]);
   const indexStore = new AgentOrgRunHistoryIndexStore(memoryDir);
   await indexStore.writeIndex([{
@@ -175,7 +177,7 @@ describe("AgentOrg first-message summary startup migration", () => {
   it("uses current Org communication sidecars only as negative provenance evidence", async () => {
     const test = await createPackage();
     const layout = new AgentMemoryLayout(test.memoryDir);
-    await new AgentOrgCommunicationMessagesV1Store().write(layout.getOrgDirPath(test.orgRunId), {
+    await new AgentOrgCommunicationMessagesStore().write(layout.getOrgDirPath(test.orgRunId), {
       schemaVersion: 1,
       subjectKind: "agent_org",
       orgRunId: test.orgRunId,
@@ -204,7 +206,7 @@ describe("AgentOrg first-message summary startup migration", () => {
       id: "trace-worker-run", trace_type: "user", source_event: "AgentRun.postUserMessage", ts: 100,
       content: "You received a message from sender name: director, sender id: direct-run\nmessage:\nInternal delivery",
     })}\n`);
-    await new AgentOrgCommunicationMessagesV1Store().write(layout.getOrgDirPath(test.orgRunId), {
+    await new AgentOrgCommunicationMessagesStore().write(layout.getOrgDirPath(test.orgRunId), {
       schemaVersion: 1,
       subjectKind: "agent_org",
       orgRunId: test.orgRunId,

@@ -118,8 +118,10 @@ agent-orgs/<o>/agent-teams/<t>/{team files | agents/<a>/{agent files}}
 ```
 
 Skills, docs, scripts, `.git`, `node_modules`, other files and `_`-prefixed
-names are not watched. A skill edit is therefore never announced; runtime
-bootstrap reads skills from disk anyway (see [Skills](./skills.md)).
+names are not watched. A skill edit is therefore never announced on this feed;
+runtime bootstrap reads skills from disk anyway (see [Skills](./skills.md)).
+Active runs that use a changed skill are told separately, by
+[Skill Update Notices](./skill_update_notices.md).
 
 Each event path is mapped to one definition folder `(kind, folderId)`.
 `AgentPackageDefinitionReloader` keeps the pending changed folders and applies

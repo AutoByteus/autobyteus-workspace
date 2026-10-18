@@ -21,7 +21,7 @@ const answering = (...answers: Answer[]) => ({ data: { taskWorkerTasks: answers 
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
 const upserted = (taskId: string, root: Partial<NonNullable<ProjectTask['root']>> | null) => ({
   type: 'task_upserted' as const, scope: { kind: 'project' as const, projectId: 'p1' },
-  task: { taskId, projectId: 'p1', description: 'd', status: 'TODO' as const, contextFiles: [], createdAt: '', updatedAt: '',
+  task: { taskId, projectId: 'p1', taskKey: `p1-${taskId}`, description: 'd', status: 'TODO' as const, dependsOnTaskIds: [], contextFiles: [], createdAt: '', updatedAt: '',
     root: root && { kind: 'agent', recipientAddress: null, ingressAgentRunId: 'x', teamRunId: null, hostRoot: { kind: 'agent', runId: 'h' },
       start: 'started', startError: null, closed: false, status: 'idle', ...root } as NonNullable<ProjectTask['root']> },
 })

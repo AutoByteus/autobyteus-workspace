@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import os from "node:os";
 import path from "node:path";
 import { once } from "node:events";
@@ -205,26 +206,45 @@ describe("collaborators → delegated runs: the built server upgrades released a
     const migration = await first.migration();
     expect(migration, JSON.stringify(migration)).toMatchObject({ status: "SUCCEEDED", requiredOnStartup: true });
     expect(JSON.stringify(migration.summary)).toContain("3");
+    // task-agent-own-run runs last in the same start and moves the converted delegated runs. This fresh ledger also runs the
+    // released `20260701` projection migration over the team root's current message log, which it rewrites into a shape
+    // the current reader rejects: task-agent-own-run reports that log as a preserved warning and moves the task agents.
+    const ownRun = (await first.gql("{getAppDataMigrations{migrationId status summary errorMessage logPath}}"))
+      .getAppDataMigrations.find((m: { migrationId: string }) => m.migrationId === TASK_AGENT_OWN_RUN_V1_MIGRATION_ID);
+    expect(ownRun, JSON.stringify(ownRun)).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS" });
+    const ownRunLog = await fs.readFile(ownRun.logPath, "utf8");
+    expect(ownRunLog).toContain("agent_team:team-root");
+    expect(ownRunLog).toContain("PRESERVED_UNREADABLE_LOG");
+    expect(ownRunLog).not.toMatch(/FAILED_OPERATION|WAITING_FOR_PREDECESSOR/);
     expect(await first.health()).toBe(200);
 
-    // Only the three tree files changed as far as this migration goes: every collaborator's memory file is byte-identical and no
-    // memory folder was created or moved (other registered startup migrations may touch message files and indexes; not asserted).
+    // Collaborators-v1 changed only the three trees; then task-agent-own-run (registered last, same start) moved every
+    // delegated run that wrote memory to its own run folder (contract L1). Every memory file keeps its bytes.
     const after = await state(memory);
     const traces = (files: Record<string, string>) => Object.fromEntries(Object.entries(files).filter(([file]) => /raw_traces_active\.jsonl$/.test(file)));
     expect(Object.keys(traces(before.others))).toHaveLength(5);
-    expect(traces(after.others)).toEqual(traces(before.others));
-    expect(Object.keys(after.trees).sort()).toEqual(Object.keys(before.trees).sort());
+    const movedTo: Record<string, string> = {
+      "agents/agent-host/collaboration/agent-writer/raw_traces_active.jsonl": "agents/agent-writer/raw_traces_active.jsonl",
+      "agents/agent-host/collaboration/agent-reviewer/raw_traces_active.jsonl": "agents/agent-reviewer/raw_traces_active.jsonl",
+      "agents/agent-host/collaboration/agent-reviewer-copy/raw_traces_active.jsonl": "agents/agent-reviewer-copy/raw_traces_active.jsonl",
+      "agent_orgs/org-root/org-designer/raw_traces_active.jsonl": "agents/org-designer/raw_traces_active.jsonl",
+    };
+    expect(traces(after.others)).toEqual(Object.fromEntries(Object.entries(traces(before.others)).map(([file, hash]) => [movedTo[file] ?? file, hash])));
     for (const file of Object.keys(before.trees)) expect(after.trees[file], `${file} was rewritten`).not.toBe(before.trees[file]);
     await expect(fs.stat(path.join(dirs.teamDir, "team-qa"))).rejects.toMatchObject({ code: "ENOENT" });
     await expect(fs.stat(path.join(dirs.agentDir, "agent-squad"))).rejects.toMatchObject({ code: "ENOENT" });
 
-    // The trees on disk: no collaborators; every collaborator is a delegated run with its run ID and delegator; copies carry a source.
-    const agentJson = JSON.parse(await fs.readFile(getStandaloneRootTreePath(dirs.agentDir), "utf8"));
-    const teamJson = JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(dirs.teamDir), "utf8"));
-    const orgJson = JSON.parse(await fs.readFile(getAgentOrgRunExecutionTreePath(dirs.orgDir), "utf8"));
-    for (const [name, json] of [["agent", agentJson], ["team", teamJson], ["org", orgJson]] as const) {
+    // The trees on disk hold no collaborators; the current stores compose every collaborator as a delegated run with its
+    // run ID and delegator, copies carrying a source.
+    const agentRaw = JSON.parse(await fs.readFile(getStandaloneRootTreePath(dirs.agentDir), "utf8"));
+    const teamRaw = JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(dirs.teamDir), "utf8"));
+    const orgRaw = JSON.parse(await fs.readFile(getAgentOrgRunExecutionTreePath(dirs.orgDir), "utf8"));
+    for (const [name, json] of [["agent", agentRaw], ["team", teamRaw], ["org", orgRaw]] as const) {
       expect(objectsIn(json).some((record) => "collaborators" in record), `${name} tree has no collaborators`).toBe(false);
     }
+    const agentJson = await new StandaloneRootPackageStore().readTree(dirs.agentDir, "agent-host");
+    const teamJson = await new TeamRunExecutionTreeStore().read(dirs.teamDir, "team-root");
+    const orgJson = await new AgentOrgRunExecutionTreeStore().read(dirs.orgDir, "org-root");
     const copyOf = (json: unknown, address: string, runId: string) => objectsIn(json).find((record) =>
       record["address"] === address && (record["agentRunId"] === runId || record["teamRunId"] === runId) && record["startedAt"]);
     const writer = copyOf(agentJson, "/writer", "agent-writer");
@@ -255,10 +275,20 @@ describe("collaborators → delegated runs: the built server upgrades released a
     expect(JSON.stringify(orgView)).toContain("org-designer");
     await first.stop();
 
-    // Second start: nothing changes (idempotent), the migration stays done.
+    // Second start: nothing changes (idempotent), the migration stays done. The one new file is the standalone run history
+    // index: this fresh ledger retries the released `20260521_run_history_index_v2` migration (it failed on the first start
+    // because `agent-host` has no run metadata), and the retry now indexes the task agents' own run metadata. Those rows are
+    // not standalone runs, so the history never lists them (the readiness index admits no task agent).
     const second = await studio(root);
     expect((await second.migration()).status).toBe("SUCCEEDED");
-    expect(await state(memory)).toEqual(after);
+    const again = await state(memory);
+    expect(again.trees).toEqual(after.trees);
+    const { ["run_history_index.json"]: retriedIndex, ...othersAgain } = again.others;
+    expect(retriedIndex, "the retried released index migration wrote the index").toBeTruthy();
+    expect(othersAgain).toEqual(after.others);
+    const history = await second.gql("{listWorkspaceRunHistory{agentDefinitions{runs{runId}}}}");
+    const listed = objectsIn(history).flatMap((record) => typeof record["runId"] === "string" ? [record["runId"]] : []);
+    expect(listed.filter((runId) => Object.values(movedTo).some((file) => file.startsWith(`agents/${runId}/`)))).toEqual([]);
     expect(await second.health()).toBe(200);
     await second.stop();
   }, 300_000);

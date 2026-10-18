@@ -65,7 +65,6 @@ describe("adoptAgentPlatformBindingInTree", () => {
   it("adopts direct task and nested task-team member identities", () => {
     let tree = addTaskExecutionToTree({
       tree: baseTree(),
-      ownerTeamRunId: rootTeamRunId,
       execution: projectTaskAgentExecution({
         address: address("/coordinator"),
         agentRunId: "task-worker-run",
@@ -74,7 +73,6 @@ describe("adoptAgentPlatformBindingInTree", () => {
     });
     tree = addTaskExecutionToTree({
       tree,
-      ownerTeamRunId: rootTeamRunId,
       execution: projectTaskTeamExecution({
         node: testAgentTeamNode({
           address: "/task-team",

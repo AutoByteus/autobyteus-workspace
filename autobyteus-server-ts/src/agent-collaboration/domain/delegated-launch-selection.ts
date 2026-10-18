@@ -1,11 +1,9 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AgentLaunchConfiguration, TeamRunAgentTeamNode, TeamRunNode } from "../../agent-team-execution/domain/team-run-config.js";
+import type { AgentLaunchConfiguration, TeamRunAgentNode, TeamRunAgentTeamNode } from "../../agent-team-execution/domain/team-run-config.js";
 import {
   effectiveCopyAgentLaunch,
   type TaskExecution,
   type TaskExecutionSource,
-  type TaskTeamExecution,
-  type TaskTeamMemberExecution,
   type UserLaunchSelection,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentTeamAddress } from "./agent-team-address.js";
@@ -70,16 +68,8 @@ export class DelegatedLaunchTargetError extends Error {
   }
 }
 
-const findNode = (node: TeamRunAgentTeamNode, address: string): TeamRunNode | null => {
-  for (const child of node.children) {
-    if (child.address === address) return child;
-    if (child.kind === "agent_team") {
-      const found = findNode(child, address);
-      if (found) return found;
-    }
-  }
-  return null;
-};
+const findNode = (node: TeamRunAgentTeamNode, address: string): TeamRunAgentNode | null =>
+  node.children.find((child) => child.address === address) ?? null;
 
 const launchOf = (node: AgentLaunchConfiguration): AgentLaunchConfiguration => Object.freeze({
   runtimeKind: node.runtimeKind,
@@ -89,45 +79,23 @@ const launchOf = (node: AgentLaunchConfiguration): AgentLaunchConfiguration => O
   workspaceRootPath: node.workspaceRootPath,
 });
 
-/** Every task execution of the forest at any depth, with the top-level Team copy that contains Team members. */
+/** Every task execution of the forest at any depth. */
 const visitTaskExecutions = (
   forest: DelegatedLaunchForest,
   visit: (execution: TaskExecution) => void,
 ): void => {
   const visitTask = (task: TaskExecution): void => {
     visit(task);
-    if ("teamRunId" in task) {
-      task.taskExecutions.forEach(visitTask);
-      const visitMember = (member: TaskTeamMemberExecution): void => {
-        if ("teamRunId" in member) {
-          member.taskExecutions.forEach(visitTask);
-          member.members.forEach(visitMember);
-        }
-      };
-      task.members.forEach(visitMember);
-    }
+    if ("teamRunId" in task) task.taskExecutions.forEach(visitTask);
   };
   forest.taskExecutionLists.forEach((list) => list.forEach(visitTask));
-};
-
-/** Agent members of a Team copy at any depth (nested Teams included), with whether each is a direct member. */
-const teamCopyAgents = (team: TaskTeamExecution): readonly Readonly<{ agentRunId: string; address: AgentTeamAddress; direct: boolean; userLaunchSelection?: UserLaunchSelection }>[] => {
-  const agents: { agentRunId: string; address: AgentTeamAddress; direct: boolean; userLaunchSelection?: UserLaunchSelection }[] = [];
-  const visit = (members: readonly TaskTeamMemberExecution[], direct: boolean): void => {
-    for (const member of members) {
-      if ("agentRunId" in member) agents.push({ agentRunId: member.agentRunId, address: member.address, direct, userLaunchSelection: member.userLaunchSelection });
-      else visit(member.members, false);
-    }
-  };
-  visit(team.members, true);
-  return agents;
 };
 
 /**
  * Resolves each change to exactly one open copy record of the forest, its stop
  * unit and its current effective launch. Throws `DelegatedLaunchTargetError` for a change that
  * names no delegated copy (a configured member or the root, an unknown or closed
- * run), names both or neither identity, names a nested Team (no Team-level choice), or repeats a target.
+ * run), names both or neither identity, or repeats a target.
  */
 export const resolveDelegatedLaunchTargets = (input: Readonly<{
   forest: DelegatedLaunchForest;
@@ -177,16 +145,16 @@ const resolveAgentTarget = (
         current: effectiveCopyAgentLaunch({ started: launchOf(source.node), agentSelection: task.userLaunchSelection }).launch };
       return;
     }
-    const member = teamCopyAgents(task).find((candidate) => candidate.agentRunId === agentRunId);
+    const member = task.members.find((candidate) => candidate.agentRunId === agentRunId);
     if (!member) return;
     const source = input.readTaskSource(task.address, task.source);
     const node = source?.kind === "agent_team" ? findNode(source.node, member.address) : null;
-    if (!source || source.kind !== "agent_team" || node?.kind !== "agent") return;
+    if (!source || source.kind !== "agent_team" || !node) return;
     found = { scope: "agent", runId: agentRunId, address: member.address,
       stopUnit: { kind: "task_execution", reference: { teamRunId: task.teamRunId } },
       current: effectiveCopyAgentLaunch({
         started: launchOf(node),
-        followsTeam: member.direct && source.followerAddresses.includes(member.address),
+        followsTeam: source.followerAddresses.includes(member.address),
         teamSelection: task.userTeamLaunchSelection,
         agentSelection: member.userLaunchSelection,
       }).launch };
@@ -245,12 +213,9 @@ export const applyDelegatedLaunchSelectionsToTaskExecutions = (
   if ("agentRunId" in task) {
     return withSelection(task, "userLaunchSelection", selections.agents.get(task.agentRunId));
   }
-  const mapMember = (member: TaskTeamMemberExecution): TaskTeamMemberExecution => "agentRunId" in member
-    ? withSelection(member, "userLaunchSelection", selections.agents.get(member.agentRunId))
-    : { ...member, members: member.members.map(mapMember), taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(member.taskExecutions, selections) };
   return withSelection({
     ...task,
-    members: task.members.map(mapMember),
+    members: task.members.map((member) => withSelection(member, "userLaunchSelection", selections.agents.get(member.agentRunId))),
     taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(task.taskExecutions, selections),
   }, "userTeamLaunchSelection", selections.teams.get(task.teamRunId));
 });
@@ -290,7 +255,7 @@ export const recordedDelegatedLaunchSelections = (
   visitTaskExecutions(forest, (task) => {
     if ("agentRunId" in task) { agent(task.agentRunId, task.userLaunchSelection); return; }
     team(task.teamRunId, task.userTeamLaunchSelection);
-    teamCopyAgents(task).forEach((member) => agent(member.agentRunId, member.userLaunchSelection));
+    task.members.forEach((member) => agent(member.agentRunId, member.userLaunchSelection));
   });
   return Object.freeze(records);
 };
@@ -308,7 +273,7 @@ export const listDelegatedLaunchTargets = (input: Readonly<{
   visitTaskExecutions(input.forest, (task) => {
     if ("agentRunId" in task) { references.push({ agentRunId: task.agentRunId }); return; }
     references.push({ teamRunId: task.teamRunId });
-    teamCopyAgents(task).forEach((member) => references.push({ agentRunId: member.agentRunId }));
+    task.members.forEach((member) => references.push({ agentRunId: member.agentRunId }));
   });
   const placeholder: DelegatedLaunchSelectionValue = { llmModelIdentifier: "-", llmConfig: null };
   return Object.freeze(references.flatMap((reference) => {

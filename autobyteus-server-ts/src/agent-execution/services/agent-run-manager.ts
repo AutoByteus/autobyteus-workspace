@@ -26,6 +26,8 @@ import { beginAgentRunActivation, type AgentRunActivationOperation } from "./age
 import type { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
 import { createManagedAgentRunTermination } from "./managed-agent-run-termination.js";
 import { buildAgentRunRestoreRuntimeContext } from "./agent-run-restore-context-factory.js";
+import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
+import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 
 const logger = console;
 
@@ -45,6 +47,10 @@ export type AgentRunManagerOptions = Readonly<{
   memoryRecorder: AgentRunMemoryRecorder;
   providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
+  /** Supplies platform notices that ride along with each run's next external input (none by default). */
+  inputPreface?: AgentRunInputPreface | null;
+  /** Told when a run is published (the matching release is reported by the resource manager). */
+  lifecycleObserver?: Pick<AgentRunLifecycleObserver, "runPublished"> | null;
 }>;
 
 export class AgentRunManager {
@@ -58,6 +64,8 @@ export class AgentRunManager {
   private readonly memoryRecorder: AgentRunMemoryRecorder;
   private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   private readonly agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
+  private readonly inputPreface: AgentRunInputPreface | null;
+  private readonly lifecycleObserver: Pick<AgentRunLifecycleObserver, "runPublished"> | null;
   private readonly activations = new Set<AgentRunActivationOperation>();
   private activationAdmissionOpen = true;
   private readonly managedTerminationPreparations = new WeakMap<
@@ -116,6 +124,8 @@ export class AgentRunManager {
     this.agentToolMcpRunSessionDeactivator =
       options.agentToolMcpRunSessionDeactivator;
     this.activationRegistry = options.activationRegistry;
+    this.inputPreface = options.inputPreface ?? null;
+    this.lifecycleObserver = options.lifecycleObserver ?? null;
     logger.info("AgentRunManager initialized.");
   }
 
@@ -144,9 +154,11 @@ export class AgentRunManager {
         preparation,
         constructRun: (backend) => {
           const run = new AgentRun({ context: backend.getContext(), backend,
-            commandObservers: [this.memoryRecorder], providerInputNormalizer: this.providerInputNormalizer });
+            commandObservers: [this.memoryRecorder], providerInputNormalizer: this.providerInputNormalizer,
+            inputPreface: this.inputPreface });
           return run;
         },
+        onPublished: run => this.notifyPublished(run, request.kind),
         validateRun: run => { if (expectedPlatformId && run.getPlatformAgentRunId() !== expectedPlatformId) throw new PlatformAgentRunRestoreError(); },
         onTerminal: () => { this.activations.delete(operation); },
         deactivateMcp: () => { this.agentToolMcpRunSessionDeactivator.deactivateForRun(runId); },
@@ -157,6 +169,14 @@ export class AgentRunManager {
   }
 
   closeActivationAdmission(): void { this.activationAdmissionOpen = false; }
+
+  private notifyPublished(run: AgentRun, activationKind: AgentRunActivationRequest["kind"]): void {
+    try {
+      this.lifecycleObserver?.runPublished(run, activationKind);
+    } catch (error) {
+      logger.warn(`AgentRun lifecycle observer failed on publish of '${run.runId}': ${String(error)}`);
+    }
+  }
 
   private assertActivationAdmissionOpen(): void { if (!this.activationAdmissionOpen) throw new AgentCreationError("AgentRun activation admission is closed for process shutdown."); }
 

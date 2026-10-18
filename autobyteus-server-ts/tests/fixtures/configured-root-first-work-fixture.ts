@@ -79,7 +79,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
   });
   const dependencies = {
     agentRunManager: manager as never,
-    memoryLocator: { getLocation: (_scope: unknown, runId: string) => ({ memoryDir: join(memoryDir, runId) }) } as never,
+    memoryLocator: { getMemoryDir: (_placement: unknown, runId: string) => join(memoryDir, runId) } as never,
     activityInspector: { inspect: () => activity.kind === "indeterminate"
       ? { kind: "indeterminate", error: new Error("unreadable") } : { kind: activity.kind } } as never,
   };
@@ -116,7 +116,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,
       memberExecutionContextBuilder: new MemberExecutionContextBuilder(definitions as never),
       taskExecutionIdentity: taskExecutionIdentity as never, executionTreeStore: { write } as never,
-      communicationStore: { write: sidecarWrite } as never,
+      communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never,
       onTerminated: vi.fn(),
     });
     return { ...common, root,
@@ -140,7 +140,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
   });
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: rootId, orgMemoryDir: memoryDir,
     executionTreeStore: { write } as never,
-    communicationStore: { write: sidecarWrite } as never, enterPersistenceFailStop: failStop,
+    communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never, enterPersistenceFailStop: failStop,
   });
   const root = await new AgentOrgExecutionScopeBuilder({ flatTeamExecutionFactory: factory,
     taskExecutionIdentity: taskExecutionIdentity as never, orgDefinitions: definitions as never, teamDefinitions: definitions as never,

@@ -70,8 +70,8 @@ AutoByteus then resolves its exact absolute workspace and calls
 `composeNativeAutoByteusPrompt(...)`; Codex and Claude call
 `composeSharedCarpenterPrompt(...)` and retain ownership of their provider
 working-directory fields. A team run supplies its validated `MemberTeamContext`
-so every composition includes the exact selected Team instruction, canonical
-member address, and the same AgentTeam Addressing/Collaboration guidance. No
+so every composition includes the exact selected Team instruction
+and the collaboration sections for the member's role. No
 flat communication or delegation roster is injected.
 
 The shared semantic order is Agent Identity, optional Team Instruction, and
@@ -461,6 +461,40 @@ runtime accepted the interrupt request: later `TURN_INTERRUPTED`/terminal
 socket cannot receive a server result, so client disconnect completion is a
 separate local transport failure, not a synthetic acknowledgement.
 
+### Platform Input Preface And Run Lifecycle Observer
+
+`AgentRunManager` accepts two optional generic ports. Neither carries any
+feature knowledge; the only current implementation is
+[Skill Update Notices](./skill_update_notices.md).
+
+- **`AgentRunLifecycleObserver`** (`domain/agent-run-lifecycle-observer.ts`):
+  - `runPublished(run, kind)` is reported from the single activation point,
+    after `registry.publish`, for kinds `new`, `restore` and
+    `platform_restore`;
+  - `runReleased(run)` is reported by `AgentRunResourceManager` after a
+    successful release. Every removal path goes through it.
+- **`AgentRunInputPreface`** (`domain/agent-run-input-preface.ts`):
+  `takePreface(run)`, `prefaceDelivered(run, preface, turnId)` and
+  `prefaceReturned(run, preface)`.
+  - In `executeInputDispatch`, after normalization, `AgentRun` asks the port
+    for a pending preface. It does so only when the claimed message is an
+    **external** input. Compaction-recovery dispatches
+    (`ClaimedInputDispatch.recovery`), TOOL continuations and messages that
+    already are or carry a preface never take one.
+  - The provider message becomes the preface text, a blank line, then the
+    input unchanged (sender, context files, recording attachments, metadata),
+    tagged `platform_input_preface { content, sender_id, original_content }`.
+    It is one dispatch, so one turn.
+  - The preface is settled `delivered` only when the dispatch is forwarded. On
+    delivery, `AgentRun` publishes `SYSTEM_TASK_NOTIFICATION` with the
+    preface's sender and the turn ID. Every other outcome (not forwarded,
+    failed, uncertain, `undeliveredRetryAsStart`) returns it.
+  - A failing port never affects the input.
+  - Admission state and the backend dispatch contract are unchanged.
+
+`GeneralProcessRunSupervisor` receives both ports as `platformInputNotices` from
+the studio and standalone compositions.
+
 ## Canonical Turn Lifecycle And Failure Authority
 
 Runtime lifecycle projection is boundary-owned. A live run is `running` only
@@ -672,9 +706,12 @@ owner of Claude turn identity. Turn ids are `${runId}:turn:${uuid}`.
 `ClaudeBackgroundTaskRegistry` tracks the CLI's background set and completions
 the model has not seen. A turn the CLI starts itself is preceded by a
 `SYSTEM_TASK_NOTIFICATION` (`sender_id: "system.claude_background_task"`), for
-example `Background task completed: <description> (<status>)`. Agent memory
-records these notices, and only these, as `system_task_notification` traces,
-and run-history replay shows them in the conversation.
+example `Background task completed: <description> (<status>)`. For external
+runtimes, agent memory records system notices from an allow-list of senders as
+`system_task_notification` traces: these Claude background-task notices and
+skill update notices (`system.skill_update_notifier`, see
+[Skill Update Notices](./skill_update_notices.md)). Run-history replay shows
+them in the conversation.
 
 The registry also owns the live Background Tasks view. A task enters it when the
 CLI lists it in `background_tasks_changed`, reports `task_started` with

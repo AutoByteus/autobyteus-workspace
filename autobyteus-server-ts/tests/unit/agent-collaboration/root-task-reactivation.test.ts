@@ -11,7 +11,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
     await f.done();
     f.resources.setTaskOpen("task-A");
 
-    expect(await f.message("manager", "worker")).toEqual({ accepted: true, message: "Delivered message to worker. worker was reactivated." });
+    expect(await f.message("manager", "worker")).toEqual({ accepted: true, message: "Delivered message to worker. worker continues with its conversation." });
     // The previous stop is settled first, the commit precedes the reopened event, and the restore follows it.
     // (The second `restorable` check is the ordinary wake's own, under the sender's lease.)
     expect(f.log).toEqual(["release:agent:worker:fenced", "discard:agent:worker", "restorable:worker", "reopened:agent:worker",
@@ -31,17 +31,17 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
     await f.assign(team, "lead");
     await f.done();
     f.resources.setTaskOpen("task-A");
-    expect(await f.message("manager", "lead")).toMatchObject({ accepted: true, message: "Delivered message to lead. lead was reactivated." });
+    expect(await f.message("manager", "lead")).toMatchObject({ accepted: true, message: "Delivered message to lead. lead continues with its conversation." });
     expect(f.log).toEqual(["release:team:review-team:fenced", "discard:team:review-team", "restorable:lead", "reopened:team:review-team",
       "restorable:lead", "restore:team:review-team", "deliver:lead"]);
     expect(f.resources.reopenRequests).toEqual([{ execution: team, requestedBy: "manager" }]);
   });
 
   it.each([
-    ["the Task is still DONE (AC-015)", "manager", "worker", false, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS)") }],
-    ["another sender (AC-006)", "intruder", "worker", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the run that assigned it") }],
-    ["a Team member that is not the ingress (AC-007)", "manager", "member", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("message the copy's agent run ID (for a Team copy, its coordinator's)") }],
-    ["a helper of the assignment (AC-005)", "manager", "helper", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the run that assigned it") }],
+    ["the Task is still DONE (AC-015)", "manager", "worker", false, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("The agent that assigned it can set the Task to TODO or IN_PROGRESS") }],
+    ["another sender (AC-006)", "intruder", "worker", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the agent that assigned the Task can continue it") }],
+    ["a Team member that is not the ingress (AC-007)", "manager", "member", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("message the task agent's run id (for a task agent team, its coordinator's run id)") }],
+    ["a helper of the assignment (AC-005)", "manager", "helper", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the agent that assigned the Task can continue it") }],
   ])("refuses when %s; nothing is stopped, discarded, reopened or published", async (_case, sender, target, reopenTask, refusal) => {
     const f = fixture();
     await f.assign(worker);
@@ -102,7 +102,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
     f.resources.setTaskOpen("task-A");
     const results = await Promise.all([f.message("manager", "worker"), f.message("manager", "worker")]);
     expect(results.map(result => result.accepted)).toEqual([true, true]);
-    expect(results.filter(result => result.message?.endsWith("worker was reactivated.")).length).toBe(1);
+    expect(results.filter(result => result.message?.endsWith("worker continues with its conversation.")).length).toBe(1);
     // A second reopen step that runs before the first commit finds no authority left; one that runs after it sees the entry open.
     expect(f.log.filter(entry => entry.startsWith("release:") && !entry.endsWith(":none"))).toEqual(["release:agent:worker:fenced"]);
     expect(f.log.filter(entry => entry.startsWith("restore:"))).toEqual(["restore:agent:worker"]);
@@ -125,7 +125,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
     const first = f.message("manager", "worker");
     // The second message passes its eligibility check while the entry is still closed, then waits.
     const second = f.message("manager", "worker");
-    expect(await first).toMatchObject({ accepted: true, message: "Delivered message to worker. worker was reactivated." });
+    expect(await first).toMatchObject({ accepted: true, message: "Delivered message to worker. worker continues with its conversation." });
     expect(f.authority.get("agent:worker")).toBe("live");
     gate.resolve();
     expect(await second).toEqual({ accepted: true, message: "Delivered message to worker." });
@@ -157,7 +157,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
     f.resources.setTaskOpen("task-A");
     f.control.restoreFailure = new Error("runtime unavailable");
     expect(await f.message("manager", "worker")).toEqual({ accepted: false, code: "TASK_EXECUTION_RESTORE_FAILED",
-      message: expect.stringContaining("worker was reactivated (its Task work is open again) but did not receive this message; message it again.") });
+      message: expect.stringContaining("worker continues with its conversation (its Task is open again) but did not receive this message; send it again.") });
     expect(f.resources.isOpen(worker)).toBe(true);
     expect(f.adapter.publishTaskExecutionsReopened).toHaveBeenCalledWith([worker]);
   });
@@ -169,7 +169,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
       await f.done();
       expect(f.authority.get("agent:worker")).toBe("fenced");
       f.resources.setTaskOpen("task-A");
-      expect(await f.message("manager", "worker")).toMatchObject({ accepted: true, message: "Delivered message to worker. worker was reactivated." });
+      expect(await f.message("manager", "worker")).toMatchObject({ accepted: true, message: "Delivered message to worker. worker continues with its conversation." });
       expect(f.authority.get("agent:worker")).toBe("live");
     }
   });

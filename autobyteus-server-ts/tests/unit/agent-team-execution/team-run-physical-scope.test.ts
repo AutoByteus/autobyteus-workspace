@@ -54,6 +54,7 @@ describe("TeamRunPhysicalScope", () => {
       children: [testAgentNode("/lead")],
     });
     expect(() => new TeamRunContext({
+      teamKind: "configured",
       physicalScope: createRootExecutionPhysicalScope({
         root: createTeamRootExecutionIdentity("root-run"),
         ancestorTeamRunIds: [],
@@ -64,6 +65,7 @@ describe("TeamRunPhysicalScope", () => {
       runtimeContext: null,
     })).toThrow("Physical scope contains TeamRun 'root-run', not 'child-run'");
     expect(() => new TeamRunContext({
+      teamKind: "configured",
       physicalScope: createRootExecutionPhysicalScope({
         root: createTeamRootExecutionIdentity("root-run"),
         ancestorTeamRunIds: [childNode.teamRunId],
@@ -85,7 +87,6 @@ describe("TeamExecutionIndex physical scope", () => {
     });
     let withTasks = addTaskExecutionToTree({
       tree: baseTree,
-      ownerTeamRunId: "root-run",
       execution: {
         address: address("/lead"), agentRunId: "task-agent", platformAgentRunId: null,
         delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:00:00.000Z",
@@ -93,7 +94,6 @@ describe("TeamExecutionIndex physical scope", () => {
     });
     withTasks = addTaskExecutionToTree({
       tree: withTasks,
-      ownerTeamRunId: "root-run",
       execution: projectTaskTeamExecution({
         node: testAgentTeamNode({
           address: "/task-team", coordinatorAddress: "/task-team/worker", teamRunId: "task-team-run",
@@ -102,17 +102,17 @@ describe("TeamExecutionIndex physical scope", () => {
         delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:01:00.000Z",
       }),
     });
-    withTasks = addTaskExecutionToTree({
-      tree: withTasks,
-      ownerTeamRunId: "task-team-run",
-      execution: projectTaskTeamExecution({
-        node: testAgentTeamNode({
-          address: "/task-team/deep", coordinatorAddress: "/task-team/deep/worker", teamRunId: "deep-run",
-          children: [testAgentNode("/task-team/deep/worker", { agentRunId: "deep-agent" })],
-        }),
-        delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:02:00.000Z",
+    // A task team nested in a task team: no longer created (task agents are linked at the top level, U-5),
+    // but the index still derives its released physical scope (the frozen location derivation reads it).
+    const deep = projectTaskTeamExecution({
+      node: testAgentTeamNode({
+        address: "/task-team/deep", coordinatorAddress: "/task-team/deep/worker", teamRunId: "deep-run",
+        children: [testAgentNode("/task-team/deep/worker", { agentRunId: "deep-agent" })],
       }),
+      delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:02:00.000Z",
     });
+    withTasks = { ...withTasks, rootTeam: { ...withTasks.rootTeam, taskExecutions: withTasks.rootTeam.taskExecutions.map((task) =>
+      "teamRunId" in task && task.teamRunId === "task-team-run" ? { ...task, taskExecutions: [deep] } : task) } };
     const index = new TeamExecutionIndex(withTasks);
 
     expect(index.getTeamRunPhysicalScope("root-run").ancestorTeamRunIds).toEqual([]);

@@ -1,0 +1,5 @@
+install 0
+prebuild 0
+server-build 0
+nuxt-prepare 0
+integration-prepare 0

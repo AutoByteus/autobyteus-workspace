@@ -318,7 +318,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
       const team = useAgentTeamDefinitionStore().agentTeamDefinitions.find((candidate) => candidate.id === teamId)
       if (!team) return
       const seed = await seedMemberLaunchDefaults({
-        members: resolveLeafTeamMembers(team, { getTeamDefinitionById: () => null }),
+        members: resolveLeafTeamMembers(team),
         getAgentDefault: (id) => normalizeDefaultLaunchConfig(agentDefinitions().getAgentDefinitionById(id)?.defaultLaunchConfig),
         catalog: startModelCatalog(),
         modelConfigFor: (choice) => explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), choice.llmConfig),

@@ -128,6 +128,9 @@ describe('token usage custom-provider model-value backfill startup e2e', () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
+    // The shared e2e database may already record this migration: any earlier file that starts a Studio server
+    // runs the startup migrations on it. Start from a ledger without this file's migration records.
+    await deleteMigrationRecords();
     logsRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'token-usage-model-backfill-e2e-'));
   });
 

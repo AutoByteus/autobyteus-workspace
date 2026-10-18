@@ -23,7 +23,7 @@ import { useWorkspaceHistorySelectionActions } from '~/composables/useWorkspaceH
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamMemberTreeRow } from '~/stores/runHistoryTypes';
-import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 definePageMeta({ layout: false });
@@ -46,14 +46,16 @@ const context = buildTestTeamContext({
   coordinatorAddress: '/Reviewer', focusedAgentRunId: REVIEWER, workspaceRootPath: '/peer-fixture',
   isActive: !retained,
   rootChildren: [testAgentNode('/Worker', { agentRunId: WORKER, currentStatus: AgentStatus.Idle }),
-    testAgentNode('/Reviewer', { agentRunId: REVIEWER, currentStatus: AgentStatus.Idle }),
-    // Existing retained configured-Team shape; not new nested-Team product scope.
-    ...(empty ? [] : [testSubTeamNode('/Research', [testAgentNode('/Research/Analyst', { agentRunId: 'peer-configured-analyst' })],
-      { teamRunId: 'peer-configured-research', coordinatorAddress: '/Research/Analyst' })])],
+    testAgentNode('/Reviewer', { agentRunId: REVIEWER, currentStatus: AgentStatus.Idle })],
   taskExecutions: empty ? [] : [
     ...[TASK_A, TASK_B].map(agent_run_id => ({ kind: 'task_agent' as const, address: '/Worker' as const,
       agent_run_id, platform_agent_run_id: null, delegator_agent_run_id: REVIEWER, started_at: started })),
+    // A catalog Research Team copy (Teams are flat); its member delegated a task Agent.
     { kind: 'task_team', address: '/Research', team_run_id: TEAM, delegator_agent_run_id: REVIEWER, started_at: started,
+      source: { kind: 'agent_team', team_definition_id: 'research-definition', coordinator_address: '/Research/Analyst',
+        members: [{ address: '/Research/Analyst', agent_definition_id: 'analyst-definition' }], handoffs: [],
+        default_launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
+          auto_execute_tools: true, workspace_root_path: null } },
       members: [{ kind: 'task_team_agent', address: '/Research/Analyst', agent_run_id: MEMBER, platform_agent_run_id: null }],
       task_executions: [{ kind: 'task_agent', address: '/Research/Analyst', agent_run_id: NESTED,
         platform_agent_run_id: null, delegator_agent_run_id: MEMBER, started_at: started }] },

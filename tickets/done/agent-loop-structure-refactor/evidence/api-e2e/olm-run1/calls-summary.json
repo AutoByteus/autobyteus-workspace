@@ -1,0 +1,456 @@
+[
+  {
+    "index": 0,
+    "phase": "OLM-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 31815,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8083,
+      "cacheRead": 0,
+      "cacheWrite": 8079,
+      "output": 31815
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 1,
+    "phase": "OLM-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 3,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 39971,
+      "cacheRead": 8079,
+      "cacheWrite": 31890,
+      "output": 3
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 2,
+    "phase": "OLM-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 4096
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7906,
+      "cacheRead": 0,
+      "cacheWrite": 7902,
+      "output": 4
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 3,
+    "phase": "OLM-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": false,
+    "limits": {
+      "max_tokens": 8192
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 10,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 29,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 10
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 4,
+    "phase": "OLM-E2E-004",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:completed"
+    ],
+    "maxReportedOutputTokens": 5,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 5,
+    "phase": "OLM-E2E-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 3,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5364,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 3
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 6,
+    "phase": "OLM-E2E-006",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 37,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5056,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 37
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 7,
+    "phase": "OLM-E2E-007",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 4831,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 8,
+    "phase": "OLM-E2E-008",
+    "host": "token-plan.ap-southeast-1.maas.aliyuncs.com",
+    "pathname": "/compatible-mode/v1/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_completion_tokens": 65536
+    },
+    "rewritten": false,
+    "status": 401,
+    "stopSignals": [],
+    "maxReportedOutputTokens": null,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": "{\"error\":{\"message\":\"Invalid API-key provided. For details, see: https://www.alibabacloud.com/help/en/model-studio/error-code#apikey-error\",\"id\":\"64ddb375-7e79-4642-9c15-53846313f2c4\",\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}",
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 9,
+    "phase": "OLM-E2E-009",
+    "host": "api.x.ai",
+    "pathname": "/v1/chat/completions",
+    "stream": true,
+    "limits": {},
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 6556,
+      "cacheRead": 1152,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 10,
+    "phase": "OLM-010-DEEPSEEK",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5373,
+      "cacheRead": 384,
+      "cacheWrite": 0,
+      "output": 24
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 11,
+    "phase": "OLM-010-DEEPSEEK",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5418,
+      "cacheRead": 5248,
+      "cacheWrite": 0,
+      "output": 24
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 12,
+    "phase": "OLM-010-DEEPSEEK",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5463,
+      "cacheRead": 5248,
+      "cacheWrite": 0,
+      "output": 24
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 13,
+    "phase": "OLM-010-DEEPSEEK",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5508,
+      "cacheRead": 5248,
+      "cacheWrite": 0,
+      "output": 24
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 14,
+    "phase": "OLM-010-GLM",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5067,
+      "cacheRead": 4544,
+      "cacheWrite": 0,
+      "output": 24
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 15,
+    "phase": "OLM-010-GLM",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5112,
+      "cacheRead": 5056,
+      "cacheWrite": 0,
+      "output": 24
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 16,
+    "phase": "OLM-010-GLM",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5157,
+      "cacheRead": 5056,
+      "cacheWrite": 0,
+      "output": 24
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 17,
+    "phase": "OLM-010-GLM",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5202,
+      "cacheRead": 5120,
+      "cacheWrite": 0,
+      "output": 24
+    },
+    "strictInjected": false
+  }
+]

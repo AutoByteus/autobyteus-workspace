@@ -421,8 +421,10 @@ target mode.
 - **Sending.** The Agent, Team, Org and Agent-collaboration stores send
   `mentions` (`{kind, definition_id}[]`) with SEND_MESSAGE. The server adds
   **nothing** to the run on send: it resolves each mention's address and appends
-  a `[Mentioned collaborators]` note to the stored message that tells the
-  focused agent to `delegate_task` to that address. When the agent delegates, a
+  a `[Mentioned agents]` note to the stored message (one line per mention, decided
+  for the focused agent: delegate a task to it, talk with it, or "in your team" /
+  "that is you"). Messages saved with the earlier `[Mentioned collaborators]`
+  note still display the same. When the agent delegates, a
   delegated (task) row appears; it disappears once the agent marks that
   delegation's Task DONE (or CANCELLED) with `update_task` (for example when the user
   asks it to), live and after reopen. It returns (live, via
@@ -479,9 +481,13 @@ target mode.
   on the Event Monitor's "earlier events" page (`EventMonitorInterAgentVisual`,
   rendered by `eventMonitorActiveTraceBrowsePresentation.ts` and
   `EventMonitorBrowseAssistantRow`). Older stored deliveries without a recorded
-  sender stay user-style. `utils/collaboration/interAgentDelivery.ts` parses the
-  delivery header with or without its `sender address` part, so stored history
-  keeps rendering.
+  sender stay user-style. `utils/collaboration/interAgentDelivery.ts` separates
+  the delivery header from the body and reads the sender run ID from it, for the current
+  header (`from the agent with [sender address "<address>" and ]sender run id "<id>"`)
+  and the released earlier one (`sender name`, optional `sender address`, `sender id`),
+  so stored history keeps rendering. The
+  "From <Sender>:" label never comes from the header text: it comes from the sender's run ID
+  (the app's lookup by run ID, else a readable form of the run ID).
 - **Standalone runs** gain children: rows under the run row
   (`AgentRunTaskRows`), a child's own conversation (titled by its name, with the
   ⚙ and ＋ header controls and the mention-aware input described above), the run row

@@ -139,7 +139,7 @@ describe("runtime-agent-tool-exposure", () => {
   });
 
   it("gives a member that belongs to no Team send_message_to, delegate_task, no task tool and not get_handoff_rules", () => {
-    const host = new MemberExecutionContext({ ...memberExecutionContext, teamScoped: false });
+    const host = new MemberExecutionContext({ ...memberExecutionContext, teamScoped: false, collaborationRole: "standalone_agent" });
     expect(automaticCollaborationToolNames(host)).toEqual(["send_message_to", "delegate_task"]);
     const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["delegate_task", "run_bash"] }, host);
     expect(exposure.requestedToolNames).toEqual(["delegate_task", "run_bash", "send_message_to"]);

@@ -1,3 +1,5 @@
+import { projectTaskTeamExecution } from "../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
+import type { TaskTeamExecutionSource } from "../../src/run-history/domain/run-execution-tree-shared-records.js";
 import {
   assertAgentTeamAddress,
   getAgentTeamAddressBasename,
@@ -11,14 +13,13 @@ import {
   TeamRunConfig,
   type TeamRunAgentNode,
   type TeamRunAgentTeamNode,
-  type TeamRunNode,
 } from "../../src/agent-team-execution/domain/team-run-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import type { RootTeamRun } from "../../src/agent-team-execution/domain/root-team-run.js";
 import { buildInitialTeamRunExecutionTree } from "../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunExecutionTreeStore } from "../../src/run-history/store/team-run-execution-tree-store.js";
-import { TeamCommunicationV1Store } from "../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../src/services/team-communication/team-communication-store.js";
 
 export const testAgentNode = (
   addressValue: string,
@@ -46,7 +47,7 @@ export const testAgentNode = (
 export const testAgentTeamNode = (input: {
   address: string;
   coordinatorAddress: string;
-  children: readonly TeamRunNode[];
+  children: readonly TeamRunAgentNode[];
   teamRunId?: string;
   teamDefinitionId?: string;
   role?: string | null;
@@ -55,9 +56,7 @@ export const testAgentTeamNode = (input: {
   const address = assertAgentTeamAddress(input.address);
   const name = getAgentTeamAddressBasename(address) ?? "root";
   const coordinatorAddress = assertAgentTeamAddress(input.coordinatorAddress);
-  const coordinator = input.children.find((child): child is TeamRunAgentNode =>
-    child.kind === "agent" && child.address === coordinatorAddress,
-  );
+  const coordinator = input.children.find((child) => child.address === coordinatorAddress);
   if (!coordinator) {
     throw new Error(`Test AgentTeam '${address}' requires direct coordinator '${coordinatorAddress}'.`);
   }
@@ -81,6 +80,23 @@ export const testAgentTeamNode = (input: {
     children: input.children,
   };
 };
+
+/**
+ * The recorded source of a Team copy started from the catalog: in a flat team run every Team copy is one
+ * (its configured places are agents). A source-less copy is a copy of a configured place (U-4).
+ */
+export const testCatalogTeamSource = (node: TeamRunAgentTeamNode): TaskTeamExecutionSource => ({
+  kind: "agent_team",
+  teamDefinitionId: node.teamDefinitionId,
+  coordinatorAddress: node.coordinatorAddress,
+  members: node.children.map((child) => ({ address: child.address, agentDefinitionId: child.agentDefinitionId })),
+  handoffs: [],
+  defaultLaunchConfiguration: node.defaultLaunchConfiguration,
+});
+
+/** A Team copy started from the catalog, as the delegation adapters record it (with its source). */
+export const testCatalogTeamCopy = (input: Omit<Parameters<typeof projectTaskTeamExecution>[0], "source">) =>
+  projectTaskTeamExecution({ ...input, source: testCatalogTeamSource(input.node) });
 
 export const testTeamRunConfig = (input: {
   children: readonly TeamRunAgentNode[];
@@ -114,7 +130,7 @@ export const testMemberExecutionContext = (input: {
   const rootTeamRunId = input.rootTeamRunId ?? "root-team-run";
   const agentRunId = input.agentRunId ?? `run-${getAgentTeamAddressBasename(memberAddress) ?? "agent"}`;
   return new MemberExecutionContext({
-    teamScoped: true,
+    teamScoped: true, collaborationRole: "team_member",
     identity: createCollaborationMemberExecutionIdentity({
       root: createTeamRootExecutionIdentity(rootTeamRunId),
       memberAddress,
@@ -172,7 +188,7 @@ export const writeCurrentTeamRunPackage = async (
   tree: TeamRunExecutionTreeSnapshot,
 ): Promise<void> => {
   await new TeamRunExecutionTreeStore().write(teamDir, tree);
-  await new TeamCommunicationV1Store().write(teamDir, {
+  await new TeamCommunicationStore().write(teamDir, {
     schemaVersion: 1,
     rootTeamRunId: tree.rootTeam.teamRunId,
     messages: [],

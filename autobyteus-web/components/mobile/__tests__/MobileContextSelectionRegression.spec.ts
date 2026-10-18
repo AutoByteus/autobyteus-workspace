@@ -35,7 +35,8 @@ import { markTeamMemberProjectionAuthoritative } from "~/services/runHydration/t
 import {
   buildTestTeamContext,
   testAgentNode,
-  testSubTeamNode,
+  testDelegation,
+  testTaskTeamLayout,
 } from "~/test-support/currentTeamTestFixtures";
 
 const { createMobileRunFromConfigMock } = vi.hoisted(() => ({
@@ -119,17 +120,20 @@ function seedActiveTeamRun(teamRunId = "team-run-1"): AgentTeamContext {
     agentRunId: "qa-run",
     agentDefinitionId: "agent-1",
   });
-  const qaTeam = testSubTeamNode("/qa-team", [qaNode], {
-    displayName: "QA Team",
+  // The lead delegated a QA Team copy (`qa-team-run`); Teams are flat.
+  const qaTeam = testTaskTeamLayout("/qa-team", [qaNode], {
     teamDefinitionId: "qa-team",
-    teamRunId: "qa-team-run",
     coordinatorAddress: qaNode.address,
   });
   const context = buildTestTeamContext({
     teamRunId,
     teamDefinitionId: "team-1",
     teamDefinitionName: "Software Team",
-    rootChildren: [leadNode, reviewerNode, qaTeam],
+    rootChildren: [leadNode, reviewerNode],
+    delegations: [testDelegation({
+      delegatorAgentRunId: "lead-run", recipientAddress: "/qa-team",
+      target: { teamRunId: "qa-team-run", team: qaTeam },
+    })],
     coordinatorAddress: "/lead",
     focusedAgentRunId: "lead-run",
     isActive: false,

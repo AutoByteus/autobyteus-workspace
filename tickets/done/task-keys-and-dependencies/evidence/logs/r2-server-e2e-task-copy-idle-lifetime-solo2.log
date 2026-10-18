@@ -1,0 +1,533 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:53132) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: til-manager-797517
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: til-worker-797517
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: til-squad-797517
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: til-team-797517
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreated and registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAgent team websocket attached for team run til_team_797517_2d208bb83f9241bd9cbc58f80a0d10fc
+Created agent session d1e451e2-b3d6-4b01-b1e2-dcfa4c2604b8 for run til_team_797517_2d208bb83f9241bd9cbc58f80a0d10fc
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAgent Team WebSocket connected: session=d1e451e2-b3d6-4b01-b1e2-dcfa4c2604b8, run=til_team_797517_2d208bb83f9241bd9cbc58f80a0d10fc
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agent_teams/til_team_797517_2d208bb83f9241bd9cbc58f80a0d10fc/til_manager_797517_6bf379e792cf4e4dba88c6e369465d77/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agent_teams/til_team_797517_2d208bb83f9241bd9cbc58f80a0d10fc/til_manager_797517_6bf379e792cf4e4dba88c6e369465d77/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agent_teams/til_team_797517_2d208bb83f9241bd9cbc58f80a0d10fc/til_manager_797517_6bf379e792cf4e4dba88c6e369465d77/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agent_orgs/til_org_797517_bac0edc54e664bccb89ce149bcbc10bf/til_manager_797517_f428e8620bcc403fbea740cdd9c9c05b/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agent_orgs/til_org_797517_bac0edc54e664bccb89ce149bcbc10bf/til_manager_797517_f428e8620bcc403fbea740cdd9c9c05b/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agent_teams/til_team_797517_2d208bb83f9241bd9cbc58f80a0d10fc/til_manager_797517_6bf379e792cf4e4dba88c6e369465d77/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_manager_797517_e073406cb962432fa18ba13a95e31321: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_manager_797517_6bf379e792cf4e4dba88c6e369465d77: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agent_orgs/til_org_797517_bac0edc54e664bccb89ce149bcbc10bf/til_manager_797517_f428e8620bcc403fbea740cdd9c9c05b/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agent_teams/til_team_797517_2d208bb83f9241bd9cbc58f80a0d10fc/til_manager_797517_6bf379e792cf4e4dba88c6e369465d77/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAgent websocket attached for run til_manager_797517_e073406cb962432fa18ba13a95e31321
+Created agent session 695bfe6c-098c-4622-99a1-0437ec13645f for run til_manager_797517_e073406cb962432fa18ba13a95e31321
+Agent WebSocket connected: session=695bfe6c-098c-4622-99a1-0437ec13645f, run=til_manager_797517_e073406cb962432fa18ba13a95e31321
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_manager_797517_f428e8620bcc403fbea740cdd9c9c05b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agent_orgs/til_org_797517_bac0edc54e664bccb89ce149bcbc10bf/til_manager_797517_f428e8620bcc403fbea740cdd9c9c05b/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/memory/agents/til_manager_797517_e073406cb962432fa18ba13a95e31321/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_382995365d814de38a88e98b629fd537: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_c8b5f012b2914d5f8d9401d228e2aa53: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_b5691c622e934c2ab9a517c8388661f6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_fab2501653d84442aa840923be26a142: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_80af3a7c31fe4f919285c532f64c5ce3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_6c112e880da84ce5b5b55877c1e392c4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_57aa693ddd194caaa47b156bf65f8b1e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_3ca9880aad4141d3a71557a4ea936cdc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_7b05284cd43a428aab723d64777a31b1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_5cb6d97ad77f43afb623e245b0cdba48: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_223d9839789c42d79ffe2f9889260285: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_2179bcbbe1c84814bb488237f348e9c5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_ef9059aaa9074ad88ee999898f5fc486: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_8158f8d82a8f45eda93362de0516ba33: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_33514ce03ca643c6919e90fb68c18825: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_57aa693ddd194caaa47b156bf65f8b1e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-copy-idle-lifetime-e2e-YcrnHU/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mReusing registered workspace ID: agent_ws_2a37901edb0a82c4a2c153987a783abb6e331edc87fa3221ca9274b34d25a5a5
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22m[2mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[22m[39mAGY compaction detection off for run til_worker_797517_5cb6d97ad77f43afb623e245b0cdba48: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mClosed agent session 695bfe6c-098c-4622-99a1-0437ec13645f
+Agent WebSocket disconnected: 695bfe6c-098c-4622-99a1-0437ec13645f
+
+[90mstdout[2m | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22m[2mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)
+[22m[39mClosed agent session d1e451e2-b3d6-4b01-b1e2-dcfa4c2604b8
+
+ [31m❯[39m tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 168775[2mms[22m[39m
+[31m     [31m×[31m background copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged[39m[33m 168214[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts[2m > [22mIdle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)[2m > [22mbackground copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+[31m[1mAssertionError[22m: expected [ Array(1) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "agent: Error: Timed out waiting for agent: til_worker_797517_80af3a7c31fe4f919285c532f64c5ce3 idle[39m
+[31m+     at Module.until (/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/e2e/helpers/agy-runtime-error-fixture.ts:20:9)[39m
+[31m+     at runNextTicks (node:internal/process/task_queues:64:5)[39m
+[31m+     at processTimers (node:internal/timers:518:9)[39m
+[31m+     at Object.signal (/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts:297:7)[39m
+[31m+     at timeline (/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts:339:20)[39m
+[31m+     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts:343:16)[39m
+[31m+     at async Promise.allSettled (index 0)[39m
+[31m+     at /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts:422:21[39m
+[31m+     at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts:[2m425:22[22m[39m
+    [90m423| [39m    evidence[33m.[39mprocessTimes [33m=[39m [33mObject[39m[33m.[39m[34mfromEntries[39m(processTimes)[33m;[39m
+    [90m424| [39m    const failures = settled.flatMap((result, index) => result.status …
+    [90m425| [39m    [34mexpect[39m(failures)[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                     [31m^[39m
+    [90m426| [39m  }[33m,[39m [34m900_000[39m)[33m;[39m
+    [90m427| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 16:32:00
+[2m   Duration [22m 176.15s[2m (transform 4.90s, setup 26ms, import 6.83s, tests 168.78s, environment 0ms)[22m
+

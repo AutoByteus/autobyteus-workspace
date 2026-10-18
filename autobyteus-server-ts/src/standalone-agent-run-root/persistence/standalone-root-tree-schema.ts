@@ -1,7 +1,7 @@
 import { getParentAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { validateCollaborationCommunicationMessageArrayV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1-schema.js";
+import { validateCollaborationCommunicationMessageArray } from "../../agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
 import type {
-  StandaloneRootMessagesFileV1,
+  StandaloneRootMessagesFile,
   StandaloneRootTreeFile,
 } from "../domain/standalone-root-tree.js";
 import {
@@ -58,10 +58,10 @@ export const validateStandaloneRootTreePayload = (
   return deepFreeze(tree);
 };
 
-export const validateStandaloneRootMessagesV1 = (
+export const validateStandaloneRootMessages = (
   value: unknown,
   expectedHostRunId?: string,
-): StandaloneRootMessagesFileV1 => {
+): StandaloneRootMessagesFile => {
   const payload = objectRecord(value, "Agent run collaboration messages");
   const actual = Object.keys(payload).sort();
   const expected = ["hostRunId", "messages", "schemaVersion", "subjectKind"];
@@ -79,6 +79,6 @@ export const validateStandaloneRootMessagesV1 = (
     schemaVersion: 1,
     subjectKind: "agent",
     hostRunId,
-    messages: validateCollaborationCommunicationMessageArrayV1(payload.messages),
+    messages: validateCollaborationCommunicationMessageArray(payload.messages),
   });
 };

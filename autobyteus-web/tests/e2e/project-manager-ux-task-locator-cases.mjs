@@ -14,6 +14,12 @@ const LOCATED_BG = 'rgb(238, 242, 255)';
 const INDIGO_500 = 'rgb(99, 102, 241)';
 const SLATE_300 = 'rgb(203, 213, 225)';
 const LIVE_HIGHLIGHT_MS = 2400;
+/** Where two texts first differ, with a little context on each side (null when equal). */
+const textDiff = (a, b) => {
+  if (a === b) return null;
+  let i = 0; while (i < a.length && i < b.length && a[i] === b[i]) i += 1;
+  return { at: i, lengths: [a.length, b.length], before: a.slice(Math.max(0, i - 120), i + 200), after: b.slice(Math.max(0, i - 120), i + 200) };
+};
 
 /** @param {Record<string, any>} h the probe's helpers */
 export const createTaskLocatorCases = (h) => {
@@ -82,6 +88,9 @@ export const createTaskLocatorCases = (h) => {
   const teamRow = (page, hostRunId, teamName) => page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${hostRunId}"] ${ROW}[data-transient-kind="task_team"][data-member-address="/${segment(teamName)}"]:visible`);
   const addressRow = (page, address) => page.locator(`${ROW}[data-member-address="${address}"]:visible`);
   const summaryIn = (row) => row.locator('[data-test="workspace-task-worker-task-summary"]');
+  // task-keys-declutter (REQ-002): the tree shows only the Task summary, never a Task key.
+  const summaryLabel = (summary) => summary.evaluate((e) => e.textContent);
+  const keyOf = async (projectId, taskId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey}}', { id: projectId })).projectTasks.find((t) => t.taskId === taskId)?.taskKey;
   const card = (page, taskId) => page.locator(`[data-testid="project-task-row-${taskId}"]:visible`);
   const panelState = (page) => page.evaluate(() => {
     const picker = [...document.querySelectorAll('[data-testid="projects-panel-picker-select"]')].find((e) => e.getBoundingClientRect().height > 0);
@@ -182,13 +191,15 @@ export const createTaskLocatorCases = (h) => {
 
     const listed = await page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${s.agentRoot.rootId}"] ${ROW}`).evaluateAll((es) => es.map((e) => ({
       kind: e.getAttribute('data-transient-kind'), address: e.getAttribute('data-member-address'), agentRunId: e.getAttribute('data-agent-run-id'),
-      height: Math.round(e.getBoundingClientRect().height), summary: e.querySelector('[data-test="workspace-task-worker-task-summary"]')?.textContent ?? null,
+      height: Math.round(e.getBoundingClientRect().height),
+      summary: e.querySelector('[data-test="workspace-task-worker-task-summary"]')?.textContent ?? null,
       label: e.getAttribute('aria-label') })));
     const byRun = (id) => listed.find((r) => r.agentRunId === id);
     const teamListed = listed.find((r) => r.kind === 'task_team');
-    assert(byRun(s.workers.agent)?.summary === 'Ship the copy Task summary in the tree' && byRun(s.workers.agent).height === 46, 'agent copy: first line as summary, 46 px row', listed);
+    const agentKey = await keyOf(s.projectA, s.tasks.agent), teamKey = await keyOf(s.projectA, s.tasks.team);
+    assert(byRun(s.workers.agent)?.summary === 'Ship the copy Task summary in the tree' && !byRun(s.workers.agent).summary.includes(agentKey) && byRun(s.workers.agent).height === 46, 'agent copy: first line as summary, no key, 46 px row', listed);
     assert(byRun(s.workers.temp)?.summary === 'Check the FAQ links.', 'Temp copy summary', listed);
-    assert(teamListed?.summary?.startsWith('Review the locate journey') && teamListed.height === 46, 'task Team copy summary', listed);
+    assert(teamListed?.summary?.startsWith('Review the locate journey') && !teamListed.summary.includes(teamKey) && teamListed.height === 46, 'task Team copy summary', listed);
     const oneLine = listed.filter((r) => r.kind === 'task_team_child' || r.agentRunId === subWorkRunId);
     assert(oneLine.length >= 3 && oneLine.every((r) => r.summary === null && r.height === 28 && !/Task:/.test(r.label)), 'members and sub-work: one line, no Task in the name', oneLine);
     assert(byRun(s.workers.agent).label.endsWith(', Task: Ship the copy Task summary in the tree'), 'row accessible name gains the Task', byRun(s.workers.agent));
@@ -204,7 +215,7 @@ export const createTaskLocatorCases = (h) => {
     });
     assert(style.tag === 'BUTTON' && style.fontSize === '11px' && style.lineHeight === '16px' && style.fontWeight === '400' && style.color === GRAY_500
       && style.gapAbove === 2 && Math.abs(style.textLeftMinusName) <= 0.5 && style.ariaCurrent === null && style.ariaSelected === null
-      && style.title === 'Show Task in Projects: Ship the copy Task summary in the tree' && style.ariaLabel === style.title, 'summary presentation (REQ-002, REQ-010)', style);
+      && style.title === 'Show Task in Projects: Ship the copy Task summary in the tree' && style.ariaLabel === style.title, 'summary presentation (REQ-002, REQ-010; task-keys-declutter REQ-002)', style);
     const team = await teamRow(page, s.agentRoot.rootId, s.names.squad).evaluate((row) => {
       const top = row.getBoundingClientRect().top; const summary = row.querySelector('[data-test="workspace-task-worker-task-summary"]');
       const branch = row.querySelector('.hierarchy-current-branch'); const elbow = getComputedStyle(branch, '::after');
@@ -240,8 +251,8 @@ export const createTaskLocatorCases = (h) => {
 
     // Team host: its delegated member copy shows its Task summary (DEC-001 b).
     await openTeamHostRun(page, s);
-    const teamHostSummary = await summaryIn(agentRow(page, s.workers.teamHost)).innerText();
-    assert(teamHostSummary === 'Draft the release notes for the beta', 'Team-host copy summary', { teamHostSummary });
+    const teamHostSummary = await summaryLabel(summaryIn(agentRow(page, s.workers.teamHost)));
+    assert(teamHostSummary === 'Draft the release notes for the beta', 'Team-host copy summary, no key', { teamHostSummary });
     await shot(page, 'pmu-020-rows-team-host');
     assertNoBrowserErrors(errors);
     return { listed, style, team, hover, answers, reads: reads.map((o) => o.variables), listScopes, teamHostSummary, subWorkRunId };
@@ -267,7 +278,17 @@ export const createTaskLocatorCases = (h) => {
     await sleep(800);
     await rightTab(page, 'files').click();
     await until('docked on another tab', async () => !(await page.locator('[data-test="right-side-projects-panel"]').count()), 10000);
-    const centerBefore = await centerText(page); const selectionBefore = await selectionState(page); const treeBefore = await treeSelection(page);
+    // The center is the host's live conversation: read it only after the Manager's tool reply is shown and the text is
+    // stable, so a late reply or status change under load is not mistaken for the locate opening something. Each check
+    // compares with a baseline read just before its own action.
+    const settledCenter = (label) => until(`host conversation settled (${label})`, async () => {
+      const first = await centerText(page);
+      if (!first.includes('CALLED:')) return null;
+      await sleep(1000);
+      return first === await centerText(page) ? first : null;
+    }, 30000);
+    const centerBefore = await settledCenter('before the docked locate');
+    const selectionBefore = await selectionState(page); const treeBefore = await treeSelection(page);
 
     await summaryIn(agentRow(page, s.workers.agent)).click();
     details.first = await located(page, s.tasks.agent, 'docked');
@@ -278,8 +299,10 @@ export const createTaskLocatorCases = (h) => {
     assert(details.highlight.background === LOCATED_BG && details.highlight.boxShadow.includes(INDIGO_500) && details.highlight.animation.startsWith('task-live'),
       'located highlight: #eef2ff wash, inset #6366f1 bar (task-live)', details.highlight);
     await shot(page, 'pmu-021-located-docked');
-    assert((await centerText(page)) === centerBefore && JSON.stringify(await selectionState(page)) === JSON.stringify(selectionBefore)
-      && JSON.stringify(await treeSelection(page)) === JSON.stringify(treeBefore), 'center view and tree selection unchanged', { selectionBefore, after: await selectionState(page) });
+    const centerAfter = await centerText(page); const selectionAfter = await selectionState(page); const treeAfter = await treeSelection(page);
+    assert(centerAfter === centerBefore && JSON.stringify(selectionAfter) === JSON.stringify(selectionBefore)
+      && JSON.stringify(treeAfter) === JSON.stringify(treeBefore), 'center view and tree selection unchanged',
+    { selectionBefore, selectionAfter, treeBefore, treeAfter, centerDiff: textDiff(centerBefore, centerAfter) });
     await sleep(LIVE_HIGHLIGHT_MS + 300);
     details.afterHighlight = await panelState(page);
     assert(details.afterHighlight.located.length === 0, 'highlight ends after 2.4 s', details.afterHighlight);
@@ -323,14 +346,16 @@ export const createTaskLocatorCases = (h) => {
     details.keyboardFocus = await page.evaluate(() => ({ test: document.activeElement?.getAttribute('data-test'), ring: getComputedStyle(document.activeElement).boxShadow }));
     assert(details.keyboardFocus.test === 'workspace-task-worker-task-summary' && details.keyboardFocus.ring.includes(INDIGO_500), 'Tab reaches the summary with the indigo-500 ring', details.keyboardFocus);
     await shot(page, 'pmu-021-summary-keyboard-focus');
-    const selectionBeforeKeys = await selectionState(page);
+    const centerBeforeKeys = await settledCenter('before the keys'); const selectionBeforeKeys = await selectionState(page);
     await page.keyboard.press('Enter');
     await located(page, s.tasks.agent, 'Enter on the summary');
     await agentRow(page, s.workers.temp).focus();
     await page.keyboard.press('Tab');
     await page.keyboard.press(' ');
     await located(page, s.tempTaskId, 'Space on the summary');
-    assert(JSON.stringify(await selectionState(page)) === JSON.stringify(selectionBeforeKeys) && (await centerText(page)) === centerBefore, 'Enter / Space neither open nor toggle the row', await selectionState(page));
+    const selectionAfterKeys = await selectionState(page); const centerAfterKeys = await centerText(page);
+    assert(JSON.stringify(selectionAfterKeys) === JSON.stringify(selectionBeforeKeys) && centerAfterKeys === centerBeforeKeys, 'Enter / Space neither open nor toggle the row',
+      { selectionBeforeKeys, selectionAfterKeys, centerDiff: textDiff(centerBeforeKeys, centerAfterKeys) });
 
     // The choice made by a locate is remembered like a manual pick (reload).
     await summaryIn(agentRow(page, s.workers.agent)).click();
@@ -345,7 +370,7 @@ export const createTaskLocatorCases = (h) => {
     await summaryIn(agentRow(page, s.workers.agent)).waitFor({ timeout: 30000 });
     await sleep(LIVE_HIGHLIGHT_MS);
     await agentRow(page, s.workers.agent).locator('span.block.truncate').click();
-    await until('agent copy opened', async () => (await agentRow(page, s.workers.agent).getAttribute('aria-selected')) === 'true' && /Task delegator address/.test(await centerText(page)), 20000);
+    await until('agent copy opened', async () => (await agentRow(page, s.workers.agent).getAttribute('aria-selected')) === 'true' && /You have a new task from/.test(await centerText(page)), 20000);
     await sleep(500);
     details.rowClick = await panelState(page);
     details.selectedSummaryColour = await summaryIn(agentRow(page, s.workers.agent)).evaluate((e) => getComputedStyle(e).color);
@@ -511,7 +536,7 @@ export const createTaskLocatorCases = (h) => {
 
     // Rename (the Task page's Save).
     await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, description: 'Write the changelog for 1.6\nwith links' } });
-    await until('summary renamed live', async () => (await workerSummary().innerText()) === 'Write the changelog for 1.6', 15000);
+    await until('summary renamed live', async () => (await summaryLabel(workerSummary())) === 'Write the changelog for 1.6', 15000);
 
     // The feed is lost; a rename made meanwhile is missed; the reconnect re-reads it.
     net.feedBlocked = true;
@@ -520,10 +545,10 @@ export const createTaskLocatorCases = (h) => {
     await sleep(500);
     await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, description: 'Write the changelog while offline' } });
     await sleep(3000);
-    details.whileOffline = await workerSummary().innerText();
+    details.whileOffline = await summaryLabel(workerSummary());
     assert(details.whileOffline === 'Write the changelog for 1.6', 'the rename is not seen while the feed is lost', details);
     net.feedBlocked = false;
-    await until('reconnect re-reads the summary', async () => (await workerSummary().innerText()) === 'Write the changelog while offline', 45000, 200);
+    await until('reconnect re-reads the summary', async () => (await summaryLabel(workerSummary())) === 'Write the changelog while offline', 45000, 200);
     await shot(page, 'pmu-024-reconnect-reread');
 
     // VIS-008: the copy's Task is done, then the copy is given a follow-up Task with its run ID.
@@ -531,7 +556,7 @@ export const createTaskLocatorCases = (h) => {
     await until('worker row leaves at DONE', async () => (await agentRow(page, worker).count()) === 0, 30000);
     input.send(callTool('delegate_task', { target_agent_run_id: worker, task_id: live.followUp }));
     await until('worker row returns with the follow-up Task', async () => (await workerSummary().count()) === 1
-      && (await workerSummary().innerText()) === 'Publish the changelog to the docs site', 60000);
+      && (await summaryLabel(workerSummary())) === 'Publish the changelog to the docs site', 60000);
     const board = await projectTasks(projectL);
     details.followUp = { first: board.find((t) => t.taskId === live.first), followUp: board.find((t) => t.taskId === live.followUp) };
     assert(details.followUp.first?.status === 'DONE' && details.followUp.first.root?.ingressAgentRunId === worker && details.followUp.followUp?.root?.ingressAgentRunId === worker,
@@ -586,7 +611,7 @@ export const createTaskLocatorCases = (h) => {
     const { page, errors } = await newPage({ width: 1440, height: 900, locale: 'zh-CN' });
     await openHostRun(page, s);
     const summary = summaryIn(agentRow(page, s.workers.agent));
-    const zh = { text: await summary.innerText(), title: await summary.getAttribute('title'), aria: await summary.getAttribute('aria-label'),
+    const zh = { text: await summaryLabel(summary), title: await summary.getAttribute('title'), aria: await summary.getAttribute('aria-label'),
       row: await agentRow(page, s.workers.agent).getAttribute('aria-label') };
     const label = 'Ship the copy Task summary in the tree';
     assert(zh.text === label && zh.title === `在项目中显示任务：${label}` && zh.aria === zh.title && zh.row.endsWith(`, 任务：${label}`), 'zh-CN strings', zh);

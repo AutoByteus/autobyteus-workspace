@@ -1,0 +1,158 @@
+{
+  "results": [
+    {
+      "args": {
+        "task_id": "project_task_65606491-6380-4a49-b19d-e1e3680d8e7c",
+        "status": "DONE"
+      },
+      "r": {
+        "task": {
+          "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+          "taskId": "project_task_65606491-6380-4a49-b19d-e1e3680d8e7c",
+          "status": "DONE"
+        }
+      }
+    },
+    {
+      "args": {
+        "task_id": "project_task_0d756bee-f162-4b91-9b6f-fbf36bc118a3",
+        "status": "IN_PROGRESS"
+      },
+      "r": {
+        "task": {
+          "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+          "taskId": "project_task_0d756bee-f162-4b91-9b6f-fbf36bc118a3",
+          "status": "IN_PROGRESS"
+        }
+      }
+    },
+    {
+      "args": {
+        "task_id": "project_task_3ef91f2e-b4db-4f9c-a613-d31969718a70",
+        "status": "CANCELLED"
+      },
+      "r": {
+        "task": {
+          "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+          "taskId": "project_task_3ef91f2e-b4db-4f9c-a613-d31969718a70",
+          "status": "CANCELLED"
+        }
+      }
+    },
+    {
+      "args": {
+        "task_id": "project_task_fd98a97b-225a-45d2-8526-7997e3a8b284",
+        "context_files": [
+          "/tmp/tkd-api-outline.md"
+        ]
+      },
+      "r": {
+        "task": {
+          "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+          "taskId": "project_task_fd98a97b-225a-45d2-8526-7997e3a8b284",
+          "status": "TODO",
+          "attachedContextFiles": [
+            {
+              "storedFilename": "ctx_874ae2c9f800__tkd-api-outline.md",
+              "displayName": "tkd-api-outline.md"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "args": {
+        "task_id": "project_task_b2b4d1ca-2a37-4ac5-954d-e6e36fa81612",
+        "status": "DONE"
+      },
+      "r": {
+        "task": {
+          "projectId": "project_8ecfca57-1bc1-475e-8f79-ac4d17d736ce",
+          "taskId": "project_task_b2b4d1ca-2a37-4ac5-954d-e6e36fa81612",
+          "status": "DONE"
+        }
+      }
+    },
+    {
+      "args": {
+        "task_id": "project_task_63394d1f-6f46-40d1-9a31-b428fa0d6c8d",
+        "status": "IN_PROGRESS"
+      },
+      "r": {
+        "task": {
+          "projectId": "project_8ecfca57-1bc1-475e-8f79-ac4d17d736ce",
+          "taskId": "project_task_63394d1f-6f46-40d1-9a31-b428fa0d6c8d",
+          "status": "IN_PROGRESS"
+        }
+      }
+    }
+  ],
+  "listedAutoByteus": {
+    "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+    "tasks": [
+      {
+        "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+        "taskId": "project_task_fd98a97b-225a-45d2-8526-7997e3a8b284",
+        "description": "Write the API reference",
+        "status": "TODO",
+        "contextFiles": [
+          {
+            "storedFilename": "ctx_874ae2c9f800__tkd-api-outline.md",
+            "displayName": "tkd-api-outline.md",
+            "mimeType": "text/markdown",
+            "sizeBytes": 40,
+            "locator": "/rest/projects/project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/project_task_fd98a97b-225a-45d2-8526-7997e3a8b284/context-files/ctx_874ae2c9f800__tkd-api-outline.md",
+            "localPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tkd-desktop-root.XniFD0BeBY/server-data/projects/project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/project_task_fd98a97b-225a-45d2-8526-7997e3a8b284/context/ctx_874ae2c9f800__tkd-api-outline.md"
+          }
+        ],
+        "assignments": [],
+        "closedAssignments": []
+      },
+      {
+        "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+        "taskId": "project_task_3ef91f2e-b4db-4f9c-a613-d31969718a70",
+        "description": "Prototype the old sync service",
+        "status": "CANCELLED",
+        "contextFiles": [],
+        "assignments": [],
+        "closedAssignments": []
+      },
+      {
+        "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+        "taskId": "project_task_0d756bee-f162-4b91-9b6f-fbf36bc118a3",
+        "description": "Ship the board UI",
+        "status": "IN_PROGRESS",
+        "contextFiles": [],
+        "assignments": [],
+        "closedAssignments": []
+      },
+      {
+        "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+        "taskId": "project_task_65606491-6380-4a49-b19d-e1e3680d8e7c",
+        "description": "Design the Task board schema\nColumns, lanes and ordering",
+        "status": "DONE",
+        "contextFiles": [],
+        "assignments": [],
+        "closedAssignments": []
+      },
+      {
+        "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+        "taskId": "project_task_b3be95df-4b44-4c27-a1aa-4b3aee9fca8e",
+        "description": "Prepare the beta release notes",
+        "status": "TODO",
+        "contextFiles": [],
+        "assignments": [],
+        "closedAssignments": []
+      },
+      {
+        "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+        "taskId": "project_task_9addd306-9056-4972-a8c6-fd5b51b9e491",
+        "description": "Set up the repository layout",
+        "status": "TODO",
+        "contextFiles": [],
+        "assignments": [],
+        "closedAssignments": []
+      }
+    ]
+  }
+}

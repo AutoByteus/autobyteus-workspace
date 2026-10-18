@@ -1,0 +1,618 @@
+{
+  "generatedAt": "2026-10-17T15:42:38.167Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frames": [
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1792251771818
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1792251771831
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_51c127fc-591f-451b-bda5-6166fcaad2aa"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_51c127fc-591f-451b-bda5-6166fcaad2aa",
+          "state": "failed",
+          "code": "NO_ACTIVE_TURN",
+          "message": "The provider has no active turn.",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1792251772085
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1792251772085
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1792251773081
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1792251773095
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-accepted",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_f98a77f7-ae61-4c39-b34a-4d5a813b67f2"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-accepted",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_f98a77f7-ae61-4c39-b34a-4d5a813b67f2",
+          "state": "accepted",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1792251773431
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1792251773431
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1792251774412
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1792251774424
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "pending-disconnect",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_a67b877f-8e80-4b1b-8595-62b2da9bc95b"
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1011,
+      "reason": "probe disconnect before ack",
+      "at": 1792251774562
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1792251774982
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "agent-package-definitions"
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run",
+      "at": 1792251775838
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run",
+      "at": 1792251775849
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "team",
+      "mode": "team-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_48c7cf91-bf76-4e63-8404-fbee5a24b66e",
+          "agent_run_id": "browser-task-team-critic-run"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "team",
+      "mode": "team-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_48c7cf91-bf76-4e63-8404-fbee5a24b66e",
+          "state": "failed",
+          "code": "NO_ACTIVE_MEMBER_TURN",
+          "message": "The Team member has no active provider turn.",
+          "agent_run_id": "browser-task-team-critic-run"
+        }
+      }
+    },
+    {
+      "direction": "close",
+      "kind": "team",
+      "code": 1001,
+      "reason": "",
+      "at": 1792251776143
+    },
+    {
+      "direction": "close",
+      "kind": "standalone",
+      "code": 1001,
+      "reason": "",
+      "at": 1792251776143
+    }
+  ],
+  "graphqlOperations": [
+    "GetTeamMemberRunProjection",
+    "GetRunFileChanges",
+    "GetTeamMemberRunProjection",
+    "GetRunFileChanges",
+    "GetTeamMemberRunProjection",
+    "GetRunFileChanges",
+    "GetTeamMemberRunProjection",
+    "GetRunFileChanges",
+    "GetTeamMemberRunProjection",
+    "GetRunFileChanges",
+    "GetTeamMemberRunProjection",
+    "GetRunFileChanges",
+    "GetTeamMemberRunProjection",
+    "GetRunFileChanges",
+    "GetTeamMemberRunProjection",
+    "GetRunFileChanges"
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket disconnected: probe disconnect before ack"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket transport connected"
+    }
+  ],
+  "scenarios": {
+    "SR008-BR-001": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 1,
+          "toastMessages": [
+            "Could not stop browser-agent-run: The provider has no active turn."
+          ]
+        },
+        "toasts": [
+          "Could not stop browser-agent-run: The provider has no active turn."
+        ]
+      }
+    },
+    "SR008-BR-002": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "beforeTerminal": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "afterTerminal": {
+          "selectedType": "agent",
+          "standaloneStatus": "idle",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        }
+      }
+    },
+    "SR008-BR-003": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 1,
+          "toastMessages": [
+            "Could not send Stop to browser-agent-run: probe disconnect before ack"
+          ]
+        },
+        "toasts": [
+          "Could not send Stop to browser-agent-run: probe disconnect before ack"
+        ]
+      }
+    },
+    "SR008-BR-004": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "team",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "team",
+          "standaloneStatus": "running",
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 1,
+          "toastMessages": [
+            "Could not stop browser-task-team-critic-run: The Team member has no active provider turn."
+          ]
+        },
+        "toasts": [
+          "Could not stop browser-task-team-critic-run: The Team member has no active provider turn."
+        ],
+        "sent": {
+          "type": "INTERRUPT_GENERATION",
+          "payload": {
+            "command_id": "client_interrupt_48c7cf91-bf76-4e63-8404-fbee5a24b66e",
+            "agent_run_id": "browser-task-team-critic-run"
+          }
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "contexts": [
+      {
+        "id": "context-1",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-2",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-3",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-4",
+        "phase": "scenario",
+        "status": "closed"
+      }
+    ],
+    "browser": {
+      "status": "closed"
+    },
+    "webSocketServer": {
+      "status": "closed"
+    },
+    "nuxt": {
+      "status": "terminated",
+      "pid": 23619,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "nuxtLog": {
+      "status": "closed"
+    },
+    "fixtureRemoved": true,
+    "fixture": {
+      "status": "removed",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-web/pages/__interrupt-result-presentation-probe.vue"
+    },
+    "evidenceFile": {
+      "status": "written",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/tickets/in-progress/baseline-e2e-probe-repair/evidence/implementation/probes/interrupt-result-presentation/evidence.json"
+    }
+  },
+  "failures": [],
+  "wsPort": 65198,
+  "nuxtPort": 65199,
+  "completedAt": "2026-10-17T15:43:07.119Z"
+}

@@ -81,6 +81,7 @@ describe("Brief package team prompt authority", () => {
       definitions.agentTeamDefinitionService,
     ).build({
       teamContext: new TeamRunContext({
+        teamKind: "configured",
         physicalScope: createRootExecutionPhysicalScope({
           root: createTeamRootExecutionIdentity("brief-team-run"),
           ancestorTeamRunIds: [],
@@ -155,8 +156,8 @@ describe("Brief package team prompt authority", () => {
     expect(prompt).toContain("## Team Instruction");
     expect(prompt).toContain(packageTeam.instructions.trim());
     expect(prompt).toContain("## AgentTeam Addressing");
-    expect(prompt).toContain("Your Agent address is:\n\n/researcher");
-    expect(prompt).toContain("## AgentTeam Collaboration");
+    expect(prompt).not.toContain("Your Agent address is");
+    expect(prompt).toContain("## Working With Other Agents");
     expect(prompt).not.toContain("## Team Runtime");
     expect(prompt).toContain("writer");
     expect(activateForRun).toHaveBeenCalledWith(expect.objectContaining({

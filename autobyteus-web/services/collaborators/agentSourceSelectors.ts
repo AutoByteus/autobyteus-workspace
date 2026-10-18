@@ -4,7 +4,6 @@ import {
   teamMemberLaunchConfiguration,
   type AgentLaunchConfigurationDto,
   type TaskExecutionDto as TeamTaskExecutionDto,
-  type TaskTeamMemberExecutionDto,
   type TeamRunExecutionTreeDto,
   type UserLaunchSelectionDto,
 } from '@autobyteus/team-stream-contracts'
@@ -16,7 +15,7 @@ import {
   type TaskAgentExecutionSourceDto,
   type UserLaunchSelectionDto as CollaborationSelectionDto,
 } from '@autobyteus/collaboration-stream-contracts'
-import { collectConfiguredAgents, collectConfiguredTeams } from '~/services/teamExecution/teamExecutionTreeSelectors'
+import { collectConfiguredAgents } from '~/services/teamExecution/teamExecutionTreeSelectors'
 import { modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 
 /**
@@ -31,8 +30,8 @@ import { modelConfigsEqual } from '~/utils/teamRunConfigUtils'
  * started launch (DS-003). Given the agent's run ID, the selectors apply that rule with the
  * contract packages' functions and the server's follower rule: a recorded Team member (a catalog
  * copy's) follows iff it records no own launch; a member of a copy of a configured Team follows
- * iff its launch equals the configured Team's default (AR-003); a member of a nested Team never
- * follows. Without a run ID they return the started source.
+ * iff its launch equals the configured Team's default (AR-003). Teams are flat: a Team copy's
+ * members are Agents. Without a run ID they return the started source.
  */
 
 /** The user choices that decide one agent instance's launch. */
@@ -65,34 +64,15 @@ export const teamCatalogAgentSourceAt = (tasks: readonly TeamTaskExecutionDto[],
   return null
 }
 
-const sameSnakeLaunch = (left: AgentLaunchConfigurationDto, right: AgentLaunchConfigurationDto): boolean =>
-  left.runtime_kind === right.runtime_kind && left.llm_model_identifier === right.llm_model_identifier
-  && modelConfigsEqual(left.llm_config ?? null, right.llm_config ?? null)
-
 /** The choices recorded for one agent of a Team root's copies; null for any other agent. */
 const teamInstanceChoice = (
   tree: TeamRunExecutionTreeDto,
   agentRunId: string,
-  started: AgentLaunchConfigurationDto,
 ): InstanceChoice<UserLaunchSelectionDto> | null => {
+  // Teams are flat: a task Team copy is a catalog copy whose recorded source says who follows it.
   const follows = (task: Extract<TeamTaskExecutionDto, { kind: 'task_team' }>, address: string): boolean => {
-    if (task.source) {
-      const recorded = task.source.members.find((candidate) => candidate.address === address)
-      return recorded ? teamMemberFollowsTeam(recorded) : false
-    }
-    const team = collectConfiguredTeams(tree).find((candidate) => candidate !== tree.root_team && candidate.address === task.address)
-    return team ? sameSnakeLaunch(started, team.default_launch_configuration) : false
-  }
-  const visitNested = (members: readonly TaskTeamMemberExecutionDto[]): InstanceChoice<UserLaunchSelectionDto> | null => {
-    for (const member of members) {
-      if (member.kind === 'task_team_agent') {
-        if (member.agent_run_id === agentRunId) return { agentSelection: member.user_launch_selection, followsTeam: false }
-        continue
-      }
-      const found = visitNested(member.members) ?? visit(member.task_executions)
-      if (found) return found
-    }
-    return null
+    const recorded = task.source?.members.find((candidate) => candidate.address === address)
+    return recorded ? teamMemberFollowsTeam(recorded) : false
   }
   const visit = (tasks: readonly TeamTaskExecutionDto[]): InstanceChoice<UserLaunchSelectionDto> | null => {
     for (const task of tasks) {
@@ -100,22 +80,16 @@ const teamInstanceChoice = (
         if (task.agent_run_id === agentRunId) return { agentSelection: task.user_launch_selection, followsTeam: false }
         continue
       }
-      for (const member of task.members) {
-        if (member.kind === 'task_team_agent') {
-          if (member.agent_run_id === agentRunId) {
-            return { agentSelection: member.user_launch_selection, teamSelection: task.user_team_launch_selection, followsTeam: follows(task, member.address) }
-          }
-          continue
-        }
-        const found = visitNested(member.members) ?? visit(member.task_executions)
-        if (found) return found
+      const member = task.members.find((candidate) => candidate.agent_run_id === agentRunId)
+      if (member) {
+        return { agentSelection: member.user_launch_selection, teamSelection: task.user_team_launch_selection, followsTeam: follows(task, member.address) }
       }
       const found = visit(task.task_executions)
       if (found) return found
     }
     return null
   }
-  return visit(collectConfiguredTeams(tree).flatMap((team) => team.task_executions))
+  return visit(tree.root_team.task_executions)
 }
 
 /**
@@ -125,7 +99,7 @@ const teamInstanceChoice = (
 export const teamAgentSourceAt = (tree: TeamRunExecutionTreeDto, address: string, agentRunId?: string): TeamAgentSource | null => {
   const source = collectConfiguredAgents(tree).find((agent) => agent.address === address)
     ?? teamCatalogAgentSourceAt(tree.root_team.task_executions, address)
-  const choice = source && agentRunId ? teamInstanceChoice(tree, agentRunId, source.launch_configuration) : null
+  const choice = source && agentRunId ? teamInstanceChoice(tree, agentRunId) : null
   if (!source || !choice) return source ?? null
   const { launch, selected } = teamCopyAgentLaunch({ started: source.launch_configuration, ...choice })
   return selected ? Object.freeze({ address: source.address, agent_definition_id: source.agent_definition_id, launch_configuration: launch }) : source
@@ -164,10 +138,7 @@ const catalogSourceAt = (
         return Object.freeze({ address, agentDefinitionId: member.agentDefinitionId, launchConfiguration: collaborationMemberLaunchConfiguration(task.source, member) })
       }
     }
-    const nested = catalogSourceAt([
-      ...task.taskExecutions,
-      ...task.members.flatMap((member) => 'teamRunId' in member ? member.taskExecutions : []),
-    ], address)
+    const nested = catalogSourceAt(task.taskExecutions, address)
     if (nested) return nested
   }
   return null
@@ -195,8 +166,6 @@ export type CollaborationInstances = Readonly<{
   configuredTeamLaunchAt?(address: string): LaunchConfiguration | null
 }>
 
-type CamelTaskMember = Extract<CollaborationTaskExecutionDto, { teamRunId: string }>['members'][number]
-
 const collaborationInstanceChoice = (
   input: CollaborationInstances,
   agentRunId: string,
@@ -210,32 +179,15 @@ const collaborationInstanceChoice = (
     const team = input.configuredTeamLaunchAt?.(task.address) ?? null
     return team ? sameCamelLaunch(started, team) : false
   }
-  const visitNested = (members: readonly CamelTaskMember[]): InstanceChoice<CollaborationSelectionDto> | null => {
-    for (const member of members) {
-      if ('agentRunId' in member) {
-        if (member.agentRunId === agentRunId) return { agentSelection: member.userLaunchSelection, followsTeam: false }
-        continue
-      }
-      const found = visitNested(member.members) ?? visit(member.taskExecutions)
-      if (found) return found
-    }
-    return null
-  }
   const visit = (tasks: readonly CollaborationTaskExecutionDto[]): InstanceChoice<CollaborationSelectionDto> | null => {
     for (const task of tasks) {
       if ('agentRunId' in task) {
         if (task.agentRunId === agentRunId) return { agentSelection: task.userLaunchSelection, followsTeam: false }
         continue
       }
-      for (const member of task.members) {
-        if ('agentRunId' in member) {
-          if (member.agentRunId === agentRunId) {
-            return { agentSelection: member.userLaunchSelection, teamSelection: task.userTeamLaunchSelection, followsTeam: follows(task, member.address) }
-          }
-          continue
-        }
-        const found = visitNested(member.members) ?? visit(member.taskExecutions)
-        if (found) return found
+      const member = task.members.find((candidate) => candidate.agentRunId === agentRunId)
+      if (member) {
+        return { agentSelection: member.userLaunchSelection, teamSelection: task.userTeamLaunchSelection, followsTeam: follows(task, member.address) }
       }
       const found = visit(task.taskExecutions)
       if (found) return found

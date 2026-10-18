@@ -1,0 +1,291 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/agent-memory/agent-memory-explorer-task-agents.test.ts[2m > [22m[2mMemory page Agents list with task agents (D-5)[2m > [22m[2mlists a task agent under its definition, never Unattributed, and leaves out a detached one
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-memory/agent-memory-explorer-task-agents.test.ts[2m > [22m[2mMemory page Agents list with task agents (D-5)[2m > [22m[2mlists a task agent under its definition, never Unattributed, and leaves out a detached one
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/agent-memory/agent-memory-explorer-task-agents.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 2789[2mms[22m[39m
+     [33m[2m✓[22m[39m lists a task agent under its definition, never Unattributed, and leaves out a detached one [33m 2703[2mms[22m[39m
+[90mstderr[2m | tests/unit/agent-memory/agent-org-memory-explorer-service.test.ts[2m > [22m[2mAgentOrgMemoryExplorerService[2m > [22m[2momits a group whose members have no memory
+[22m[39mTask agent 'org-a-1-engineering-task' of agent_org run 'org-a-1' is not available: its own file is missing.
+Task agent 'org-a-1-review' of agent_org run 'org-a-1' is not available: its own file is missing.
+
+ [32m✓[39m tests/unit/agent-memory/agent-org-memory-explorer-service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 1038[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/agent-memory-explorer-service.test.ts[2m > [22m[2mAgentMemoryExplorerService[2m > [22m[2mlists only agents with memory and groups runs by agent definition
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-memory/agent-memory-explorer-service.test.ts[2m > [22m[2mAgentMemoryExplorerService[2m > [22m[2mlists only agents with memory and groups runs by agent definition
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/agent-memory/agent-memory-explorer-service.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 659[2mms[22m[39m
+     [33m[2m✓[22m[39m lists only agents with memory and groups runs by agent definition [33m 631[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/team-memory-explorer-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-memory/team-memory-explorer-service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 671[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 406[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps removed run-specific layout symbols out of source and tests [33m 405[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/agent-memory-location-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-memory/agent-memory-location-service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 485[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/agent-run-memory-recorder.test.ts[2m > [22m[2mAgentRunMemoryRecorder[2m > [22m[2mrecords forwarded commands and normalized events without a stream subscriber
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-IU1mGX/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-IU1mGX/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/agent-run-memory-recorder.test.ts[2m > [22m[2mAgentRunMemoryRecorder[2m > [22m[2mrecords canonical route-backed send_message_to tool traces with MCP content result shape
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-QLqhaL/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-QLqhaL/working_context_snapshot.json
+
+ [32m✓[39m tests/unit/agent-memory/agent-run-memory-recorder.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 67[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists run-owned reasoning closure exactly once before the next tool
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-3myZ63/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mrejects segment lifecycle without an exact turn instead of inventing a fallback turn
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-Xyqm53/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-Xyqm53/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists one trace for adjacent reasoning deltas and a new trace after a tool boundary
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-bZMlbg/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mtolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-F6vo6v/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists open reasoning before a following tool call without duplicating later flushes
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-H3N0CV/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists open reasoning before an inferred tool call from a terminal tool result
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-ErcEu7/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mkeeps reasoning open across a matching result and flushes one trace at the next tool
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-4wFiav/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpreserves post-card reasoning when authoritative call arguments arrive only at result
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-RFfRZy/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mkeeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-B88LYp/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mkeeps reasoning open across matching TOOL_DENIED updates
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-hrFDFI/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists open reasoning before assistant text without requiring turn completion
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-mWHdmc/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists open reasoning before assistant complete output
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-MlpCEU/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mrecords the sender of a forwarded agent-to-agent delivery on its user trace (RD-004)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-0GYdvv/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mdoes not substitute an active turn when forwarded input lacks its exact turn identity
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-azix0u/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-azix0u/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mrecords tool traces once from lifecycle events when matching tool segments are present
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-F1z4or/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpreserves assistant-tool-assistant raw trace order from distinct text segment ids
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-pL3bZN/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mdoes not create a fallback turn for a segment without exact turn identity
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-pBVmFH/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-pBVmFH/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mignores provider compaction/status payloads without local raw-trace pruning
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-RzMp44/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mwrites provider compaction markers and rotates settled active traces into segmented archives
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-SroG6g/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mdedupes replayed provider boundaries without dropping post-boundary active records
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-Y4VDI0/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mretries rotation from an existing provider boundary marker when no complete segment exists
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-XI8mhd/working_context_snapshot.json
+
+ [32m✓[39m tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 48[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/agent-memory-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mapplies raw trace limits
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-bprIlE/agents/agent-456/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-bprIlE/agents/agent-456/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-bprIlE/agents/agent-456/semantic.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mreads archive segments plus active traces as the complete corpus
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-hTJ4Pp/agents/agent-archive/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-hTJ4Pp/agents/agent-archive/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-hTJ4Pp/agents/agent-archive/semantic.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mlists raw trace files active first and reads only the selected segment filename
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-TEmWpq/agents/agent-segments/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-TEmWpq/agents/agent-segments/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-TEmWpq/agents/agent-segments/semantic.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mfalls back to the default raw trace file for invalid selected filenames
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-CRQ1do/agents/agent-invalid-file/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-CRQ1do/agents/agent-invalid-file/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-CRQ1do/agents/agent-invalid-file/semantic.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mdoes not create a missing run directory for includeArchive raw-trace reads
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-VdphEs/agents/missing-run/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-VdphEs/agents/missing-run/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-VdphEs/agents/missing-run/semantic.jsonl
+
+ [32m✓[39m tests/unit/agent-memory/agent-memory-service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/external-runtime-memory-writer.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/external-runtime-memory-writer.test.ts[2m > [22m[2mExternalRuntimeMemoryWriter[2m > [22m[2mwrites exact normalized raw fields without creating a WorkingContext snapshot
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-runtime-memory-writer-Zsbnhp/working_context_snapshot.json
+
+ [32m✓[39m tests/unit/agent-memory/external-runtime-memory-writer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts[2m > [22m[2msystem task notification memory trace (REQ-003, ARCH-F-004)[2m > [22m[2mrecords a Claude background-task notice for its turn and replays it into the conversation
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-notice-vxLs8j/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts[2m > [22m[2msystem task notification memory trace (REQ-003, ARCH-F-004)[2m > [22m[2mdoes not record notices from other producers, such as skill improvement (history behavior unchanged)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-notice-4UcoXO/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-notice-4UcoXO/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts[2m > [22m[2msystem task notification memory trace (REQ-003, ARCH-F-004)[2m > [22m[2mrecords a skill update notice combined into an input as one system notice beside the unchanged user message
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-notice-3FlbW7/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts[2m > [22m[2msystem task notification memory trace (REQ-003, ARCH-F-004)[2m > [22m[2mrecords a notice-only skill update message once, as a system notice and never as a user message
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-notice-cEOoiY/working_context_snapshot.json
+
+ [32m✓[39m tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+[90mstderr[2m | tests/unit/agent-memory/memory-file-store.test.ts[2m > [22m[2mMemoryFileStore[2m > [22m[2mreturns null for missing or invalid JSON
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-2NIKOh/missing.json
+Failed to decode JSON file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-2NIKOh/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+[90mstderr[2m | tests/unit/agent-memory/memory-file-store.test.ts[2m > [22m[2mMemoryFileStore[2m > [22m[2mreads JSONL and skips malformed lines
+[22m[39mSkipping malformed JSONL line in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-mGH0Hl/agents/agent/raw_traces_active.jsonl: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+[90mstderr[2m | tests/unit/agent-memory/memory-file-store.test.ts[2m > [22m[2mMemoryFileStore[2m > [22m[2mreturns empty array for missing JSONL
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-egC4s0/missing.jsonl
+
+ [32m✓[39m tests/unit/agent-memory/memory-file-store.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/agent-memory-layout.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/raw-trace-record-normalizer.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/raw-trace-record-normalizer.test.ts[2m > [22m[2mraw trace record normalizer outcome presence[2m > [22m[2misolates malformed run rows and preserves strict run/turn scope
+[22m[39m[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ [32m✓[39m tests/unit/agent-memory/raw-trace-record-normalizer.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m16 passed[39m[22m[90m (16)[39m
+[2m      Tests [22m [1m[32m112 passed[39m[22m[90m (112)[39m
+[2m   Start at [22m 20:26:14
+[2m   Duration [22m 14.97s[2m (transform 3.38s, setup 141ms, import 6.79s, tests 6.26s, environment 1ms)[22m
+

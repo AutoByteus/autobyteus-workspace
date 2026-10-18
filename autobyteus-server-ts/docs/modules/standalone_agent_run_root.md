@@ -27,8 +27,7 @@ rule (`isCollaborationEligibleStandaloneRun`) decides both the root and the host
 An eligible host always has `send_message_to` and `delegate_task` from
 its first turn and a short
 standalone collaboration section in its prompt
-(`agent-execution/prompt/standalone-collaboration-instruction.ts`, including the shared "Work
-Requests and Outcomes" section); it has no `get_handoff_rules`. Ineligible runs keep the plain
+(`agent-execution/prompt/collaboration-prompt-sections.ts`, role `standalone_agent`); it has no `get_handoff_rules`. Ineligible runs keep the plain
 standalone path (`AgentRunService.resolveCommandReadyAgentRun` and the lifecycle directly).
 
 ## Ownership
@@ -138,15 +137,24 @@ See [Project Task agent run resources](projects.md#saved-id-delegation-and-agent
 memory/agents/<hostRunId>/
   run_metadata.json
   collaboration/
-    collaboration_tree.json        # subjectKind "agent", host, taskExecutions (delegated copies, each with its catalog source)
-    communication_messages.json    # schemaVersion 1, hostRunId, messages
-    <childRunId>/...               # a delegated Agent copy's memory
-    <teamRunId>/<agentRunId>/...   # members of a delegated Team copy
+    collaboration_tree.json        # subjectKind "agent", host, taskExecutions (a link per task agent)
+    communication_messages.json    # schemaVersion 1, hostRunId, messages (the host's own log)
+memory/agents/<childRunId>/        # a delegated Agent copy: a run of its own
+  run_metadata.json                # its facts and catalog source + taskAgent { coordinatingRun, delegatorAgentRunId, address, origin, … }
+  communication_messages.json      # its own message log
+  raw_traces_active.jsonl, …       # its memory
+memory/agent_teams/<teamRunId>/    # a delegated Team copy: a run of its own
+  team_run_execution_tree.json     # its members, coordinator, handoffs and source + taskAgent
+  team_communication_messages.json # its own message log
+  <agentRunId>/...                 # its members' memory
 ```
 
-Trees are read tolerantly and written exactly, like the Team and Org trees. The location
-service (`StandaloneRootLocationService`) resolves a child through the third root family
-`agents`.
+Trees are read tolerantly and written exactly, like the Team and Org trees. On disk the tree
+holds links; `StandaloneRootPackageStore` composes each delegated copy's record from its own file
+on load and splits it again on save (design D-1 of task-agent-own-run). A message between the
+host and a copy is stored in both logs (receiver's first); the stored view composes them once
+each. Deleting the host's run keeps its copies' folders (detached). The location service
+(`StandaloneRootLocationService`) resolves a child through the third root family `agents`.
 
 ## Surfaces
 
@@ -228,7 +236,7 @@ and [memory](agent_memory.md) for the persistence boundaries.
 - `src/standalone-agent-run-root/persistence/standalone-root-package-store.ts`
 - `src/agent-execution/services/standalone-agent-run-lifecycle-service.ts`
 - `src/agent-execution/services/standalone-run-ports.ts`
-- `src/agent-execution/prompt/standalone-collaboration-instruction.ts`
+- `src/agent-execution/prompt/collaboration-prompt-sections.ts`
 - `src/services/agent-streaming/agent-collaboration-stream-handler.ts`
 - `src/run-history/services/standalone-run-liveness.ts`
 - `src/api/graphql/types/agent-run-collaboration.ts`

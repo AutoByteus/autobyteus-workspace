@@ -4,49 +4,11 @@ import {
   composeNativeAutoByteusPrompt,
   composeSharedCarpenterPrompt,
 } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { renderCollaborationSections } from "../../../src/agent-execution/prompt/collaboration-prompt-sections.js";
 import { resolveRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
-import { renderMemberCollaborationInstruction } from "../../../src/agent-team-execution/services/member-collaboration-instruction-renderer.js";
 import { testMemberExecutionContext } from "../../fixtures/current-team-run-fixtures.js";
-import { AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION } from "../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
-const occurrences = (value: string, fragment: string): number =>
-  value.split(fragment).length - 1;
-
-const expectedInstruction = (memberAddress: string): string => [
-  "## AgentTeam Addressing",
-  "",
-  "AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.",
-  "",
-  "The root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.",
-  "",
-  "The following example illustrates the address structure:",
-  "",
-  "/",
-  "├── /A              (Agent)",
-  "├── /B              (Agent)",
-  "└── /C              (nested AgentTeam)",
-  "    ├── /C/D         (Agent)",
-  "    └── /C/E         (Agent)",
-  "",
-  "In this example:",
-  "",
-  "- `/A` and `/B` are Agents directly under the root AgentTeam.",
-  "- `/C` is an AgentTeam directly under the root AgentTeam.",
-  "- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.",
-  "- Each `/` separates one parent-to-child level.",
-  "",
-  "The letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.",
-  "",
-  "Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.",
-  "",
-  "Your Agent address is:",
-  "",
-  memberAddress,
-  "",
-  "Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.",
-  "",
-  AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION,
-].join("\n");
+const occurrences = (value: string, fragment: string): number => value.split(fragment).length - 1;
 
 const agentDefinition = new AgentDefinition({
   id: "agent-student-one",
@@ -70,80 +32,43 @@ describe("member collaboration instruction provider parity", () => {
       teamInstruction: "Teach and learn collaboratively.",
       deliverInterAgentMessage: vi.fn(async () => undefined) as never,
     });
-    const expected = renderMemberCollaborationInstruction({ memberAddress: memberExecutionContext.identity.memberAddress });
-
-    const providerSharedPrompt = composeSharedCarpenterPrompt({
-      agentDefinition,
-      memberExecutionContext,
-    });
+    const expected = renderCollaborationSections(memberExecutionContext);
+    const providerSharedPrompt = composeSharedCarpenterPrompt({ agentDefinition, memberExecutionContext });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
       agentDefinition,
       workspaceRootPath: "/tmp/classroom-workspace",
       memberExecutionContext,
     });
-    const runtimeExposure = resolveRuntimeAgentToolExposure(
-      agentDefinition,
-      memberExecutionContext,
-    );
+    const runtimeExposure = resolveRuntimeAgentToolExposure(agentDefinition, memberExecutionContext);
 
-    expect(expected).toBe(expectedInstruction("/StudentStudyGroup/student_one"));
     for (const prompt of [providerSharedPrompt, nativeAutoByteusPrompt]) {
-      const normalizedPrompt = prompt.replace(/\s+/g, " ");
-
       expect(prompt).toContain(expected);
       expect(occurrences(prompt, expected)).toBe(1);
       expect(occurrences(prompt, "## AgentTeam Addressing")).toBe(1);
-      expect(occurrences(prompt, "## AgentTeam Collaboration")).toBe(1);
-      expect(prompt.indexOf("## Team Instruction")).toBeLessThan(
-        prompt.indexOf("## AgentTeam Addressing"),
-      );
-      expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(
-        prompt.indexOf("## AgentTeam Collaboration"),
-      );
+      expect(occurrences(prompt, "## Working With Other Agents")).toBe(1);
+      expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## AgentTeam Addressing"));
+      expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(prompt.indexOf("## Working With Other Agents"));
       expect(prompt).not.toContain("## Team Runtime");
       expect(prompt).not.toContain("recipient_name");
       expect(prompt).not.toContain("memberPath");
       expect(prompt).not.toContain("Team membership roster");
       expect(prompt).not.toContain("requirements_engineering");
-      expect(prompt).not.toContain("REQ-");
-      expect(prompt).not.toContain("DEC-");
-      expect(prompt).toContain("The root AgentTeam is represented by `/`");
-      expect(prompt).toContain("├── /A              (Agent)");
-      expect(prompt).toContain("└── /C              (nested AgentTeam)");
-      expect(prompt).toContain("The letters in this example are placeholders only.");
-      expect(prompt).toContain("Never use both to deliver the same work.");
-      expect(prompt).toContain("it is not an\nalias for the new copy.");
-      expect(prompt).toContain("A copy that stays quiet is shut down after a while, but not\nwhile it has a running background task;");
+      expect(prompt).not.toContain("/StudentStudyGroup/student_one");
       expect(prompt).not.toMatch(/submit_task_result|review_task_result|Task Lifecycle/);
-      expect(prompt).toContain(
-        "Select the single rule whose `when` condition most specifically applies",
-      );
-      expect(prompt).toContain(
-        "Do not notify additional recipients for the same outcome.",
-      );
-      expect(normalizedPrompt).not.toContain("Apply every matching rule");
-      expect(normalizedPrompt).not.toContain("follow distinct recipients");
     }
     expect(providerSharedPrompt).not.toContain("## Working Environment");
     expect(providerSharedPrompt).not.toContain("## Bash Operating Practice");
     expect(providerSharedPrompt).not.toContain("## File And Directory Practice");
-    expect(nativeAutoByteusPrompt.indexOf("## AgentTeam Collaboration")).toBeLessThan(
+    expect(nativeAutoByteusPrompt.indexOf("## Working With Other Agents")).toBeLessThan(
       nativeAutoByteusPrompt.indexOf("## Working Environment"),
     );
     expect(nativeAutoByteusPrompt).toContain("## Bash Operating Practice");
     expect(nativeAutoByteusPrompt).toContain("## File And Directory Practice");
-    expect(runtimeExposure.requestedToolNames).toEqual([
-      "get_handoff_rules",
-      "send_message_to",
-      "delegate_task",
-    ]);
+    expect(runtimeExposure.requestedToolNames).toEqual(["get_handoff_rules", "send_message_to", "delegate_task"]);
   });
 
-  it("does not inject the Team collaboration block or intrinsic tools for standalone Agents", () => {
-    const providerSharedPrompt = composeSharedCarpenterPrompt({
-      agentDefinition,
-      memberExecutionContext: null,
-    });
+  it("does not inject the collaboration sections or intrinsic tools for standalone Agents without a member context", () => {
+    const providerSharedPrompt = composeSharedCarpenterPrompt({ agentDefinition, memberExecutionContext: null });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
       agentDefinition,
       workspaceRootPath: "/tmp/standalone-workspace",
@@ -152,7 +77,7 @@ describe("member collaboration instruction provider parity", () => {
 
     for (const prompt of [providerSharedPrompt, nativeAutoByteusPrompt]) {
       expect(prompt).not.toContain("## AgentTeam Addressing");
-      expect(prompt).not.toContain("## AgentTeam Collaboration");
+      expect(prompt).not.toContain("## Working With Other Agents");
     }
     expect(providerSharedPrompt).not.toContain("## Working Environment");
     expect(nativeAutoByteusPrompt).toContain("## Working Environment");

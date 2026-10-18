@@ -1,0 +1,36 @@
+{
+  "instanceId": "iso-55445-b74c",
+  "controlPort": 55445,
+  "backendUrl": "http://127.0.0.1:55446",
+  "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+  "startedAt": "2026-10-17T07:32:06.664Z",
+  "steps": {
+    "A1-busy-expanded": {
+      "result": "Fail",
+      "message": "locator.waitFor: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-transient-execution-row\"][data-transient-kind=\"task_team\"]').first() to be visible\n"
+    }
+  },
+  "timeline": [],
+  "failures": [
+    {
+      "id": "A1-busy-expanded",
+      "message": "locator.waitFor: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-transient-execution-row\"][data-transient-kind=\"task_team\"]').first() to be visible\n"
+    }
+  ],
+  "setup": {
+    "ids": {
+      "manager": "status-manager",
+      "lead": "status-lead",
+      "helper": "status-helper",
+      "team": "status-check-team"
+    },
+    "wsRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-xmKFDH/ac011-workspace",
+    "hostRunId": "status_manager_89d0ee84537c43bb9f0f1bcebe428da8",
+    "model": "gpt-5.6-sol",
+    "runtime": "codex_app_server"
+  },
+  "sentAt": "2026-10-17T07:32:08.310Z",
+  "result": "Fail",
+  "pageErrors": [],
+  "finishedAt": "2026-10-17T07:36:08.607Z"
+}

@@ -280,6 +280,8 @@ work are delegated through additional `delegate_task` calls.
 `{recipient_address, description, reference_files?}` spawn a new copy;
 `{target_team_run_id | target_agent_run_id, task_id}` gives a saved Task to an
 existing copy (see [Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy)).
+A Project Task's `task_id` is its key (any letter case) or its long ID; a Task
+with no Project uses its ID (see [Task keys](projects.md#task-keys-and-depends-on)).
 `recipient_address` is therefore not required by the parameter schema; the
 parser requires exactly one mode.
 
@@ -303,8 +305,8 @@ The tool description explains the field.
 
 An address that is neither a configured placement nor an
 available catalog agent of the run returns `{ delegated: false,
-message }` ("'…' is not a mounted Agent or Agent Team or an
-available agent of this run."); it is not a tool error. A catalog copy in which
+message }` ("'…' is not the address of an available agent or agent
+team. If you have list_available_agents, it shows the addresses you can use."); it is not a tool error. A catalog copy in which
 some agent has no usable layer, including the run root's settings, also starts
 nothing and returns
 `{ delegated: false, message: "<name> cannot be delegated to: <reason>" }`.

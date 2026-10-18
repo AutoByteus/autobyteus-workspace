@@ -1,0 +1,61 @@
+{
+  "startedAt": "2026-10-16T08:44:38.922Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "T01": {
+      "title": "SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); \"From Product Prototyper:\"; the next send with @Note Taker (CR-003) delegates an Agent copy",
+      "result": "Fail",
+      "ms": 38804,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-list-claude_agent_sdk\"]').locator('[data-test=\"chat-model-option-haiku\"]')\n    - locator resolved to <button data-row=\"\" type=\"button\" role=\"menuitemradio\" aria-checked=\"false\" data-test=\"chat-model-option-haiku\" title=\"claude-haiku-5-5 — Haiku · Haiku 5.5 · Fastest for quick answers · $0.10/$0.50 per Mtok ($0.50/$2.50 for prompts over 100k)\" aria-label=\"claude-haiku-5-5 — Haiku · Haiku 5.5 · Fastest for quick answers · $0.10/$0.50 per Mtok ($0.50/$2.50 for prompts over 100k)\" class=\"flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] text-gray-900 hover:bg-gray-100 focus…>…</button>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n  - element was detached from the DOM, retrying\n",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 47022
+    },
+    {
+      "label": "frontend",
+      "pid": 47057
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 47057,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 47022,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-aPq2sO"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-aPq2sO",
+  "backendUrl": "http://127.0.0.1:49294",
+  "frontUrl": "http://127.0.0.1:49295",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "noteTaker": "note-taker",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 1,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-16T08:45:35.094Z"
+}

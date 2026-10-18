@@ -49,9 +49,14 @@ export class MemberExecutionContextBuilder {
     // CR-001: the one owner decides the member's handoffs and enclosing instruction.
     const scope = resolveMemberCollaborationScope({
       memberAddress: input.agentNode.address,
+      agentRunId: input.agentNode.agentRunId,
       hostTeam: input.hostTeam,
       root: {
-        configuredRootAddresses: input.teamContext.teamNode.children.map((child) => child.address),
+        configured: {
+          addresses: input.teamContext.teamNode.children.map((child) => child.address),
+          agentRunIds: input.teamContext.teamNode.children.map((child) => child.agentRunId),
+          role: "team_member",
+        },
         handoffs: input.teamContext.handoffs,
         definition: { kind: "agent_team", definitionId: input.teamContext.teamNode.teamDefinitionId },
       },
@@ -78,6 +83,7 @@ export class MemberExecutionContextBuilder {
     return new MemberExecutionContext({
       identity,
       teamScoped: true,
+      collaborationRole: scope.role,
       authoredEnclosingScopeInstruction: summary.instruction,
       collaboration,
       tasks: input.taskCommands,
