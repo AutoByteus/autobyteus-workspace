@@ -1,0 +1,141 @@
+# API-06b HEAD | queue-lag probe (25 ms async delay per pipeline batch), real Claude CLI | src at 03d396b0b1 (= f4490d258a src) | 2026-10-18T17:22:11Z
+# env -i PATH HOME USER LOGNAME TMPDIR RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts > PROBE queue lag: Claude self-started turn after a background task (live) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+Agent websocket attached for run claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff
+Created agent session d832f8da-05c3-4f55-9267-c77d1bb2e4ac for run claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff
+Agent WebSocket connected: session=d832f8da-05c3-4f55-9267-c77d1bb2e4ac, run=claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff
+
+stdout | tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts > PROBE queue lag: Claude self-started turn after a background task (live) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts > PROBE queue lag: Claude self-started turn after a background task (live) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts > PROBE queue lag: Claude self-started turn after a background task (live) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+[claude-self-started-turn-shape] {"label":"path-claude","selfStartedTurnId":"claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:5a71f921-650e-484a-a19d-412179fd57de","turnsAfterNotice":["TURN_STARTED:claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:a50f2ea2-689b-4fd0-a08b-ed7bd2182ed3","SYSTEM_TASK_NOTIFICATION:claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:a50f2ea2-689b-4fd0-a08b-ed7bd2182ed3 \"Background task completed: sleep 10; echo READY_9eafcbd8-A > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-path-claude-L4M6HI/workspace/marker-a.txt (completed)\nBackground task completed: sleep 10; echo READY_9eafcbd8-B > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-path-claude-L4M6HI/workspace/marker-b.txt (completed)\"","TURN_COMPLETED:claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:a50f2ea2-689b-4fd0-a08b-ed7bd2182ed3","TURN_STARTED:claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:5a71f921-650e-484a-a19d-412179fd57de","SYSTEM_TASK_NOTIFICATION:claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:5a71f921-650e-484a-a19d-412179fd57de \"Claude started a turn on its own.\"","TURN_COMPLETED:claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:5a71f921-650e-484a-a19d-412179fd57de"],"turnBoundaryMs":["TURN_STARTED@88.6ms","TURN_COMPLETED@4451.2ms","TURN_STARTED@13345.8ms","TURN_COMPLETED@13431.1ms","TURN_STARTED@13457.8ms","TURN_COMPLETED@16653.8ms"],"lifecycleNotices":0,"statusAtText":[{"turnId":"claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:67fb2fb7-aca5-4fd3-8065-e76c0ed5c15f","status":"running"},{"turnId":"claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:5a71f921-650e-484a-a19d-412179fd57de","status":"running"},{"turnId":"claude-self-started-path-claude-84ab11d5-d19f-4cf6-aa1d-072dabf513ff:turn:5a71f921-650e-484a-a19d-412179fd57de","status":"running"}],"rejectionLogLines":0}
+
+stdout | tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts > PROBE queue lag: Claude self-started turn after a background task (live) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+Closed agent session d832f8da-05c3-4f55-9267-c77d1bb2e4ac
+Agent WebSocket disconnected: d832f8da-05c3-4f55-9267-c77d1bb2e4ac
+
+stdout | tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts > PROBE queue lag: Claude self-started turn after a background task (live) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude)
+Agent websocket attached for run claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81
+Created agent session f35656bb-6972-42e9-86c0-eee7783c5b16 for run claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81
+Agent WebSocket connected: session=f35656bb-6972-42e9-86c0-eee7783c5b16, run=claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81
+
+stdout | tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts > PROBE queue lag: Claude self-started turn after a background task (live) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude)
+[claude-self-started-turn-shape] {"label":"sdk-bundled-claude","selfStartedTurnId":"claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:139a0c34-d2e8-4b80-90f9-d57b1abd20b4","turnsAfterNotice":["TURN_STARTED:claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:95c0cb57-1163-4eb6-a71f-fbaefc80d640","SYSTEM_TASK_NOTIFICATION:claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:95c0cb57-1163-4eb6-a71f-fbaefc80d640 \"Background task completed: sleep 10; echo READY_e2914f85-A > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-sdk-bundled-claude-GsSuCg/workspace/marker-a.txt (completed)\nBackground task completed: sleep 10; echo READY_e2914f85-B > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-sdk-bundled-claude-GsSuCg/workspace/marker-b.txt (completed)\"","TURN_COMPLETED:claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:95c0cb57-1163-4eb6-a71f-fbaefc80d640","TURN_STARTED:claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:139a0c34-d2e8-4b80-90f9-d57b1abd20b4","SYSTEM_TASK_NOTIFICATION:claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:139a0c34-d2e8-4b80-90f9-d57b1abd20b4 \"Claude started a turn on its own.\"","TURN_COMPLETED:claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:139a0c34-d2e8-4b80-90f9-d57b1abd20b4"],"turnBoundaryMs":["TURN_STARTED@27.0ms","TURN_COMPLETED@6503.3ms","TURN_STARTED@15098.2ms","TURN_COMPLETED@15181.9ms","TURN_STARTED@15207.6ms","TURN_COMPLETED@19641.1ms"],"lifecycleNotices":0,"statusAtText":[{"turnId":"claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:28d77f4c-7cbb-42e0-9947-530f8e55381a","status":"running"},{"turnId":"claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:139a0c34-d2e8-4b80-90f9-d57b1abd20b4","status":"running"},{"turnId":"claude-self-started-sdk-bundled-claude-7ca08602-3be3-476a-85f8-0084e48a7b81:turn:139a0c34-d2e8-4b80-90f9-d57b1abd20b4","status":"running"}],"rejectionLogLines":0}
+
+stdout | tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts > PROBE queue lag: Claude self-started turn after a background task (live) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude)
+Closed agent session f35656bb-6972-42e9-86c0-eee7783c5b16
+Agent WebSocket disconnected: f35656bb-6972-42e9-86c0-eee7783c5b16
+
+ ✓ tests/e2e/runtime/zz-probe-claude-live-queue-lag.e2e.test.ts (2 tests) 37261ms
+     ✓ shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)  17019ms
+     ✓ shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude)  20241ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  19:22:12
+   Duration  43.43s (transform 3.94s, setup 24ms, import 5.66s, tests 37.26s, environment 0ms)
+
+exit 0

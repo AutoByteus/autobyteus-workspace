@@ -1,0 +1,135 @@
+# API-07 | existing live suite, first case | commit 03d396b0b1 | 2026-10-18T17:26:49Z
+# env -i PATH HOME USER LOGNAME TMPDIR RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-background-task.e2e.test.ts -t 'shows a background Bash command' --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts > Claude runtime background tasks (live E2E) > shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+Agent websocket attached for run claude-live-background-task-32de0f96-5470-4759-8a36-4126f77575ca
+Created agent session 0abfa0f7-9baa-4a58-b490-30fae7d1e6c7 for run claude-live-background-task-32de0f96-5470-4759-8a36-4126f77575ca
+Agent WebSocket connected: session=0abfa0f7-9baa-4a58-b490-30fae7d1e6c7, run=claude-live-background-task-32de0f96-5470-4759-8a36-4126f77575ca
+
+stdout | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts > Claude runtime background tasks (live E2E) > shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts > Claude runtime background tasks (live E2E) > shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts > Claude runtime background tasks (live E2E) > shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)
+Closed agent session 0abfa0f7-9baa-4a58-b490-30fae7d1e6c7
+Agent WebSocket disconnected: 0abfa0f7-9baa-4a58-b490-30fae7d1e6c7
+
+stdout | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts > Claude runtime background tasks (live E2E) > shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)
+Agent websocket attached for run claude-live-background-task-9049ad55-8d84-464b-a25b-00b135e03db8
+Created agent session 3aecc964-b9f7-42db-8d90-4c0347721939 for run claude-live-background-task-9049ad55-8d84-464b-a25b-00b135e03db8
+Agent WebSocket connected: session=3aecc964-b9f7-42db-8d90-4c0347721939, run=claude-live-background-task-9049ad55-8d84-464b-a25b-00b135e03db8
+
+stdout | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts > Claude runtime background tasks (live E2E) > shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)
+Closed agent session 3aecc964-b9f7-42db-8d90-4c0347721939
+Agent WebSocket disconnected: 3aecc964-b9f7-42db-8d90-4c0347721939
+
+ ✓ tests/e2e/runtime/claude-agent-background-task.e2e.test.ts (12 tests | 10 skipped) 55140ms
+     ✓ shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)  26841ms
+     ✓ shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)  28299ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 10 skipped (12)
+   Start at  19:26:50
+   Duration  59.40s (transform 2.69s, setup 23ms, import 3.78s, tests 55.14s, environment 0ms)
+
+exit 0

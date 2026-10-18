@@ -2,6 +2,7 @@ import type { AgentRunBackend } from "../backends/agent-run-backend.js";
 import type { AgentRunEventDispatchQueue } from "../events/agent-run-event-dispatch-queue.js";
 import type { AgentTurnLifecycleState } from "../events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
 import type { AgentSegmentLifecycleState } from "../events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
+import { logAgentSegmentRejectionSummaries } from "../events/processors/segment-lifecycle/agent-segment-rejection-log.js";
 import { getDefaultAgentRunEventPipeline } from "../events/default-agent-run-event-pipeline.js";
 import type {
   AgentRunInputAdmissionState,
@@ -14,7 +15,7 @@ import { createPreparedAgentRunTermination, type PreparedAgentRunTermination } f
 
 type AgentRunTerminationOptions = Readonly<{
   runId: string;
-  backend: Pick<AgentRunBackend, "getLifecycleSnapshot" | "hasRunningBackgroundTasks" | "terminate">;
+  backend: Pick<AgentRunBackend, "runtimeKind" | "getLifecycleSnapshot" | "hasRunningBackgroundTasks" | "terminate">;
   dispatchQueue: AgentRunEventDispatchQueue;
   lifecycleState: AgentTurnLifecycleState;
   segmentLifecycleState: AgentSegmentLifecycleState;
@@ -213,7 +214,10 @@ export class AgentRunTermination {
       this.options.inputAdmissionState.settleAcceptedTermination();
       this.options.interruptState.clear();
       this.options.lifecycleState.terminate();
-      this.options.segmentLifecycleState.releaseRun();
+      logAgentSegmentRejectionSummaries(
+        { runtimeKind: this.options.backend.runtimeKind, runId: this.options.runId },
+        this.options.segmentLifecycleState.releaseRun(),
+      );
       await getDefaultAgentRunEventPipeline().releaseRun(this.options.runId);
       this.options.dispatchCanonicalStatus();
     });

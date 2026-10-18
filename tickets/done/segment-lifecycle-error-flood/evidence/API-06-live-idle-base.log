@@ -1,0 +1,141 @@
+# API-06 base comparison | src of 4 modified files from 1c718202b2 (base), test file from working tree | 2026-10-18T17:18:02Z
+# env -i PATH HOME USER LOGNAME TMPDIR RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+Agent websocket attached for run claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a
+Created agent session 44bcd67d-6647-4a30-9553-58e6f39c048b for run claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a
+Agent WebSocket connected: session=44bcd67d-6647-4a30-9553-58e6f39c048b, run=claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+[claude-self-started-turn-shape] {"label":"path-claude","selfStartedTurnId":"claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:25902b73-fcb0-4973-9a30-8bebfdc21cae","turnsAfterNotice":["TURN_STARTED:claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:be813f98-109c-4751-a942-53f382da8027","SYSTEM_TASK_NOTIFICATION:claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:be813f98-109c-4751-a942-53f382da8027 \"Background task completed: sleep 10; echo READY_205fcf84-A > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-path-claude-EPSEwt/workspace/marker-a.txt (completed)\nBackground task completed: sleep 10; echo READY_205fcf84-B > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-path-claude-EPSEwt/workspace/marker-b.txt (completed)\"","TURN_COMPLETED:claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:be813f98-109c-4751-a942-53f382da8027","TURN_STARTED:claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:25902b73-fcb0-4973-9a30-8bebfdc21cae","SYSTEM_TASK_NOTIFICATION:claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:25902b73-fcb0-4973-9a30-8bebfdc21cae \"Claude started a turn on its own.\"","TURN_COMPLETED:claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:25902b73-fcb0-4973-9a30-8bebfdc21cae"],"lifecycleNotices":0,"statusAtText":[{"turnId":"claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:08dd4b2d-7df4-42b7-bcc1-e076df48a974","status":"running"},{"turnId":"claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:25902b73-fcb0-4973-9a30-8bebfdc21cae","status":"running"},{"turnId":"claude-self-started-path-claude-bef79d3c-b7d4-4350-a036-3ab6bfae5b3a:turn:25902b73-fcb0-4973-9a30-8bebfdc21cae","status":"running"}],"rejectionLogLines":0}
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)
+Closed agent session 44bcd67d-6647-4a30-9553-58e6f39c048b
+Agent WebSocket disconnected: 44bcd67d-6647-4a30-9553-58e6f39c048b
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude)
+Agent websocket attached for run claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af
+Created agent session 2cef7a5a-67c2-45fb-8dd1-001300c3aec1 for run claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af
+Agent WebSocket connected: session=2cef7a5a-67c2-45fb-8dd1-001300c3aec1, run=claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude)
+[claude-self-started-turn-shape] {"label":"sdk-bundled-claude","selfStartedTurnId":"claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:3d3a12a9-0d22-438c-8287-bd7a233ac7b3","turnsAfterNotice":["TURN_STARTED:claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:c6aae8b5-1137-4d44-9e25-01083cd0877b","SYSTEM_TASK_NOTIFICATION:claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:c6aae8b5-1137-4d44-9e25-01083cd0877b \"Background task completed: sleep 10; echo READY_fdbb8baa-A > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-sdk-bundled-claude-GRhUTs/workspace/marker-a.txt (completed)\nBackground task completed: sleep 10; echo READY_fdbb8baa-B > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-sdk-bundled-claude-GRhUTs/workspace/marker-b.txt (completed)\"","TURN_COMPLETED:claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:c6aae8b5-1137-4d44-9e25-01083cd0877b","TURN_STARTED:claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:3d3a12a9-0d22-438c-8287-bd7a233ac7b3","SYSTEM_TASK_NOTIFICATION:claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:3d3a12a9-0d22-438c-8287-bd7a233ac7b3 \"Claude started a turn on its own.\"","TURN_COMPLETED:claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:3d3a12a9-0d22-438c-8287-bd7a233ac7b3"],"lifecycleNotices":0,"statusAtText":[{"turnId":"claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:7a716169-4840-4ca0-8fe8-53576fc39d7b","status":"running"},{"turnId":"claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:3d3a12a9-0d22-438c-8287-bd7a233ac7b3","status":"running"},{"turnId":"claude-self-started-sdk-bundled-claude-6d2786ca-2119-42bb-a496-30cda1fce2af:turn:3d3a12a9-0d22-438c-8287-bd7a233ac7b3","status":"running"}],"rejectionLogLines":0}
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude)
+Closed agent session 2cef7a5a-67c2-45fb-8dd1-001300c3aec1
+Agent WebSocket disconnected: 2cef7a5a-67c2-45fb-8dd1-001300c3aec1
+
+ ✓ tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts (2 tests) 37271ms
+     ✓ shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude)  17039ms
+     ✓ shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude)  20231ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  19:18:02
+   Duration  42.47s (transform 3.21s, setup 25ms, import 4.67s, tests 37.27s, environment 0ms)
+
+exit 0

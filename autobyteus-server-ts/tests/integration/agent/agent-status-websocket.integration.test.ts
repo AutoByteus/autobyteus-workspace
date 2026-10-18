@@ -572,7 +572,7 @@ describe("Agent status WebSocket contract integration", () => {
         }),
       ]);
 
-      await waitForMessageCount(primary.messages, 12);
+      await waitForMessageCount(primary.messages, 11);
       const trace = primary.messages.slice(2);
       expect(trace.map((message) => [message.type, message.payload.status ?? message.payload.turn_id])).toEqual([
         ["AGENT_STATUS", "running"],
@@ -584,9 +584,8 @@ describe("Agent status WebSocket contract integration", () => {
         ["AGENT_STATUS", "running"],
         ["TURN_STARTED", "turn-b"],
         ["TURN_COMPLETED", "turn-a"],
-        ["ERROR", "turn-a"],
       ]);
-      expect(trace.at(-1)?.payload.code).toBe("AGENT_SEGMENT_LIFECYCLE_INVALID");
+      // The ended turn's late content stays undisplayed and gets no chat notice (REQ-003).
       expect(run.getStatusSnapshot()).toEqual({
         status: "running",
         agent_id: run.runId,
@@ -605,7 +604,8 @@ describe("Agent status WebSocket contract integration", () => {
       await backend.emitSource([
         event(run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-b" }),
       ]);
-      await waitForMessageCount(primary.messages, 14);
+      await waitForMessageCount(primary.messages, 13);
+      expect(primary.messages.filter((message) => message.type === "ERROR")).toEqual([]);
       expect(primary.messages.slice(-2).map((message) => message.type)).toEqual([
         "TURN_INTERRUPTED",
         "AGENT_STATUS",

@@ -4,6 +4,7 @@ import {
   type AgentSegmentIdentity,
   type AgentSegmentType,
 } from "../../../domain/agent-segment.js";
+import { AgentTurnLedger } from "../lifecycle-status/agent-turn-ledger.js";
 import type { AgentTurnLifecycleState } from "../lifecycle-status/agent-turn-lifecycle-state.js";
 
 type SegmentLifecycle = Readonly<{
@@ -12,19 +13,35 @@ type SegmentLifecycle = Readonly<{
   phase: "active" | "ended";
 }>;
 
+export type AgentSegmentRejectionReason =
+  | "TURN_ENDED"
+  | "TURN_NOT_CURRENT"
+  | "SEGMENT_NOT_STARTED"
+  | "SEGMENT_ENDED"
+  | "SEGMENT_TYPE_CONFLICT"
+  | "PAYLOAD_INVALID";
+
 export type AgentSegmentTransitionResult =
   | { kind: "ACCEPTED"; type: AgentSegmentType }
   | { kind: "REPLAY" }
-  | { kind: "REJECTED" };
+  | { kind: "REJECTED"; reason: Exclude<AgentSegmentRejectionReason, "PAYLOAD_INVALID"> };
+
+/** Rejections of one account (`turnId: null` for events without a turn id) since its last report. */
+export type AgentSegmentRejectionSummary = Readonly<{ turnId: string | null; count: number }>;
+
+export type AgentSegmentRejectionDecision = Readonly<{ warn: boolean; showNotice: boolean }>;
+
+type RejectionAccount = { warned: boolean; pending: number; noticed: boolean };
 
 export class AgentSegmentLifecycleState {
-  private activeTurnId: string | null = null;
-  private readonly retiredTurnIds = new Set<string>();
+  private readonly turns = new AgentTurnLedger();
   private readonly segments = new Map<string, SegmentLifecycle>();
+  /** Per-turn rejection accounts for the run's lifetime (`null`: events without a turn id). */
+  private readonly rejectionAccounts = new Map<string | null, RejectionAccount>();
 
   acceptCommand(turnId: string | null): void {
     if (turnId) {
-      this.openTurn(turnId);
+      this.openStreamTurn(turnId);
     }
   }
 
@@ -35,21 +52,23 @@ export class AgentSegmentLifecycleState {
       return;
     }
     if (snapshot.currentTurn.kind === "IDENTIFIED") {
-      this.openTurn(snapshot.currentTurn.turnId);
+      this.turns.observeRuntimeSnapshotTurn(snapshot.currentTurn.turnId);
     }
   }
 
+  /** Releases the run when the runtime is offline or failed; returns the release's pending summaries. */
   reconcileAfterBatch(
     snapshot: AgentRuntimeLifecycleSnapshot | undefined,
-  ): void {
+  ): AgentSegmentRejectionSummary[] {
     if (snapshot?.availability === "offline" || snapshot?.phase === "error") {
-      this.releaseRun();
+      return this.releaseRun();
     }
+    return [];
   }
 
   observeTurnStarted(turnId: string | null): void {
     if (turnId) {
-      this.openTurn(turnId);
+      this.openStreamTurn(turnId);
     }
   }
 
@@ -57,15 +76,13 @@ export class AgentSegmentLifecycleState {
     if (!turnId) {
       return;
     }
-    this.retiredTurnIds.add(turnId);
+    this.turns.end(turnId);
     this.clearTurn(turnId);
-    if (this.activeTurnId === turnId) {
-      this.activeTurnId = null;
-    }
   }
 
-  observeRuntimeTerminal(): void {
-    this.releaseRun();
+  /** A runtime-global failure or offline status; returns the release's pending summaries. */
+  observeRuntimeTerminal(): AgentSegmentRejectionSummary[] {
+    return this.releaseRun();
   }
 
   start(
@@ -73,8 +90,11 @@ export class AgentSegmentLifecycleState {
     type: AgentSegmentType,
     turnLifecycleState: AgentTurnLifecycleState,
   ): AgentSegmentTransitionResult {
-    if (!this.canOpen(identity.turnId, turnLifecycleState)) {
-      return { kind: "REJECTED" };
+    if (this.turns.hasEnded(identity.turnId)) {
+      return { kind: "REJECTED", reason: "TURN_ENDED" };
+    }
+    if (!this.isCurrentTurn(identity.turnId, turnLifecycleState)) {
+      return { kind: "REJECTED", reason: "TURN_NOT_CURRENT" };
     }
 
     const key = agentSegmentIdentityKey(identity);
@@ -83,10 +103,11 @@ export class AgentSegmentLifecycleState {
       if (existing.type === type) {
         return { kind: "REPLAY" };
       }
-      return { kind: "REJECTED" };
+      return { kind: "REJECTED", reason: "SEGMENT_TYPE_CONFLICT" };
     }
 
-    this.openTurn(identity.turnId);
+    // A segment start is stream evidence of its turn.
+    if (this.turns.activeTurnId !== identity.turnId) this.openStreamTurn(identity.turnId);
     this.segments.set(key, {
       identity,
       type,
@@ -95,25 +116,28 @@ export class AgentSegmentLifecycleState {
     return { kind: "ACCEPTED", type };
   }
 
-  content(identity: AgentSegmentIdentity): AgentSegmentTransitionResult {
-    if (this.retiredTurnIds.has(identity.turnId)) {
-      return { kind: "REJECTED" };
+  content(identity: AgentSegmentIdentity): Exclude<AgentSegmentTransitionResult, { kind: "REPLAY" }> {
+    if (this.turns.hasEnded(identity.turnId)) {
+      return { kind: "REJECTED", reason: "TURN_ENDED" };
     }
     const existing = this.segments.get(agentSegmentIdentityKey(identity));
-    if (!existing || existing.phase !== "active") {
-      return { kind: "REJECTED" };
+    if (!existing) {
+      return { kind: "REJECTED", reason: "SEGMENT_NOT_STARTED" };
+    }
+    if (existing.phase !== "active") {
+      return { kind: "REJECTED", reason: "SEGMENT_ENDED" };
     }
     return { kind: "ACCEPTED", type: existing.type };
   }
 
   end(identity: AgentSegmentIdentity): AgentSegmentTransitionResult {
-    if (this.retiredTurnIds.has(identity.turnId)) {
-      return { kind: "REJECTED" };
+    if (this.turns.hasEnded(identity.turnId)) {
+      return { kind: "REJECTED", reason: "TURN_ENDED" };
     }
     const key = agentSegmentIdentityKey(identity);
     const existing = this.segments.get(key);
     if (!existing) {
-      return { kind: "REJECTED" };
+      return { kind: "REJECTED", reason: "SEGMENT_NOT_STARTED" };
     }
     if (existing.phase === "ended") {
       return { kind: "REPLAY" };
@@ -122,20 +146,50 @@ export class AgentSegmentLifecycleState {
     return { kind: "ACCEPTED", type: existing.type };
   }
 
-  releaseRun(): void {
-    this.activeTurnId = null;
-    this.segments.clear();
+  /**
+   * Accounts one rejected segment event. `warn` is true only for the account's first rejection;
+   * later ones are counted until the next boundary. `showNotice` is true once per turn, and only
+   * while that turn is this state's active turn.
+   */
+  recordRejection(turnId: string | null): AgentSegmentRejectionDecision {
+    let account = this.rejectionAccounts.get(turnId);
+    if (!account) {
+      account = { warned: false, pending: 0, noticed: false };
+      this.rejectionAccounts.set(turnId, account);
+    }
+    const warn = !account.warned;
+    if (warn) account.warned = true;
+    else account.pending += 1;
+    const showNotice = turnId !== null && !account.noticed && this.turns.activeTurnId === turnId;
+    if (showNotice) account.noticed = true;
+    return { warn, showNotice };
   }
 
-  private canOpen(
+  /** A run lifecycle boundary: returns every account's pending count and resets it. */
+  takeRejectionSummaries(): AgentSegmentRejectionSummary[] {
+    const summaries: AgentSegmentRejectionSummary[] = [];
+    for (const [turnId, account] of this.rejectionAccounts) {
+      if (account.pending === 0) continue;
+      summaries.push({ turnId, count: account.pending });
+      account.pending = 0;
+    }
+    return summaries;
+  }
+
+  /** The run released its runtime. Returns the pending summaries for the caller to log. */
+  releaseRun(): AgentSegmentRejectionSummary[] {
+    this.turns.forgetActive();
+    this.segments.clear();
+    return this.takeRejectionSummaries();
+  }
+
+  private isCurrentTurn(
     turnId: string,
     turnLifecycleState: AgentTurnLifecycleState,
   ): boolean {
-    if (this.retiredTurnIds.has(turnId)) {
-      return false;
-    }
-    if (this.activeTurnId) {
-      return this.activeTurnId === turnId;
+    const activeTurnId = this.turns.activeTurnId;
+    if (activeTurnId) {
+      return activeTurnId === turnId;
     }
     if (turnLifecycleState.activeTurn.kind === "IDENTIFIED") {
       return turnLifecycleState.activeTurn.turnId === turnId;
@@ -147,15 +201,9 @@ export class AgentSegmentLifecycleState {
       turnLifecycleState.status === "running";
   }
 
-  private openTurn(turnId: string): void {
-    if (this.retiredTurnIds.has(turnId)) {
-      return;
-    }
-    if (this.activeTurnId && this.activeTurnId !== turnId) {
-      this.retiredTurnIds.add(this.activeTurnId);
-      this.clearTurn(this.activeTurnId);
-    }
-    this.activeTurnId = turnId;
+  private openStreamTurn(turnId: string): void {
+    const superseded = this.turns.observeStreamStart(turnId);
+    if (superseded) this.clearTurn(superseded);
   }
 
   private clearTurn(turnId: string): void {
