@@ -1,0 +1,17 @@
+{
+ "pm": {
+  "success": true,
+  "message": "Agent run created successfully.",
+  "runId": "ado_project_manager_0532bbe56e944a9f9ffc6a35ff190f46"
+ },
+ "writer": {
+  "success": true,
+  "message": "Agent run created successfully.",
+  "runId": "ado_writer_f443f8aeed79450bb2deec9f9d57d491"
+ },
+ "team": {
+  "success": true,
+  "message": "Agent team run created successfully.",
+  "teamRunId": "ado_review_team_9e0b160e7b384ebbbd93df7284824afb"
+ }
+}

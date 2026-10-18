@@ -1,0 +1,13 @@
+# Case: LIVE-TEAM run 3 — status-window analysis (S2)
+# Command: node evidence/analyze-status-windows.mjs evidence/LIVE-TEAM-run3/frames-S2.jsonl
+# Commit: e24ff6b333; Env: ENV-2
+# frames file: LIVE-TEAM-run3/frames-S2.jsonl
+batch frames: 152; sequences per batch: {"n":152,"min":3,"median":39,"max":59}
+frames between consecutive batches (top patterns, of 152 gaps):
+  148 × [AGENT_STATUS:running]
+  1 × [SEGMENT_START,AGENT_STATUS:running]
+  1 × [SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running]
+  1 × [TOKEN_USAGE_UPDATED,AGENT_STATUS:running,AGENT_STATUS:running,ASSISTANT_COMPLETE,TURN_COMPLETED,AGENT_STATUS:idle,AGENT_INPUT_STATE,AGENT_STATUS:initializing,AGENT_STATUS:idle,AGENT_STATUS:running]
+  1 × [AGENT_STATUS:running,SEGMENT_START,AGENT_STATUS:running]
+standalone statuses within 5 ms after a batch: identical-to-last-forwarded=13, changed-or-no-baseline=1
+  for those batches, ms since the previous sequenced frame (≈ window means a timer flush): {"n":14,"min":3,"median":502,"max":520}

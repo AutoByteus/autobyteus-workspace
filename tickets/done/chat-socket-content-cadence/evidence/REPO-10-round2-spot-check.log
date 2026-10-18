@@ -1,0 +1,268 @@
+# Case: REPO-10 (round 2 spot-check)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent/chat-socket-content-cadence.integration.test.ts --no-watch; then pnpm -C autobyteus-web test:nuxt run services/agentCollaboration services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+# Commit: 335f065cd1; Env: ENV-1; Date: 2026-10-18 14:31
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 55efbe2d-55f7-4302-8d1d-445dd07144ae for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent Team WebSocket connected: session=55efbe2d-55f7-4302-8d1d-445dd07144ae, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mClosed agent session 55efbe2d-55f7-4302-8d1d-445dd07144ae
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 97ac94c0-164a-4fb1-8403-389cc6c8f28f for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent Team WebSocket connected: session=97ac94c0-164a-4fb1-8403-389cc6c8f28f, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mClosed agent session 97ac94c0-164a-4fb1-8403-389cc6c8f28f
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session b849779a-5c4b-4a5a-a385-f3b149cbfb39 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent Team WebSocket connected: session=b849779a-5c4b-4a5a-a385-f3b149cbfb39, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mClosed agent session b849779a-5c4b-4a5a-a385-f3b149cbfb39
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 02dfdb65-5c83-4ce0-9f29-78b7d915acf0 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent Team WebSocket connected: session=02dfdb65-5c83-4ce0-9f29-78b7d915acf0, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mClosed agent session 02dfdb65-5c83-4ce0-9f29-78b7d915acf0
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 48d42e1d-dc81-4ca1-b30c-73a0348b31fb for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent Team WebSocket connected: session=48d42e1d-dc81-4ca1-b30c-73a0348b31fb, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mClosed agent session 48d42e1d-dc81-4ca1-b30c-73a0348b31fb
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session ba790419-5276-447c-82e9-df4d1700473b for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent Team WebSocket connected: session=ba790419-5276-447c-82e9-df4d1700473b, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Org /ws/agent-org'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mClosed agent session ba790419-5276-447c-82e9-df4d1700473b
+
+ [32m✓[39m tests/integration/agent/chat-socket-content-cadence.integration.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 10293[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 695[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 667[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1830[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 693[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 669[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1820[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 681[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 670[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1816[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m18 passed[39m[22m[90m (18)[39m
+[2m   Start at [22m 14:31:35
+[2m   Duration [22m 14.76s[2m (transform 2.54s, setup 25ms, import 3.97s, tests 10.29s, environment 0ms)[22m
+
+# server exit 0
+
+> autobyteus@1.5.6-beta.5 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web
+> cross-env NUXT_TEST=true vitest run services/agentCollaboration services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContextBatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContextBatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > becomes ready only after the exact connected root and complete authoritative snapshot
+Team WebSocket transport connected
+
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (15 tests) 12ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts (6 tests) 20ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContextBatch.spec.ts (3 tests) 7ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts (5 tests) 19ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts (7 tests) 17ms
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > acts on the first rejected gap effect once and cannot revive the failed instance
+Rejected Team execution message (TEAM_EXECUTION_CHANGE_SEQUENCE_GAP): Expected change sequence 1, received 2.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > rejects and stops a candidate whose snapshot base does not match
+Rejected invalid Team WebSocket message: Error: TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: Expected 7, received 8.
+    at TeamStreamingService.dispatchMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentStreaming/TeamStreamingService.ts:330:15[90m)[39m
+    at handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentStreaming/TeamStreamingService.ts:260:16[90m)[39m
+    at emit [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentStreaming/__tests__/TeamStreamingService.spec.ts:69:31[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentStreaming/__tests__/TeamStreamingService.spec.ts:433:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1574:12)
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (14 tests) 39ms
+
+ Test Files  6 passed (6)
+      Tests  50 passed (50)
+   Start at  14:31:52
+   Duration  6.64s (transform 3.67s, setup 34.44s, collect 1.40s, tests 114ms, environment 1.60s, prepare 975ms)
+
+# web exit 0

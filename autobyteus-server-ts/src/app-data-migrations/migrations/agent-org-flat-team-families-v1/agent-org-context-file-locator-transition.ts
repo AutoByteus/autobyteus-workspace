@@ -11,9 +11,8 @@ import type { AtomicRunPackageFileCommitWriter } from "../../../run-history/stor
 import { assertStoredFilename, buildFinalContextFileLocator } from "../../../context-files/domain/context-file-owner-types.js";
 import { listContextFileRecordSources, transformContextFileRecordLocators, type ContextFileRecordSource } from "../../../context-files/services/context-file-record-locators.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import { validateTeamCommunicationMessagesPayload } from "../../../services/team-communication/team-communication-messages-schema.js";
+import { validateAgentOrgCommunicationMessages, validateTeamCommunicationMessagesPayload } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { validateAgentOrgTaskDelegationRecordsV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-schema.js";
-import { validateAgentOrgCommunicationMessages } from "../../../agent-org-execution/persistence/agent-org-communication-messages-schema.js";
 
 type RootPlan = { id: string; source: string; index: AgentOrgExecutionIndex };
 type FilePlan = { source: ContextFileRecordSource; hash: string; targetHash: string; dependencies: Set<string> };

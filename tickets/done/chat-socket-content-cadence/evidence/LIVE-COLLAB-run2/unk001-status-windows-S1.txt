@@ -1,0 +1,13 @@
+# Case: LIVE-COLLAB run 2 — status-window analysis (S1)
+# Command: node evidence/analyze-status-windows.mjs evidence/LIVE-COLLAB-run2/frames-S1.jsonl; Commit: e24ff6b333; Env: ENV-2
+# frames file: LIVE-COLLAB-run2/frames-S1.jsonl
+batch frames: 69; sequences per batch: {"n":69,"min":2,"median":37,"max":59}
+frames between consecutive batches (top patterns, of 69 gaps):
+  61 × [AGENT_STATUS:running]
+  4 × [SEGMENT_START,AGENT_STATUS:running]
+  1 × [event:task_execution_started,AGENT_INPUT_STATE,AGENT_STATUS:initializing,AGENT_INPUT_STATE,SYSTEM_TASK_NOTIFICATION,AGENT_STATUS:initializing,SYSTEM_INSTRUCTIONS_SUPPLIED,AGENT_INPUT_STATE,AGENT_STATUS:running,AGENT_STATUS:running,TURN_STARTED,AGENT_INPUT_STATE,AGENT_STATUS:running,AGENT_STATUS:runn…]
+  1 × [SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running]
+  1 × [TOKEN_USAGE_UPDATED,AGENT_STATUS:running,AGENT_STATUS:running,ASSISTANT_COMPLETE,TURN_COMPLETED,AGENT_STATUS:idle,AGENT_INPUT_STATE,AGENT_STATUS:initializing,AGENT_STATUS:idle,AGENT_STATUS:running]
+  1 × [SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running,TOKEN_USAGE_UPDATED,AGENT_STATUS:running,AGENT_STATUS:running,ASSISTANT_COMPLETE,TURN_COMPLETED,AGENT_STATUS:idle,AGENT_INPUT_STATE,AGENT_STATUS:initializing,AGENT_STATUS:idle,AGENT_STATUS:initializing,AGENT_INPUT_STATE,MEMBER_INPUT_M…]
+standalone statuses within 5 ms after a batch: identical-to-last-forwarded=2, changed-or-no-baseline=0
+  for those batches, ms since the previous sequenced frame (≈ window means a timer flush): {"n":2,"min":500,"median":501,"max":501}

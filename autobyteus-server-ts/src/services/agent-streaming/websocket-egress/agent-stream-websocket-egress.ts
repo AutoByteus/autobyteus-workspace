@@ -6,7 +6,10 @@ import type {
   StreamEgressMessage,
 } from "./agent-stream-egress-control.js";
 import { createAgentStreamEgressControlMessage } from "./agent-stream-egress-control.js";
-import { createDefaultAgentStreamEgressControlComposition } from "./agent-stream-egress-control-composition.js";
+import {
+  createDefaultAgentStreamEgressControlComposition,
+  type AgentStreamEgressCompositionOptions,
+} from "./agent-stream-egress-control-composition.js";
 
 export interface AgentStreamServerMessageSink<
   M extends StreamEgressMessage = ServerMessage,
@@ -21,6 +24,8 @@ export type AgentStreamWebSocketEgressOptions<M extends StreamEgressMessage = Se
   onSendError?: (error: unknown) => void;
   onObserverError?: (error: unknown) => void;
   controlExtensions?: AgentStreamEgressControlExtensions;
+  /** The filters, scheduler and observers of this socket; the unsequenced `/ws/agent` composition by default. */
+  createControls?: (options: AgentStreamEgressCompositionOptions) => AgentStreamEgressControlComposition<M>;
 };
 
 export class AgentStreamWebSocketEgress<
@@ -31,7 +36,7 @@ export class AgentStreamWebSocketEgress<
   private readonly onObserverError: (error: unknown) => void;
 
   constructor(private readonly options: AgentStreamWebSocketEgressOptions<M>) {
-    this.controls = createDefaultAgentStreamEgressControlComposition({
+    this.controls = (options.createControls ?? createDefaultAgentStreamEgressControlComposition)({
       readIntervalMs: options.readIntervalMs,
       onScheduledError: options.onSendError,
       extensions: options.controlExtensions,

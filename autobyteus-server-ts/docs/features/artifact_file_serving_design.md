@@ -60,7 +60,7 @@ scope-local instance and never bind it as the process authority.
    events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
 4. `TeamCommunicationService` observes derived `TEAM_COMMUNICATION_MESSAGE`
    team events and persists one message-first projection at
-   `agent_teams/<teamRunId>/team_communication_messages.json`.
+   `agent_teams/<teamRunId>/team_communication_messages_*.jsonl`.
 5. GraphQL exposes `getTeamCommunicationMessages(teamRunId)` for Team tab
    hydration.
 6. Reference bytes are served by message-owned identity:
@@ -95,7 +95,7 @@ Agent Artifact metadata:
 Team Communication message/reference metadata:
 
 ```text
-agent_teams/<teamRunId>/team_communication_messages.json
+agent_teams/<teamRunId>/team_communication_messages_*.jsonl
 ```
 
 Both projections store metadata only. Current filesystem bytes are read on demand

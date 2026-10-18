@@ -1,0 +1,12 @@
+# IMP-07 (server-integration)
+# Command: pnpm -C autobyteus-server-ts test:integration
+# Commit: b3666d458f
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T12:13:43Z
+
+# Excerpt of IMP-07-server-integration.log: summary lines
+
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+ Test Files  77 passed | 18 skipped (95)
+      Tests  415 passed | 69 skipped (484)
+# exit: 0

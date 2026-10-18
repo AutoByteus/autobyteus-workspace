@@ -1,3 +1,5 @@
+import type { HandStartedRuns } from "../../agent-collaboration/execution/task/hand-started-runs.js";
+import { memoryRootOfCoordinatingDir } from "../../agent-memory/store/agent-memory-layout.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { resolveMemberCollaborationScope, type MemberHostTeam } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
@@ -46,6 +48,8 @@ export type StandaloneRootBuilderDependencies = Readonly<{
   activityInspector?: AgentConversationActivityInspector;
   workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
   collaboratorAdmission?: CollaboratorAdmission;
+  /** Runs the user started, as adoption reads and hands them over (default: the process managers over this memory root). */
+  handStartedRuns?: HandStartedRuns;
 }>;
 
 /** Builds one complete standalone root (registries, callbacks, persistence, host handle) around a loaded package. */
@@ -128,6 +132,8 @@ export class StandaloneRootBuilder {
       memoryLocator: this.dependencies.memoryLocator,
       activityInspector: this.dependencies.activityInspector,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
+      adoption: { memoryDir: memoryRootOfCoordinatingDir("agent", input.collaborationDir),
+        ...(this.dependencies.handStartedRuns ? { runs: this.dependencies.handStartedRuns } : {}) },
       onTerminated: () => { if (run) input.onTerminated(run); },
     });
     run.activate();

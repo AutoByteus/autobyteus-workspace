@@ -1,6 +1,6 @@
 import { agentInputStateSchema, compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
-import { agentAddressSchema, agentPresentationMessageSchema, jsonValueSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
+import { agentAddressSchema, agentPresentationMessageSchema, agentPresentationPayloadSchemas, jsonValueSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
 const timestamp = nonEmptyStringSchema;
 const nullableText = nonEmptyStringSchema.nullable();
 export const agentOrgLaunchConfigurationDtoSchema = z.object({
@@ -117,6 +117,19 @@ export const delegatedLaunchSelectionsChangedEventDtoSchema = z.object({
         z.object({ teamRunId: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
     ])).min(1),
 }).strict();
+/**
+ * Live: response text a chat socket coalesced over one content window. Each item is the
+ * concatenated text of one agent segment, in order of first appearance. The envelope covers the
+ * contiguous root sequences `[change_sequence, change_sequence_through]`, including absorbed
+ * identical status repeats; nothing outside that range is regrouped.
+ */
+export const agentPresentationBatchEventDtoSchema = z.object({
+    kind: z.literal("agent_presentation_batch"),
+    items: z.array(z.object({
+        member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema,
+        message: z.object({ type: z.literal("SEGMENT_CONTENT"), payload: agentPresentationPayloadSchemas.SEGMENT_CONTENT }).strict(),
+    }).strict()).min(1),
+}).strict();
 const configuredTeam = z.object({
     address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
     role: z.string().nullable(), description: z.string().nullable(), teamRunId: nonEmptyStringSchema,
@@ -167,6 +180,7 @@ export const agentOrgExecutionViewDtoSchema = z.object({
 }).strict();
 export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
+    agentPresentationBatchEventDtoSchema,
     z.object({
         kind: z.literal("task_execution_started"),
         host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecution,

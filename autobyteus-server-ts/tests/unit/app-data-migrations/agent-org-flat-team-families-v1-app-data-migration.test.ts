@@ -16,8 +16,7 @@ import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { getTaskDelegationRecordsV1Path } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
 import { getAgentOrgTaskDelegationRecordsV1Path } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
-import { getTeamCommunicationMessagesPath } from "../../../src/services/team-communication/team-communication-store.js";
-import { getAgentOrgCommunicationMessagesPath } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { getAgentOrgCommunicationMessagesPath, getTeamCommunicationMessagesPath } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
 import {

@@ -1,0 +1,400 @@
+#!/usr/bin/env node
+// IR-004 local rendered check (implementation self-validation, not a durable probe): the stack and helpers are
+// task-closure-tree-probe.mjs lines 19-271 verbatim; the journey below adopts runs the user opened this session.
+import fs from 'node:fs';
+import fsp from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+
+const require = createRequire(import.meta.url);
+const { chromium } = require('playwright-core');
+const WebSocket = require('ws');
+const webDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const serverDir = path.join(path.dirname(webDir), 'autobyteus-server-ts');
+const getArg = (name, fallback) => {
+  const inline = process.argv.find((a) => a.startsWith(`--${name}=`));
+  if (inline) return inline.slice(name.length + 3);
+  const i = process.argv.indexOf(`--${name}`);
+  return i >= 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : fallback;
+};
+const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/task-closure-tree'));
+const ledger = getArg('ledger');
+const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
+  || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
+    .find((candidate) => fs.existsSync(candidate));
+const ALL_CASES = ['BR-001', 'BR-002', 'BR-003', 'BR-004', 'BR-005', 'BR-006', 'BR-007', 'BR-008', 'BR-009', 'BR-010', 'BR-011',
+  'BR-012', 'BR-013', 'BR-014', 'BR-015', 'BR-016'];
+const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
+const SELECTED_BG = 'rgb(238, 242, 255)';
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const until = async (label, predicate, ms = 30000) => {
+  const end = Date.now() + ms; let last;
+  while (Date.now() < end) { try { const v = await predicate(); if (v) return v; } catch (e) { last = e; } await sleep(100); }
+  throw new Error(`Timed out: ${label}${last ? ` (${last.message})` : ''}`);
+};
+const assert = (cond, message, details) => { if (!cond) { const e = new Error(message); e.details = details; throw e; } };
+const freePort = () => new Promise((resolve, reject) => {
+  const s = net.createServer(); s.once('error', reject);
+  s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); });
+});
+const segment = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+const slug = (name) => segment(name).replace(/_/g, '-');
+const callTool = (name, args) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
+
+const evidence = { startedAt: new Date().toISOString(), executablePath, cases: {}, cleanup: {}, failures: [] };
+const evidencePath = path.join(outputDir, 'evidence.json');
+const save = () => fsp.writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`);
+
+// ---------------------------------------------------------------- owned stack
+const stack = { dataRoot: '', backendUrl: '', frontendUrl: '', backend: null, frontend: null, backendStarts: 0 };
+const exited = (c) => !c || c.exitCode !== null || c.signalCode !== null;
+const stopGroup = async (child) => {
+  if (exited(child)) return { pid: child?.pid ?? null, status: 'not-running' };
+  process.kill(-child.pid, 'SIGTERM');
+  await until('owned process exit', () => exited(child), 15000).catch(async () => {
+    process.kill(-child.pid, 'SIGKILL'); await until('owned process killed', () => exited(child), 5000);
+  });
+  return { pid: child.pid, status: 'terminated', exit: child.exitCode ?? child.signalCode };
+};
+const spawnLogged = (cmd, args, cwd, env, name) => {
+  const log = fs.createWriteStream(path.join(outputDir, `${name}.log`), { flags: 'a' });
+  const child = spawn(cmd, args, { cwd, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+  child.output = '';
+  child.stdout.on('data', (d) => { child.output += d; log.write(d); });
+  child.stderr.on('data', (d) => { child.output += d; log.write(d); });
+  child.once('close', () => log.end());
+  return child;
+};
+const backendEnv = () => {
+  const keys = { APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: `file:${path.join(stack.dataRoot, 'db', 'development.db')}`,
+    AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
+    AUTOBYTEUS_MEMORY_DIR: path.join(stack.dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(stack.dataRoot, 'temp_workspace') };
+  return keys;
+};
+const startBackend = async (port) => {
+  stack.backendStarts += 1;
+  const env = { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('AUTOBYTEUS_'))), ...backendEnv(),
+    ANTIGRAVITY_CLI_COMMAND: path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs'), AGY_FAKE_CASE: 'linked_skills' };
+  stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', stack.dataRoot],
+    serverDir, env, `backend-${stack.backendStarts}`);
+  await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 180000);
+  await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
+    headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
+};
+const startStack = async () => {
+  assert(fs.existsSync(path.join(serverDir, 'dist/app.js')), 'Build the server first: pnpm -C autobyteus-server-ts prebuild && pnpm -C autobyteus-server-ts build');
+  stack.dataRoot = await fsp.mkdtemp(path.join(os.tmpdir(), 'task-closure-tree-'));
+  for (const dir of ['db', 'logs', 'memory', 'temp_workspace', 'workspace']) await fsp.mkdir(path.join(stack.dataRoot, dir));
+  const backendPort = await freePort(); const frontendPort = await freePort();
+  stack.backendPort = backendPort;
+  stack.backendUrl = `http://127.0.0.1:${backendPort}`; stack.frontendUrl = `http://127.0.0.1:${frontendPort}`;
+  await fsp.writeFile(path.join(stack.dataRoot, '.env'), `${Object.entries(backendEnv()).map(([k, v]) => `${k}=${v}`).join('\n')}\n`, { mode: 0o600 });
+  await startBackend(backendPort);
+  const ws = stack.backendUrl.replace(/^http/, 'ws');
+  stack.frontend = spawnLogged('pnpm', ['exec', 'nuxi', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir,
+    { ...process.env, NODE_ENV: 'development', NUXT_TELEMETRY_DISABLED: '1', BACKEND_NODE_BASE_URL: stack.backendUrl,
+      BACKEND_AGENT_WS_ENDPOINT: `${ws}/ws/agent`, BACKEND_TEAM_WS_ENDPOINT: `${ws}/ws/agent-team`, BACKEND_GRAPHQL_WS_ENDPOINT: `${ws}/graphql`,
+      BACKEND_TRANSCRIPTION_WS_ENDPOINT: `${ws}/ws/transcribe`, BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
+      BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${ws}/ws/file-explorer` }, 'frontend');
+  await until('frontend', async () => { if (exited(stack.frontend)) throw new Error('Nuxt exited'); return (await fetch(stack.frontendUrl)).ok; }, 240000);
+  evidence.stack = { backendUrl: stack.backendUrl, frontendUrl: stack.frontendUrl, dataRoot: stack.dataRoot };
+};
+/** Real backend restart: the same entry, port and data root. */
+const restartBackend = async () => {
+  const before = stack.backend.pid;
+  await stopGroup(stack.backend);
+  await startBackend(stack.backendPort);
+  return { before, after: stack.backend.pid, starts: stack.backendStarts };
+};
+
+// ---------------------------------------------------------------- public API setup (what the app's own launch does)
+const gql = async (query, variables = {}) => {
+  const response = await fetch(`${stack.backendUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ query, variables }) });
+  const body = await response.json();
+  if (!response.ok || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
+  return body.data;
+};
+const workspace = () => path.join(stack.dataRoot, 'workspace');
+const config = () => ({ workspaceRootPath: workspace(), llmModelIdentifier: 'gemini-3.8-flash-low', llmConfig: null, autoExecuteTools: true, runtimeKind: 'antigravity_cli' });
+const createDefinitions = async (label) => {
+  const s = `${label} ${randomUUID().slice(0, 4)}`;
+  const agent = async (name, toolNames) => (await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',
+    { input: { name, role: 'assistant', description: name, instructions: 'Follow the request.', toolNames } })).createAgentDefinition.id;
+  const names = { manager: `Manager ${s}`, worker: `Release Notes Writer ${s}`, helper: `Fact Checker ${s}`, assistant: `Researcher ${s}`,
+    squad: `Docs Review Team ${s}`, team: `Delivery Team ${s}`, org: `Delivery Org ${s}` };
+  const ids = {};
+  ids.manager = await agent(names.manager, ['list_projects', 'list_project_tasks', 'create_project', 'update_project', 'create_task', 'update_task']);
+  ids.worker = await agent(names.worker, []); ids.helper = await agent(names.helper, []); ids.assistant = await agent(names.assistant, []);
+  const team = async (name, coordinatorMemberName, nodes) => (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}',
+    { input: { name, description: name, instructions: 'Deliver.', coordinatorMemberName, nodes } })).createAgentTeamDefinition.id;
+  ids.squad = await team(names.squad, 'reviewer', [{ memberName: 'reviewer', ref: ids.worker, refScope: 'SHARED' }, { memberName: 'editor', ref: ids.helper, refScope: 'SHARED' }]);
+  // A Team root delegates only outside its own Team (collaboration-model-contract): worker and helper are catalog Agents, not members.
+  ids.team = await team(names.team, 'manager', [{ memberName: 'manager', ref: ids.manager, refScope: 'SHARED' }]);
+  ids.org = (await gql('mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}',
+    { input: { name: names.org, description: 'Org root', instructions: 'Deliver.', handoffs: [], members: [
+      { memberName: 'manager', ref: ids.manager, refType: 'AGENT', refScope: 'SHARED' },
+      { memberName: 'worker', ref: ids.worker, refType: 'AGENT', refScope: 'SHARED' },
+      { memberName: 'helper', ref: ids.helper, refType: 'AGENT', refScope: 'SHARED' },
+      { memberName: 'squad', ref: ids.squad, refType: 'AGENT_TEAM', refScope: 'SHARED' }] } })).createAgentOrgDefinition.id;
+  return { ids, names };
+};
+const ensureWorkspace = async () => {
+  const listed = (await gql('query{workspaces{absolutePath}}').catch(() => ({ workspaces: [] }))).workspaces ?? [];
+  if (!listed.some((w) => w.absolutePath === workspace())) {
+    await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: workspace() } });
+  }
+};
+const createProject = async (label) => {
+  const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}',
+    { input: { name: `Prototype Launch ${label} ${randomUUID().slice(0, 6)}` } })).createProject.projectId;
+  const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
+    { input: { projectId, description } })).createProjectTask.taskId;
+  return { projectId, task };
+};
+const taskStatus = async (projectId, taskId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status}}', { id: projectId }))
+  .projectTasks.find((t) => t.taskId === taskId)?.status;
+/** Task execution nodes of a stored tree (camelCase Agent/Org trees, snake_case Team tree). */
+const taskNodes = (tree) => {
+  const found = [];
+  const visit = (v) => {
+    if (Array.isArray(v)) return v.forEach(visit);
+    if (!v || typeof v !== 'object') return;
+    const startedAt = v.startedAt ?? v.started_at; const agentRunId = v.agentRunId ?? v.agent_run_id; const teamRunId = v.teamRunId ?? v.team_run_id;
+    if (typeof startedAt === 'string' && (agentRunId || teamRunId)) found.push({ agentRunId: teamRunId ? undefined : agentRunId, teamRunId, address: v.address,
+      delegatorAgentRunId: v.delegatorAgentRunId ?? v.delegator_agent_run_id, members: (v.members ?? []).map((m) => m.agentRunId ?? m.agent_run_id).filter(Boolean) });
+    Object.values(v).forEach(visit);
+  };
+  visit(tree); return found;
+};
+const createRoot = async (kind, ids) => {
+  if (kind === 'agent') {
+    const r = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: ids.manager, ...config() } })).createAgentRun;
+    assert(r.success, r.message); return { kind, rootId: r.runId, managerRunId: r.runId };
+  }
+  if (kind === 'team') {
+    const r = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}',
+      { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: ['manager']
+        .map((m) => ({ memberAddress: `/${m}`, agentDefinitionId: ids[m], ...config() })) } })).createAgentTeamRun;
+    assert(r.success, r.message);
+    const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: r.teamRunId })).getTeamRunResumeConfig.executionTree;
+    return { kind, rootId: r.teamRunId, managerRunId: tree.root_team.members.find((m) => m.address === '/manager').agent_run_id };
+  }
+  const r = (await gql('mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}',
+    { input: { agentOrgDefinitionId: ids.org, rootConfiguration: config(), agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
+  assert(r.success, r.message);
+  const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: r.agentOrgRunId })).getAgentOrgRunConfig.executionTree;
+  return { kind, rootId: r.agentOrgRunId, managerRunId: tree.rootOrg.members.find((m) => m.address === '/manager').agentRunId };
+};
+const storedTree = async (root) => {
+  if (root.kind === 'agent') return (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })).agentRunCollaboration?.root_agent?.execution_tree;
+  if (root.kind === 'team') return (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId })).getTeamRunResumeConfig.executionTree;
+  return (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId })).getAgentOrgRootHistory.org;
+};
+const terminate = async (root) => Object.values(await gql(root.kind === 'agent' ? 'mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}'
+  : root.kind === 'team' ? 'mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}'
+    : 'mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}', { id: root.rootId }))[0];
+const sockets = [];
+/** The Manager's input channel (what its composer sends). Used for the Manager's own steps. */
+const managerInput = async (root) => {
+  const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
+  const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
+    ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
+      message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
+    : { agent_run_id: root.managerRunId, message_id: `e2e-${randomUUID()}`, dedupe_key: `agent_run_input:e2e:${randomUUID()}`,
+      content, context_file_paths: [], image_urls: [] } }));
+  return { send, close: () => socket.close() };
+};
+
+/** A root with Task A (Agent + delegated helper + the helper's own delegation to a researcher), Task B (a Team), and non-Task work. */
+const setupRoot = async (kind, label, { withB = true, withPlain = true } = {}) => {
+  const { ids, names } = await createDefinitions(label);
+  const { projectId, task } = await createProject(label);
+  const at = (member, catalogName) => (kind !== 'org' ? `/${segment(catalogName)}` : `/${member}`);
+  const taskA = await task(callTool('delegate_task', { recipient_address: at('helper', names.helper),
+    description: callTool('delegate_task', { recipient_address: `/${segment(names.assistant)}`, description: 'Collect the changelog links.' }) }));
+  const taskB = await task('Review the docs site.');
+  const root = await createRoot(kind, ids);
+  const input = await managerInput(root);
+  const count = async () => taskNodes(await storedTree(root)).length;
+  input.send(callTool('delegate_task', { recipient_address: at('worker', names.worker), task_id: taskA }));
+  await until('Task A runs', async () => (await count()) >= 3, 60000);
+  const aNodes = taskNodes(await storedTree(root));
+  if (withB) { input.send(callTool('delegate_task', { recipient_address: kind === 'org' ? '/squad' : `/${segment(names.squad)}`, task_id: taskB })); await until('Task B', async () => (await count()) >= 4, 60000); }
+  if (withPlain) { input.send(callTool('delegate_task', { recipient_address: at('worker', names.worker), description: 'Draft a short summary.' }));
+    await until('non-Task run', async () => (await count()) >= aNodes.length + (withB ? 2 : 1), 60000); }
+  const all = taskNodes(await storedTree(root));
+  const key = (n) => n.teamRunId ?? n.agentRunId;
+  const bNode = all.find((n) => n.teamRunId && !aNodes.some((a) => key(a) === key(n)));
+  const plainNode = all.find((n) => !n.teamRunId && !aNodes.some((a) => key(a) === key(n)));
+  return { ids, names, projectId, taskA, taskB, root, input, at,
+    aRefs: aNodes.map((n) => (n.teamRunId ? { teamRunId: n.teamRunId } : { agentRunId: n.agentRunId })),
+    aAssigned: aNodes.find((n) => n.delegatorAgentRunId === root.managerRunId),
+    bRef: bNode ? { teamRunId: bNode.teamRunId } : null, bMembers: bNode?.members ?? [], plainRef: plainNode ? { agentRunId: plainNode.agentRunId } : null };
+};
+
+// ---------------------------------------------------------------- browser helpers
+let browser;
+const newPage = async ({ reducedMotion = 'no-preference', initScript } = {}) => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion, locale: 'en-US' });
+  if (initScript) await context.addInitScript(initScript);
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
+  // A cold Nuxt dev server may reload once for dependency optimization; those transient errors are not app errors.
+  page.on('console', (m) => { if (m.type() === 'error' && !/Outdated Optimize Dep|dynamically imported module|error caught during app initialization/.test(m.text())) errors.push(m.text()); });
+  return { context, page, errors };
+};
+const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) });
+const rowSelector = (ref) => ref.teamRunId ? '[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]'
+  : `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${ref.agentRunId}"]`;
+const ownAgentRow = (runId) => `[data-test="workspace-agent-run-row"][data-run-id="${runId}"]`;
+const ownTeamRow = (teamRunId) => `[data-test="workspace-team-row-${teamRunId}"]`;
+const count = (page, sel) => page.locator(sel).count();
+const conversationText = async (runId) => JSON.stringify((await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: runId })
+  .catch(() => ({ getRunProjection: null }))).getRunProjection?.conversation ?? []);
+/** The renderer's retirement state (the Pinia store added in IR-004). */
+const retiredState = (page) => page.evaluate(() => {
+  const state = document.querySelector('#__nuxt')?.__vue_app__?.config.globalProperties.$pinia?.state.value.runHistoryRetiredRuns;
+  return state ? { taskExecution: Object.keys(state.taskExecutionRunIds), departed: Object.keys(state.departedRunIds) } : null;
+});
+const openWorkspace = async (page) => {
+  await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
+  await until('workspace rows', async () => (await count(page, '[data-test="workspace-row"]')) >= 1, 60000);
+  await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).first().click();
+};
+const openAgentRun = async (page, agentName, runId) => {
+  await page.locator('[data-test="workspace-agent-row"]', { hasText: agentName }).click();
+  await until(`run row ${runId}`, async () => (await count(page, ownAgentRow(runId))) === 1, 30000);
+  await page.locator(ownAgentRow(runId)).click();
+  await until(`run ${runId} selected`, async () => (await page.locator(ownAgentRow(runId)).getAttribute('aria-current')) === 'true', 30000);
+};
+
+const journey = async () => {
+  const out = {};
+  const { ids, names } = await createDefinitions('Adopt');
+  const { projectId, task } = await createProject('Adopt');
+  const agentTask = await task('Write the release notes.');
+  const teamTask = await task('Review the docs site.');
+  // Runs the user started by hand: an agent run and a team run, each with its own conversation.
+  const worker = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}',
+    { input: { agentDefinitionId: ids.worker, ...config() } })).createAgentRun.runId;
+  const workerInput = await managerInput({ kind: 'agent', rootId: worker, managerRunId: worker });
+  workerInput.send('Hello, start of my own work.');
+  await until('worker answered', async () => (await conversationText(worker)).includes('OK'), 60000);
+  const teamRun = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}',
+    { input: { teamDefinitionId: ids.squad, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: [['reviewer', ids.worker], ['editor', ids.helper]]
+      .map(([m, id]) => ({ memberAddress: `/${m}`, agentDefinitionId: id, ...config() })) } })).createAgentTeamRun;
+  assert(teamRun.teamRunId, teamRun.message);
+  const team = teamRun.teamRunId;
+  const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: team })).getTeamRunResumeConfig.executionTree;
+  const reviewer = tree.root_team.members.find((m) => m.address === '/reviewer').agent_run_id;
+  const teamInput = await managerInput({ kind: 'team', rootId: team, managerRunId: reviewer });
+  teamInput.send('Hello team, start of our own work.');
+  await until('team answered', async () => (await conversationText(reviewer)).includes('OK'), 60000).catch(() => sleep(10000));
+  workerInput.close(); teamInput.close();
+  const pm = await createRoot('agent', ids);
+  const pmInput = await managerInput(pm);
+  pmInput.send('Hello, I manage the project.');
+  await until('PM answered', async () => (await conversationText(pm.rootId)).includes('OK'), 60000);
+
+  // Page 1: the user opened the hand-started agent run from its history row, and the PM run (delegator open).
+  const p1 = await newPage();
+  await openWorkspace(p1.page);
+  await openAgentRun(p1.page, names.worker, worker);
+  await openAgentRun(p1.page, names.manager, pm.rootId);
+  await shot(p1.page, '01-before-adoption');
+  out.beforeAdoption = { ownRow: await count(p1.page, ownAgentRow(worker)) };
+  assert(out.beforeAdoption.ownRow === 1, 'the opened worker run is not in its own group before adoption');
+
+  pmInput.send(callTool('delegate_task', { target_agent_run_id: worker, task_id: agentTask }));
+  await until('agent run adopted (stored tree)', async () => taskNodes(await storedTree(pm)).some((n) => n.agentRunId === worker), 90000);
+  const adoptedAt = Date.now();
+  await until('adopted agent run left its own group', async () => (await count(p1.page, ownAgentRow(worker))) === 0, 30000);
+  out.agentLeftOwnGroupMs = Date.now() - adoptedAt;
+  await until('adopted agent run under the PM', async () => (await count(p1.page, rowSelector({ agentRunId: worker }))) >= 1, 30000);
+  out.afterAdoption = { ownRow: await count(p1.page, ownAgentRow(worker)), underPm: await count(p1.page, rowSelector({ agentRunId: worker })),
+    retired: await retiredState(p1.page) };
+  await shot(p1.page, '02-after-adoption');
+  await sleep(6000); // past one history refresh (5 s)
+  out.afterHistoryRefresh = { ownRow: await count(p1.page, ownAgentRow(worker)), retired: await retiredState(p1.page) };
+  assert(out.afterHistoryRefresh.ownRow === 0, 'the adopted run came back in its own group after a history read');
+
+  // AC-003 / D-1: DONE removes it from under the PM; reopening and a message bring it back there, never to its own group.
+  pmInput.send(callTool('update_task', { task_id: agentTask, status: 'DONE' }));
+  await until('Task DONE', async () => (await taskStatus(projectId, agentTask)) === 'DONE', 60000);
+  await until('row under the PM leaves on DONE', async () => (await count(p1.page, rowSelector({ agentRunId: worker }))) === 0, 30000);
+  await sleep(6000);
+  out.afterDone = { ownRow: await count(p1.page, ownAgentRow(worker)), underPm: await count(p1.page, rowSelector({ agentRunId: worker })) };
+  await shot(p1.page, '03-after-done');
+  assert(out.afterDone.ownRow === 0, 'the adopted run came back in its own group after DONE');
+  pmInput.send(callTool('update_task', { task_id: agentTask, status: 'IN_PROGRESS' }));
+  await until('Task reopened', async () => (await taskStatus(projectId, agentTask)) === 'IN_PROGRESS', 60000);
+  pmInput.send(callTool('send_message_to', { target_agent_run_id: worker, content: 'Continue the Task please.' }));
+  await until('reactivated under the PM', async () => (await count(p1.page, rowSelector({ agentRunId: worker }))) >= 1, 60000);
+  await sleep(6000);
+  out.afterReopen = { ownRow: await count(p1.page, ownAgentRow(worker)), underPm: await count(p1.page, rowSelector({ agentRunId: worker })) };
+  await shot(p1.page, '04-after-reopen');
+  assert(out.afterReopen.ownRow === 0, 'the adopted run came back in its own group after reopening');
+
+  // Page 2: the user opened the hand-started team run only (the PM is not opened in this page).
+  const p2 = await newPage();
+  await openWorkspace(p2.page);
+  await p2.page.locator(`[data-test="workspace-team-definition-row-${slug(names.squad)}"]`).click();
+  await until('team row', async () => (await count(p2.page, ownTeamRow(team))) === 1, 30000);
+  await p2.page.locator(ownTeamRow(team)).click();
+  await until('team tree', async () => (await count(p2.page, '[data-test="workspace-team-execution-tree"]')) >= 1, 30000);
+  await shot(p2.page, '05-team-before-adoption');
+  pmInput.send(callTool('delegate_task', { target_team_run_id: team, task_id: teamTask }));
+  await until('team run adopted (stored tree)', async () => taskNodes(await storedTree(pm)).some((n) => n.teamRunId === team), 90000);
+  const teamAdoptedAt = Date.now();
+  await until('adopted team left its own group', async () => (await count(p2.page, ownTeamRow(team))) === 0, 30000);
+  out.teamLeftOwnGroupMs = Date.now() - teamAdoptedAt;
+  out.teamRetired = await retiredState(p2.page);
+  await shot(p2.page, '06-team-after-adoption');
+
+  // A reload: the server lists neither run; both are shown only under the PM.
+  await openWorkspace(p1.page);
+  await sleep(3000);
+  out.afterReload = { workerOwnRow: await count(p1.page, ownAgentRow(worker)), teamOwnRow: await count(p1.page, ownTeamRow(team)) };
+  assert(out.afterReload.workerOwnRow === 0 && out.afterReload.teamOwnRow === 0, 'an adopted run is in its own group after reload');
+  out.browserErrors = [...p1.errors, ...p2.errors];
+  assert(out.browserErrors.length === 0, 'browser errors', out.browserErrors);
+  return out;
+};
+
+let result = 'Pass';
+try {
+  if (fs.existsSync(evidencePath)) throw new Error(`Refusing to overwrite ${evidencePath}; use a fresh --output-dir`);
+  await fsp.mkdir(outputDir, { recursive: true });
+  assert(executablePath, 'No Chrome found; pass --browser-executable');
+  await startStack();
+  await ensureWorkspace();
+  browser = await chromium.launch({ headless: true, executablePath });
+  evidence.browserVersion = browser.version();
+  try { evidence.cases.ADOPT = { result: 'Pass', details: await journey() }; }
+  catch (error) { result = 'Fail'; evidence.cases.ADOPT = { result: 'Fail', message: error.message, details: error.details }; evidence.failures.push({ id: 'ADOPT', message: error.message }); }
+  await save();
+} catch (error) {
+  result = 'Fail';
+  evidence.failures.push({ id: 'HARNESS', message: error.message, details: error.details });
+} finally {
+  for (const socket of sockets) socket.terminate();
+  try { await browser?.close(); evidence.cleanup.browser = browser ? 'closed' : 'not-started'; } catch (e) { result = 'Fail'; evidence.cleanup.browser = `failed: ${e.message}`; }
+  try { evidence.cleanup.frontend = await stopGroup(stack.frontend); } catch (e) { result = 'Fail'; evidence.cleanup.frontend = `failed: ${e.message}`; }
+  try { evidence.cleanup.backend = await stopGroup(stack.backend); } catch (e) { result = 'Fail'; evidence.cleanup.backend = `failed: ${e.message}`; }
+  try { if (stack.dataRoot) await fsp.rm(stack.dataRoot, { recursive: true, force: true }); evidence.cleanup.dataRootRemoved = !stack.dataRoot || !fs.existsSync(stack.dataRoot); }
+  catch (e) { result = 'Fail'; evidence.cleanup.dataRootRemoved = `failed: ${e.message}`; }
+  evidence.result = result; evidence.finishedAt = new Date().toISOString();
+  if (fs.existsSync(outputDir)) await save();
+}
+process.stdout.write(`IR-004 adoption sidebar check: ${result}. Evidence: ${evidencePath}\n`);
+process.exit(result === 'Pass' ? 0 : 1);

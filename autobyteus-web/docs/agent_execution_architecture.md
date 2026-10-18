@@ -111,11 +111,35 @@ suppression Set or policy callback.
 its coordinator. Status, closure recovery, conversations and execution remain
 separate from disclosure. Agent Team and Agent Org roots keep their own policies.
 
-Collapsing does not defer child hydration. Stored inspection and stream
-snapshots still stage complete child contexts before publication, fetching each
-child's projection and artifact state through the existing hydration owners.
-Compact rows are not evidence of fewer reads or a host-selection speedup;
-host selection, collaboration publication and member readiness are distinct
+Disclosure and loading are separate. A stored inspection or stream snapshot
+publishes the context from the run's collaboration view alone
+(`buildAgentRunCollaborationContext`): the tree, one Offline child context per
+child, and statuses and input states from the view. No child's conversation,
+activities or artifacts are fetched to draw the rows, so their cost does not grow
+with the number of copies.
+
+A child's stored details load on demand (`agentRunCollaborationChildHydration.ts`):
+
+- **When.** When it is selected (row click, Task locate), and again for the
+  selected child after every publication, including the snapshot that follows a
+  new delegation or a settings Save. Unopened children are never loaded;
+  previously opened ones load again when selected again.
+- **What.** One member projection request and one hub-scoped artifact request
+  (`agentRunCollaborationMemberFileChanges`, never the run-id `getRunFileChanges`).
+- **Ownership.** The store is the only owner of in-flight loads, keyed by
+  (published context, child). A load whose context is no longer published, because
+  it was republished or the host is stopping, ends `superseded` and writes nothing.
+  A live event (single or an `agent_presentation_batch`) or a shown local message during
+  the fetch retries the load within the same context, at most three attempts. Live
+  presentation reaches every child's context, loaded or not. A failure is logged with the host and child
+  and leaves the child unloaded, so selecting it again retries.
+- **Shown content.** A republication carries a loaded child's shown conversation into
+  the new context (not its loaded mark), so the opened copy does not flash empty.
+  Until a copy loads, the center view shows its empty or previous conversation; there
+  is no separate loading state. Held or queued input the view or the stream showed
+  stays shown when the stored conversation arrives.
+
+Host selection, collaboration publication and child readiness are distinct
 boundaries. See [Projects](./projects.md#delegated-team-disclosure-under-agent-runs)
 for the user interaction contract.
 
@@ -503,6 +527,18 @@ address. The strict contract contains no task instance ids, execution-kind
 aliases, member/source path or route-key fallbacks, represented-Team compatibility fields,
 or generated-run-id inference. Complete snapshots and live events reconcile
 through the same execution model and exact serialized address.
+
+A run that became a task agent is never a top-level row, even when this session
+still holds its context (a run the user started and a Project Task Manager
+adopted, server `projects.md` §A Task for a run the user started).
+`runHistoryRetiredRuns` holds the retired run ids, and the navigation projection
+builds top-level rows without them (`withoutRetiredRuns`): a run reported by an
+Agent root's collaboration stream as `task_execution_started` is retired at once,
+and a run a history read listed is retired when a later read no longer lists it
+although it would have (agent history lists only the newest runs per agent, so a
+run that merely fell out of that window stays). A run listed again is shown
+again; runs no read has listed yet (drafts, runs created this session) keep their
+local rows.
 
 Delegated children are shown only in the global Workspaces/run-history tree,
 as ordinary rows. That tree composes stable history rows with pure
@@ -1552,11 +1588,14 @@ The service layer bridges the gap between the WebSocket transport and the applic
       task/member identity and required task-navigation mutation first, then
       uses the same projector for the resolved context.
   4.  Applies each `SEGMENT_CONTENT` message once and immediately because the
-      server has already shaped the transport cadence.
+      server has already shaped the transport cadence. On the sequenced Team,
+      Org and delegated-agent streams, content arrives as a content batch, and
+      each of its items is applied as one `SEGMENT_CONTENT` (see below).
 
 ### Server-Owned Stream-Content Cadence And Immediate Frontend Projection
 
-Standalone and team WebSocket sessions use the same server-side
+Every chat WebSocket session (standalone Agent, AgentTeam, AgentOrg and the
+delegated agents of a standalone run) uses the same server-side
 `AgentStreamWebSocketEgress`. Runtime and provider adapters still publish every
 fine-grained canonical event; only the client-bound WebSocket content lane is
 shaped. The policy does not select a different path for AutoByteus, Codex,
@@ -1591,8 +1630,22 @@ Claude, a particular provider, or a particular model.
 - Team routing still resolves structural members and transient task-agent or
   task-team children before applying the message. The server egress preserves
   the mapped identity and does not guess frontend context.
+- The Team, Org and delegated-agent streams are sequenced: the client needs
+  every root `change_sequence` after its snapshot exactly once and in order, and
+  reopens on a gap. Their reply text therefore arrives only as a content batch
+  (`SEGMENT_CONTENT_BATCH` on Team; a `ROOT_EXECUTION_EVENT` whose event is
+  `agent_presentation_batch` on Org and delegated agents). One batch covers the
+  contiguous sequences `[change_sequence, change_sequence_through]`, including
+  absorbed identical status repeats, and may hold items of several agents in
+  order. `sequencedStreamRange.ts` (`advanceSequencedStream`) accepts a frame
+  only when its first sequence is the next expected one and continues after its
+  last; the Team view state, `agentOrgExecutionContext` and
+  `agentRunCollaborationContext` then apply each item as one `SEGMENT_CONTENT`
+  through the normal handler. Every other frame covers its one sequence. The
+  server rules are in `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
+  (Client-Bound Content Cadence).
 
-The WebSocket payload type and final content remain unchanged. Raw runtime
+The standalone payload type and the final content remain unchanged. Raw runtime
 events, internal subscribers, raw traces, working-context snapshots, run
 history, and other persisted data remain fine-grained/unchanged and require no
 migration. A physically lost/closed socket still has no replay guarantee; the

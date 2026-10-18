@@ -1,0 +1,582 @@
+# API-02 + API-12 rerun on the merged state (round 2, DR-001)
+# command: env -i PATH=$PATH HOME=$HOME TMPDIR=$TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts --no-watch
+# commit: 05ab1c4790 (+ uncommitted probe path fix, not exercised here); server dist rebuilt from this tree; date 2026-10-18T14:34:03Z
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:61983) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent Definition created successfully with ID: uc-host-dc7809
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent Definition created successfully with ID: uc-helper-dc7809
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreated and registered workspace ID: agent_ws_2240679724cd804cd2c5691b056a3ce3b61cfb74a32d3b0def7216f8231d93e8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_2240679724cd804cd2c5691b056a3ce3b61cfb74a32d3b0def7216f8231d93e8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_host_dc7809_3fa5631613424c0ea22561730a81503d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent websocket attached for run uc_host_dc7809_3fa5631613424c0ea22561730a81503d
+Created agent session 669b66ee-eaed-46ac-8a5b-85d3b4b02b5e for run uc_host_dc7809_3fa5631613424c0ea22561730a81503d
+Agent WebSocket connected: session=669b66ee-eaed-46ac-8a5b-85d3b4b02b5e, run=uc_host_dc7809_3fa5631613424c0ea22561730a81503d
+
+[90mstderr[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/memory/agents/uc_host_dc7809_3fa5631613424c0ea22561730a81503d/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_2240679724cd804cd2c5691b056a3ce3b61cfb74a32d3b0def7216f8231d93e8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_helper_dc7809_d4309ea290cc4a0ba6b78109203319f8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mClosed agent session 669b66ee-eaed-46ac-8a5b-85d3b4b02b5e
+Agent WebSocket disconnected: 669b66ee-eaed-46ac-8a5b-85d3b4b02b5e
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_2240679724cd804cd2c5691b056a3ce3b61cfb74a32d3b0def7216f8231d93e8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_2240679724cd804cd2c5691b056a3ce3b61cfb74a32d3b0def7216f8231d93e8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_host_dc7809_e184b4e40b9e4fa49a89b62da2a9d388: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent websocket attached for run uc_host_dc7809_e184b4e40b9e4fa49a89b62da2a9d388
+Created agent session 7912d4f2-fedc-4b7a-912b-f66d8a0982cd for run uc_host_dc7809_e184b4e40b9e4fa49a89b62da2a9d388
+Agent WebSocket connected: session=7912d4f2-fedc-4b7a-912b-f66d8a0982cd, run=uc_host_dc7809_e184b4e40b9e4fa49a89b62da2a9d388
+
+[90mstderr[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/memory/agents/uc_host_dc7809_e184b4e40b9e4fa49a89b62da2a9d388/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_2240679724cd804cd2c5691b056a3ce3b61cfb74a32d3b0def7216f8231d93e8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_helper_dc7809_d2f1fd9a7c5d4ac48141af42cf575124: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mClosed agent session 7912d4f2-fedc-4b7a-912b-f66d8a0982cd
+Agent WebSocket disconnected: 7912d4f2-fedc-4b7a-912b-f66d8a0982cd
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_2240679724cd804cd2c5691b056a3ce3b61cfb74a32d3b0def7216f8231d93e8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_2240679724cd804cd2c5691b056a3ce3b61cfb74a32d3b0def7216f8231d93e8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_host_dc7809_eb12f6aab6ad4d8195520e4ed6bb1ad1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent websocket attached for run uc_host_dc7809_eb12f6aab6ad4d8195520e4ed6bb1ad1
+Created agent session 5d582cf0-4348-427a-a07c-173d57440cd2 for run uc_host_dc7809_eb12f6aab6ad4d8195520e4ed6bb1ad1
+Agent WebSocket connected: session=5d582cf0-4348-427a-a07c-173d57440cd2, run=uc_host_dc7809_eb12f6aab6ad4d8195520e4ed6bb1ad1
+
+[90mstderr[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/memory/agents/uc_host_dc7809_eb12f6aab6ad4d8195520e4ed6bb1ad1/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-drJZTy/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_2240679724cd804cd2c5691b056a3ce3b61cfb74a32d3b0def7216f8231d93e8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_helper_dc7809_fc0a8f5a58ad4fc08ad7bb1224190b04: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mClosed agent session 5d582cf0-4348-427a-a07c-173d57440cd2
+Agent WebSocket disconnected: 5d582cf0-4348-427a-a07c-173d57440cd2
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)[2m > [22m[2mUC-1 the other runs work, the scan warns naming the bad run and continues, the bad run reports its error, no file changes
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 5337[2mms[22m[39m
+     [33m[2m✓[22m[39m UC-1 the other runs work, the scan warns naming the bad run and continues, the bad run reports its error, no file changes [33m 506[2mms[22m[39m
+     [33m[2m✓[22m[39m UC-2 a new server process starts with the unreadable tree present and the same holds [33m 2226[2mms[22m[39m
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:62199) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAgent Definition created successfully with ID: mfc-host-8acd2f
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAgent Definition created successfully with ID: mfc-lead-8acd2f
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAgent Definition created successfully with ID: mfc-mate-8acd2f
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAgent Definition created successfully with ID: mfc-worker-8acd2f
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAgent Team Definition created successfully with ID: mfc-team-8acd2f
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mCreated and registered workspace ID: agent_ws_d48e63f8cd9b3cb77bb2f95d899e595eae1458fa27dda9a02dbdce0fbb183f7e
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d48e63f8cd9b3cb77bb2f95d899e595eae1458fa27dda9a02dbdce0fbb183f7e
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAGY compaction detection off for run mfc_host_8acd2f_68031d36bf7444009b8c7d39df8fe482: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAgent websocket attached for run mfc_host_8acd2f_68031d36bf7444009b8c7d39df8fe482
+Created agent session c0025577-a48f-4ee6-9ab2-80154aeea951 for run mfc_host_8acd2f_68031d36bf7444009b8c7d39df8fe482
+Agent WebSocket connected: session=c0025577-a48f-4ee6-9ab2-80154aeea951, run=mfc_host_8acd2f_68031d36bf7444009b8c7d39df8fe482
+
+[90mstderr[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/memory/agents/mfc_host_8acd2f_68031d36bf7444009b8c7d39df8fe482/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d48e63f8cd9b3cb77bb2f95d899e595eae1458fa27dda9a02dbdce0fbb183f7e
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAGY compaction detection off for run mfc_worker_8acd2f_6d8a35f7fb0d471e97372f3dfd65a067: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d48e63f8cd9b3cb77bb2f95d899e595eae1458fa27dda9a02dbdce0fbb183f7e
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAGY compaction detection off for run mfc_lead_8acd2f_be68453ca9e64f90bb560374e5875e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d48e63f8cd9b3cb77bb2f95d899e595eae1458fa27dda9a02dbdce0fbb183f7e
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d48e63f8cd9b3cb77bb2f95d899e595eae1458fa27dda9a02dbdce0fbb183f7e
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAGY compaction detection off for run mfc_host_8acd2f_afbc248c9f214525bff5c11c413ebe62: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAgent websocket attached for run mfc_host_8acd2f_afbc248c9f214525bff5c11c413ebe62
+Created agent session 3f788a91-3e64-4820-86fe-53b47d0389a2 for run mfc_host_8acd2f_afbc248c9f214525bff5c11c413ebe62
+Agent WebSocket connected: session=3f788a91-3e64-4820-86fe-53b47d0389a2, run=mfc_host_8acd2f_afbc248c9f214525bff5c11c413ebe62
+
+[90mstderr[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/memory/agents/mfc_host_8acd2f_afbc248c9f214525bff5c11c413ebe62/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/member-file-changes-e2e-B2ZhPq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d48e63f8cd9b3cb77bb2f95d899e595eae1458fa27dda9a02dbdce0fbb183f7e
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mAGY compaction detection off for run mfc_worker_8acd2f_75bb54237c0c4ef69df10df3c5fe95f5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)
+[22m[39mClosed agent session 3f788a91-3e64-4820-86fe-53b47d0389a2
+Agent WebSocket disconnected: 3f788a91-3e64-4820-86fe-53b47d0389a2
+
+[90mstdout[2m | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts[2m > [22m[2magentRunCollaborationMemberFileChanges over real GraphQL (hubs made by real Agent roots)[2m > [22m[2mstopped hub: lists the same artifact from the copy's stored file
+[22m[39mClosed agent session c0025577-a48f-4ee6-9ab2-80154aeea951
+Agent WebSocket disconnected: c0025577-a48f-4ee6-9ab2-80154aeea951
+
+ [32m✓[39m tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 2298[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 16:34:04
+[2m   Duration [22m 18.96s[2m (transform 6.41s, setup 35ms, import 10.67s, tests 7.64s, environment 0ms)[22m
+
+# ---- exit code: 0

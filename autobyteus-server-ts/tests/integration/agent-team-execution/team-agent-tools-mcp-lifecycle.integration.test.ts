@@ -69,6 +69,7 @@ const createAgentBackend = (input: {
     runtimeKind: RuntimeKind.AUTOBYTEUS,
     getContext: () => context,
     isActive: () => active,
+    inputCapabilities: { activeTurnAppend: "unsupported" },
     compactionRecovery: { kind: "unsupported" },
     getPlatformAgentRunId: () => null,
     getLifecycleSnapshot: () => ({

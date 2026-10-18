@@ -1,0 +1,13 @@
+# Case: LIVE-COLLAB run 1 — status-window analysis (S1)
+# Command: node evidence/analyze-status-windows.mjs evidence/LIVE-COLLAB-run1/frames-S1.jsonl; Commit: e24ff6b333; Env: ENV-2
+# frames file: LIVE-COLLAB-run1/frames-S1.jsonl
+batch frames: 110; sequences per batch: {"n":110,"min":2,"median":21,"max":49}
+frames between consecutive batches (top patterns, of 110 gaps):
+  91 × [AGENT_STATUS:running]
+  8 × [SEGMENT_START,AGENT_STATUS:running]
+  1 × [event:task_execution_started,AGENT_INPUT_STATE,AGENT_STATUS:initializing,AGENT_INPUT_STATE,SYSTEM_TASK_NOTIFICATION,AGENT_STATUS:initializing,SYSTEM_INSTRUCTIONS_SUPPLIED,AGENT_INPUT_STATE,AGENT_STATUS:running,AGENT_STATUS:running,TURN_STARTED,AGENT_INPUT_STATE,AGENT_STATUS:running,AGENT_STATUS:runn…]
+  1 × [SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running]
+  1 × [TOKEN_USAGE_UPDATED,AGENT_STATUS:running,AGENT_STATUS:running,TOOL_EXECUTION_STARTED,AGENT_STATUS:running,TOOL_LOG,AGENT_STATUS:running]
+  1 × [event:communication,AGENT_STATUS:running,TOOL_LOG,AGENT_STATUS:running,AGENT_STATUS:running,TOOL_EXECUTION_SUCCEEDED,AGENT_STATUS:running,TOOL_LOG,AGENT_STATUS:running,AGENT_STATUS:running,AGENT_STATUS:running]
+standalone statuses within 5 ms after a batch: identical-to-last-forwarded=9, changed-or-no-baseline=0
+  for those batches, ms since the previous sequenced frame (≈ window means a timer flush): {"n":9,"min":499,"median":501,"max":508}

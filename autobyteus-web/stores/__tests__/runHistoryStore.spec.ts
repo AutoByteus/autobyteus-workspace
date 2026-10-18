@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useRunHistoryStore } from '../runHistoryStore';
+import { useRunHistoryRetiredRunsStore } from '../runHistoryRetiredRuns';
 import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport';
 import linkedOrgHistory from '~/test-support/fixtures/linked-org-history-public.json';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
@@ -2586,6 +2587,133 @@ describe('runHistoryStore', () => {
 
     expect(store.agentOrgHistory.map((run) => run.rootRunId)).toEqual(["org-target"]);
     expect(agentOrgContextsStoreMock.releaseContext).not.toHaveBeenCalled();
+  });
+
+  // link-existing-run-to-task SR-009 ("Sidebar After Adoption"): a run that became a task agent leaves its own group.
+  describe('top-level rows of runs that left the history', () => {
+    const WS = '/ws/a';
+    const agentRow = (runId: string, createdAt: string) => ({ runId, summary: runId, createdAt, isActive: false, lastKnownStatus: 'IDLE' });
+    const teamRow = (teamRunId: string) => ({
+      teamRunId, teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha', workspaceRootPath: WS, summary: teamRunId,
+      lastActivityAt: '2026-01-01T00:00:00.000Z', isActive: false, deleteLifecycle: 'READY', members: [],
+    });
+    /** What the server lists from now on (agent history: the newest runs per agent; team history: every run). */
+    const serveHistory = (agentRuns: Array<[string, string]>, teamRunIds: string[]) => {
+      queryMock.mockImplementation(async ({ query }: { query: string }) => {
+        if (query === 'ListWorkspaceRunHistory') return { errors: [], data: { listWorkspaceRunHistory: [buildWorkspaceHistoryGroup({
+          workspaceRootPath: WS, workspaceName: 'a',
+          agents: agentRuns.length ? [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent',
+            runs: agentRuns.map(([runId, createdAt]) => agentRow(runId, createdAt)) }] : [],
+          teamRuns: teamRunIds.map(teamRow),
+        })] } };
+        if (query === 'ListCollaborationRootHistory') return { errors: [], data: { listCollaborationRootHistory: [] } };
+        throw new Error(`Unexpected query: ${String(query)}`);
+      });
+    };
+    /** A run this session opened (from a history row or newly created): its context is held whatever the server lists. */
+    const holdAgentContext = (runId: string) => agentContextsStoreMock.runs.set(runId, {
+      config: { agentDefinitionId: 'agent-def-1', agentDefinitionName: 'SuperAgent', workspaceId: null, workspaceMetadata: { workspaceRootPath: WS } },
+      state: { runId, currentStatus: 'idle', conversation: { id: runId, messages: [], createdAt: '2026-01-01T00:00:00.000Z', updatedAt: '2026-01-01T00:00:00.000Z' } },
+    });
+    const holdTeamContext = (teamRunId: string) => teamContextsStoreMock.teams.set(teamRunId, buildTestTeamContext({
+      teamRunId, teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha', workspaceRootPath: WS,
+      rootChildren: [testAgentNode('/coordinator', { agentRunId: `${teamRunId}-coordinator` })],
+    }));
+    const shownAgentRuns = (store: ReturnType<typeof useRunHistoryStore>) =>
+      store.getTreeNodes().flatMap((workspace) => workspace.agents.flatMap((agent) => agent.runs.map((run) => run.runId))).sort();
+    const shownTeamRuns = (store: ReturnType<typeof useRunHistoryStore>) => store.getTeamNodes().map((team) => team.teamRunId).sort();
+
+    beforeEach(() => {
+      workspaceStoreMock.allWorkspaces = [{ workspaceId: 'ws-a', absolutePath: WS, workspaceRootPath: WS, name: 'a' }];
+      workspaceStoreMock.workspaces = { 'ws-a': workspaceStoreMock.allWorkspaces[0] };
+    });
+
+    it('drops an open agent run and an open team run once a later read no longer lists them, and shows them again if listed (rule 2)', async () => {
+      holdAgentContext('run-open');
+      holdTeamContext('team-open');
+      const store = useRunHistoryStore();
+      serveHistory([['run-other', '2026-01-02T00:00:00.000Z'], ['run-open', '2026-01-01T00:00:00.000Z']], ['team-open', 'team-other']);
+      await store.fetchTree();
+      expect(shownAgentRuns(store)).toEqual(['run-open', 'run-other']);
+      expect(shownTeamRuns(store)).toEqual(['team-open', 'team-other']);
+
+      // Adopted by a Project Task Manager: the server removed both history rows.
+      serveHistory([['run-other', '2026-01-02T00:00:00.000Z']], ['team-other']);
+      await store.fetchTree();
+      expect(shownAgentRuns(store)).toEqual(['run-other']);
+      expect(shownTeamRuns(store)).toEqual(['team-other']);
+      // Their contexts stay usable (shown under the coordinator).
+      expect(agentContextsStoreMock.runs.has('run-open')).toBe(true);
+      expect(teamContextsStoreMock.teams.has('team-open')).toBe(true);
+
+      serveHistory([['run-other', '2026-01-02T00:00:00.000Z'], ['run-open', '2026-01-01T00:00:00.000Z']], ['team-open', 'team-other']);
+      await store.fetchTree();
+      expect(shownAgentRuns(store)).toEqual(['run-open', 'run-other']);
+      expect(shownTeamRuns(store)).toEqual(['team-open', 'team-other']);
+    });
+
+    it('keeps an open agent run that only fell out of the per-agent window, and drops it once a read would have listed it', async () => {
+      holdAgentContext('run-open');
+      const newer = (count: number) => Array.from({ length: count }, (_, index): [string, string] =>
+        [`run-${index}`, `2026-02-0${index + 1}T00:00:00.000Z`]);
+      const store = useRunHistoryStore();
+      serveHistory([...newer(5), ['run-open', '2026-01-01T00:00:00.000Z']], []);
+      await store.fetchTree();
+      expect(shownAgentRuns(store)).toContain('run-open');
+
+      // Six newer runs fill the window (limit 6): the open run is older than all of them, so it may still be in the history.
+      serveHistory(newer(6), []);
+      await store.fetchTree();
+      expect(shownAgentRuns(store)).toContain('run-open');
+
+      // A read with room for it that still leaves it out: it left the history.
+      serveHistory(newer(2), []);
+      await store.fetchTree();
+      expect(shownAgentRuns(store)).toEqual(['run-0', 'run-1']);
+    });
+
+    it('never drops a run no read has listed yet (a run created this session)', async () => {
+      holdAgentContext('run-new');
+      const store = useRunHistoryStore();
+      serveHistory([['run-other', '2026-01-02T00:00:00.000Z']], []);
+      await store.fetchTree();
+      await store.fetchTree();
+      expect(shownAgentRuns(store)).toEqual(['run-new', 'run-other']);
+    });
+
+    it('drops a run reported as a started task execution at once, before any read, and a stale read cannot bring it back (rule 1)', async () => {
+      holdAgentContext('run-open');
+      holdTeamContext('team-open');
+      const store = useRunHistoryStore();
+      serveHistory([['run-open', '2026-01-01T00:00:00.000Z']], ['team-open']);
+      await store.fetchTree();
+      expect(shownAgentRuns(store)).toEqual(['run-open']);
+
+      const retired = useRunHistoryRetiredRunsStore();
+      retired.retireTaskExecution({ agentRunId: 'run-open' });
+      retired.retireTaskExecution({ teamRunId: 'team-open' });
+      store.refreshRunNavigationTopology('task-execution-started');
+      expect(store.workspaceGroups[0]?.agentDefinitions[0]?.runs.map((run) => run.runId)).toEqual(['run-open']);
+      expect(shownAgentRuns(store)).toEqual([]);
+      expect(shownTeamRuns(store)).toEqual([]);
+
+      await store.fetchTree();
+      expect(shownAgentRuns(store)).toEqual([]);
+      expect(shownTeamRuns(store)).toEqual([]);
+    });
+
+    it('archiving an open team run takes it out of its group, and the next read keeps it out', async () => {
+      holdTeamContext('team-open');
+      const store = useRunHistoryStore();
+      serveHistory([], ['team-open', 'team-other']);
+      await store.fetchTree();
+      mutateMock.mockResolvedValueOnce({ data: { archiveStoredTeamRun: { success: true, message: 'Team archived.' } }, errors: [] });
+      // The team history leaves out an archived run that is not active.
+      serveHistory([], ['team-other']);
+      expect(await store.archiveTeamRun('team-open')).toBe(true);
+      expect(teamContextsStoreMock.removeTeamContext).toHaveBeenCalledWith('team-open');
+      expect(shownTeamRuns(store)).toEqual(['team-other']);
+    });
   });
 
   describe('group archive', () => {

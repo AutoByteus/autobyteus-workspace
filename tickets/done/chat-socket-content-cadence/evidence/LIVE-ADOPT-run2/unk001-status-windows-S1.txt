@@ -1,0 +1,10 @@
+# Case: LIVE-ADOPT run2 — status-window analysis (S1); Commit: 335f065cd1; Env: ENV-2
+# frames file: LIVE-ADOPT-run2/frames-S1.jsonl
+batch frames: 46; sequences per batch: {"n":46,"min":1,"median":61,"max":77}
+frames between consecutive batches (top patterns, of 46 gaps):
+  41 × [AGENT_STATUS:running]
+  3 × [SEGMENT_START,AGENT_STATUS:running]
+  1 × [event:task_execution_started,AGENT_INPUT_STATE,event:communication,MEMBER_INPUT_MESSAGE,AGENT_STATUS:initializing,AGENT_STATUS:initializing,SYSTEM_INSTRUCTIONS_SUPPLIED,AGENT_INPUT_STATE,AGENT_INPUT_STATE,AGENT_STATUS:running,AGENT_STATUS:running,TURN_STARTED,AGENT_INPUT_STATE,AGENT_STATUS:running,A…]
+  1 × [SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running,TOKEN_USAGE_UPDATED,AGENT_STATUS:running,AGENT_STATUS:running,ASSISTANT_COMPLETE,TURN_COMPLETED,AGENT_STATUS:idle,AGENT_INPUT_STATE,AGENT_STATUS:initializing,AGENT_STATUS:idle,AGENT_STATUS:running]
+standalone statuses within 5 ms after a batch: identical-to-last-forwarded=5, changed-or-no-baseline=0
+  for those batches, ms since the previous sequenced frame (≈ window means a timer flush): {"n":5,"min":496,"median":500,"max":549}

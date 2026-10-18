@@ -1,13 +1,10 @@
 // Frozen verbatim copy (import paths remapped only) of `src/standalone-agent-run-root/persistence/standalone-root-tree-schema.ts` as of the
 // D-10 rename commit 8bbd081c8d (behavior identical to origin/personal@66429d6f31). Owned by
 // released app-data migrations and `20261017_task_agent_own_run_v1`; current runtime must not import it.
+// The message-log validator moved to `../released-message-logs-before-append-only.ts`.
 
 import { getParentAgentTeamAddress } from "../../../../agent-collaboration/domain/agent-team-address.js";
-import { validateCollaborationCommunicationMessageArray } from "../../../../agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
-import type {
-  StandaloneRootMessagesFile,
-  StandaloneRootTreeFile,
-} from "./standalone-root-tree.js";
+import type { StandaloneRootTreeFile } from "./standalone-root-tree.js";
 import {
   canonicalNonRootAddress,
   deepFreeze,
@@ -60,29 +57,4 @@ export const validateStandaloneRootTreePayload = (
   }
   validateInvariants(tree);
   return deepFreeze(tree);
-};
-
-export const validateStandaloneRootMessages = (
-  value: unknown,
-  expectedHostRunId?: string,
-): StandaloneRootMessagesFile => {
-  const payload = objectRecord(value, "Agent run collaboration messages");
-  const actual = Object.keys(payload).sort();
-  const expected = ["hostRunId", "messages", "schemaVersion", "subjectKind"];
-  if (actual.length !== expected.length || actual.some((key, index) => key !== expected[index])) {
-    throw new Error("Agent run collaboration messages has unsupported or missing field(s).");
-  }
-  if (payload.schemaVersion !== 1 || payload.subjectKind !== "agent") {
-    throw new Error("Agent run collaboration messages requires schemaVersion 1 and subjectKind 'agent'.");
-  }
-  const hostRunId = requiredString(payload.hostRunId, "hostRunId");
-  if (expectedHostRunId && hostRunId !== expectedHostRunId) {
-    throw new Error(`Collaboration messages host '${hostRunId}' does not match '${expectedHostRunId}'.`);
-  }
-  return Object.freeze({
-    schemaVersion: 1,
-    subjectKind: "agent",
-    hostRunId,
-    messages: validateCollaborationCommunicationMessageArray(payload.messages),
-  });
 };

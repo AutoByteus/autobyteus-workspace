@@ -69,21 +69,25 @@ describe("SkillFolderSnapshotter (REQ-010)", () => {
   });
 });
 
-describe("diffSkillVersion (REQ-008, REQ-009, DEC-011)", () => {
-  it("lists changed, added and removed files with SKILL.md first", () => {
-    const seen = snapshotOf("/s/code-review", { "SKILL.md": "a", "references/a.md": "a", "references/old.md": "o" });
+describe("diffSkillVersion", () => {
+  it("marks each differing file changed, added or removed, SKILL.md first, then by path", () => {
+    const seen = snapshotOf("/s/code-review", { "SKILL.md": "a", "references/a.md": "a", "scripts/old.sh": "o" });
     const current = snapshotOf("/s/code-review", { "SKILL.md": "b", "references/a.md": "a", "references/new.md": "n" });
     expect(diffSkillVersion("code-review", seen, current)).toEqual({
-      kind: "updated", skillName: "code-review", skillMdPath: "/s/code-review/SKILL.md",
-      changedFiles: ["SKILL.md", "references/new.md", "references/old.md"],
+      kind: "updated", skillName: "code-review", skillDir: "/s/code-review",
+      files: [
+        { path: "SKILL.md", status: "changed" },
+        { path: "references/new.md", status: "added" },
+        { path: "scripts/old.sh", status: "removed" },
+      ],
     });
   });
 
-  it("treats a moved folder with the same files as unchanged, and with changes as updated at the new path", () => {
+  it("treats a moved folder with the same files as unchanged, and with changes as updated at the new folder", () => {
     const seen = snapshotOf("/g1/code-review", { "SKILL.md": "a" });
     expect(diffSkillVersion("code-review", seen, snapshotOf("/g2/code-review", { "SKILL.md": "a" }))).toBeNull();
-    expect(diffSkillVersion("code-review", seen, snapshotOf("/g2/code-review", { "SKILL.md": "b" }))).toMatchObject({
-      kind: "updated", skillMdPath: "/g2/code-review/SKILL.md", changedFiles: ["SKILL.md"],
+    expect(diffSkillVersion("code-review", seen, snapshotOf("/g2/code-review", { "SKILL.md": "b" }))).toEqual({
+      kind: "updated", skillName: "code-review", skillDir: "/g2/code-review", files: [{ path: "SKILL.md", status: "changed" }],
     });
   });
 
@@ -94,17 +98,82 @@ describe("diffSkillVersion (REQ-008, REQ-009, DEC-011)", () => {
   });
 });
 
-describe("skill update notice text and message (REQ-007, REQ-008)", () => {
-  it("names each skill, its changed files (10 then 'and N more') and its SKILL.md path, and removed skills", () => {
-    const files = Array.from({ length: 12 }, (_, index) => `references/r${String(index).padStart(2, "0")}.md`);
+describe("skill update notice text and message", () => {
+  const updated = (skillName: string, files: Array<[string, "changed" | "added" | "removed"]>) => ({
+    kind: "updated" as const, skillName, skillDir: `/skills/${skillName}`,
+    files: files.map(([path, status]) => ({ path, status })),
+  });
+
+  it("AC-001: only reference files changed: one block naming the package and its folder, the exact files, no SKILL.md", () => {
     const text = buildSkillUpdateNoticeText([
-      { kind: "updated", skillName: "code-review", skillMdPath: "/s/code-review/SKILL.md", changedFiles: ["SKILL.md", ...files] },
+      updated("agent-package-creation", [["references/a.md", "changed"], ["references/b.md", "changed"]]),
+    ]);
+    expect(text).toBe([
+      "[Platform notice — skill updated]",
+      "",
+      "Your skill package `agent-package-creation` has been updated (/skills/agent-package-creation).",
+      "",
+      "Changed files:",
+      "- references/a.md (changed)",
+      "- references/b.md (changed)",
+      "",
+      "Re-read the updated files before continuing work that relies on this skill.",
+    ].join("\n"));
+    expect(text).not.toContain("SKILL.md");
+  });
+
+  it("AC-002: SKILL.md changed, a file added and one removed: each with its status, plus the removed-files line", () => {
+    const text = buildSkillUpdateNoticeText([
+      updated("code-review", [["SKILL.md", "changed"], ["references/new.md", "added"], ["scripts/old.sh", "removed"]]),
+    ]);
+    expect(text).toContain([
+      "Changed files:",
+      "- SKILL.md (changed)",
+      "- references/new.md (added)",
+      "- scripts/old.sh (removed)",
+      "",
+      "Re-read the updated files before continuing work that relies on this skill.",
+      "Removed files are no longer available.",
+    ].join("\n"));
+  });
+
+  it("AC-003: an updated and a removed skill: one block each, in order; the closing lines cover both", () => {
+    const text = buildSkillUpdateNoticeText([
+      updated("code-review", [["references/a.md", "changed"]]),
       { kind: "removed", skillName: "deep-research" },
     ]);
-    expect(text.split("\n")[0]).toBe("[Platform notice — skill updated]");
-    expect(text).toContain(`- code-review (/s/code-review/SKILL.md): SKILL.md, ${files.slice(0, 9).join(", ")} and 3 more`);
-    expect(text).toContain("- deep-research: no longer available");
-    expect(text).toContain("Re-read the updated SKILL.md");
+    expect(text).toBe([
+      "[Platform notice — skill updated]",
+      "",
+      "Your skill package `code-review` has been updated (/skills/code-review).",
+      "",
+      "Changed files:",
+      "- references/a.md (changed)",
+      "",
+      "Your skill package `deep-research` is no longer available.",
+      "",
+      "Re-read the updated files before continuing work that relies on this skill.",
+      "Do not rely on a skill that is no longer available.",
+    ].join("\n"));
+  });
+
+  it("says 'these skills' when several skills were updated, and has no re-read line when none was", () => {
+    const several = buildSkillUpdateNoticeText([
+      updated("code-review", [["SKILL.md", "changed"]]),
+      updated("deep-research", [["references/a.md", "added"]]),
+    ]);
+    expect(several).toContain("Re-read the updated files before continuing work that relies on these skills.");
+    const removedOnly = buildSkillUpdateNoticeText([{ kind: "removed", skillName: "deep-research" }]);
+    expect(removedOnly).not.toContain("Re-read");
+    expect(removedOnly).not.toContain("Removed files");
+    expect(removedOnly.endsWith("Do not rely on a skill that is no longer available.")).toBe(true);
+  });
+
+  it("AC-004: 25 changed files list 10, then '…and 15 more files'", () => {
+    const files = Array.from({ length: 25 }, (_, index) => `references/r${String(index).padStart(2, "0")}.md`);
+    const text = buildSkillUpdateNoticeText([updated("code-review", files.map((file) => [file, "changed"]))]);
+    const listed = text.split("\n").filter((line) => line.startsWith("- "));
+    expect(listed).toEqual([...files.slice(0, 10).map((file) => `- ${file} (changed)`), "- …and 15 more files"]);
   });
 
   it("builds the busy-run message as a SYSTEM, notice-only platform message without a native auto-notification", () => {

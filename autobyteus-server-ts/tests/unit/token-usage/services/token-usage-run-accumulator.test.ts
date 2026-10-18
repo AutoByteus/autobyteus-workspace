@@ -191,6 +191,35 @@ describe("TokenUsageRunAccumulator", () => {
     }
   });
 
+  it("claims the observation's current root after a team run is adopted, keeping the record's earlier root", async () => {
+    const realCalculator = new TokenCostCalculator();
+    const calculator = { resolvePolicy: vi.fn().mockResolvedValue(policy),
+      applyPolicy: vi.fn((payload, resolvedPolicy) => realCalculator.applyPolicy(payload, resolvedPolicy)) };
+    const runId = "run-adopted-team-member";
+    const observation = (eventId: string, rootTeamRunId: string | null) => {
+      const base = directPayload(eventId);
+      return createTokenUsageUpdatedPayload({ runId,
+        payload: { ...base, run_id: runId, root_team_run_id: rootTeamRunId } });
+    };
+    const prisma = new PrismaClient({ datasourceUrl: process.env.DATABASE_URL });
+    const repository = new SqlTokenUsageRunRepository(prisma);
+    try {
+      const accumulator = new TokenUsageRunAccumulator(repository, calculator as never);
+      const beforeAdoption = await accumulator.recordObservation(observation("1", "hand-started-team"));
+      expect(beforeAdoption.run_summary_after_event?.root_team_run_id).toBe("hand-started-team");
+      // Adopted by a standalone PM: later usage runs under the PM's Agent root, which carries no team root.
+      const afterAdoption = await accumulator.recordObservation(observation("2", null));
+      expect(afterAdoption.root_team_run_id).toBeNull();
+      expect(afterAdoption.run_summary_after_event?.root_team_run_id).toBeNull();
+      expect(afterAdoption.run_summary_after_event?.total_tokens).toBe(2);
+      // Earlier usage stays attributed to the run's earlier team (REQ-004).
+      expect((await repository.getByRunId(runId))?.rootTeamRunId).toBe("hand-started-team");
+    } finally {
+      await prisma.tokenUsageRunRecord.deleteMany({ where: { runId } });
+      await prisma.$disconnect();
+    }
+  });
+
   it("commits exact BigInt state before an unsafe public-summary projection rejects", async () => {
     const calculator = {
       resolvePolicy: vi.fn().mockResolvedValue(policy),

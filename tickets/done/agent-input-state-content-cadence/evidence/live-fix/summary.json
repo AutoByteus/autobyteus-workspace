@@ -1,0 +1,404 @@
+{
+  "label": "fix",
+  "failure": null,
+  "runId": "pb001_live_stream_66471661_e1a1428c924b4d43ad1596b8c05539df",
+  "origin": "http://127.0.0.1:65191",
+  "model": "qwen3.6-35b-a3b",
+  "sent": [
+    {
+      "at": 2590.8,
+      "socket": "A",
+      "content": "Write a plain-prose essay of about 350 words about how lighthouses work and their history. No headings, no lists.",
+      "messageId": "probe-2b9e154a-0a3b-479a-bda8-c1d60c7defee"
+    },
+    {
+      "at": 90302,
+      "socket": "A",
+      "content": "Now write a plain-prose paragraph of about 200 words about tides. No headings, no lists.",
+      "messageId": "probe-3295b8fa-9aec-42e0-b106-31f4034dd89d"
+    }
+  ],
+  "socketA": {
+    "frames": 184,
+    "typeCounts": {
+      "CONNECTED": 1,
+      "AGENT_STATUS": 10,
+      "AGENT_INPUT_STATE": 9,
+      "AGENT_COMMAND_ACK": 2,
+      "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+      "TURN_STARTED": 2,
+      "SEGMENT_START": 4,
+      "SEGMENT_CONTENT": 145,
+      "SEGMENT_END": 4,
+      "TOKEN_USAGE_UPDATED": 2,
+      "ASSISTANT_COMPLETE": 2,
+      "TURN_COMPLETED": 2
+    },
+    "inputStateRevisions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "inputStateRepeats": 0,
+    "inputStates": [
+      {
+        "at": 2540.6,
+        "revision": 1,
+        "entries": []
+      },
+      {
+        "at": 2594.2,
+        "revision": 2,
+        "entries": [
+          {
+            "state": "queued",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 2597.7,
+        "revision": 3,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 2605,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 90304.1,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 119064.3,
+        "revision": 6,
+        "entries": [
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 119071.5,
+        "revision": 7,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 119074.9,
+        "revision": 8,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 165911.4,
+        "revision": 9,
+        "entries": []
+      }
+    ],
+    "contentFrames": 145,
+    "contentGapStats": {
+      "n": 141,
+      "min": 10,
+      "median": 518,
+      "max": 592,
+      "under350": 3
+    },
+    "windowGapStats": {
+      "n": 137,
+      "min": 500,
+      "median": 518,
+      "max": 592,
+      "under350": 0
+    },
+    "flushTriggerCounts": {
+      "window": 141,
+      "AGENT_INPUT_STATE": 1,
+      "SEGMENT_END": 2,
+      "SEGMENT_START": 1
+    },
+    "earlyFlushes": [
+      {
+        "at": 119020.4,
+        "segment": "turn_1b38bfda89944a6dbdd1192946e57a72:1edd909b0ce14fb182b5bd7bfcb3366b",
+        "segment_type": "text",
+        "gapFromPrevContentMs": 10,
+        "deltaLength": 19,
+        "followedBy": "SEGMENT_END"
+      },
+      {
+        "at": 160003.1,
+        "segment": "segment_61cee6ced938416293ff8e6b5ab6335d:reasoning_fee342ab3fc347feaae36658d32d496a",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 155,
+        "deltaLength": 25,
+        "followedBy": "SEGMENT_START"
+      },
+      {
+        "at": 165902.8,
+        "segment": "turn_1e1d5845a7df471ab53dbad192a9e94c:b6b3c2d8c4a5441d9147a00608dcbf63",
+        "segment_type": "text",
+        "gapFromPrevContentMs": 186,
+        "deltaLength": 70,
+        "followedBy": "SEGMENT_END"
+      }
+    ],
+    "textLengthBySegment": {
+      "segment_1c257b06f06a4cafb01d6a4fc28470e6:reasoning_7eddbb5137ab4bb5be6c4480f25adcfc": 5659,
+      "turn_1b38bfda89944a6dbdd1192946e57a72:1edd909b0ce14fb182b5bd7bfcb3366b": 2372,
+      "segment_61cee6ced938416293ff8e6b5ab6335d:reasoning_fee342ab3fc347feaae36658d32d496a": 8711,
+      "turn_1e1d5845a7df471ab53dbad192a9e94c:b6b3c2d8c4a5441d9147a00608dcbf63": 1556
+    }
+  },
+  "socketB": {
+    "frames": 167,
+    "typeCounts": {
+      "CONNECTED": 1,
+      "AGENT_STATUS": 8,
+      "AGENT_INPUT_STATE": 5,
+      "SEGMENT_CONTENT": 139,
+      "SEGMENT_START": 3,
+      "SEGMENT_END": 4,
+      "TOKEN_USAGE_UPDATED": 2,
+      "ASSISTANT_COMPLETE": 2,
+      "TURN_COMPLETED": 2,
+      "TURN_STARTED": 1
+    },
+    "inputStateRevisions": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "inputStateRepeats": 0,
+    "inputStates": [
+      {
+        "at": 91510.4,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 119064.4,
+        "revision": 6,
+        "entries": [
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 119071.6,
+        "revision": 7,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 119075,
+        "revision": 8,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 165911.5,
+        "revision": 9,
+        "entries": []
+      }
+    ],
+    "contentFrames": 139,
+    "contentGapStats": {
+      "n": 135,
+      "min": 10,
+      "median": 518,
+      "max": 593,
+      "under350": 4
+    },
+    "windowGapStats": {
+      "n": 131,
+      "min": 500,
+      "median": 518,
+      "max": 593,
+      "under350": 0
+    },
+    "flushTriggerCounts": {
+      "window": 135,
+      "SEGMENT_START": 2,
+      "SEGMENT_END": 2
+    },
+    "earlyFlushes": [
+      {
+        "at": 110138.4,
+        "segment": "segment_1c257b06f06a4cafb01d6a4fc28470e6:reasoning_7eddbb5137ab4bb5be6c4480f25adcfc",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 343,
+        "deltaLength": 49,
+        "followedBy": "SEGMENT_START"
+      },
+      {
+        "at": 119020.5,
+        "segment": "turn_1b38bfda89944a6dbdd1192946e57a72:1edd909b0ce14fb182b5bd7bfcb3366b",
+        "segment_type": "text",
+        "gapFromPrevContentMs": 10,
+        "deltaLength": 19,
+        "followedBy": "SEGMENT_END"
+      },
+      {
+        "at": 160003.2,
+        "segment": "segment_61cee6ced938416293ff8e6b5ab6335d:reasoning_fee342ab3fc347feaae36658d32d496a",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 155,
+        "deltaLength": 25,
+        "followedBy": "SEGMENT_START"
+      },
+      {
+        "at": 165902.9,
+        "segment": "turn_1e1d5845a7df471ab53dbad192a9e94c:b6b3c2d8c4a5441d9147a00608dcbf63",
+        "segment_type": "text",
+        "gapFromPrevContentMs": 186,
+        "deltaLength": 70,
+        "followedBy": "SEGMENT_END"
+      }
+    ],
+    "textLengthBySegment": {
+      "segment_1c257b06f06a4cafb01d6a4fc28470e6:reasoning_7eddbb5137ab4bb5be6c4480f25adcfc": 4843,
+      "turn_1b38bfda89944a6dbdd1192946e57a72:1edd909b0ce14fb182b5bd7bfcb3366b": 2372,
+      "segment_61cee6ced938416293ff8e6b5ab6335d:reasoning_fee342ab3fc347feaae36658d32d496a": 8711,
+      "turn_1e1d5845a7df471ab53dbad192a9e94c:b6b3c2d8c4a5441d9147a00608dcbf63": 1556
+    }
+  },
+  "queuedMessage": {
+    "sentAt": 90302,
+    "inputStateAt": 90304.1,
+    "delayMs": 2,
+    "revision": 5,
+    "entries": [
+      {
+        "state": "forwarded",
+        "content": "Write a plain-prose essay of about 350 w"
+      },
+      {
+        "state": "queued",
+        "content": "Now write a plain-prose paragraph of abo"
+      }
+    ],
+    "frameBefore": {
+      "type": "SEGMENT_CONTENT",
+      "at": 90304.1,
+      "gapMs": 0
+    }
+  },
+  "reconnect": {
+    "firstFrameOnB": {
+      "type": "CONNECTED",
+      "at": 91510.1
+    },
+    "snapshotRevision": 5,
+    "snapshotEntries": [
+      {
+        "state": "forwarded",
+        "content": "Write a plain-prose essay of about 350 w"
+      },
+      {
+        "state": "queued",
+        "content": "Now write a plain-prose paragraph of abo"
+      }
+    ],
+    "aRevisionsAfterBJoin": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "bRevisionsAfterSnapshot": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "bGotEveryLaterRevision": true
+  },
+  "textConsistencyAB": [
+    {
+      "segment": "segment_1c257b06f06a4cafb01d6a4fc28470e6:reasoning_7eddbb5137ab4bb5be6c4480f25adcfc",
+      "aLen": 5659,
+      "bLen": 4843,
+      "bIsSuffixOfA": true,
+      "identical": false
+    },
+    {
+      "segment": "turn_1b38bfda89944a6dbdd1192946e57a72:1edd909b0ce14fb182b5bd7bfcb3366b",
+      "aLen": 2372,
+      "bLen": 2372,
+      "bIsSuffixOfA": true,
+      "identical": true
+    },
+    {
+      "segment": "segment_61cee6ced938416293ff8e6b5ab6335d:reasoning_fee342ab3fc347feaae36658d32d496a",
+      "aLen": 8711,
+      "bLen": 8711,
+      "bIsSuffixOfA": true,
+      "identical": true
+    },
+    {
+      "segment": "turn_1e1d5845a7df471ab53dbad192a9e94c:b6b3c2d8c4a5441d9147a00608dcbf63",
+      "aLen": 1556,
+      "bLen": 1556,
+      "bIsSuffixOfA": true,
+      "identical": true
+    }
+  ]
+}

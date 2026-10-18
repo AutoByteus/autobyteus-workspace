@@ -19,8 +19,8 @@ import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnviro
  *  1. The agent reads the codeword (it now has the skill's first version in its conversation).
  *  2. A busy turn runs `sleep`; the codeword changes meanwhile. The run gets one "skill updated"
  *     system notice while busy (Codex/Claude: inside that turn; AutoByteus: the next turn).
- *  3. Asked the same question again, the agent re-reads the absolute SKILL.md path the notice
- *     gives and answers the new codeword (R-1: readable from the runtime).
+ *  3. Asked the same question again, the agent re-reads the changed file the notice lists (relative
+ *     to the skill folder it names) and answers the new codeword (R-1: readable from the runtime).
  *  4. The codeword changes while the run is idle: nothing is sent until the next message, which
  *     is one turn carrying the notice, answered with the newest codeword.
  *  5. The run's history shows both notices as system notices and the user's messages as typed.
@@ -187,7 +187,7 @@ suite("active-run skill update notice (live E2E)", () => {
       await until(() => notices().length === 1, "the busy-run notice", 30_000);
       const busyNotice = notices()[0]!;
       expect(busyNotice.payload.content).toContain("[Platform notice — skill updated]");
-      expect(busyNotice.payload.content).toContain(`- notice-probe (${skillMdPath}): SKILL.md`);
+      expect(busyNotice.payload.content).toContain(`Your skill package \`notice-probe\` has been updated (${path.dirname(skillMdPath)}).\n\nChanged files:\n- SKILL.md (changed)\n`);
       if (APPEND_RUNTIMES.includes(runtimeKind)) expect(busyNotice.payload.turn_id).toBe(busyTurnId); // appended to the busy turn
       // Next-turn runtimes with turn ids (ACP/Grok): the notice is its own turn right after the busy one.
       if (runtimeKind === "grok_build") {
@@ -325,7 +325,7 @@ suite("active-run skill update notice (live E2E)", () => {
       await until(() => count("TURN_COMPLETED") > continueCompleted && idle() && notices().length >= 1, "the continued turn");
       await new Promise((r) => setTimeout(r, 1000));
       expect(notices()).toHaveLength(1);
-      expect(notices()[0]!.payload.content).toContain(`- notice-probe (${skillMdPath}): SKILL.md`);
+      expect(notices()[0]!.payload.content).toContain(`Your skill package \`notice-probe\` has been updated (${path.dirname(skillMdPath)}).\n\nChanged files:\n- SKILL.md (changed)\n`);
       expect(textSince(resumed)).toContain("BIRCH-8642");
 
       // 4. Stopped and deleted from history: its memory folder is removed and does not come back,

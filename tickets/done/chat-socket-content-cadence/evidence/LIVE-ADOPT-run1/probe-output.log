@@ -1,0 +1,167 @@
+{"at":2492.5,"what":"ready","origin":"http://127.0.0.1:59921","interval":"default(500)","model":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234"}
+{"at":8483.2,"what":"hand-started run answered","handId":"abt139_essay_worker_ec06852fae424e129d41191e5719a1a1"}
+{"at":8702.2,"what":"adoption + delegation requested"}
+{"at":16001.6,"what":"task executions started","executions":[{"address":"/abt139_essay_worker","agentRunId":"abt139_essay_worker_ec06852fae424e129d41191e5719a1a1","platformAgentRunId":"abt139_essay_worker_ec06852fae424e129d41191e5719a1a1","delegatorAgentRunId":"abt139_pm_66b6b488d1394743a58b2e27ffe451bf","startedAt":"2026-10-18T12:35:54.254Z","source":{"kind":"agent","agentDefinitionId":"abt139-essay-worker","launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234","llmConfig":null,"autoExecuteTools":true,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abt139-live-RriaYh/workspace"}}},{"address":"/abt139_essay_worker","agentRunId":"abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210","platformAgentRunId":null,"delegatorAgentRunId":"abt139_pm_66b6b488d1394743a58b2e27ffe451bf","startedAt":"2026-10-18T12:36:07.436Z","source":{"kind":"agent","agentDefinitionId":"abt139-essay-worker","launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234","llmConfig":null,"autoExecuteTools":true,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abt139-live-RriaYh/workspace"},"launchSource":{"origin":"inherited","fallbacks":[]}}}]}
+{"at":23048.3,"what":"adopted run and copy streaming","adopted":"abt139_essay_worker_ec06852fae424e129d41191e5719a1a1","copy":"abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210"}
+{"at":123264.9,"what":"both turns done"}
+{
+ "scenario": "adopt",
+ "failure": "terminate: TypeError: fetch failed",
+ "S1": {
+  "frames": 516,
+  "gaps": 0,
+  "snapshots": [
+   {
+    "at": 8601.7,
+    "base": 0
+   }
+  ],
+  "startsAfterSnapshot": [
+   {
+    "expected": 1,
+    "first": 1
+   }
+  ],
+  "batches": 189,
+  "multiAgentBatches": 42,
+  "plainContent": 0,
+  "batchRange": {
+   "min": 1,
+   "median": 29,
+   "max": 68,
+   "total": 5624
+  },
+  "closedBy": {
+   "window": 159,
+   "SEGMENT_START": 11,
+   "AGENT_STATUS": 10,
+   "SEGMENT_END": 5,
+   "event:communication": 3,
+   "TOKEN_USAGE_UPDATED": 1
+  },
+  "spacing": {
+   "abt139_essay_worker_ec06852fae424e129d41191e5719a1a1": {
+    "batchesWithAgent": 188,
+    "windowClosed": 159,
+    "boundaryClosed": 29,
+    "windowGapMs": {
+     "n": 137,
+     "min": 508,
+     "median": 533,
+     "max": 3567,
+     "under350": 0
+    },
+    "activeSeconds": 106.1,
+    "windowFramesPerSecond": 1.5
+   },
+   "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210": {
+    "batchesWithAgent": 43,
+    "windowClosed": 30,
+    "boundaryClosed": 13,
+    "windowGapMs": {
+     "n": 22,
+     "min": 514,
+     "median": 543,
+     "max": 975,
+     "under350": 0
+    },
+    "activeSeconds": 49.7,
+    "windowFramesPerSecond": 0.6
+   }
+  },
+  "status": {
+   "abt139_essay_worker_ec06852fae424e129d41191e5719a1a1": {
+    "standaloneStatusFrames": 172,
+    "identicalToPreviousForwarded": 167,
+    "byValue": {
+     "initializing": 3,
+     "running": 167,
+     "idle": 2
+    }
+   },
+   "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210": {
+    "standaloneStatusFrames": 79,
+    "identicalToPreviousForwarded": 69,
+    "byValue": {
+     "initializing": 5,
+     "running": 70,
+     "idle": 4
+    }
+   }
+  },
+  "stopCheck": {
+   "lifecycleAt": 124805.9,
+   "framesAfterInactive": 0,
+   "previousSequencedFrame": {
+    "type": "ROOT_EXECUTION_EVENT",
+    "at": 123083.7,
+    "gapMs": 1722,
+    "batch": false
+   }
+  }
+ },
+ "s2Check": null,
+ "textCheck": [
+  {
+   "segKey": "abt139_essay_worker_ec06852fae424e129d41191e5719a1a1|segment_42d45daff751463ca93e287c827e6850:reasoning_dd7278d75fb5489ebda85010c5a9ea3d",
+   "chars": 6994,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|segment_2a91d4dbd082469f802e84217f7a3a39:reasoning_c466a0b66bb141eebcf95f0a590fb46c",
+   "chars": 268,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|turn_54e0246578b64bc9a37f8d4bebd62516:fc20f6e8b7f84cdd8ec60943c0fcf178",
+   "chars": 2,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|561034775",
+   "chars": 1789,
+   "inProjection": false
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|segment_4a75fdb3cc574a8183c72aca7d49cead:reasoning_cdea4605edfc4d3b8d6165344ce22d08",
+   "chars": 114,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|turn_a8e2f881874e4960a1fa17e81d77fcbb:335db7dc3618466db3fc89318440c8f5",
+   "chars": 181,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|segment_e48df82e2d43453fb3e98ae2ddebec83:reasoning_d35a25ee595143e2ab8ee9a5a0d1cc23",
+   "chars": 411,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|turn_e92b9caff3194e3eb3a5bf98af38830c:b2ca844373954b2b83defb4fa04a28d1",
+   "chars": 2,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|637830588",
+   "chars": 135,
+   "inProjection": false
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|segment_4163511aab6143c881b408413f116efd:reasoning_41b9b09615824b2398101596e5f33771",
+   "chars": 196,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_d550fe0aaa744f68bbaecd8568c43210|turn_39b713c8fedb4afa8f370b1e163094de:29903f737ca245a6b193c832b5ed92e3",
+   "chars": 130,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_ec06852fae424e129d41191e5719a1a1|turn_7f8367ebd6a142b6a7bd31fef447bf7f:c0b936c08c08438298b90f55347d4307",
+   "chars": 1516,
+   "inProjection": true
+  }
+ ],
+ "rootRemoved": true
+}

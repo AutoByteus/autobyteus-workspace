@@ -59,8 +59,8 @@ beforeEach(async () => {
   await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org"), tree);
   await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "standalone-team", ancestorTeamRunIds: [] }),
     testExecutionTree({ rootTeamRunId: "standalone-team", coordinatorAddress: "/lead", children: [testAgentNode("/lead", { agentRunId: "standalone-lead" })] }));
-  writeAttachmentSidecars(layout.getOrgDirPath("org"), "org", "org");
-  writeAttachmentSidecars(layout.getTeamDirPath({rootTeamRunId: "standalone-team", ancestorTeamRunIds: []}), "team", "standalone-team");
+  writeAttachmentSidecars(layout.getOrgDirPath("org"), "org");
+  writeAttachmentSidecars(layout.getTeamDirPath({rootTeamRunId: "standalone-team", ancestorTeamRunIds: []}), "team");
   writeAttachmentAgentMetadata(memoryDir, "standalone");
   writeAttachmentAgentMetadata(memoryDir, "isolated");
   normalizer = new AgentRunProviderInputNormalizer(new ContextFileLocalPathResolver({

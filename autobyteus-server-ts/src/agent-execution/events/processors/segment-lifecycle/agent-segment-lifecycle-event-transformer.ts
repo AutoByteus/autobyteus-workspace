@@ -9,10 +9,23 @@ import {
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
 import { resolveAgentRunEventTurnId } from "../../../domain/agent-run-event-turn-id.js";
+import type { AgentRunContext, RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
 import type {
   AgentRunEventTransformer,
   AgentRunEventTransformerInput,
 } from "../../agent-run-event-transformer.js";
+import type {
+  AgentSegmentLifecycleState,
+  AgentSegmentRejectionReason,
+  AgentSegmentRejectionSummary,
+} from "./agent-segment-lifecycle-state.js";
+import {
+  logAgentSegmentRejection,
+  logAgentSegmentRejectionSummaries,
+  type AgentSegmentRejectionLogContext,
+} from "./agent-segment-rejection-log.js";
+
+const REJECTION_NOTICE_MESSAGE = "Some of the agent's output in this turn could not be shown.";
 
 const START_KEYS = new Set(["id", "turn_id", "segment_type", "metadata"]);
 const CONTENT_KEYS = new Set(["id", "turn_id", "delta"]);
@@ -53,6 +66,18 @@ const identity = (payload: Record<string, unknown>): AgentSegmentIdentity | null
   return turnId && segmentId ? { turnId, segmentId } : null;
 };
 
+/** Read only when a line is written: run identity is not needed on the accepted-event path. */
+const logContext = (
+  runContext: AgentRunContext<RuntimeAgentRunContext>,
+): AgentSegmentRejectionLogContext => ({ runtimeKind: runContext.config.runtimeKind, runId: runContext.runId });
+
+const logSummaries = (
+  runContext: AgentRunContext<RuntimeAgentRunContext>,
+  summaries: readonly AgentSegmentRejectionSummary[],
+): void => {
+  if (summaries.length > 0) logAgentSegmentRejectionSummaries(logContext(runContext), summaries);
+};
+
 export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTransformer {
   transform(input: AgentRunEventTransformerInput): AgentRunEvent[] {
     const state = input.segmentLifecycleState;
@@ -65,6 +90,11 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
 
     state.reconcileBeforeBatch(input.runtimeLifecycleSnapshot);
     const output: AgentRunEvent[] = [];
+    const reject = (event: AgentRunEvent, reason: AgentSegmentRejectionReason): void => {
+      output.push(...this.rejection(state, input.runContext, event, reason));
+    };
+    const releasedSummaries: AgentSegmentRejectionSummary[] = [];
+    let reachedBoundary = false;
 
     for (const event of input.events) {
       if (event.eventType === AgentRunEventType.SEGMENT_START) {
@@ -76,7 +106,7 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
           !isAgentSegmentType(type) ||
           !validOptionalMetadata(event.payload)
         ) {
-          output.push(...this.diagnostic(event));
+          reject(event, "PAYLOAD_INVALID");
           continue;
         }
         const result = state.start(parsedIdentity, type, turnState);
@@ -93,7 +123,7 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
             },
           });
         }
-        else if (result.kind === "REJECTED") output.push(...this.diagnostic(event));
+        else if (result.kind === "REJECTED") reject(event, result.reason);
         continue;
       }
 
@@ -104,12 +134,12 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
           !exactKeys(event.payload, CONTENT_KEYS) ||
           typeof event.payload.delta !== "string"
         ) {
-          output.push(...this.diagnostic(event));
+          reject(event, "PAYLOAD_INVALID");
           continue;
         }
         const result = state.content(parsedIdentity);
-        if (result.kind !== "ACCEPTED") {
-          output.push(...this.diagnostic(event));
+        if (result.kind === "REJECTED") {
+          reject(event, result.reason);
           continue;
         }
         output.push({
@@ -135,7 +165,7 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
           !validOptionalBoolean(event.payload, "failed") ||
           !validOptionalString(event.payload, "error")
         ) {
-          output.push(...this.diagnostic(event));
+          reject(event, "PAYLOAD_INVALID");
           continue;
         }
         const result = state.end(parsedIdentity);
@@ -163,7 +193,7 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
             },
           });
         }
-        else if (result.kind === "REJECTED") output.push(...this.diagnostic(event));
+        else if (result.kind === "REJECTED") reject(event, result.reason);
         continue;
       }
 
@@ -175,14 +205,17 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
       ) {
         output.push(event);
         state.observeTurnTerminal(resolveAgentRunEventTurnId(event));
+        reachedBoundary = true;
         continue;
       } else if (event.eventType === AgentRunEventType.ERROR) {
         output.push(event);
         const evidence = resolveAgentRunErrorEvidence(event);
         if (evidence?.kind === "TURN_TERMINAL") {
           state.observeTurnTerminal(evidence.turnId);
+          reachedBoundary = true;
         } else if (evidence?.kind === "RUNTIME_GLOBAL") {
-          state.observeRuntimeTerminal();
+          releasedSummaries.push(...state.observeRuntimeTerminal());
+          reachedBoundary = true;
         }
         continue;
       } else if (
@@ -190,26 +223,49 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
         (event.payload.status === "offline" || event.payload.status === "error")
       ) {
         output.push(event);
-        state.observeRuntimeTerminal();
+        releasedSummaries.push(...state.observeRuntimeTerminal());
+        reachedBoundary = true;
         continue;
       }
 
       output.push(event);
     }
 
-    state.reconcileAfterBatch(input.runtimeLifecycleSnapshot);
+    releasedSummaries.push(...state.reconcileAfterBatch(input.runtimeLifecycleSnapshot));
+    logSummaries(input.runContext, releasedSummaries);
+    // A turn ending or a release is a lifecycle boundary: report counts pending since then too.
+    if (reachedBoundary) logSummaries(input.runContext, state.takeRejectionSummaries());
     return output;
   }
 
-  private diagnostic(event: AgentRunEvent): AgentRunEvent[] {
+  /**
+   * A rejected segment event is never displayed. Its turn's first rejection is logged in detail
+   * and later ones are counted; the run's current turn gets one plain-language notice.
+   */
+  private rejection(
+    state: AgentSegmentLifecycleState,
+    runContext: AgentRunContext<RuntimeAgentRunContext>,
+    event: AgentRunEvent,
+    reason: AgentSegmentRejectionReason,
+  ): AgentRunEvent[] {
     const turnId = nonEmpty(event.payload.turn_id);
-    if (!turnId) return [];
+    const decision = state.recordRejection(turnId);
+    if (decision.warn) {
+      logAgentSegmentRejection({
+        ...logContext(runContext),
+        turnId,
+        eventType: event.eventType,
+        segmentId: nonEmpty(event.payload.id),
+        reason,
+      });
+    }
+    if (!decision.showNotice || !turnId) return [];
     return [{
       eventType: AgentRunEventType.ERROR,
       runId: event.runId,
       payload: {
         code: "AGENT_SEGMENT_LIFECYCLE_INVALID",
-        message: "A runtime segment event violated the canonical lifecycle contract.",
+        message: REJECTION_NOTICE_MESSAGE,
         error_scope: "turn",
         error_effect: "diagnostic",
         turn_id: turnId,

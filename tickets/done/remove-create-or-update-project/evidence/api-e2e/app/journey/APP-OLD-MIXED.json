@@ -1,0 +1,81 @@
+{
+  "launch": {
+    "success": true,
+    "message": "Agent run created successfully.",
+    "runId": "pts_old_listed_b1f39488fe2e46db97d67df9f4c34e6b"
+  },
+  "runId": "pts_old_listed_b1f39488fe2e46db97d67df9f4c34e6b",
+  "definitionToolNames": [
+    "list_projects",
+    "create_or_update_project",
+    "create_project",
+    "update_project",
+    "list_project_tasks",
+    "create_task",
+    "update_task",
+    "read_file"
+  ],
+  "exposedToolNames": [
+    "create_project",
+    "create_task",
+    "delegate_task",
+    "list_project_tasks",
+    "list_projects",
+    "send_message_to",
+    "update_project",
+    "update_task"
+  ],
+  "calls": [
+    {
+      "tool": "create_or_update_project",
+      "arguments": {
+        "name": "Must not be created (old name)"
+      },
+      "refused": true,
+      "agentError": [
+        {
+          "type": "ERROR",
+          "payload": {
+            "code": "AGY_TURN_ERROR",
+            "message": "MCP error -32602: Unknown MCP tool",
+            "error_scope": "turn",
+            "error_effect": "terminal",
+            "turn_id": "6edc25fd-c05c-4ce4-b5a3-8c4a0c57f9a0"
+          }
+        }
+      ]
+    },
+    {
+      "tool": "create_project",
+      "arguments": {
+        "name": "PTS OldListed 9f51",
+        "description": "via create_project"
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_a26e154f-966b-4b69-b0d8-6d948fc9c7be",
+          "name": "PTS OldListed 9f51",
+          "description": "via create_project",
+          "workspaces": []
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_a26e154f-966b-4b69-b0d8-6d948fc9c7be",
+        "description": "via update_project"
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_a26e154f-966b-4b69-b0d8-6d948fc9c7be",
+          "name": "PTS OldListed 9f51",
+          "description": "via update_project",
+          "workspaces": []
+        }
+      }
+    }
+  ]
+}

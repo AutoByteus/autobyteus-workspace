@@ -1133,4 +1133,136 @@ describe("AgentRun termination delegation keeps coalescing (agent-run-terminatio
     await expect(Promise.all([first, second])).resolves.toEqual([{ accepted: true }, { accepted: true }]);
     expect(harness.backend.terminate).toHaveBeenCalledOnce();
   });
+
+  it("logs the current turn's pending segment rejection count once during termination (AC-005c)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const harness = createHarness();
+      const runId = harness.run.runId;
+      await harness.getSourceListener()?.([
+        event(runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-t" }),
+        ...[1, 2, 3].map(() => event(runId, AgentRunEventType.SEGMENT_CONTENT, { id: "never-started", turn_id: "turn-t", delta: "x" })),
+      ]);
+      const summaries = () => warn.mock.calls.filter(([tag]) => tag === "[AgentSegmentLifecycleRejectedSummary]").map(([, detail]) => detail);
+      expect(summaries()).toEqual([]);
+
+      await expect(harness.run.terminate()).resolves.toEqual({ accepted: true });
+
+      expect(summaries()).toEqual([{ runtimeKind: "codex_app_server", runId, turnId: "turn-t", count: 2 }]);
+      expect(warn.mock.calls.filter(([tag]) => tag === "[AgentSegmentLifecycleRejected]")).toHaveLength(1);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+});
+
+describe("AgentRun input-state publication (agent-input-state-content-cadence)", () => {
+  const runningTurn: AgentRuntimeLifecycleSnapshot = {
+    availability: "active",
+    phase: "running",
+    currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" },
+  };
+  type InputStateRecord = { listener: string; revision: number; entries: number };
+  const recordInputStates = (log: InputStateRecord[], listener: string) => (item: AgentRunEvent) => {
+    if (item.eventType !== AgentRunEventType.AGENT_INPUT_STATE) return;
+    const payload = item.payload as { revision: number; entries: unknown[] };
+    log.push({ listener, revision: payload.revision, entries: payload.entries.length });
+  };
+  const contentBatch = (runId: string, delta: string) => [
+    event(runId, AgentRunEventType.SEGMENT_CONTENT, { id: "segment-1", turn_id: "turn-1", delta }),
+  ];
+  const queueWithoutPublish = async (harness: ReturnType<typeof createHarness>, content: string) => {
+    const result = await harness.run.reserveUserMessage(new AgentInputUserMessage(content));
+    if (!result.reserved) throw new Error("Expected reservation.");
+    result.reservation.commit().release();
+  };
+
+  it("sends no already-delivered revision after content batches and broadcasts a queued input once (AC-002)", async () => {
+    const harness = createHarness({ snapshot: runningTurn });
+    const log: InputStateRecord[] = [];
+    harness.run.subscribeToEvents(recordInputStates(log, "a"));
+    await vi.waitFor(() => expect(log).toEqual([{ listener: "a", revision: 1, entries: 0 }]));
+
+    const source = harness.getSourceListener();
+    await source?.([event(harness.run.runId, AgentRunEventType.SEGMENT_START, {
+      id: "segment-1", turn_id: "turn-1", segment_type: "text",
+    })]);
+    await source?.(contentBatch(harness.run.runId, "one"));
+    await source?.(contentBatch(harness.run.runId, "two"));
+    expect(log).toEqual([{ listener: "a", revision: 1, entries: 0 }]);
+
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("queued while running")))
+      .resolves.toEqual({ accepted: true, turnId: null });
+    expect(log).toEqual([
+      { listener: "a", revision: 1, entries: 0 },
+      { listener: "a", revision: 2, entries: 1 },
+    ]);
+
+    await source?.(contentBatch(harness.run.runId, "three"));
+    expect(log).toHaveLength(2);
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+  });
+
+  it("gives each new subscriber the current snapshot without repeating it to existing subscribers (AC-004a)", async () => {
+    const harness = createHarness({ snapshot: runningTurn });
+    const log: InputStateRecord[] = [];
+    harness.run.subscribeToEvents(recordInputStates(log, "a"));
+    harness.run.subscribeToEvents(recordInputStates(log, "b"));
+    await vi.waitFor(() => expect(log).toHaveLength(2));
+    expect(log).toEqual([
+      { listener: "a", revision: 1, entries: 0 },
+      { listener: "b", revision: 1, entries: 0 },
+    ]);
+
+    await harness.run.postUserMessage(new AgentInputUserMessage("queued"));
+    const unsubscribeReconnect = harness.run.subscribeToEvents(recordInputStates(log, "reconnect"));
+    await vi.waitFor(() => expect(log).toHaveLength(5));
+    expect(log.slice(2)).toEqual([
+      { listener: "a", revision: 2, entries: 1 },
+      { listener: "b", revision: 2, entries: 1 },
+      { listener: "reconnect", revision: 2, entries: 1 },
+    ]);
+    unsubscribeReconnect();
+    await harness.getSourceListener()?.(contentBatch(harness.run.runId, "after reconnect"));
+    expect(log).toHaveLength(5);
+  });
+
+  it("broadcasts a revision first produced by a pull read on the next publish (AC-004b)", async () => {
+    const harness = createHarness({ snapshot: runningTurn });
+    const log: InputStateRecord[] = [];
+    harness.run.subscribeToEvents(recordInputStates(log, "a"));
+    await vi.waitFor(() => expect(log).toHaveLength(1));
+
+    await queueWithoutPublish(harness, "reserved then released");
+    await Promise.resolve();
+    expect(harness.run.getInputStateSnapshot()).toMatchObject({ revision: 2, entries: [{ content: "reserved then released" }] });
+    expect(log).toHaveLength(1);
+
+    await harness.getSourceListener()?.(contentBatch(harness.run.runId, "next batch"));
+    expect(log).toEqual([
+      { listener: "a", revision: 1, entries: 0 },
+      { listener: "a", revision: 2, entries: 1 },
+    ]);
+    await harness.getSourceListener()?.(contentBatch(harness.run.runId, "later batch"));
+    expect(log).toHaveLength(2);
+  });
+
+  it("broadcasts a revision first produced by a subscribe snapshot to existing subscribers before the new snapshot (AC-004b)", async () => {
+    const harness = createHarness({ snapshot: runningTurn });
+    const log: InputStateRecord[] = [];
+    harness.run.subscribeToEvents(recordInputStates(log, "a"));
+    await vi.waitFor(() => expect(log).toHaveLength(1));
+
+    await queueWithoutPublish(harness, "reserved then released");
+    harness.run.subscribeToEvents(recordInputStates(log, "b"));
+    await vi.waitFor(() => expect(log).toHaveLength(3));
+    expect(log).toEqual([
+      { listener: "a", revision: 1, entries: 0 },
+      { listener: "a", revision: 2, entries: 1 },
+      { listener: "b", revision: 2, entries: 1 },
+    ]);
+
+    await harness.getSourceListener()?.(contentBatch(harness.run.runId, "next batch"));
+    expect(log).toHaveLength(3);
+  });
 });

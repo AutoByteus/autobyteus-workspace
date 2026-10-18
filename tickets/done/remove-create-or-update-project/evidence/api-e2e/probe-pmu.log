@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.6-beta.1 test:e2e:project-manager-ux /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-web
+> node tests/e2e/project-manager-ux-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/probe-pmu
+
+Project manager UX probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/probe-pmu/evidence.json
+exit 0

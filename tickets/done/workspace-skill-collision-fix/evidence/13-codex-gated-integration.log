@@ -1,0 +1,497 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts status and assistant text segments for a normal Codex turn
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:36.849238Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts approval, tool execution, and terminal tool events for an approved command
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:37.160065Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:37.347675Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts denied approval into TOOL_DENIED and preserves post-deny assistant output
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:37.526430Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts tool execution events without approval when autoExecuteTools is enabled
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:37.701668Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:37.917430Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2memits multiple reasoning segment ids when one turn reasons again between two tool calls
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:38.117149Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts raw Codex fileChange activity into segment, lifecycle, and artifact events
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:38.380790Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mexecutes open_tab through the live Codex Agent Tools MCP path
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:38.678360Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mpublishes an existing workspace file through the live Codex Agent Tools MCP path
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-publish-artifacts-RsTjZG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-publish-artifacts-RsTjZG.
+
+[90mstdout[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mpublishes an existing workspace file through the live Codex Agent Tools MCP path
+[22m[39mCreated and registered workspace ID: agent_ws_e0db7375419944fb79c33f385d1861b13f6de3657d14f9e9ce36f8cb04d67233
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mpublishes an existing workspace file through the live Codex Agent Tools MCP path
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:38.916462Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mexecutes the full browser tool surface through the live Codex Agent Tools MCP path
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:39.152044Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [31m❯[39m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m11 failed[39m[2m)[22m[33m 2651[2mms[22m[39m
+[31m     [31m×[31m converts status and assistant text segments for a normal Codex turn[39m[33m 351[2mms[22m[39m
+[31m     [31m×[31m converts approval, tool execution, and terminal tool events for an approved command[39m[32m 295[2mms[22m[39m
+[31m     [31m×[31m converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled[39m[32m 190[2mms[22m[39m
+[31m     [31m×[31m converts denied approval into TOOL_DENIED and preserves post-deny assistant output[39m[32m 175[2mms[22m[39m
+[31m     [31m×[31m converts tool execution events without approval when autoExecuteTools is enabled[39m[32m 177[2mms[22m[39m
+[31m     [31m×[31m steers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)[39m[32m 221[2mms[22m[39m
+[31m     [31m×[31m emits multiple reasoning segment ids when one turn reasons again between two tool calls[39m[32m 241[2mms[22m[39m
+[31m     [31m×[31m converts raw Codex fileChange activity into segment, lifecycle, and artifact events[39m[32m 225[2mms[22m[39m
+[31m     [31m×[31m executes open_tab through the live Codex Agent Tools MCP path[39m[33m 306[2mms[22m[39m
+[31m     [31m×[31m publishes an existing workspace file through the live Codex Agent Tools MCP path[39m[32m 222[2mms[22m[39m
+[31m     [31m×[31m executes the full browser tool surface through the live Codex Agent Tools MCP path[39m[32m 245[2mms[22m[39m
+[90mstdout[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts[2m > [22m[2mCodexThreadManager integration (live transport)[2m > [22m[2mcreates a real Codex thread, registers it, and reaches startup-ready state
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:40.810183Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts[2m > [22m[2mCodexThreadManager integration (live transport)[2m > [22m[2mrestores an existing remote Codex thread and continues the same thread id
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:41.024888Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts[2m > [22m[2mCodexThreadManager integration (live transport)[2m > [22m[2mreuses one live app-server client for two threads on the same workspace
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:41.222602Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [31m❯[39m tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 597[2mms[22m[39m
+[31m     [31m×[31m creates a real Codex thread, registers it, and reaches startup-ready state[39m[32m 195[2mms[22m[39m
+[31m     [31m×[31m restores an existing remote Codex thread and continues the same thread id[39m[32m 213[2mms[22m[39m
+[31m     [31m×[31m reuses one live app-server client for two threads on the same workspace[39m[32m 188[2mms[22m[39m
+[90mstdout[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22m[2mCodexThread integration (live transport)[2m > [22m[2mcreates a real thread, sends a live turn, and reaches completion
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:42.200599Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22m[2mCodexThread integration (live transport)[2m > [22m[2msteers the exact active live turn without starting a phantom replacement
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:42.480773Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22m[2mCodexThread integration (live transport)[2m > [22m[2mrequests terminal approval, approves it, and completes the command
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:42.677797Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22m[2mCodexThread integration (live transport)[2m > [22m[2mrequests terminal approval, denies it, and leaves the command unapplied
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:42.918798Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22m[2mCodexThread integration (live transport)[2m > [22m[2minterrupts an active long-running terminal turn
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:26:43.152478Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [31m❯[39m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[33m 1171[2mms[22m[39m
+[31m     [31m×[31m creates a real thread, sends a live turn, and reaches completion[39m[32m 217[2mms[22m[39m
+[31m     [31m×[31m steers the exact active live turn without starting a phantom replacement[39m[32m 269[2mms[22m[39m
+[31m     [31m×[31m requests terminal approval, approves it, and completes the command[39m[32m 211[2mms[22m[39m
+[31m     [31m×[31m requests terminal approval, denies it, and leaves the command unapplied[39m[32m 243[2mms[22m[39m
+[31m     [31m×[31m interrupts an active long-running terminal turn[39m[32m 230[2mms[22m[39m
+[90mstdout[2m | tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 16[2mms[22m[39m
+[31m     [31m×[31m reuses one real app-server client per canonical cwd and round-trips requests[39m[32m 10[2mms[22m[39m
+[31m     [31m×[31m releases the last acquired client and starts a fresh process on the next acquire[39m[32m 6[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 21 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mconverts status and assistant text segments for a normal Codex turn
+[31m[1mError[22m: Codex model catalog did not return any preferred backend-flow model. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m203:11[22m[39m
+    [90m201| [39m  )[33m;[39m
+    [90m202| [39m  [35mif[39m ([33m![39mpreferredIdentifier) {
+    [90m203| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m204| [39m      `Codex model catalog did not return any preferred backend-flow m…
+    [90m205| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m356:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mconverts approval, tool execution, and terminal tool events for an approved command
+[31m[1mError[22m: Codex model catalog did not return any preferred backend-flow model. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m203:11[22m[39m
+    [90m201| [39m  )[33m;[39m
+    [90m202| [39m  [35mif[39m ([33m![39mpreferredIdentifier) {
+    [90m203| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m204| [39m      `Codex model catalog did not return any preferred backend-flow m…
+    [90m205| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m459:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mconverts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[31m[1mError[22m: Codex model catalog did not return any preferred backend-flow model. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m203:11[22m[39m
+    [90m201| [39m  )[33m;[39m
+    [90m202| [39m  [35mif[39m ([33m![39mpreferredIdentifier) {
+    [90m203| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m204| [39m      `Codex model catalog did not return any preferred backend-flow m…
+    [90m205| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m571:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mconverts denied approval into TOOL_DENIED and preserves post-deny assistant output
+[31m[1mError[22m: Codex model catalog did not return any preferred backend-flow model. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m203:11[22m[39m
+    [90m201| [39m  )[33m;[39m
+    [90m202| [39m  [35mif[39m ([33m![39mpreferredIdentifier) {
+    [90m203| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m204| [39m      `Codex model catalog did not return any preferred backend-flow m…
+    [90m205| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m659:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mconverts tool execution events without approval when autoExecuteTools is enabled
+[31m[1mError[22m: Codex model catalog did not return any preferred backend-flow model. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m203:11[22m[39m
+    [90m201| [39m  )[33m;[39m
+    [90m202| [39m  [35mif[39m ([33m![39mpreferredIdentifier) {
+    [90m203| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m204| [39m      `Codex model catalog did not return any preferred backend-flow m…
+    [90m205| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m757:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[31m[1mError[22m: Codex model catalog did not return any preferred backend-flow model. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m203:11[22m[39m
+    [90m201| [39m  )[33m;[39m
+    [90m202| [39m  [35mif[39m ([33m![39mpreferredIdentifier) {
+    [90m203| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m204| [39m      `Codex model catalog did not return any preferred backend-flow m…
+    [90m205| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m844:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22memits multiple reasoning segment ids when one turn reasons again between two tool calls
+[31m[1mError[22m: Codex model catalog did not return required model gpt-5.4. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m186:13[22m[39m
+    [90m184| [39m  [35mif[39m (requiredModelIdentifier) {
+    [90m185| [39m    [35mif[39m ([33m![39mavailableModelIdentifiers[33m.[39m[34mincludes[39m(requiredModelIdentifier)) {
+    [90m186| [39m      [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m            [31m^[39m
+    [90m187| [39m        `Codex model catalog did not return required model ${requiredM…
+    [90m188| [39m      )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m937:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mconverts raw Codex fileChange activity into segment, lifecycle, and artifact events
+[31m[1mTypeError[22m: factory.createBackend is not a function[39m
+[36m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m1063:35[22m[39m
+    [90m1061| [39m    })[33m;[39m
+    [90m1062| [39m
+    [90m1063| [39m    [35mconst[39m backend [33m=[39m [35mawait[39m factory[33m.[39m[34mcreateBackend[39m(
+    [90m   | [39m                                  [31m^[39m
+    [90m1064| [39m      [35mnew[39m [33mAgentRunConfig[39m({
+    [90m1065| [39m        runtimeKind[33m:[39m [32m"codex_app_server"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mexecutes open_tab through the live Codex Agent Tools MCP path
+[31m[1mError[22m: Codex model catalog did not return any preferred backend-flow model. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m203:11[22m[39m
+    [90m201| [39m  )[33m;[39m
+    [90m202| [39m  [35mif[39m ([33m![39mpreferredIdentifier) {
+    [90m203| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m204| [39m      `Codex model catalog did not return any preferred backend-flow m…
+    [90m205| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m1169:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mpublishes an existing workspace file through the live Codex Agent Tools MCP path
+[31m[1mError[22m: Codex model catalog did not return any preferred backend-flow model. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m203:11[22m[39m
+    [90m201| [39m  )[33m;[39m
+    [90m202| [39m  [35mif[39m ([33m![39mpreferredIdentifier) {
+    [90m203| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m204| [39m      `Codex model catalog did not return any preferred backend-flow m…
+    [90m205| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m1276:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mexecutes the full browser tool surface through the live Codex Agent Tools MCP path
+[31m[1mError[22m: Codex model catalog did not return any preferred backend-flow model. Available models: gpt-6.1-sol, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m203:11[22m[39m
+    [90m201| [39m  )[33m;[39m
+    [90m202| [39m  [35mif[39m ([33m![39mpreferredIdentifier) {
+    [90m203| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m204| [39m      `Codex model catalog did not return any preferred backend-flow m…
+    [90m205| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m1436:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts[2m > [22mCodexThreadManager integration (live transport)[2m > [22mcreates a real Codex thread, registers it, and reaches startup-ready state
+[31m[1mError[22m: Codex model catalog did not return gpt-5.4-mini.[39m
+[36m [2m❯[22m fetchCodexMiniModelIdentifier tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts:[2m107:11[22m[39m
+    [90m105| [39m  const gpt54Mini = models.find((model) => model.model_identifier === …
+    [90m106| [39m  [35mif[39m ([33m![39mgpt54Mini) {
+    [90m107| [39m    throw new Error("Codex model catalog did not return gpt-5.4-mini."…
+    [90m   | [39m          [31m^[39m
+    [90m108| [39m  }
+    [90m109| [39m  [35mreturn[39m gpt54Mini[33m.[39mmodel_identifier[33m;[39m
+[90m [2m❯[22m tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts:[2m151:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts[2m > [22mCodexThreadManager integration (live transport)[2m > [22mrestores an existing remote Codex thread and continues the same thread id
+[31m[1mError[22m: Codex model catalog did not return gpt-5.4-mini.[39m
+[36m [2m❯[22m fetchCodexMiniModelIdentifier tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts:[2m107:11[22m[39m
+    [90m105| [39m  const gpt54Mini = models.find((model) => model.model_identifier === …
+    [90m106| [39m  [35mif[39m ([33m![39mgpt54Mini) {
+    [90m107| [39m    throw new Error("Codex model catalog did not return gpt-5.4-mini."…
+    [90m   | [39m          [31m^[39m
+    [90m108| [39m  }
+    [90m109| [39m  [35mreturn[39m gpt54Mini[33m.[39mmodel_identifier[33m;[39m
+[90m [2m❯[22m tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts:[2m191:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts[2m > [22mCodexThreadManager integration (live transport)[2m > [22mreuses one live app-server client for two threads on the same workspace
+[31m[1mError[22m: Codex model catalog did not return gpt-5.4-mini.[39m
+[36m [2m❯[22m fetchCodexMiniModelIdentifier tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts:[2m107:11[22m[39m
+    [90m105| [39m  const gpt54Mini = models.find((model) => model.model_identifier === …
+    [90m106| [39m  [35mif[39m ([33m![39mgpt54Mini) {
+    [90m107| [39m    throw new Error("Codex model catalog did not return gpt-5.4-mini."…
+    [90m   | [39m          [31m^[39m
+    [90m108| [39m  }
+    [90m109| [39m  [35mreturn[39m gpt54Mini[33m.[39mmodel_identifier[33m;[39m
+[90m [2m❯[22m tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts:[2m246:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22mCodexThread integration (live transport)[2m > [22mcreates a real thread, sends a live turn, and reaches completion
+[31m[1mError[22m: Codex model catalog did not return gpt-5.4-mini.[39m
+[36m [2m❯[22m fetchCodexMiniModelIdentifier tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m163:11[22m[39m
+    [90m161| [39m  const gpt54Mini = models.find((model) => model.model_identifier === …
+    [90m162| [39m  [35mif[39m ([33m![39mgpt54Mini) {
+    [90m163| [39m    throw new Error("Codex model catalog did not return gpt-5.4-mini."…
+    [90m   | [39m          [31m^[39m
+    [90m164| [39m  }
+    [90m165| [39m  [35mreturn[39m gpt54Mini[33m.[39mmodel_identifier[33m;[39m
+[90m [2m❯[22m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m207:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22mCodexThread integration (live transport)[2m > [22msteers the exact active live turn without starting a phantom replacement
+[31m[1mError[22m: Codex model catalog did not return gpt-5.4-mini.[39m
+[36m [2m❯[22m fetchCodexMiniModelIdentifier tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m163:11[22m[39m
+    [90m161| [39m  const gpt54Mini = models.find((model) => model.model_identifier === …
+    [90m162| [39m  [35mif[39m ([33m![39mgpt54Mini) {
+    [90m163| [39m    throw new Error("Codex model catalog did not return gpt-5.4-mini."…
+    [90m   | [39m          [31m^[39m
+    [90m164| [39m  }
+    [90m165| [39m  [35mreturn[39m gpt54Mini[33m.[39mmodel_identifier[33m;[39m
+[90m [2m❯[22m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m266:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22mCodexThread integration (live transport)[2m > [22mrequests terminal approval, approves it, and completes the command
+[31m[1mError[22m: Codex model catalog did not return gpt-5.4-mini.[39m
+[36m [2m❯[22m fetchCodexMiniModelIdentifier tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m163:11[22m[39m
+    [90m161| [39m  const gpt54Mini = models.find((model) => model.model_identifier === …
+    [90m162| [39m  [35mif[39m ([33m![39mgpt54Mini) {
+    [90m163| [39m    throw new Error("Codex model catalog did not return gpt-5.4-mini."…
+    [90m   | [39m          [31m^[39m
+    [90m164| [39m  }
+    [90m165| [39m  [35mreturn[39m gpt54Mini[33m.[39mmodel_identifier[33m;[39m
+[90m [2m❯[22m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m349:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22mCodexThread integration (live transport)[2m > [22mrequests terminal approval, denies it, and leaves the command unapplied
+[31m[1mError[22m: Codex model catalog did not return gpt-5.4-mini.[39m
+[36m [2m❯[22m fetchCodexMiniModelIdentifier tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m163:11[22m[39m
+    [90m161| [39m  const gpt54Mini = models.find((model) => model.model_identifier === …
+    [90m162| [39m  [35mif[39m ([33m![39mgpt54Mini) {
+    [90m163| [39m    throw new Error("Codex model catalog did not return gpt-5.4-mini."…
+    [90m   | [39m          [31m^[39m
+    [90m164| [39m  }
+    [90m165| [39m  [35mreturn[39m gpt54Mini[33m.[39mmodel_identifier[33m;[39m
+[90m [2m❯[22m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m420:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts[2m > [22mCodexThread integration (live transport)[2m > [22minterrupts an active long-running terminal turn
+[31m[1mError[22m: Codex model catalog did not return gpt-5.4-mini.[39m
+[36m [2m❯[22m fetchCodexMiniModelIdentifier tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m163:11[22m[39m
+    [90m161| [39m  const gpt54Mini = models.find((model) => model.model_identifier === …
+    [90m162| [39m  [35mif[39m ([33m![39mgpt54Mini) {
+    [90m163| [39m    throw new Error("Codex model catalog did not return gpt-5.4-mini."…
+    [90m   | [39m          [31m^[39m
+    [90m164| [39m  }
+    [90m165| [39m  [35mreturn[39m gpt54Mini[33m.[39mmodel_identifier[33m;[39m
+[90m [2m❯[22m tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts:[2m490:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts[2m > [22mCodexAppServerClientManager integration (live transport)[2m > [22mreuses one real app-server client per canonical cwd and round-trips requests
+[31m[1mTypeError[22m: manager.getClient is not a function[39m
+[36m [2m❯[22m tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts:[2m74:33[22m[39m
+    [90m 72| [39m    })[33m;[39m
+    [90m 73| [39m
+    [90m 74| [39m    [35mconst[39m first [33m=[39m [35mawait[39m manager[33m.[39m[34mgetClient[39m(workspaceRoot)[33m;[39m
+    [90m   | [39m                                [31m^[39m
+    [90m 75| [39m    const second = await manager.getClient(path.join(workspaceRoot, ".…
+    [90m 76| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts[2m > [22mCodexAppServerClientManager integration (live transport)[2m > [22mreleases the last acquired client and starts a fresh process on the next acquire
+[31m[1mTypeError[22m: manager.acquireClient is not a function[39m
+[36m [2m❯[22m tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts:[2m95:33[22m[39m
+    [90m 93| [39m    })[33m;[39m
+    [90m 94| [39m
+    [90m 95| [39m    [35mconst[39m first [33m=[39m [35mawait[39m manager[33m.[39m[34macquireClient[39m(workspaceRoot)[33m;[39m
+    [90m   | [39m                                [31m^[39m
+    [90m 96| [39m    [35mconst[39m firstThreadId [33m=[39m [35mawait[39m [34mstartThread[39m(first[33m,[39m workspaceRoot)[33m;[39m
+    [90m 97| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/21]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m4 failed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[31m21 failed[39m[22m[90m (21)[39m
+[2m   Start at [22m 11:26:25
+[2m   Duration [22m 19.58s[2m (transform 7.27s, setup 63ms, import 13.91s, tests 4.43s, environment 0ms)[22m
+
+exit=1

@@ -77,7 +77,7 @@ export const startCollaborationHarness = async (label: string) => {
     if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
     return body.data;
   };
-  const config = () => ({ workspaceRootPath: workspace, llmModelIdentifier: "gemini-3.8-flash-low", llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli" });
+  const config = (workspaceRootPath = workspace) => ({ workspaceRootPath, llmModelIdentifier: "gemini-3.8-flash-low", llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli" });
   const agentDefinition = async (name: string, extra: Rec = {}) => (await graphql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
     { input: { name, role: "assistant", description: `${name} (collaboration prompt E2E)`, instructions: `Instructions of ${name}.`, toolNames: [], ...extra } })).createAgentDefinition.id as string;
   const teamDefinition = async (name: string, members: Array<[string, string]>, coordinator: string, extra: Rec = {}) => (await graphql(
@@ -166,12 +166,12 @@ export const startCollaborationHarness = async (label: string) => {
   };
 
   /** A root of one kind: its members by address, a way to send a scripted tool call to any agent of it, and its live tree. */
-  const startRoot = async (kind: RootKind, ids: Rec) => {
+  const startRoot = async (kind: RootKind, ids: Rec, options: { workspaceRootPath?: string } = {}) => {
     let rootId: string, managerRunId: string;
     const members: Record<string, string> = {};
     if (kind === "agent") {
       const created = (await graphql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
-        { input: { agentDefinitionId: ids.manager, ...config() } })).createAgentRun;
+        { input: { agentDefinitionId: ids.manager, ...config(options.workspaceRootPath) } })).createAgentRun;
       expect(created.success, created.message).toBe(true);
       rootId = managerRunId = created.runId;
       members["/"] = managerRunId;
@@ -260,6 +260,12 @@ export const startCollaborationHarness = async (label: string) => {
     return attachRoot(root.kind, root.rootId, root.managerRunId, root.members);
   };
 
+  /** A root that stopped being one (e.g. a run the user started, now another root's task agent) is no longer stopped at close. */
+  const release = (rootId: string) => {
+    const index = active.findIndex((root) => root.rootId === rootId);
+    if (index >= 0) active.splice(index, 1);
+  };
+
   let serverStopped = false;
   /** Stops the in-process server and leaves the data dir in place (to start another server process on it). */
   const stopServer = async () => {
@@ -278,5 +284,5 @@ export const startCollaborationHarness = async (label: string) => {
     if (priorCase === undefined) delete process.env["AGY_FAKE_CASE"]; else process.env["AGY_FAKE_CASE"] = priorCase;
     expect(errors, "owned cleanup").toEqual([]);
   };
-  return { graphql, config, agentDefinition, teamDefinition, orgDefinition, startRoot, reopenRoot, terminate, stopServer, promptOf, mcpCall, close, dataDir, workspace };
+  return { graphql, config, agentDefinition, teamDefinition, orgDefinition, startRoot, reopenRoot, terminate, release, stopServer, promptOf, mcpCall, close, dataDir, workspace };
 };

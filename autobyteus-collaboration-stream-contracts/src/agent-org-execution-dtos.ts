@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   agentAddressSchema,
   agentPresentationMessageSchema,
+  agentPresentationPayloadSchemas,
   jsonValueSchema,
   nonEmptyStringSchema,
 } from "@autobyteus/agent-presentation-contracts";
@@ -203,6 +204,20 @@ export const delegatedLaunchSelectionsChangedEventDtoSchema = z.object({
   ])).min(1),
 }).strict();
 export type DelegatedLaunchSelectionsChangedEventDto = Readonly<z.infer<typeof delegatedLaunchSelectionsChangedEventDtoSchema>>;
+/**
+ * Live: response text a chat socket coalesced over one content window. Each item is the
+ * concatenated text of one agent segment, in order of first appearance. The envelope covers the
+ * contiguous root sequences `[change_sequence, change_sequence_through]`, including absorbed
+ * identical status repeats; nothing outside that range is regrouped.
+ */
+export const agentPresentationBatchEventDtoSchema = z.object({
+  kind: z.literal("agent_presentation_batch"),
+  items: z.array(z.object({
+    member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema,
+    message: z.object({ type: z.literal("SEGMENT_CONTENT"), payload: agentPresentationPayloadSchemas.SEGMENT_CONTENT }).strict(),
+  }).strict()).min(1),
+}).strict();
+export type AgentPresentationBatchEventDto = Readonly<z.infer<typeof agentPresentationBatchEventDtoSchema>>;
 
 const configuredTeam = z.object({
   address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
@@ -260,6 +275,7 @@ export const agentOrgExecutionViewDtoSchema = z.object({
 
 export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
+  agentPresentationBatchEventDtoSchema,
   z.object({
     kind: z.literal("task_execution_started"),
     host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecution,

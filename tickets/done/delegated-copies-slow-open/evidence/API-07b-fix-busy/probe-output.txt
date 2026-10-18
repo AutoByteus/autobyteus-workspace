@@ -1,0 +1,5 @@
+[2026-10-18T13:23:40.848Z] L-001 start: Running large hub: hub row → copy rows and hub click → conversation (AC-003 running, QR-001/QR-002)
+[2026-10-18T13:23:47.654Z] L-001 Pass
+[2026-10-18T13:23:47.654Z] L-009 start: Opening a copy while it works through a burst of turns: loads (or retries on reselect) and ends with its complete conversation (CAND-003 residual)
+[2026-10-18T13:23:52.600Z] L-009 Pass
+{"result":"Pass","label":"fix-busy","cases":{"S-API":"Not Run (filtered)","S-001":"Not Run (filtered)","S-002":"Not Run (filtered)","S-003":"Not Run (filtered)","S-ROWS":"Not Run (filtered)","L-001":"Pass","L-002":"Not Run (filtered)","L-003":"Not Run (filtered)","L-004":"Not Run (filtered)","L-008":"Not Run (filtered)","L-009":"Pass","L-005":"Not Run (filtered)","L-006":"Not Run (filtered)","L-007":"Not Run (filtered)"},"errors":0,"cleanup":{"browserClosed":true,"frontend":{"pid":44650,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":44579,"status":"terminated","exit":0},"runRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/tmp/dcso-api-e2e/API-07b-fix-busy/evidence.json"}

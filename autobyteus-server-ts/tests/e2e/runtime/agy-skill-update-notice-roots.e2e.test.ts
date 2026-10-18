@@ -25,7 +25,7 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // - SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle (grace 60 s) is not restored by a
 //   skill change. The Manager's later message restores it, and that one turn carries the notice.
 // - SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation folder. The next input
-//   says "updated" with the new SKILL.md path; a later edit in the new folder gives another notice.
+//   says the skill package was updated, with the new folder; a later edit in the new folder gives another notice.
 // Run (about 3 minutes):
 //   env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS \
 //   RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -311,7 +311,9 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
       expect(occurrences(text, HEADER), `${who}: exactly one notice in the same turn`).toBe(1);
       expect(text.indexOf(HEADER), `${who}: notice first`).toBeLessThan(text.indexOf("ECHO_INPUT"));
       expect(text, `${who}: names the skill`).toContain("roots-probe");
-      expect(text, `${who}: gives the current SKILL.md path`).toContain(skillPath);
+      expect(text, `${who}: names the package with its current folder`)
+        .toContain(`Your skill package \`roots-probe\` has been updated (${path.dirname(skillPath)}).`);
+      expect(text, `${who}: lists the changed file`).toContain("- SKILL.md (changed)");
       expect(text, `${who}: the message follows unchanged`).toMatch(/ECHO_INPUT (team user|org|copy) second/);
     }
     expect(next.teamPlain, "member without the skill gets no notice").not.toContain(HEADER);
@@ -386,7 +388,8 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
     await wait(3_000);
     const afterUpdate = await echo("ECHO_INPUT gh after update");
     expect(occurrences(afterUpdate, HEADER)).toBe(1);
-    expect(afterUpdate, "reported as updated with the new path").toContain(path.join(secondRoot!, "SKILL.md"));
+    expect(afterUpdate, "reported as updated with the new folder")
+      .toContain(`Your skill package \`gh-probe\` has been updated (${secondRoot!}).`);
     expect(afterUpdate).not.toMatch(/no longer available/i);
 
     // The new generation folder is watched: a local edit there produces another notice.
@@ -394,7 +397,8 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
     await wait(3_000);
     const afterEdit = await echo("ECHO_INPUT gh after local edit");
     expect(occurrences(afterEdit, HEADER)).toBe(1);
-    expect(afterEdit).toContain(path.join(secondRoot!, "SKILL.md"));
+    expect(afterEdit).toContain(`Your skill package \`gh-probe\` has been updated (${secondRoot!}).`);
+    expect(afterEdit).toContain("- SKILL.md (changed)");
     evidence.sun003 = { firstRoot, secondRoot, afterUpdate, afterEdit };
   }, 180_000);
 });

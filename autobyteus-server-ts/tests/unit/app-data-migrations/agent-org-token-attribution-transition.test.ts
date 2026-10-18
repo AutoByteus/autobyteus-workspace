@@ -8,6 +8,7 @@ import { createOrgMigrationFixture, writeNestedRoot, putOrgFixture } from "../..
 import { buildCurrentTokenUsagePayload } from "../../helpers/token-usage-run-record-fixtures.js";
 import { AgentOrgRunManager } from "../../../src/agent-org-execution/services/agent-org-run-manager.js";
 import type { AgentOrgExecutionScopeBuilder } from "../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
+import { convertMessageLogsAsOnStartup } from "../../helpers/append-only-message-log-startup.js";
 import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 
 const fixtures: Awaited<ReturnType<typeof createOrgMigrationFixture>>[] = [];
@@ -131,6 +132,7 @@ describe("Org attribution: isolated actual SQL and current token store", () => {
 
   it("uses the current token boundary after real package loading and rejects before scope build; inspection stays available", async () => {
     const e = await fixture(); await writeNestedRoot(e.memory); expect((await e.migrate()).status).toBe("SUCCEEDED");
+    await convertMessageLogsAsOnStartup(e.memory);
     await e.store.recordObservation(observation("org-direct"));
     const build = vi.fn(async () => { throw new Error("REACHED_SCOPE_BUILD"); });
     const manager = new AgentOrgRunManager({ memoryDir: e.memory, tokenUsageRunStore: e.store, scopeBuilder: { build } as unknown as AgentOrgExecutionScopeBuilder });

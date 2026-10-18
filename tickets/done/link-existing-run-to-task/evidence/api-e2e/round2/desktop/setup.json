@@ -1,0 +1,14 @@
+{
+ "project": "project_802f3f4d-a512-4f30-9eb8-fdbbcf11e7cc",
+ "taskTeam": {
+  "taskId": "project_task_2372c74c-43ce-472b-9cf9-b5a05aeeff85",
+  "taskKey": "ado-desktop-project-1"
+ },
+ "taskAgent": {
+  "taskId": "project_task_291be9a9-d8e5-44f7-961a-ff8da6ef7c0a",
+  "taskKey": "ado-desktop-project-2"
+ },
+ "pm": "ado_project_manager_b95e07caa966451280b2a8e5d990edaa",
+ "writer": "ado_writer_b2d683f22cc54afe952f70d20dfca5f0",
+ "team": "ado_review_team_8d5e58e389fe4212b0c033fb1aa112d4"
+}

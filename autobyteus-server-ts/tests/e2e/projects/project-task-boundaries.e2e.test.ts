@@ -14,7 +14,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
-import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateOrUpdateProjectTool, CreateTaskTool, UpdateTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
+import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
@@ -25,9 +25,8 @@ import { resetProjectTaskContextStoreForTests } from "../../../src/projects/cont
 // test-owned files. No Project adapter/service/auth/multipart doubles. The unused publication
 // capability is supplied because a real run scope requires it; it must never be called here.
 // No model request, Manager package or interactive same-window node switching is represented.
-// create_or_update_project is deprecated and kept for the transition (project-tool-split REQ-004); it runs as
-// update_project when project_id is present, otherwise as create_project.
-const names = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_or_update_project", "create_task", "update_task"];
+// A Project mutation call goes to update_project when project_id is present, otherwise to create_project.
+const names = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
 const projectTool = (args: unknown) => typeof args === "object" && args !== null && Object.hasOwn(args, "project_id") ? "update_project" : "create_project";
 const FILES = "storedFilename displayName mimeType sizeBytes locator";
 const TASK = `taskId projectId description status createdAt updatedAt contextFiles { ${FILES} }`;
@@ -84,25 +83,22 @@ describe("Project Task production HTTP boundaries", () => {
     return (await gql<{ createWorkspace: { workspaceId: string; workspaceRootPath: string } }>(
       "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", { i: { rootPath } })).createWorkspace;
   };
-  const projectCall = async (args: Record<string, unknown>, name: string = projectTool(args)) => {
-    const result = await call(name, args);
+  const projectCall = async (args: Record<string, unknown>) => {
+    const result = await call(projectTool(args), args);
     expect(result.isError).not.toBe(true);
     expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
     return result.structuredContent.project as Pick<Project, "projectId" | "name" | "description"> & { workspaces: Array<Pick<Link, "workspaceRootPath" | "description">> };
   };
-  /** The tool the args belong to rejects them natively and over MCP; the deprecated tool returns the same error (AC-004). */
+  /** The tool the args belong to rejects them natively and over MCP with the same error. */
   const expectProjectError = async (args: Record<string, unknown>, code: string) => {
     const before = await snapshot(path.join(root, "projects"));
     const name = projectTool(args);
     const native = await new (name === "update_project" ? UpdateProjectTool : CreateProjectTool)().execute(null, args).then(
       () => { throw new Error("Expected native rejection"); }, (error: Error) => JSON.parse(error.message));
     expect(native.error.code).toBe(code); expect(native.error.message).not.toBe("");
-    for (const tool of [name, "create_or_update_project"]) {
-      const result = await call(tool, args);
-      expect(result.isError).toBe(true); expect(result.structuredContent).toEqual(native);
-      expect(JSON.parse(result.content[0].text)).toEqual(native);
-    }
-    expect(await new CreateOrUpdateProjectTool().execute(null, args).then(() => null, (error: Error) => JSON.parse(error.message))).toEqual(native);
+    const result = await call(name, args);
+    expect(result.isError).toBe(true); expect(result.structuredContent).toEqual(native);
+    expect(JSON.parse(result.content[0].text)).toEqual(native);
     expect(await snapshot(path.join(root, "projects"))).toEqual(before);
   };
   const draft = async (projectId: string, taskId?: string) => {
@@ -141,11 +137,11 @@ describe("Project Task production HTTP boundaries", () => {
     for (const name of ["create_task", "update_task"]) {
       expect((await rpc(one.descriptor.serverUrl, "tools/call", { name, arguments: {} })).body.error).toBeDefined();
     }
-    for (const [name, args] of [["create_project", { name: "Unauthorized" }], ["update_project", { project_id: "p", name: "Unauthorized" }], ["create_or_update_project", { name: "Unauthorized" }]] as const) {
+    for (const [name, args] of [["create_project", { name: "Unauthorized" }], ["update_project", { project_id: "p", name: "Unauthorized" }]] as const) {
       expect((await rpc(one.descriptor.serverUrl, "tools/call", { name, arguments: args })).body.error).toBeDefined();
     }
     const listedTools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; inputSchema: { properties: Record<string, any>; required?: string[] } }>;
-    for (const name of ["create_project", "update_project", "create_or_update_project"]) {
+    for (const name of ["create_project", "update_project"]) {
       expect(listedTools.find(t => t.name === name)!.inputSchema.properties.workspaces.items.properties.workspace_path.type).toBe("string");
     }
     expect(listedTools.find(t => t.name === "create_project")!.inputSchema.required).toEqual(["name"]);
@@ -255,7 +251,7 @@ describe("Project Task production HTTP boundaries", () => {
     await expect(fs.stat(replacementPath)).rejects.toMatchObject({ code: "ENOENT" });
     expect(await fs.readFile(original, "utf8")).toBe("original workspace bytes");
   }, 30000);
-  it.each(["list_projects", "create_project", "update_project", "create_or_update_project"])("API-MCP collision: selected protected %s adapter wins over a configured MCP name", async (name) => {
+  it.each(["list_projects", "create_project", "update_project"])("API-MCP collision: selected protected %s adapter wins over a configured MCP name", async (name) => {
     const target = name === "update_project" ? await createProject("Collision target") : undefined;
     const original = defaultToolRegistry.getToolDefinition(name)!;
     const collision = new ToolDefinition(name, "Configured same-name tool", ToolOrigin.MCP, "MCP",
@@ -319,10 +315,6 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await readProject(nativeCreated.projectId)).toMatchObject(nativeCreated);
     const defaults = await projectCall({name: "HTTP defaults"});
     expect(defaults).toMatchObject({description: "", workspaces: []});
-    // AC-004: the deprecated tool still creates without project_id, with the same result shape.
-    const oldCreated = await projectCall({name: "  Old tool authored  ", description: "  Saved goal  "}, "create_or_update_project");
-    expect(oldCreated).toEqual({projectId: expect.stringMatching(/^project_/), name: "Old tool authored", description: "Saved goal", workspaces: []});
-    expect(await readProject(oldCreated.projectId)).toMatchObject({...oldCreated, taskCount: 0, openTaskCount: 0});
     const summary = (await call("list_projects", {})).structuredContent;
     expect(summary).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
     expect(summary.projects).toContainEqual({projectId: created.projectId, name: created.name, description: created.description});
@@ -330,8 +322,6 @@ describe("Project Task production HTTP boundaries", () => {
       const args = {project_id: ` ${created.projectId} `, ...patch};
       const ack = await projectCall(args);
       expect(JSON.parse(await new UpdateProjectTool().execute(null, args))).toEqual({project: ack});
-      // AC-004: the deprecated tool still patches with project_id and returns the same acknowledgement.
-      expect(await projectCall(args, "create_or_update_project")).toEqual(ack);
       const read = await readProject(created.projectId);
       expect(read).toMatchObject({...ack, createdAt: initial.createdAt, workspaces: []});
       expect(Date.parse(read.updatedAt)).toBeGreaterThanOrEqual(Date.parse(initial.updatedAt));

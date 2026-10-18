@@ -1,0 +1,152 @@
+# DR-02-focused-unit | merged state 5a9df8a8cf (origin/personal ff8e72e724 + ticket) | macOS 26.5.2, node v22.23.1 | 2026-10-18
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > delivers and records the second turn's text and reports running while it works (AC-001, AC-003)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > delivers and records the second turn's text and reports running while it works (AC-001, AC-003)
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts (2 tests) 676ms
+     ✓ delivers and records the second turn's text and reports running while it works (AC-001, AC-003)  565ms
+stdout | tests/unit/agent-execution/agent-run.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/agent-run.test.ts > AgentRun input-state publication (agent-input-state-content-cadence) > gives each new subscriber the current snapshot without repeating it to existing subscribers (AC-004a)
+[AgentSegmentLifecycleRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'agent-run-1',
+  turnId: 'turn-1',
+  eventType: 'SEGMENT_CONTENT',
+  segmentId: 'segment-1',
+  reason: 'SEGMENT_NOT_STARTED'
+}
+
+stderr | tests/unit/agent-execution/agent-run.test.ts > AgentRun input-state publication (agent-input-state-content-cadence) > broadcasts a revision first produced by a pull read on the next publish (AC-004b)
+[AgentSegmentLifecycleRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'agent-run-1',
+  turnId: 'turn-1',
+  eventType: 'SEGMENT_CONTENT',
+  segmentId: 'segment-1',
+  reason: 'SEGMENT_NOT_STARTED'
+}
+
+stderr | tests/unit/agent-execution/agent-run.test.ts > AgentRun input-state publication (agent-input-state-content-cadence) > broadcasts a revision first produced by a subscribe snapshot to existing subscribers before the new snapshot (AC-004b)
+[AgentSegmentLifecycleRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'agent-run-1',
+  turnId: 'turn-1',
+  eventType: 'SEGMENT_CONTENT',
+  segmentId: 'segment-1',
+  reason: 'SEGMENT_NOT_STARTED'
+}
+
+ ✓ tests/unit/agent-execution/agent-run.test.ts (47 tests) 1550ms
+ ✓ tests/unit/agent-execution/events/agent-segment-lifecycle-event-transformer.test.ts (8 tests) 6ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts (12 tests) 5ms
+ ✓ tests/unit/agent-execution/events/agent-turn-ledger.test.ts (6 tests) 2ms
+
+ Test Files  5 passed (5)
+      Tests  75 passed (75)
+   Start at  19:44:46
+   Duration  7.79s (transform 2.55s, setup 62ms, import 4.62s, tests 2.24s, environment 0ms)
+
+exit 0

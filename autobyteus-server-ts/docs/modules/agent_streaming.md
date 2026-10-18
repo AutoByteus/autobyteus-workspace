@@ -2,8 +2,10 @@
 
 ## Scope
 
-Bridges canonical `AgentRunEvent` / `TeamRunEvent` streams to strict standalone
-and Team WebSocket clients. Provider parsing, run-owned lifecycle admission,
+Bridges canonical `AgentRunEvent` / root event streams to strict chat WebSocket
+clients: standalone Agent (`/ws/agent`), AgentTeam (`/ws/agent-team`), AgentOrg
+(`/ws/agent-org`) and the delegated agents of a standalone run
+(`/ws/agent-collaboration`). Provider parsing, run-owned lifecycle admission,
 Team execution correlation, transport projection, and presentation cadence are
 separate boundaries.
 
@@ -15,6 +17,7 @@ separate boundaries.
 - `src/agent-execution/events/processors/segment-lifecycle`
 - `src/agent-team-execution/services/team-agent-event-adapter.ts`
 - `@autobyteus/team-stream-contracts`
+- `@autobyteus/collaboration-stream-contracts`
 - `src/config/streaming-content-flush-interval-setting.ts`
 - `src/api/websocket/agent.ts`
 - `src/api/graphql/types/agent-run.ts`
@@ -41,9 +44,14 @@ The segment lifecycle is owned by exactly one non-persisted
 - the lifecycle transformer admits a valid start, derives the canonical type
   onto each content event, and emits a type-less canonical end;
 - a repeated identical active start or repeated end is an idempotent no-op;
-- a missing start, retired turn, mismatched type, surplus source field, missing
-  identity, or conflicting lifecycle emits `AGENT_SEGMENT_LIFECYCLE_INVALID`
-  diagnostic evidence and no segment mutation; and
+- a missing start, ended (retired) turn, mismatched type, surplus source field,
+  missing identity, or conflicting lifecycle is rejected with no segment
+  mutation. The run's current turn gets at most one
+  `AGENT_SEGMENT_LIFECYCLE_INVALID` diagnostic ("Some of the agent's output in
+  this turn could not be shown."); rejections for other turns or without a turn
+  id get none. Rejections are logged with a reason code, the first per turn in
+  detail and the rest as one count per turn at the next turn end or run
+  release (see [Agent Execution](agent_execution.md#runtime-segment-identity-and-ordering));
 - matching turn terminal events, runtime-global terminal errors, offline/error
   status, or accepted run termination clear the applicable live lifecycle.
 
@@ -149,23 +157,40 @@ shape, redacted-content variant, turn identity, or compatibility alias.
 
 ## WebSocket Content Egress
 
-Each standalone or Team session owns one `AgentStreamWebSocketEgress` between
-canonical mapped events and `connection.send(...)`. Runtime publication,
-persistence, memory, raw traces, and non-WebSocket subscribers remain
-unthrottled.
+Every chat session (all four sockets) owns one `AgentStreamWebSocketEgress`
+between mapped messages and `connection.send(...)`; handlers send nothing to the
+socket around it. Runtime publication, persistence, memory, raw traces,
+applications, the Team lifecycle observer, inspections and other non-WebSocket
+subscribers remain unthrottled. A first pending content message opens a fixed,
+non-sliding window using `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS`
+(default 500 ms; accepted range 100–2,000 ms).
 
-- A first pending `SEGMENT_CONTENT` opens a fixed, non-sliding window using
-  `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS` (default 500 ms; accepted
-  range 100–2,000 ms).
-- Adjacent content coalesces only when every payload field except `delta` is
-  deeply equal. Exact run/execution, turn, segment, and type identity is
-  therefore preserved.
-- `CONNECTED`, acknowledgements, token usage, and non-terminal status can pass
-  immediately without altering the pending content lane.
-- Segment/tool/lifecycle boundaries, terminal statuses, errors, completion,
-  interruption, and unknown message types flush earlier content first.
+The egress composition depends on the socket:
+
+- Standalone `/ws/agent` (default composition): adjacent `SEGMENT_CONTENT`
+  coalesces only when every payload field except `delta` is deeply equal;
+  `CONNECTED`, acknowledgements, token usage and non-terminal status pass
+  immediately without altering the pending content lane; exact repeated
+  statuses are suppressed; segment/tool/lifecycle boundaries, terminal
+  statuses, errors, completion, interruption and unknown types flush earlier
+  content first.
+- Team, Org and delegated agents (sequenced composition,
+  `SequencedContentCadenceScheduler` with a `SequencedStreamShape` per wire
+  format): the window's content of every agent and segment forms one batch
+  that leaves as one frame covering the contiguous root sequences it absorbed
+  (`SEGMENT_CONTENT_BATCH` on Team, an `agent_presentation_batch`
+  `ROOT_EXECUTION_EVENT` on Org and delegated agents). Identical repeated
+  statuses are absorbed into that range while a batch is pending. Nothing
+  sequenced overtakes a pending batch; only `CONNECTED` and
+  `AGENT_COMMAND_ACK` may pass it. The composition has no suppressing filters,
+  because a suppressed message would leave its sequence uncovered.
 - Disposal of an already-lost socket cancels its timer and discards unsendable
-  connection-local presentation state; the transport does not claim replay.
+  connection-local presentation state; the transport does not claim replay. A
+  server-initiated close sends its final `ROOT_LIFECYCLE` or `ERROR` through the
+  egress (pending text first) before closing.
+
+The wire rules are in
+[Agent WebSocket Streaming Protocol](../design/agent_websocket_streaming_protocol.md#client-bound-content-cadence).
 
 ## Consumer Rules
 

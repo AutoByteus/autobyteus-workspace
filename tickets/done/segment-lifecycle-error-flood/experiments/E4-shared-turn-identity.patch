@@ -1,0 +1,381 @@
+diff --git a/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-identity.ts b/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-identity.ts
+new file mode 100644
+index 0000000000..da75be3a33
+--- /dev/null
++++ b/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-identity.ts
+@@ -0,0 +1,59 @@
++/**
++ * The identified turn one ordered consumer of a run's event stream considers active, and the
++ * turns it has seen end. Two kinds of evidence feed it:
++ * - stream evidence (a turn's own start/terminal events, an accepted command): ordered with the
++ *   events being projected, so a newer stream start supersedes and retires the previous turn;
++ * - runtime-snapshot evidence (the runtime's live current turn): possibly ahead of the queued
++ *   events, so it only names a turn while the stream has none, never retires one, and is
++ *   replaced without retirement when the stream reports a turn.
++ */
++export class AgentTurnIdentity {
++  private active: { turnId: string; evidence: "stream" | "runtime_snapshot" } | null = null;
++  private readonly retired = new Set<string>();
++
++  get activeTurnId(): string | null {
++    return this.active?.turnId ?? null;
++  }
++
++  isRetired(turnId: string): boolean {
++    return this.retired.has(turnId);
++  }
++
++  /** Returns the turn this start superseded and retired, if any. */
++  observeStreamStart(turnId: string): string | null {
++    if (this.retired.has(turnId)) return null;
++    const previous = this.active;
++    this.active = { turnId, evidence: "stream" };
++    if (previous && previous.turnId !== turnId && previous.evidence === "stream") {
++      this.retired.add(previous.turnId);
++      return previous.turnId;
++    }
++    return null;
++  }
++
++  /** Returns whether the snapshot turn is now the active turn. */
++  observeRuntimeSnapshotTurn(turnId: string): boolean {
++    if (this.retired.has(turnId)) return false;
++    if (this.active?.evidence === "stream") return this.active.turnId === turnId;
++    this.active = { turnId, evidence: "runtime_snapshot" };
++    return true;
++  }
++
++  /** The turn ended (its own terminal, a turn-terminal error). */
++  retire(turnId: string): void {
++    this.retired.add(turnId);
++    if (this.active?.turnId === turnId) this.active = null;
++  }
++
++  /** Ends the active turn (runtime-global failure, termination). */
++  retireActive(): string | null {
++    const turnId = this.active?.turnId ?? null;
++    if (turnId) this.retire(turnId);
++    return turnId;
++  }
++
++  /** Forgets the active turn without ending it (the run released its runtime). */
++  clearActive(): void {
++    this.active = null;
++  }
++}
+diff --git a/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts b/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts
+index fd20fe1903..19970dd045 100644
+--- a/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts
++++ b/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts
+@@ -7,6 +7,7 @@ import type { AgentRunErrorEvidence } from "../../../domain/agent-run-error-evid
+ import { resolveAgentRunEventTurnId } from "../../../domain/agent-run-event-turn-id.js";
+ import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
+ import type { AgentApiStatus } from "../../../domain/agent-status-payload.js";
++import { AgentTurnIdentity } from "./agent-turn-identity.js";
+ 
+ export type AgentActiveTurn =
+   | { kind: "NONE" }
+@@ -37,8 +38,8 @@ const ACTIVITY_EVENT_TYPES = new Set<AgentRunEventType>([
+ ]);
+ 
+ export class AgentTurnLifecycleState {
+-  activeTurn: AgentActiveTurn = { kind: "NONE" };
+-  readonly retiredTurnIds = new Set<string>();
++  private readonly turns = new AgentTurnIdentity();
++  private anonymousTurnActive = false;
+   lastStatus: AgentApiStatus = "idle";
+   recoverableBlock: CompactionRecoveryBlockDto | null = null;
+   private pendingCommand: PendingCommand | null = null;
+@@ -107,8 +108,8 @@ export class AgentTurnLifecycleState {
+     this.recoverableBlock = snapshot.recoverableBlock ?? null;
+     if (wasRecoverable && !this.recoverableBlock) this.lastStatus = snapshot.phase === "error" ? "error" : "idle";
+     if (this.recoverableBlock) {
+-      if (snapshot.currentTurn.kind === "IDENTIFIED" && !this.retiredTurnIds.has(snapshot.currentTurn.turnId)) {
+-        this.pendingCommand = null; this.openIdentifiedTurn(snapshot.currentTurn.turnId);
++      if (snapshot.currentTurn.kind === "IDENTIFIED" && !this.turns.isRetired(snapshot.currentTurn.turnId)) {
++        this.pendingCommand = null; this.openSnapshotTurn(snapshot.currentTurn.turnId);
+       }
+       // A real terminal event retires consumed A; an Error projection never retires held A.
+       this.lastStatus = this.recoverableBlock.state === "recovering" ? "running" : "error";
+@@ -122,9 +123,9 @@ export class AgentTurnLifecycleState {
+     }
+ 
+     if (snapshot.currentTurn.kind === "IDENTIFIED") {
+-      if (!this.retiredTurnIds.has(snapshot.currentTurn.turnId)) {
++      if (!this.turns.isRetired(snapshot.currentTurn.turnId)) {
+         this.pendingCommand = null;
+-        this.openIdentifiedTurn(snapshot.currentTurn.turnId);
++        this.openSnapshotTurn(snapshot.currentTurn.turnId);
+       }
+       return;
+     }
+@@ -136,7 +137,7 @@ export class AgentTurnLifecycleState {
+ 
+     if (snapshot.currentTurn.kind === "ANONYMOUS") {
+       this.pendingCommand = null;
+-      this.activeTurn = { kind: "ANONYMOUS" };
++      this.anonymousTurnActive = true;
+       this.lastStatus = "running";
+       return;
+     }
+@@ -146,7 +147,7 @@ export class AgentTurnLifecycleState {
+         this.lastStatus = "running";
+         return;
+       }
+-      this.activeTurn = { kind: "NONE" };
++      this.anonymousTurnActive = false;
+     }
+ 
+     if (this.pendingCommand) {
+@@ -174,7 +175,7 @@ export class AgentTurnLifecycleState {
+       if (turnId) {
+         this.openIdentifiedTurn(turnId);
+       } else if (this.activeTurn.kind === "NONE") {
+-        this.activeTurn = { kind: "ANONYMOUS" };
++        this.anonymousTurnActive = true;
+         this.lastStatus = "running";
+       }
+       return;
+@@ -207,10 +208,10 @@ export class AgentTurnLifecycleState {
+       return;
+     }
+     this.pendingCommand = null;
+-    if (turnId && !this.retiredTurnIds.has(turnId)) {
++    if (turnId && !this.turns.isRetired(turnId)) {
+       this.openIdentifiedTurn(turnId);
+     } else if (!turnId) {
+-      this.activeTurn = { kind: "ANONYMOUS" };
++      this.anonymousTurnActive = true;
+       this.lastStatus = "running";
+     }
+   }
+@@ -228,15 +229,12 @@ export class AgentTurnLifecycleState {
+     }
+ 
+     const turnId = evidence.turnId;
+-    if (this.retiredTurnIds.has(turnId)) {
++    if (this.turns.isRetired(turnId)) {
+       return;
+     }
+-    this.retiredTurnIds.add(turnId);
+-    if (
+-      this.activeTurn.kind === "IDENTIFIED" &&
+-      this.activeTurn.turnId === turnId
+-    ) {
+-      this.activeTurn = { kind: "NONE" };
++    const wasActive = this.turns.activeTurnId === turnId;
++    this.turns.retire(turnId);
++    if (wasActive) {
+       this.pendingCommand = null;
+       this.lastStatus = "error";
+     }
+@@ -259,7 +257,7 @@ export class AgentTurnLifecycleState {
+         this.lastStatus = "running";
+       } else if (this.pendingCommand?.acceptedWithoutTurnId) {
+         this.pendingCommand = null;
+-        this.activeTurn = { kind: "ANONYMOUS" };
++        this.anonymousTurnActive = true;
+         this.lastStatus = "running";
+       }
+       return;
+@@ -286,48 +284,51 @@ export class AgentTurnLifecycleState {
+     return this.lastStatus;
+   }
+ 
++  get activeTurn(): AgentActiveTurn {
++    const turnId = this.turns.activeTurnId;
++    if (turnId) return { kind: "IDENTIFIED", turnId };
++    return this.anonymousTurnActive ? { kind: "ANONYMOUS" } : { kind: "NONE" };
++  }
++
+   get hasPendingCommand(): boolean {
+     return this.pendingCommand !== null;
+   }
+ 
+   private openIdentifiedTurn(turnId: string): void {
+-    if (this.retiredTurnIds.has(turnId)) {
++    if (this.turns.isRetired(turnId)) {
+       return;
+     }
+-    if (
+-      this.activeTurn.kind === "IDENTIFIED" &&
+-      this.activeTurn.turnId !== turnId
+-    ) {
+-      this.retiredTurnIds.add(this.activeTurn.turnId);
+-    }
+-    this.activeTurn = { kind: "IDENTIFIED", turnId };
++    this.turns.observeStreamStart(turnId);
++    this.anonymousTurnActive = false;
+     this.lastStatus = "running";
+   }
+ 
++  private openSnapshotTurn(turnId: string): void {
++    if (this.turns.observeRuntimeSnapshotTurn(turnId)) {
++      this.anonymousTurnActive = false;
++      this.lastStatus = "running";
++    }
++  }
++
+   private observeTurnTerminal(turnId: string | null): void {
+     if (!turnId) {
+       if (this.activeTurn.kind === "ANONYMOUS") {
+-        this.activeTurn = { kind: "NONE" };
++        this.anonymousTurnActive = false;
+         this.pendingCommand = null;
+         this.lastStatus = "idle";
+       }
+       return;
+     }
+-    this.retiredTurnIds.add(turnId);
+-    if (
+-      this.activeTurn.kind === "IDENTIFIED" &&
+-      this.activeTurn.turnId === turnId
+-    ) {
+-      this.activeTurn = { kind: "NONE" };
++    const wasActive = this.turns.activeTurnId === turnId;
++    this.turns.retire(turnId);
++    if (wasActive) {
+       this.pendingCommand = null;
+       this.lastStatus = "idle";
+     }
+   }
+ 
+   private retireAndClearActiveTurn(): void {
+-    if (this.activeTurn.kind === "IDENTIFIED") {
+-      this.retiredTurnIds.add(this.activeTurn.turnId);
+-    }
+-    this.activeTurn = { kind: "NONE" };
++    this.turns.retireActive();
++    this.anonymousTurnActive = false;
+   }
+ }
+diff --git a/autobyteus-server-ts/src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.ts b/autobyteus-server-ts/src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.ts
+index bf6a25a647..98e7ffaebb 100644
+--- a/autobyteus-server-ts/src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.ts
++++ b/autobyteus-server-ts/src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.ts
+@@ -5,6 +5,7 @@ import {
+   type AgentSegmentType,
+ } from "../../../domain/agent-segment.js";
+ import type { AgentTurnLifecycleState } from "../lifecycle-status/agent-turn-lifecycle-state.js";
++import { AgentTurnIdentity } from "../lifecycle-status/agent-turn-identity.js";
+ 
+ type SegmentLifecycle = Readonly<{
+   identity: AgentSegmentIdentity;
+@@ -18,13 +19,12 @@ export type AgentSegmentTransitionResult =
+   | { kind: "REJECTED" };
+ 
+ export class AgentSegmentLifecycleState {
+-  private activeTurnId: string | null = null;
+-  private readonly retiredTurnIds = new Set<string>();
++  private readonly turns = new AgentTurnIdentity();
+   private readonly segments = new Map<string, SegmentLifecycle>();
+ 
+   acceptCommand(turnId: string | null): void {
+     if (turnId) {
+-      this.openTurn(turnId);
++      this.openStreamTurn(turnId);
+     }
+   }
+ 
+@@ -35,7 +35,7 @@ export class AgentSegmentLifecycleState {
+       return;
+     }
+     if (snapshot.currentTurn.kind === "IDENTIFIED") {
+-      this.openTurn(snapshot.currentTurn.turnId);
++      this.turns.observeRuntimeSnapshotTurn(snapshot.currentTurn.turnId);
+     }
+   }
+ 
+@@ -49,7 +49,7 @@ export class AgentSegmentLifecycleState {
+ 
+   observeTurnStarted(turnId: string | null): void {
+     if (turnId) {
+-      this.openTurn(turnId);
++      this.openStreamTurn(turnId);
+     }
+   }
+ 
+@@ -57,11 +57,8 @@ export class AgentSegmentLifecycleState {
+     if (!turnId) {
+       return;
+     }
+-    this.retiredTurnIds.add(turnId);
++    this.turns.retire(turnId);
+     this.clearTurn(turnId);
+-    if (this.activeTurnId === turnId) {
+-      this.activeTurnId = null;
+-    }
+   }
+ 
+   observeRuntimeTerminal(): void {
+@@ -86,7 +83,7 @@ export class AgentSegmentLifecycleState {
+       return { kind: "REJECTED" };
+     }
+ 
+-    this.openTurn(identity.turnId);
++    if (this.turns.activeTurnId !== identity.turnId) this.openStreamTurn(identity.turnId);
+     this.segments.set(key, {
+       identity,
+       type,
+@@ -96,7 +93,7 @@ export class AgentSegmentLifecycleState {
+   }
+ 
+   content(identity: AgentSegmentIdentity): AgentSegmentTransitionResult {
+-    if (this.retiredTurnIds.has(identity.turnId)) {
++    if (this.turns.isRetired(identity.turnId)) {
+       return { kind: "REJECTED" };
+     }
+     const existing = this.segments.get(agentSegmentIdentityKey(identity));
+@@ -107,7 +104,7 @@ export class AgentSegmentLifecycleState {
+   }
+ 
+   end(identity: AgentSegmentIdentity): AgentSegmentTransitionResult {
+-    if (this.retiredTurnIds.has(identity.turnId)) {
++    if (this.turns.isRetired(identity.turnId)) {
+       return { kind: "REJECTED" };
+     }
+     const key = agentSegmentIdentityKey(identity);
+@@ -123,7 +120,7 @@ export class AgentSegmentLifecycleState {
+   }
+ 
+   releaseRun(): void {
+-    this.activeTurnId = null;
++    this.turns.clearActive();
+     this.segments.clear();
+   }
+ 
+@@ -131,11 +128,12 @@ export class AgentSegmentLifecycleState {
+     turnId: string,
+     turnLifecycleState: AgentTurnLifecycleState,
+   ): boolean {
+-    if (this.retiredTurnIds.has(turnId)) {
++    if (this.turns.isRetired(turnId)) {
+       return false;
+     }
+-    if (this.activeTurnId) {
+-      return this.activeTurnId === turnId;
++    const activeTurnId = this.turns.activeTurnId;
++    if (activeTurnId) {
++      return activeTurnId === turnId;
+     }
+     if (turnLifecycleState.activeTurn.kind === "IDENTIFIED") {
+       return turnLifecycleState.activeTurn.turnId === turnId;
+@@ -147,15 +145,9 @@ export class AgentSegmentLifecycleState {
+       turnLifecycleState.status === "running";
+   }
+ 
+-  private openTurn(turnId: string): void {
+-    if (this.retiredTurnIds.has(turnId)) {
+-      return;
+-    }
+-    if (this.activeTurnId && this.activeTurnId !== turnId) {
+-      this.retiredTurnIds.add(this.activeTurnId);
+-      this.clearTurn(this.activeTurnId);
+-    }
+-    this.activeTurnId = turnId;
++  private openStreamTurn(turnId: string): void {
++    const superseded = this.turns.observeStreamStart(turnId);
++    if (superseded) this.clearTurn(superseded);
+   }
+ 
+   private clearTurn(turnId: string): void {

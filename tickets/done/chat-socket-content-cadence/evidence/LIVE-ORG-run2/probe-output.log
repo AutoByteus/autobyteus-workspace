@@ -1,0 +1,111 @@
+{"at":3548.3,"what":"ready","origin":"http://127.0.0.1:51076","interval":"default(500)","model":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234"}
+{"at":4262.7,"what":"sent both"}
+{"at":17229.3,"what":"both streaming"}
+{"at":21237.9,"what":"interval -> 1000"}
+{"at":29376,"what":"org terminated mid-answer"}
+{
+ "scenario": "org",
+ "failure": null,
+ "S1": {
+  "frames": 73,
+  "gaps": 0,
+  "snapshots": [
+   {
+    "at": 4163.6,
+    "base": 0
+   }
+  ],
+  "startsAfterSnapshot": [
+   {
+    "expected": 1,
+    "first": 1
+   }
+  ],
+  "batches": 18,
+  "multiAgentBatches": 17,
+  "plainContent": 0,
+  "batchRange": {
+   "min": 2,
+   "median": 55,
+   "max": 105,
+   "total": 1145
+  },
+  "closedBy": {
+   "SEGMENT_START": 1,
+   "window": 15,
+   "AGENT_STATUS": 2
+  },
+  "spacing": {
+   "abt139_org_alpha_c8bc82b8eff44346b17542e1f25b0e4e": {
+    "batchesWithAgent": 18,
+    "windowClosed": 15,
+    "boundaryClosed": 3,
+    "windowGapMs": {
+     "n": 12,
+     "min": 527,
+     "median": 695,
+     "max": 1081,
+     "under350": 0
+    },
+    "activeSeconds": 12.7,
+    "windowFramesPerSecond": 1.18
+   },
+   "abt139_org_beta_24f2b4d8cb534e36b5a7dc9df8d918c5": {
+    "batchesWithAgent": 17,
+    "windowClosed": 15,
+    "boundaryClosed": 2,
+    "windowGapMs": {
+     "n": 12,
+     "min": 527,
+     "median": 695,
+     "max": 1081,
+     "under350": 0
+    },
+    "activeSeconds": 12.2,
+    "windowFramesPerSecond": 1.23
+   }
+  },
+  "status": {
+   "abt139_org_alpha_c8bc82b8eff44346b17542e1f25b0e4e": {
+    "standaloneStatusFrames": 17,
+    "identicalToPreviousForwarded": 14,
+    "byValue": {
+     "initializing": 3,
+     "running": 14
+    }
+   },
+   "abt139_org_beta_24f2b4d8cb534e36b5a7dc9df8d918c5": {
+    "standaloneStatusFrames": 16,
+    "identicalToPreviousForwarded": 13,
+    "byValue": {
+     "initializing": 3,
+     "running": 13
+    }
+   }
+  },
+  "stopCheck": {
+   "lifecycleAt": 29359,
+   "framesAfterInactive": 0,
+   "previousSequencedFrame": {
+    "type": "ROOT_EXECUTION_EVENT",
+    "at": 29359,
+    "gapMs": 0,
+    "batch": true
+   }
+  }
+ },
+ "s2Check": null,
+ "textCheck": [
+  {
+   "segKey": "abt139_org_alpha_c8bc82b8eff44346b17542e1f25b0e4e|segment_8fe36c6ee2d248d8ae3dcd98732c3696:reasoning_f15506d85dd3404db3ea172d38431950",
+   "chars": 1181,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_org_beta_24f2b4d8cb534e36b5a7dc9df8d918c5|segment_ac85ee84a5c5424d865b148ce1fc1987:reasoning_34de6a022b6741daacf0f3ab71200169",
+   "chars": 1178,
+   "inProjection": true
+  }
+ ],
+ "rootRemoved": true
+}

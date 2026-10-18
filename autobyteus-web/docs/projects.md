@@ -480,8 +480,6 @@ extension, microphone/permission/device or live transcription capability.
 `list_projects`, `list_project_tasks`, `create_project`, `update_project`, `create_task`, `update_task` are selected
 independently per agent/node; none is added automatically (not even where `delegate_task` is). `create_project` creates a
 Project with a required name; `update_project` patches a known project_id: omitted fields persist, blank description clears.
-`create_or_update_project` is deprecated: it still works unchanged for agents that list it (create without project_id,
-patch with it), but select `create_project` and/or `update_project` instead; it will be removed in a later release.
 Optional workspaces [{workspace_path, description?}] reference absolute folder paths
 on the selected node: a supplied list replaces all links, [] unlinks only, omission
 preserves. Retained descriptions persist if omitted. Registration and folder

@@ -107,7 +107,19 @@ export class RunFileChangeProjectionService {
 
     const location = await this.collaborationLocations.findAgent({ agentRunId: runId });
     if (!location) return { projection: { version: 2, entries: [] }, workspaceRootPath: null, isActiveRun: false };
-    const workspaceRootPath = this.workspaceRootPath(location);
+    return this.locatedCollaborationMember(location);
+  }
+
+  /**
+   * Artifacts of a collaboration member its caller already located: the live projection while its
+   * root is active, else the member's stored `file_changes.json`.
+   */
+  async getLocatedCollaborationMemberProjection(location: LocatedCollaborationAgentExecution): Promise<RunFileChangeEntry[]> {
+    return (await this.locatedCollaborationMember(location)).projection.entries;
+  }
+
+  private async locatedCollaborationMember(location: LocatedCollaborationAgentExecution): Promise<ProjectionContext> {
+    const workspaceRootPath = locatedLaunchConfiguration(location)?.workspaceRootPath ?? null;
     return {
       projection: location.isActive
         ? await this.changes().getProjectionForCollaborationMember({
@@ -117,15 +129,11 @@ export class RunFileChangeProjectionService {
           })
         : normalizeRunFileChangeProjection(
             await this.projectionStore.readProjection(location.memoryDir),
-            { runId, workspaceRootPath },
+            { runId: location.agentRunId, workspaceRootPath },
           ),
       workspaceRootPath,
       isActiveRun: location.isActive,
     };
-  }
-
-  private workspaceRootPath(location: LocatedCollaborationAgentExecution): string | null {
-    return locatedLaunchConfiguration(location)?.workspaceRootPath ?? null;
   }
 
   private async activeStandalone(run: AgentRun): Promise<ProjectionContext> {

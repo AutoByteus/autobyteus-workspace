@@ -1,0 +1,25 @@
+{
+ "workspaceGroups": [
+  {
+   "agents": [
+    [
+     "ADO Project Manager",
+     [
+      "ado_project_manager_b95e07caa966451280b2a8e5d990edaa"
+     ]
+    ]
+   ],
+   "teams": []
+  }
+ ],
+ "holders": [
+  "agentContexts.runs (Map key)",
+  "agentTeamContexts.teams (Map key)",
+  "agentRunCollaboration.contexts (object key)",
+  "agentRunCollaboration.errors (object key)",
+  "agentActivity.activitiesByRunId (Map key)",
+  "agentActivity.activityContentRevisionByRunId (Map key)",
+  "runHistory.resumeConfigByRunId (object key)",
+  "runFileChanges.entriesByRun (Map key)"
+ ]
+}

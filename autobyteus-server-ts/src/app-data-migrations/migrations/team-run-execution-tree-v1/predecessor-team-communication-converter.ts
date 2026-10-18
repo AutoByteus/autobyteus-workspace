@@ -1,9 +1,11 @@
 import { createAgentTeamAddress, type AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
 import { TeamExecutionIndex } from "./team-execution-v1-index.js";
-import type { CollaborationCommunicationMessage } from "../../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../../services/team-communication/team-communication-messages-file.js";
-import { validateTeamCommunicationMessagesPayload } from "../../../services/team-communication/team-communication-messages-schema.js";
+import {
+  validateTeamCommunicationMessagesPayload,
+  type CollaborationCommunicationMessage,
+  type TeamCommunicationMessagesSnapshot,
+} from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { normalizePredecessorTeamExecutionAddress } from "./predecessor-team-execution-address-normalizer.js";
 import {
   addressKey,
