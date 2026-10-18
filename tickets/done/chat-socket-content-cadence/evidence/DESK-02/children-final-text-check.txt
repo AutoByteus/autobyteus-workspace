@@ -1,0 +1,8 @@
+# Case: DESK-02 — adopted run + delegated copy: persisted projection (agentRunCollaborationMemberProjection) vs the renderer DOM (dom-child0.txt adopted, dom-child1.txt copy; normalized)
+# Commit: 335f065cd1; Env: ENV-3 iso-60835-5403; Date: 2026-10-18T13:03:41.011Z
+desk_essay_worker_46786959a5fa4f8b998ceed9c024ce71: entries message/user:81,reasoning/:151,message/assistant:47,inter_agent_message/user:328,reasoning/:5451,message/assistant:2,tool_call/:0,reasoning/:36170,message/assistant:0
+  assistant 45 chars; in a child DOM: true
+  assistant (0 chars): empty
+  assistant (0 chars): empty
+desk_essay_worker_503c8eed28d7497190e63d0645f04856: entries message/user:452,reasoning/:314,message/assistant:2040
+  assistant 2038 chars; in a child DOM: true

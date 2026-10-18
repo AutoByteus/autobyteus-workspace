@@ -1,5 +1,6 @@
 import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
 import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
+import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange';
 import { computed, reactive, ref, shallowRef } from 'vue';
 import {
   teamExecutionViewSnapshotPayloadSchema,
@@ -105,7 +106,7 @@ const sequenceOf = (message: Exclude<TeamStreamServerMessage,
 };
 
 const targetAgentRunId = (message: Exclude<TeamStreamServerMessage,
-  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' }>): string | null => {
+  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'SEGMENT_CONTENT_BATCH' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' }>): string | null => {
   if (message.type === 'MEMBER_INPUT_MESSAGE') return message.payload.recipient_agent_run_id;
   if (message.type === 'ERROR') return message.payload.agent_run_id;
   return message.payload.agent_run_id;
@@ -357,10 +358,22 @@ export const createTeamExecutionViewState = (
       });
     }
     const sequence = sequenceOf(message);
-    if (sequence !== null && sequence !== publication.value.changeSequence + 1) return rejectGap(sequence);
+    const through = message.type === 'SEGMENT_CONTENT_BATCH' ? message.payload.change_sequence_through : sequence;
+    if (sequence !== null && advanceSequencedStream(publication.value.changeSequence + 1, { first: sequence, through: through! }) === null) {
+      return rejectGap(sequence);
+    }
     const effects: TeamExecutionEffect[] = [];
     try {
-      if (message.type === 'TASK_EXECUTION_STARTED') {
+      if (message.type === 'SEGMENT_CONTENT_BATCH') {
+        const unknown = message.payload.items.find((item) => !publication.value.contexts.has(item.agent_run_id));
+        if (unknown) throw new Error(`Message 'SEGMENT_CONTENT_BATCH' targets unknown AgentRun '${unknown.agent_run_id}'.`);
+        for (const { agent_run_id: agentRunId, ...content } of message.payload.items) {
+          // Each item is that member's SEGMENT_CONTENT; the batch's first sequence stands in for its own.
+          effects.push({ kind: 'dispatch_agent', agentRunId, message: {
+            type: 'SEGMENT_CONTENT', payload: { change_sequence: message.payload.change_sequence, agent_run_id: agentRunId, ...content },
+          } });
+        }
+      } else if (message.type === 'TASK_EXECUTION_STARTED') {
         const nextTree = insertTaskExecution({
           tree: publication.value.tree,
           parentTeamRunId: message.payload.parent_team_run_id,
@@ -422,8 +435,8 @@ export const createTeamExecutionViewState = (
           effects.push({ kind: 'dispatch_agent', agentRunId, message: message as TeamAgentStreamMessage });
         }
       }
-      if (sequence !== null && sequence !== publication.value.changeSequence) {
-        publication.value = { ...publication.value, changeSequence: sequence };
+      if (through !== null && through !== publication.value.changeSequence) {
+        publication.value = { ...publication.value, changeSequence: through };
       }
       return Object.freeze({ disposition: 'applied', effects: Object.freeze(effects) });
     } catch (error) {

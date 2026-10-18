@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, type TeamAgentMessageType } from "./team-agent-message-dtos.js";
+import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, teamSegmentContentBatchPayloadSchema, type TeamAgentMessageType } from "./team-agent-message-dtos.js";
 import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
 import { teamDelegatedLaunchSelectionsChangedPayloadSchema, teamTaskExecutionStartedPayloadSchema, teamTaskExecutionsClosedPayloadSchema, teamTaskExecutionsReopenedPayloadSchema } from "./team-task-execution-message-dtos.js";
@@ -241,6 +241,27 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         error: z.ZodNullable<z.ZodString>;
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
+    }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"SEGMENT_CONTENT_BATCH">;
+    payload: z.ZodObject<{
+        change_sequence: z.ZodNumber;
+        change_sequence_through: z.ZodNumber;
+        items: z.ZodArray<z.ZodObject<{
+            segment_id: z.ZodString;
+            turn_id: z.ZodString;
+            segment_type: z.ZodEnum<{
+                text: "text";
+                tool_call: "tool_call";
+                write_file: "write_file";
+                edit_file: "edit_file";
+                run_bash: "run_bash";
+                reasoning: "reasoning";
+                media: "media";
+            }>;
+            delta: z.ZodString;
+            agent_run_id: z.ZodString;
+        }, z.core.$strict>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"AGENT_STATUS">;
@@ -1185,6 +1206,9 @@ type TeamAgentServerMessage = {
     }>;
 }[TeamAgentMessageType];
 export type TeamStreamServerMessage = TeamAgentServerMessage | Readonly<{
+    type: "SEGMENT_CONTENT_BATCH";
+    payload: Readonly<z.infer<typeof teamSegmentContentBatchPayloadSchema>>;
+}> | Readonly<{
     type: "CONNECTED";
     payload: z.infer<typeof teamConnectedPayloadSchema>;
 }> | Readonly<{

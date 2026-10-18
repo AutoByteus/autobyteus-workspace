@@ -1,0 +1,11 @@
+# IMP-10 (web-full)
+# Command: pnpm -C autobyteus-web test:nuxt run
+# Commit: b3666d458f
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T12:17:19Z
+
+# Excerpt of IMP-10-web-full.log: summary lines
+
+ Test Files  634 passed | 2 skipped (636)
+      Tests  4493 passed | 3 skipped (4496)
+# exit: 0

@@ -202,7 +202,9 @@ export class AgentRunCollaborationStreamingService {
     if (message.type === 'ROOT_EXECUTION_EVENT') {
       if (message.payload.root_subject_kind !== 'agent') throw new Error('Agent collaboration stream supplied a foreign event.')
       const event = message.payload.event
-      if (this.context.applyEvent(message.payload.change_sequence, event) === 'checkpoint_required') {
+      if (this.context.applyEvent(
+        message.payload.change_sequence, event, message.payload.change_sequence_through,
+      ) === 'checkpoint_required') {
         // A new child: reconnect for a fresh snapshot that includes its context.
         this.closeSocket('Agent collaboration reload')
         this.connect()

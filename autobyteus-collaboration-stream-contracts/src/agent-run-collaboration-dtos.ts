@@ -7,6 +7,7 @@ import {
 } from "@autobyteus/agent-presentation-contracts";
 import {
   agentOrgAgentStatusDtoSchema,
+  agentPresentationBatchEventDtoSchema,
   agentOrgCommunicationMessageDtoSchema,
   closedTaskExecutionsDtoSchema,
   taskExecutionDtoSchema,
@@ -52,6 +53,7 @@ export const agentRunCollaborationViewDtoSchema = z.object({
 
 export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
+  agentPresentationBatchEventDtoSchema,
   z.object({
     kind: z.literal("task_execution_started"),
     host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecutionDtoSchema,

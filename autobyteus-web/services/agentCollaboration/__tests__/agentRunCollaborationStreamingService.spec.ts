@@ -56,6 +56,21 @@ it.each(['disconnect', 'owner'])('a late snapshot after %s cannot publish or com
   expect(f.options.reportError).not.toHaveBeenCalled(); expect(f.service.isReady()).toBe(false)
   f.service.disconnect()
 })
+it('applies a received content batch frame and continues after its covered range (autobyteus-139)', async () => {
+  const f = setup(); f.finish(); await flush()
+  const segment = { segment_id: 's-1', turn_id: 't-1', segment_type: 'text' }
+  f.socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence: 5,
+    event: { kind: 'agent_presentation', agent_run_id: 'cua-run', member_address: '/computer_use_agent', message: {
+      type: 'SEGMENT_START', payload: { ...segment, metadata: null } } } } })
+  f.socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence: 6,
+    change_sequence_through: 11, event: { kind: 'agent_presentation_batch', items: [{ agent_run_id: 'cua-run', member_address: '/computer_use_agent',
+      message: { type: 'SEGMENT_CONTENT', payload: { ...segment, delta: 'xy' } } }] } } })
+  await flush()
+  expect(f.context.changeSequence).toBe(11)
+  expect(JSON.stringify(f.context.getAgentContext('cua-run')!.conversation.messages)).toContain('"content":"xy"')
+  expect(f.options.reportError).not.toHaveBeenCalled(); expect(f.socket.close).not.toHaveBeenCalled()
+  f.service.disconnect()
+})
 it('reports a started task execution (e.g. an adopted run) to its owner, then reloads for the new child (SR-009)', async () => {
   const f = setup(); const onTaskExecutionStarted = vi.fn()
   Object.assign(f.options, { onTaskExecutionStarted }); await flush(); f.finish(); await flush()

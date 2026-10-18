@@ -325,7 +325,8 @@ export class AgentOrgStreamingService {
       if (message.payload.root_subject_kind !== 'agent_org') {
         throw new Error('AgentOrg stream supplied a non-Org event.')
       }
-      const application = this.context.applyEvent(message.payload.change_sequence, message.payload.event)
+      const application = this.context.applyEvent(
+        message.payload.change_sequence, message.payload.event, message.payload.change_sequence_through)
       if (application === 'checkpoint_required') await this.reopenOwned(generation)
       return
     }

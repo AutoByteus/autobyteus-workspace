@@ -1,0 +1,13 @@
+# Case: LIVE-TEAM run 2 — UNK-001/REQ-002 status-window analysis (S1)
+# Command: node evidence/analyze-status-windows.mjs evidence/LIVE-TEAM-run2/frames-S1.jsonl
+# Commit: e24ff6b333; Env: ENV-2; Date: 2026-10-18 13:15
+# frames file: LIVE-TEAM-run2/frames-S1.jsonl
+batch frames: 114; sequences per batch: {"n":114,"min":2,"median":49,"max":61}
+frames between consecutive batches (top patterns, of 114 gaps):
+  108 × [AGENT_STATUS:running]
+  3 × [SEGMENT_START,AGENT_STATUS:running]
+  1 × [AGENT_STATUS:initializing,AGENT_STATUS:initializing,AGENT_INPUT_STATE,AGENT_STATUS:initializing,AGENT_INPUT_STATE,MEMBER_INPUT_MESSAGE,AGENT_STATUS:initializing,SYSTEM_INSTRUCTIONS_SUPPLIED,AGENT_INPUT_STATE,AGENT_STATUS:running,AGENT_INPUT_STATE,AGENT_STATUS:initializing,AGENT_INPUT_STATE,MEMBER_IN…]
+  1 × [SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running]
+  1 × [TOKEN_USAGE_UPDATED,AGENT_STATUS:running,AGENT_STATUS:running,ASSISTANT_COMPLETE,TURN_COMPLETED,AGENT_STATUS:idle,AGENT_INPUT_STATE,AGENT_STATUS:initializing,AGENT_STATUS:idle,AGENT_STATUS:running]
+standalone statuses within 5 ms after a batch: identical-to-last-forwarded=11, changed-or-no-baseline=0
+  for those batches, ms since the previous sequenced frame (≈ window means a timer flush): {"n":11,"min":500,"median":501,"max":504}
