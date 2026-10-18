@@ -6,7 +6,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgExecutionIndex } from "../../../src/agent-org-execution/services/agent-org-execution-index.js";
-import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { InMemoryMigrationLedger, runStart } from "../../helpers/migration-start-harness.js";
+import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, AppendOnlyMessageLogsV1AppDataMigration } from "../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import {
@@ -23,6 +24,9 @@ import { resetRootRunPackageReadinessIndex } from "../../../src/run-history/serv
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const roots: string[] = [];
+/** The org message log as released versions wrote it (one JSON file). */
+const writeReleasedOrgLog = (orgDir: string, envelope: unknown) =>
+  fs.writeFile(path.join(orgDir, "agent_org_communication_messages.json"), `${JSON.stringify(envelope, null, 2)}\n`);
 afterEach(async () => {
   vi.restoreAllMocks();
   for (const root of roots.splice(0)) {
@@ -80,7 +84,7 @@ const createPackage = async (options: { summary?: string; tie?: boolean; taskEvi
         createdAt: taskExecution.startedAt,
       }] : [],
     })),
-    new AgentOrgCommunicationMessagesStore().write(orgDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] }),
+    writeReleasedOrgLog(orgDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] }),
   ]);
   const indexStore = new AgentOrgRunHistoryIndexStore(memoryDir);
   await indexStore.writeIndex([{
@@ -177,7 +181,7 @@ describe("AgentOrg first-message summary startup migration", () => {
   it("uses current Org communication sidecars only as negative provenance evidence", async () => {
     const test = await createPackage();
     const layout = new AgentMemoryLayout(test.memoryDir);
-    await new AgentOrgCommunicationMessagesStore().write(layout.getOrgDirPath(test.orgRunId), {
+    await writeReleasedOrgLog(layout.getOrgDirPath(test.orgRunId), {
       schemaVersion: 1,
       subjectKind: "agent_org",
       orgRunId: test.orgRunId,
@@ -206,7 +210,7 @@ describe("AgentOrg first-message summary startup migration", () => {
       id: "trace-worker-run", trace_type: "user", source_event: "AgentRun.postUserMessage", ts: 100,
       content: "You received a message from sender name: director, sender id: direct-run\nmessage:\nInternal delivery",
     })}\n`);
-    await new AgentOrgCommunicationMessagesStore().write(layout.getOrgDirPath(test.orgRunId), {
+    await writeReleasedOrgLog(layout.getOrgDirPath(test.orgRunId), {
       schemaVersion: 1,
       subjectKind: "agent_org",
       orgRunId: test.orgRunId,
@@ -223,6 +227,49 @@ describe("AgentOrg first-message summary startup migration", () => {
     const result = await new AgentOrgHistoryFirstMessageSummaryV1AppDataMigration(test.memoryDir).execute();
     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
     expect((await test.indexStore.readIndex())[0]?.summary).toBe("");
+  });
+
+  it("reads the org's messages from its append-only log when it runs after the conversion, with the same result (F-SUMMARY-AFTER-OURS)", async () => {
+    const test = await createPackage();
+    const layout = new AgentMemoryLayout(test.memoryDir);
+    const orgDir = layout.getOrgDirPath(test.orgRunId);
+    const index = new AgentOrgExecutionIndex(test.tree);
+    const workerRunDir = layout.getRootedAgentRunDirPath(index.getPhysicalScopeForAgent("worker-run"), "worker-run");
+    await fs.writeFile(path.join(workerRunDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME), `${JSON.stringify({
+      id: "trace-worker-run", trace_type: "user", source_event: "AgentRun.postUserMessage", ts: 100,
+      content: "You received a message from sender name: director, sender id: direct-run\nmessage:\nInternal delivery",
+    })}\n`);
+    await writeReleasedOrgLog(orgDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId: test.orgRunId, messages: [{
+      messageId: "internal-message", senderAgentRunId: "direct-run", receiverAgentRunId: "worker-run", content: "Internal delivery",
+      messageType: "agent_message", referenceFiles: [], createdAt: "1970-01-01T00:02:30.000Z" }] });
+    const ledger = new InMemoryMigrationLedger();
+    const real = () => [new AgentOrgHistoryFirstMessageSummaryV1AppDataMigration(test.memoryDir), new AppendOnlyMessageLogsV1AppDataMigration(test.memoryDir, { ledger })];
+    const logsDir = path.join(test.memoryDir, "..", `${path.basename(test.memoryDir)}-logs`);
+    roots.push(logsDir);
+    // Start 1: summary-v1 waits for a failed prerequisite; the org's log is converted (summary-v1 only
+    // reads logs, so the conversion is already terminal).
+    const first = await runStart({ ledger, logsDir, real: real(), stubs: { [RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID]: "FAILED" } });
+    expect(first[AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID]).toBe("NOT_RUN");
+    expect(first[APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID]).toBe("SUCCEEDED");
+    expect((await fs.readdir(orgDir)).filter((name) => name.startsWith("agent_org_communication"))).toEqual(["agent_org_communication_messages_active.jsonl"]);
+    // Start 2: summary-v1 admits the package by its append-only log and reads the internal delivery from it
+    // (the same outcome as on the JSON log: the worker's first prompt is not an external one).
+    const second = await runStart({ ledger, logsDir, real: real() });
+    expect(second[AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID]).toBe("SUCCEEDED_WITH_WARNINGS");
+    expect(second[APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID]).toBe("SUCCEEDED");
+    expect((await test.indexStore.readIndex())[0]?.summary).toBe("");
+  });
+
+  it("backfills the summary on an org whose log is already converted (F-SUMMARY-AFTER-OURS, empty log)", async () => {
+    const test = await createPackage();
+    const ledger = new InMemoryMigrationLedger();
+    const real = () => [new AgentOrgHistoryFirstMessageSummaryV1AppDataMigration(test.memoryDir), new AppendOnlyMessageLogsV1AppDataMigration(test.memoryDir, { ledger })];
+    const logsDir = path.join(test.memoryDir, "..", `${path.basename(test.memoryDir)}-logs`);
+    roots.push(logsDir);
+    await runStart({ ledger, logsDir, real: real(), stubs: { [RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID]: "FAILED" } });
+    const second = await runStart({ ledger, logsDir, real: real() });
+    expect(second[AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID]).toBe("SUCCEEDED");
+    expect((await test.indexStore.readIndex())[0]?.summary).toBe("Mounted Team first prompt");
   });
 
   it("uses current Org task submission sidecars only as negative provenance evidence", async () => {

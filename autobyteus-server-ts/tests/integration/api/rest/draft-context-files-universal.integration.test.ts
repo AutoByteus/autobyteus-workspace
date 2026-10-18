@@ -80,7 +80,7 @@ const writeOrgFixture = async (memoryDir: string) => {
   const raw = structuredClone(testAgentOrgExecutionTree({ orgRunId: "org", members: [direct] }));
   const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath("org");
   await new AgentOrgRunExecutionTreeStore().write(dir, validateAgentOrgRunExecutionTreePayload(raw, "org"));
-  writeAttachmentSidecars(dir, "org", "org");
+  writeAttachmentSidecars(dir, "org");
 };
 
 /** A standalone host run with one delegated Agent copy (the 19.png owner kind). */
@@ -98,8 +98,7 @@ const writeAgentCollaborationFixture = async (memoryDir: string) => {
       delegatorAgentRunId: "host", startedAt: "2026-09-30T00:00:01.000Z",
       source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: testOrgLaunchConfiguration() } }],
   }, "host"));
-  await put(path.join(hostDir, "collaboration", "communication_messages.json"),
-    { schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] });
+  await fs.writeFile(path.join(hostDir, "collaboration", "communication_messages_active.jsonl"), "");
 };
 
 const postUpload = (owner: unknown, content: string) => {

@@ -6,12 +6,15 @@ import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { DatabaseSync } from "node:sqlite";
 import { afterEach, describe, expect, it } from "vitest";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
+import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 
 // The startup migration `20261017_task_agent_own_run_v1` through the BUILT Studio server (`dist/app.js`) on a FAITHFUL
 // upgrade: the app-data folder of an install where every earlier released migration already completed and this one never
 // ran. The ledger is made by a first start of this build on an empty folder (every migration records itself) and then
-// removing only this migration's row; then the released-layout test data is written (hand-built, never real user data:
+// removing this migration's row and the rows of the migrations registered after it (they never ran on such an install
+// either: `20261018_append_only_message_logs_v1`, which converts the message logs this migration reads and writes at the
+// end of the same start); then the released-layout test data is written (hand-built, never real user data:
 // `released-task-agent-layout-fixtures.ts`). Its runtime values are set to the scripted AGY CLI so a migrated task agent's model can
 // be configured (Settings model edit needs a model catalog); the record shapes stay the released ones.
 // - TAU-1 (AC-008, AC-011, AC-006, AC-013, AC-005): the migration completes; every task agent's memory is at its own folder with the
@@ -28,6 +31,8 @@ import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeReleasedDataRoot } from "../..
 // Run: env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts --no-watch
 const ID = TASK_AGENT_OWN_RUN_V1_MIGRATION_ID;
+/** Registered after own-run: an install that never ran own-run never ran these either. */
+const LATER = [APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID];
 const AGY_CLI = path.resolve("tests/fixtures/agy-failure-cli.mjs");
 const MODEL = "gemini-3.8-flash-low";
 const ALT = "tau-alt-model";
@@ -89,8 +94,8 @@ const studio = async (root: string) => {
     const body = await response.json() as { data?: any; errors?: unknown[] };
     return Boolean(body.errors?.length) || body.data?.[mutation]?.success === false;
   };
-  const migration = async () => (await gql("{getAppDataMigrations{migrationId status attempts summary errorMessage logPath}}"))
-    .getAppDataMigrations.find((m: Json) => m.migrationId === ID);
+  const migration = async (id = ID) => (await gql("{getAppDataMigrations{migrationId status attempts summary errorMessage logPath}}"))
+    .getAppDataMigrations.find((m: Json) => m.migrationId === id);
   const stop = async () => {
     if (child.exitCode !== null || child.signalCode !== null) return;
     const exited = once(child, "exit");
@@ -126,11 +131,11 @@ const faithfulRoot = async () => {
   const recorded = (await fresh.gql("{getAppDataMigrations{migrationId status}}")).getAppDataMigrations as Json[];
   await fresh.stop();
   const db = new DatabaseSync(path.join(root, "db", "production.db"));
-  db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(ID);
+  for (const id of [ID, ...LATER]) db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
   const remaining = db.prepare("SELECT migration_id, status FROM app_data_migration_records").all() as Json[];
   db.close();
-  expect(remaining.some((row) => row["migration_id"] === ID)).toBe(false);
-  expect(remaining.length, "every earlier migration stays recorded").toBe(recorded.length - 1);
+  expect(remaining.some((row) => [ID, ...LATER].includes(row["migration_id"]))).toBe(false);
+  expect(remaining.length, "every earlier migration stays recorded").toBe(recorded.length - 1 - LATER.length);
   const memory = path.join(root, "memory");
   await writeReleasedDataRoot(memory);
   for (const file of await jsonFiles(memory)) await fs.writeFile(file, `${JSON.stringify(toScriptedRuntime(JSON.parse(await fs.readFile(file, "utf8"))), null, 2)}\n`);
@@ -161,6 +166,9 @@ describe("task agent own run: the built server upgrades a faithful released inst
     const log = await fs.readFile(migration.logPath, "utf8");
     expect(log, log).not.toMatch(/FAILED_OPERATION|WAITING_FOR_PREDECESSOR|PRESERVED_/);
     expect(await first.health()).toBe(200);
+    // The same start ends with the message log conversion: every message log own-run read or wrote is append-only now.
+    expect(await first.migration(APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID)).toMatchObject({ status: "SUCCEEDED" });
+    expect((await jsonFiles(memory)).filter((file) => /communication_messages\.json$/.test(file)), "no JSON message log is left").toEqual([]);
 
     // AC-008: every task agent's memory is at its own folder (contract L1) with the same files and bytes; none is left at the old place.
     const after = await snapshot(memory);

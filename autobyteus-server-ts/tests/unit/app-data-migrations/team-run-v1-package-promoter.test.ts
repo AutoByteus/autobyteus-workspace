@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { validateTeamRunExecutionTreePayload as validateTeamRunExecutionTreeV1Payload } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import { validateTeamCommunicationMessagesPayload } from "../../../src/services/team-communication/team-communication-messages-schema.js";
+import { validateTeamCommunicationMessagesPayload } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { TeamRunV1PackagePromoter } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-v1-package-promoter.js";
 
 const disposableDirectories: string[] = [];

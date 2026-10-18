@@ -49,7 +49,7 @@ describe("TeamRunPackageCatalog V2 current-only readiness", () => {
     const packageDir = await writePackage(rootTeamRunId);
     const authorityPaths = [
       path.join(packageDir, "team_run_execution_tree.json"),
-      path.join(packageDir, "team_communication_messages.json"),
+      path.join(packageDir, "team_communication_messages_active.jsonl"),
     ];
     const before = await Promise.all(authorityPaths.map(async (file) => ({
       bytes: await fs.readFile(file),
@@ -73,12 +73,7 @@ describe("TeamRunPackageCatalog V2 current-only readiness", () => {
     const validRoot = "b-valid-root";
     const invalidDir = await writePackage(invalidRoot);
     await writePackage(validRoot);
-    await fs.writeFile(path.join(invalidDir, "team_communication_messages.json"), JSON.stringify({
-      schemaVersion: 1,
-      rootTeamRunId: invalidRoot,
-      messages: [],
-      legacyFallback: true,
-    }, null, 2));
+    await fs.writeFile(path.join(invalidDir, "team_communication_messages_active.jsonl"), `${JSON.stringify({ legacyFallback: true })}\n`);
 
     const catalog = new TeamRunPackageCatalog(memoryDir);
     await catalog.rebuild();

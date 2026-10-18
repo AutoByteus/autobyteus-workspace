@@ -72,9 +72,10 @@ describe('strict read-only Org inspection', () => {
     const f = await fixture();
     await expect(f.manager.getInspection('missing')).rejects.toThrow('unavailable');
     const file = (await fs.readdir(f.dir)).find((name) => name.includes('communication'))!;
-    await fs.writeFile(path.join(f.dir, file), '{broken');
+    // A complete malformed line (an unfinished last line would be ignored by design, REQ-005).
+    await fs.writeFile(path.join(f.dir, file), '{broken\n');
     await expect(f.manager.getInspection('org')).rejects.toThrow();
-    expect(await fs.readFile(path.join(f.dir, file), 'utf8')).toBe('{broken');
+    expect(await fs.readFile(path.join(f.dir, file), 'utf8')).toBe('{broken\n');
     expect(f.build).not.toHaveBeenCalled();
   });
 

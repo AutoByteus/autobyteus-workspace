@@ -2,7 +2,6 @@ import type { AgentRunInputReservation } from "../../agent-execution/input/agent
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import type { PreparedTeamMessageAppend } from "../../agent-team-execution/services/team-run-persistence-contract.js";
 import { buildTeamMemberInputEventPayload } from "../../agent-team-execution/services/team-member-input-event-builder.js";
-import { validateTeamCommunicationMessagesPayload } from "./team-communication-messages-schema.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
 import type { MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
@@ -59,10 +58,10 @@ export const createTeamCommunicationMessageAppendPlan = (input: {
           message: "Message append conflicts with current root state.",
         };
       }
-      const nextMessages = validateTeamCommunicationMessagesPayload({
+      const nextMessages: TeamCommunicationMessagesSnapshot = Object.freeze({
         ...current,
-        messages: [...current.messages, input.message],
-      }, input.rootTeamRunId);
+        messages: Object.freeze([...current.messages, input.message]),
+      });
       state = "prepared";
       return {
         prepared: true as const,

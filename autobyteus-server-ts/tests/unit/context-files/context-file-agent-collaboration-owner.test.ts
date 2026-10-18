@@ -45,7 +45,7 @@ const fixture = async () => {
     taskExecutions: [{ address: "/code_reviewer", agentRunId: "child", platformAgentRunId: null, delegatorAgentRunId: "host", startedAt: "2026-09-30T00:00:01.000Z",
       source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: testOrgLaunchConfiguration() } }],
   }, "host"));
-  await put(path.join(hostDir, "collaboration", "communication_messages.json"), { schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] });
+  await fs.writeFile(path.join(hostDir, "collaboration", "communication_messages_active.jsonl"), "");
   // Startup admits current packages before any context-file access.
   await new RootRunPackageReadinessIndex(memoryDir).rebuild();
   const layout = new ContextFileLayout({ appDataDir: root, memoryDir });

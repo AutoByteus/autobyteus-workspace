@@ -3,7 +3,6 @@ import type { RootCommunicationAdapter } from "../../agent-collaboration/executi
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
 import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
-import { validateAgentOrgCommunicationMessages } from "../persistence/agent-org-communication-messages-schema.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 
 /** Org-private sidecar/input/event adapter for RootCommunicationEngine. */
@@ -49,12 +48,12 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
       input.reservation.cancel();
       return Object.freeze({ committed: false as const, code: "AGENT_ORG_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current AgentOrg state." });
     }
-    const next = validateAgentOrgCommunicationMessages({
+    const next: AgentOrgCommunicationMessagesFile = Object.freeze({
       schemaVersion: 1,
       subjectKind: "agent_org",
       orgRunId: this.root.rootRunId,
-      messages: [...input.getCurrentMessages(), input.message],
-    }, this.root.rootRunId);
+      messages: Object.freeze([...input.getCurrentMessages(), input.message]),
+    });
     let reservationCommitted = false;
     try {
       return await this.options.persistence.commitCommunication({

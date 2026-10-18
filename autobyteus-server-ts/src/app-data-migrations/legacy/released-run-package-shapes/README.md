@@ -30,3 +30,19 @@ layout read through these copies (contract §5.4):
   classifier and stored location derivation. Used by both `20260731` working-context snapshot migrations.
 
 Current runtime code must never import this module.
+
+## Message logs before and after append-only message logs (as of `origin/personal@65cf41c6b4`)
+
+- `released-message-logs-before-append-only.ts`: the JSON message logs as released before
+  `20261018_append_only_message_logs_v1` (one file per log with an envelope): file names, path helpers,
+  envelope types, the strict envelope and seven-field message validators, and the JSON task-log merge of
+  `20261017_task_agent_own_run_v1`. Every released migration that reads or writes a JSON message log
+  imports it, and so does the append-only conversion (its source side).
+- `released-message-log-files-from-append-only.ts`: a frozen reader of the append-only layout
+  (`<base>_<6 digits>.jsonl` sealed files, then `<base>_active.jsonl`). Used by the same-ID repairs of
+  the released migrations that may run after the conversion on a pending install: the message readers in
+  `released-trees-before-task-agent-own-run/released-run-package-file-readers.ts` (R-A), the package
+  validator in `released-root-packages-before-task-agent-own-run.ts` (R-B) and the locators-v1 message
+  sources in `src/context-files/services/context-file-record-locators.ts` (R-C).
+
+Current runtime code must never import these modules.

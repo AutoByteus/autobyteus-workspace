@@ -15,12 +15,14 @@ import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agen
 import { getAtomicRunPackageFileCommitWriter, type AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
 import { getTaskDelegationRecordsV1Path } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import { getTeamCommunicationMessagesPath } from "../../../services/team-communication/team-communication-store.js";
-import { validateTeamCommunicationMessagesPayload } from "../../../services/team-communication/team-communication-messages-schema.js";
 import { getAgentOrgTaskDelegationRecordsV1Path } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
 import { validateAgentOrgTaskDelegationRecordsV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-schema.js";
-import { getAgentOrgCommunicationMessagesPath } from "../../../agent-org-execution/persistence/agent-org-communication-messages-store.js";
-import { validateAgentOrgCommunicationMessages } from "../../../agent-org-execution/persistence/agent-org-communication-messages-schema.js";
+import {
+  getAgentOrgCommunicationMessagesPath,
+  getTeamCommunicationMessagesPath,
+  validateAgentOrgCommunicationMessages,
+  validateTeamCommunicationMessagesPayload,
+} from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../run-history/store/agent-org-run-history-index-store.js";
 

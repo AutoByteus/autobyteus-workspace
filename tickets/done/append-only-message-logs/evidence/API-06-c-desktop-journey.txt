@@ -1,0 +1,81 @@
+# Case: API-06 steps D-F, UI journey on the converted package (instance iso-57762-932a, worktree build), restart, safety
+# Steps: CDP-driven renderer (probes/api-06-cdp.mjs): open runs, Team/Org messages panel, open reference chips, send CALL_TOOL messages from the composer of each old run; isolated-app restart; reopen; REST reference sweep (probes/api-06-references.mjs)
+# Date: 2026-10-18 14:22 CEST
+
+## UI checks (DOM text, renderer)
+hub (old, converted) opened: Team panel "2 Messages" incl. "Released hub to pair." with chip hub-pair.md; chip click shows "reference hub-pair"  [API-06-03, -04]
+hub UI composer send (CALL_TOOL send_message_to helper, reference desktop-hub.md): panel "3 Messages", new message shown  [API-06-05]
+hub UI composer delegate_task /aoml_pair -> new task agent team aoml_pair_be9bf79d0d8e47f7a15c4808376a61d3 with team_communication_messages_active.jsonl of 0 bytes (only message-log file of the folder)
+team run (old, converted) opened: "2 Messages"  [API-06-06]; UI composer send lead -> /mate with reference desktop-team.md
+org run (old, converted, rotated 2 sealed + active) opened via director: Org panel "26 Messages" (24 synthesized older + 2 released)  [API-06-09]; UI composer send director -> /analyst with reference desktop-org.md: "27 Messages"; chip desktop-org.md opens "reference desktop-org"  [API-06-10]
+not admitted (design R-3): the unreadable team aoml_pair_d5d592a9... and old-address-team are not listed (sidebar "AOML Pair (2)" = the converted team run + the empty team run "Untitled team run")
+after restart: hub "3 Messages" (old1, old2, new all shown), team "3 Messages", org "27 Messages" (24 older + 2 released + 1 new)  [API-06-11, -12, -13]
+
+## owner-log files before the UI sends (lines, bytes, sha256 prefix)
+    11 lines    4508516 B fdfce264bb23 ./agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_000001.jsonl
+    11 lines    4508526 B 1bcf30ff8717 ./agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_000002.jsonl
+     4 lines     820512 B 6206a013c3cc ./agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_active.jsonl
+     2 lines        770 B 960993745bc5 ./agent_teams/aoml_pair_5d168649b4ac468193d3c2679d952070/team_communication_messages_active.jsonl
+     1 lines        375 B 3f3736691d04 ./agent_teams/aoml_pair_c95616ffa5754cf2b9ded9e1a06ad04d/team_communication_messages_active.jsonl
+     0 lines         10 B 0228f717792f ./agent_teams/aoml_pair_d5d592a9b3484500933bf5e6d0625d9e/team_communication_messages.json
+     0 lines          0 B e3b0c44298fc ./agent_teams/aoml_pair_f125ef9022c4484bab30f85c53a16ee6/team_communication_messages_active.jsonl
+    11 lines        186 B 74ca39c6dacd ./agent_teams/old-address-team/team_communication_messages.json
+    11 lines        186 B 74ca39c6dacd ./agent_teams/old-address-team/team_communication_messages.json.backup-20260701
+     1 lines        388 B b767d3d54cea ./agents/aoml_helper_7d42e48e22594693bc650222b6308e72/communication_messages_active.jsonl
+     1 lines        381 B 1579dcc7314b ./agents/aoml_helper_9bdf7971717c4ae391a9154f51e02cf1/communication_messages_active.jsonl
+     1 lines        390 B d25d9064ffb5 ./agents/aoml_helper_eff28cbf8fb54fc7ab7e28ad77bf26b4/communication_messages_active.jsonl
+     2 lines        756 B b4e91d6441ed ./agents/aoml_host_1b9db3bae1944871a305a993805db88e/collaboration/communication_messages_active.jsonl
+
+## after the hub send: hub 2->3 lines, helper 1->2 lines; prefixes unchanged (hub b4e91d6441ed, helper 1579dcc7314b); the same line in both
+
+## team send: diff of the owner-log listing
+4c4
+<      2 lines        770 B 960993745bc5 ./agent_teams/aoml_pair_5d168649b4ac468193d3c2679d952070/team_communication_messages_active.jsonl
+---
+>      3 lines       1171 B a22622975ea1 ./agent_teams/aoml_pair_5d168649b4ac468193d3c2679d952070/team_communication_messages_active.jsonl
+prefix of the team log after the send = 960993745bc5 (before 960993745bc5)
+
+## org send on the rotated log: diff of the owner-log listing (sealed _000001/_000002 not in the diff = unchanged)
+3c3
+<      4 lines     820512 B 6206a013c3cc ./agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_active.jsonl
+---
+>      5 lines     820911 B 06cb7d1328eb ./agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_active.jsonl
+active prefix after the send = 6206a013c3cc (before 6206a013c3cc)
+
+## owner-log files before restart (unchanged by the restart: LOGS_UNCHANGED_BY_RESTART; conversion attempts still 1)
+    11 lines    4508516 B fdfce264bb23 ./agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_000001.jsonl
+    11 lines    4508526 B 1bcf30ff8717 ./agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_000002.jsonl
+     5 lines     820911 B 06cb7d1328eb ./agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_active.jsonl
+     3 lines       1171 B a22622975ea1 ./agent_teams/aoml_pair_5d168649b4ac468193d3c2679d952070/team_communication_messages_active.jsonl
+     0 lines          0 B e3b0c44298fc ./agent_teams/aoml_pair_be9bf79d0d8e47f7a15c4808376a61d3/team_communication_messages_active.jsonl
+     1 lines        375 B 3f3736691d04 ./agent_teams/aoml_pair_c95616ffa5754cf2b9ded9e1a06ad04d/team_communication_messages_active.jsonl
+     0 lines         10 B 0228f717792f ./agent_teams/aoml_pair_d5d592a9b3484500933bf5e6d0625d9e/team_communication_messages.json
+     0 lines          0 B e3b0c44298fc ./agent_teams/aoml_pair_f125ef9022c4484bab30f85c53a16ee6/team_communication_messages_active.jsonl
+    11 lines        186 B 74ca39c6dacd ./agent_teams/old-address-team/team_communication_messages.json
+    11 lines        186 B 74ca39c6dacd ./agent_teams/old-address-team/team_communication_messages.json.backup-20260701
+     1 lines        388 B b767d3d54cea ./agents/aoml_helper_7d42e48e22594693bc650222b6308e72/communication_messages_active.jsonl
+     2 lines        782 B 01115b949fb1 ./agents/aoml_helper_9bdf7971717c4ae391a9154f51e02cf1/communication_messages_active.jsonl
+     1 lines        390 B d25d9064ffb5 ./agents/aoml_helper_eff28cbf8fb54fc7ab7e28ad77bf26b4/communication_messages_active.jsonl
+     3 lines       1157 B 30c29e8d2dfe ./agents/aoml_host_1b9db3bae1944871a305a993805db88e/collaboration/communication_messages_active.jsonl
+
+## REST reference sweep before restart
+hub aoml_host_1b9db3bae1944871a305a993805db88e: 3 messages
+200 BODY_EQUALS_FILE hub collabmsg_Y-gQbjZBYlExrGEPRtB9e8KXherm_Ldn "Released hub to helper."
+200 BODY_EQUALS_FILE hub collabmsg_qzAn3ifhaGrWuFZDMp6qemhst0M3GNc4 "Released hub to pair."
+200 BODY_EQUALS_FILE hub collabmsg_lLkJ3fW4nW-1lDtTByHsTOgvrooK2_mQ "Desktop new hub message after the upgrade."
+team aoml_pair_5d168649b4ac468193d3c2679d952070: 3 messages
+200 BODY_EQUALS_FILE team collabmsg_uiluMec0Fm7p42_fOtseFjfL4YYTu-G6 "Released team lead to mate."
+200 BODY_EQUALS_FILE team collabmsg_PdCduvICtP5cd00KfeD2SMAvx0XBUgdV "Released team lead to helper."
+200 BODY_EQUALS_FILE team collabmsg_llHXGoVziYrzyXittfnQDAYjijFTAOet "Desktop new team message after the upgrade."
+team aoml_pair_f125ef9022c4484bab30f85c53a16ee6: 0 messages
+org aoml_company_d74f4bf4d6ca449f836e481740699704: 27 messages (24 synthesized older)
+200 BODY_EQUALS_FILE org collabmsg_JzBncVxUStevsVBNovOthXOcW4DnvlcF "Released org director to analyst."
+200 BODY_EQUALS_FILE org collabmsg_88rvXfgaypSp084dprx-vF4-RzhDNUdm "Released org director to helper."
+200 BODY_EQUALS_FILE org collabmsg_TENsaBYRc_q8PLZycSj-Bzl7uxU2nu6v "Desktop new org message after the upgrade."
+createdAt order: hub true, org true
+
+## REST reference sweep after restart: identical (REFS_SAME_AFTER_RESTART)
+
+## safety
+~/.gemini/antigravity-cli/brain listing before and after the journey: identical (500 entries; REAL_HOME_AGY_BRAIN_UNCHANGED)
+observation (not this change): 'Memory file missing: .../raw_traces_active.jsonl' for members that never ran is logged by the released v1.5.6-beta.4 too (5 lines in iso-57200-6bde.log)
