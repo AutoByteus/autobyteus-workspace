@@ -2,9 +2,8 @@
 
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence`
-- Branch: `codex/chat-socket-content-cadence` (local, not pushed); HEAD `e24ff6b333`
-- Base: `origin/personal` @ `f3124db10f`
-- Ticket artifacts are uncommitted, as upstream left them.
+- Branch: `codex/chat-socket-content-cadence` (local, not pushed). Code HEAD `335f065cd1`; the ticket documents and evidence are committed after it (see the handoff message).
+- Base: `origin/personal` @ `cf14704473`, merged in IR-002 (merge commit `b3666d458f`). IR-001 was built on `f3124db10f`.
 
 | Commit | Slice |
 | --- | --- |
@@ -13,6 +12,8 @@
 | `43b685b906` | server egress, shapes, scheduler, handlers + unit tests |
 | `b8eed1387f` | per-socket integration cases + handler close tests |
 | `e24ff6b333` | docs |
+| `b3666d458f` | IR-002: merge of `origin/personal` @ `cf14704473` (DR-001 Local Fix; 2 conflicts resolved) |
+| `335f065cd1` | IR-002: type-clean assertion in the Team content-batch spec (test only) |
 
 ## Upstream Artifact Package
 
@@ -24,7 +25,7 @@
 - Supplemental task artifacts: `.../evidence/validity-probe.*`; this round's local logs are `evidence/impl-*.log`.
 - Design review report: `.../design-review-report.md` (ARCH-REV-002 Pass)
 - Architecture review revision record: `.../architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial)
+- Triggering rework report: DR-001, `release-deployment-report.md` and `delivery-revision-record.md` (Local Fix: integration merge conflict)
 
 ## Current Implementation Summary
 
@@ -36,15 +37,15 @@ Every chat socket now sends through its own `AgentStreamWebSocketEgress`. The Te
 
 Clients apply a frame when its first sequence is the next expected one, then advance to `through + 1`. `RootEventPublisher`, the snapshot barrier, inspection bases, the `/ws/agent` scheduler and `AgentRun` are unchanged.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: base integration; IR-001 is the implementation)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `CRR-001` — Pass (9.4/10, no findings; D-1..D-3 accepted), `code-review-report.md`. Recorded as informational; the reviewer routed to API/E2E.
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (AR-004 and AR-005 applied as notes)
+- Related code-review revision IDs: `CRR-001` — Pass (9.4/10, no findings; D-1..D-3 accepted), `code-review-report.md`; `CRR-002` (test code), per `delivery-revision-record.md`.
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `DR-001`
+- Triggering finding IDs: DR-001 Local Fix (merge conflict). IR-001: none (AR-004 and AR-005 applied as notes).
 
 ## Routing Classification (Mandatory)
 
@@ -53,7 +54,7 @@ Clients apply a frame when its first sequence is the next expected one, then adv
 - Design classification section / evidence reference: `design-spec.md` › Task Size And Architectural Risk
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale: the change touches three subsystems (server egress and handlers, two contract packages, three web contexts). It changes the wire contract on three streams and adds new per-connection timers on two sockets. This matches the design.
-- Selected route: `Code Review`
+- Selected route: `Code Review`. Classification is unchanged (Large/High), so the IR-002 Local Fix follows the `get_handoff_rules` rule for a delivery-requested Local Fix on a Large/High package, which sends it back for source review. Delivery asked for the package back; the reviewer's next handoff goes to delivery.
 - Lightweight implementation self-review completed for the direct route: `Not Applicable` (independent review route). A self-review was still done; see below.
 - New design impact or escalation trigger: `None`. Root sequencing, the barrier and inspection bases are untouched. Every client accepts the range. UNK-001 still needs live evidence.
 
@@ -179,27 +180,59 @@ Docs:
 - `pnpm -C autobyteus-web exec nuxt prepare` was run for the web specs and tsc.
 - Web `tsc --noEmit` has about 800 lines of errors on the base too (none of them from this change). Compared against base built with the new contracts: this change adds no errors and removes 7 that the new contract types would otherwise cause.
 
-## Local Implementation Checks Run
+## IR-002 Merge Resolution (DR-001)
 
-All logs are in `evidence/`. Code under test: HEAD `e24ff6b333`. These are local implementation checks, not API/E2E sign-off.
+- Conflict 1, `autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts` (`ROOT_EXECUTION_EVENT` branch): kept both sides. The base adds `const event = message.payload.event`, its `task_executions_closed` check, and `onTaskExecutionStarted?.(event.execution)` for `task_execution_started`. This ticket adds `message.payload.change_sequence_through` as the third `applyEvent` argument.
+- Conflict 2, `.../__tests__/agentRunCollaborationStreamingService.spec.ts`: kept both new tests (this ticket's content-batch test and the base's SR-009 started-task test).
+- An `agent_presentation_batch` can never carry `task_execution_started`:
+  - The contract allows only `SEGMENT_CONTENT` items (`agentPresentationBatchEventDtoSchema`; contract test IMP-01 rejects an `AGENT_STATUS` item).
+  - The server batches only `SEGMENT_CONTENT` (`rootExecutionEventSequencedShape.contentOf`).
+  - `task_execution_started` is its own event kind and leaves as its own frame after the batch flush (scheduler rule 5).
+  - So the base callback needs no look inside batches.
+- Merge scope check:
+  - Besides these two files, the base changes nothing under `autobyteus-server-ts/src/services/agent-streaming`, `src/api/websocket`, the web stream services and contexts, the root event publisher, or the three contract packages (`git diff --name-only f3124db10f origin/personal -- <those paths>`).
+  - The base adds no new `connection.send` in server `src`.
+  - The lockfile and `autobyteus-ts` are unchanged.
+  - The contract `dist/` matches a fresh `pnpm build`.
+  - The base's `TESTING.md` change concerns the E2E temp `HOME` only.
+- Conclusion: the merge is mechanical; it changes no behavior of this ticket.
+- One test-only follow-on, `335f065cd1`: the post-merge web tsc (IMP-11) showed 2 errors in my Team content-batch spec case, which was added after the IR-001 tsc baseline. The assertion now goes through `toMatchObject`, and the text checked is the same.
 
-| Check | Command | Result |
+## Checks Run
+
+IR-002 rows are current. Evidence is in `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/evidence/`. Each `IMP-*` file starts with a header (command, commit, environment, date). Environment for all rows: macOS 26.5.2, node v22.23.1, pnpm 10.28.2. These are local implementation checks, not API/E2E sign-off.
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-01 | `pnpm -C autobyteus-collaboration-stream-contracts test` | `b3666d458f` | as above | collaboration contracts incl. `agent_presentation_batch` | BEH-005, AC-002 | Pass | `IMP-01-contracts-collaboration.log` | `# pass 33`, `# fail 0` |
+| IMP-02 | `pnpm -C autobyteus-team-stream-contracts test` | `b3666d458f` | as above | Team contracts incl. `SEGMENT_CONTENT_BATCH` | BEH-005, AC-002 | Pass | `IMP-02-contracts-team.log` | `# pass 19`, `# fail 0` |
+| IMP-03 | `pnpm -C autobyteus-server-ts typecheck` | `b3666d458f` | as above | server `src` | AC-006 | Pass | `IMP-03-server-typecheck.log` | `# exit: 0` |
+| IMP-04 | `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent/chat-socket-content-cadence.integration.test.ts --no-watch`, 3 runs | `b3666d458f` | as above | egress, sequenced scheduler, shapes, Team/Org/collaboration handlers over real sockets | AC-001..AC-005, AC-009 | Pass | `IMP-04-cadence-integration-run{1,2,3}.log`, `IMP-04-cadence-integration-run1-excerpt.txt` | `Tests  18 passed (18)` in each run |
+| IMP-05 | `pnpm -C autobyteus-server-ts test:unit` | `b3666d458f` | as above | all server units incl. scheduler/shape/handler tests | AC-006 | Pass | `IMP-05-server-unit.log`, `IMP-05-server-unit-excerpt.txt` | `Test Files  722 passed \| 4 skipped (726)`, `Tests  5894 passed \| 7 skipped (5901)` |
+| IMP-06 | `pnpm -C autobyteus-server-ts test:integration:prepare` | `b3666d458f` | as above | integration build prerequisites | — | Pass | `IMP-06-server-integration-prepare.log` | `Integration test prerequisites are present.` |
+| IMP-07 | `pnpm -C autobyteus-server-ts test:integration` | `b3666d458f` | as above | all server integration incl. IMP-04's file and `agent-status-websocket` (PB-001) | AC-005, AC-006 | Pass | `IMP-07-server-integration.log`, `IMP-07-server-integration-excerpt.txt` | `Test Files  77 passed \| 18 skipped (95)`, `Tests  415 passed \| 69 skipped (484)` |
+| IMP-08 | `pnpm -C autobyteus-web exec nuxt prepare` | `b3666d458f` | as above | web type generation (setup) | — | Pass | `IMP-08-web-nuxt-prepare.log` | `Types generated in .nuxt.` |
+| IMP-09 | `pnpm -C autobyteus-web test:nuxt run services/agentCollaboration services/agentOrgExecution services/teamExecution services/agentStreaming/__tests__/TeamStreamingService.spec.ts` | `b3666d458f` | as above | the merged collaboration streaming service and spec; Org, collaboration and Team contexts and streaming services | BEH-002..005, AC-002 | Pass | `IMP-09-web-touched-specs.log` | `Test Files  19 passed (19)`, `Tests  151 passed (151)` |
+| IMP-10 | `pnpm -C autobyteus-web test:nuxt run` | `b3666d458f` | as above | all web specs | AC-006 | Pass | `IMP-10-web-full.log`, `IMP-10-web-full-excerpt.txt` | `Test Files  634 passed \| 2 skipped (636)`, `Tests  4493 passed \| 3 skipped (4496)` |
+| IMP-11 | `NODE_OPTIONS=--max-old-space-size=8192 pnpm -C autobyteus-web exec tsc --noEmit -p tsconfig.json` | `b3666d458f` | as above | web types | — | Fail → fixed in `335f065cd1` | `IMP-11-web-tsc-excerpt.txt`, `IMP-11-web-tsc-oom-attempt.log` (first attempt without the heap flag: V8 heap out of memory) | 2 new `TS2339` lines at `TeamStreamingService.spec.ts(220,…)` and `(221,…)` (this ticket's case) |
+| IMP-12 | `pnpm -C autobyteus-web test:nuxt run services/agentStreaming/__tests__/TeamStreamingService.spec.ts` | `335f065cd1` | as above | the edited Team streaming spec | BEH-002 | Pass | `IMP-12-web-team-streaming-spec.log` | `Tests  14 passed (14)` |
+| IMP-13 | as IMP-11 | `335f065cd1` | as above | web types | — | Pass (no new errors from this ticket) | `IMP-13-web-tsc-excerpt.txt` | `Tracked-source error lines: 671`. New versus pre-merge: only `delegate-task.ts` and `model-catalog-service.ts`. Neither file is changed by the base or this branch; tsc resolves a second `autobyteus-ts` copy under the untracked packaged build `autobyteus-web/electron-dist/` (the excerpt shows the path). That build also adds 7,342 error lines and is the cause of the out-of-memory first attempt. |
+
+- Not committed: the full web tsc logs `IMP-11-web-tsc.log` and `IMP-13-web-tsc.log` (about 2.6 MB each, mostly `electron-dist/` lines). They stay in the evidence folder in the worktree; the excerpts list everything that matters.
+- Not rerun in IR-002: none of the requested checks were skipped. API/E2E and real-app checks (AC-007, DESK-01) belong to API/E2E and delivery, which rerun on the integrated state.
+- Unchanged code since IR-001: everything except the 2 merged web files and the test edit. The base changes in other areas are covered by IMP-05, IMP-07 and IMP-10.
+
+### Earlier round (IR-001, commit `e24ff6b333`, base `f3124db10f`; superseded by the IR-002 rows)
+
+| Check | Result | Evidence |
 | --- | --- | --- |
-| Contract tests | `pnpm -C autobyteus-collaboration-stream-contracts test`, `pnpm -C autobyteus-team-stream-contracts test` (and `node --test` against the committed dist) | 33/33 and 19/19 (`impl-contracts-tests.log`) |
-| Server typecheck | `pnpm -C autobyteus-server-ts typecheck` | exit 0 (`impl-typecheck.log`) |
-| Scheduler and shape units | `vitest run tests/unit/services/agent-streaming/sequenced-*.test.ts` | 11/11 and 5/5 |
-| Streaming unit folder | `vitest run tests/unit/services/agent-streaming` | all green, including the Org/collaboration close and disconnect cases (20/20 in those 2 files) |
-| Per-socket cadence integration | `vitest run tests/integration/agent/chat-socket-content-cadence.integration.test.ts`, 3 runs | 18/18 on each run. Against the pre-change handlers, all 15 behavior cases fail |
-| Server unit (full) | `pnpm -C autobyteus-server-ts test:unit` | run 1: 5855 passed, 1 failed (see below); run 2: 5856 passed / 7 skipped (`impl-test-unit.log`, `impl-test-unit-rerun.log`) |
-| Server integration (full) | `test:integration:prepare` then `test:integration` | 77 files / 414 tests passed, 65 skipped (`impl-test-integration.log`) |
-| Web specs (full) | `pnpm -C autobyteus-web test:nuxt run` | 634 files / 4483 tests passed, 5 skipped (`impl-web-test-nuxt.log`) |
-| Web type check | `pnpm -C autobyteus-web exec tsc --noEmit -p tsconfig.json` | no new errors; the remaining about 800 lines also exist on base |
+| Contracts | 33/33, 19/19 | `impl-contracts-tests.log` |
+| Server typecheck | Pass | `impl-typecheck.log` |
+| Server unit | run 1: 1 timeout in `run-file-change-service.test.ts` (FU-C, unrelated; see below); run 2: 5856 passed | `impl-test-unit.log`, `impl-test-unit-rerun.log` |
+| Server integration | 414 passed | `impl-test-integration.log` |
+| Web full | 4483 passed | `impl-web-test-nuxt.log` |
 
-**Unit run 1 failure, investigated (TESTING.md Rule 9):** `tests/unit/services/run-file-changes/run-file-change-service.test.ts` › "projects FILE_CHANGE events…" failed with `Timed out waiting for live projection status 'streaming'`. That is the test's own 2,000 ms wall-clock `waitForCondition` over temp-dir file projection.
-- Run 1 had very heavy load: 478 s of aggregate import time across workers.
-- Not caused by this change. The test's transitive import graph (`tsc --listFilesOnly`) contains none of the changed server modules, only the contract `.d.ts` types. File-change projection does not use the batch schemas.
-- The file passed 3/3 alone, 2/2 inside `tests/unit/services` + `tests/unit/agent-execution` (1,796 tests in parallel), and in the full rerun.
-- Cause: a fixed 2 s deadline on file-system polling under full-suite CPU contention. I made no test change, because I could not reproduce it to prove a fix. It is recorded as follow-up FU-C.
+The IR-001 unit run 1 failure was a 2,000 ms wall-clock wait in `run-file-change-service.test.ts` under full-suite load. Its import graph has none of the changed server modules; it passed alone, under parallel load and in the rerun, and in IR-002's IMP-05. Recorded as FU-C.
 
 ## Frontend Rendered-Result Check
 

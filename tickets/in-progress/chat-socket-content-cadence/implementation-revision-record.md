@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` (ARCH-REV-002 Pass) / initial | N/A (AR-004, AR-005 non-blocking notes applied) | `Initial Baseline` | `SR-002`, `ARCH-REV-002`; CRR `N/A`; API-REV `N/A`; DR `N/A` | Implemented; local checks green; ready for independent code review |
+| IR-002 | Delivery Engineer / `release-deployment-report.md` (DR-001 Blocked) / integration | DR-001 Local Fix (merge conflict with base `fbc0f805bf`) | `Local Fix` | `SR-002`, `ARCH-REV-002`, `CRR-001`, `CRR-002`, `API-REV-001`, `DR-001` | Latest base merged (mechanical resolution); affected checks rerun green; back to delivery |
 
 ## Revision Entries
 
@@ -31,6 +32,33 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - `b8eed1387f` tests: per-socket integration cases plus handler close and disconnect cases.
   - `e24ff6b333` docs: the protocol doc and the agent streaming module doc.
 - Changed files or areas: see `implementation-handoff.md` › Key Files Or Areas.
-- Local validation and result: see `implementation-handoff.md` › Local Implementation Checks Run.
+- Local validation and result: see `implementation-handoff.md` › Checks Run (IR-001 rows, files `impl-*.log`).
 - Next recipient or routing: Code Reviewer (Large/High), per `get_handoff_rules`.
 - Remaining limitations or risks: UNK-001 (live status repeats), RSK-003 (remote-node skew), and the design deviations D-1 and D-2 recorded in the handoff.
+
+### IR-002 — Integrate the latest base (DR-001 Local Fix)
+
+- Triggering role, report path, and round: Delivery Engineer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/release-deployment-report.md`, DR-001 (Blocked: integration merge conflict).
+- Triggering finding IDs: DR-001 Local Fix.
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001, implemented and validated on `e24ff6b333` (CRR-001 Pass, API-REV-001 validated), base `f3124db10f`.
+- Current authoritative result: `origin/personal` @ `cf14704473` merged into the branch (merge commit `b3666d458f`), plus one test-only commit `335f065cd1`. All affected checks were rerun green on `b3666d458f` / `335f065cd1`.
+- Related solution revision IDs: `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-002`
+- Related code-review revision IDs: `CRR-001` (source), `CRR-002` (test code)
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `DR-001`
+- Why this implementation revision is recorded: the base commit `fbc0f805bf` (link-existing-run-to-task, IR-004) changed the same lines of the collaboration streaming service and its spec.
+- Approved behavior or requirement IDs affected: none changed. BEH-004 and BEH-005 on the delegated-agent socket were rechecked.
+- Implementation delta:
+  - `agentRunCollaborationStreamingService.ts` `ROOT_EXECUTION_EVENT` branch: kept the base's `const event = message.payload.event`, its `task_executions_closed` check and its new `onTaskExecutionStarted` callback. Kept this ticket's third argument `message.payload.change_sequence_through` to `applyEvent`. The result is the union of both sides; no logic was rewritten.
+  - `agentRunCollaborationStreamingService.spec.ts`: kept both new tests (this ticket's content-batch test and the base's SR-009 started-task test) one after the other.
+  - `335f065cd1` (test only): the Team content-batch case in `TeamStreamingService.spec.ts` now asserts through `toMatchObject` instead of `.segments` on `AIMessage | UserMessage`. The post-merge web tsc run found those 2 errors (the case was added after the IR-001 tsc baseline). The assertion is unchanged.
+- Behavior beyond a mechanical merge: none. An `agent_presentation_batch` cannot carry `task_execution_started`:
+  - The contract only allows `SEGMENT_CONTENT` items (`agentPresentationBatchEventDtoSchema`; the contract test rejects an `AGENT_STATUS` item).
+  - The server batches only `SEGMENT_CONTENT` (`rootExecutionEventSequencedShape.contentOf`). `task_execution_started` is its own event kind, so scheduler rule 5 flushes the batch and then forwards it as its own frame.
+  - So the base's callback, which reads the top-level `event.kind`, needs no look inside batches.
+- Changed files or areas: the two web files above; `TeamStreamingService.spec.ts`.
+- Local validation and result: IMP-01..IMP-13 in `implementation-handoff.md` › Checks Run, all Pass.
+- Next recipient or routing: Code Reviewer, per the `get_handoff_rules` rule for a delivery-requested Local Fix on a Large/High package (classification rechecked: unchanged).
+- Remaining limitations or risks: unchanged from IR-001.
