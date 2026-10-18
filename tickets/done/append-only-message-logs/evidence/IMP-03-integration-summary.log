@@ -1,0 +1,10 @@
+# IMP-03 server integration suite
+# command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# commit: 265ad100ce; env: Darwin 25.5.0, node v22.23.1; date: 2026-10-18T11:33:27Z
+# excerpt: failures and summary (full log: IMP-03-integration-full.log)
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration > does not hydrate unmigrated old flat projections through a runtime compatibility fallback
+AssertionError: expected [] to be null
+ Test Files  1 failed | 75 passed | 17 skipped (93)
+      Tests  1 failed | 396 passed | 65 skipped (462)
+   Duration  332.38s (transform 15.61s, setup 1.43s, import 171.13s, tests 145.58s, environment 10ms)
+exit=1

@@ -1,0 +1,32 @@
+# Case: API-01 (first run, before the test updates)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations --no-watch
+# Commit: 78b42de3ae (no test changes yet)
+# Environment: macOS Darwin 25.5.0, node v22.23.1; env -i PATH HOME=<temp> TMPDIR USER; built server dist from this worktree (built 2026-10-18)
+# Date: 2026-10-18 14:04 CEST
+
+ FAIL  tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+ FAIL  tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > token-only-rerun: preserves usage and conversation through full restore, replay and advancing response
+Error: AGENT_ORG_STATE_PACKAGE_NOT_CATALOGED: AgentOrg 'org' is not an admitted current package.
+ ❯ src/agent-org-execution/services/agent-org-run-manager.ts:124:15
+    122|       await this.packageCatalog.awaitReady();
+ FAIL  tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing
+AssertionError: [{"message":"AgentOrg package is not admitted.","locations":[{"line":1,"column":20}],"path":["getAgentOrgRunConfig"]}]: expected [ { …(3) } ] to be undefined
+
+- Expected: 
+undefined
+ FAIL  tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows)
+AssertionError: {"success":false,"outcome":"NOT_FOUND","message":"Team run is not an admitted current package.","fieldErrors":[]}: expected { success: false, …(3) } to match object { success: true }
+(3 matching properties omitted from actual)
+
+- Expected
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+ Test Files  3 failed | 2 passed (5)
+      Tests  5 failed | 9 passed (14)
+   Start at  13:59:49
+   Duration  68.83s (transform 5.02s, setup 74ms, import 9.37s, tests 57.80s, environment 0ms)
+
+exit=1

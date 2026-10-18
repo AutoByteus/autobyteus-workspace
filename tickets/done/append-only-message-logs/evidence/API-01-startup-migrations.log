@@ -1,0 +1,27 @@
+# Case: API-01 (after the test updates)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations --no-watch
+# Commit: 78b42de3ae (+ uncommitted test updates listed in the execution report, round 1)
+# Environment: macOS Darwin 25.5.0, node v22.23.1; env -i PATH HOME=<temp> TMPDIR USER; built server dist from this worktree (built 2026-10-18)
+# Date: 2026-10-18 14:04 CEST
+
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 14348ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  4565ms
+     ✓ isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root  3713ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  4081ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  1988ms
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 17136ms
+     ✓ TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing  5634ms
+     ✓ TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows)  6032ms
+     ✓ TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are not listed  5469ms
+ ✓ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests) 534ms
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts (4 tests) 15846ms
+     ✓ E-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart  3311ms
+     ✓ E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued  4141ms
+     ✓ E-003 Studio fresh install: creates no installed copy and records nothing to remove  3504ms
+     ✓ E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record  4890ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 3973ms
+     ✓ converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing  3973ms
+ Test Files  5 passed (5)
+      Tests  14 passed (14)
+   Duration  59.91s (transform 3.56s, setup 57ms, import 7.07s, tests 51.84s, environment 0ms)
+exit=0

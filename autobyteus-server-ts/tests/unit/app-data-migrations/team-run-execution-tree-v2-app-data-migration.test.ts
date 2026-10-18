@@ -169,8 +169,9 @@ describe("TeamRunExecutionTreeV2AppDataMigration", () => {
     await catalog.rebuild();
     expect(catalog.listAdmittedRootIds()).toEqual([]);
     expect(catalog.getDiagnostics().get("classroom-run")).toContain(
-      // The released recursive V2 tree is structurally not a current flat Team tree (no version check needed).
-      "rootTeam.members[1] is missing required field(s)",
+      // The released recursive V2 tree is not a current flat Team tree, so its JSON message log stays
+      // unconverted (the append-only conversion waits for its tree) and current readiness rejects it.
+      "ROOT_RUN_PACKAGE_MANIFEST_INVALID",
     );
     await expect(migration.execute()).resolves.toMatchObject({
       status: "SUCCEEDED",

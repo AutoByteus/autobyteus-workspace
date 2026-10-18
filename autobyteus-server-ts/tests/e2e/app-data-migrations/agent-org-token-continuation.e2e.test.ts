@@ -5,6 +5,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createOrgMigrationFixture, putOrgFixture, writeNestedRoot } from "../../helpers/org-family-migration-fixtures.js";
 import { createMigrationContinuationRuntime, migrationUsage, retainedThread } from "../../helpers/org-migration-continuation-fixtures.js";
+import { convertMessageLogsAsOnStartup } from "../../helpers/append-only-message-log-startup.js";
 import { LegacyTokenUsageConsolidationRepository } from "../../../src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.js";
 import { TokenUsageRunRecordsV1AppDataMigration } from "../../../src/app-data-migrations/migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.js";
 import { TokenUsageRunStore } from "../../../src/token-usage/providers/token-usage-run-store.js";
@@ -72,6 +73,9 @@ describe("isolated migrated Org continuation through current server lifecycle", 
       expect(write).not.toHaveBeenCalled();
     }
     vi.restoreAllMocks();
+    // A real start ends with the message log conversion, which turns the org's JSON log into the append-only log the
+    // current runtime admits.
+    expect((await convertMessageLogsAsOnStartup(e.memory)).status).toBe("SUCCEEDED");
     const corrected = await e.client.tokenUsageRunRecord.findUniqueOrThrow({ where: { runId: "org-lead" } });
     expect(corrected).toEqual({ ...before, rootTeamRunId: null, rootAttributionStatus: "unknown",
       identitySummaryJson: JSON.stringify({ ...JSON.parse(before.identitySummaryJson), rootTeamRunIds: { status: "unknown" } }),

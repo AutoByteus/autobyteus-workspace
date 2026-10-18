@@ -9,7 +9,7 @@ import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history
 import { taskExecutionsClosedEvent, taskExecutionsReopenedEvent } from "../../../../src/agent-team-execution/task-delegation/task-execution-event-factory.js";
 import { AgentTeamRunManager } from "../../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
-import { validateTeamCommunicationMessagesPayload } from "../../../../src/services/team-communication/team-communication-messages-schema.js";
+import { validateCollaborationCommunicationMessageArray } from "../../../../src/agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
 import {
   projectLiveTeamAgentStatusMessage,
@@ -26,7 +26,11 @@ const recordsDir = path.resolve(
 );
 const json = (dir: string, name: string) => JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")) as unknown;
 const tree = validateTeamRunExecutionTreePayload(json(scenarioDir, "team_run_execution_tree.json"), "team-run-root");
-const messages = validateTeamCommunicationMessagesPayload(json(recordsDir, "team_communication_messages.json"), "team-run-root");
+const messages = Object.freeze({
+  schemaVersion: 1 as const,
+  rootTeamRunId: "team-run-root",
+  messages: validateCollaborationCommunicationMessageArray((json(recordsDir, "team_communication_messages.json") as { messages: unknown }).messages),
+});
 const message = messages.messages[0]!;
 const root = {
   getExecutionTreeSnapshot: () => tree,

@@ -1,0 +1,10 @@
+# IMP-02 server unit suite
+# command: pnpm -C autobyteus-server-ts test:unit
+# commit: 265ad100ce; env: Darwin 25.5.0, node v22.23.1; date: 2026-10-18T11:14:12Z
+# excerpt: failures and summary (full log: IMP-02-unit-full.log)
+ FAIL  tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts > memory layout cleanup regression > keeps removed run-specific layout symbols out of source and tests
+Error: Test timed out in 5000ms.
+ Test Files  1 failed | 724 passed | 4 skipped (729)
+      Tests  1 failed | 5895 passed | 7 skipped (5903)
+   Duration  1154.05s (transform 35.39s, setup 13.28s, import 742.11s, tests 296.98s, environment 1.65s)
+exit=1

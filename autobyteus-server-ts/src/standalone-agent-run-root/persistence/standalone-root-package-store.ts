@@ -1,4 +1,3 @@
-import fsPromises from "node:fs/promises";
 import type {
   StandaloneRootMessagesFile,
   StandaloneRootTreeFile,
@@ -8,16 +7,11 @@ import {
   type AtomicRunPackageFileCommitWriter,
   type RunPackageFileWriteResult,
 } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
-import {
-  getStandaloneRootMessagesPath,
-  getStandaloneRootTreePath,
-} from "./standalone-root-tree-path.js";
-import {
-  validateStandaloneRootMessages,
-  validateStandaloneRootTreePayload,
-} from "./standalone-root-tree-schema.js";
+import { getStandaloneRootTreePath } from "./standalone-root-tree-path.js";
+import { validateStandaloneRootTreePayload } from "./standalone-root-tree-schema.js";
 import { memoryRootOfCoordinatingDir } from "../../agent-memory/store/agent-memory-layout.js";
 import { STANDALONE_ROOT_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
+import { MessageLog } from "../../run-history/store/message-log.js";
 import { TaskAgentOwnFiles } from "../../run-history/store/task-agent-own-files.js";
 import {
   appendMessageToOwnerLogs,
@@ -37,10 +31,13 @@ import {
   splitTaskExecutions,
 } from "../../run-history/store/task-execution-tree-split.js";
 
-const missing = (error: unknown): boolean => (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
-
 /** Reader and writer of one Agent-root collaboration package (tree plus communication messages). */
 export class StandaloneRootPackageStore {
+  /** The host's own message log in `agents/<hostRunId>/collaboration/`. */
+  private hostLog(collaborationDir: string): MessageLog {
+    return new MessageLog(collaborationDir, "communication_messages", { writer: this.writer });
+  }
+
   private taskLogs(collaborationDir: string): TaskAgentMessageLogs {
     return new TaskAgentMessageLogs(memoryRootOfCoordinatingDir("agent", collaborationDir), this.writer);
   }
@@ -81,15 +78,10 @@ export class StandaloneRootPackageStore {
     });
   }
 
-  /** The host's own message log file. */
+  /** The host's own message log; `null` without a log. */
   async readMessagesLog(collaborationDir: string, hostRunId: string): Promise<StandaloneRootMessagesFile | null> {
-    try {
-      const value = JSON.parse(await fsPromises.readFile(getStandaloneRootMessagesPath(collaborationDir), "utf8")) as unknown;
-      return validateStandaloneRootMessages(value, hostRunId);
-    } catch (error) {
-      if (missing(error)) return null;
-      throw error;
-    }
+    const messages = await this.hostLog(collaborationDir).read();
+    return messages ? Object.freeze({ schemaVersion: 1, subjectKind: "agent", hostRunId, messages }) : null;
   }
 
   /** Splits the tree: each new or changed task agent's own file first, then the links tree (D-1). */
@@ -112,23 +104,17 @@ export class StandaloneRootPackageStore {
   ): Promise<RunPackageFileWriteResult<"communication_messages">> {
     return appendMessageToOwnerLogs(owners, async (owner) => {
       if (owner.kind !== "coordinating") return this.taskLogs(collaborationDir).append(owner, message);
-      const own = await this.readMessagesLog(collaborationDir, hostRunId);
-      if (!own) throw new Error(`Agent root '${hostRunId}' has no message log.`);
-      if (own.messages.some((entry) => entry.messageId === message.messageId)) return null;
-      return this.writeMessages(collaborationDir, { ...own, messages: [...own.messages, message] });
+      const log = this.hostLog(collaborationDir);
+      if (!await log.exists()) throw new Error(`Agent root '${hostRunId}' has no message log.`);
+      return log.append(message);
     });
   }
 
-  /** Creates the host's message log (the package's first write); appends go through `appendMessage`. */
+  /** Creates the host's message log (the package's first write, replaced on a retry); appends go through `appendMessage`. */
   writeMessages(
     collaborationDir: string,
     messages: StandaloneRootMessagesFile,
   ): Promise<RunPackageFileWriteResult<"communication_messages">> {
-    const normalized = validateStandaloneRootMessages(messages, messages.hostRunId);
-    return this.writer.write({
-      file: "communication_messages",
-      filePath: getStandaloneRootMessagesPath(collaborationDir),
-      payload: normalized,
-    });
+    return this.hostLog(collaborationDir).writeInitial(messages.messages);
   }
 }

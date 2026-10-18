@@ -2,7 +2,6 @@ import type { RootCommunicationAdapter } from "../../agent-collaboration/executi
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
-import { validateStandaloneRootMessages } from "../persistence/standalone-root-tree-schema.js";
 import type { StandaloneRootMessagesFile } from "../domain/standalone-root-tree.js";
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
 import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
@@ -52,12 +51,12 @@ export class StandaloneRootCommunicationAdapter implements RootCommunicationAdap
       input.reservation.cancel();
       return Object.freeze({ committed: false as const, code: "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with the current Agent root state." });
     }
-    const next = validateStandaloneRootMessages({
+    const next: StandaloneRootMessagesFile = Object.freeze({
       schemaVersion: 1,
       subjectKind: "agent",
       hostRunId: this.root.rootRunId,
-      messages: [...input.getCurrentMessages(), input.message],
-    }, this.root.rootRunId);
+      messages: Object.freeze([...input.getCurrentMessages(), input.message]),
+    });
     let reservationCommitted = false;
     try {
       return await this.options.persistence.commitCommunication({

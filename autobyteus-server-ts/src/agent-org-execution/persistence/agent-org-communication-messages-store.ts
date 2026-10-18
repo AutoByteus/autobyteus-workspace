@@ -1,5 +1,3 @@
-import fs from "node:fs/promises";
-import path from "node:path";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { memoryRootOfCoordinatingDir } from "../../agent-memory/store/agent-memory-layout.js";
 import {
@@ -8,6 +6,7 @@ import {
   type RunPackageFileWriteResult,
 } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import { AGENT_ORG_RUN_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
+import { MessageLog } from "../../run-history/store/message-log.js";
 import {
   appendMessageToOwnerLogs,
   composeMessageLogs,
@@ -17,32 +16,29 @@ import {
 } from "../../run-history/store/task-agent-message-logs.js";
 import { agentRunIdsOfTree } from "../../run-history/store/task-execution-tree-split.js";
 import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execution-tree.js";
-import {
-  AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME,
-  type AgentOrgCommunicationMessagesFile,
-} from "./agent-org-communication-messages.js";
-import { validateAgentOrgCommunicationMessages } from "./agent-org-communication-messages-schema.js";
-
-export const getAgentOrgCommunicationMessagesPath = (orgDir: string): string =>
-  path.join(path.resolve(orgDir), AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME);
-const missing = (error: unknown): boolean => (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
+import type { AgentOrgCommunicationMessagesFile } from "./agent-org-communication-messages.js";
 
 /**
- * An organization run's message log and its stored view (design D-4): the run's own log plus its loaded
- * task agents' own logs. New messages are appended to the logs they belong to, never rewritten from a
- * loaded list.
+ * An organization run's message log (`agent_org_communication_messages`, a `MessageLog`) and its stored
+ * view (design D-4): the run's own log plus its loaded task agents' own logs. New messages are appended
+ * to the logs they belong to, never rewritten from a loaded list.
  */
 export class AgentOrgCommunicationMessagesStore {
   constructor(private readonly writer: AtomicRunPackageFileCommitWriter = getAtomicRunPackageFileCommitWriter()) {}
 
-  /** The organization run's own log file. */
+  private ownLog(orgDir: string): MessageLog {
+    return new MessageLog(orgDir, "agent_org_communication_messages", { writer: this.writer });
+  }
+
+  /** Whether the run's own log exists (any of its files). */
+  hasLog(orgDir: string): Promise<boolean> {
+    return this.ownLog(orgDir).exists();
+  }
+
+  /** The organization run's own log; `null` without a log. */
   async readLog(orgDir: string, orgRunId: string): Promise<AgentOrgCommunicationMessagesFile | null> {
-    try {
-      return validateAgentOrgCommunicationMessages(
-        JSON.parse(await fs.readFile(getAgentOrgCommunicationMessagesPath(orgDir), "utf8")),
-        orgRunId,
-      );
-    } catch (error) { if (missing(error)) return null; throw error; }
+    const messages = await this.ownLog(orgDir).read();
+    return messages ? Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages }) : null;
   }
 
   /** The stored view for a composed tree: the run's log and its loaded task agents' logs (L6); `null` without a log. */
@@ -58,14 +54,9 @@ export class AgentOrgCommunicationMessagesStore {
     });
   }
 
-  /** Creates the run's log (its initial package). */
-  write(orgDir: string, messages: AgentOrgCommunicationMessagesFile): Promise<RunPackageFileWriteResult<"org_communication_messages">> {
-    const normalized = validateAgentOrgCommunicationMessages(messages, messages.orgRunId);
-    return this.writer.write({
-      file: "org_communication_messages",
-      filePath: getAgentOrgCommunicationMessagesPath(orgDir),
-      payload: normalized,
-    });
+  /** Creates the run's log (its initial package; replaced on a retry). */
+  async write(orgDir: string, messages: AgentOrgCommunicationMessagesFile): Promise<RunPackageFileWriteResult<"org_communication_messages">> {
+    return { ...await this.ownLog(orgDir).writeInitial(messages.messages), file: "org_communication_messages" };
   }
 
   /** Adds one committed message to each log it belongs to, receiver's first (contract §3.4, DEC-011). */
@@ -77,10 +68,9 @@ export class AgentOrgCommunicationMessagesStore {
   ): Promise<RunPackageFileWriteResult<"communication_messages">> {
     return appendMessageToOwnerLogs(owners, async (owner) => {
       if (owner.kind !== "coordinating") return this.taskLogs(orgDir).append(owner, message);
-      const own = await this.readLog(orgDir, orgRunId);
-      if (!own) throw new Error(`AgentOrg '${orgRunId}' has no message log.`);
-      if (own.messages.some((entry) => entry.messageId === message.messageId)) return null;
-      return this.write(orgDir, { ...own, messages: [...own.messages, message] });
+      const log = this.ownLog(orgDir);
+      if (!await log.exists()) throw new Error(`AgentOrg '${orgRunId}' has no message log.`);
+      return log.append(message);
     });
   }
 

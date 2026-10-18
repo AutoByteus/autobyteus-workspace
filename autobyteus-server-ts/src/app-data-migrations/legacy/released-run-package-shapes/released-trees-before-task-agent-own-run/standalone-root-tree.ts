@@ -1,9 +1,9 @@
 // Frozen verbatim copy (import paths remapped only) of `src/standalone-agent-run-root/domain/standalone-root-tree.ts` as of the
 // D-10 rename commit 8bbd081c8d (behavior identical to origin/personal@66429d6f31). Owned by
 // released app-data migrations and `20261017_task_agent_own_run_v1`; current runtime must not import it.
+// The message-log envelope moved to `../released-message-logs-before-append-only.ts`.
 
 import type { AgentTeamAddress } from "../../../../agent-collaboration/domain/agent-team-address.js";
-import type { CollaborationCommunicationMessage } from "../../../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type {
   IsoTimestamp,
   TaskExecution,
@@ -30,14 +30,6 @@ export type StandaloneRootTreeFile = Readonly<{
 
 export type StandaloneRootTreeSnapshot = StandaloneRootTreeFile;
 
-/** `memory/agents/<hostRunId>/collaboration/communication_messages.json`. */
-export type StandaloneRootMessagesFile = Readonly<{
-  schemaVersion: 1;
-  subjectKind: "agent";
-  hostRunId: string;
-  messages: readonly CollaborationCommunicationMessage[];
-}>;
-
 export const emptyStandaloneRootTree = (input: Readonly<{
   host: StandaloneRootHost;
   createdAt: IsoTimestamp;
@@ -47,6 +39,3 @@ export const emptyStandaloneRootTree = (input: Readonly<{
   host: Object.freeze({ ...input.host }),
   taskExecutions: Object.freeze([]),
 });
-
-export const emptyStandaloneRootMessages = (hostRunId: string): StandaloneRootMessagesFile =>
-  Object.freeze({ schemaVersion: 1, subjectKind: "agent", hostRunId, messages: Object.freeze([]) });
