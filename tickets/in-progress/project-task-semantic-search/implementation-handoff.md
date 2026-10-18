@@ -389,3 +389,5 @@ Evidence: `tickets/in-progress/project-task-semantic-search/evidence/implementat
   - Web tests: no web code changed in IR-003; the IR-002 web results (113/113) still apply.
   - Packaging: no packaging code changed.
   - QR-003/QR-004 cost measurements with Granite as the default (API-L03b/c/d), API-L04 and API-R06: these belong to API/E2E, which reruns them.
+
+- CRR-004: **Pass** (targeted delta review of IR-003; FO-001 resolved, O-1 applied). Report: `code-review-report.md`. The code reviewer hands off to `/software_engineering_team/api_e2e_engineer`.
