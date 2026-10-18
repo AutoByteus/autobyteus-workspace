@@ -15,22 +15,24 @@ The Docker launcher can use any operator-supplied directory through
 and `<root>/nodes/<name>` to that node's workspace. The launcher retains private
 settings, sign-ins and memory volumes but neither installs nor controls NFS.
 
-## Configured skills and process ownership
+## Configured skills
 
-Claude, Codex and Grok use exact execution-private skill profiles on every
-filesystem. A profile is registered with its owner before awaited acquisition,
-in valid application-private execution storage outside the project, including
-symlink aliases. No configured bindings means no profile acquisition. Missing
-storage or unsupported native discovery refuses preparation; it does not fall
-back to project links. Configured collisions fail; ALL_INSTALLED prefers the
-user-owned project entry. Other adapters' genuine materializers remain.
+Skill exposure does not depend on the filesystem or on how a workspace is
+stored. Claude, Codex and Grok expose configured skills the same way on every
+workspace: the shared `WorkspaceSkillMaterializer` links each skill into
+`<workspace>/.claude/skills`, `.codex/skills` or `.grok/skills`. It reuses an
+existing link to the same skill, repairs broken links and removes the links it
+holds when the run ends. Codex first checks `skills/list`. A configured-skill
+run refuses a different workspace-owned entry with the same name;
+`ALL_INSTALLED` prefers it. Run preparation does not need the run's memory
+folder. AGY keeps its private capsule. See [Skills](./skills.md) (Codex and
+Claude; Workspace collision policy).
 
-Native discovery checks the logical name and actual source manifest. A proven
-native process/client close precedes exact profile release. Cleanup removes only
-that profile's wrappers/links, never source bytes or a peer profile. Managed
-catalog lookup selects the current matching source; it does not retain an old
-generation. Source Update/Remove remains independent, so linked bytes can
-disappear. AGY retains its separate private capsule and missing-source policy.
+There is no NFS-specific or execution-private skill profile. Folders left under
+`<memory>/runtime-skill-profiles/` by v1.5.6-beta.2 and beta.3 runs are inert
+and may be deleted.
+
+## Git and ordinary operations
 
 AutoByteus does not inject `safe.directory` into Git environments. Explicit
 operator Git configuration and provider authentication remain independent.

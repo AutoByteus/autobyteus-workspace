@@ -1,6 +1,8 @@
+import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { Skill } from "../../../../../src/skills/domain/models.js";
 import { RuntimeKind, isExternalProviderRuntimeKind, runtimeKindFromString } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { getRuntimeAvailabilityService } from "../../../../../src/runtime-management/runtime-availability-service.js";
 import { buildAgentRunRestoreRuntimeContext } from "../../../../../src/agent-execution/services/agent-run-restore-context-factory.js";
@@ -9,11 +11,16 @@ import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/
 import { ModelCatalogService } from "../../../../../src/llm-management/services/model-catalog-service.js";
 import { AgentRunResumeConfigService } from "../../../../../src/run-history/services/agent-run-resume-config-service.js";
 import { ApplicationProviderCredentialReadinessAdapter } from "../../../../../src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.js";
+import {
+  GROK_WORKSPACE_SKILL_MATERIALIZATION_PROFILE,
+  getGrokWorkspaceSkillMaterializer,
+} from "../../../../../src/agent-execution/backends/grok/grok-workspace-skill-materializer.js";
 
-
+const tempRoots: string[] = [];
 const savedCommand = process.env.GROK_BUILD_COMMAND;
 afterEach(async () => {
   if (savedCommand === undefined) delete process.env.GROK_BUILD_COMMAND; else process.env.GROK_BUILD_COMMAND = savedCommand;
+  await Promise.all(tempRoots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })));
 });
 
 describe("grok_build runtime registration", () => {
@@ -56,4 +63,21 @@ describe("grok_build runtime registration", () => {
       .toEqual({ kind: "unsupported", runtime: "grok_build" });
   });
 
+  it("materializes configured skills under .grok/skills and releases them (AC-010)", async () => {
+    expect(GROK_WORKSPACE_SKILL_MATERIALIZATION_PROFILE.workspaceSkillsRootSegments).toEqual([".grok", "skills"]);
+    const source = await fs.mkdtemp(path.join(os.tmpdir(), "grok-skill-source-"));
+    const workspace = await fs.mkdtemp(path.join(os.tmpdir(), "grok-skill-workspace-"));
+    tempRoots.push(source, workspace);
+    await fs.writeFile(path.join(source, "SKILL.md"), "# Grok\n", "utf8");
+    const skill = new Skill({ name: "grok-profile", description: "test", content: "# Grok", rootPath: source });
+    const materializer = getGrokWorkspaceSkillMaterializer();
+    const { materializedSkills: descriptors } = await materializer.materializeConfiguredWorkspaceSkills({
+      runId: "grok-run", workingDirectory: workspace, requests: [{ kind: "expose-resolved", skill }],
+    });
+    const link = path.join(workspace, ".grok", "skills", "grok-profile");
+    expect(descriptors[0]!.materializedRootPath).toBe(link);
+    expect((await fs.lstat(link)).isSymbolicLink()).toBe(true);
+    await materializer.cleanupMaterializedWorkspaceSkills(descriptors);
+    await expect(fs.lstat(link)).rejects.toMatchObject({ code: "ENOENT" });
+  });
 });

@@ -1,6 +1,3 @@
-import type { AcpPrivateSkillAdapter } from "../acp-private-skill-adapter.js";
-import type { RuntimeSkillProfile } from "../../shared/runtime-skill-profile.js";
-import { preparePrivateRuntimeSkills, privateSkillInstructions } from "../../shared/prepare-private-runtime-skills.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 import { createBackendPreparation, type AgentRunBackendPreparation } from "../../agent-run-backend-preparation.js";
@@ -46,18 +43,15 @@ export type AcpAgentRunBackendFactoryDependencies = Readonly<{
   skills: SkillService;
   workspaces: AcpWorkingDirectoryResolver;
   mcpSessions: AgentToolMcpRunSessionActivator;
+  skillMaterializer: WorkspaceSkillMaterializer;
   instructionCapture?: SystemInstructionCaptureService;
-}> & (
-  | Readonly<{ privateSkills: AcpPrivateSkillAdapter; skillMaterializer?: never }>
-  | Readonly<{ privateSkills?: undefined; skillMaterializer: WorkspaceSkillMaterializer }>
-);
+}>;
 
 type PreparedRun = Readonly<{
   workingDirectory: string;
   definition: AgentDefinition;
   descriptor: AgentToolMcpDescriptor | null;
   materializedSkills: MaterializedWorkspaceSkill[];
-  privateSkillProfile: RuntimeSkillProfile | null;
 }>;
 
 /** Forwards session output to the backend once it exists; activation emits no events before. */
@@ -82,7 +76,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
   constructor(private readonly deps: AcpAgentRunBackendFactoryDependencies) {}
 
   beginPreparation(request: AgentRunBackendPreparationRequest): AgentRunBackendPreparation {
-    const owner: AcpPreparationOwner = { process: null, connection: null, session: null, skills: [], profile: null };
+    const owner: AcpPreparationOwner = { process: null, connection: null, session: null, skills: [] };
     const operation = createBackendPreparation({
       prepare: (assertAccepting) => request.kind === "new"
         ? this.createBackend(request.config, request.runId, owner, assertAccepting, release)
@@ -94,11 +88,8 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
           if (owner.connection) await owner.connection.close();
           else await owner.process?.stop();
         } catch (error) { errors.push(error); }
-        if (!this.deps.privateSkills) {
-          try { await this.deps.skillMaterializer.cleanupMaterializedWorkspaceSkills(owner.skills); }
-          catch (error) { errors.push(error); }
-        }
-        if (!errors.length) try { await owner.profile?.release(); } catch (error) { errors.push(error); }
+        try { await this.deps.skillMaterializer.cleanupMaterializedWorkspaceSkills(owner.skills); }
+        catch (error) { errors.push(error); }
         if (errors.length) throw new AggregateError(errors, "ACP exact preparation release failed.");
       },
     });
@@ -113,7 +104,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     const prepared = await this.prepare(config, runId, owner, assertAccepting);
     const composedPrompt = composeSharedCarpenterPrompt({
       agentDefinition: prepared.definition, memberExecutionContext: config.memberExecutionContext,
-    }) + (prepared.privateSkillProfile ? privateSkillInstructions(prepared.privateSkillProfile) : "");
+    });
     return this.launch(config, runId, prepared, async (session) => {
       const suppliedAt = Date.now() / 1000;
       const opened = await session.openNew({
@@ -148,13 +139,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     const definition = await this.deps.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`ACP_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     const bindings = this.deps.skills.resolveConfiguredSkillBindingsForAgent(definition);
-    const privateSkillProfile = this.deps.privateSkills ? await preparePrivateRuntimeSkills({
-      runtime: this.deps.privateSkills.runtime, workingDirectory, memoryDir: config.memoryDir,
-      bindings, skills: this.deps.skills,
-      collisionPolicy: workspaceCollisionPolicyForScope(this.deps.skills.resolveSkillScope(definition)),
-      guard: { assertAccepting, ownSkillProfile: (profile) => { owner.profile = profile; } },
-    }) : null;
-    const { materializedSkills } = this.deps.privateSkills ? { materializedSkills: [] } : await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
+    const { materializedSkills } = await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
       runId, workingDirectory,
       onAcquired: (skill) => { owner.skills.push(skill); }, assertAccepting,
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.deps.skills.resolveSkillScope(definition)),
@@ -164,7 +149,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     });
     assertAccepting();
     const descriptor = this.activateMcp(runId, config, workingDirectory, definition);
-    return { workingDirectory, definition, descriptor, materializedSkills, privateSkillProfile };
+    return { workingDirectory, definition, descriptor, materializedSkills };
   }
 
   private async launch(
@@ -183,7 +168,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     const env = launchProfile.env(globalThis.process.env);
     const process = AcpAgentProcess.spawn({
       command: launchProfile.command(),
-      args: prepared.privateSkillProfile && this.deps.privateSkills ? this.deps.privateSkills.launchArgs(args, prepared.privateSkillProfile) : args,
+      args,
       env,
       cwd: prepared.workingDirectory,
     });
@@ -199,7 +184,6 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     try {
       const initialized = await connection.initialize();
       const capabilities = AcpAgentCapabilities.fromInitialize(initialized);
-      if (prepared.privateSkillProfile) await this.deps.privateSkills?.validate(connection, initialized, prepared.privateSkillProfile);
       capabilities.require(launchProfile.agentLabel,
         AcpAgentCapabilities.requiredFor({ restore, mcp: prepared.descriptor !== null }));
       assertAccepting();
@@ -257,5 +241,4 @@ type AcpPreparationOwner = {
   connection: AcpClientConnection | null;
   session: AcpAgentSession | null;
   skills: MaterializedWorkspaceSkill[];
-  profile: RuntimeSkillProfile | null;
 };
