@@ -1,0 +1,30 @@
+# IMP-10 (start-only-grep)
+# Command: grep -rn 'start_only' autobyteus-server-ts/tests ; grep -rn 'inputCapabilities' autobyteus-server-ts/tests
+# Commit: a3c4982721
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-18T14:11:57Z
+
+## start_only
+(no matches)
+
+## inputCapabilities
+autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts:134:    inputCapabilities: { activeTurnAppend: 'unsupported' },
+autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts:187:        inputCapabilities: { activeTurnAppend: "unsupported" }, getContext: () => context, getPlatformAgentRunId: () => "p",
+autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts:53:    inputCapabilities: { activeTurnAppend: "unsupported" },
+autobyteus-server-ts/tests/unit/agent-execution/agent-run.test.ts:70:    inputCapabilities: { activeTurnAppend: options.append ?? "unsupported" },
+autobyteus-server-ts/tests/unit/agent-execution/agent-run-input-preface.test.ts:62:    inputCapabilities: { activeTurnAppend: options.append ?? "unsupported" },
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts:103:    expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "supported" });
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts:245:    expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "supported" });
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts:143:    expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "unsupported" });
+autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts:46:    inputCapabilities: { activeTurnAppend: "unsupported" },
+autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts:745:      inputCapabilities: { activeTurnAppend: "unsupported" },
+autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts:365:      inputCapabilities: { activeTurnAppend: "unsupported" as const },
+autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts:54:  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
+autobyteus-server-ts/tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts:143:    inputCapabilities: { activeTurnAppend: "supported" },
+autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts:72:    inputCapabilities: { activeTurnAppend: "unsupported" },
+autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts:41:  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts:48:    inputCapabilities: { activeTurnAppend: "unsupported" },
+autobyteus-server-ts/tests/fixtures/accepted-attachment-message.ts:43:    inputCapabilities: { activeTurnAppend: "unsupported" },
+autobyteus-server-ts/tests/e2e/agent/agent-command-correlated-status.e2e.test.ts:54:  readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
+autobyteus-server-ts/tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts:81:      inputCapabilities: { activeTurnAppend: "unsupported" },
+autobyteus-server-ts/tests/helpers/org-migration-continuation-fixtures.ts:43:    inputCapabilities: { activeTurnAppend: "unsupported" },

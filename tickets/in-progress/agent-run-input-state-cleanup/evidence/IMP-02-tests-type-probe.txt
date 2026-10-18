@@ -1,0 +1,35 @@
+# IMP-02 (tests-type-probe)
+# Command: NODE_OPTIONS=--max-old-space-size=8192 pnpm -C autobyteus-server-ts exec tsc -p tsconfig.json --noEmit --rootDir .   (run once on base 2763e7c678 via git stash, once on the edited tree = a3c4982721)
+# Commit: a3c4982721 (after); 2763e7c678 (before)
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-18T14:11:56Z
+# Why --rootDir .: tsconfig.json has rootDir src, so every test file otherwise only reports TS6059.
+
+Errors in the 7 edited files: before 88, after 80. Whole project: 11671 -> 11663.
+
+## Removed by this change
+   1 tests/integration/agent-execution/agent-run-manager.integration.test.ts: error TS2353: Object literal may only specify known properties, and 'kind'
+   1 tests/integration/agent/agent-status-websocket.integration.test.ts: error TS2416: Property 'inputCapabilities' in type 'ScriptedAgentRunBacken
+   6 tests/integration/agent/agent-status-websocket.integration.test.ts: error TS2739: Type 'ScriptedAgentRunBackend' is missing the following prop
+
+## Added by this change
+(none if empty)
+
+## Backend-contract errors still in the edited files (FU-001 scope: factory doubles)
+tests/unit/agent-execution/agent-run-manager.test.ts(70,7): error TS2741: Property 'beginPreparation' is missing in type 'Readonly<{ createBackend: () => Promise<never>; restoreBackend: () => Promise<never>; }>' but requ
+tests/unit/agent-execution/agent-run-manager.test.ts(147,37): error TS2741: Property 'beginPreparation' is missing in type '{ createBackend: Mock<() => Promise<{ runId: string; runtimeKind: RuntimeKind; inputCapabilities
+tests/unit/agent-execution/agent-run-manager.test.ts(170,30): error TS2353: Object literal may only specify known properties, and 'createBackend' does not exist in type 'AgentRunBackendFactory'.
+tests/unit/agent-execution/agent-run-manager.test.ts(194,37): error TS2741: Property 'beginPreparation' is missing in type '{ createBackend: Mock<() => Promise<{ runId: string; runtimeKind: RuntimeKind; inputCapabilities
+tests/unit/agent-execution/agent-run-manager.test.ts(214,37): error TS2741: Property 'beginPreparation' is missing in type '{ createBackend: Mock<() => Promise<{ runId: string; runtimeKind: RuntimeKind; inputCapabilities
+tests/unit/agent-execution/agent-run-manager.test.ts(235,37): error TS2741: Property 'beginPreparation' is missing in type '{ createBackend: Mock<() => Promise<{ runId: string; runtimeKind: RuntimeKind; inputCapabilities
+tests/unit/agent-execution/agent-run-manager.test.ts(258,35): error TS2345: Argument of type '{ codexBackendFactory: { createBackend: Mock<Procedure>; restoreBackend: Mock<() => Promise<{ runId: string; runtimeKind: Runt
+tests/unit/agent-execution/agent-run-manager.test.ts(294,37): error TS2741: Property 'beginPreparation' is missing in type '{ createBackend: Mock<Procedure>; restoreBackend: Mock<Procedure>; }' but required in type 'Agen
+tests/unit/agent-execution/agent-run-manager.test.ts(321,7): error TS2741: Property 'beginPreparation' is missing in type '{ createBackend: Mock<() => Promise<{ runId: string; runtimeKind: RuntimeKind; inputCapabilities:
+tests/unit/agent-execution/agent-run-manager.test.ts(341,9): error TS2353: Object literal may only specify known properties, and 'createBackend' does not exist in type 'AgentRunBackendFactory'.
+tests/unit/agent-execution/agent-run-manager.test.ts(364,9): error TS2353: Object literal may only specify known properties, and 'createBackend' does not exist in type 'AgentRunBackendFactory'.
+tests/unit/agent-execution/agent-run-manager.test.ts(395,9): error TS2741: Property 'beginPreparation' is missing in type '{ createBackend: Mock<() => Promise<never>>; restoreBackend: Mock<() => Promise<never>>; }' but r
+tests/unit/agent-execution/agent-run-manager.test.ts(419,9): error TS2353: Object literal may only specify known properties, and 'createBackend' does not exist in type 'AgentRunBackendFactory'.
+tests/unit/agent-execution/agent-run-manager.test.ts(440,37): error TS2741: Property 'beginPreparation' is missing in type '{ createBackend: Mock<() => Promise<{ runId: string; runtimeKind: RuntimeKind; inputCapabilities
+tests/unit/agent-execution/agent-run-manager.test.ts(461,7): error TS2741: Property 'beginPreparation' is missing in type '{ createBackend: Mock<() => Promise<{ runId: string; runtimeKind: RuntimeKind; inputCapabilities:
+tests/unit/agent-execution/agent-run-manager.test.ts(501,9): error TS2353: Object literal may only specify known properties, and 'createBackend' does not exist in type 'AgentRunBackendFactory'.
+tests/unit/agent-execution/agent-run-manager.test.ts(699,32): error TS2353: Object literal may only specify known properties, and 'createBackend' does not exist in type 'AgentRunBackendFactory'.
