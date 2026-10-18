@@ -9,6 +9,7 @@ import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-ex
 import type { RootTaskExecutionAdapter, TaskExecutionTarget } from "./root-task-execution-adapter.js";
 import { RootTaskExecutionCommandQueue } from "./root-task-execution-command-queue.js";
 import { TaskExecutionLiveHolds } from "./task-execution-live-holds.js";
+import type { HandStartedRunAdoption } from "./hand-started-run-adoption.js";
 import {
   ROOT_NOT_ACTIVE_MESSAGE,
   TaskDelegationError,
@@ -70,6 +71,8 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
   /** Live leases and user Stops in progress (SR-006). */
   private readonly holds = new TaskExecutionLiveHolds();
+  /** Adoption of runs the user started; only an Agent root's delegator (its host) adopts (design SR-008, DEC-108). */
+  private readonly adoption: HandStartedRunAdoption | null;
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -77,8 +80,10 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       gracePeriodMs?: () => number;
       timers?: TaskExecutionIdleTimers;
       taskExecutionResources?: TaskExecutionResourcePort;
+      adoption?: HandStartedRunAdoption;
     }> = {},
   ) {
+    this.adoption = options.adoption ?? null;
     this.resourceScope = new RootTaskExecutionResourceScope(adapter, options.taskExecutionResources);
     this.schedule = new TaskExecutionIdleShutdownSchedule({
       gracePeriodMs: options.gracePeriodMs ?? (() => resolveTaskExecutionIdleShutdownGraceMs()),
@@ -160,6 +165,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   async assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     const sender = context.identity.agentRunId;
     let target: TaskExecutionTarget, taskId: string, taskReference: string, description: string, referenceFiles: readonly string[];
+    let adopted = false;
     try {
       this.assertAdmitting(context.identity);
       this.adapter.assertCurrentSchemaReady();
@@ -169,19 +175,38 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       const saved = await port.resolveAssignment(requireTaskString(input.taskId, "task_id"));
       ({ taskId, taskReference, description } = saved);
       const found = resolveExistingCopy(this.adapter, input.copy);
-      if (!found) return await this.refuseCopyOutsideTree(port, input.copy, sender, taskId);
-      target = found;
-      referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
-      await port.assertAssignable({ execution: target.execution, requestedBy: sender, taskId });
-      await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId) });
-      await port.assignExistingTaskExecution({ hostRoot: target.root, execution: target.execution, taskId, assignedBy: sender,
-        ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) });
+      const request = { delegatorAgentRunId: sender, execution: input.copy, taskId };
+      // A run not in this tree may be adopted; one linked by an adoption that stopped before it finished is resumed.
+      if (found ? await this.adoption?.isInProgress(request, port) : await this.isAdoptable(port, input.copy)) {
+        referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
+        await this.adoption!.admit(request, port);
+        target = await this.queue.submit({ kind: "adopt", executeAtQueueHead: () => this.adoption!.complete(request) });
+        adopted = true;
+      } else {
+        if (!found) return await this.refuseCopyOutsideTree(port, input.copy, sender, taskId);
+        target = found;
+        referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
+        await port.assertAssignable({ execution: target.execution, requestedBy: sender, taskId });
+        await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId) });
+        await port.assignExistingTaskExecution({ hostRoot: target.root, execution: target.execution, taskId, assignedBy: sender,
+          ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) });
+      }
     } catch (error) {
       if (refusalCode(error)) return { delegated: false, message: errorMessage(error) };
       throw error;
     }
-    this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
-    const content = buildExistingCopyTaskMessage({ taskReference, description });
+    // An adopted run joined the tree as started (published by its commit); a returning copy is reopened.
+    if (!adopted) this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
+    return this.deliverAssignedTask(sender, target, { taskReference, description, referenceFiles }, deliverWork);
+  }
+  /**
+   * The Task's work to an existing run (DS-002, adoption step 5), as the next message of its conversation; then
+   * `started` (step 6). A delivery that fails marks the assignment `failed` with guidance.
+   */
+  private async deliverAssignedTask(sender: string, target: TaskExecutionTarget,
+    task: Readonly<{ taskReference: string; description: string; referenceFiles: readonly string[] }>, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
+    const { taskReference, referenceFiles } = task;
+    const content = buildExistingCopyTaskMessage({ taskReference, description: task.description });
     let delivered: AgentOperationResult;
     try { delivered = await this.withLiveLease(sender, () => deliverWork(target.ingressAgentRunId, content, referenceFiles)); }
     catch (error) { delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: errorMessage(error) }; }
@@ -196,6 +221,21 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     try { await port.markStarted(target.execution); }
     catch (error) { throw new TaskDispatchIndeterminateError(target.execution, error); }
     return { delegated: true, copy: delegatedCopyOf(target) };
+  }
+  /**
+   * A run named by its own ID that is not in this tree is adopted (design SR-008) when this root adopts, unless it is
+   * a copy of this root whose start failed and not a run the user started (its specific refusal stays, AC-009).
+   */
+  private async isAdoptable(port: TaskExecutionResourcePort, copy: TaskExecutionReference): Promise<boolean> {
+    if (!this.adoption) return false;
+    const key = taskExecutionReferenceKey(copy);
+    return !port.closedTaskExecutionsIn(this.adapter.root).some(reference => taskExecutionReferenceKey(reference) === key)
+      || await this.adoption.isHandStarted(copy);
+  }
+  /** Undo of an unfinished adoption whose Task was closed or deleted, on this root's queue (never racing its steps). */
+  revertUnfinishedAdoption(execution: TaskExecutionReference): Promise<boolean> {
+    const adoption = this.adoption;
+    return adoption ? this.queue.submit({ kind: "adopt", executeAtQueueHead: () => adoption.revertUnfinished(execution) }) : Promise.resolve(false);
   }
   /**
    * A named copy that is not in this root's tree. A copy whose start failed never reached the tree, but the

@@ -123,6 +123,22 @@ export class TeamRunHistoryCatalogService {
     });
   }
 
+  /** The team run's row in the history index, admitted or not; null when it has none. */
+  async indexedRowOf(teamRunId: string): Promise<TeamRunIndexRowRecord | null> {
+    return this.enqueueValue(async () => this.core.rowsInQueue().get(safeRunId(teamRunId)) ?? null);
+  }
+
+  /** Adoption (step 4): the team run is now a task agent team; it leaves the user's history and is no longer admitted. */
+  async removeAdoptedTeamRun(teamRunId: string): Promise<void> {
+    await this.mutate(async (rows) => ({ value: undefined, shouldFlush: rows.delete(safeRunId(teamRunId)) }));
+    this.packageCatalog.exclude(teamRunId, "Adopted as a task agent team.");
+  }
+
+  /** Revert of an unfinished adoption: the tree is a team run's again; its row (never removed) is admitted again. */
+  readmitHandStartedTeamRun(teamRunId: string): Promise<void> {
+    return this.packageCatalog.admit(teamRunId);
+  }
+
   archiveTeamRun(teamRunId: string): Promise<TeamCatalogMutationResultMessage> {
     return this.setArchived(teamRunId, true);
   }
