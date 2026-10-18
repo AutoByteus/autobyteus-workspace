@@ -311,9 +311,10 @@ describe("Team communication API integration", () => {
       },
     });
     const body = response.json() as GraphqlResponse<{ getTeamCommunicationMessages: unknown[] | null }>;
-    // The strict V1 reader rejects the old flat shape; nothing is hydrated through a fallback.
-    expect(body.data?.getTeamCommunicationMessages ?? null).toBeNull();
-    expect(body.errors?.[0]?.message).toContain("unsupported or missing field");
+    // The current runtime reads only append-only message logs; a JSON file left in the folder is never read,
+    // so nothing is hydrated through a fallback (the run has no log: no messages).
+    expect(body.errors).toBeUndefined();
+    expect(body.data?.getTeamCommunicationMessages).toEqual([]);
   });
 
   it("maps unreadable reference content failures to a graceful 403 REST response", async () => {
