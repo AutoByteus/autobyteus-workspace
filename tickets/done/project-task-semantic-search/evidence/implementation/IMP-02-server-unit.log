@@ -1,0 +1,16 @@
+# IMP-02-server-unit
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 9f0df7eab3
+# Environment: macOS 26, Node 22.23.1 (tests/setup isolation)
+# Date: 2026-10-18 (start/end UTC in the exit line)
+# Excerpt: per-file results of the changed embeddings/search/tool tests and the totals; the full log is not committed (about 10 MB, /tmp/pts-impl/IMP-unit.log).
+
+ ✓ tests/unit/projects/project-task-search.test.ts (6 tests) 413ms
+ ✓ tests/unit/agent-tools/project-tasks/search-project-tasks-tool.test.ts (5 tests) 474ms
+ ✓ tests/unit/embeddings/embedding-index.test.ts (12 tests) 144ms
+ ✓ tests/unit/embeddings/embedding-model-catalog.test.ts (6 tests) 128ms
+ ✓ tests/unit/embeddings/embedding-model-files.test.ts (6 tests) 70ms
+ ✓ tests/unit/embeddings/embedding-vector-store.test.ts (5 tests) 25ms
+ Test Files  726 passed | 4 skipped (730)
+      Tests  5873 passed | 7 skipped (5880)
+exit=0 start=2026-10-18T17:32:05Z end=2026-10-18T17:40:26Z

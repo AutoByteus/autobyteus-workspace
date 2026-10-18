@@ -1,0 +1,4 @@
+# API-L03c (round 2): GraphQL search latency at 1,000 Tasks (Granite, READY), 3 rounds x 102 queries, then user-paced searching (1/s for 60 s); footprint over 185 MB baseline; commit 9f0df7eab3; ENV-2 iso-60493-231f; Sun Oct 18 20:03:15 CEST 2026; host: load averages: 13.30 26.76 40.15
+latency: {"projectId":"project_989cb4c8-e961-46e1-b237-35f2807171bd","searches":270,"ms":{"p50":42,"p90":46,"p99":50,"max":109}}
+burst (back-to-back searches): footprint max 483 MB (+298 MB), median 482 MB (+297 MB), 10 samples
+user-paced (1 search per second, 60 s): footprint max 483 MB (+298 MB), median 482 MB (+297 MB), 55 samples

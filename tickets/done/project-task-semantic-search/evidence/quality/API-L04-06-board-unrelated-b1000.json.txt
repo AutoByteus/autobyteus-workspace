@@ -1,0 +1,112 @@
+# API-L04: output of the step named in the execution report Cases row for API-L04; commit 722b9b3918; ENV-2 (app GraphQL) / ENV-4 (production runner from dist); 2026-10-18
+{
+ "elapsedMs": 104,
+ "statusesSeen": [
+  null
+ ],
+ "state": {
+  "query": "weather in Berlin tomorrow",
+  "placeholder": "Describe the task you're looking for",
+  "status": null,
+  "retry": false,
+  "noMatch": false,
+  "cancelledToggle": "Cancelled (94)",
+  "lanes": {
+   "TODO": {
+    "count": 8,
+    "tasks": [
+     {
+      "taskId": "project_task_bfb4fc41-0fdc-4411-b34e-efca613313f9",
+      "title": "Temp tasks list reports times in the wrong time zone",
+      "located": false
+     },
+     {
+      "taskId": "project_task_352382c4-743d-4e63-aa41-cb90fadc9945",
+      "title": "Garden irrigation controller schedules waterings at the wrong hour after dayligh",
+      "located": false
+     },
+     {
+      "taskId": "project_task_23e5c0eb-a487-4559-a6b5-b48180559dd4",
+      "title": "Database layer sorts items in an unexpected order",
+      "located": false
+     },
+     {
+      "taskId": "project_task_e71dd851-3c68-419e-a634-e42508aade4a",
+      "title": "Scheduled runs drops the last character of pasted text",
+      "located": false
+     },
+     {
+      "taskId": "project_task_8ddcf8a9-6255-43d1-9f7a-20c849413fe7",
+      "title": "Replace the hand-written types of the database layer with generated ones",
+      "located": false
+     },
+     {
+      "taskId": "project_task_77a38cfd-4571-4dec-a242-a7f7014e5842",
+      "title": "Temp tasks list drops the last character of pasted text",
+      "located": false
+     },
+     {
+      "taskId": "project_task_aa31ac2d-cbeb-43a9-97e3-381bcfbb04c7",
+      "title": "Memory inspector reports times in the wrong time zone",
+      "located": false
+     },
+     {
+      "taskId": "project_task_aad0584b-78b6-4539-b6bf-c5deca900a79",
+      "title": "Database layer throws on empty input",
+      "located": false
+     }
+    ]
+   },
+   "IN_PROGRESS": {
+    "count": 3,
+    "tasks": [
+     {
+      "taskId": "project_task_00a1504c-c628-423a-8ede-7bafdac13159",
+      "title": "Agent avatar picker reports times in the wrong time zone",
+      "located": false
+     },
+     {
+      "taskId": "project_task_cb31fa96-2133-457d-96ce-e91852fea692",
+      "title": "Database layer throws on empty input",
+      "located": false
+     },
+     {
+      "taskId": "project_task_5a780731-ac7a-4282-95e5-994605c0359d",
+      "title": "Add a compact density option to the Temp tasks list",
+      "located": false
+     }
+    ]
+   },
+   "DONE": {
+    "count": 5,
+    "tasks": [
+     {
+      "taskId": "project_task_6d6b0418-6951-4244-8fd5-bdb11978c311",
+      "title": "Unify the three different date formats",
+      "located": false
+     },
+     {
+      "taskId": "project_task_6a10b2d2-1729-410b-b6bf-710ea04910c4",
+      "title": "Add end-to-end coverage for the Temp tasks list",
+      "located": false
+     },
+     {
+      "taskId": "project_task_0c4c75fd-7b82-445d-bab8-c5a6431fb063",
+      "title": "Database layer shows an English label in the Chinese locale",
+      "located": false
+     },
+     {
+      "taskId": "project_task_87be45ca-1b0a-40a5-9ba0-a6a100c9cb6e",
+      "title": "Scheduled runs reports times in the wrong time zone",
+      "located": false
+     },
+     {
+      "taskId": "project_task_b6c659d2-f1c6-4ff5-ab18-92c217c2aecf",
+      "title": "Keyboard shortcut handler overflows its container on narrow windows",
+      "located": false
+     }
+    ]
+   }
+  }
+ }
+}

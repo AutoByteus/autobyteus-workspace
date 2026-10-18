@@ -1,0 +1,4 @@
+# API-L05 AC-007: import the companion repository (autobyteus-agents @ 344da76, local path) into the isolated instance and read the Project Task Manager definition; commit 722b9b3918; iso-65187-14ae; Sun Oct 18 12:48:32 CEST 2026
+{"data":{"importAgentPackage":[{"packageId":"built-in:default"},{"packageId":"local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents-project-task-semantic-search"}]}}
+{"id": "project-task-manager", "name": "Project Task Manager", "toolNames": ["list_projects", "create_project", "update_project", "list_project_tasks", "search_project_tasks", "create_task", "update_task", "list_available_agents", "delegate_task", "send_message_to", "read_file", "write_file", "edit_file", "run_bash"], "skillNames": ["project-task-management"]}
+definitions with search_project_tasks: 1 of 57

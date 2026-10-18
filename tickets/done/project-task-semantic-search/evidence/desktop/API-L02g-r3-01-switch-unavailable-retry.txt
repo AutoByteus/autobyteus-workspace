@@ -1,0 +1,77 @@
+# API-L02g/API-L02h (round 3): Settings > Server Settings > Advanced: not-a-model; mdbr-leaf-ir with embeddings/models unwritable -> board on Representative 60 shows unavailable + Retry; Task created while unavailable; folder restored; Retry pressed on the board; files/rows; then blank (Granite) and files/rows; commit 600d079b9c; ENV-2c; Sun Oct 18 21:24:10 CEST 2026
+== not-a-model
+{
+ "mode": "add-row",
+ "value": null,
+ "error": "Embedding model must be blank (default) or one of: granite-embedding-small-english-r2, mdbr-leaf-ir, embeddinggemma-2.\nEmbedding m"
+}
+dr-xr-xr-x@ 
+== mdbr-leaf-ir
+{
+ "mode": "add-row",
+ "value": "mdbr-leaf-ir",
+ "error": null
+}
+== board until Retry shows
+{
+ "elapsedMs": 2123,
+ "statusesSeen": [
+  null,
+  "Preparing meaning search: downloading the model (0 of 24 MB)…",
+  "Meaning search is unavailable: EACCES: permission denied, mkdir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rtspwJ/server-data/embeddings/models/mdbr-leaf-ir'. Exact matches still work.Try again"
+ ],
+ "state": {
+  "query": "docker",
+  "placeholder": "Describe the task you're looking for",
+  "status": "Meaning search is unavailable: EACCES: permission denied, mkdir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rtspwJ/server-data/embeddings/models/mdbr-leaf-ir'. Exact matches still work.Try again",
+  "retry": true,
+  "noMatch": false,
+  "cancelledToggle": null,
+  "lanes": {
+   "TODO": {
+    "count": 2,
+    "tasks": [
+     {
+      "taskId": "project_task_af569523-ee51-4759-bd48-96b3d6548898",
+      "title": "Docker logs fill the disk on long-running nodes",
+      "located": false
+     },
+     {
+      "taskId": "project_task_b04bb5a8-7b7a-4c8c-8e26-e7175109499e",
+      "title": "Docker image fails to start on ARM servers",
+      "located": false
+     }
+    ]
+   },
+   "IN_PROGRESS": {
+    "count": 0,
+    "tasks": []
+   },
+   "DONE": {
+    "count": 0,
+    "tasks": []
+   }
+  }
+ }
+}
+== create while unavailable
+{"data":{"createProjectTask":{"taskKey":"representative-60-62","status":"TODO"}}}
+== Retry on the board
+{"clicked":"project-tasks-meaning-retry","at":1792351473689}
+timeout None elapsedMs 5650
+['Preparing meaning search: downloading the model (0 of 24 MB)…', 'Preparing meaning search: downloading the model (9 of 24 MB)…', 'Preparing meaning search… 0 of 61 Tasks', None]
+after LEAF-IR ready:
+mdbr-leaf-ir
+[{"model_id":"mdbr-leaf-ir","n":61,"bytes":3072}]
+== blank
+{
+ "mode": "edit-existing-row",
+ "value": "",
+ "error": null
+}
+{"t":7.15,"ms":67,"state":"PREPARING","phase":"INDEXING","done":8,"total":61,"reason":null,"matches":2,"kinds":"EE"}
+{"t":10.241,"ms":10,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":2,"kinds":"EE"}
+{"final":true,"t":10.241,"ms":10,"matches":[{"taskId":"project_task_af569523-ee51-4759-bd48-96b3d6548898","match":"EXACT"},{"taskId":"project_task_b04bb5a8-7b7a-4c8c-8e26-e7175109499e","match":"EXACT"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+after blank (Granite) ready:
+granite-embedding-small-english-r2
+[{"model_id":"granite-embedding-small-english-r2","n":61,"bytes":1536}]

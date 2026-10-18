@@ -13,12 +13,19 @@ import {
   initializeProjectTaskServiceProcessInstance,
   releaseProjectTaskServiceProcessInstance,
 } from "../projects/services/project-task-service.js";
+import {
+  initializeProjectTaskSearchService,
+  processProjectTaskSearchCleanup,
+  releaseProjectTaskSearchService,
+} from "../projects/search/project-task-search-service.js";
+import { getEmbeddingIndex, shutdownEmbeddingIndex } from "../embeddings/embedding-index.js";
 
 /**
  * The one place Projects and collaboration runtime are bound. It loads the Task agent run resource
  * view of both Task roots (`projects/` and `ad-hoc-tasks/`) once (after app-data migrations; a
  * damaged file is non-fatal), initializes the Task service process instance with an exact-root stop
- * request, and returns the neutral port roots receive.
+ * request, initializes Project Task search over it (nothing is loaded until the first search), and returns the
+ * neutral port roots receive.
  */
 export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   activeRootDirectory: ActiveCollaborationRootDirectory;
@@ -38,7 +45,10 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
       const root = deps.activeRootDirectory.resolve(hostRoot);
       return root ? root.taskExecutionStatus?.(execution) ?? "offline" : null;
     },
+    searchCleanup: processProjectTaskSearchCleanup,
   });
+  // Search reads the Task service's current Tasks; the embedding index is created at the first search or cleanup.
+  initializeProjectTaskSearchService({ listTasks: (projectId) => service.listTasks(projectId), index: getEmbeddingIndex });
   // The `/ws/projects` feed: views are built from the services' committed state, after `load()`.
   getProjectChangePublisher().bind({
     readProject: (projectId) => getProjectService().getProject(projectId),
@@ -51,5 +61,7 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
 /** Host close and startup rollback release the process binding composed above. */
 export const releaseProjectTaskExecutionResources = (port: TaskExecutionResourcePort): void => {
   getProjectChangePublisher().unbind();
+  releaseProjectTaskSearchService();
+  void shutdownEmbeddingIndex().catch((error: unknown) => console.warn("EMBEDDING_INDEX_SHUTDOWN_FAILED", error));
   releaseProjectTaskServiceProcessInstance(port);
 };

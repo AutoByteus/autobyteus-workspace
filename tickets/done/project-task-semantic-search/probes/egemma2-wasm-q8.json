@@ -1,0 +1,1 @@
+{"stack":"ort-web+tokenizers","model":"embeddinggemma-2-ONNX","file":"model_quantized","threads":4,"maxTokens":1024,"tasks":171,"dims":768,"loadMs":1694,"msPerTask":4270.3,"indexSec":730,"queryMsMedian":150.6,"rssLoadedMB":1134,"rssIndexedMB":1522,"recall1":0.913,"recall5":0.957,"recall10":0.986,"mrr":0.94}

@@ -1,0 +1,40 @@
+# API-L02g (round 2): Settings UI (Server Settings > Advanced): not-a-model, then mdbr-leaf-ir, search Representative 60 until READY, files/rows; then blank (default Granite), search until READY, files/rows; commit 9f0df7eab3; ENV-2; Sun Oct 18 20:16:47 CEST 2026
+before: 
+granite-embedding-small-english-r2
+[{"model_id":"granite-embedding-small-english-r2","n":2060,"bytes":1536}]
+== not-a-model
+{
+ "mode": "add-row",
+ "value": null,
+ "row": null,
+ "error": "Embedding model must be blank (default) or one of: granite-embedding-small-english-r2, mdbr-leaf-ir, embeddinggemma-2.\nEmbedding model must "
+}
+== mdbr-leaf-ir
+{
+ "mode": "add-row",
+ "value": "mdbr-leaf-ir",
+ "row": "AUTOBYTEUS_EMBEDDING_MODEL Embedding model for meaning search of Project Tasks. Blank uses the default (granite-embedding-small-english-r2). The model is downloaded on first use and the search index is rebuilt in the background after a change. Allowed values: granite-embedding-small-english-r2: IBM Granite Embedding Small English R2. Default. English; reads up to 1,024 tokens of a Task and keeps i",
+ "error": null
+}
+{"t":0.029,"ms":29,"state":"PREPARING","phase":"DOWNLOADING","done":0,"total":23888539,"reason":null,"matches":1,"kinds":"E"}
+{"t":4.071,"ms":6,"state":"PREPARING","phase":"INDEXING","done":0,"total":60,"reason":null,"matches":1,"kinds":"E"}
+{"t":6.103,"ms":18,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":1,"kinds":"E"}
+{"final":true,"t":6.103,"ms":18,"matches":[{"taskId":"project_task_ab16f23c-5ec1-4ddf-a24b-b8547d6d5007","match":"EXACT"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+after switch to LEAF-IR:
+mdbr-leaf-ir
+[{"model_id":"mdbr-leaf-ir","n":60,"bytes":3072}]
+== blank
+{
+ "mode": "edit-existing-row",
+ "value": "",
+ "row": "AUTOBYTEUS_EMBEDDING_MODEL Embedding model for meaning search of Project Tasks. Blank uses the default (granite-embedding-small-english-r2). The model is downloaded on first use and the search index is rebuilt in the background after a change. Allowed values: granite-embedding-small-english-r2: IBM Granite Embedding Small English R2. Default. English; reads up to 1,024 tokens of a Task and keeps i",
+ "error": null
+}
+{"t":0.026,"ms":25,"state":"PREPARING","phase":"DOWNLOADING","done":0,"total":54633923,"reason":null,"matches":1,"kinds":"E"}
+{"t":6.076,"ms":6,"state":"PREPARING","phase":"LOADING","done":0,"total":0,"reason":null,"matches":1,"kinds":"E"}
+{"t":7.114,"ms":37,"state":"PREPARING","phase":"INDEXING","done":16,"total":60,"reason":null,"matches":2,"kinds":"EM"}
+{"t":10.194,"ms":19,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":1,"kinds":"E"}
+{"final":true,"t":10.194,"ms":19,"matches":[{"taskId":"project_task_ab16f23c-5ec1-4ddf-a24b-b8547d6d5007","match":"EXACT"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+after switch back to blank:
+granite-embedding-small-english-r2
+[{"model_id":"granite-embedding-small-english-r2","n":60,"bytes":1536}]

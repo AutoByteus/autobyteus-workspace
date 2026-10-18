@@ -1,0 +1,4 @@
+# API-L01: output of the step named in the execution report Cases row for API-L01; commit 722b9b3918; ENV-3 (Docker linux/arm64, image ab-pts-validation:722b9b3918); 2026-10-18
+{"ms":54,"matches":[{"taskId":"project_task_acf8e858-69dd-432a-9357-4ae138cfa2b4","match":"EXACT"}],"meaningSearch":{"state":"UNAVAILABLE","phase":null,"done":null,"total":null,"reason":"Could not reach huggingface.co to download the model: fetch failed"}}
+{"data":{"createProjectTask":{"taskId":"project_task_efb089e4-927a-4e9b-9d93-6b0d05c631dc","taskKey":"representative-60-61","status":"TODO"}}}
+{"ms":65,"matches":[{"taskId":"project_task_efb089e4-927a-4e9b-9d93-6b0d05c631dc","match":"EXACT"}],"meaningSearch":{"state":"UNAVAILABLE","phase":null,"done":null,"total":null,"reason":"Could not reach huggingface.co to download the model: fetch failed"}}

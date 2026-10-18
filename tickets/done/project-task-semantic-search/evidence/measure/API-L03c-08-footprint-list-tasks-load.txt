@@ -1,0 +1,3 @@
+# API-L03c/QR-004 comparison: same request count (234) of the existing projectTasks query (all 1,000 Tasks), no meaning search; same process right after the search loop
+loop: {"requests":234,"ms":{"p50":45,"p90":53}}
+footprint before: 485 MB; during 11 s: max 589 MB, min 499 MB

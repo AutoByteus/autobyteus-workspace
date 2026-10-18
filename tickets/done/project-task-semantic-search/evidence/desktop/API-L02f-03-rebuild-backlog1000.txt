@@ -1,0 +1,12 @@
+# API-L03b/API-L02f: rebuild of Backlog 1000 on LEAF-IR after the model switch (worker already loaded by the Rep60 search); commit 722b9b3918; iso-65187-14ae; Sun Oct 18 12:42:35 CEST 2026
+{"t":0.22,"ms":219,"state":"PREPARING","phase":"INDEXING","done":144,"total":1000,"reason":null,"matches":21,"kinds":"EMMMMMMMMMMMMMMMMMMMM"}
+{"t":10.473,"ms":178,"state":"PREPARING","phase":"INDEXING","done":216,"total":1000,"reason":null,"matches":21,"kinds":"EMMMMMMMMMMMMMMMMMMMM"}
+{"t":20.618,"ms":159,"state":"PREPARING","phase":"INDEXING","done":296,"total":1000,"reason":null,"matches":9,"kinds":"EMMMMMMMM"}
+{"t":30.777,"ms":197,"state":"PREPARING","phase":"INDEXING","done":368,"total":1000,"reason":null,"matches":10,"kinds":"EMMMMMMMMM"}
+{"t":40.779,"ms":136,"state":"PREPARING","phase":"INDEXING","done":440,"total":1000,"reason":null,"matches":11,"kinds":"EMMMMMMMMMM"}
+{"t":60.15,"ms":148,"state":"PREPARING","phase":"INDEXING","done":584,"total":1000,"reason":null,"matches":1,"kinds":"E"}
+{"t":70.71,"ms":220,"state":"PREPARING","phase":"INDEXING","done":656,"total":1000,"reason":null,"matches":1,"kinds":"E"}
+{"t":80.85,"ms":208,"state":"PREPARING","phase":"INDEXING","done":736,"total":1000,"reason":null,"matches":1,"kinds":"E"}
+{"t":110.24,"ms":134,"state":"PREPARING","phase":"INDEXING","done":960,"total":1000,"reason":null,"matches":1,"kinds":"E"}
+{"t":116.045,"ms":58,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":1,"kinds":"E"}
+{"final":true,"t":116.045,"ms":58,"matches":[{"taskId":"project_task_a9aab2d2-a97e-4d1a-a756-6d04484ddd52","match":"EXACT"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}

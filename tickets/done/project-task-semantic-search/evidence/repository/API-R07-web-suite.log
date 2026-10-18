@@ -1,0 +1,5 @@
+# API-R07: output of the step named in the execution report Cases row for API-R07; commit 722b9b3918; ENV-1 (macOS arm64 host, Node 22.23.1); 2026-10-18
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+ Test Files  632 passed | 2 skipped (634)
+      Tests  4479 passed | 3 skipped (4482)
+exit=0

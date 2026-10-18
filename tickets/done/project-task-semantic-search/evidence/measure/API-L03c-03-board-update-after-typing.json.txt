@@ -1,0 +1,43 @@
+# API-L03c: output of the step named in the execution report Cases row for API-L03c; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+[
+ {
+  "q": "how much did this chat cost me",
+  "msAfterTypingStopped": 380,
+  "shown": 1
+ },
+ {
+  "q": "documents written by the assistant do not show up ",
+  "msAfterTypingStopped": 359,
+  "shown": 1
+ },
+ {
+  "q": "container crashes on raspberry pi style processors",
+  "msAfterTypingStopped": 446,
+  "shown": 2
+ },
+ {
+  "q": "leaked credentials when sharing my configuration f",
+  "msAfterTypingStopped": 369,
+  "shown": 1
+ },
+ {
+  "q": "finding text across a huge codebase takes forever",
+  "msAfterTypingStopped": 327,
+  "shown": 2
+ },
+ {
+  "q": "group symbol turned into a lightning bolt",
+  "msAfterTypingStopped": 376,
+  "shown": 1
+ },
+ {
+  "q": "too many requests should back off and try again",
+  "msAfterTypingStopped": 338,
+  "shown": 1
+ },
+ {
+  "q": "switching wifi makes the remote machine look offli",
+  "msAfterTypingStopped": 336,
+  "shown": 2
+ }
+]

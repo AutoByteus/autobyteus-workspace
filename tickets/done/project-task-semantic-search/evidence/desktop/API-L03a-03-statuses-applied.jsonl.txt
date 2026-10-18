@@ -1,0 +1,4 @@
+# API-L03a: output of the step named in the execution report Cases row for API-L03a; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{"projectId":"project_060dbe1f-4610-4194-8721-7ec516c25faa","set":"backlog1000","counts":{"DONE":429,"TODO":338,"IN_PROGRESS":139,"CANCELLED":94}}
+{"projectId":"project_28439038-efbf-42c8-b823-6607f7a37e7b","set":"backlog1000long","counts":{"DONE":429,"TODO":338,"IN_PROGRESS":139,"CANCELLED":94}}
+{"projectId":"project_f7f4edf0-8d37-4e17-b598-bb0ff500be62","set":"rep60","counts":{"TODO":37,"IN_PROGRESS":11,"DONE":11,"CANCELLED":1}}

@@ -1,0 +1,6 @@
+# API-L02f (round 3): after `pnpm --silent isolated-app restart iso-64674-76e2`, d007 edited through GraphQL before any search, then the first search (polled every 1 s); commit 600d079b9c; ENV-2c; Sun Oct 18 21:28:55 CEST 2026
+{"data":{"updateProjectTask":{"taskKey":"backlog-1000-7"}}}
+{"t":0.085,"ms":85,"state":"PREPARING","phase":"LOADING","done":0,"total":0,"reason":null,"matches":0,"kinds":""}
+{"t":1.244,"ms":158,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":1,"kinds":"M"}
+{"final":true,"t":1.244,"ms":158,"matches":[{"taskId":"project_task_a405a7b7-82ce-4641-bb91-a1291723cac9","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+d007 = project_task_a405a7b7-82ce-4641-bb91-a1291723cac9

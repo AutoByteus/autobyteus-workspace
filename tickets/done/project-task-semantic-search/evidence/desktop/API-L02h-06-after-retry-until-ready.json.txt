@@ -1,0 +1,53 @@
+# API-L02h: output of the step named in the execution report Cases row for API-L02h; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "elapsedMs": 48312,
+ "statusesSeen": [
+  "Preparing meaning search: downloading the model (0 of 55 MB)…",
+  "Preparing meaning search: downloading the model (4 of 55 MB)…",
+  "Preparing meaning search: downloading the model (29 of 55 MB)…",
+  "Preparing meaning search: downloading the model (52 of 55 MB)…",
+  "Preparing meaning search… 0 of 61 Tasks",
+  "Preparing meaning search… 8 of 61 Tasks",
+  "Preparing meaning search… 16 of 61 Tasks",
+  "Preparing meaning search… 24 of 61 Tasks",
+  "Preparing meaning search… 32 of 61 Tasks",
+  "Preparing meaning search… 40 of 61 Tasks",
+  "Preparing meaning search… 48 of 61 Tasks",
+  "Preparing meaning search… 56 of 61 Tasks",
+  null
+ ],
+ "state": {
+  "query": "docker",
+  "placeholder": "Describe the task you're looking for",
+  "status": null,
+  "retry": false,
+  "noMatch": false,
+  "cancelledToggle": "Cancelled (1)",
+  "lanes": {
+   "TODO": {
+    "count": 1,
+    "tasks": [
+     {
+      "taskId": "project_task_48fa0c16-5384-436a-a3cc-f2d83a486c9a",
+      "title": "Docker logs fill the disk on long-running nodes",
+      "located": false
+     }
+    ]
+   },
+   "IN_PROGRESS": {
+    "count": 0,
+    "tasks": []
+   },
+   "DONE": {
+    "count": 1,
+    "tasks": [
+     {
+      "taskId": "project_task_82f93e88-d7a0-4d88-be1f-32d50ac3e679",
+      "title": "Docker image fails to start on ARM servers",
+      "located": false
+     }
+    ]
+   }
+  }
+ }
+}

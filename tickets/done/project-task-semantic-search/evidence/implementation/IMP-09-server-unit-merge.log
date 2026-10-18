@@ -1,0 +1,19 @@
+# IMP-09-server-unit-merge
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 600d079b9c (merge of origin/personal 2b04a9971d)
+# Environment: macOS 26 (Darwin 25.5), Node 22.23.1 (tests/setup isolation)
+# Date: 2026-10-18 (start/end UTC in the exit line)
+# Excerpt: per-file results of the embeddings, search and Project/Task tool tests and the totals; full log not committed (about 10 MB).
+
+ ✓ tests/unit/agent-tools/project-tasks/project-task-tools.test.ts (96 tests) 1705ms
+ ✓ tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts (12 tests) 860ms
+ ✓ tests/unit/agent-tools/project-tasks/project-task-keys-tools.test.ts (10 tests) 763ms
+ ✓ tests/unit/agent-tools/project-tasks/search-project-tasks-tool.test.ts (5 tests) 167ms
+ ✓ tests/unit/projects/project-task-search.test.ts (6 tests) 410ms
+ ✓ tests/unit/embeddings/embedding-index.test.ts (12 tests) 152ms
+ ✓ tests/unit/embeddings/embedding-model-files.test.ts (6 tests) 71ms
+ ✓ tests/unit/embeddings/embedding-model-catalog.test.ts (6 tests) 128ms
+ ✓ tests/unit/embeddings/embedding-vector-store.test.ts (5 tests) 24ms
+ Test Files  737 passed | 4 skipped (741)
+      Tests  6013 passed | 7 skipped (6020)
+exit=0 start=2026-10-18T18:39:27Z end=2026-10-18T18:48:03Z

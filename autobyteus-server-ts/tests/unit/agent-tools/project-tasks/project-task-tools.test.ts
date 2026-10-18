@@ -104,8 +104,8 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(UpdateProjectTool.getDescription()).toMatch(/^Update a known Project by its project_id.*replaces ALL links \(\[\] unlinks all/);
   });
 
-  it("has exactly the six Project/Task tools on the contract, the MCP adapters and the native registry; the removed create_or_update_project is unknown (REQ-001, REQ-002)", () => {
-    const current = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
+  it("has exactly the seven Project/Task tools (the six plus search_project_tasks) on the contract, the MCP adapters and the native registry; the removed create_or_update_project is unknown (REQ-001, REQ-002)", () => {
+    const current = ["list_projects", "list_project_tasks", "search_project_tasks", "create_project", "update_project", "create_task", "update_task"];
     expect([...PROJECT_TASK_TOOL_NAMES]).toEqual(current);
     expect(provider.getAdapters().map(a => a.definition.name)).toEqual(current);
     expect(defaultToolRegistry.listToolNames().filter(name => isProjectTaskToolName(name) || /project/.test(name)).sort()).toEqual([...current].sort());

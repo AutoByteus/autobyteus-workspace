@@ -1,0 +1,41 @@
+# API-L04: output of the step named in the execution report Cases row for API-L04; commit 722b9b3918; ENV-2 (app GraphQL) / ENV-4 (production runner from dist); 2026-10-18
+{
+ "elapsedMs": 0,
+ "statusesSeen": [
+  null
+ ],
+ "state": {
+  "query": "weather in Berlin tomorrow",
+  "placeholder": "Describe the task you're looking for",
+  "status": null,
+  "retry": false,
+  "noMatch": false,
+  "cancelledToggle": "Cancelled (1)",
+  "lanes": {
+   "TODO": {
+    "count": 1,
+    "tasks": [
+     {
+      "taskId": "project_task_08fe057f-c416-42ab-a0ba-76e344ca9030",
+      "title": "Schedule an agent to run every morning",
+      "located": false
+     }
+    ]
+   },
+   "IN_PROGRESS": {
+    "count": 0,
+    "tasks": []
+   },
+   "DONE": {
+    "count": 1,
+    "tasks": [
+     {
+      "taskId": "project_task_92710803-4573-4390-95d4-9a4f6101ef33",
+      "title": "Unify the three different date formats",
+      "located": false
+     }
+    ]
+   }
+  }
+ }
+}

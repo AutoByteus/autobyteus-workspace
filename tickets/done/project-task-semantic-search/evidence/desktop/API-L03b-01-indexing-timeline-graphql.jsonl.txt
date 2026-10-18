@@ -1,0 +1,11 @@
+# API-L03b: output of the step named in the execution report Cases row for API-L03b; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{"t":0.156,"ms":155,"state":"PREPARING","phase":"INDEXING","done":120,"total":1000,"reason":null,"matches":1,"kinds":"M"}
+{"t":10.6,"ms":225,"state":"PREPARING","phase":"INDEXING","done":176,"total":1000,"reason":null,"matches":1,"kinds":"M"}
+{"t":20.959,"ms":79,"state":"PREPARING","phase":"INDEXING","done":248,"total":1000,"reason":null,"matches":1,"kinds":"M"}
+{"t":30.043,"ms":74,"state":"PREPARING","phase":"INDEXING","done":296,"total":1000,"reason":null,"matches":1,"kinds":"M"}
+{"t":50.332,"ms":89,"state":"PREPARING","phase":"INDEXING","done":464,"total":1000,"reason":null,"matches":1,"kinds":"M"}
+{"t":60.286,"ms":127,"state":"PREPARING","phase":"INDEXING","done":584,"total":1000,"reason":null,"matches":1,"kinds":"M"}
+{"t":70.19,"ms":103,"state":"PREPARING","phase":"INDEXING","done":704,"total":1000,"reason":null,"matches":1,"kinds":"M"}
+{"t":80.154,"ms":103,"state":"PREPARING","phase":"INDEXING","done":800,"total":1000,"reason":null,"matches":1,"kinds":"M"}
+{"t":96.457,"ms":61,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":1,"kinds":"M"}
+{"final":true,"t":96.457,"ms":61,"matches":[{"taskId":"project_task_87d1cab5-3b34-48ea-ba70-bc30346d3909","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}

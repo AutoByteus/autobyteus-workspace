@@ -1,0 +1,17 @@
+# API-L03a (round 3): seed via GraphQL; commit 600d079b9c; ENV-2c iso-64674-76e2; real-text texts sha256 42ecbb90f855e02e; Sun Oct 18 21:08:56 CEST 2026
+{"projectId":"project_7dab8013-160b-48c4-a821-ac96f7aca6c3","created":1000,"seconds":36.019}
+{"projectId":"project_b26b0a98-e4b8-4fc1-a20c-ff9b6300ec74","created":1000,"seconds":36.676}
+{"projectId":"project_07b46d9f-f2e1-4c58-8df0-1e2e351f01a9","created":60,"seconds":1.332}
+server-data after seeding:
+agent-orgs
+agent-teams
+agents
+application-packages
+db
+download
+llm
+logs
+memory
+projects
+skills
+temp_workspace

@@ -1,0 +1,4 @@
+# API-L01: output of the step named in the execution report Cases row for API-L01; commit 722b9b3918; ENV-3 (Docker linux/arm64, image ab-pts-validation:722b9b3918); 2026-10-18
+granite-embedding-small-english-r2
+53M	models/granite-embedding-small-english-r2
+[{"model_id":"granite-embedding-small-english-r2","n":61,"bytes":1536}]

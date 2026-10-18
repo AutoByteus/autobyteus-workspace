@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount, RouterLinkStub } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 
+const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
 vi.mock('~/composables/projects/useProjectChangeFeed', () => ({ useProjectChangeFeed: vi.fn() }))
 vi.mock('~/composables/projects/useTaskRootNavigation', () => ({ useTaskRootNavigation: () => ({ open: vi.fn() }) }))
 
@@ -11,6 +13,8 @@ import { useProjectStore } from '~/stores/projectStore'
 import { TEMP_TASKS_LIST_ID, useProjectTaskStore } from '~/stores/projectTaskStore'
 import { useProjectsPanelStore } from '~/stores/projectsPanelStore'
 import type { Project, ProjectTask, TaskWithoutProject } from '~/types/project'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { afterSearchDebounce, createProjectTaskSearchServer } from '~/test-support/projectTaskSearchServer'
 
 const project = (projectId: string, name: string, updatedAt: string): Project => ({ projectId, name, description: '', createdAt: updatedAt, updatedAt,
   workspaces: [], openTaskCount: 1, taskCount: 1 })
@@ -39,7 +43,12 @@ const mountPanel = async () => {
 const card = (wrapper: Awaited<ReturnType<typeof mountPanel>>, taskId: string) => wrapper.get(`[data-testid="project-task-row-${taskId}"] [data-testid="project-task-row-link"]`)
 
 describe('ProjectsPanel (projects-always-on SR-003)', () => {
-  beforeEach(() => { setActivePinia(createPinia()); window.localStorage.clear(); vi.clearAllMocks() })
+  beforeEach(() => {
+    setActivePinia(createPinia()); window.localStorage.clear(); vi.clearAllMocks()
+    const searchServer = createProjectTaskSearchServer((projectId) => (lists?.[projectId]?.tasks ?? []) as ProjectTask[])
+    io.query.mockImplementation((options) => searchServer.respond(options))
+    vi.spyOn(useWindowNodeContextStore(), 'waitForBoundBackendReady').mockResolvedValue(true)
+  })
 
   it('shows the latest Project as a compact board (no New task) and switches to Temp tasks from the picker', async () => {
     seed([project('p0', 'Older', '2026-10-01T00:00:00.000Z'), project('p1', 'Launch', '2026-10-05T00:00:00.000Z')],
@@ -67,6 +76,9 @@ describe('ProjectsPanel (projects-always-on SR-003)', () => {
     seed([project('p1', 'Launch', '2026-10-05T00:00:00.000Z')], { p1: [projectTask('t1', 'Write the notes\nAll of them'), projectTask('t2', 'Other')] })
     const wrapper = await mountPanel()
     await wrapper.get('[data-testid="project-tasks-search-input"]').setValue('notes')
+    await afterSearchDebounce()
+    await flushPromises()
+    expect(wrapper.find('[data-testid="project-task-row-t2"]').exists()).toBe(false)
     expect(card(wrapper, 't1').element.tagName).toBe('BUTTON')
     await card(wrapper, 't1').trigger('click')
 

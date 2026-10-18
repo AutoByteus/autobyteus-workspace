@@ -1,0 +1,11 @@
+# API-L03b (round 3): first use on Backlog 1000 (Granite): time, footprint (footprint -p every 1 s, baseline 189 MB after start), files; commit 600d079b9c; ENV-2c; host load averages: 110.37 92.07 123.27; Sun Oct 18 21:15:24 CEST 2026
+typing -> board ready (download 55 MB + load + index 1,000 Tasks): 291 s
+peak footprint during first use: 429 MB at +33 s (+240 MB over 189 MB)
+files:
+1347584 server-data/embeddings/embeddings.sqlite
+32768 server-data/embeddings/embeddings.sqlite-shm
+4165352 server-data/embeddings/embeddings.sqlite-wal
+20839 server-data/embeddings/models/granite-embedding-small-english-r2/tokenizer_config.json
+51885568 server-data/embeddings/models/granite-embedding-small-english-r2/onnx/model_quantized.onnx_data
+598902 server-data/embeddings/models/granite-embedding-small-english-r2/onnx/model_quantized.onnx
+2128614 server-data/embeddings/models/granite-embedding-small-english-r2/tokenizer.json

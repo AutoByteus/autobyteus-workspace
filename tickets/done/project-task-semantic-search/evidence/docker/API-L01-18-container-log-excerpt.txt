@@ -1,0 +1,16 @@
+# API-L01: output of the step named in the execution report Cases row for API-L01; commit 722b9b3918; ENV-3 (Docker linux/arm64, image ab-pts-validation:722b9b3918); 2026-10-18
+app-data-migrations
+server.log
+EMBEDDING_MODEL_UNAVAILABLE {
+Server setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+Server setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+(node:42) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+EMBEDDING_MODEL_UNAVAILABLE {
+(node:55) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+Server setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+Server setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+Server setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+Server setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+(node:42) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+EMBEDDING_MODEL_UNAVAILABLE {
+(node:55) ExperimentalWarning: SQLite is an experimental feature and might change at any time

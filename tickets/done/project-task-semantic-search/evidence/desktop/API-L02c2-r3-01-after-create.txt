@@ -1,0 +1,329 @@
+# API-L02c2 (round 3): searched "restart", New task, saved; board state after returning; commit 600d079b9c; ENV-2c; Sun Oct 18 21:21:39 CEST 2026
+{
+ "query": "",
+ "placeholder": "Describe the task you're looking for",
+ "status": null,
+ "retry": false,
+ "noMatch": false,
+ "cancelledToggle": null,
+ "lanes": {
+  "TODO": {
+   "count": 61,
+   "tasks": [
+    {
+     "taskId": "project_task_af569523-ee51-4759-bd48-96b3d6548898",
+     "title": "Docker logs fill the disk on long-running nodes",
+     "located": false
+    },
+    {
+     "taskId": "project_task_08f2dbad-3bed-4958-82f1-848e37419b69",
+     "title": "Offline mode for local models",
+     "located": false
+    },
+    {
+     "taskId": "project_task_8feeed3d-8207-4c1c-a200-e7a22340ee47",
+     "title": "Agents should not run shell commands outside the workspace",
+     "located": false
+    },
+    {
+     "taskId": "project_task_1b2c52cb-7c6d-4607-a0b3-f60cb83fb2f3",
+     "title": "Projects need a description field shown on the board",
+     "located": false
+    },
+    {
+     "taskId": "project_task_271b05d9-4317-411a-bcfe-be90804916c8",
+     "title": "Fix flaky server end-to-end tests on CI",
+     "located": false
+    },
+    {
+     "taskId": "project_task_07a2755c-f252-43d3-8f57-994638e1ff62",
+     "title": "Notifications when a long run finishes",
+     "located": false
+    },
+    {
+     "taskId": "project_task_29ab412a-258d-4daa-977e-0487910459be",
+     "title": "Skills should be updatable from their source",
+     "located": false
+    },
+    {
+     "taskId": "project_task_450ee589-5ffb-4ef1-b572-432085791f4a",
+     "title": "Show the cost of a team run per member",
+     "located": false
+    },
+    {
+     "taskId": "project_task_245923d9-b9d5-4558-b1e2-192685074afc",
+     "title": "Tool approval prompts appear in the wrong conversation",
+     "located": false
+    },
+    {
+     "taskId": "project_task_b582b62f-a400-4d36-a9a9-2aa0a00f0a91",
+     "title": "Conversation export to Markdown",
+     "located": false
+    },
+    {
+     "taskId": "project_task_4303875e-6deb-4cf9-8a21-0f67acc84ba4",
+     "title": "Let users choose where app data is stored",
+     "located": false
+    },
+    {
+     "taskId": "project_task_e2410ad9-553d-4537-a492-433d14c572fa",
+     "title": "Node connection drops after changing networks",
+     "located": false
+    },
+    {
+     "taskId": "project_task_b5a87f78-bc79-4fe8-b68b-0d33f5aa15f3",
+     "title": "Copy button for code blocks",
+     "located": false
+    },
+    {
+     "taskId": "project_task_03e65f5d-5fd3-4d1a-8bc2-10115ba48c9b",
+     "title": "Explain why an agent definition is invalid",
+     "located": false
+    },
+    {
+     "taskId": "project_task_4e928e17-11b1-4dd7-b648-faf02f372a35",
+     "title": "Agents need a tool to fetch web pages",
+     "located": false
+    },
+    {
+     "taskId": "project_task_b9200187-47ff-4935-8c8f-2baf6956e074",
+     "title": "Reduce the size of the desktop installer",
+     "located": false
+    },
+    {
+     "taskId": "project_task_216a285d-47a7-4067-84bc-c148ee8a4410",
+     "title": "Agents ignore the repository's release rules",
+     "located": false
+    },
+    {
+     "taskId": "project_task_f87f44cf-a20c-4ae2-9fcc-254b3c018438",
+     "title": "Unify the three different date formats",
+     "located": false
+    },
+    {
+     "taskId": "project_task_8b5ab7d3-8303-4921-8f78-a25fecca3d16",
+     "title": "Schedule an agent to run every morning",
+     "located": false
+    },
+    {
+     "taskId": "project_task_34039834-1041-49b4-8cd0-3c16c2ef277d",
+     "title": "Make the delete confirmation say what will be lost",
+     "located": false
+    },
+    {
+     "taskId": "project_task_69f5da45-a5aa-48a4-a65f-3ccaa56e18a5",
+     "title": "Build a mobile app for iPhone",
+     "located": false
+    },
+    {
+     "taskId": "project_task_b3a0ea5d-c16b-441f-b696-a856c7571c3f",
+     "title": "Rate limit errors should wait and retry",
+     "located": false
+    },
+    {
+     "taskId": "project_task_2204c031-78c2-45a1-b21e-7194b3e5b03d",
+     "title": "Show a diff before an agent overwrites a file",
+     "located": false
+    },
+    {
+     "taskId": "project_task_cbbb97d1-8769-40d4-8716-5de8140c9c2f",
+     "title": "Auto-update downloads the full installer every time",
+     "located": false
+    },
+    {
+     "taskId": "project_task_b6a65a60-3ed9-4e3a-b853-050a60922eef",
+     "title": "Pin important conversations in history",
+     "located": false
+    },
+    {
+     "taskId": "project_task_15a2fbe5-d4e8-46d5-915e-49840de3f778",
+     "title": "Contributors guide and code of conduct",
+     "located": false
+    },
+    {
+     "taskId": "project_task_54283379-0225-4d2f-9f2e-5a85737ab02b",
+     "title": "Clear error when the LLM API key is wrong",
+     "located": false
+    },
+    {
+     "taskId": "project_task_56a2b2b8-c1ab-411f-80cd-838a77bd9adb",
+     "title": "Agents should be able to read PDF attachments",
+     "located": false
+    },
+    {
+     "taskId": "project_task_b88ce257-6b1e-48bf-b0df-be42ff3c4ecd",
+     "title": "Server memory keeps growing during long runs",
+     "located": false
+    },
+    {
+     "taskId": "project_task_909362a5-bde2-406f-af65-31909a6c3332",
+     "title": "Add a print view for Project Tasks",
+     "located": false
+    },
+    {
+     "taskId": "project_task_d69a88d8-e5ab-4b68-aefc-55ed26805e29",
+     "title": "Allow choosing the default working folder for new agents",
+     "located": false
+    },
+    {
+     "taskId": "project_task_d1fe112d-301e-4a9e-a9c3-02e59820fda3",
+     "title": "Settings page freezes when a provider is unreachable",
+     "located": false
+    },
+    {
+     "taskId": "project_task_0c3fe5db-34a7-46e1-92b4-6aab8cdabcb4",
+     "title": "Delegated task agents should report progress",
+     "located": false
+    },
+    {
+     "taskId": "project_task_cdb046a7-6b5b-497d-a09f-31d99d92cc6d",
+     "title": "Conversation history takes long to open",
+     "located": false
+    },
+    {
+     "taskId": "project_task_24696356-4371-4a71-89ab-d863e39aea4a",
+     "title": "Proxy settings are ignored for provider requests",
+     "located": false
+    },
+    {
+     "taskId": "project_task_56e61d54-9dcd-45b5-8b6a-bed6bc5d1d63",
+     "title": "Show which model each team member uses",
+     "located": false
+    },
+    {
+     "taskId": "project_task_d2343fc5-e88a-4073-b926-40adc4fbd9b6",
+     "title": "Group icon looks like a lightning bolt",
+     "located": false
+    },
+    {
+     "taskId": "project_task_7a512ba8-b08b-4d8b-83d5-1eb5c8831ae3",
+     "title": "Backup and restore of all app data",
+     "located": false
+    },
+    {
+     "taskId": "project_task_67c85a83-56f2-4592-9850-4f41c1337335",
+     "title": "Move the Applications page into the main navigation",
+     "located": false
+    },
+    {
+     "taskId": "project_task_780dffa1-8db0-42ee-9408-be3cfb760d91",
+     "title": "Agents keep retrying a failing tool forever",
+     "located": false
+    },
+    {
+     "taskId": "project_task_a4364ef5-9837-42ce-a712-b368ae55b5fa",
+     "title": "Add Spanish translation of the app",
+     "located": false
+    },
+    {
+     "taskId": "project_task_5d9db790-645d-427b-9492-735e3bcf4ed9",
+     "title": "Crash when pasting a large image into the message input",
+     "located": false
+    },
+    {
+     "taskId": "project_task_a2aa78a4-8fa9-40dc-b032-7773b021a886",
+     "title": "Team members cannot see each other's file changes",
+     "located": false
+    },
+    {
+     "taskId": "project_task_6af6428f-5ac4-4f88-a0f6-cb0f405efde3",
+     "title": "Workspace search is slow in large repositories",
+     "located": false
+    },
+    {
+     "taskId": "project_task_2f3a0a92-47f0-4a5c-ad34-002039a1e969",
+     "title": "Support MCP servers that need OAuth sign-in",
+     "located": false
+    },
+    {
+     "taskId": "project_task_e7b4da96-8e18-4861-852b-cb0ba22dacff",
+     "title": "Markdown tables overflow the conversation column",
+     "located": false
+    },
+    {
+     "taskId": "project_task_98d0f577-0079-4232-a094-5b01cdf4b067",
+     "title": "Release workflow publishes the macOS build without notarization",
+     "located": false
+    },
+    {
+     "taskId": "project_task_8cb7b0f1-c769-48f2-b625-2d146a8d400b",
+     "title": "Agent definitions cannot be duplicated",
+     "located": false
+    },
+    {
+     "taskId": "project_task_77a3229c-a9f7-45f0-8181-cd0d57df1352",
+     "title": "Voice input transcribes the wrong language",
+     "located": false
+    },
+    {
+     "taskId": "project_task_ce57da58-ee21-442f-b446-d674b99afb27",
+     "title": "Secrets are visible in exported server settings",
+     "located": false
+    },
+    {
+     "taskId": "project_task_22791374-fa2e-406d-b146-7afce031c740",
+     "title": "Add keyboard shortcut to focus the message input",
+     "located": false
+    },
+    {
+     "taskId": "project_task_b04bb5a8-7b7a-4c8c-8e26-e7175109499e",
+     "title": "Docker image fails to start on ARM servers",
+     "located": false
+    },
+    {
+     "taskId": "project_task_a0c39691-a9fe-49c5-97bb-47c53e513327",
+     "title": "Let users rename a team run from the history list",
+     "located": false
+    },
+    {
+     "taskId": "project_task_a4191ce0-68a6-4e7c-899e-66de1c2b2c49",
+     "title": "Speed up app startup on Windows",
+     "located": false
+    },
+    {
+     "taskId": "project_task_76038bda-6c20-4469-8345-6b2fbdfcf2ba",
+     "title": "File explorer does not show newly created files from agents",
+     "located": false
+    },
+    {
+     "taskId": "project_task_cadb2303-6038-4c45-9722-ff82ab571199",
+     "title": "Relicense the core under AGPL with a commercial option",
+     "located": false
+    },
+    {
+     "taskId": "project_task_28cee574-6890-4786-a747-3f016f506716",
+     "title": "Dark mode contrast of code blocks is too low",
+     "located": false
+    },
+    {
+     "taskId": "project_task_eddb234c-0bc3-44f4-b971-d99980a6591b",
+     "title": "Terminal loses its scrollback when switching tabs",
+     "located": false
+    },
+    {
+     "taskId": "project_task_39213388-3340-4419-9dc6-708c6f9095ef",
+     "title": "Show token usage per conversation",
+     "located": false
+    },
+    {
+     "taskId": "project_task_98b7fd93-4a5a-427d-97eb-7c4086269f89",
+     "title": "Agent run stops streaming when the laptop wakes from sleep",
+     "located": false
+    },
+    {
+     "taskId": "project_task_4a72d64e-6ce6-4548-9121-b0c9a3edabe8",
+     "title": "Sidebar collapse state is lost after restart",
+     "located": false
+    }
+   ]
+  },
+  "IN_PROGRESS": {
+   "count": 0,
+   "tasks": []
+  },
+  "DONE": {
+   "count": 0,
+   "tasks": []
+  }
+ }
+}
