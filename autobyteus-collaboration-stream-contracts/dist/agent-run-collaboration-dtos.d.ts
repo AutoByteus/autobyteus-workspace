@@ -267,6 +267,29 @@ export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnio
     agent_run_id: z.ZodString;
     message: z.ZodType<import("@autobyteus/agent-presentation-contracts").AgentPresentationMessage, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").AgentPresentationMessage, unknown>>;
 }, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"agent_presentation_batch">;
+    items: z.ZodArray<z.ZodObject<{
+        member_address: z.ZodString;
+        agent_run_id: z.ZodString;
+        message: z.ZodObject<{
+            type: z.ZodLiteral<"SEGMENT_CONTENT">;
+            payload: z.ZodObject<{
+                segment_id: z.ZodString;
+                turn_id: z.ZodString;
+                segment_type: z.ZodEnum<{
+                    text: "text";
+                    tool_call: "tool_call";
+                    write_file: "write_file";
+                    edit_file: "edit_file";
+                    run_bash: "run_bash";
+                    reasoning: "reasoning";
+                    media: "media";
+                }>;
+                delta: z.ZodString;
+            }, z.core.$strict>;
+        }, z.core.$strict>;
+    }, z.core.$strict>>;
+}, z.core.$strict>, z.ZodObject<{
     kind: z.ZodLiteral<"task_execution_started">;
     host_kind: z.ZodEnum<{
         team: "team";

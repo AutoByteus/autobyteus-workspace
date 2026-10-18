@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { agentAddressSchema, agentInputStateSchema, agentPresentationMessageSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
-import { agentOrgAgentStatusDtoSchema, agentOrgCommunicationMessageDtoSchema, closedTaskExecutionsDtoSchema, taskExecutionDtoSchema, taskExecutionsClosedEventDtoSchema, delegatedLaunchSelectionsChangedEventDtoSchema, taskExecutionsReopenedEventDtoSchema, } from "./agent-org-execution-dtos.js";
+import { agentOrgAgentStatusDtoSchema, agentPresentationBatchEventDtoSchema, agentOrgCommunicationMessageDtoSchema, closedTaskExecutionsDtoSchema, taskExecutionDtoSchema, taskExecutionsClosedEventDtoSchema, delegatedLaunchSelectionsChangedEventDtoSchema, taskExecutionsReopenedEventDtoSchema, } from "./agent-org-execution-dtos.js";
 const timestamp = nonEmptyStringSchema;
 /**
  * The collaboration package of one standalone Agent run (root kind `agent`): its host
@@ -34,6 +34,7 @@ export const agentRunCollaborationViewDtoSchema = z.object({
 }).strict();
 export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
+    agentPresentationBatchEventDtoSchema,
     z.object({
         kind: z.literal("task_execution_started"),
         host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecutionDtoSchema,
