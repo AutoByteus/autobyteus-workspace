@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { createReadStream } from "node:fs";
+import { createReadStream, statSync } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { EmbeddingModelDefinition, EmbeddingModelFile } from "../catalog/embedding-model-definition.js";
@@ -34,7 +34,22 @@ export class EmbeddingModelFiles {
     return path.join(this.rootDir, definition.id);
   }
 
-  /** Makes the model's files present and verified; resolves to its folder. Progress counts bytes. */
+  /** Whether every file is present with its pinned size (a cheap check; `ensure` still verifies the checksums). */
+  hasAllFiles(definition: EmbeddingModelDefinition): boolean {
+    const dir = this.modelDir(definition);
+    return definition.files.every((file) => {
+      try {
+        return statSync(path.join(dir, file.path)).size === file.bytes;
+      } catch {
+        return false;
+      }
+    });
+  }
+
+  /**
+   * Makes the model's files present and verified; resolves to its folder. Progress counts bytes and is reported only
+   * while something is downloaded (files already present are verified silently).
+   */
   ensure(definition: EmbeddingModelDefinition, onProgress: DownloadProgress = () => undefined): Promise<string> {
     let pending = this.inflight.get(definition.id);
     if (!pending) {
@@ -59,9 +74,9 @@ export class EmbeddingModelFiles {
       const target = path.join(dir, file.path);
       if (!(await this.isVerified(target, file))) {
         await this.download(definition, file, target, (bytes) => onProgress(done + bytes, total));
+        onProgress(done + file.bytes, total);
       }
       done += file.bytes;
-      onProgress(done, total);
     }
     return dir;
   }

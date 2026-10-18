@@ -55,8 +55,8 @@ calibration. The worker and the index have no per-model branches.
 
 | Setting value | Model | Languages | Licence | Source (pinned revision) | Download | Indexing cost (WebAssembly, 4 threads, fast laptop) |
 | --- | --- | --- | --- | --- | --- | --- |
-| `mdbr-leaf-ir` (default) | MongoDB LEAF-IR | English | Apache-2.0 | `MongoDB/mdbr-leaf-ir` @ `4262131b32c3182bd06e67e92ae69d7bd66e0c5c` | ≈ 23 MB | ≈ 0.1 s per Task; ≈ 0.27 GB loaded, ≈ 0.5 GB peak |
-| `granite-embedding-small-english-r2` | IBM Granite Embedding Small English R2 | English (reads up to 1,024 tokens of a Task) | Apache-2.0 | `onnx-community/granite-embedding-small-english-r2-ONNX` @ `1dc7835ba0cb9c76a3618d0bf0c427c97671b3c8` | ≈ 55 MB | ≈ 0.5 s per Task; ≈ 0.4 GB loaded, ≈ 0.7 GB peak |
+| `granite-embedding-small-english-r2` (default) | IBM Granite Embedding Small English R2 | English (reads up to 1,024 tokens of a Task) | Apache-2.0 | `onnx-community/granite-embedding-small-english-r2-ONNX` @ `1dc7835ba0cb9c76a3618d0bf0c427c97671b3c8` | ≈ 55 MB | ≈ 0.5 s per Task; ≈ 0.4 GB loaded, ≈ 0.7 GB peak |
+| `mdbr-leaf-ir` (small Projects) | MongoDB LEAF-IR | English | Apache-2.0 | `MongoDB/mdbr-leaf-ir` @ `4262131b32c3182bd06e67e92ae69d7bd66e0c5c` | ≈ 23 MB | ≈ 0.1 s per Task; ≈ 0.27 GB loaded, ≈ 0.5 GB peak |
 | `embeddinggemma-2` | Google EmbeddingGemma 2 | 100+ languages | Apache-2.0 | `onnx-community/embeddinggemma-2-ONNX` @ `daa72c51243991dfcaf9f9137d2c573d8f7790c0` | ≈ 346 MB | ≈ 4 s per long Task; ≈ 1.1 GB loaded, ≈ 1.5 GB peak |
 
 Models are not shipped with the app: the server downloads the active model from Hugging Face
@@ -72,7 +72,9 @@ only the three `onnxruntime-web` files its Node build loads (`autobyteus-web/scr
 
 ### Choosing The Model
 
-The server setting `AUTOBYTEUS_EMBEDDING_MODEL` chooses the active model of this server; blank means the default. The
+The server setting `AUTOBYTEUS_EMBEDDING_MODEL` chooses the active model of this server; blank means the default,
+Granite Small English R2. LEAF-IR indexes about five times faster, but its relevance degrades on Projects with
+hundreds of Tasks (see Relevance); EmbeddingGemma 2 is for Tasks written in other languages. The
 settings screen accepts only the catalog values above. A value set outside the settings screen that is not in the
 catalog is ignored with one logged warning (`EMBEDDING_MODEL_SETTING_UNKNOWN`), and the default is used.
 
@@ -87,9 +89,25 @@ even the best score is below the entry's `clearMatchFloor`; otherwise every item
 one, at most `limit`. The values were calibrated with the synthetic Task set in `tests/fixtures/project-task-search`
 and cross-checked with measurements on real Tasks; the catalog file records the evidence per entry.
 
+Measured with each model's relevance rule (gated test
+`tests/integration/embeddings/embedding-model-quality.integration.test.ts`; `TEST_EMBEDDING_SCALE=1` adds the 1,000-Task
+backlogs of `tests/helpers/project-task-search-backlogs.ts`). Each cell: paraphrased queries whose target is shown among
+the first 5 matches (AC-001) / unrelated queries that show no match (AC-004), over 63 paraphrases and 24 unrelated
+queries. The targets are 90% / 90%; the default model must meet them up to 1,000 Tasks.
+
+| Model | 60 fixture Tasks | 1,000 Tasks: fixture + 940 generated | 1,000 Tasks: fixture + 940 texts from finished tickets |
+| --- | --- | --- | --- |
+| Granite Small English R2 (default; floor 0.78, margin 0.02) | 96.8% / 95.8% | 93.7% / 95.8% | 92.1% / 95.8% |
+| LEAF-IR (floor 0.30, margin 0.045) | 95.2% / 95.8% | 87.3% / 91.7% | 90.5% / 83.3% |
+| EmbeddingGemma 2 (floor 0.68, margin 0.02) | 95.2% / 100% | not measured (indexing 2,000 long Tasks takes hours) | not measured |
+
+LEAF-IR's scores spread less as a Project grows, so no floor keeps both targets at 1,000 Tasks; with hundreds of Tasks,
+unrelated searches start to show a few meaning matches. Exact matches are unaffected.
+
 ## Readiness And Failures
 
-The active model moves `idle → downloading → loading → ready`; any failure makes it `unavailable` with a reason. A
+The active model moves `idle → downloading → loading → ready`, skipping `downloading` when its files are already on
+disk (they are only verified then, reported as `loading`); any failure makes it `unavailable` with a reason. A
 search answers at once (unless `waitForReadyMs` is set) with the readiness:
 
 - `preparing` + `downloading` (`done`/`total` in bytes), `loading`, or `indexing` (`done`/`total` in items of the

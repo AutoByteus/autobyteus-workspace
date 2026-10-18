@@ -106,7 +106,7 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
   it("validates the active-model setting and offers Retry only for an unavailable model", async () => {
     const update = async (value: string) => (await ok<{ updateServerSetting: string }>(
       "mutation($k:String!,$v:String!){updateServerSetting(key:$k,value:$v)}", { k: "AUTOBYTEUS_EMBEDDING_MODEL", v: value })).updateServerSetting;
-    expect(await update("not-a-model")).toContain("Embedding model must be blank (default) or one of: mdbr-leaf-ir, granite-embedding-small-english-r2, embeddinggemma-2.");
+    expect(await update("not-a-model")).toContain("Embedding model must be blank (default) or one of: granite-embedding-small-english-r2, mdbr-leaf-ir, embeddinggemma-2.");
     expect(await update("granite-embedding-small-english-r2")).toContain("updated successfully");
     expect((await ok<{ retryEmbeddingModel: boolean }>("mutation{retryEmbeddingModel}")).retryEmbeddingModel).toBe(false);
   });

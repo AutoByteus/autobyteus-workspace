@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DEFAULT_EMBEDDING_MODEL_ID, EMBEDDING_MODEL_CATALOG } from "../../../src/embeddings/catalog/embedding-model-catalog.js";
-import { normalizeEmbeddingModelSettingForPersistence, resolveActiveEmbeddingModel } from "../../../src/embeddings/catalog/embedding-model-setting.js";
+import { EMBEDDING_MODEL_SETTING_DESCRIPTION, normalizeEmbeddingModelSettingForPersistence, resolveActiveEmbeddingModel } from "../../../src/embeddings/catalog/embedding-model-setting.js";
 import { selectRelevant } from "../../../src/embeddings/relevance.js";
 import { EmbeddingModelRunner } from "../../../src/embeddings/runtime/embedding-model-runner.js";
 import { fakeModel } from "../../helpers/fake-embedding-model.js";
@@ -12,9 +12,11 @@ import { fakeModel } from "../../helpers/fake-embedding-model.js";
 afterEach(() => vi.restoreAllMocks());
 
 describe("embedding model catalog and setting", () => {
-  it("offers the three approved models with LEAF-IR as the default, each pinned with checksums, and documents each licence and source", () => {
-    expect(EMBEDDING_MODEL_CATALOG.map((model) => model.id)).toEqual(["mdbr-leaf-ir", "granite-embedding-small-english-r2", "embeddinggemma-2"]);
-    expect(DEFAULT_EMBEDDING_MODEL_ID).toBe("mdbr-leaf-ir");
+  it("offers the three approved models with Granite small R2 as the default and listed first, each pinned with checksums, and documents each licence and source", () => {
+    expect(EMBEDDING_MODEL_CATALOG.map((model) => model.id)).toEqual(["granite-embedding-small-english-r2", "mdbr-leaf-ir", "embeddinggemma-2"]);
+    expect(DEFAULT_EMBEDDING_MODEL_ID).toBe("granite-embedding-small-english-r2");
+    expect(EMBEDDING_MODEL_SETTING_DESCRIPTION).toContain("Blank uses the default (granite-embedding-small-english-r2).");
+    expect(EMBEDDING_MODEL_SETTING_DESCRIPTION.indexOf("granite-embedding-small-english-r2: ")).toBeLessThan(EMBEDDING_MODEL_SETTING_DESCRIPTION.indexOf("mdbr-leaf-ir: "));
     const docs = fs.readFileSync(path.resolve(import.meta.dirname, "../../../docs/modules/embeddings.md"), "utf8");
     for (const model of EMBEDDING_MODEL_CATALOG) {
       expect(model.source.revision).toMatch(/^[0-9a-f]{40}$/);
@@ -29,10 +31,10 @@ describe("embedding model catalog and setting", () => {
 
   it("resolves blank to the default, a catalog id to its model, and an unknown value to the default with one warning", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    expect(resolveActiveEmbeddingModel("").id).toBe("mdbr-leaf-ir");
+    expect(resolveActiveEmbeddingModel("").id).toBe("granite-embedding-small-english-r2");
     expect(resolveActiveEmbeddingModel(" embeddinggemma-2 ").id).toBe("embeddinggemma-2");
-    expect(resolveActiveEmbeddingModel("nomic-v9").id).toBe("mdbr-leaf-ir");
-    expect(resolveActiveEmbeddingModel("nomic-v9").id).toBe("mdbr-leaf-ir");
+    expect(resolveActiveEmbeddingModel("nomic-v9").id).toBe("granite-embedding-small-english-r2");
+    expect(resolveActiveEmbeddingModel("nomic-v9").id).toBe("granite-embedding-small-english-r2");
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn).toHaveBeenCalledWith("EMBEDDING_MODEL_SETTING_UNKNOWN", expect.objectContaining({ value: "nomic-v9" }));
   });

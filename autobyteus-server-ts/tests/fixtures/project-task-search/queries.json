@@ -1,5 +1,5 @@
 {
-  "description": "Paraphrased queries for tasks.json, each written in different words from its target Task(s). Used for the catalog quality check (QR-007: target in the top 5 for at least 90% and in the top 10 for at least 95%) and for relevance calibration.",
+  "description": "Paraphrased queries for tasks.json, each written in different words from its target Task(s), and queries unrelated to every Task. Used for the catalog quality check (QR-007: target in the top 5 for at least 90% and in the top 10 for at least 95%; AC-001: target shown among the first 5 matches for at least 90%; AC-004: unrelated query shows no match for at least 90%) and for relevance calibration.",
   "paraphrases": [
     {"q": "the navigation panel on the left forgets that I folded it when I reopen the program", "targets": ["t01"]},
     {"q": "answer stops appearing after my computer was asleep", "targets": ["t02"]},
@@ -77,6 +77,18 @@
     "how long to boil an egg",
     "capital city of australia",
     "lyrics of a famous love song",
-    "cheap flights to lisbon"
+    "cheap flights to lisbon",
+    "how do I bake sourdough",
+    "translate good morning into Japanese",
+    "how to change a flat tyre on a bicycle",
+    "best time of year to plant tomatoes",
+    "convert 5 miles to kilometers",
+    "qwertyuiop asdfgh",
+    "who painted the Mona Lisa",
+    "symptoms of a common cold",
+    "train timetable from Munich to Vienna",
+    "how many calories in an avocado",
+    "rules of chess castling",
+    "top rated sushi restaurants nearby"
   ]
 }

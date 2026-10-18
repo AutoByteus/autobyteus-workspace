@@ -8,16 +8,20 @@ import type { EmbeddingModelDefinition } from "./embedding-model-definition.js";
  * Relevance calibration (`clearMatchFloor`, `nearBestMargin`) follows model-evaluation-report.md §4: the margin covers
  * about the p95 of "best score minus the target's score" over paraphrased queries, and the floor separates the best
  * score of on-topic queries from that of unrelated ones. Each entry was verified on this production stack with the
- * synthetic fixture (tests/fixtures/project-task-search, 60 Tasks, 63 paraphrases, 12 unrelated queries; gated test
+ * synthetic fixture (tests/fixtures/project-task-search: 60 Tasks, 63 paraphrases, 24 unrelated queries; gated test
  * tests/integration/embeddings/embedding-model-quality.integration.test.ts) and cross-checked with the design probes on
- * real Tasks (69 paraphrases, 8 unrelated queries). Per entry: synthetic on-topic best-score minimum / unrelated
- * maximum; real on-topic minimum / unrelated maximum.
+ * real Tasks (69 paraphrases, 8 unrelated queries). The default model is also verified on two 1,000-Task backlogs (the
+ * fixture plus 940 generated Tasks, and plus 940 Task-like texts from this repository's finished tickets; same gated
+ * test, `TEST_EMBEDDING_SCALE=1`): AC-001 (target shown among the first 5 matches) and AC-004 (unrelated query shows no
+ * match) must hold for at least 90% there too (DEC-011). Per entry below: synthetic on-topic best-score minimum /
+ * unrelated maximum; real on-topic minimum / unrelated maximum; then the 1,000-Task results (shown in first 5 /
+ * unrelated with no match) for the generated and the repository backlogs (FO-001 evidence).
  */
 
 const LEAF_IR: EmbeddingModelDefinition = {
   id: "mdbr-leaf-ir",
   displayName: "MongoDB LEAF-IR",
-  description: "Default. English. About 23 MB to download; the fastest to index (about 0.1 s per Task on a fast laptop CPU).",
+  description: "English; for small Projects. About 23 MB to download and the fastest to index (about 0.1 s per Task on a fast laptop CPU), but its relevance degrades on large Projects (hundreds of Tasks): unrelated searches start to show matches.",
   licence: "Apache-2.0",
   languages: ["en"],
   source: { repo: "MongoDB/mdbr-leaf-ir", revision: "4262131b32c3182bd06e67e92ae69d7bd66e0c5c" },
@@ -34,15 +38,16 @@ const LEAF_IR: EmbeddingModelDefinition = {
   documentPrefix: "",
   output: "sentence_embedding",
   dimensions: 768,
-  // Synthetic 0.208 / 0.273 (unrelated p90 0.232), real 0.210 / 0.177; gap p95 0.031 synthetic, 0.043 real.
-  // 0.24 is the lowest floor with at least 90% of the synthetic unrelated queries unmatched (11 of 12).
-  relevance: { clearMatchFloor: 0.24, nearBestMargin: 0.045 },
+  // Synthetic 0.208 / 0.273, real 0.210 / 0.177; gap p95 0.031 synthetic, 0.043 real. No floor/margin passes both AC-001
+  // and AC-004 at 1,000 Tasks (FO-001); 0.30 is the best compromise: fixture 95.2% / 95.8%, generated 87.3% / 91.7%,
+  // repository 90.5% / 83.3%. Hence not the default.
+  relevance: { clearMatchFloor: 0.3, nearBestMargin: 0.045 },
 };
 
 const GRANITE_SMALL_ENGLISH_R2: EmbeddingModelDefinition = {
   id: "granite-embedding-small-english-r2",
   displayName: "IBM Granite Embedding Small English R2",
-  description: "English; reads more of long Tasks. About 55 MB to download; about 5x slower to index than the default (about 0.5 s per Task).",
+  description: "Default. English; reads up to 1,024 tokens of a Task and keeps its relevance on large Projects. About 55 MB to download; about 0.5 s per Task to index on a fast laptop CPU.",
   licence: "Apache-2.0",
   languages: ["en"],
   source: { repo: "onnx-community/granite-embedding-small-english-r2-ONNX", revision: "1dc7835ba0cb9c76a3618d0bf0c427c97671b3c8" },
@@ -60,6 +65,7 @@ const GRANITE_SMALL_ENGLISH_R2: EmbeddingModelDefinition = {
   output: { pool: "cls" },
   dimensions: 384,
   // Synthetic 0.741 / 0.754, real 0.786 / 0.773; gap max 0.018 synthetic, p95 0.017 real.
+  // 1,000 Tasks (FO-001): generated 93.7% / 95.8%, repository 92.1% / 95.8% (fixture 96.8% / 95.8%).
   relevance: { clearMatchFloor: 0.78, nearBestMargin: 0.02 },
 };
 
@@ -87,8 +93,9 @@ const EMBEDDINGGEMMA_2: EmbeddingModelDefinition = {
   relevance: { clearMatchFloor: 0.68, nearBestMargin: 0.02 },
 };
 
-export const EMBEDDING_MODEL_CATALOG: readonly EmbeddingModelDefinition[] = [LEAF_IR, GRANITE_SMALL_ENGLISH_R2, EMBEDDINGGEMMA_2];
-export const DEFAULT_EMBEDDING_MODEL_ID = LEAF_IR.id;
+/** The default first: the setting description and error messages list the models in this order. */
+export const EMBEDDING_MODEL_CATALOG: readonly EmbeddingModelDefinition[] = [GRANITE_SMALL_ENGLISH_R2, LEAF_IR, EMBEDDINGGEMMA_2];
+export const DEFAULT_EMBEDDING_MODEL_ID = GRANITE_SMALL_ENGLISH_R2.id;
 export const EMBEDDING_MODEL_IDS: readonly string[] = EMBEDDING_MODEL_CATALOG.map((model) => model.id);
 
 export const getEmbeddingModelDefinition = (id: string): EmbeddingModelDefinition | null =>

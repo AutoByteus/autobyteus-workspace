@@ -39,6 +39,14 @@ describe("EmbeddingIndex", () => {
     expect(runner().documents).toHaveLength(3);
   });
 
+  it("reports downloading only when the model files are missing, and loading while present files are verified", async () => {
+    const missing = await make();
+    expect((await missing.index.search("tasks/p1", ITEMS, "docker")).readiness).toMatchObject({ state: "preparing", phase: "downloading", done: 0 });
+    const present = await make({ filesPresent: true });
+    expect((await present.index.search("tasks/p1", ITEMS, "docker")).readiness).toEqual({ state: "preparing", phase: "loading", done: 0, total: 0 });
+    await settle(present.index, "tasks/p1", ITEMS);
+  });
+
   it("shows no meaning match when even the best score is below the model's floor", async () => {
     const { index } = await make();
     await settle(index, "tasks/p1", ITEMS);

@@ -42,7 +42,7 @@ type Dependencies = {
   files?: ModelFiles;
   store?: EmbeddingVectorStore;
 };
-type ModelFiles = Pick<EmbeddingModelFiles, "ensure" | "removeAllExcept">;
+type ModelFiles = Pick<EmbeddingModelFiles, "hasAllFiles" | "ensure" | "removeAllExcept">;
 
 const DEFAULT_LIMIT = 20;
 const reasonOf = (error: unknown): string => error instanceof Error ? error.message : String(error);
@@ -157,14 +157,19 @@ export class EmbeddingIndex {
     return job;
   }
 
-  /** DS-004: download and verify the files, then load the worker. Any failure leaves the model unavailable until a retry. */
+  /**
+   * DS-004: download and verify the files, then load the worker. Any failure leaves the model unavailable until a retry.
+   * Files already on disk are only verified, which reports `loading`; `downloading` is reported while bytes arrive.
+   */
   private prepareModel(model: ActiveModel): void {
     const { definition } = model;
-    model.phase = { kind: "downloading", done: 0, total: definition.files.reduce((sum, file) => sum + file.bytes, 0) };
+    model.phase = this.files.hasAllFiles(definition)
+      ? { kind: "loading" }
+      : { kind: "downloading", done: 0, total: definition.files.reduce((sum, file) => sum + file.bytes, 0) };
     void (async () => {
       try {
         const modelDir = await this.files.ensure(definition, (done, total) => {
-          if (model.phase.kind === "downloading") model.phase = { kind: "downloading", done, total };
+          if (model.phase.kind === "downloading" || model.phase.kind === "loading") model.phase = { kind: "downloading", done, total };
         });
         if (this.model !== model) return;
         model.phase = { kind: "loading" };

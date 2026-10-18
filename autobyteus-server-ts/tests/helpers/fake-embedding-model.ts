@@ -78,7 +78,9 @@ export class FakeEmbeddingRunner implements EmbeddingRunner {
 }
 
 /** An index over a temp folder whose model files "download" instantly; `runners` lists every runner it created. */
-export const createFakeEmbeddingIndex = async (options: { model?: () => EmbeddingModelDefinition; rootDir?: string; failDownload?: () => Error | null } = {}) => {
+export const createFakeEmbeddingIndex = async (options: {
+  model?: () => EmbeddingModelDefinition; rootDir?: string; failDownload?: () => Error | null; filesPresent?: boolean;
+} = {}) => {
   const rootDir = options.rootDir ?? await fs.mkdtemp(path.join(os.tmpdir(), "embedding-index-"));
   const runners: FakeEmbeddingRunner[] = [];
   const downloads: string[] = [];
@@ -88,6 +90,7 @@ export const createFakeEmbeddingIndex = async (options: { model?: () => Embeddin
     rootDir,
     resolveModel: options.model ?? (() => definition),
     files: {
+      hasAllFiles: () => options.filesPresent ?? false,
       ensure: async (model) => {
         downloads.push(model.id);
         const failure = options.failDownload?.();

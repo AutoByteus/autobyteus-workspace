@@ -25,6 +25,7 @@ import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shar
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { resetEmbeddingIndexForTests, shutdownEmbeddingIndex } from "../../../src/embeddings/embedding-index.js";
+import { DEFAULT_EMBEDDING_MODEL_ID } from "../../../src/embeddings/catalog/embedding-model-catalog.js";
 import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
@@ -170,7 +171,7 @@ describe("Project Task search with the real embedding layer when the model host 
     expect(retried.meaningSearch.reason).toContain("from huggingface.co failed (HTTP 404)");
 
     // A failed download leaves no partial file behind.
-    const modelDir = path.join(root, "embeddings", "models", "mdbr-leaf-ir");
+    const modelDir = path.join(root, "embeddings", "models", DEFAULT_EMBEDDING_MODEL_ID);
     const leftovers = await fs.readdir(modelDir, { recursive: true }).catch(() => [] as string[]);
     expect(leftovers.filter((name) => String(name).endsWith(".part"))).toEqual([]);
   });

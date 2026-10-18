@@ -47,8 +47,20 @@ describe("EmbeddingModelFiles", () => {
     expect(requests).toEqual(Object.keys(content).map((file) => `/org/tiny/resolve/abc123/${file}`));
     const total = model.files.reduce((sum, file) => sum + file.bytes, 0);
     expect(progress.at(-1)).toEqual([total, total]);
-    await files.ensure(model);
+    // Files already present are verified silently: no download progress (the index reports "loading" meanwhile).
+    const again: Array<[number, number]> = [];
+    await files.ensure(model, (done, all) => again.push([done, all]));
     expect(requests).toHaveLength(3);
+    expect(again).toEqual([]);
+  });
+
+  it("tells whether every file is present with its pinned size", async () => {
+    const files = new EmbeddingModelFiles(root, { baseUrl });
+    expect(files.hasAllFiles(model)).toBe(false);
+    await files.ensure(model);
+    expect(files.hasAllFiles(model)).toBe(true);
+    await fs.writeFile(path.join(root, "tiny", "tokenizer.json"), "{ }");
+    expect(files.hasAllFiles(model)).toBe(false);
   });
 
   it("rejects a file whose checksum differs and leaves no partial file", async () => {
