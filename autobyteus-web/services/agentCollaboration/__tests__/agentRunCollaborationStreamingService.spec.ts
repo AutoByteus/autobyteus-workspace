@@ -56,3 +56,14 @@ it.each(['disconnect', 'owner'])('a late snapshot after %s cannot publish or com
   expect(f.options.reportError).not.toHaveBeenCalled(); expect(f.service.isReady()).toBe(false)
   f.service.disconnect()
 })
+it('reports a started task execution (e.g. an adopted run) to its owner, then reloads for the new child (SR-009)', async () => {
+  const f = setup(); const onTaskExecutionStarted = vi.fn()
+  Object.assign(f.options, { onTaskExecutionStarted }); await flush(); f.finish(); await flush()
+  const execution = { address: '/code_reviewer', agentRunId: 'adopted-run', platformAgentRunId: 'thread-review', startedAt: '2026-10-18T00:00:00.000Z' }
+  f.socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence: 5,
+    event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution } } })
+  await flush()
+  expect(onTaskExecutionStarted).toHaveBeenCalledExactlyOnceWith(execution)
+  expect(f.options.reportError).not.toHaveBeenCalled()
+  expect(Socket.instances).toHaveLength(2); f.service.disconnect()
+})

@@ -654,9 +654,11 @@ Task goes to the copy by `target_team_run_id` / `target_agent_run_id`.
 - **Address messaging order:** the sender's own Team instance, then run-wide
   placements; any other address is not found. Messaging never creates a copy
   (CM-4).
-- **Borrowed, not adopted.** Existing unowned agents are
-  borrowed, never adopted. Unowned agents are never checked
-  against Task data. Another Task's run is never a shared helper
+- **Borrowed, not adopted implicitly.** Existing unowned agents are
+  borrowed, never adopted implicitly; a run the user started becomes a task
+  agent only when a standalone agent run gives it a Task with `delegate_task`
+  and its run id ([A Task for a run the user started](#a-task-for-a-run-the-user-started-adoption)).
+  Unowned agents are never checked against Task data. Another Task's run is never a shared helper
   (`TASK_AGENT_RESOURCE_CONFLICT`). Definition or address equality is not
   ownership.
 
@@ -834,6 +836,65 @@ ingress, or mark B CANCELLED / delegate it to a new copy).
 
 Data: existing files are used unchanged (no migration); see
 [Agent Run Resources](#agent-run-resources).
+
+### A Task for a run the user started (adoption)
+
+The same call gives a saved Task to an agent run or team run the user started by
+hand, so it joins the Task's lifecycle as if the delegator had delegated it
+(Task `autobyteus-11`, design SR-008):
+
+```text
+delegate_task({target_team_run_id: "software_engineering_team_8f12", task_id: "autobyteus-10"})
+  → {delegated: true, target_kind: "team", target_team_run_id: "software_engineering_team_8f12", target_team_coordinator_agent_run_id: "solution_designer_4b7d"}
+```
+
+**Rule.** Only a standalone agent run that is not Task-owned adopts (the
+Project Task Manager). The run must be one the user started (in its history,
+without a `taskAgent` section), in the delegator's own workspace (a team: every
+member's), without delegated runs of its own, not bound to an application, not
+archived, belonging to no Task, idle, and its definition must still be in the
+catalog: it is placed at the address the catalog offers that definition.
+
+**Path** (`HandStartedRunAdoption`, only in an Agent root; step 1 with the
+eligibility checks, steps 2–4 on the root's queue):
+1. The Task side records the delegator's `assigned` entry, `starting`.
+2. The run is handed over from its own session (stopped while idle).
+3. Its own file gains the `taskAgent` section (a team's tree also moves from
+   `/` to the catalog address); every other key stays. The record is read back
+   through the task-agent reader, so the tree's split write writes only the
+   link.
+4. Its history row leaves (a team: no longer admitted as a team run).
+5. The Task is delivered as the next message of its own conversation, as for a
+   follow-up Task; the entry becomes `started`.
+
+**Effect.** The run is the delegator's task agent: shown under it with its
+Task line, idle-shut-down and woken by it, stopped and removed from the
+sidebar on DONE or CANCELLED, reactivated by it. No file moves or is copied.
+An adopted team's members may remember their old `/` addresses; their
+handoff rules and restored team context give the new ones.
+In the web sidebar a run the user opened this session leaves its own group at
+once when the delegator's collaboration stream reports its
+`task_execution_started`, and otherwise at the next history read that no longer
+lists it (design SR-009); its open conversation stays usable under the
+delegator.
+
+**Stopped halfway.** Every step is recognized from the files: the same
+delegator's retry continues at the first missing step (the run's open entry is
+recognized first; until finished it shows as `not_confirmed`). A failure in
+steps 2–4 refuses with "not taken over yet … call again" and never marks the
+entry `failed`. If the Task is DONE, CANCELLED or deleted (or its Project is
+deleted) before the link exists, the adoption is undone: the run's own file is
+restored exactly and it is listed in its group again (on the delegator root's
+queue when it is active, otherwise from the files; a failure is logged as
+`TASK_ADOPTION_REVERT_FAILED` and repeating DONE retries).
+
+**Refusals** change nothing and say why: another workspace; delegated runs of
+its own; bound to an application; archived ("unarchive it first"); definition
+no longer in the catalog; already working on a Task; in the middle of a turn
+("try again when it is idle"); a team's member or coordinator passed as
+`target_agent_run_id` (its team run id to use); an organization run; a run
+that is not one the user started; a delegator that is not a standalone agent
+run.
 
 ## Tasks With No Project (Ad-Hoc)
 

@@ -1,0 +1,12 @@
+D0-install exit=0
+D0-prebuild exit=0
+D0-build exit=0
+D0-nuxt-prepare exit=0
+D1-typecheck exit=0
+--- power-off at 2026-10-18 ~12:33 during D2-unit; resumed from D2 on cd3bb0dd6b (merge of tickets-only 00ca7f5350)
+D2-unit exit=1
+D3-integration-prepare exit=0
+D3-integration exit=1
+D4-server-e2e exit=0
+D5-web exit=1
+DONE

@@ -1,0 +1,4 @@
+src/skills/services/configured-agent-skill-resolver.ts:129:      const privateSkill = this.loadContextualCandidate(
+src/skills/services/configured-agent-skill-resolver.ts:134:      if (privateSkill) {
+src/skills/services/configured-agent-skill-resolver.ts:135:        return privateSkill;
+grep-exit=0 (1 = no matches)

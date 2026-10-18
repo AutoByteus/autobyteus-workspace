@@ -254,7 +254,10 @@ describeLiveProbe("Codex raw-vs-backend cadence probe", () => {
             requestTimeoutMs: 90_000,
           }),
       });
-      threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
+      threadManager = new CodexThreadManager(
+        clientManager,
+        undefined,
+        new CodexClientThreadRouter(),
       );
 
       const modelIdentifier = await fetchPreferredCodexModelIdentifier(clientManager, workspaceRoot);
