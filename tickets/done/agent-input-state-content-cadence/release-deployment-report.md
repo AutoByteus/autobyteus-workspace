@@ -137,4 +137,28 @@ If live replies stop updating, queued state stops appearing, or reconnects lose 
 
 ## Finalization Record
 
-Filled in after finalization; see the follow-up `docs(delivery)` commit.
+| Step | Result |
+| --- | --- |
+| Ticket branch commit | `f01a59b310` "docs(ticket): archive agent-input-state-content-cadence delivery artifacts (PB-001, DR-001)". Staged explicitly: 92 files under `tickets/done/agent-input-state-content-cadence/`, no build output |
+| Ticket branch push | `origin/codex/agent-input-state-content-cadence` → `f01a59b310` |
+| Target update | `git fetch origin personal` → `55bff1f5ee` (unchanged since integration) |
+| Finalize branch | `finalize/agent-input-state-content-cadence` from `origin/personal` |
+| Merge | `git merge --no-ff codex/agent-input-state-content-cadence` → `33129d04b9` "Merge agent input-state content cadence fix (PB-001)". Tree identical to the verified ticket branch (`git diff` empty) |
+| Checks before push | `python3 scripts/check_licensing.py` → "Licensing is consistent." (exit 0); `python3 scripts/check_repository_artifact_hygiene.py` → passed, 71,926 tracked files (exit 0) |
+| Fetch-check, then push | `origin/personal` still `55bff1f5ee`; `git push origin HEAD:personal` → `55bff1f5ee..33129d04b9` |
+| Repository finalization status | `Completed` |
+| Release / tag | `Not required` (No release) |
+| Worktree cleanup | `Completed`: `git worktree remove --force` (only untracked build outputs remained), then `git worktree prune` |
+| Local branch cleanup | `Completed`: deleted `codex/agent-input-state-content-cadence` (`f01a59b310`) and `finalize/agent-input-state-content-cadence` (`33129d04b9`) |
+| Remote branch cleanup | `Not required`: merged `codex/*` ticket branches are retained on `origin` by repository practice |
+| Delivery record commit | This report and `delivery-revision-record.md` were committed from a temporary detached worktree at `origin/personal` (`33129d04b9`), which was removed afterwards. The main checkout was not touched |
+
+## Final Status
+
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `33129d04b9`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes`, via `get_handoff_rules` → `send_message_to`, right after this record commit

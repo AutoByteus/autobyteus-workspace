@@ -20,8 +20,8 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: merged `origin/personal` @ `55bff1f5ee` into the ticket branch (`025b0e9104`), no conflicts. Typecheck, AgentRun unit 46/46, cadence socket 8/8 ×3, Team segment admission 11/11, `test:unit` 5837/7 skipped, `test:integration` 396/65 skipped all pass (`evidence/delivery-*.log`).
-- Verification and finalization state: verified from evidence (sufficient; no user check needed). Finalized per `RELEASE.md`: `finalize/agent-input-state-content-cadence` from `origin/personal`, `--no-ff` merge of the ticket branch, pushed to `personal`. The exact commits are in `release-deployment-report.md`.
-- Terminal return to `/solution_designer`: `Sent` after finalization and cleanup (see the release report's Final Status).
+- Verification and finalization state: verified from evidence (sufficient; no user check needed). Finalized per `RELEASE.md`: ticket branch `f01a59b310` pushed; `--no-ff` merge `33129d04b9` pushed to `origin/personal` (`55bff1f5ee..33129d04b9`); licensing and artifact-hygiene checks pass. Worktree and local branches removed; remote ticket branch retained by practice.
+- Terminal return to `/solution_designer`: `Sent` after this record commit (see the release report's Final Status).
 - Terminal return message/reference: `send_message_to` per `get_handoff_rules`.
 - Why this baseline was recorded: first completed delivery-stage result.
 - Next recipient/action: Solution Designer verifies the receipt and returns `Terminal`.
