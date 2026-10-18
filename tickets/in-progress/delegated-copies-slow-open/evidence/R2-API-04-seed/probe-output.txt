@@ -1,0 +1,16 @@
+[2026-10-18T14:34:34.103Z] SEED start: Seed 50 Team copies, 300 unrelated team runs through public APIs
+  delegated 10/50
+  delegated 20/50
+  delegated 30/50
+  delegated 40/50
+  delegated 50/50
+  report commands: 50 acks; problems: []; first ack: {"type":"AGENT_COMMAND_ACK","payload":{"root_subject_kind":"agent","root_run_id":"large_hub_manager_probe_4203ffef2d8d46ef97d8799a8b418fd7","command_id":"fe46970b-a4f9-4ba0-abd9-fe2ddc00a466","command_type":"SEND_MESSAGE","target_agent_run_id":"solution_designer_34562b5d3d8647ba9344e092ea1bba09","st
+  message log: {"at":"2026-10-18T14:35:22.103Z","liveViewMessages":14,"liveViewReports":12,"storedMessages":252,"storedReports":250,"storedFiles":["communication_messages_active.jsonl"]}
+  unrelated team runs 50/300
+  unrelated team runs 100/300
+  unrelated team runs 150/300
+  unrelated team runs 200/300
+  unrelated team runs 250/300
+  unrelated team runs 300/300
+[2026-10-18T14:36:04.390Z] SEED Pass
+{"result":"Seeded","label":"current","cases":{"SEED":"Pass"},"errors":0,"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":62741,"status":"terminated","exit":0},"backendPortClosed":true,"frontendPortClosed":true,"seedKept":"/tmp/dcso-api-e2e/r2-seed (test-owned seed; remove after the measurements)"},"evidencePath":"/tmp/dcso-api-e2e/R2-API-04-seed/evidence.json"}

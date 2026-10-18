@@ -27,3 +27,15 @@
 | 2026-10-18 15:44 | API-15 | Started | | L-011 load failure on the real stack + L-010 rerun with final probe; fresh 10-Team seed |
 | 2026-10-18 15:58 | API-15 | Completed | Pass | L-011 failure logged/unloaded/other copy ok/retry 1+1; L-010 258 ms; first attempt stuck on my own readiness check (empty conversation), fixed |
 | 2026-10-18 16:00 | — | Completed | Pass | round complete; report and revision record written |
+| 2026-10-18 16:32 | R2 | Started | | round 2 (DR-001 rerun on merged state 05ab1c4790): probe path fix for append-only hub log, rebuild, base 2763e7c678 + merged S cases, L-001/L-002/L-004 |
+| 2026-10-18 16:34 | API-02/API-12 | Started | | merged state rerun |
+| 2026-10-18 16:34 | API-02/API-12 | Completed | Pass | 5/5 on merged build |
+| 2026-10-18 16:34 | API-04 | Started | | R2 seed 50 Teams/300 unrelated with merged server -> /tmp/dcso-api-e2e/r2-seed |
+| 2026-10-18 16:36 | API-04 | Completed | Pass | R2 seed: 300 children, 300 unrelated, hub log 2.61 MB (append-only active file) |
+| 2026-10-18 16:36 | API-05 | Started | | R2 base 2763e7c678 S cases, 2 samples |
+| 2026-10-18 16:37 | API-05 | Completed | see report | base2 run exit recorded |
+| 2026-10-18 16:37 | API-06 | Started | | R2 merged S cases, 3 samples, compare base2 |
+| 2026-10-18 16:39 | API-06 | Completed | Pass | merged T-1 54-69 ms 0 member reqs; T-3 1+1; rows equal base2 |
+| 2026-10-18 16:39 | API-07 | Started | | R2 merged live L-001..L-011 on large hub |
+| 2026-10-18 16:41 | API-07 | Completed | Pass | R2 merged live L-001..L-011 all Pass; batches seen in L-002; base2 worktree and seed removed |
+| 2026-10-18 16:42 | R2 | Completed | Pass | round 2 report and revision record updated |

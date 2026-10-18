@@ -18,11 +18,17 @@ The plan. Results, confidence and the broader-validation decision are in `api-e2
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code review pass CRR-001 from `/software_engineering_team/code_reviewer`
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2 (DR-001 rerun on the merged state: `05ab1c4790`, merge of `origin/personal` @ `2763e7c678`)
+- Trigger: round 1: code review pass CRR-001. Round 2: CRR-003 forwarding delivery's DR-001 request for integrated-state evidence, with the probe blocker (the hub log is now append-only `communication_messages_*.jsonl`)
 - Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: this file, round 1
+- Latest Authoritative Investigation: this file, round 2. Round-2 plan:
+  - Fix the probe's hub-log reader.
+  - Rebuild the merged worktree; build the new base `2763e7c678`.
+  - Rerun the server E2E (API-02, API-12).
+  - Reseed, then run the S cases on base and merged with row comparison, and the live cases L-001..L-011.
+  - Reuse IMP-10..IMP-18. Do not rerun the desktop instance (no shell change in the merge).
+  The test-validity decisions are unchanged: the merge only moved the probe's own read of the hub log, and the probe still verifies the same behavior.
 
 All paths above are relative to the ticket folder `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/tickets/in-progress/delegated-copies-slow-open/`.
 

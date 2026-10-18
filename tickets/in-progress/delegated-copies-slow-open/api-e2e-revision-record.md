@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md`, CRR-001 Pass; round 1 | SR-002, SR-004, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 95.0% |
+| API-REV-002 | Code reviewer, CRR-003 (merge re-review), forwarding delivery DR-001; round 2 | IR-002, CRR-002, CRR-003, DR-001 | Pass / 95.0% | Pass / 95.0% |
 
 ## Revision Entries
 
@@ -41,3 +42,32 @@ None.
   - CAND-003 under continuous streaming is not reproduced.
   - Live cases were not run inside the desktop shell.
   - Out-of-scope follow-ups: OBS-1 (live view lists part of the hub log, pre-existing), OBS-2 (an extra hub-view request per hub click, now visible), OBS-3 (unbroken 60 KB-token conversations take ~86 s of client processing, pre-existing).
+
+### API-REV-002 — Integrated-state rerun (DR-001): probe reads the append-only hub log; S and live cases on the merged build
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-003), forwarding `delivery-revision-record.md` DR-001; round 2
+- Triggering finding or case IDs: CRR-003 blocker. The probe read `collaboration/communication_messages.json`; the merged base stores `communication_messages_<6 digits>.jsonl` plus `communication_messages_active.jsonl`. DR-001 asks for the large-hub S cases and L-001, L-002, L-004 on the integrated state.
+- Related revision IDs: IR-002, CRR-002, CRR-003, DR-001
+- Why this revision was recorded: integrated-state evidence before delivery resumes
+- Coverage decisions or durable test paths changed: `autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs` now reads the hub log as the server's `MessageLog` does (sealed files in order, then the active file; complete lines; each id once). Nothing else changed.
+- Cases added, changed, removed, or rechecked:
+  - Rerun: R2-API-02 (server E2E + fixture regression), R2-API-04 (seed), R2-API-05 (new base), R2-API-06 (merged S cases + row comparison), R2-API-07 (L-001..L-011).
+  - Reused: R2-API-R (IMP-10..IMP-18).
+  - Not rerun: R2-API-11 (desktop).
+- Commands, environment, fixture, or broader-validation delta:
+  - Merged worktree rebuilt; new base worktree `2763e7c678`.
+  - Round-2 seed made with the merged server: 2.61 MB in `communication_messages_active.jsonl`.
+
+#### Prior Failure Resolution
+
+None (round 1 had no failures).
+
+- Canonical artifacts and sections updated: execution report (Round, environments, Round 2 cases, AC-008 table, scorecard note, durable coverage, cleanup, OBS-1), coverage investigation meta, progress log, `evidence/R2-*`, `evidence/API-02-12-merged-e2e.log`
+- Prior result and confidence: Pass / 95.0%
+- Current result and confidence: Pass / 95.0%
+- New or remaining failure IDs: none
+- Recommended owner: `/software_engineering_team/code_reviewer` for proportional review of the probe change
+- Remaining risks, blocked evidence, or untested scope:
+  - Desktop shell not rerun on the merged build.
+  - CAND-003 under continuous streaming.
+  - OBS-1..OBS-3 unchanged. OBS-1 is still present with append-only logs: live view 14 of 252.

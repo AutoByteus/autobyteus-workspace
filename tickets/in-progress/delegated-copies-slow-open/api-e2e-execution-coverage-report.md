@@ -3,10 +3,19 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1, code review pass CRR-001 (`/software_engineering_team/code_reviewer`)
-- Prior round reviewed: N/A
+- Round and trigger: round 2, the delivery request DR-001 for integrated-state evidence, forwarded with CRR-003 (re-review of the merge of `origin/personal` @ `2763e7c678`) by `/software_engineering_team/code_reviewer`. Round 1 (API-REV-001) was the first pass.
+- Prior round reviewed: round 1. All of its cases passed; no prior failures to recheck.
+- Round 2 summary:
+  - Probe fix (blocker from CRR-003): the probe read the hub log as `collaboration/communication_messages.json`. On the merged state that log is append-only: `communication_messages_<6 digits>.jsonl` (sealed) plus `communication_messages_active.jsonl`. The probe now reads it as the server's `MessageLog` does (sealed files in order, then the active file, complete lines, each id once).
+  - Rebuilt the merged worktree (`pnpm install --frozen-lockfile`, server build, `nuxt prepare`). Built a fresh base worktree at `2763e7c678`.
+  - Reran the server E2E (R2-API-02).
+  - Reseeded the large hub with the merged server (R2-API-04).
+  - Ran the S cases on the new base (R2-API-05) and on the merged build, with row comparison (R2-API-06).
+  - Ran all live cases L-001..L-011 on the merged build (R2-API-07). Delivery asked for L-001, L-002 and L-004.
+  - The desktop instance was not rerun (R2 cases table).
+  - IMP-10..IMP-18 are reused: they ran on `2cb21ab41e`, and only `tickets/` changed since.
 - Deviations from the investigation's plan, and why:
   - API-07..API-10 ran as one probe run on the large hub (cases L-001..L-008), not as separate runs. API-08 = L-007, API-09 = L-004, API-10 = L-005 + L-006.
   - Cases added during execution:
@@ -39,6 +48,8 @@
 | ENV-1 | worktree HEAD `f30b469079` (code = `54e5356ae6`; later commits are tickets-only) + this round's uncommitted test files | macOS 26.5.2, 10 CPUs, shared machine (load average 5–190 during the round, logged per run) | node 22.23.1, in-process Studio server (vitest), scripted AGY `agy-failure-cli.mjs` (`linked_skills`) | temp data dir and private HOME per suite (harness), clean env (`env -i`) |
 | ENV-2 | fix build: same commit; `autobyteus-server-ts/dist` + Nuxt dev from the worktree | same | probe-owned backend `dist/app.js` + Nuxt dev + headless Google Chrome 155 (playwright-core), viewport 1440×1100, en-US | copy of the test-owned seed per run, free ports, private HOME, scripted AGY |
 | ENV-3 | base build `5ceb43039a` (git worktree under `/tmp`, `pnpm install`, server prebuild + build, `nuxt prepare`) | same | same as ENV-2 with base `dist/app.js` and base Nuxt dev; probe file from the fix worktree | same seed copy as ENV-2 |
+| ENV-5 | merged build: worktree `05ab1c4790` (code = `2cb21ab41e`, merge of `origin/personal` @ `2763e7c678`), rebuilt `dist` + Nuxt dev | macOS 26.5.2 (load average 7–66 during round 2) | as ENV-2 | as ENV-2; round-2 seed |
+| ENV-6 | new base build `2763e7c678` (git worktree under `/tmp`, install + prebuild + build + `nuxt prepare`) | same | as ENV-3 | round-2 seed copy |
 | ENV-4 | fix build packaged: `pnpm --silent isolated-app start --build --data-root <copy of seed>` | same | AutoByteus.app `electron-dist/mac-arm64` (worktree build), Electron renderer Chrome 148 over CDP | instance `iso-49384-a072`, own ports 49384/49385, data root `/private/tmp/dcso-api-e2e/desktop-root` (seed copy, removed after) |
 
 Seed (API-04): 50 Team copies × 6 members (300 child agents), one Project Task each, 250 copy→hub report messages of 10 KB (hub message log 2.63 MB, hub view 2.73 MB), 2 marker member conversations, a second hub with 2 copies, and 300 stopped unrelated team runs in another workspace. Memory 12.6 MB, 352 team folders. Everything was created through public GraphQL/WebSocket APIs on ENV-2's server (`evidence/API-04-seed/seed-manifest.json`). A small seed (8 Teams, 3 unrelated runs) and two 10-Team seeds were made the same way for the AC-002 size comparison and for L-010/L-011.
@@ -69,6 +80,18 @@ Seed (API-04): 50 Team copies × 6 members (300 child agents), one Project Task 
 | API-14 | QR-002 / AC-004 for a copy with a multi-MB conversation | fix build, running hub (10-Team seed) | L-010: 20 messages of 60 KB sent to a copy (`ECHO_INPUT`), cold page, open it; `--large-shape words` (prose) and the earlier unbroken-token run; base comparison | ENV-2, ENV-3 | Pass (prose); unbroken-token shape → OBS-3 | `API-14-fix-words/evidence.json`, `API-14-large-copy/evidence.json`, `API-14-base-large-copy/evidence.json`, `OBS-3-unbroken-token-conversation.txt` | prose: `"clickToStoreLoadedMs": 261.7 … "projectionBytes": 2369240`; unbroken: `"clickToStoreLoadedMs": 86679 … "projectionServerMs": 19.5`; base: click `Timeout 30000ms exceeded` | The unbroken-token cost predates this ticket and is the same client processing the base did while staging every copy (OBS-3) |
 | API-15 | AC-004 alternate (failure) | fix build, real browser, one network failure injected on one copy's projection request (`page.route` abort) | `… --label fix-failure --live --cases L-011,L-001,L-010` on a fresh 10-Team seed | ENV-2 | Pass | `API-15-fix-failure/evidence.json` | `"logged": ["[agentRunCollaboration] Could not load 'api_e2e_engineer_…' of 'large_hub_manager_probe_…'. ApolloError: Failed to fetch…"]`, `"afterFailure": {"hydrated": false, "error": null …}`, `"otherCopyOpened": true`, `"retried": {"hydrated": true, "ops": {…Projection: 1, …FileChanges: 1}}`; L-010 rerun `257.6` ms | The first attempt waited forever on my own readiness check (a never-started copy has an empty conversation). I fixed the check to wait for "loaded" |
 
+### Round 2 cases (merged state, DR-001)
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| R2-API-R | merged regression | server/web suites, guards, native input, mutations, collapse probe | Reused: IMP-10..IMP-18 (implementation handoff, IR-002) | — | Pass | see handoff | see handoff | ran on `2cb21ab41e`; `git diff --name-only 2cb21ab41e 05ab1c4790` lists only `tickets/` files |
+| R2-API-02 | AC-009, REQ-004, R-B (+ fixture regression) | server GraphQL E2E on the merged build | `env -i … RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=… pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts --no-watch` | ENV-5 | Pass | `API-02-12-merged-e2e.log` | `Tests  5 passed (5)` | — |
+| R2-API-04 | AC-008 fixture | merged server, public APIs; probe reads the append-only log | `node tests/e2e/delegated-copies-large-hub-probe.mjs --seed-to /tmp/dcso-api-e2e/r2-seed --teams 50 --unrelated 300 …` | ENV-5 | Pass | `R2-API-04-seed/{evidence.json,seed-manifest.json,probe-output.txt}` | `"storedReports":250,"storedFiles":["communication_messages_active.jsonl"]`, `'hubMessageLogBytes': 2614147` | Exercises the probe change (setup completes on the new layout). OBS-1 is still present: live view 14 of 252 |
+| R2-API-05 | AC-008 baseline on the new base | base `2763e7c678`, browser + HTTP | `… --from-seed … --stack-root /tmp/dcso-api-e2e/base2 --label base2 --samples 2 --cases S` | ENV-6 | Pass (baseline observed) | `R2-API-05-base/*`, `R2-timing-summary.txt` | `S-001: T1 8385 ms ops {… 'GetAgentRunCollaborationMemberProjection': 312, 'GetRunFileChanges': 312}` | — |
+| R2-API-06 | AC-001..AC-005, AC-008, AC-009, QR-001, QR-002 on the merged build | browser + HTTP | `… --from-seed … --label merged --samples 3 --cases S --compare-with <R2-API-05 evidence.json>` | ENV-5 | Pass | `R2-API-06-merged/*`, `R2-timing-summary.txt` | `S-001: T1 69 ms ops {'GetAgentRunCollaboration': 2} \| T2 407 ms … \| T3 65 ms {…Projection: 1, …FileChanges: 1} \| reopen 13 ms {}`; `comparison {'collapsedEqual': True, 'expandedEqual': True …}`; scoped artifact median 6.2 ms | — |
+| R2-API-07 | AC-003 (running), AC-004 (failure), AC-006, AC-007, R-004, FU-4, CAND-003 on the merged build with batched content | running large hub | `… --from-seed … --label merged-live --live --cases L` (L-001..L-011) | ENV-5 | Pass | `R2-API-07-live/*` | L-001 T1 62 ms, memberOps `{}`; L-002 `teamsAfter: 51`, memberOps = allMemberOps = 1 + 1, events include `agent_presentation_batch`; L-004 `'state': 'queued'`, hydrated; L-010 318.9 ms; L-011 failure logged and retried 1 + 1; L-006 613 ms | L-001, L-002 and L-004 were the cases delivery asked for |
+| R2-API-11 | desktop shell | — | not rerun | — | Not Tested | — | — | The merge changed renderer and server code only (no shell code). The renderer is proven in the browser. A packaged rebuild would add shell timing, not new behavior |
+
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
@@ -81,20 +104,21 @@ Seed (API-04): 50 Team copies × 6 members (300 child agents), one Project Task 
 | AC-006 live status, complete conversation incl. output before opening, sending wakes, pending input | Yes | API-07 (L-002, L-003), API-08 (L-007), API-09 (L-004), API-L008, API-L009, API-R3 | Proven | Tool approvals were not exercised live (scripted AGY auto-executes); covered by the unit reconciliation cases in API-R2/R4 |
 | AC-007 new delegation: new row, no request for unopened copies, opened copy keeps its state | Yes | API-07 L-002 | Proven | — |
 | AC-008 baseline vs fixed timings and the regression check command | Yes | API-04, API-05, API-06, API-11; summary below | Proven | — |
+| Round 2 (merged state) | — | R2-API-02, R2-API-06, R2-API-07, R2-API-R | All AC-001..AC-009 re-proven on the merged build (AC-008: table below, merged column) | — |
 | AC-009 one copy's artifact lookup independent of other stored runs | Yes | API-02 (scoped read over GraphQL), API-06 S-API (scoped 3.2 ms with 3 unrelated runs → 5.6 ms with 300; generic 3.9 → 41.8 ms), API-R1 | Proven | — |
 
 ### AC-008: baseline vs fixed
 
 Same seed for every build (50 Teams × 6 = 300 child agents, 300 unrelated team runs, 2.63 MB hub log). Times are page-clock ms; the regression check is the request counts.
 
-| Measure | Base `5ceb43039a` (browser) | Fix (browser, 3 samples) | Fix (desktop, cold sample) | QR |
-| --- | --- | --- | --- | --- |
-| Hub row → copy rows (T-1) | 7303 / 7288 ms after 312 projection + 312 artifact requests | 56 / 47 / 49 ms; 1 view request per hub, 0 member requests | 45 ms | QR-001 ≤ 2 s: met |
-| Hub click → hub conversation (T-2) | 388 / 360 ms, then 300 + 301 member requests (re-staging) | 390 / 381 / 350 ms; 0 member requests (running hub: 416 ms) | 225 ms | QR-002 ≤ 2 s: met |
-| Copy click → copy conversation (T-3) | 54 / 50 ms (already preloaded) | 61 / 56 / 56 ms; exactly 1 projection + 1 artifact request; reopen 11–12 ms, 0 requests | 55 ms | QR-002 ≤ 2 s: met |
-| Copy with a 2.37 MB conversation | (base pays this inside staging, before the rows) | 262 / 258 ms | — | met |
-| Server: a copy's artifact lookup | generic 37.8 ms (scoped query absent) | scoped 5.6 ms (generic 41.8 ms) | scoped 4.7 ms | QR-002 ≤ 100 ms: met |
-| Server: hub view / hub conversation | 21.6 ms (2.73 MB) / 12.3 ms | 23.8 ms / 12.7 ms | 23.5 ms / 7.9 ms | — |
+| Measure | Base `5ceb43039a` (browser) | Fix (browser, 3 samples) | Fix (desktop, cold sample) | Round 2: base `2763e7c678` | Round 2: merged (browser) | QR |
+| --- | --- | --- | --- | --- | --- | --- |
+| Hub row → copy rows (T-1) | 7303 / 7288 ms after 312 projection + 312 artifact requests | 56 / 47 / 49 ms; 1 view request per hub, 0 member requests | 45 ms | 8385 / 9073 ms after 312 + 312 | 69 / 56 / 54 ms, 0 member requests (running: 62 ms) | QR-001 ≤ 2 s: met |
+| Hub click → hub conversation (T-2) | 388 / 360 ms, then 300 + 301 member requests (re-staging) | 390 / 381 / 350 ms; 0 member requests (running hub: 416 ms) | 225 ms | 409 / 389 ms, then 300 + 301 | 407 / 370 / 364 ms (running: 394 ms) | QR-002 ≤ 2 s: met |
+| Copy click → copy conversation (T-3) | 54 / 50 ms (already preloaded) | 61 / 56 / 56 ms; exactly 1 projection + 1 artifact request; reopen 11–12 ms, 0 requests | 55 ms | 58 / 55 ms (preloaded) | 65 / 64 / 64 ms, 1 + 1; reopen 13–42 ms, 0 requests | QR-002 ≤ 2 s: met |
+| Copy with a 2.37 MB conversation | (base pays this inside staging, before the rows) | 262 / 258 ms | — | — | 319 ms | met |
+| Server: a copy's artifact lookup | generic 37.8 ms (scoped query absent) | scoped 5.6 ms (generic 41.8 ms) | scoped 4.7 ms | generic 44.0 ms | scoped 6.2 ms (generic 44.4 ms) | QR-002 ≤ 100 ms: met |
+| Server: hub view / hub conversation | 21.6 ms (2.73 MB) / 12.3 ms | 23.8 ms / 12.7 ms | 23.5 ms / 7.9 ms | 26.3 ms / 13.7 ms | 25.3 ms / 13.3 ms | — |
 
 - Regression check commands:
   - repository: `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/agentRunCollaborationLazyChildren.spec.ts` (5 vs 50 Teams: one view request, zero member requests);
@@ -120,7 +144,7 @@ Same seed for every build (50 Teams × 6 = 300 child agents, 300 unrelated team 
 | Durable regression coverage quality and relevance | 85% | 95% | Server E2E for the new query (API-02); large-hub probe with package script, runnable against any build; the 5-vs-50 unit spec (API-R2) | The probe is a manual layer (not in CI), like the other browser probes | — |
 
 - Overall post-repository confidence: 80% (API-R*, API-02, API-03)
-- Overall final confidence: 95.0% ((96 + 97 + 93 + 93 + 96 + 95 + 95) / 7)
+- Overall final confidence: 95.0% ((96 + 97 + 93 + 93 + 96 + 95 + 95) / 7). Round 2 reproduces every round-1 result on the merged build. The scores are unchanged: the desktop shell was not rerun on the merged build, but the category stays at 95% because the merge changed no shell code.
 - Calculation method: simple average
 - Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
 - Any final applicable category below `90%`: `No`
@@ -161,6 +185,7 @@ Same seed for every build (50 Teams × 6 = 300 child agents, 300 unrelated team 
 | `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs` (`GENERATE_IMAGE:<path>` directive in `linked_skills`) | Updated | API-02, API-12 | — |
 | `autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs` | Added | API-04..API-11, API-14, API-15 | — |
 | `autobyteus-web/package.json` (`test:e2e:delegated-copies-large-hub`) | Updated | API-13 | — |
+| `autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs` (round 2: append-only hub-log reader for seeding, `messageLogObservation` and `hubMessageLogBytes`) | Updated | R2-API-04..R2-API-07 | — |
 
 - Added or updated paths attached for proportional test-code review: `Yes`
 - Diff or repository evidence supplied for removed paths: N/A
@@ -182,13 +207,14 @@ Same seed for every build (50 Teams × 6 = 300 child agents, 300 unrelated team 
 | Probe stacks (backend, Nuxt, Chrome, run-root copies, private HOMEs) | Yes | probe `finally` per run; three private HOMEs left by debug runs I killed were removed by hand | evidence `cleanup` blocks show `runRootRemoved: true`, ports closed; no probe processes left |
 | Isolated instance `iso-49384-a072` and its data root | Yes | `isolated-app stop`, `rm -rf /private/tmp/dcso-api-e2e/desktop-root` | stopped, ports released, data root removed |
 | `autobyteus-web/electron-dist/`, rebuilt `autobyteus-server-ts/dist/` | Yes (build outputs) | left in place (untracked build outputs, same source) | — |
+| Round 2: base worktree `/tmp/dcso-api-e2e/base2`, seed `/tmp/dcso-api-e2e/r2-seed` | Yes | `git worktree remove --force` + prune; `rm -rf` | removed; probe stacks closed (`runRootRemoved: true`, ports closed) |
 | `/tmp/dcso-api-e2e/` probe outputs and logs | Yes | kept outside the repository; the evidence used is copied into the ticket | — |
 
 ## Out-Of-Scope Observations (follow-ups)
 
 | ID | Observation | Evidence | Pre-existing? | Scope / Owner |
 | --- | --- | --- | --- | --- |
-| OBS-1 | A running hub's live view lists only part of its stored message log. Live: 11 of 252, 4 of 42, 3 of 22. After the hub stops, the stored view lists all of them. This follows copies sending the hub several messages in one parallel batch | `OBS-1-live-view-message-gap.txt` | Yes, same on base `5ceb43039a` | Outside the Change Scope (message area; FU-2/autobyteus-114 neighbourhood). Follow-up for the Project Task manager |
+| OBS-1 | A running hub's live view lists only part of its stored message log. Live: 11 of 252, 4 of 42, 3 of 22; on the merged state (append-only logs): 14 of 252 (`R2-API-04-seed/probe-output.txt`). After the hub stops, the stored view lists all of them. This follows copies sending the hub several messages in one parallel batch | `OBS-1-live-view-message-gap.txt` | Yes, same on base `5ceb43039a` | Outside the Change Scope (message area; FU-2/autobyteus-114 neighbourhood). Follow-up for the Project Task manager |
 | OBS-2 | A hub click issues `GetAgentRunCollaboration` twice for the hub (base: once). Likely cause from reading the code: `useAgentRunCollaborationSync`'s watch key includes `bindingRevision`, and the store dedupes only an in-flight inspection. The base's slow staging used to absorb the second trigger | `OBS-2-hub-click-double-view-request.txt` | The double trigger is pre-existing; the extra request is now visible because inspection is fast | Non-blocking: one extra 2.7 MB view per hub click, T-2 still 350–390 ms. Not an AC violation. Follow-up |
 | OBS-3 | A copy whose conversation consists of 60 KB single-token messages (2.46 MB) takes ~86.7 s of client processing (server 19.5 ms). The same size in prose takes 262 ms | `OBS-3-unbroken-token-conversation.txt` | Yes; base freezes on the same content while staging every copy | Outside the Change Scope (conversation building/rendering). Follow-up |
 
@@ -198,4 +224,4 @@ Same seed for every build (50 Teams × 6 = 300 child agents, 300 unrelated team 
 - Criteria not proven, or parts only the user can check: `None`
 - Preliminary classification and recommended owner: N/A
 - Next recipient from `get_handoff_rules`: see the handoff message (code reviewer for proportional test-code review)
-- Notes: the classification stays Medium / High. OBS-1..OBS-3 go as follow-ups. None blocks this ticket's acceptance criteria.
+- Notes: round 2 (merged state): Pass. The probe change needs the code reviewer's proportional review. The classification stays Medium / High. OBS-1..OBS-3 go as follow-ups. None blocks this ticket's acceptance criteria.
