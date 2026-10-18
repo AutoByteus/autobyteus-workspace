@@ -30,7 +30,7 @@ The copy rows of a standalone run (the hub) now come from its collaboration view
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: SR-004 (design), SR-002 (requirements)
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: N/A
+- Related code-review revision IDs: CRR-001 (Pass, no findings; Important Assumptions 1–2 accepted; `code-review-report.md`). Informational, no implementation change.
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
 - Triggering finding IDs: N/A
