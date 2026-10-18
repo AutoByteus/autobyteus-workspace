@@ -38,7 +38,7 @@ class DummyLLM extends BaseLLM {
   }
 }
 
-const NOTICE = "[Platform notice — skill updated]\n- code-review (/s/code-review/SKILL.md): SKILL.md";
+const NOTICE = "[Platform notice — skill updated]\n\nYour skill package `code-review` has been updated (/s/code-review).\n\nChanged files:\n- SKILL.md (changed)";
 const tempDirs: string[] = [];
 afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));

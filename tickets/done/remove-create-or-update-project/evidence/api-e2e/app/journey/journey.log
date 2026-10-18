@@ -1,0 +1,39 @@
+[2026-10-18T05:40:15.798Z] package imported {"packageId":"local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fremove-create-or-update-project%2Ftickets%2Fin-progress%2Fremove-create-or-update-project%2Fevidence%2Fapi-e2e%2Ftest-package","displayName":"test-package","path":"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/test-package","sourceKind":"LOCAL_PATH","sharedAgentCount":3}
+[2026-10-18T05:40:15.801Z] package agent definitions [{"id":"pts-new-tools","name":"PTS New Tools","toolNames":["list_projects","create_project","update_project"]},{"id":"pts-old-alone","name":"PTS Old Alone","toolNames":["create_or_update_project"]},{"id":"pts-old-listed","name":"PTS Old Listed","toolNames":["list_projects","create_or_update_project","create_project","update_project","list_project_tasks","create_task","update_task","read_file"]}]
+[2026-10-18T05:40:15.806Z] CASE APP-OLD-MIXED START
+[2026-10-18T05:40:16.028Z] launch PTS Old Listed (antigravity_cli) {"success":true,"message":"Agent run created successfully.","runId":"pts_old_listed_b1f39488fe2e46db97d67df9f4c34e6b"}
+[2026-10-18T05:40:16.232Z]   PTS Old Listed lists ["list_projects","create_or_update_project","create_project","update_project","list_project_tasks","create_task","update_task","read_file"]; exposed: ["create_project","create_task","delegate_task","list_project_tasks","list_projects","send_message_to","update_project","update_task"]
+[2026-10-18T05:40:16.746Z]   create_or_update_project -> refused ["MCP error -32602: Unknown MCP tool"]
+[2026-10-18T05:40:17.263Z]   create_project({"name":"PTS OldListed 9f51","description":"via create_project"}) -> ok {"project":{"projectId":"project_a26e154f-966b-4b69-b0d8-6d948fc9c7be","name":"PTS OldListed 9f51","description":"via create_project","workspaces":[]}}
+[2026-10-18T05:40:17.779Z]   update_project({"project_id":"project_a26e154f-966b-4b69-b0d8-6d948fc9c7be","description":"via update_project"}) -> ok {"project":{"projectId":"project_a26e154f-966b-4b69-b0d8-6d948fc9c7be","name":"PTS OldListed 9f51","description":"via update_project","workspaces":[]}}
+[2026-10-18T05:40:17.910Z] CASE APP-OLD-MIXED PASS
+[2026-10-18T05:40:17.911Z] CASE APP-OLD-ALONE START
+[2026-10-18T05:40:18.156Z] launch PTS Old Alone (antigravity_cli) {"success":true,"message":"Agent run created successfully.","runId":"pts_old_alone_273c04f72c9740f0ad6e5f1b10ffcedb"}
+[2026-10-18T05:40:18.678Z]   PTS Old Alone lists ["create_or_update_project"]; exposed: ["delegate_task","send_message_to"]
+[2026-10-18T05:40:19.190Z]   create_or_update_project -> refused ["MCP error -32602: Unknown MCP tool"]
+[2026-10-18T05:40:19.274Z] CASE APP-OLD-ALONE PASS
+[2026-10-18T05:40:19.275Z] CASE APP-NEW START
+[2026-10-18T05:40:19.443Z] launch PTS New Tools (antigravity_cli) {"success":true,"message":"Agent run created successfully.","runId":"pts_new_tools_6778b04dd24a40519bb673eda10c3d8f"}
+[2026-10-18T05:40:19.960Z]   PTS New Tools lists ["list_projects","create_project","update_project"]; exposed: ["create_project","delegate_task","list_projects","send_message_to","update_project"]
+[2026-10-18T05:40:20.470Z]   create_project({"name":"PTS New 24e9","description":"made","workspaces":[{"workspace_path":"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-a","description":"A"}]}) -> ok {"project":{"projectId":"project_3329b093-9bee-446a-916b-30042e534eb7","name":"PTS New 24e9","description":"made","workspaces":[{"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/
+[2026-10-18T05:40:20.982Z]   update_project({"project_id":"project_3329b093-9bee-446a-916b-30042e534eb7","name":"PTS New 24e9 renamed"}) -> ok {"project":{"projectId":"project_3329b093-9bee-446a-916b-30042e534eb7","name":"PTS New 24e9 renamed","description":"made","workspaces":[{"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/
+[2026-10-18T05:40:21.494Z]   update_project({"project_id":"project_3329b093-9bee-446a-916b-30042e534eb7","workspaces":[{"workspace_path":"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-b"}]}) -> ok {"project":{"projectId":"project_3329b093-9bee-446a-916b-30042e534eb7","name":"PTS New 24e9 renamed","description":"made","workspaces":[{"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/
+[2026-10-18T05:40:22.003Z]   update_project({"project_id":"project_3329b093-9bee-446a-916b-30042e534eb7","workspaces":[]}) -> ok {"project":{"projectId":"project_3329b093-9bee-446a-916b-30042e534eb7","name":"PTS New 24e9 renamed","description":"made","workspaces":[]}}
+[2026-10-18T05:40:22.517Z]   create_project({"project_id":"project_3329b093-9bee-446a-916b-30042e534eb7","name":"Must not be created"}) -> isError {"error":{"code":"PROJECT_TOOL_ARGUMENT_INVALID","message":"Unsupported tool argument."}}
+[2026-10-18T05:40:23.037Z]   update_project({"project_id":"project_3329b093-9bee-446a-916b-30042e534eb7"}) -> isError {"error":{"code":"PROJECT_PATCH_REQUIRED","message":"Supply name, description and/or workspaces to update a Project."}}
+[2026-10-18T05:40:23.550Z]   update_project({"name":"x"}) -> isError {"error":{"code":"PROJECT_TOOL_ARGUMENT_INVALID","message":"project_id must be a non-empty string."}}
+[2026-10-18T05:40:24.060Z]   create_project({"name":"  "}) -> isError {"error":{"code":"PROJECT_NAME_REQUIRED","message":"Project name is required."}}
+[2026-10-18T05:40:24.139Z] CASE APP-NEW PASS
+[2026-10-18T05:40:24.140Z] CASE REAL-OLD-MIXED START
+[2026-10-18T05:40:24.183Z] launch PTS Old Listed (claude_agent_sdk) {"success":true,"message":"Agent run created successfully.","runId":"pts_old_listed_f0b68e7a694f4042948c54ce5e0151cf"}
+[2026-10-18T05:40:30.420Z] CASE REAL-OLD-MIXED PASS
+[2026-10-18T05:40:30.422Z] CASE REAL-OLD-ALONE START
+[2026-10-18T05:40:30.462Z] launch PTS Old Alone (claude_agent_sdk) {"success":true,"message":"Agent run created successfully.","runId":"pts_old_alone_192c908cbc294390af3b0ee2b10431c6"}
+[2026-10-18T05:40:39.574Z] CASE REAL-OLD-ALONE PASS
+[2026-10-18T05:40:39.580Z] CASE REAL-NEW START
+[2026-10-18T05:40:39.633Z] launch PTS New Tools (claude_agent_sdk) {"success":true,"message":"Agent run created successfully.","runId":"pts_new_tools_2c8bc3425fd04bf1b9584db47bf6156a"}
+[2026-10-18T05:40:48.100Z] CASE REAL-NEW PASS
+[2026-10-18T05:40:48.101Z] CASE NATIVE-LAUNCH START
+[2026-10-18T05:40:48.158Z] launch PTS Old Listed (autobyteus) {"success":true,"message":"Agent run created successfully.","runId":"pts_old_listed_77109f5f90584c4cb5336ac0ec23b8f4"}
+[2026-10-18T05:40:51.191Z] CASE NATIVE-LAUNCH PASS
+[2026-10-18T05:40:51.192Z] SUMMARY 7 cases, 0 failed []

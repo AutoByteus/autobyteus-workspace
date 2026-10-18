@@ -1,0 +1,14 @@
+# Temporary probe (not durable): Grok 1.0.62 native skill discovery for a test-owned workspace
+# Workspace .grok/skills: link-probe-real (real folder), link-probe-linked (absolute link to <pkg>/agents/a/skills/link-probe-linked)
+# Probe script: /tmp/skill-probe-scripts/grok-skills-list.mjs (ACP initialize + _x.ai/skills/list {cwd, refresh:true}); grok agent --no-leader stdio
+## ACP _x.ai/skills/list
+skills/list error null
+probe rows []
+total rows 33 scopes ["user","bundled"]
+## grok inspect (text, Environment + Skills header)
+
+  Environment
+  └ Version: 1.0.62 [stable]
+  └ CWD: <probe>/ws
+  └ Project trusted: no
+  Skills (33)

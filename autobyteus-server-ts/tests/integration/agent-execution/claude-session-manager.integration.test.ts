@@ -149,7 +149,7 @@ const normalizeWrittenText = (value: string): string => value.replace(/\r?\n$/u,
 
 const createExplicitSessionManager = (): ClaudeSessionManager =>
   new ClaudeSessionManager(
-    { activateForRun: () => ({ kind: "not_exposed" as const }) },
+    { activateForRun: () => ({ kind: "not_exposed" as const }), deactivateForRun: () => 0 },
     getWorkspaceManager(),
     getClaudeSdkClient(),
     getClaudeWorkspaceSkillMaterializer(),

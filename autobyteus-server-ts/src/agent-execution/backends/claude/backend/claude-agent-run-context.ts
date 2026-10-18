@@ -1,4 +1,3 @@
-import type { RuntimeSkillProfile } from "../../shared/runtime-skill-profile.js";
 import type { Skill } from "../../../../skills/domain/models.js";
 import type { ClaudeSessionConfig } from "../session/claude-session-config.js";
 import type { AgentRunContext as SharedAgentRunContext } from "../../../domain/agent-run-context.js";
@@ -6,7 +5,6 @@ import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-ma
 import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 
 export class ClaudeAgentRunContext {
-  readonly privateSkillProfile: RuntimeSkillProfile | null;
   readonly sessionConfig: ClaudeSessionConfig;
   readonly carpenterSystemPrompt: string;
   readonly runtimeToolExposure: RuntimeAgentToolExposure;
@@ -17,7 +15,6 @@ export class ClaudeAgentRunContext {
   activeTurnId: string | null;
 
   constructor(input: {
-    privateSkillProfile?: RuntimeSkillProfile | null;
     sessionConfig: ClaudeSessionConfig;
     carpenterSystemPrompt: string;
     runtimeToolExposure: RuntimeAgentToolExposure;
@@ -27,7 +24,6 @@ export class ClaudeAgentRunContext {
     hasCompletedTurn?: boolean;
     activeTurnId?: string | null;
   }) {
-    this.privateSkillProfile = input.privateSkillProfile ?? null;
     this.sessionConfig = input.sessionConfig;
     this.carpenterSystemPrompt = input.carpenterSystemPrompt;
     this.runtimeToolExposure = input.runtimeToolExposure;

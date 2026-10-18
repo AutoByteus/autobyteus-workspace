@@ -1,4 +1,3 @@
-import { configuredSharedWorkspace } from "../../../workspaces/shared-workspace-binding.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 
@@ -28,7 +27,7 @@ export class CodexWorkspaceResolver {
         }
       } catch (error) {
         const registeredRoot = await this.workspaceManager.getRegisteredWorkspaceRootPath(normalizedWorkspaceId);
-        if (registeredRoot && await configuredSharedWorkspace(registeredRoot)) throw error;
+        if (registeredRoot) throw error;
         // fallback below
       }
     }

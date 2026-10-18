@@ -3,7 +3,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { spawnSync } from "node:child_process";
+import { execFile, spawnSync } from "node:child_process";
+import { promisify } from "node:util";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -89,10 +90,20 @@ const toolResult = (called: string): Record<string, any> => {
   const text = raw.content?.find?.((part: any) => part.type === "text")?.text;
   try { return JSON.parse(text); } catch { return { text: text ?? called }; }
 };
-/** Working directories of every live scripted AGY process (one per running agent; the cwd contains its run ID). */
-const liveAgyCwds = (): string[] => spawnSync("pgrep", ["-f", "agy-failure-cli"], { encoding: "utf8" }).stdout.trim().split("\n")
-  .filter(Boolean).map((pid) => (spawnSync("lsof", ["-a", "-d", "cwd", "-p", pid, "-Fn"], { encoding: "utf8" }).stdout
-    .split("\n").find((line) => line.startsWith("n")) ?? "").slice(1));
+const execFileAsync = promisify(execFile);
+/**
+ * Working directories of every live scripted AGY process (one per running agent; the cwd contains its run ID).
+ * Asynchronous, with one `lsof` call for all processes: the server under test runs in this process, so a synchronous
+ * scan (one `spawnSync` per process, about a second with a full folder running) froze the server and its timers.
+ */
+const liveAgyCwds = async (): Promise<string[]> => {
+  // pgrep exits 1 when nothing matches; lsof exits 1 when a listed process has just exited but still prints the others.
+  const pids = (await execFileAsync("pgrep", ["-f", "agy-failure-cli"]).catch(() => ({ stdout: "" }))).stdout.trim().split("\n").filter(Boolean);
+  if (pids.length === 0) return [];
+  const { stdout } = await execFileAsync("lsof", ["-a", "-d", "cwd", "-p", pids.join(","), "-Fn"])
+    .catch((error: { stdout?: string }) => ({ stdout: error.stdout ?? "" }));
+  return stdout.split("\n").filter((line) => line.startsWith("n")).map((line) => line.slice(1));
+};
 /**
  * Agent statuses and background-task updates on a root view: a Team view's `AGENT_STATUS` / `BACKGROUND_TASK_UPDATED`
  * frames, or an Agent/Org view's `agent_presentation` events carrying those messages.
@@ -121,20 +132,27 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
   /** Live/gone times of every agent's CLI process, sampled every 2 s for the whole suite. */
   const processTimes = new Map<string, { firstSeen: number; lastSeen: number }>();
   let sampler: ReturnType<typeof setInterval> | undefined;
-  const sample = () => {
-    const now = Date.now();
-    for (const cwd of liveAgyCwds()) {
-      const runId = /([^/]+)\/agy-project$/.exec(cwd)?.[1] ?? cwd;
-      const times = processTimes.get(runId);
-      if (times) times.lastSeen = now; else processTimes.set(runId, { firstSeen: now, lastSeen: now });
-    }
+  let sampling = false;
+  const sample = async () => {
+    if (sampling) return;
+    sampling = true;
+    try {
+      const now = Date.now();
+      for (const cwd of await liveAgyCwds()) {
+        const runId = /([^/]+)\/agy-project$/.exec(cwd)?.[1] ?? cwd;
+        const times = processTimes.get(runId);
+        if (times) times.lastSeen = now; else processTimes.set(runId, { firstSeen: now, lastSeen: now });
+      }
+    } finally { sampling = false; }
   };
   /** A CLI process for the run whose cwd mentions it is live now. */
-  const processLive = (agentRunId: string) => liveAgyCwds().some((cwd) => cwd.includes(agentRunId));
+  const processLive = async (agentRunId: string) => (await liveAgyCwds()).some((cwd) => cwd.includes(agentRunId));
+  const allGone = async (agentRunIds: readonly string[]) => { const cwds = await liveAgyCwds(); return agentRunIds.every((id) => !cwds.some((cwd) => cwd.includes(id))); };
 
   const graphql = async <T = any>(query: string, variables?: Record<string, unknown>): Promise<T> => {
     const response = await fetch(new URL("/graphql", url), { method: "POST",
-      headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+      headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) })
+      .catch((error: unknown) => { throw new Error(`GraphQL request failed: ${String((error as { cause?: unknown }).cause ?? error)}`, { cause: error }); });
     const body = await response.json() as { data?: T; errors?: unknown[] };
     if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
     return body.data;
@@ -200,7 +218,7 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
         { memberName: "worker", ref: ids.worker, refType: "AGENT", refScope: "SHARED" },
         { memberName: "squad", ref: ids.squad, refType: "AGENT_TEAM", refScope: "SHARED" }] } },
     )).createAgentOrgDefinition.id;
-    sampler = setInterval(sample, 2_000);
+    sampler = setInterval(() => void sample(), 2_000);
   }, 120_000);
 
   afterAll(async () => {
@@ -209,7 +227,7 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     for (const socket of sockets) socket.terminate();
     for (const run of [...active]) await terminate(run.kind, run.rootId).catch((error) => errors.push(String(error)));
     if (app) await app.close();
-    const leftover = liveAgyCwds().filter((cwd) => cwd.startsWith(dataDir));
+    const leftover = (await liveAgyCwds()).filter((cwd) => cwd.startsWith(dataDir));
     if (leftover.length) errors.push(`live AGY processes after close: ${leftover.join(", ")}`);
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
     for (const [key, value] of savedEnv) { if (value === undefined) delete process.env[key]; else process.env[key] = value; }
@@ -345,11 +363,11 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     const st = await timeline(stopCopy.ingress);
     await root.answered(quiet.ingress, quiet.address, "QUIET-FIRST");
     const quietIdle = await root.signal("quiet idle", (e) => e.agentRunId === quiet.ingress && e.kind === "status" && e.status === "idle");
-    for (const run of [background.ingress, team.ingress, quiet.ingress, doneCopy.ingress, stopCopy.ingress]) expect(processLive(run), run).toBe(true);
+    for (const run of [background.ingress, team.ingress, quiet.ingress, doneCopy.ingress, stopCopy.ingress]) expect(await processLive(run), run).toBe(true);
 
     // AC-006 control: the quiet copy is shut down one grace period after it went idle (the grace setting is in effect).
     const quietOffline = await root.signal("quiet offline", (e) => e.agentRunId === quiet.ingress && e.kind === "status" && e.status === "offline", GRACE_MS + 30_000);
-    await until(() => !processLive(quiet.ingress), `${kind}: quiet copy process gone`, 15_000);
+    await until(async () => !(await processLive(quiet.ingress)), `${kind}: quiet copy process gone`, 15_000);
     const quietShutdownMs = quietOffline.at - quietIdle.at;
 
     // While their steps run, the background copies are not shut down although their grace period has elapsed.
@@ -359,19 +377,19 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     for (const run of [background.ingress, ...team.members, doneCopy.ingress, stopCopy.ingress]) {
       expect(root.signals().filter((e) => e.agentRunId === run && e.status === "offline"), `${kind} ${run} offline while its step runs`).toEqual([]);
     }
-    for (const run of [background.ingress, team.ingress, doneCopy.ingress, stopCopy.ingress]) expect(processLive(run), `${kind} ${run} process`).toBe(true);
+    for (const run of [background.ingress, team.ingress, doneCopy.ingress, stopCopy.ingress]) expect(await processLive(run), `${kind} ${run} process`).toBe(true);
 
     // AC-007: Task DONE stops a copy whose background step is still running, at once.
     const doneAt = Date.now();
     await root.managerCalls(callTool("update_task", { task_id: doneCopy.taskId, status: "DONE" }));
     const doneStopped = await root.signal("DONE copy's task stopped", (e) => e.agentRunId === doneCopy.ingress && e.kind === "background" && e.status === "stopped", PROMPT_STOP_MS);
-    await until(() => !processLive(doneCopy.ingress), `${kind}: DONE copy process gone`, PROMPT_STOP_MS);
+    await until(async () => !(await processLive(doneCopy.ingress)), `${kind}: DONE copy process gone`, PROMPT_STOP_MS);
     const doneStopMs = Date.now() - doneAt;
 
     // AC-006: the Manager's message restores the shut-down quiet copy (a relaunch with its provider conversation).
     const launchesBefore = (await launches()).length;
     const woken = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: quiet.ingress, content: "Wake up. Marker QUIET-LATER." }));
-    expect(woken, `${kind} wake`).toMatchObject({ accepted: true, target_agent_run_id: quiet.ingress });
+    expect(woken, `${kind} wake: ${JSON.stringify(woken)}`).toMatchObject({ accepted: true, target_agent_run_id: quiet.ingress });
     await root.answered(quiet.ingress, quiet.address, "QUIET-LATER");
     const relaunches = (await launches()).slice(launchesBefore).filter((entry) => entry.cwd.includes(quiet.ingress));
     expect(relaunches, `${kind} quiet copy restore`).toHaveLength(1);
@@ -383,17 +401,17 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
       const before = root.signals().filter((e) => e.agentRunId === copy.ingress && e.kind === "status" && e.status === "offline" && e.at < completed.at);
       expect(before, `${kind} ${copy.ingress} offline before its step ended`).toEqual([]);
       const offline = await root.signal(`${copy.ingress} offline after its step`, (e) => e.agentRunId === copy.ingress && e.kind === "status" && e.status === "offline", GRACE_MS + 30_000);
-      await until(() => copy.members.every((member) => !processLive(member)), `${kind}: ${copy.ingress} processes gone`, 15_000);
+      await until(() => allGone(copy.members), `${kind}: ${copy.ingress} processes gone`, 15_000);
       return { completed, offline, runningMs: completed.at - (copy === background ? bg : tm).idle.at, shutdownAfterEndMs: offline.at - completed.at };
     };
     const [bgEnd, tmEnd] = await Promise.all([ended(background, "failed"), ended(team, "completed")]);
 
     // The root-stop copy is still live (its step runs on), then root stop stops it at once.
-    expect(processLive(stopCopy.ingress), `${kind} root-stop copy still live`).toBe(true);
+    expect(await processLive(stopCopy.ingress), `${kind} root-stop copy still live`).toBe(true);
     expect(root.signals().filter((e) => e.agentRunId === stopCopy.ingress && e.status === "offline")).toEqual([]);
     const stopAt = Date.now();
     await terminate(kind, root.rootId);
-    await until(() => !processLive(stopCopy.ingress), `${kind}: root-stop copy process gone`, PROMPT_STOP_MS);
+    await until(async () => !(await processLive(stopCopy.ingress)), `${kind}: root-stop copy process gone`, PROMPT_STOP_MS);
     const rootStopMs = Date.now() - stopAt;
     const stopCopyAliveMs = stopAt - st.idle.at;
 

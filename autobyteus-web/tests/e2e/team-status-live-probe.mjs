@@ -138,7 +138,7 @@ const createDefinitions = async (label) => {
   const names = { manager: `Manager ${s}`, worker: `Release Notes Writer ${s}`, helper: `Fact Checker ${s}`,
     squad: `Docs Review Team ${s}`, team: `Delivery Team ${s}`, org: `Delivery Org ${s}` };
   const ids = {};
-  ids.manager = await agent(names.manager, ['list_projects', 'list_project_tasks', 'create_or_update_project', 'create_or_update_task']);
+  ids.manager = await agent(names.manager, ['list_projects', 'list_project_tasks', 'create_project', 'update_project', 'create_task', 'update_task']);
   ids.worker = await agent(names.worker, []); ids.helper = await agent(names.helper, []);
   const team = async (name, coordinatorMemberName, nodes) => (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}',
     { input: { name, description: name, instructions: 'Deliver.', coordinatorMemberName, nodes } })).createAgentTeamDefinition.id;

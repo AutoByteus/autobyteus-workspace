@@ -195,10 +195,13 @@ describe("SkillUpdateNoticeService (integration)", () => {
     expect(message.senderType).toBe(SenderType.SYSTEM);
     expect(message.content).toBe([
       "[Platform notice — skill updated]",
-      "The following skills you use changed on disk since you last read them:",
-      `- code-review (${path.join(skillDir, "SKILL.md")}): SKILL.md`,
       "",
-      "Re-read the updated SKILL.md (and any files it points to) before continuing work that relies on these skills.",
+      `Your skill package \`code-review\` has been updated (${skillDir}).`,
+      "",
+      "Changed files:",
+      "- SKILL.md (changed)",
+      "",
+      "Re-read the updated files before continuing work that relies on this skill.",
     ].join("\n"));
     expect(fake.published[0]).toMatchObject({
       eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
@@ -231,13 +234,59 @@ describe("SkillUpdateNoticeService (integration)", () => {
     await world.service.onSkillFoldersChanged([skillDir]);
     await vi.waitFor(() => expect(fake.published).toHaveLength(1));
     expect(fake.posted).toHaveLength(1);
-    expect(fake.posted[0]!.content).toContain("): SKILL.md, references/a.md, references/b.md");
+    expect(fake.posted[0]!.content).toContain(
+      "Changed files:\n- SKILL.md (changed)\n- references/a.md (changed)\n- references/b.md (added)\n");
 
     await write(path.join(skillDir, "SKILL.md"), "v3");
     await write(path.join(skillDir, "SKILL.md"), "v2");
     await world.service.onSkillFoldersChanged([skillDir]);
     await settle();
     expect(fake.posted).toHaveLength(1);
+  });
+
+  it("lists exactly the files that differ, each with its status; no SKILL.md when only references changed", async () => {
+    const world = await createWorld();
+    const skillDir = await world.createSkill("agent-package-creation", {
+      "SKILL.md": "v1", "references/a.md": "a", "references/b.md": "b", "scripts/old.sh": "o",
+    });
+    world.useSkills("def-a", { "agent-package-creation": skillDir });
+    const fake = createRun(world, { runId: "run-a", definitionId: "def-a" });
+    await publish(world, fake);
+    fake.state.status = "running";
+
+    // Only reference files change.
+    await write(path.join(skillDir, "references/a.md"), "a2");
+    await write(path.join(skillDir, "references/b.md"), "b2");
+    await world.service.onSkillFoldersChanged([skillDir]);
+    await vi.waitFor(() => expect(fake.published).toHaveLength(1));
+    expect(fake.posted[0]!.content).toBe([
+      "[Platform notice — skill updated]",
+      "",
+      `Your skill package \`agent-package-creation\` has been updated (${skillDir}).`,
+      "",
+      "Changed files:",
+      "- references/a.md (changed)",
+      "- references/b.md (changed)",
+      "",
+      "Re-read the updated files before continuing work that relies on this skill.",
+    ].join("\n"));
+    expect(fake.posted[0]!.content).not.toContain("SKILL.md");
+
+    // SKILL.md edited, a reference added, a script deleted.
+    await write(path.join(skillDir, "SKILL.md"), "v2");
+    await write(path.join(skillDir, "references/new.md"), "n");
+    await fs.rm(path.join(skillDir, "scripts/old.sh"));
+    await world.service.onSkillFoldersChanged([skillDir]);
+    await vi.waitFor(() => expect(fake.published).toHaveLength(2));
+    expect(fake.posted[1]!.content).toContain([
+      "Changed files:",
+      "- SKILL.md (changed)",
+      "- references/new.md (added)",
+      "- scripts/old.sh (removed)",
+      "",
+      "Re-read the updated files before continuing work that relies on this skill.",
+      "Removed files are no longer available.",
+    ].join("\n"));
   });
 
   it("DS-003: an idle run is only marked; its next input takes the notice once it is delivered", async () => {
@@ -252,7 +301,7 @@ describe("SkillUpdateNoticeService (integration)", () => {
     expect(fake.posted).toHaveLength(0);
 
     const preface = await world.service.takePreface(fake.run);
-    expect(preface?.text).toContain(`- code-review (${path.join(skillDir, "SKILL.md")}): SKILL.md`);
+    expect(preface?.text).toContain(`Your skill package \`code-review\` has been updated (${skillDir}).\n\nChanged files:\n- SKILL.md (changed)\n`);
     expect(preface?.presentation).toEqual({ senderId: SKILL_UPDATE_NOTICE_SENDER_ID, content: preface?.text });
     // While in flight, no second notice is handed out.
     expect(await world.service.takePreface(fake.run)).toBeNull();
@@ -335,14 +384,14 @@ describe("SkillUpdateNoticeService (integration)", () => {
     await write(path.join(generation2, "SKILL.md"), "v2");
     await world.service.onSkillFoldersChanged([generation2]);
     await vi.waitFor(() => expect(fake.published).toHaveLength(1));
-    expect(fake.posted[0]!.content).toContain(`- code-review (${path.join(generation2, "SKILL.md")}): SKILL.md`);
+    expect(fake.posted[0]!.content).toContain(`Your skill package \`code-review\` has been updated (${generation2}).\n\nChanged files:\n- SKILL.md (changed)\n`);
 
     // The skill is uninstalled: it no longer resolves for the run.
     world.uninstall("code-review");
     await fs.rm(generation2, { recursive: true, force: true });
     await world.service.onSkillFoldersChanged([generation2]);
     await vi.waitFor(() => expect(fake.published).toHaveLength(2));
-    expect(fake.posted[1]!.content).toContain("- code-review: no longer available");
+    expect(fake.posted[1]!.content).toContain("Your skill package `code-review` is no longer available.");
     expect(fake.posted[1]!.content).not.toContain("Re-read");
     await vi.waitFor(() => expect(world.subsystem.watcher.watchedFolders()).toEqual([]));
   });
@@ -361,7 +410,7 @@ describe("SkillUpdateNoticeService (integration)", () => {
     await write(path.join(research, "SKILL.md"), "v2");
     await world.service.onSkillFoldersChanged([research]);
     await vi.waitFor(() => expect(fake.published).toHaveLength(1));
-    expect(fake.posted[0]!.content).toContain(`- deep-research (${path.join(research, "SKILL.md")}): SKILL.md`);
+    expect(fake.posted[0]!.content).toContain(`Your skill package \`deep-research\` has been updated (${research}).\n\nChanged files:\n- SKILL.md (changed)\n`);
     expect(fake.posted[0]!.content).not.toContain("no longer available");
 
     // The definition is deleted while the run is active; its skills are still installed.
@@ -369,7 +418,7 @@ describe("SkillUpdateNoticeService (integration)", () => {
     await write(path.join(review, "SKILL.md"), "v2");
     await world.service.onSkillFoldersChanged([review]);
     await vi.waitFor(() => expect(fake.published).toHaveLength(2));
-    expect(fake.posted[1]!.content).toContain(`- code-review (${path.join(review, "SKILL.md")}): SKILL.md`);
+    expect(fake.posted[1]!.content).toContain(`Your skill package \`code-review\` has been updated (${review}).\n\nChanged files:\n- SKILL.md (changed)\n`);
     expect(fake.posted[1]!.content).not.toContain("no longer available");
     expect(world.subsystem.watcher.watchedFolders()).toEqual([review, research].sort());
   });
@@ -430,8 +479,8 @@ describe("SkillUpdateNoticeService (integration)", () => {
     world.service.runPublished(restored.run, "restore");
 
     const preface = await world.service.takePreface(restored.run);
-    expect(preface?.text).toContain(`- code-review (${path.join(skillDir, "SKILL.md")}): SKILL.md`);
-    expect(preface?.text).toContain("- deep-research: no longer available");
+    expect(preface?.text).toContain(`Your skill package \`code-review\` has been updated (${skillDir}).\n\nChanged files:\n- SKILL.md (changed)\n`);
+    expect(preface?.text).toContain("Your skill package `deep-research` is no longer available.");
     expect(preface?.text).not.toContain("brand-new");
 
     // A run restored without a record (pre-feature run): re-created from current files, no notice.
@@ -523,7 +572,7 @@ describe("SkillUpdateNoticeService with the real folder watcher", () => {
     await write(path.join(skillDir, "SKILL.md"), "v2");
 
     await vi.waitFor(() => expect(posted).toHaveLength(1), { timeout: 5000 });
-    expect(posted[0]).toContain(`- code-review (${path.join(skillDir, "SKILL.md")}): SKILL.md`);
+    expect(posted[0]).toContain(`Your skill package \`code-review\` has been updated (${skillDir}).\n\nChanged files:\n- SKILL.md (changed)\n`);
   });
 });
 
@@ -589,7 +638,7 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
 
     await vi.waitFor(() => expect(dispatchUserInput).toHaveBeenCalledOnce());
     expect(dispatched(0).content.startsWith("[Platform notice — skill updated]")).toBe(true);
-    expect(dispatched(0).content).toContain(`- code-review (${path.join(skillDir, "SKILL.md")}): SKILL.md`);
+    expect(dispatched(0).content).toContain(`Your skill package \`code-review\` has been updated (${skillDir}).\n\nChanged files:\n- SKILL.md (changed)\n`);
     expect(dispatched(0).content.endsWith("\n\ncontinue")).toBe(true);
     service.close();
     await watcher.close();

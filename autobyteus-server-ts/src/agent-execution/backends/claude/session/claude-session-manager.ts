@@ -1,8 +1,5 @@
 import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import { getWorkspaceManager } from "../../../../workspaces/workspace-manager.js";
-import {
-  type ClaudeSessionEvent,
-} from "../claude-runtime-shared.js";
 import { normalizeSessionMessages } from "../claude-runtime-message-normalizers.js";
 import { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
 import { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-coordinator.js";

@@ -1,4 +1,3 @@
-import { scopedProjectGitEnvironment } from "../../../../runtime-management/shared/scoped-project-git-environment.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import type { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
 import type { ClaudeSdkSessionBinding } from "../../../../runtime-management/claude/client/claude-sdk-session-binding.js";
@@ -21,7 +20,7 @@ export const resolveClaudeSessionQueryOptions = async (input: {
   const sessionConfig = runContext.runtimeContext.sessionConfig;
   const toolingInput = {
     runtimeToolExposure: runContext.runtimeContext.runtimeToolExposure,
-    hasMaterializedSkills: runContext.runtimeContext.materializedConfiguredSkills.length > 0 || (runContext.runtimeContext.privateSkillProfile?.exposures.length ?? 0) > 0,
+    hasMaterializedSkills: runContext.runtimeContext.materializedConfiguredSkills.length > 0,
     memberExecutionContext: runContext.config.memberExecutionContext,
   };
   const configuredToolingOptions = resolveClaudeSessionToolingOptions(toolingInput);
@@ -38,11 +37,6 @@ export const resolveClaudeSessionQueryOptions = async (input: {
   const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
   return {
     systemPrompt: runContext.runtimeContext.carpenterSystemPrompt,
-    ...(runContext.runtimeContext.privateSkillProfile ? {
-      privateSkillPlugin: { path: runContext.runtimeContext.privateSkillProfile.root,
-        names: runContext.runtimeContext.privateSkillProfile.exposures.map(entry => `autobyteus-configured:${entry.skill.name}`) },
-      env: scopedProjectGitEnvironment(process.env, sessionConfig.workingDirectory),
-    } : {}),
     sessionBinding: input.binding,
     model: sessionConfig.model,
     workingDirectory: sessionConfig.workingDirectory,

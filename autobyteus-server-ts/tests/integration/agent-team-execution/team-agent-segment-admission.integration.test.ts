@@ -38,6 +38,8 @@ const runningSnapshot = (turnId: string): AgentRuntimeLifecycleSnapshot => ({
 
 class SegmentSourceBackend implements AgentRunBackend {
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
+  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
+  readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly context = new AgentRunContext({
     runId,
     config: new AgentRunConfig({

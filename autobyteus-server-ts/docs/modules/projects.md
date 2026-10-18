@@ -57,9 +57,8 @@ ordinary, deletable custom setting. Nothing migrates or deletes it. Tools must
 be selected explicitly in the agent definition; no task tool is added
 automatically, not even to an agent with `delegate_task`. A definition that still
 lists the removed `create_or_update_task` gets no task tool from that name.
-Neither `create_project` nor `update_project` is added automatically either; the
-deprecated `create_or_update_project` stays available to definitions that list
-it (see [Project And Task Agent Tools](#project-and-task-agent-tools)).
+Neither `create_project` nor `update_project` is added automatically either
+(see [Project And Task Agent Tools](#project-and-task-agent-tools)).
 
 ## Main Owners
 
@@ -451,7 +450,6 @@ is selected per agent definition; none is added automatically.
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}` |
 | `create_project` | `{name, description?, workspaces?}` (no `project_id`); creates a Project | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
 | `update_project` | `{project_id, name?, description?, workspaces?}`; patches a known Project, at least one change | `{project: {...}}` (same shape) |
-| `create_or_update_project` (**deprecated**) | Kept unchanged for the transition: without `project_id` it runs as `create_project`, with `project_id` as `update_project` (same parsers, results and errors). Select `create_project` and/or `update_project` instead; it will be removed in a later release | `{project: {...}}` (same shape) |
 | `create_task` | `{project_id, description, context_files?, depends_on?}` (**omit status**, no `task_id`); creates a TODO Project Task with the Project's next key | `{task: {...}}` |
 | `update_task` | `{task_id, description?, status?, context_files?, depends_on?}` with **no `project_id`**; the Task ID alone (a Project Task's key or long ID, or a Task with no Project's ID) identifies the Task. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
 

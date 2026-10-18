@@ -122,4 +122,13 @@ describe('resolveAutoByteusAgentTools', () => {
     // delegate_task's own construction needs the real Task command port (not this test's subject).
     expect(logger.error).not.toHaveBeenCalledWith(expect.stringMatching(/create_task|update_task|create_or_update_task/));
   });
+
+  it('launches an agent that still selects the removed create_or_update_project without it and with its other tools, with a warning (remove-create-or-update-project AC-002)', () => {
+    const { resolution, logger } = resolveFor(['create_or_update_project', 'create_project', 'update_project', 'read_file'], true);
+    expect(resolution.actualToolNames).toEqual(expect.arrayContaining(['create_project', 'update_project', 'read_file']));
+    expect(resolution.actualToolNames).not.toContain('create_or_update_project');
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining("'create_or_update_project'"));
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('not found in registry'));
+    expect(logger.error).not.toHaveBeenCalledWith(expect.stringMatching(/project/));
+  });
 });

@@ -1,0 +1,91 @@
+{
+  "11492.508": {
+    "url": "ws://127.0.0.1:51036/ws/agent/lighthouse_writer_670b3f0e162d48419ab9fab17ccc1192",
+    "frames": 452,
+    "closed": false,
+    "typeCounts": {
+      "CONNECTED": 1,
+      "AGENT_STATUS": 7,
+      "AGENT_INPUT_STATE": 5,
+      "SEGMENT_CONTENT": 425,
+      "SEGMENT_START": 3,
+      "SEGMENT_END": 4,
+      "TOKEN_USAGE_UPDATED": 2,
+      "ASSISTANT_COMPLETE": 2,
+      "TURN_COMPLETED": 2,
+      "TURN_STARTED": 1
+    },
+    "inputStateRevisions": [
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "inputStateRepeats": 0,
+    "inputStates": [
+      {
+        "ts": 758560.954617,
+        "revision": 17,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Finally, write a plain-prose paragraph o"
+          }
+        ]
+      },
+      {
+        "ts": 758645.223112,
+        "revision": 18,
+        "entries": [
+          {
+            "state": "queued",
+            "content": "Finally, write a plain-prose paragraph o"
+          }
+        ]
+      },
+      {
+        "ts": 758645.227449,
+        "revision": 19,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Finally, write a plain-prose paragraph o"
+          }
+        ]
+      },
+      {
+        "ts": 758645.229381,
+        "revision": 20,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Finally, write a plain-prose paragraph o"
+          }
+        ]
+      },
+      {
+        "ts": 758785.946974,
+        "revision": 21,
+        "entries": []
+      }
+    ],
+    "contentFrames": 425,
+    "contentGaps": {
+      "n": 421,
+      "min": 77,
+      "median": 518,
+      "max": 725,
+      "under350": 3
+    },
+    "flushTriggers": {
+      "window": 421,
+      "SEGMENT_START": 2,
+      "SEGMENT_END": 2
+    }
+  }
+}

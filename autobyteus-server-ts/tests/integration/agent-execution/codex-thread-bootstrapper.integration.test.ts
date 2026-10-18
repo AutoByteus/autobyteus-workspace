@@ -186,11 +186,17 @@ const listSkills = async (
   manager: CodexAppServerClientManager,
   workspaceRoot: string,
 ): Promise<ListedSkill[]> => {
-  const client = await manager.getClient(workspaceRoot);
-  const response = await client.request<unknown>("skills/list", {
-    cwds: [workspaceRoot],
-    forceReload: true,
-  });
+  const lease = manager.beginAcquire(workspaceRoot);
+  let response: unknown;
+  try {
+    const client = await lease.acquire();
+    response = await client.request<unknown>("skills/list", {
+      cwds: [workspaceRoot],
+      forceReload: true,
+    });
+  } finally {
+    await lease.release();
+  }
   const root = asObjectRecord(response);
   const data = Array.isArray(root?.data) ? root.data : [];
   const results: ListedSkill[] = [];
@@ -209,6 +215,9 @@ const listSkills = async (
   }
   return results;
 };
+
+/** Accepts every acquisition; the test releases materialized skills itself. */
+const acceptingGuard = { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined };
 
 const createBootstrapper = (input: {
   workspaceRoot: string;
@@ -276,7 +285,7 @@ describeCodexBootstrapperIntegration(
     });
 
     it(
-      "discovers a real repo-local Codex skill by logical name and skips runtime materialization for the same configured skill",
+      "exposes the configured copy when live Codex discovery lists a different repo-local copy with the same name (D-19)",
       async () => {
         const workspaceRoot = await createTempDir("codex-bootstrapper-live-workspace");
         cleanupRoots.add(workspaceRoot);
@@ -322,9 +331,18 @@ describeCodexBootstrapperIntegration(
           materializer,
         });
 
-        const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+        const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), acceptingGuard);
 
-        expect(runContext.runtimeContext.materializedConfiguredSkills).toEqual([]);
+        // D-19 (beta.1): Codex lists only a different copy, so the configured copy is exposed in the workspace.
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("codex-runtime-duplicate"));
+        expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
+        const canonicalLinkPath = path.join(workspaceRoot, ".codex", "skills", skillName);
+        expect(runContext.runtimeContext.materializedConfiguredSkills[0]).toMatchObject({
+          name: skillName,
+          materializedRootPath: canonicalLinkPath,
+        });
+        expect(await fs.readlink(canonicalLinkPath)).toBe(path.resolve(configuredSkill.rootPath));
         expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
           mcp_servers: {
             autobyteus_agent_tools: {
@@ -337,7 +355,67 @@ describeCodexBootstrapperIntegration(
         const workspaceSkillEntries = await fs.readdir(
           path.join(workspaceRoot, ".codex", "skills"),
         );
-        expect(workspaceSkillEntries).toEqual([folderName]);
+        expect(workspaceSkillEntries.sort()).toEqual([folderName, skillName].sort());
+        await materializer.cleanupMaterializedWorkspaceSkills(runContext.runtimeContext.materializedConfiguredSkills);
+        await expect(fs.lstat(canonicalLinkPath)).rejects.toMatchObject({ code: "ENOENT" });
+      },
+      60_000,
+    );
+
+    it(
+      "keeps the user's absolute .codex/skills link to the configured package skill: live skills/list reports it at its real path, new and restored runs materialize nothing (REQ-105)",
+      async () => {
+        const fixtureRoot = await fs.realpath(await createTempDir("codex-bootstrapper-user-link"));
+        cleanupRoots.add(fixtureRoot);
+        const skillName = `live_linked_skill_${randomUUID().replace(/-/g, "_").slice(0, 12)}`;
+        // The user's package shape: <package>/agents/<agent>/skills/<skill>.
+        const packageSkillRoot = path.join(fixtureRoot, "package", "agents", "solution-designer", "skills", skillName);
+        await fs.mkdir(packageSkillRoot, { recursive: true });
+        await fs.writeFile(
+          path.join(packageSkillRoot, "SKILL.md"),
+          ["---", `name: ${skillName}`, 'description: "Configured package skill linked from the workspace."', "---", "", `# ${skillName}`, ""].join("\n"),
+          "utf8",
+        );
+        const workspaceRoot = path.join(fixtureRoot, "workspace");
+        const linkPath = path.join(workspaceRoot, ".codex", "skills", skillName);
+        await fs.mkdir(path.dirname(linkPath), { recursive: true });
+        await fs.symlink(packageSkillRoot, linkPath); // absolute link, as the user creates it
+        const configuredSkill = new Skill({
+          name: skillName,
+          description: "Configured package skill linked from the workspace.",
+          content: `# ${skillName}`,
+          rootPath: packageSkillRoot,
+        });
+        clientManager = new CodexAppServerClientManager({
+          createClient: (cwd) =>
+            new CodexAppServerClient({ command: "codex", args: ["app-server"], cwd, requestTimeoutMs: 30_000 }),
+        });
+
+        const listedSkills = await listSkills(clientManager, workspaceRoot);
+        const listed = listedSkills.filter((skill) => skill.name === skillName);
+        console.info("CODEX_LIVE_USER_LINK_SKILLS_LIST", JSON.stringify(listed));
+        expect(listed).toHaveLength(1);
+        expect(listed[0]).toMatchObject({ scope: "repo", enabled: true });
+        expect(await fs.realpath(listed[0]!.path!)).toBe(path.join(packageSkillRoot, "SKILL.md"));
+
+        const materializer = new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
+        const bootstrapper = createBootstrapper({ workspaceRoot, configuredSkills: [configuredSkill], clientManager, materializer });
+
+        const created = await bootstrapper.bootstrapForCreate(createRunContext(), acceptingGuard);
+        expect(created.runtimeContext.materializedConfiguredSkills).toEqual([]);
+        const fresh = createRunContext();
+        const restored = await bootstrapper.bootstrapForRestore(new AgentRunContext({
+          runId: fresh.runId,
+          config: fresh.config,
+          runtimeContext: { threadId: "existing-thread", activeTurnId: null } as never,
+        }), acceptingGuard);
+        expect(restored.runtimeContext.threadId).toBe("existing-thread");
+        expect(restored.runtimeContext.materializedConfiguredSkills).toEqual([]);
+
+        // The preflight left the user's link alone.
+        expect((await fs.lstat(linkPath)).isSymbolicLink()).toBe(true);
+        expect(await fs.readlink(linkPath)).toBe(packageSkillRoot);
+        expect(await fs.readdir(path.dirname(linkPath))).toEqual([skillName]);
       },
       60_000,
     );
@@ -392,6 +470,7 @@ describeCodexBootstrapperIntegration(
 
         const runContext = await bootstrapper.bootstrapForCreate(
           createRunContext("gpt-5.6-luna"),
+          acceptingGuard,
         );
 
         expect(runContext.runtimeContext.codexThreadConfig.model).toBe("gpt-5.6-luna");
@@ -452,7 +531,7 @@ describeCodexBootstrapperIntegration(
           materializer,
         });
 
-        const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+        const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), acceptingGuard);
 
         expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
         const [descriptor] = runContext.runtimeContext.materializedConfiguredSkills;

@@ -1,4 +1,3 @@
-import { preparePrivateRuntimeSkills } from "../../shared/prepare-private-runtime-skills.js";
 import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -266,12 +265,7 @@ export class CodexThreadBootstrapper {
       }),
       dynamicToolRegistrations,
     });
-    const privateSkillProfile = await preparePrivateRuntimeSkills({
-      runtime: "codex", workingDirectory, memoryDir: runContext.config.memoryDir,
-      bindings: configuredSkillBindings, skills: this.skillService, guard,
-      collisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
-    });
-    const materializedConfiguredSkills = privateSkillProfile ? [] : await this.prepareWorkspaceSkills({
+    const materializedConfiguredSkills = await this.prepareWorkspaceSkills({
       runId: runContext.runId,
       workingDirectory,
       configuredSkillBindings,
@@ -284,7 +278,6 @@ export class CodexThreadBootstrapper {
       config: runContext.config,
       runtimeContext: new CodexAgentRunContext({
         codexThreadConfig,
-        privateSkillProfile,
         materializedConfiguredSkills,
         dynamicToolHandlers: buildCodexDynamicToolHandlerMap(
           dynamicToolRegistrations,
