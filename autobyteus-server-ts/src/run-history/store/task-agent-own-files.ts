@@ -3,7 +3,6 @@ import fsPromises from "node:fs/promises";
 import { TASK_AGENT_PLACEMENT } from "../../agent-memory/domain/agent-run-memory-placement.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { TaskAgentTeamTreeFile } from "../../agent-team-execution/domain/task-agent-team-tree.js";
-import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import { AgentRunMetadataStore, type TaskAgentRunMetadataReadState } from "./agent-run-metadata-store.js";
 import type { TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
 import {
@@ -12,6 +11,7 @@ import {
   type RunPackageFileWriteResult,
 } from "./atomic-run-package-file-commit-writer.js";
 import { hasTaskAgentSection } from "./task-agent-own-file-schema.js";
+import { TaskAgentMessageLogs } from "./task-agent-message-logs.js";
 import { validateTaskAgentTeamTreePayload } from "./task-agent-team-tree-schema.js";
 import { getTeamRunExecutionTreePath } from "./team-run-execution-tree-path.js";
 
@@ -42,6 +42,7 @@ const teamState = (read: () => string, teamRunId: string): TaskAgentTeamTreeRead
 export class TaskAgentOwnFiles {
   private readonly layout: AgentMemoryLayout;
   private readonly metadata: AgentRunMetadataStore;
+  private readonly messageLogs: TaskAgentMessageLogs;
 
   constructor(
     memoryRoot: string,
@@ -49,6 +50,7 @@ export class TaskAgentOwnFiles {
   ) {
     this.layout = new AgentMemoryLayout(memoryRoot);
     this.metadata = new AgentRunMetadataStore(memoryRoot, writer);
+    this.messageLogs = new TaskAgentMessageLogs(memoryRoot, writer);
   }
 
   agentMemoryDir(agentRunId: string): string {
@@ -86,11 +88,8 @@ export class TaskAgentOwnFiles {
   async writeTeam(tree: TaskAgentTeamTreeFile): Promise<RunPackageFileWriteResult> {
     const teamRunId = tree.rootTeam.teamRunId;
     const dir = this.teamDir(teamRunId);
-    const messages = new TeamCommunicationStore(this.writer);
-    if (!await messages.readLog(dir, teamRunId)) {
-      const log = await messages.write(dir, { schemaVersion: 1, rootTeamRunId: teamRunId, messages: [] });
-      if (log.outcome !== "committed") return log;
-    }
+    const log = await this.messageLogs.createTeamLogIfMissing(teamRunId);
+    if (log && log.outcome !== "committed") return log;
     return this.writer.write({
       file: "task_agent_team_tree",
       filePath: getTeamRunExecutionTreePath(dir),

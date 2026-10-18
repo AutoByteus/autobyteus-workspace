@@ -37,14 +37,14 @@ const fixture = async (family: "team" | "org" | "standalone") => {
     const team = path.join(memoryDir, "agent_teams", "team");
     await put(path.join(team, "team_run_execution_tree.json"), testExecutionTree({rootTeamRunId: "team", children: [testAgentNode("/worker", {agentRunId: "worker"})], coordinatorAddress: "/worker"}));
     await put(path.join(team, "task_delegation_records.json"), {schemaVersion: 1, rootTeamRunId: "team", records: []});
-    await put(path.join(team, "team_communication_messages.json"), {schemaVersion: 1, rootTeamRunId: "team", messages: []});
+    await fs.writeFile(path.join(team, "team_communication_messages_active.jsonl"), "");
     directory = path.join(team, "worker");
     owner = {kind: "team_member_final", teamRunId: "team", agentRunId: "worker"};
   } else if (family === "org") {
     const org = path.join(memoryDir, "agent_orgs", "org");
     await put(path.join(org, "agent_org_run_execution_tree.json"), testAgentOrgExecutionTree({orgRunId: "org", members: [testOrgAgentNode("/worker", "worker")]}));
     await put(path.join(org, "agent_org_task_delegation_records.json"), {schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org", records: []});
-    await put(path.join(org, "agent_org_communication_messages.json"), {schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org", messages: []});
+    await fs.writeFile(path.join(org, "agent_org_communication_messages_active.jsonl"), "");
     directory = path.join(org, "worker");
     owner = {kind: "org_member_final", orgRunId: "org", agentRunId: "worker"};
   } else {

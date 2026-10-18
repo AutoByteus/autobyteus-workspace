@@ -2,9 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgCommunicationMessagesStore } from "../../agent-org-execution/persistence/agent-org-communication-messages-store.js";
-import { AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME } from "../../agent-org-execution/persistence/agent-org-communication-messages.js";
 import { validateAgentOrgStatePackage } from "../../agent-org-execution/services/agent-org-state-package-validator.js";
-import { TeamCommunicationStore, TEAM_COMMUNICATION_MESSAGES_FILE_NAME } from "../../services/team-communication/team-communication-store.js";
+import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
 import { AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME } from "../store/agent-org-run-execution-tree-path.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
@@ -32,25 +31,24 @@ const exists = (filePath: string): Promise<boolean> =>
   fs.access(filePath).then(() => true).catch((error: NodeJS.ErrnoException) => { if (error.code === "ENOENT") return false; throw error; });
 
 // Released task-records files are neither required nor retired: an old package
-// keeps its untouched records file on disk and is still admitted.
-const requiredTeamFiles = Object.freeze([
-  TEAM_RUN_EXECUTION_TREE_FILE_NAME,
-  TEAM_COMMUNICATION_MESSAGES_FILE_NAME,
-]);
+// keeps its untouched records file on disk and is still admitted. A package's message log is required
+// as "the log exists" (any of its files, through its store); a JSON message log left in a package is
+// retired residue of the append-only conversion (not admitted, data kept).
+const RETIRED_JSON_MESSAGE_LOGS = Object.freeze(["team_communication_messages.json", "agent_org_communication_messages.json"]);
+const requiredTeamFiles = Object.freeze([TEAM_RUN_EXECUTION_TREE_FILE_NAME]);
 const retiredTeamFiles = Object.freeze([
   "team_run_metadata.json",
   AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME,
-  AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME,
+  ...RETIRED_JSON_MESSAGE_LOGS,
 ]);
-const requiredOrgFiles = Object.freeze([
-  AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME,
-  AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME,
-]);
+const requiredOrgFiles = Object.freeze([AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME]);
 const retiredOrgFiles = Object.freeze([
   "team_run_metadata.json",
   TEAM_RUN_EXECUTION_TREE_FILE_NAME,
-  TEAM_COMMUNICATION_MESSAGES_FILE_NAME,
+  ...RETIRED_JSON_MESSAGE_LOGS,
 ]);
+
+type RequiredMessageLog = Readonly<{ name: string; exists(): Promise<boolean> }>;
 
 
 /**
@@ -150,7 +148,8 @@ export class RootRunPackageCurrentValidator {
       this.record(target, "agent_team", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
       return;
     }
-    const manifestError = await this.validateManifest(entry.packagePath, requiredTeamFiles, retiredTeamFiles);
+    const manifestError = await this.validateManifest(entry.packagePath, requiredTeamFiles, retiredTeamFiles,
+      { name: "team_communication_messages", exists: () => this.stores.teamMessages.hasLog(entry.packagePath) });
     if (manifestError) {
       this.record(target, "agent_team", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MANIFEST_INVALID", manifestError);
       return;
@@ -181,7 +180,8 @@ export class RootRunPackageCurrentValidator {
       this.record(target, "agent_org", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MISSING_TREE", "Execution tree is missing; package preserved.");
       return;
     }
-    const manifestError = await this.validateManifest(entry.packagePath, requiredOrgFiles, retiredOrgFiles);
+    const manifestError = await this.validateManifest(entry.packagePath, requiredOrgFiles, retiredOrgFiles,
+      { name: "agent_org_communication_messages", exists: () => this.stores.orgMessages.hasLog(entry.packagePath) });
     if (manifestError) {
       this.record(target, "agent_org", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MANIFEST_INVALID", manifestError);
       return;
@@ -222,9 +222,11 @@ export class RootRunPackageCurrentValidator {
     packagePath: string,
     required: readonly string[],
     retired: readonly string[],
+    messageLog: RequiredMessageLog,
   ): Promise<string | null> {
     const missing = (await Promise.all(required.map(async (name) =>
       await exists(path.join(packagePath, name)) ? null : name))).filter((name): name is string => name !== null);
+    if (!await messageLog.exists()) missing.push(messageLog.name);
     if (missing.length) return `Current package is missing required authorities: ${missing.join(", ")}.`;
     const residue = (await Promise.all(retired.map(async (name) =>
       await exists(path.join(packagePath, name)) ? name : null))).filter((name): name is string => name !== null);
