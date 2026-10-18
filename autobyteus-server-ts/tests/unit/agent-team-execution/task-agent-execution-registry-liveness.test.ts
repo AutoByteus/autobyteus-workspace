@@ -22,6 +22,7 @@ const buildRegistry = () => {
   const worker = testAgentNode("/worker", { agentRunId: "configured-worker", runtimeKind: RuntimeKind.CODEX_APP_SERVER });
   const config = testTeamRunConfig({ rootTeamRunId: "liveness-root", coordinatorAddress: "/worker", children: [worker] });
   const teamContext = new TeamRunContext({
+    teamKind: "configured",
     physicalScope: createRootExecutionPhysicalScope({ root: createTeamRootExecutionIdentity("liveness-root"), ancestorTeamRunIds: [] }),
     teamRunId: "liveness-root",
     teamBackendKind: TeamBackendKind.MIXED,

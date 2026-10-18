@@ -34,7 +34,8 @@ import type { TaskExecutionIdleTimers } from "../../agent-collaboration/executio
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher, RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { COORDINATING_LOG, messageLogOwnerOf } from "../../run-history/store/task-agent-message-logs.js";
+import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { createCollaborationAgentStatusSnapshot, type CollaborationAgentExecutionEvent, type CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
@@ -50,7 +51,7 @@ import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/loca
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import { RootOperationGate } from "../../agent-collaboration/execution/services/root-operation-gate.js";
-import type { StandaloneRootMessagesFileV1, StandaloneRootTreeSnapshot } from "./standalone-root-tree.js";
+import type { StandaloneRootMessagesFile, StandaloneRootTreeSnapshot } from "./standalone-root-tree.js";
 import type { StandaloneRootEvent } from "./standalone-root-event.js";
 import type { StandaloneHostAgentHandle } from "./standalone-host-agent-handle.js";
 import { StandaloneRootExecutionIndex } from "../services/standalone-root-execution-index.js";
@@ -66,7 +67,7 @@ export type StandaloneRootPackageSnapshot = Readonly<{
   tree: StandaloneRootTreeSnapshot;
   /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
   closedTaskExecutions: readonly TaskExecutionReference[];
-  messages: StandaloneRootMessagesFileV1;
+  messages: StandaloneRootMessagesFile;
   statuses: readonly CollaborationAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -80,7 +81,7 @@ export type StandaloneRootPackageSnapshot = Readonly<{
 export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   private lifecycle: "activating" | "active" | "terminating" | "terminated" | "fail_stop" = "activating";
   private tree: StandaloneRootTreeSnapshot;
-  private messages: StandaloneRootMessagesFileV1;
+  private messages: StandaloneRootMessagesFile;
   private index: StandaloneRootExecutionIndex;
   private readonly taskExecutions: RootTaskExecutionLifecycle<StandaloneRootPlacement>;
   private readonly communication: RootCommunicationEngine;
@@ -96,7 +97,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   constructor(private readonly options: Readonly<{
     root: RootExecutionIdentity;
     tree: StandaloneRootTreeSnapshot;
-    messages: StandaloneRootMessagesFileV1;
+    messages: StandaloneRootMessagesFile;
     host: StandaloneHostAgentHandle;
     rootLaunchConfiguration: AgentLaunchConfiguration;
     rootAgents: RootAgentExecutionRegistry;
@@ -106,7 +107,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     publisher: RootEventPublisher<StandaloneRootEvent>;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
     taskExecutionResources?: TaskExecutionResourcePort;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
@@ -183,6 +184,10 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       isOpen: () => this.isAdmitting(),
       assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
+      // The host is the run itself; every other endpoint is a task agent or a task-team member.
+      messageLogOwnerOf: (agentRunId) => agentRunId === options.root.rootRunId
+        ? COORDINATING_LOG
+        : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
       replaceMessages: (messages) => { this.messages = messages; },
       publish: (message) => options.publisher.publish({ kind: "communication", message }),
@@ -222,7 +227,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.lifecycle = "active";
   }
   getExecutionTreeSnapshot(): StandaloneRootTreeSnapshot { return this.tree; }
-  getCommunicationSnapshot(): StandaloneRootMessagesFileV1 { return this.messages; }
+  getCommunicationSnapshot(): StandaloneRootMessagesFile { return this.messages; }
   /** Children only: every child without a live execution reports `offline`. */
   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
     // Root-level Teams: task Teams (each reports its members and nested children).

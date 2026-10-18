@@ -1,5 +1,5 @@
 import type { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
-import type { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+import type { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type {
   ExecutionTreeCommitResult,
@@ -28,7 +28,7 @@ export class TeamRunPersistenceCoordinator {
     rootTeamRunId: string;
     teamMemoryDir: string;
     executionTreeStore: TeamRunExecutionTreeStore;
-    communicationStore: TeamCommunicationV1Store;
+    communicationStore: TeamCommunicationStore;
     enterPersistenceFailStop: TeamRunPersistenceFailStop;
   }) {}
 
@@ -116,9 +116,11 @@ export class TeamRunPersistenceCoordinator {
     if (!prepared.prepared) {
       return { outcome: "conflict", code: prepared.code, message: prepared.message };
     }
-    const result = await this.options.communicationStore.write(
+    const result = await this.options.communicationStore.appendMessage(
       this.options.teamMemoryDir,
-      prepared.commit.nextMessages,
+      this.options.rootTeamRunId,
+      prepared.commit.message,
+      prepared.commit.logOwners,
     );
     if (result.outcome === "not_renamed") {
       prepared.commit.cancelBeforeDurability("TEAM_MESSAGE_HISTORY_COMMIT_FAILED");

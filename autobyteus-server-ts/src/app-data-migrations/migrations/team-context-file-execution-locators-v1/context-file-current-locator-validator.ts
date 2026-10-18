@@ -1,7 +1,7 @@
 import { assertContainedContextFile, ContextFilePathUnavailableError } from "../../../context-files/services/context-file-path-validation.js";
 import path from "node:path";
 import { ContextFileDescriptorError, assertStoredFilename, parseFinalContextFileOwnerDescriptor } from "../../../context-files/domain/context-file-owner-types.js";
-import type { CurrentRunPackage, CurrentContextFileOwner } from "../../../run-history/services/root-run-package-current-validator.js";
+import type { CurrentRunPackage, CurrentContextFileOwner } from "../../legacy/released-run-package-shapes/released-root-packages-before-task-agent-own-run.js";
 import { ContextFileRecordValidationError } from "../../../context-files/services/context-file-record-locators.js";
 
 export class ContextFileReferenceUnavailableError extends Error {}

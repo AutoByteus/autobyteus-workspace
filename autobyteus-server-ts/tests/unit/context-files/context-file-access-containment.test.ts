@@ -1,4 +1,6 @@
 import { createStoredCollaborationExecutionLocationService } from "../../../src/agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
 import fs from "node:fs/promises";
 import fsSync from "node:fs";
 import os from "node:os";
@@ -111,10 +113,13 @@ it("uses the containing nested Team ID, never its root ID, for async and sync at
   const team = path.dirname(f.directory);
   const treePath = path.join(team, "team_run_execution_tree.json");
   const tree = JSON.parse(await fs.readFile(treePath, "utf8"));
-  tree.rootTeam.members.push(testOrgAgentNode("/nested", "nested-placement"));
-  tree.rootTeam.taskExecutions = [{address: "/nested", teamRunId: "nested", members: [{address: "/nested/worker", agentRunId: "nested-worker", platformAgentRunId: null}], taskExecutions: [], delegatorAgentRunId: "worker", startedAt: "2026-09-01T00:00:00.000Z"}];
-  await put(treePath, tree);
-  const nestedFile = path.join(team, "nested", "nested-worker", "context_files", filename);
+  // A Team copy (a catalog copy, as every Team copy of a flat team run), written as the app writes it:
+  // its own tree at `agent_teams/nested/`, its link in the team tree.
+  tree.rootTeam.taskExecutions = [{address: "/nested", teamRunId: "nested", members: [{address: "/nested/worker", agentRunId: "nested-worker", platformAgentRunId: null}], taskExecutions: [], delegatorAgentRunId: "worker", startedAt: "2026-09-01T00:00:00.000Z",
+    source: {kind: "agent_team", teamDefinitionId: "nested-team", coordinatorAddress: "/nested/worker", members: [{address: "/nested/worker", agentDefinitionId: "nested-def"}], handoffs: [], defaultLaunchConfiguration: tree.rootTeam.defaultLaunchConfiguration}}];
+  await new TeamRunExecutionTreeStore().write(team, validateTeamRunExecutionTreePayload(tree, "team"));
+  // A task agent team member keeps its memory inside the task team's own folder (contract L1).
+  const nestedFile = path.join(path.dirname(team), "nested", "nested-worker", "context_files", filename);
   await put(nestedFile, "nested bytes");
   const owner = {kind: "team_member_final" as const, teamRunId: "nested", agentRunId: "nested-worker"};
   expect(await f.read.getFinalFilePath(owner, filename)).toBe(nestedFile);

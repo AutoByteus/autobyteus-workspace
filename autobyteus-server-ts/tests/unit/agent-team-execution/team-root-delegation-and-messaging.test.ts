@@ -111,7 +111,7 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     expect(await f.root.assignToExistingCopy({ identity: coordinatorOf(f) }, { copy: { teamRunId: copy!.teamRunId }, taskId: "task-B" }))
       .toEqual({ delegated: true, copy: { kind: "team", teamRunId: copy!.teamRunId, teamCoordinatorAgentRunId: lead } });
     expect(resources.entry({ teamRunId: copy!.teamRunId })).toMatchObject({ taskId: "task-B", open: true, start: "started" });
-    const messages = (await f.dependencies.communicationStore.read(f.teamMemoryDir, ROOT))!.messages;
+    const messages = (await f.dependencies.communicationStore.read(f.teamMemoryDir, (await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT))!))!.messages;
     expect(messages.at(-1)).toEqual(expect.objectContaining({ senderAgentRunId: "run-coordinator", receiverAgentRunId: lead, messageType: "task_assignment",
       content: expect.stringContaining("New Task assigned to you: task-B.") }));
   });

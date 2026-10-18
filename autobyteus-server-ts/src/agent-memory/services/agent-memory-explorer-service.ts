@@ -9,7 +9,8 @@ import type {
 import type { MemoryFileStore } from "../store/memory-file-store.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
-import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
+import type { AgentRunMetadata, TaskAgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
+import { TaskAgentLinkChecker } from "../../run-history/store/task-agent-link-check.js";
 import type { RunHistoryIndexRow } from "../../run-history/domain/agent-run-history-index-types.js";
 import {
   MemoryRunSummaryBuilder,
@@ -28,8 +29,29 @@ const UNATTRIBUTED_DISPLAY_NAME = "Unattributed runs";
 type AgentRunRecord = {
   runId: string;
   metadata: AgentRunMetadata | null;
+  /** A task agent's own facts (G1 hides them from `metadata`); listed under its definition (D-5, AC-013). */
+  taskAgent: TaskAgentRunMetadata | null;
   catalogRow: RunHistoryIndexRow | null;
   memory: MemoryAvailabilityBuildResult;
+};
+
+const definitionOf = (run: AgentRunRecord): string | null =>
+  run.metadata?.agentDefinitionId?.trim() || run.taskAgent?.agentDefinitionId || run.catalogRow?.agentDefinitionId?.trim() || null;
+const workspaceOf = (run: AgentRunRecord): string | null =>
+  run.metadata?.workspaceRootPath ?? run.taskAgent?.workspaceRootPath ?? run.catalogRow?.workspaceRootPath ?? null;
+const createdAtOf = (run: AgentRunRecord): string | null =>
+  run.catalogRow?.createdAt ?? run.metadata?.startedAt ?? run.metadata?.preparedAt ?? run.taskAgent?.startedAt ?? null;
+
+/** Resolves an agent definition's display name; `null` when the definition can no longer be found. */
+type AgentDefinitionLookup = {
+  getAgentDefinitionById(agentDefinitionId: string): Promise<{ name?: string | null } | null>;
+};
+
+const PROCESS_AGENT_DEFINITIONS: AgentDefinitionLookup = {
+  getAgentDefinitionById: async (agentDefinitionId) => {
+    const { AgentDefinitionService } = await import("../../agent-definition/services/agent-definition-service.js");
+    return AgentDefinitionService.getInstance().getAgentDefinitionById(agentDefinitionId);
+  },
 };
 
 type AgentGroup = {
@@ -44,6 +66,8 @@ export class AgentMemoryExplorerService {
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly catalogService: AgentRunHistoryCatalogService;
   private readonly summaryBuilder: MemoryRunSummaryBuilder;
+  private readonly agentDefinitions: AgentDefinitionLookup;
+  private readonly memoryDir: string;
 
   constructor(
     private readonly store: MemoryFileStore,
@@ -52,11 +76,14 @@ export class AgentMemoryExplorerService {
       metadataStore?: AgentRunMetadataStore;
       catalogService?: AgentRunHistoryCatalogService;
       summaryBuilder?: MemoryRunSummaryBuilder;
+      agentDefinitions?: AgentDefinitionLookup; // default: the process agent definition service
     } = {},
   ) {
+    this.memoryDir = memoryDir;
     this.metadataStore = dependencies.metadataStore ?? new AgentRunMetadataStore(memoryDir);
     this.catalogService = dependencies.catalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.summaryBuilder = dependencies.summaryBuilder ?? new MemoryRunSummaryBuilder(store);
+    this.agentDefinitions = dependencies.agentDefinitions ?? PROCESS_AGENT_DEFINITIONS;
   }
 
   async listAgentsWithMemory(
@@ -99,6 +126,7 @@ export class AgentMemoryExplorerService {
   private async buildGroups(): Promise<AgentGroup[]> {
     const catalogRows = await this.readCatalogRowsByRunId();
     const groups = new Map<string, AgentGroup>();
+    const links = new TaskAgentLinkChecker(this.memoryDir);
 
     for (const runId of this.store.listRunDirs()) {
       const memory = this.summaryBuilder.build(runId);
@@ -106,8 +134,12 @@ export class AgentMemoryExplorerService {
         continue;
       }
       const metadata = await this.metadataStore.readMetadata(runId);
+      const taskAgent = metadata ? null : await this.metadataStore.readTaskAgentMetadata(runId);
+      // A detached task agent (its coordinating run deleted) is not listed (contract §4, §10).
+      if (taskAgent && !await links.isLinked(taskAgent.taskAgent.coordinatingRun, runId)) continue;
       const catalogRow = catalogRows.get(runId) ?? null;
-      const agentDefinitionId = metadata?.agentDefinitionId?.trim() || catalogRow?.agentDefinitionId?.trim() || null;
+      const run: AgentRunRecord = { runId, metadata, taskAgent, catalogRow, memory };
+      const agentDefinitionId = definitionOf(run);
       const key = agentDefinitionId ? `definition:${agentDefinitionId}` : UNATTRIBUTED_STABLE_ID;
       let group = groups.get(key);
       if (!group) {
@@ -124,10 +156,26 @@ export class AgentMemoryExplorerService {
       } else if (catalogRow?.agentName?.trim() && group.displayName === group.stableId) {
         group.displayName = catalogRow.agentName.trim();
       }
-      group.runs.push({ runId, metadata, catalogRow, memory });
+      group.runs.push(run);
     }
 
+    // A group no history row names (e.g. only task agents, which G1 keeps out of the history) shows its
+    // definition's name; the id only when the definition can no longer be found (D-5, DEC-018).
+    for (const group of groups.values()) {
+      if (group.agentDefinitionId && group.displayName === group.stableId) {
+        group.displayName = await this.definitionName(group.agentDefinitionId);
+      }
+    }
     return Array.from(groups.values());
+  }
+
+  private async definitionName(agentDefinitionId: string): Promise<string> {
+    try {
+      return (await this.agentDefinitions.getAgentDefinitionById(agentDefinitionId))?.name?.trim() || agentDefinitionId;
+    } catch (error) {
+      console.warn(`Failed reading agent definition '${agentDefinitionId}' for memory explorer: ${String(error)}`);
+      return agentDefinitionId;
+    }
   }
 
   private async readCatalogRowsByRunId(): Promise<Map<string, RunHistoryIndexRow>> {
@@ -173,8 +221,8 @@ export class AgentMemoryExplorerService {
       includesMemoryExplorerQuery(run.catalogRow?.agentName, query) ||
       includesMemoryExplorerQuery(run.catalogRow?.summary, query) ||
       includesMemoryExplorerQuery(run.catalogRow?.workspaceRootPath, query) ||
-      includesMemoryExplorerQuery(run.metadata?.agentDefinitionId, query) ||
-      includesMemoryExplorerQuery(run.metadata?.workspaceRootPath, query)
+      includesMemoryExplorerQuery(run.metadata?.agentDefinitionId ?? run.taskAgent?.agentDefinitionId, query) ||
+      includesMemoryExplorerQuery(run.metadata?.workspaceRootPath ?? run.taskAgent?.workspaceRootPath, query)
     );
   }
 
@@ -194,11 +242,11 @@ export class AgentMemoryExplorerService {
   private toRunSummary(run: AgentRunRecord): AgentRunMemorySummary {
     return {
       runId: run.runId,
-      agentDefinitionId: run.metadata?.agentDefinitionId ?? run.catalogRow?.agentDefinitionId ?? null,
+      agentDefinitionId: run.metadata?.agentDefinitionId ?? run.taskAgent?.agentDefinitionId ?? run.catalogRow?.agentDefinitionId ?? null,
       agentName: run.catalogRow?.agentName ?? null,
       summary: run.catalogRow?.summary ?? null,
-      workspaceRootPath: run.metadata?.workspaceRootPath ?? run.catalogRow?.workspaceRootPath ?? null,
-      createdAt: run.catalogRow?.createdAt ?? run.metadata?.startedAt ?? run.metadata?.preparedAt ?? null,
+      workspaceRootPath: workspaceOf(run),
+      createdAt: createdAtOf(run),
       lastUpdatedAt: run.memory.availability.latestMemoryAt,
       memory: run.memory.availability,
     };
@@ -216,8 +264,8 @@ export class AgentMemoryExplorerService {
     if (a.memory.latestMemoryMtime !== b.memory.latestMemoryMtime) {
       return b.memory.latestMemoryMtime - a.memory.latestMemoryMtime;
     }
-    const aCreated = a.catalogRow?.createdAt ?? a.metadata?.startedAt ?? a.metadata?.preparedAt ?? "";
-    const bCreated = b.catalogRow?.createdAt ?? b.metadata?.startedAt ?? b.metadata?.preparedAt ?? "";
+    const aCreated = createdAtOf(a) ?? "";
+    const bCreated = createdAtOf(b) ?? "";
     if (aCreated !== bCreated) {
       return bCreated.localeCompare(aCreated);
     }

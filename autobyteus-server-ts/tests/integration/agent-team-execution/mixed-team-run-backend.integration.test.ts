@@ -37,6 +37,7 @@ const createHarness = () => {
     })),
   });
   const context = new TeamRunContext({
+    teamKind: "configured",
     physicalScope: createRootExecutionPhysicalScope({
       root: createTeamRootExecutionIdentity(config.rootTeam.teamRunId),
       ancestorTeamRunIds: [],

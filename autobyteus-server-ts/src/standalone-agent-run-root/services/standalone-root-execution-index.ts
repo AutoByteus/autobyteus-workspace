@@ -26,6 +26,7 @@ import type {
   TaskTeamExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
+import { placementForAgentChain, type AgentRunMemoryPlacement } from "../../agent-memory/domain/agent-run-memory-placement.js";
 
 export type StandaloneRootAgentKind = "host" | "task" | "task_team_member";
 
@@ -163,6 +164,11 @@ export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort, 
     return agent.host.hostKind === "root"
       ? createRootExecutionPhysicalScope({ root: this.root, ancestorTeamRunIds: [] })
       : this.getPhysicalScopeForTeam(agent.host.hostRunId);
+  }
+
+  /** Where a child's memory directory is (contract L1), from its task execution chain. */
+  getMemoryPlacementForAgent(agentRunId: string): AgentRunMemoryPlacement {
+    return placementForAgentChain(agentRunId, this.listTaskExecutionChainForAgent(agentRunId), this.getPhysicalScopeForAgent(agentRunId));
   }
 
   getPhysicalScopeForTeam(teamRunId: string): RootExecutionPhysicalScope {

@@ -5,7 +5,6 @@ import {
 } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type {
-  RootConfiguredTeamExecutionNode,
   TaskExecution,
   TaskTeamExecution,
   TeamRunExecutionTreeSnapshot,
@@ -14,54 +13,28 @@ import { validateTeamRunExecutionTreePayload } from "../../run-history/store/tea
 import type { TeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
 import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
 
-type TeamWithTasks = RootConfiguredTeamExecutionNode | TaskTeamExecution;
-
-const mapTask = (
-  task: TaskExecution,
-  targetTeamRunId: string,
-  change: (team: TeamWithTasks) => TeamWithTasks,
-): TaskExecution => {
-  if (!("teamRunId" in task)) return task;
-  return mapTeam(task, targetTeamRunId, change) as Extract<TaskExecution, { teamRunId: string }>;
-};
-
-const mapTeam = (
-  team: TeamWithTasks,
-  targetTeamRunId: string,
-  change: (team: TeamWithTasks) => TeamWithTasks,
-): TeamWithTasks => {
-  if (team.teamRunId === targetTeamRunId) return change(team);
-  const taskExecutions = team.taskExecutions.map((task) => mapTask(task, targetTeamRunId, change));
-  return { ...team, taskExecutions } as TeamWithTasks;
-};
-
-/** Applies `change` to the owner TeamRun: the root or a task Team. */
-const replaceRoot = (
-  tree: TeamRunExecutionTreeSnapshot,
-  targetTeamRunId: string,
-  change: <T extends { taskExecutions: readonly TaskExecution[] }>(team: T) => T,
-): TeamRunExecutionTreeSnapshot => {
-  const rootTeam = mapTeam(tree.rootTeam, targetTeamRunId, change) as RootConfiguredTeamExecutionNode;
-  return validateTeamRunExecutionTreePayload({ ...tree, rootTeam }, tree.rootTeam.teamRunId);
-};
-
+/**
+ * Appends a new task execution as a link of the coordinating run's top level. Every new task agent is
+ * hosted by the root TeamRun (the team adapter's `planActivation`: CM-1 refuses targets inside the
+ * delegator's own Team), and task agents created by task-team members are linked by the coordinating
+ * run (CM-7, U-5); a task Team never holds task executions.
+ */
 export const addTaskExecutionToTree = (input: {
   tree: TeamRunExecutionTreeSnapshot;
-  ownerTeamRunId: string;
   execution: TaskExecution;
-}): TeamRunExecutionTreeSnapshot => replaceRoot(
-  input.tree,
-  input.ownerTeamRunId,
-  <T extends { taskExecutions: readonly TaskExecution[] }>(team: T): T => {
-    if (team.taskExecutions.some((task) =>
-      "agentRunId" in task
-        ? "agentRunId" in input.execution && task.agentRunId === input.execution.agentRunId
-        : "teamRunId" in input.execution && task.teamRunId === input.execution.teamRunId)) {
-      throw new Error("Task execution is already present in the owner TeamRun.");
-    }
-    return { ...team, taskExecutions: [...team.taskExecutions, input.execution] };
-  },
-);
+}): TeamRunExecutionTreeSnapshot => {
+  const rootTeam = input.tree.rootTeam;
+  if (rootTeam.taskExecutions.some((task) =>
+    "agentRunId" in task
+      ? "agentRunId" in input.execution && task.agentRunId === input.execution.agentRunId
+      : "teamRunId" in input.execution && task.teamRunId === input.execution.teamRunId)) {
+    throw new Error("Task execution is already present in the owner TeamRun.");
+  }
+  return validateTeamRunExecutionTreePayload({
+    ...input.tree,
+    rootTeam: { ...rootTeam, taskExecutions: [...rootTeam.taskExecutions, input.execution] },
+  }, rootTeam.teamRunId);
+};
 
 type AgentExecutionNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
 

@@ -1623,7 +1623,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await nextTick();
     expect(vm.showDeleteConfirmation).toBe(true);
     expect(vm.deleteConfirmationMessage).toBe(
-      'Delete this Team history permanently? This cannot be undone.',
+      "Delete this Team history permanently? Its task agents' memory is kept. This cannot be undone.",
     );
     expect(teamRunStoreMock.terminateTeamRun).not.toHaveBeenCalled();
     expect(runHistoryStoreMock.deleteTeamRun).not.toHaveBeenCalled();
@@ -1649,7 +1649,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await wrapper.get('button[aria-label="Delete team history permanently"]').trigger('click');
     await nextTick();
     expect(vm.deleteConfirmationMessage).toBe(
-      'Delete this Team history permanently? This cannot be undone.',
+      "Delete this Team history permanently? Its task agents' memory is kept. This cannot be undone.",
     );
     vm.closeDeleteConfirmation();
     await flushPromises();

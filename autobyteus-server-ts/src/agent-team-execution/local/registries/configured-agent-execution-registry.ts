@@ -4,7 +4,7 @@ import type { TeamRunContext } from "../../domain/team-run-context.js";
 import type { FlatTeamExecutionContext, FlatTeamMemberExecutionContext } from "../flat-team-execution-context.js";
 import { FlatTeamAgentExecutionHandle } from "../flat-team-agent-execution-handle.js";
 import { FlatTeamMemberConfigResolver } from "./flat-team-member-config-resolver.js";
-import type { RootedAgentMemoryLocator } from "../../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import type { AgentRunMemoryLocator } from "../../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { FlatTeamExecutionCallbacks } from "../flat-team-execution-callbacks.js";
@@ -21,7 +21,7 @@ export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistr
     teamContext: TeamRunContext<FlatTeamExecutionContext>;
     configResolver: FlatTeamMemberConfigResolver;
     agentRunManager?: AgentRunManager;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     callbacks: FlatTeamExecutionCallbacks;
@@ -48,6 +48,7 @@ export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistr
       teamContext: this.options.teamContext,
       context,
       config: node,
+      memoryPlacement: this.options.teamContext.memberMemoryPlacement,
       activationMode: this.options.teamContext.runtimeContext.configuredMemberActivationMode,
       agentRunManager: this.options.agentRunManager,
       memoryLocator: this.options.memoryLocator,

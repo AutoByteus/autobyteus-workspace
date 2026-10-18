@@ -94,7 +94,7 @@ export class RootTeamExecutionDirectory {
     this.reserveIds([input.teamNode.teamRunId]);
     let prepared: PreparedFlatTeamExecution;
     try {
-      prepared = await this.factory.beginMaterialization(input).prepare();
+      prepared = await this.factory.beginMaterialization({ ...input, teamKind: "configured" }).prepare();
     } catch (error) {
       this.releaseIds([input.teamNode.teamRunId]);
       throw error;
@@ -148,6 +148,7 @@ export class RootTeamExecutionDirectory {
     });
     const factoryControl = this.factory.beginMaterialization({
       physicalScope: input.physicalScope,
+      teamKind: "task",
       teamNode: input.task.teamNode,
       handoffs: input.task.handoffs,
       applicationBinding: null,
@@ -253,7 +254,7 @@ export class RootTeamExecutionDirectory {
     this.reserveIds([input.teamNode.teamRunId]);
     const id = input.teamNode.teamRunId;
     const operation = this.factory.beginMaterialization({
-      physicalScope: input.physicalScope, teamNode: input.teamNode, handoffs: input.handoffs,
+      physicalScope: input.physicalScope, teamKind: "task", teamNode: input.teamNode, handoffs: input.handoffs,
       applicationBinding: null, activationMode: "restore", callbacks: input.callbacks,
     });
     this.restorations.set(id, operation);

@@ -12,9 +12,9 @@ import {
   requireKeys,
   requiredArray,
   requiredString,
-} from "../../../run-history/store/run-execution-tree-shared-record-schemas.js";
-import { parseOptionalLaunchFields } from "../../../run-history/store/launch-configuration-source-schema.js";
-import { parseOptionalUserLaunchSelection } from "../../../run-history/store/launch-configuration-source-schema.js";
+  parseOptionalLaunchFields,
+  parseOptionalUserLaunchSelection,
+} from "../../legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
 
 /**
  * Frozen knowledge of the released `collaborators[]` entry shape (last written by the release

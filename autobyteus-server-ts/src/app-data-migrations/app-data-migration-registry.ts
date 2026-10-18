@@ -26,6 +26,7 @@ import { RemoveExternalMessagingDataMigration } from "./migrations/remove-extern
 import { ProjectsPerFolderV1AppDataMigration } from "./migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
 import { ProjectTaskKeysV1AppDataMigration } from "./migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
 import { RemoveBuiltInProjectTaskManagerMigration } from "./migrations/remove-built-in-project-task-manager-migration.js";
+import { TaskAgentOwnRunV1AppDataMigration } from "./migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
 
 export class AppDataMigrationRegistry {
@@ -87,6 +88,8 @@ export class AppDataMigrationRegistry {
       ),
       // Converts stored collaborators into delegated runs; must stay after every tree-shape migration above.
       new CollaboratorsToDelegatedRunsV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
+      // Registered last: on every start each pending or failed predecessor runs before it (contract §5.4).
+      new TaskAgentOwnRunV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
     ];
     this.validateDefinitions();
   }

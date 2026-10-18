@@ -28,7 +28,7 @@ import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
-import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { AgentOrgExecutionScopeBuilder } from "../../agent-org-execution/services/agent-org-execution-scope-builder.js";
 import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
@@ -248,7 +248,7 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
         locationService: storedTeamLocations,
       });
-      const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+      const memoryLocator = new AgentRunMemoryLocator({ memoryDir });
       const activityInspector = new AgentConversationActivityInspector();
       const generalAgentRunManager = agentRunManager;
       const flatTeamExecutionFactory = new FlatTeamExecutionFactory({

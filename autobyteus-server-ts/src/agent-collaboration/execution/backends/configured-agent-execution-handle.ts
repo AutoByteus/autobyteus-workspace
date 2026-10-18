@@ -13,9 +13,8 @@ import { AgentRunManager } from "../../../agent-execution/services/agent-run-man
 import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
-import {
-  RootedAgentMemoryLocator,
-} from "../services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../services/agent-run-memory-locator.js";
+import type { AgentRunMemoryPlacement } from "../../../agent-memory/domain/agent-run-memory-placement.js";
 import {
   cloneCollaborationMemberExecutionIdentity,
   createRootExecutionPhysicalScope,
@@ -76,13 +75,15 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
   constructor(private readonly options: {
     identity: CollaborationMemberExecutionIdentity;
     physicalScope: RootExecutionPhysicalScope;
+    /** Where this agent's memory directory is (contract L1), decided by whoever builds the agent. */
+    memoryPlacement: AgentRunMemoryPlacement;
     execution: ConfiguredAgentExecutionSpec;
     activationMode: ConfiguredAgentActivationMode;
     memberExecutionContext: MemberExecutionContext;
     applicationExecutionContext?: ApplicationExecutionContext | null;
     callbacks: RootAgentExecutionCallbacks;
     agentRunManager?: AgentRunManager;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     assertInputAllowed?: () => void;
@@ -434,8 +435,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
       llmModelIdentifier: execution.llmModelIdentifier,
       autoExecuteTools: execution.autoExecuteTools,
       workspaceId,
-      memoryDir: (this.options.memoryLocator ?? new RootedAgentMemoryLocator())
-        .getLocation(this.physicalScope, this.identity.agentRunId).memoryDir,
+      memoryDir: (this.options.memoryLocator ?? new AgentRunMemoryLocator())
+        .getMemoryDir(this.options.memoryPlacement, this.identity.agentRunId),
       llmConfig: execution.llmConfig as Record<string, unknown> | null,
       runtimeKind: execution.runtimeKind,
       memberExecutionContext: this.options.memberExecutionContext,

@@ -66,7 +66,7 @@ async function fixture(kind: RootSubjectKind, placement: Placement) {
   if (kind === 'agent_team') {
     const rootNode = testAgentTeamNode({ address: '/', teamRunId: 'root', coordinatorAddress: '/Manager',
       children: [testAgentNode('/Manager', { agentRunId: 'manager' })] });
-    const prepared = await f.factory.beginMaterialization({ physicalScope: scope([]), teamNode: rootNode,
+    const prepared = await f.factory.beginMaterialization({ teamKind: 'configured', physicalScope: scope([]), teamNode: rootNode,
       handoffs: [], activationMode: 'fresh', callbacks: f.callbacks }).prepare();
     prepared.commitAfterDurability(); rootTeam = prepared.teamRun;
     await activateTeamMembers(rootTeam, ['manager']);
@@ -193,7 +193,7 @@ for (const kind of kinds) it.each(['agent', 'team'] as const)(`${kind} keeps abo
   const forward = vi.fn();
   const callbacks = { publishAgentEvent: forward, buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn() };
   const parent = await new FlatTeamExecutionFactory().beginMaterialization({
-    teamNode: host, physicalScope: createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: kind === 'agent_team' ? [] : ['host'] }),
+    teamKind: 'configured', teamNode: host, physicalScope: createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: kind === 'agent_team' ? [] : ['host'] }),
     activationMode: 'fresh', handoffs: [], callbacks,
   }).prepare();
   parent.commitAfterDurability(); forward.mockClear();

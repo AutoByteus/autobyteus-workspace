@@ -1,5 +1,5 @@
 import type { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
-import type { AgentOrgCommunicationMessagesV1Store } from "../persistence/agent-org-communication-messages-v1-store.js";
+import type { AgentOrgCommunicationMessagesStore } from "../persistence/agent-org-communication-messages-store.js";
 import { validateAgentOrgStatePackage, type ValidatedAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
 
 export type AgentOrgStatePackageLoadResult =
@@ -13,14 +13,12 @@ export type AgentOrgStatePackageLoadResult =
 export class AgentOrgStatePackageLoader {
   constructor(private readonly stores: {
     executionTree: AgentOrgRunExecutionTreeStore;
-    messages: AgentOrgCommunicationMessagesV1Store;
+    messages: AgentOrgCommunicationMessagesStore;
   }) {}
 
   async load(input: { orgMemoryDir: string; orgRunId: string }): Promise<AgentOrgStatePackageLoadResult> {
-    const [tree, messages] = await Promise.all([
-      this.stores.executionTree.read(input.orgMemoryDir, input.orgRunId),
-      this.stores.messages.read(input.orgMemoryDir, input.orgRunId),
-    ]);
+    const tree = await this.stores.executionTree.read(input.orgMemoryDir, input.orgRunId);
+    const messages = tree ? await this.stores.messages.read(input.orgMemoryDir, tree) : null;
     if (!tree || !messages) return {
       loaded: false,
       code: "AGENT_ORG_STATE_PACKAGE_INCOMPLETE",

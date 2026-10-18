@@ -352,8 +352,16 @@ memory/agent_org_run_history_index.json
 memory/agent_orgs/<org-run-id>/
   agent_org_run_execution_tree.json
   agent_org_communication_messages.json
-  <rooted member memory...>
+  <rooted member memory...>        # direct agents and mounted teams' members
+memory/agents/<task-agent-run-id>/       # a task agent of the org: a run of its own (own run_metadata.json with taskAgent, own log)
+memory/agent_teams/<task-team-run-id>/   # a task agent team of the org: its own tree (with taskAgent), log and members
 ```
+
+Task agents are not part of the org's folder: the org tree keeps a link per task agent
+(`rootOrg.taskExecutions`, and older links under a configured team's `taskExecutions`), and
+`AgentOrgRunExecutionTreeStore` composes their records from their own files (task-agent-own-run,
+D-1). A task agent created from a configured place records `origin: "configured_place"` and
+keeps following that place. Messages with a task agent are stored in both logs.
 
 `AgentOrgRunExecutionTreeFile` has `subjectKind: "agent_org"` and a
 coordinator-free `rootOrg`. It stores direct Agent placements, direct

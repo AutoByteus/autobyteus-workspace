@@ -23,7 +23,7 @@ import { buildMemberInputPresentationEvent } from "../../agent-collaboration/exe
 import { projectAgentPresentationMessage } from "../../agent-collaboration/execution/events/agent-presentation-message-projector.js";
 import type { CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
+import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { AgentOrgExecutionIndex, AgentOrgIndexedAgentExecution } from "./agent-org-execution-index.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
@@ -127,7 +127,7 @@ export class AgentOrgRunMessageDelivery {
   }
 
   presentCommittedCommunication(
-    message: AgentOrgCommunicationMessagesFileV1["messages"][number],
+    message: AgentOrgCommunicationMessagesFile["messages"][number],
     receiverInput: AgentInputUserMessage,
   ): void {
     // Admission already succeeded. Retained identities, not current liveness,

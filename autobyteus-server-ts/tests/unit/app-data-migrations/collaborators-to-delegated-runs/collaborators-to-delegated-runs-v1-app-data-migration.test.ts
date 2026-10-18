@@ -1,4 +1,10 @@
 import { createHash } from "node:crypto";
+import {
+  ReleasedAgentOrgRunExecutionTreeReader,
+  ReleasedStandaloneRootTreeReader,
+  ReleasedTeamRunExecutionTreeReader,
+} from "../../../../src/app-data-migrations/legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
+import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -10,6 +16,7 @@ import {
 } from "../../../../src/app-data-migrations/migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { StandaloneRootPackageStore } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { AtomicRunPackageFileCommitWriter } from "../../../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
 import { emptyStandaloneRootTree } from "../../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
@@ -106,19 +113,21 @@ const seedAllFamilies = async (f: Fixture) => {
   return { agentDir, teamDir, orgDir };
 };
 
-const readAll = async (f: Fixture, dirs: Awaited<ReturnType<typeof seedAllFamilies>>) => ({
-  agent: await new StandaloneRootPackageStore().readTree(dirs.agentDir, "agent-host"),
-  team: await new TeamRunExecutionTreeStore().read(dirs.teamDir, "team-root"),
-  org: await new AgentOrgRunExecutionTreeStore().read(dirs.orgDir, "org-root"),
+/** This migration's output is the released shape before task-agent-own-run: read with the frozen readers. */
+const readAll = async (_f: Fixture, dirs: Awaited<ReturnType<typeof seedAllFamilies>>) => ({
+  agent: await new ReleasedStandaloneRootTreeReader().readTree(dirs.agentDir, "agent-host"),
+  team: await new ReleasedTeamRunExecutionTreeReader().read(dirs.teamDir, "team-root"),
+  org: await new ReleasedAgentOrgRunExecutionTreeReader().read(dirs.orgDir, "org-root"),
 });
 const runIds = (tasks: readonly { agentRunId?: string; teamRunId?: string }[]) => tasks.map((task) => task.agentRunId ?? task.teamRunId);
 
 describe("20261015_collaborators_to_delegated_runs_v1", () => {
-  it("is registered last, required on startup and startup-only", () => {
+  it("is registered right before task-agent-own-run (which is last), required on startup and startup-only", () => {
     const definitions = (new AppDataMigrationRegistry() as unknown as { definitions: { id: string; requiredOnStartup?: boolean; executionPolicy?: string }[] }).definitions;
-    const last = definitions.at(-1)!;
-    expect(last.id).toBe(COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID);
-    expect(last).toMatchObject({ id: "20261015_collaborators_to_delegated_runs_v1", requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
+    const ours = definitions.at(-2)!;
+    expect(definitions.at(-1)!.id).toBe(TASK_AGENT_OWN_RUN_V1_MIGRATION_ID);
+    expect(ours.id).toBe(COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID);
+    expect(ours).toMatchObject({ id: "20261015_collaborators_to_delegated_runs_v1", requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
   });
 
   it("converts the Agent, Team and Org trees in place; every collaborator keeps its run ID; no memory file or folder moves (AC-007)", async () => {
@@ -240,8 +249,12 @@ describe("20261015_collaborators_to_delegated_runs_v1", () => {
   it("FAILED_OPERATION: a write that does not rename leaves the original tree and fails the item", async () => {
     const f = await fixture();
     const dirs = await seedAllFamilies(f);
-    vi.spyOn(StandaloneRootPackageStore.prototype, "writeTree").mockResolvedValue({ outcome: "not_renamed", cause: new Error("disk full") } as never);
     const agentTree = getStandaloneRootTreePath(dirs.agentDir);
+    const write = AtomicRunPackageFileCommitWriter.prototype.write;
+    vi.spyOn(AtomicRunPackageFileCommitWriter.prototype, "write").mockImplementation(function (this: AtomicRunPackageFileCommitWriter, input) {
+      if (input.filePath === agentTree) return Promise.resolve({ outcome: "not_renamed", cause: new Error("disk full") } as never);
+      return write.call(this, input);
+    });
     const before = await sha(agentTree);
     const result = await f.migration.execute();
     expect(result.status).toBe("FAILED");

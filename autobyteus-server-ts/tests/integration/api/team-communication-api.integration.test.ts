@@ -6,7 +6,7 @@ import fastify, { type FastifyInstance } from "fastify";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { createHash } from "node:crypto";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const timestamp = "2026-04-12T10:00:00.000Z";
@@ -47,7 +47,7 @@ describe("Team communication API integration", () => {
         testAgentNode("/implementation_engineer", { agentRunId: "receiver-run-1", workspaceRootPath }),
       ],
     }));
-    await new TeamCommunicationV1Store().write(teamDir, {
+    await new TeamCommunicationStore().write(teamDir, {
       schemaVersion: 1,
       rootTeamRunId: input.teamRunId,
       messages: [{

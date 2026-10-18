@@ -26,7 +26,7 @@ import type {
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import type { SequencedRootEvent } from "../../agent-team-execution/services/team-run-event-publisher.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import type { TeamCommunicationMessageV1 } from "../../services/team-communication/team-communication-v1-types.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { projectTeamAgentEventMessage } from "./team-agent-event-websocket-projector.js";
 import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket-projector.js";
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
@@ -112,7 +112,7 @@ const projectTaskExecutionReference = (reference: TaskExecutionReference): TeamT
   "agentRunId" in reference ? { agent_run_id: reference.agentRunId } : { team_run_id: reference.teamRunId };
 
 export const projectCommunicationMessage = (
-  message: TeamCommunicationMessageV1,
+  message: CollaborationCommunicationMessage,
 ): TeamCommunicationMessageDto => ({
   message_id: message.messageId,
   sender_agent_run_id: message.senderAgentRunId,

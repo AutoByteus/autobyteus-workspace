@@ -57,7 +57,7 @@ const messages = {
   "workspace.agentOrg.history.stopLabel": "停止智能体组织",
   "workspace.agentOrg.history.archiveLabel": "归档智能体组织历史记录",
   "workspace.agentOrg.history.deleteLabel": "永久删除智能体组织历史记录",
-  "workspace.agentOrg.history.deleteConfirmation": "要永久删除此智能体组织历史记录吗？此操作仅删除本次运行，且无法撤销。",
+  "workspace.agentOrg.history.deleteConfirmation": "要永久删除此智能体组织历史记录吗？此操作仅删除本次运行，且无法撤销；其任务智能体的记忆将保留。",
   "workspace.agentOrg.history.archived": "智能体组织历史记录已归档。",
   "workspace.agentOrg.history.archiveFailed": "无法归档智能体组织历史记录，请重试。",
   "workspace.agentOrg.history.deleted": "智能体组织历史记录已永久删除。",

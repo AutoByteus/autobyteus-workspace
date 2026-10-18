@@ -51,6 +51,17 @@ how to apply them; they do not replace user-approved product requirements.
    unreadable run. It is not permission to swallow errors inside normal work.
    Historical data must never lock users out (see the
    [Data Migration Guideline](autobyteus-server-ts/docs/design/data_migration_guideline.md)).
+8. **No version numbers in the names of current code.** Current files, types,
+   functions and constants describe the one current shape, so they carry no
+   `V1`/`V2`/`v3` (for example `team-communication-store.ts`, not
+   `team-communication-v1-store.ts`). A version in a current name implies several
+   shapes living side by side, which current code forbids, and it goes stale when
+   the shape changes. Old shapes live only inside migrations: name a frozen copy
+   after the migration that owns it or the period it comes from (for example
+   `released-trees-before-task-agent-own-run.ts`), not after an invented shape
+   number. Renaming code never renames a file or value on disk. Product or
+   external names that contain a number (a model name, an external API version)
+   are not schema versions.
 
 ## Work in two phases: clean functionality, then evidence-led refinement
 

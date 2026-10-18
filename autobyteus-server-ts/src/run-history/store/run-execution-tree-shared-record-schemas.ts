@@ -1,3 +1,4 @@
+import type { TaskExecutionLink } from "./task-agent-own-records.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import {
@@ -204,6 +205,21 @@ export const parseTaskExecution = (value: unknown, label: string): TaskExecution
     ...parseTaskTeamExecutionSource(execution, address, label),
     ...parseOptionalUserLaunchSelection(execution, "userTeamLaunchSelection", label),
   };
+};
+
+/**
+ * The link a coordinating tree keeps on disk for a task agent (contract §3.3); its facts are in the task
+ * agent's own file. Read tolerantly: other fields are ignored.
+ */
+export const parseTaskExecutionLink = (value: unknown, label: string): TaskExecutionLink => {
+  const link = objectRecord(value, label);
+  const isAgent = "agentRunId" in link;
+  requireKeys(link, ["address", isAgent ? "agentRunId" : "teamRunId", "startedAt"], label);
+  const address = canonicalNonRootAddress(link.address, `${label}.address`);
+  const tail = { ...parseDelegator(link, label), startedAt: isoTimestamp(link.startedAt, `${label}.startedAt`) };
+  return isAgent
+    ? { address, agentRunId: requiredString(link.agentRunId, `${label}.agentRunId`), ...tail }
+    : { address, teamRunId: requiredString(link.teamRunId, `${label}.teamRunId`), ...tail };
 };
 
 export const parseTaskExecutions = (value: unknown, label: string): TaskExecution[] =>

@@ -1,7 +1,7 @@
 import type { TeamAgentExecutionBinding } from "./team-agent-execution-binding.js";
 import type { TeamAgentEvent } from "./team-agent-event.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import type { TeamCommunicationMessageV1 } from "../../services/team-communication/team-communication-v1-types.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { DelegatedLaunchSelectionRecord } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 
 export enum TeamRunEventSourceType {
@@ -56,7 +56,7 @@ export type TeamRunEvent =
     }>
   | Readonly<{
       eventSourceType: TeamRunEventSourceType.COMMUNICATION;
-      payload: TeamCommunicationMessageV1;
+      payload: CollaborationCommunicationMessage;
     }>
   | Readonly<{
       eventSourceType: TeamRunEventSourceType.MEMBER_INPUT;

@@ -26,7 +26,7 @@ import {
   createTaskExecutionHostIdentity,
   type TaskExecutionHostIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import {
@@ -71,7 +71,7 @@ export type StandaloneRootTaskExecutionAdapterOptions = Readonly<{
   publishTaskExecutionsReopened(taskExecutions: readonly TaskExecutionReference[]): void;
   publishAgentOffline(identity: CollaborationMemberExecutionIdentity): void;
   enterLifecycleFailStop(): void;
-  memoryLocator?: RootedAgentMemoryLocator;
+  memoryLocator?: AgentRunMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
   tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
 }>;
@@ -86,12 +86,12 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
   private readonly registrations = new Map<string, RegisteredTaskActivation>();
   get root(): RootExecutionIdentity { return this.options.root; }
   private readonly readiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
-  private readonly memoryLocator: RootedAgentMemoryLocator;
+  private readonly memoryLocator: AgentRunMemoryLocator;
   private readonly sources: StandaloneRootTaskSourceResolver;
 
   constructor(private readonly options: StandaloneRootTaskExecutionAdapterOptions) {
     this.readiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
-    this.memoryLocator = options.memoryLocator ?? new RootedAgentMemoryLocator();
+    this.memoryLocator = options.memoryLocator ?? new AgentRunMemoryLocator();
     this.sources = new StandaloneRootTaskSourceResolver();
   }
 
@@ -246,7 +246,7 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
     for (const indexed of index.listTaskExecutionChainForAgent(agentRunId)) {
       if (this.isLive(referenceOf(indexed))) continue;
       const ingressAgentRunId = this.ingressAgentRunId(indexed);
-      const memoryDir = this.memoryLocator.getLocation(index.getPhysicalScopeForAgent(ingressAgentRunId), ingressAgentRunId).memoryDir;
+      const memoryDir = this.memoryLocator.getMemoryDir(index.getMemoryPlacementForAgent(ingressAgentRunId), ingressAgentRunId);
       const activity = (this.options.activityInspector ?? getAgentConversationActivityInspector())
         .inspect({ agentRunId: ingressAgentRunId, memoryDir });
       if (activity.kind !== "present") {
@@ -371,7 +371,7 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
     let nextTreeAtCommit: StandaloneRootTreeSnapshot | null = null;
     return this.options.persistence.commitTaskActivation({
       prepareAgainstCurrent: () => {
-        let nextTree = addStandaloneRootTaskExecution({ tree: this.options.getTree(), host: input.host, execution });
+        let nextTree = addStandaloneRootTaskExecution({ tree: this.options.getTree(), execution });
         for (const staged of input.prepared.stagedPlatformBindings) {
           nextTree = adoptStandaloneRootPlatformBinding({ tree: nextTree, binding: staged }).tree;
         }

@@ -1,4 +1,5 @@
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+import { TASK_AGENT_PLACEMENT } from "../../../src/agent-memory/domain/agent-run-memory-placement.js";
 import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -8,7 +9,7 @@ import { AgentDefinition } from "../../../src/agent-definition/domain/models.js"
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
 import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { RootedAgentMemoryLocator } from "../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { StandaloneAgentRunRootManager } from "../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { StandaloneRootLocationService } from "../../../src/standalone-agent-run-root/services/standalone-root-location-service.js";
@@ -136,10 +137,10 @@ const buildManager = async (taskExecutionResources: InMemoryTaskExecutionResourc
     taskExecutionResources,
     rootDependencies: {
       taskExecutionResources,
-      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new RootedAgentMemoryLocator({ memoryDir }) }),
+      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new AgentRunMemoryLocator({ memoryDir }) }),
       taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
       teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
-      memoryLocator: new RootedAgentMemoryLocator({ memoryDir }),
+      memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
       activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
       collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable),
     },
@@ -296,7 +297,7 @@ describe("Agent root of a standalone run", () => {
     expect("taskExecutions" in team && team.taskExecutions).toEqual([]);
     const location = await new StandaloneRootLocationService({ memoryDir: f.memoryDir }).findAgent({ agentRunId: "code-reviewer-run-1" });
     expect(location).toMatchObject({ rootSubjectKind: "agent", rootRunId: HOST, memberAddress: "/code_reviewer",
-      memoryDir: path.join(dir, "code-reviewer-run-1"), launchConfiguration: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-host" } });
+      memoryDir: path.join(f.memoryDir, "agents", "code-reviewer-run-1"), launchConfiguration: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-host" } });
 
     // The host crashes: the root and its children survive; a delegated copy's report wakes the host (DS-009).
     f.host.crash();
@@ -305,7 +306,7 @@ describe("Agent root of a standalone run", () => {
     expect(delivered).toMatchObject({ accepted: true });
     expect(f.restores).toHaveBeenCalledOnce();
     expect(f.host.reserved.at(-1)).toContain("Review done.");
-    expect((await f.store.readMessages(dir, HOST))!.messages.at(-1)).toEqual(expect.objectContaining({ senderAgentRunId: "code-reviewer-run-1", receiverAgentRunId: HOST }));
+    expect((await f.store.readMessages(dir, (await f.store.readTree(dir, HOST))!))!.messages.at(-1)).toEqual(expect.objectContaining({ senderAgentRunId: "code-reviewer-run-1", receiverAgentRunId: HOST }));
     await flushMicrotasks();
     expect(f.host.published).toEqual([expect.objectContaining({ eventType: "INTER_AGENT_MESSAGE", runId: HOST })]);
   });
@@ -563,7 +564,7 @@ describe("agent-initiated delegation of a standalone run", () => {
     expect(f.handles.get(restoredLead)!.input.memberExecutionContext).toMatchObject(ownScope);
   });
 
-  it("a copy-Team member's catalog copy goes to the root; a copy already stored under a Team restores in place (REQ-012, DEC-006)", async () => {
+  it("a copy-Team member's catalog copy goes to the root and restores as its own run (REQ-012, contract L1)", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
     await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/product_team", description: "Start" });
@@ -578,23 +579,15 @@ describe("agent-initiated delegation of a standalone run", () => {
     expect(reviewerCopy).toMatchObject({ delegatorAgentRunId: lead.agentRunId });
     expect(tasks.find((task) => task.address === "/product_team")!.taskExecutions).toEqual([]);
 
-    // A copy recorded under the Team by an earlier version keeps its recorded host on restore.
+    // After a stop and reopen the copy restores as its own run: its memory is `agents/<id>/` (contract L1);
+    // copies nested under a Team by earlier versions are lifted to the root by the startup migration (U-5).
     expect(await f.manager.stopRoot(HOST)).toMatchObject({ rootEnded: true });
-    const dir = new AgentMemoryLayout(f.memoryDir).getAgentRunCollaborationDirPath(HOST);
-    const stored = (await f.store.readTree(dir, HOST))!;
-    const moved = {
-      ...stored,
-      taskExecutions: stored.taskExecutions
-        .filter((task) => task.address !== "/code_reviewer")
-        .map((task) => task.address === "/product_team" ? { ...task, taskExecutions: stored.taskExecutions.filter((other) => other.address === "/code_reviewer") } : task),
-    };
-    expect((await f.store.writeTree(dir, moved as never)).outcome).toBe("committed");
     const reopened = (await f.manager.resolveRoot(HOST))!;
     await reopened.ensureHostReady();
     await expect(reopened.executeAgentCommand(reviewerCopy.agentRunId, { kind: "post_message", message: { content: "Status?" } as never }))
       .resolves.toMatchObject({ accepted: true });
     expect(f.handles.get(reviewerCopy.agentRunId)!.input.activationMode).toBe("restore");
-    expect(f.handles.get(reviewerCopy.agentRunId)!.input.physicalScope.ancestorTeamRunIds).toEqual([product!.teamRunId]);
+    expect(f.handles.get(reviewerCopy.agentRunId)!.input.memoryPlacement).toEqual(TASK_AGENT_PLACEMENT);
   });
 });
 
@@ -762,7 +755,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(live.snapshot.closedTaskExecutions).toEqual([]);
     live.close();
     const dir = new AgentMemoryLayout(f.memoryDir).getAgentRunCollaborationDirPath(HOST);
-    const work = (await f.store.readMessages(dir, HOST))!.messages.at(-1)!;
+    const work = (await f.store.readMessages(dir, (await f.store.readTree(dir, HOST))!))!.messages.at(-1)!;
     expect(work).toEqual(expect.objectContaining({ senderAgentRunId: HOST, receiverAgentRunId: copy.agentRunId, messageType: "task_assignment" }));
     expect(work.content).toContain("New Task assigned to you: B.");
     expect(work.content).toContain("Follow-up cleanup");

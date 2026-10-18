@@ -92,6 +92,7 @@ const createFactory = (input: {
       configuredMemberActivationMode: request.activationMode,
     });
     const context = new TeamRunContext({
+      teamKind: "configured",
       physicalScope: request.physicalScope,
       teamRunId: request.teamNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,

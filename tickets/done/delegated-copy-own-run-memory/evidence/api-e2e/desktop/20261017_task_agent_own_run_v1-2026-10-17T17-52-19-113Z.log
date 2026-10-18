@@ -1,0 +1,11 @@
+migrationId=20261017_task_agent_own_run_v1
+displayName=Task agents as their own runs
+statusSummary={"scannedCount":3,"migratedCount":6,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"agent:hub_assistant_480199d96db54d0db7e0ba82d5948710/code_reviewer_a90b133f73ca44588b160c24b59b4576","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/dcm-upgrade-desktop-root/server-data/memory/agents/hub_assistant_480199d96db54d0db7e0ba82d5948710/collaboration/collaboration_tree.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"agent:hub_assistant_480199d96db54d0db7e0ba82d5948710/research_squad_dea6dd13f31843b38b78fe9a9119ee6d","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/dcm-upgrade-desktop-root/server-data/memory/agents/hub_assistant_480199d96db54d0db7e0ba82d5948710/collaboration/collaboration_tree.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"agent:hub_assistant_480199d96db54d0db7e0ba82d5948710/build_crew_7978e7f7be7741aabfa031295aba9795","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/dcm-upgrade-desktop-root/server-data/memory/agents/hub_assistant_480199d96db54d0db7e0ba82d5948710/collaboration/collaboration_tree.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"agent_team:forest_team_fc4883b644734e7d865fec4dfabe6067/research_squad_91fda655adc84addab25ef8981c2fdc1","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/dcm-upgrade-desktop-root/server-data/memory/agent_teams/forest_team_fc4883b644734e7d865fec4dfabe6067/team_run_execution_tree.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"agent_org:studio_e42c6e903a6643a6ae83f20eae1568e5/research_squad_e4572ed368a2416e9c2bacb6b97d6c7f","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/dcm-upgrade-desktop-root/server-data/memory/agent_orgs/studio_e42c6e903a6643a6ae83f20eae1568e5/agent_org_run_execution_tree.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"agent_org:studio_e42c6e903a6643a6ae83f20eae1568e5/build_crew_14b6c2246eb3405da5fef82ddf1cb956","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/dcm-upgrade-desktop-root/server-data/memory/agent_orgs/studio_e42c6e903a6643a6ae83f20eae1568e5/agent_org_run_execution_tree.json","status":"MIGRATED","message":"MIGRATED"}
