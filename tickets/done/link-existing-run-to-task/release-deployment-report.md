@@ -54,7 +54,7 @@ Finalization to `personal`, then a beta (the user's decision). The beta is recor
 
 ## Repository Finalization
 
-- See delivery-revision-record.md.
+- Merge `--no-ff` commit `4e738acc66` pushed to `origin/personal`. Beta v1.5.6-beta.5 Completed (delivery-revision-record.md, DR-002).
 
 ## Rollback
 
