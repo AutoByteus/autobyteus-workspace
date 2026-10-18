@@ -1,0 +1,3 @@
+## Changes
+- **Withdrawn: giving a Task to a run you started yourself.** The feature from v1.5.6-beta.5 is removed. The Project Task Manager again gives Tasks only to task agents it started itself (or to a new task agent). If it is asked to give a Task to a run you started by hand, it refuses with the reason and changes nothing. No run was ever adopted, so no data needs converting.
+- Kept from that beta: an archived or deleted run leaves the sidebar right away, also when it was removed from another window; and a team that worked before being delegated no longer stops its Project Manager because of its earlier usage records.

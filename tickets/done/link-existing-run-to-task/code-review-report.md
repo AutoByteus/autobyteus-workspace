@@ -16,8 +16,8 @@
 - Implementation Revision Record Reviewed As Context: `.../implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001` (`ef807beb6d`), `IR-002` (`4b0986363c`)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-006`
-- Current Review Round: `6`
+- Current Code Review Revision ID: `CRR-009`
+- Current Review Round: `7` (independent review of the withdrawal, SR-018 / IR-005, at the user's request)
 - Review Scope: round 2 is a `Targeted Delta Review` of `4b0986363c` (5 source files within CR-001..CR-003, docs, 2 tests, e2e evidence). Round 1 was a `Full Review` (`2f211340ee..ef807beb6d`). All 27 changed source files were read in full; plus the 4 new and 2 updated test files and the 2 docs.
 - Trigger: implementation_engineer, IR-002
 - Prior Review Round Reviewed: `1` (CRR-001, Fail)
@@ -47,6 +47,27 @@
   - **The e2e `collaboration-prompt-wording.e2e.test.ts` (scripted AGY, clean env): CPW-R3 fails on M-34** (CR-002); the other 10 pass.
   - Size: no changed source file is over 500 effective lines. `agent-run-history-catalog-service.ts` was over the limit at base and is now under it after the extraction. The two new files are 162 and 180 effective lines.
 - **Explicit exclusions:** the full unit and integration suites were not rerun (the implementer reports them green). The remaining e2e suites were not run by the reviewer.
+
+## Round 7 — Withdrawal Of Adoption (SR-018, IR-005, CRR-009)
+
+- **Context:** the user withdrew adoption (SR-018). The removal is Medium / Low, a direct route to API/E2E; this independent source review was requested by the user and runs alongside API/E2E.
+  - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption`, branch `codex/withdraw-adoption`, base `origin/personal` `2b04a9971d`, code commit `ffeea43dac`.
+  - Basis: requirements "Removal Requirements" RM-001..RM-006; design-spec "Removal Plan (current)"; SR-018 and its RM-006 decisions (kept fixes, reverted extractions).
+- **Review Scope:** `Full Review` of the removal commit, aimed at what the implementer's recorded checks can't show: completeness and exactness of the revert, the conflict resolutions, and the kept fixes. Per the skill, the recorded checks in the handoff's Checks Run were not rerun: IMP-01..IMP-10 (typecheck, unit 5933, integration 415, refusal e2e 24/3, web 4508, guards, web typecheck parity, kept-fix with/without, identifier search, rule 2). They ran on `ffeea43dac` and nothing has changed since.
+- **Reviewer verification:**
+  - **Exact revert.** Of the 52 product files the merge `4e738acc66` changed, 37 are byte-identical to the pre-merge content (`4e738acc66^1`). These include the agent-facing texts, the lifecycle, the port, the Task side, the catalogs, the standalone root, the compositions, the docs and the ADO tests. Both reverted extractions are back to their shipped structure.
+  - **Later tickets kept (RM-002).** For the 8 files later tickets also changed, the change from pre-merge to now was compared with the later tickets' changes (`4e738acc66..2b04a9971d`):
+    - 6 are exact: `task-agent-own-files.ts`, `collaboration_model.md`, the streaming spec, `agentRunCollaborationStore.ts`, and the disclosure and closure specs.
+    - `agentRunCollaborationStreamingService.ts` differs only by naming: it uses `message.payload.event` instead of the merge's local `event`, with autobyteus-139's `change_sequence_through` kept. Same behavior.
+    - The web `agent_execution_architecture.md` adds only kept fix 1's description.
+  - **The one file outside the merge.** `agentRunCollaborationLazyChildren.spec.ts` loses only the rule-1 assertion and its mock. They were added by `2cb21ab41e`, the later ticket's integration commit, to assert the adoption-era SR-009 rule-1 handler; the ticket's own `291545c66f` had none. Removing them with rule 1 is correct.
+  - **Kept fixes (RM-006):**
+    - (1) SR-009 rule 2: `runHistoryRetiredRuns.ts` and its two calls, with rule 1's state, action and hook removed.
+    - (2) the accumulator's live root claim. Premise checked: a record whose observations span more than one root keeps `rootTeamRunId: null` with `rootAttributionStatus: "unknown"` (`token-usage/domain/agent-org-token-attribution.ts:8`). IMP-08 fails without the fix.
+    - (3) the TESTING.md note.
+    - No adoption wording or rule-1 identifiers remain in the kept files.
+- **Scenario basis:** the kept fixes are the Solution Designer's RM-006 decisions under the user's rule. Fix 1 covers a run deleted or archived from another window or client; fix 2 covers mixed-root records. Both are recorded with evidence and accepted as decided; this review doesn't reopen them.
+- **Result:** no findings. Score unchanged at 9.3/10 for the remaining code; the removal itself raises no structural concern.
 
 ## Round 2 — Delta (IR-002, CRR-002)
 
@@ -282,12 +303,9 @@ N/A (Pass). Round 1 was `Local Fix` (CR-001..CR-003), resolved.
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 6, Targeted Delta Review of SR-009 / IR-004)
+- Review Entry Point: `Implementation Review` (round 7: independent review of the withdrawal SR-018 / IR-005, `ffeea43dac`, requested by the user; direct route, alongside API/E2E)
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass` (the sidebar premise corrected by SR-009 and implemented)
-- Score Summary: 9.3/10; every category ≥ 9.0
-- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes:
-  - API/E2E reruns the web tests, the guards and D-1 on the real app: adopt a run opened this session, then DONE and reopen. Confirm it shows only under the PM, for an agent run and a team run, with the PM open and not open.
-  - The server side stays valid.
-  - Then the test-code review of API/E2E's durable changes.
+- Material-Premise Gate: `Pass`
+- Score Summary: no findings; the revert is exact apart from the approved kept fixes and later-ticket content
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer` (already validating the removal; informational: `/software_engineering_team/implementation_engineer`)
+- Notes: RM-004 / RM-005 (withdrawal note in the release notes, new beta) are for delivery.
