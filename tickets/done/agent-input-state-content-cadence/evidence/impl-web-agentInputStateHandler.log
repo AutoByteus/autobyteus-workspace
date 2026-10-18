@@ -1,0 +1,26 @@
+
+> autobyteus@1.5.6-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-state-content-cadence/autobyteus-web
+> cross-env NUXT_TEST=true vitest run services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-state-content-cadence/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts (3 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  06:12:50
+   Duration  8.57s (transform 4.12s, setup 7.71s, collect 237ms, tests 14ms, environment 241ms, prepare 133ms)
+

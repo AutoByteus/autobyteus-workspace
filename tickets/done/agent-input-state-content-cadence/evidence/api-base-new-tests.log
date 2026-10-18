@@ -1,0 +1,544 @@
+=== agent-run.ts at base 2f211340ee ===
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-state-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-state-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/agent-execution/agent-run.test.ts [2m([22m[2m46 tests[22m[2m | [22m[31m4 failed[39m[2m | [22m[33m42 skipped[39m[2m)[22m[33m 1278[2mms[22m[39m
+     [2m[90m↓[39m[22m normalizes only the private provider dispatch while observers retain the admitted message
+     [2m[90m↓[39m[22m returns admission before an idle start dispatch settles and records forwarding once
+     [2m[90m↓[39m[22m claims exact active Codex append and exposes only that atomic turn id
+     [2m[90m↓[39m[22m appends input posted while an earlier input's turn is running (IMP-DI-001, AC-015)
+     [2m[90m↓[39m[22m starts a definitely-undelivered append as the next turn instead of failing it (AC-016)
+     [2m[90m↓[39m[22m resolves a requeued append only at the next turn's terminal when the old turn ended mid-dispatch (CR-001)
+     [2m[90m↓[39m[22m admits Claude/AutoByteus input while active and starts it only after terminal
+     [2m[90m↓[39m[22m retains anonymous-turn input until the canonical terminal instead of guessing
+     [2m[90m↓[39m[22m keeps several next-turn inputs FIFO and one provider invocation at a time
+     [2m[90m↓[39m[22m orders synchronous start and terminal facts behind forwarding result
+     [2m[90m↓[39m[22m does not retry or convert a rejected append
+     [2m[90m↓[39m[22m settles reject-after-start as one protocol failure without retry
+     [2m[90m↓[39m[22m keeps append-capable input FIFO-owned through interrupt acceptance until terminal
+     [2m[90m↓[39m[22m resumes exact active-turn append after interrupt rejection
+     [2m[90m↓[39m[22m resumes exact active-turn append after interrupt failure
+     [2m[90m↓[39m[22m reserves one no-id interrupt and lets a canonical terminal win provider-result ordering
+     [2m[90m↓[39m[22m rejects an interrupt target mismatch before provider I/O
+     [2m[90m↓[39m[22m passes an anonymous canonical active turn as exact null provider mechanics
+     [2m[90m↓[39m[22m keeps an earlier reservation intact until its owner commits and the released input terminates
+     [2m[90m↓[39m[22m keeps quiescence pending until an earlier reservation owner cancels
+     [2m[90m↓[39m[22m keeps admission closed after committed provider termination rejects
+     [2m[90m↓[39m[22m retries the same prepared AgentRun after a nonterminal provider termination result
+     [2m[90m↓[39m[22m drains claimed and queued inputs in FIFO order before provider termination
+     [2m[90m↓[39m[22m returns null without side effects when quiescent preparation sees an active turn
+     [2m[90m↓[39m[22m prepares an already-quiescent run and ordinary cancellation reopens admission
+     [2m[90m↓[39m[22m root shutdown silently invalidates reservations and cancels admitted pre-forward input once
+     [2m[90m↓[39m[22m tracks provider-started pre-turn work through canonical interruption before completing the root fence
+     [2m[90m↓[39m[22m interrupts an already-active approval-wait turn before the root fence completes
+     [2m[90m↓[39m[22m waits for the provider interrupt request even when canonical terminal truth arrives first
+     [2m[90m↓[39m[22m is not quiescent for idle shutdown while the runtime reports a running background task, and admission stays open
+     [2m[90m↓[39m[22m prepares an idle run once its background task has ended
+     [2m[90m↓[39m[22m explicit termination and the root-shutdown fence never wait for a running background task (AC-007)
+     [2m[90m↓[39m[22m does not reopen root-fenced admission when an earlier prepared termination is cancelled
+     [2m[90m↓[39m[22m fails retained input once and closes admission on a runtime-global terminal error
+     [2m[90m↓[39m[22m rejects input while the runtime is offline
+     [2m[90m↓[39m[22m rejects invalid typed input without provider effect
+     [2m[90m↓[39m[22m preserves source callback order and rejects cross-run publication
+     [2m[90m↓[39m[22m settles accepted when the turn completes after a rejected interrupt, with no second interrupt (F-1)
+     [2m[90m↓[39m[22m ends a failed attempt at the bound, keeps input fenced, and lets the next call start a new attempt (F-2, F-3)
+     [2m[90m↓[39m[22m shares one pending attempt between concurrent callers and keeps an accepted result latched (F-3)
+     [2m[90m↓[39m[22m fails only the attempt whose interrupt throws; the next call interrupts again (F-3)
+     [2m[90m↓[39m[22m shares one preparation promise, one try-if-quiescent promise and one backend termination
+[31m     [31m×[31m sends no already-delivered revision after content batches and broadcasts a queued input once (AC-002)[39m[32m 62[2mms[22m[39m
+[31m     [31m×[31m gives each new subscriber the current snapshot without repeating it to existing subscribers (AC-004a)[39m[32m 105[2mms[22m[39m
+[31m     [31m×[31m broadcasts a revision first produced by a pull read on the next publish (AC-004b)[39m[32m 54[2mms[22m[39m
+[31m     [31m×[31m broadcasts a revision first produced by a subscribe snapshot to existing subscribers before the new snapshot (AC-004b)[39m[33m 1055[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/agent-run.test.ts[2m > [22mAgentRun input-state publication (agent-input-state-content-cadence)[2m > [22msends no already-delivered revision after content batches and broadcasts a queued input once (AC-002)
+[31m[1mAssertionError[22m: expected [ { listener: 'a', …(2) }, …(3) ] to deeply equal [ Array(1) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -2,6 +2,21 @@[39m
+[2m    {[22m
+[2m      "entries": 0,[22m
+[2m      "listener": "a",[22m
+[2m      "revision": 1,[22m
+[2m    },[22m
+[31m+   {[39m
+[31m+     "entries": 0,[39m
+[31m+     "listener": "a",[39m
+[31m+     "revision": 1,[39m
+[31m+   },[39m
+[31m+   {[39m
+[31m+     "entries": 0,[39m
+[31m+     "listener": "a",[39m
+[31m+     "revision": 1,[39m
+[31m+   },[39m
+[31m+   {[39m
+[31m+     "entries": 0,[39m
+[31m+     "listener": "a",[39m
+[31m+     "revision": 1,[39m
+[31m+   },[39m
+[2m  ][22m
+
+[36m [2m❯[22m tests/unit/agent-execution/agent-run.test.ts:[2m1171:17[22m[39m
+    [90m1169| [39m    [35mawait[39m [34msource[39m[33m?.[39m([34mcontentBatch[39m(harness[33m.[39mrun[33m.[39mrunId[33m,[39m [32m"one"[39m))[33m;[39m
+    [90m1170| [39m    [35mawait[39m [34msource[39m[33m?.[39m([34mcontentBatch[39m(harness[33m.[39mrun[33m.[39mrunId[33m,[39m [32m"two"[39m))[33m;[39m
+    [90m1171| [39m    [34mexpect[39m(log)[33m.[39m[34mtoEqual[39m([{ listener[33m:[39m [32m"a"[39m[33m,[39m revision[33m:[39m [34m1[39m[33m,[39m entries[33m:[39m [34m0[39m }])[33m;[39m
+    [90m   | [39m                [31m^[39m
+    [90m1172| [39m
+    [90m1173| [39m    await expect(harness.run.postUserMessage(new AgentInputUserMessage…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/agent-run.test.ts[2m > [22mAgentRun input-state publication (agent-input-state-content-cadence)[2m > [22mgives each new subscriber the current snapshot without repeating it to existing subscribers (AC-004a)
+[31m[1mAssertionError[22m: expected [ { listener: 'a', …(2) }, …(6) ] to have a length of 5 but got 7[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 5[39m
+[31m+ 7[39m
+
+[36m [2m❯[22m tests/unit/agent-execution/agent-run.test.ts:[2m1206:17[22m[39m
+    [90m1204| [39m    [34munsubscribeReconnect[39m()[33m;[39m
+    [90m1205| [39m    await harness.getSourceListener()?.(contentBatch(harness.run.runId…
+    [90m1206| [39m    [34mexpect[39m(log)[33m.[39m[34mtoHaveLength[39m([34m5[39m)[33m;[39m
+    [90m   | [39m                [31m^[39m
+    [90m1207| [39m  })[33m;[39m
+    [90m1208| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/agent-run.test.ts[2m > [22mAgentRun input-state publication (agent-input-state-content-cadence)[2m > [22mbroadcasts a revision first produced by a pull read on the next publish (AC-004b)
+[31m[1mAssertionError[22m: expected [ { listener: 'a', …(2) }, …(2) ] to have a length of 2 but got 3[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 2[39m
+[31m+ 3[39m
+
+[36m [2m❯[22m tests/unit/agent-execution/agent-run.test.ts:[2m1226:17[22m[39m
+    [90m1224| [39m    ])[33m;[39m
+    [90m1225| [39m    await harness.getSourceListener()?.(contentBatch(harness.run.runId…
+    [90m1226| [39m    [34mexpect[39m(log)[33m.[39m[34mtoHaveLength[39m([34m2[39m)[33m;[39m
+    [90m   | [39m                [31m^[39m
+    [90m1227| [39m  })[33m;[39m
+    [90m1228| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/agent-run.test.ts[2m > [22mAgentRun input-state publication (agent-input-state-content-cadence)[2m > [22mbroadcasts a revision first produced by a subscribe snapshot to existing subscribers before the new snapshot (AC-004b)
+[31m[1mAssertionError[22m: expected [ { listener: 'a', …(2) }, …(1) ] to have a length of 3 but got 2[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 3[39m
+[31m+ 2[39m
+
+[36m [2m❯[22m tests/unit/agent-execution/agent-run.test.ts:[2m1237:40[22m[39m
+    [90m1235| [39m    [35mawait[39m [34mqueueWithoutPublish[39m(harness[33m,[39m [32m"reserved then released"[39m)[33m;[39m
+    [90m1236| [39m    harness[33m.[39mrun[33m.[39m[34msubscribeToEvents[39m([34mrecordInputStates[39m(log[33m,[39m [32m"b"[39m))[33m;[39m
+    [90m1237| [39m    [35mawait[39m vi[33m.[39m[34mwaitFor[39m(() [33m=>[39m [34mexpect[39m(log)[33m.[39m[34mtoHaveLength[39m([34m3[39m))[33m;[39m
+    [90m   | [39m                                       [31m^[39m
+    [90m1238| [39m    [34mexpect[39m(log)[33m.[39m[34mtoEqual[39m([
+    [90m1239| [39m      { listener[33m:[39m [32m"a"[39m[33m,[39m revision[33m:[39m [34m1[39m[33m,[39m entries[33m:[39m [34m0[39m }[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[33m42 skipped[39m[90m (46)[39m
+[2m   Start at [22m 06:20:01
+[2m   Duration [22m 5.52s[2m (transform 2.65s, setup 26ms, import 3.76s, tests 1.28s, environment 0ms)[22m
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-state-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-state-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-autobyteus
+Created agent session fabb0750-3c8c-4d23-8f09-3b329d5d0cf4 for run run-autobyteus
+Agent WebSocket connected: session=fabb0750-3c8c-4d23-8f09-3b329d5d0cf4, run=run-autobyteus
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-state-content-cadence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-state-content-cadence/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-autobyteus
+Created agent session 2743a404-5cdd-474b-a2b3-06f109e9617d for run run-autobyteus
+Agent WebSocket connected: session=2743a404-5cdd-474b-a2b3-06f109e9617d, run=run-autobyteus
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 2743a404-5cdd-474b-a2b3-06f109e9617d
+Agent WebSocket disconnected: 2743a404-5cdd-474b-a2b3-06f109e9617d
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session fabb0750-3c8c-4d23-8f09-3b329d5d0cf4
+Agent WebSocket disconnected: fabb0750-3c8c-4d23-8f09-3b329d5d0cf4
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-codex_app_server
+Created agent session 55eb897c-e19f-4bd2-b624-adc0be35f0cc for run run-codex_app_server
+Agent WebSocket connected: session=55eb897c-e19f-4bd2-b624-adc0be35f0cc, run=run-codex_app_server
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-codex_app_server
+Created agent session a63e4592-c3f4-4c4e-871e-3eaea34d9229 for run run-codex_app_server
+Agent WebSocket connected: session=a63e4592-c3f4-4c4e-871e-3eaea34d9229, run=run-codex_app_server
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session a63e4592-c3f4-4c4e-871e-3eaea34d9229
+Agent WebSocket disconnected: a63e4592-c3f4-4c4e-871e-3eaea34d9229
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 55eb897c-e19f-4bd2-b624-adc0be35f0cc
+Agent WebSocket disconnected: 55eb897c-e19f-4bd2-b624-adc0be35f0cc
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-claude_agent_sdk
+Created agent session 6f996852-ad87-41eb-9f96-eac866199298 for run run-claude_agent_sdk
+Agent WebSocket connected: session=6f996852-ad87-41eb-9f96-eac866199298, run=run-claude_agent_sdk
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-claude_agent_sdk
+Created agent session 90ef42e6-f1c3-421b-a5ca-eaf08a709e87 for run run-claude_agent_sdk
+Agent WebSocket connected: session=90ef42e6-f1c3-421b-a5ca-eaf08a709e87, run=run-claude_agent_sdk
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 90ef42e6-f1c3-421b-a5ca-eaf08a709e87
+Agent WebSocket disconnected: 90ef42e6-f1c3-421b-a5ca-eaf08a709e87
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mcoalesces a representative fine-grained canonical stream into one default-window content frame
+[22m[39mClosed agent session 6f996852-ad87-41eb-9f96-eac866199298
+Agent WebSocket disconnected: 6f996852-ad87-41eb-9f96-eac866199298
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mcoalesces a representative fine-grained canonical stream into one default-window content frame
+[22m[39mAgent websocket attached for run run-default-window-rate
+Created agent session c8932c8a-b9cc-44dc-b468-c9faf9fc8701 for run run-default-window-rate
+Agent WebSocket connected: session=c8932c8a-b9cc-44dc-b468-c9faf9fc8701, run=run-default-window-rate
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2muses a changed interval only for the active socket's next newly opened window
+[22m[39mClosed agent session c8932c8a-b9cc-44dc-b468-c9faf9fc8701
+Agent WebSocket disconnected: c8932c8a-b9cc-44dc-b468-c9faf9fc8701
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2muses a changed interval only for the active socket's next newly opened window
+[22m[39mAgent websocket attached for run run-live-interval-change
+Created agent session 27c55485-0a5e-45f2-a2c9-2c48ffb34511 for run run-live-interval-change
+Agent WebSocket connected: session=27c55485-0a5e-45f2-a2c9-2c48ffb34511, run=run-live-interval-change
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2msends no repeated input state during a content window and a queued message's new revision right after the pending content
+[22m[39mClosed agent session 27c55485-0a5e-45f2-a2c9-2c48ffb34511
+Agent WebSocket disconnected: 27c55485-0a5e-45f2-a2c9-2c48ffb34511
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2msends no repeated input state during a content window and a queued message's new revision right after the pending content
+[22m[39mAgent websocket attached for run run-input-state-window
+Created agent session 93b71b8b-70a8-4f9e-8ea8-0ec3dd20994e for run run-input-state-window
+Agent WebSocket connected: session=93b71b8b-70a8-4f9e-8ea8-0ec3dd20994e, run=run-input-state-window
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mClosed agent session 93b71b8b-70a8-4f9e-8ea8-0ec3dd20994e
+Agent WebSocket disconnected: 93b71b8b-70a8-4f9e-8ea8-0ec3dd20994e
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mAgent websocket attached for run run-retired-turn-ordering
+Created agent session 00ef47ed-ec1c-4216-8a95-00549be25820 for run run-retired-turn-ordering
+Agent WebSocket connected: session=00ef47ed-ec1c-4216-8a95-00549be25820, run=run-retired-turn-ordering
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mAgent websocket attached for run run-retired-turn-ordering
+Created agent session 55f7885a-2497-435d-adf8-43823b5feb15 for run run-retired-turn-ordering
+Agent WebSocket connected: session=55f7885a-2497-435d-adf8-43823b5feb15, run=run-retired-turn-ordering
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mClosed agent session 55f7885a-2497-435d-adf8-43823b5feb15
+Agent WebSocket disconnected: 55f7885a-2497-435d-adf8-43823b5feb15
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mAgent websocket attached for run run-retired-turn-ordering
+Created agent session 43a4b8ae-b201-435f-b581-3ea876eddc6c for run run-retired-turn-ordering
+Agent WebSocket connected: session=43a4b8ae-b201-435f-b581-3ea876eddc6c, run=run-retired-turn-ordering
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mClosed agent session 43a4b8ae-b201-435f-b581-3ea876eddc6c
+Agent WebSocket disconnected: 43a4b8ae-b201-435f-b581-3ea876eddc6c
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mkeeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+[22m[39mClosed agent session 00ef47ed-ec1c-4216-8a95-00549be25820
+Agent WebSocket disconnected: 00ef47ed-ec1c-4216-8a95-00549be25820
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mkeeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+[22m[39mAgent websocket attached for run run-error-contract
+Created agent session 18e5f376-7727-4c38-ab4c-dcf5f4050c62 for run run-error-contract
+Agent WebSocket connected: session=18e5f376-7727-4c38-ab4c-dcf5f4050c62, run=run-error-contract
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts
+[22m[39mClosed agent session 18e5f376-7727-4c38-ab4c-dcf5f4050c62
+Agent WebSocket disconnected: 18e5f376-7727-4c38-ab4c-dcf5f4050c62
+
+ [31m❯[39m tests/integration/agent/agent-status-websocket.integration.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 1033[2mms[22m[39m
+     [32m✓[39m projects only autobyteus status transitions to a real standalone socket while preserving canonical companions[32m 40[2mms[22m[39m
+     [32m✓[39m projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions[32m 21[2mms[22m[39m
+     [32m✓[39m projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions[32m 17[2mms[22m[39m
+[31m     [31m×[31m coalesces a representative fine-grained canonical stream into one default-window content frame[39m[33m 361[2mms[22m[39m
+[31m     [31m×[31m uses a changed interval only for the active socket's next newly opened window[39m[33m 357[2mms[22m[39m
+[31m     [31m×[31m sends no repeated input state during a content window and a queued message's new revision right after the pending content[39m[32m 171[2mms[22m[39m
+     [32m✓[39m preserves B while rejecting a retired turn's late segment content across reconnect[32m 38[2mms[22m[39m
+     [32m✓[39m keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination[32m 28[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22mAgent status WebSocket contract integration[2m > [22mcoalesces a representative fine-grained canonical stream into one default-window content frame
+[31m[1mAssertionError[22m: expected [ { type: 'SEGMENT_CONTENT', …(1) } ] to have a length of +0 but got 1[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 0[39m
+[31m+ 1[39m
+
+[36m [2m❯[22m tests/integration/agent/agent-status-websocket.integration.test.ts:[2m358:91[22m[39m
+    [90m356| [39m
+    [90m357| [39m      [35mawait[39m [34mwait[39m([34m350[39m)[33m;[39m
+    [90m358| [39m      expect(connection.messages.filter((message) => message.type === …
+    [90m   | [39m                                                                                          [31m^[39m
+    [90m359| [39m      [35mawait[39m [34mwait[39m([34m300[39m)[33m;[39m
+    [90m360| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22mAgent status WebSocket contract integration[2m > [22muses a changed interval only for the active socket's next newly opened window
+[31m[1mAssertionError[22m: expected [ { type: 'SEGMENT_CONTENT', …(1) } ] to have a length of +0 but got 1[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 0[39m
+[31m+ 1[39m
+
+[36m [2m❯[22m tests/integration/agent/agent-status-websocket.integration.test.ts:[2m410:10[22m[39m
+    [90m408| [39m      [35mawait[39m [34mwait[39m([34m350[39m)[33m;[39m
+    [90m409| [39m      expect(connection.messages.filter((message) => message.type === …
+    [90m410| [39m        [33m.[39m[34mtoHaveLength[39m([34m0[39m)[33m;[39m
+    [90m   | [39m         [31m^[39m
+    [90m411| [39m      [35mawait[39m [34mwait[39m([34m300[39m)[33m;[39m
+    [90m412| [39m      expect(connection.messages.filter((message) => message.type === …
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22mAgent status WebSocket contract integration[2m > [22msends no repeated input state during a content window and a queued message's new revision right after the pending content
+[31m[1mAssertionError[22m: expected [ { …(2) }, { …(2) }, { …(2) }, …(2) ] to have a length of 1 but got 5[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ 5[39m
+
+[36m [2m❯[22m tests/integration/agent/agent-status-websocket.integration.test.ts:[2m478:29[22m[39m
+    [90m476| [39m      }
+    [90m477| [39m      [35mawait[39m [34mwait[39m([34m150[39m)[33m;[39m
+    [90m478| [39m      [34mexpect[39m([34minputStates[39m())[33m.[39m[34mtoHaveLength[39m([34m1[39m)[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m479| [39m      expect(frames.filter((frame) => frame.type === "SEGMENT_CONTENT"…
+    [90m480| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (8)[39m
+[2m   Start at [22m 06:20:07
+[2m   Duration [22m 6.50s[2m (transform 3.51s, setup 25ms, import 4.97s, tests 1.03s, environment 0ms)[22m
+
