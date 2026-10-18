@@ -111,11 +111,35 @@ suppression Set or policy callback.
 its coordinator. Status, closure recovery, conversations and execution remain
 separate from disclosure. Agent Team and Agent Org roots keep their own policies.
 
-Collapsing does not defer child hydration. Stored inspection and stream
-snapshots still stage complete child contexts before publication, fetching each
-child's projection and artifact state through the existing hydration owners.
-Compact rows are not evidence of fewer reads or a host-selection speedup;
-host selection, collaboration publication and member readiness are distinct
+Disclosure and loading are separate. A stored inspection or stream snapshot
+publishes the context from the run's collaboration view alone
+(`buildAgentRunCollaborationContext`): the tree, one Offline child context per
+child, and statuses and input states from the view. No child's conversation,
+activities or artifacts are fetched to draw the rows, so their cost does not grow
+with the number of copies.
+
+A child's stored details load on demand (`agentRunCollaborationChildHydration.ts`):
+
+- **When.** When it is selected (row click, Task locate), and again for the
+  selected child after every publication, including the snapshot that follows a
+  new delegation or a settings Save. Unopened children are never loaded;
+  previously opened ones load again when selected again.
+- **What.** One member projection request and one hub-scoped artifact request
+  (`agentRunCollaborationMemberFileChanges`, never the run-id `getRunFileChanges`).
+- **Ownership.** The store is the only owner of in-flight loads, keyed by
+  (published context, child). A load whose context is no longer published, because
+  it was republished or the host is stopping, ends `superseded` and writes nothing.
+  A live event (single or an `agent_presentation_batch`) or a shown local message during
+  the fetch retries the load within the same context, at most three attempts. Live
+  presentation reaches every child's context, loaded or not. A failure is logged with the host and child
+  and leaves the child unloaded, so selecting it again retries.
+- **Shown content.** A republication carries a loaded child's shown conversation into
+  the new context (not its loaded mark), so the opened copy does not flash empty.
+  Until a copy loads, the center view shows its empty or previous conversation; there
+  is no separate loading state. Held or queued input the view or the stream showed
+  stays shown when the stored conversation arrives.
+
+Host selection, collaboration publication and child readiness are distinct
 boundaries. See [Projects](./projects.md#delegated-team-disclosure-under-agent-runs)
 for the user interaction contract.
 

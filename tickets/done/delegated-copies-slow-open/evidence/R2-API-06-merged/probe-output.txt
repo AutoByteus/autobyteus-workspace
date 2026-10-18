@@ -1,0 +1,11 @@
+[2026-10-18T14:38:16.760Z] S-API start: Server timings over HTTP: hub view, hub conversation, a copy projection, a copy artifact list (generic and scoped)
+[2026-10-18T14:38:17.182Z] S-API Pass
+[2026-10-18T14:38:17.182Z] S-001 start: Stopped hub cold sample 1: T-1, T-2, T-3 with request counts; reopen without refetch
+[2026-10-18T14:38:24.538Z] S-001 Pass
+[2026-10-18T14:38:24.539Z] S-002 start: Stopped hub cold sample 2: T-1, T-2, T-3 with request counts; reopen without refetch
+[2026-10-18T14:38:32.088Z] S-002 Pass
+[2026-10-18T14:38:32.088Z] S-003 start: Stopped hub cold sample 3: T-1, T-2, T-3 with request counts; reopen without refetch
+[2026-10-18T14:38:39.622Z] S-003 Pass
+[2026-10-18T14:38:39.622Z] S-ROWS start: Every Team row and every member row with statuses and Task summaries (AC-005)
+[2026-10-18T14:38:58.738Z] S-ROWS Pass
+{"result":"Pass","label":"merged","cases":{"S-API":"Pass","S-001":"Pass","S-002":"Pass","S-003":"Pass","S-ROWS":"Pass"},"errors":0,"cleanup":{"browserClosed":true,"frontend":{"pid":65388,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":65364,"status":"terminated","exit":0},"runRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/tmp/dcso-api-e2e/R2-API-06-merged/evidence.json"}

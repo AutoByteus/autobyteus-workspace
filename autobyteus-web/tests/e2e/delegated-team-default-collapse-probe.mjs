@@ -334,7 +334,7 @@ try {
     await page.goto(`${stack.frontendUrl}/workspace`, { timeout: 120000 }); await sleep(3500);
   }
   await observe(); evidence.browser = browser.version();
-  await runCase('B-001', 'Fresh stored manager: seven collapsed Teams, 42 hydrated child identities', async () => {
+  await runCase('B-001', 'Fresh stored manager: seven collapsed Teams, 42 child identities (details load when opened)', async () => {
     await prepareTree(); await runRow().click(); await untilRows(page, baseline ? 49 : 7);
     await until('host selection committed', async () => { const s = await storeState(page); return s.selected === setup.hostId && s.target === setup.hostId; }, 60000);
     const state = await storeState(page); assert(!state.error, 'Collaboration error', state);
@@ -352,7 +352,7 @@ try {
       const coldReadsEnd = requests.length;
       const warm = await timedSelection(`warm-reselection-${repeat}`);
       cold.roleRevealRequests = requests.slice(coldReadsStart, coldReadsEnd).filter(r => r.operationName === 'GetAgentRunCollaborationMemberProjection' && r.variables.hostRunId === setup.hostId).length;
-      cold.roleRevealArtifactReads = requests.slice(coldReadsStart, coldReadsEnd).filter(r => r.operationName === 'GetRunFileChanges' && setup.teams.flatMap(t => t.members.map(m => m.agentRunId)).includes(r.variables.runId)).length;
+      cold.roleRevealArtifactReads = requests.slice(coldReadsStart, coldReadsEnd).filter(r => r.operationName === 'GetAgentRunCollaborationMemberFileChanges' && r.variables.hostRunId === setup.hostId).length;
       samples.push({ cold, warm });
       await save();
     }
@@ -365,7 +365,8 @@ try {
       const team = teamRow(page, task), before = await storeState(page);
       await team.locator('[data-test="workspace-team-transient-disclosure"]').click(); await untilRows(page, 13);
       assert((await storeState(page)).child === before.child, 'Disclosure button selected a conversation');
-      await memberRow(page, member).click(); await until('member conversation/composer', async () => (await storeState(page)).conversationId === member);
+      // The copy's stored conversation loads when it is opened.
+      await memberRow(page, member).click(); await until('member conversation/composer', async () => { const s = await storeState(page); return s.conversationId === member && s.messageCount > 0; });
       const centerText = await page.locator('[data-test="workspace-center-pane"]').innerText();
       assert(centerText.includes('Persisted marker for copy 2') && !centerText.includes('Persisted marker for copy 3'), 'Wrong same-address copy conversation', centerText);
       assert(await page.locator('textarea').first().getAttribute('placeholder') !== null, 'Actual composer unavailable');

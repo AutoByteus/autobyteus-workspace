@@ -1,7 +1,7 @@
 import { useAgentActivityStore, type ActivityProjectionReplacementResult } from '~/stores/agentActivityStore';
 import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import type { RunActivity } from '~/types/activity/RunActivity';
-import { fetchRunFileChanges, mergeHydratedRunFileChanges } from './runFileChangeHydrationService';
+import { mergeHydratedRunFileChanges } from './runFileChangeHydrationService';
 
 /**
  * Hydration of one collaboration member's run state (Team members, AgentOrg members and the
@@ -23,16 +23,17 @@ export type MemberRunStateCommit = Readonly<{
 }>;
 
 /**
- * Fetches the member's projection (through the caller's subject-specific query) and its artifacts in
- * parallel. Fails if either fails, so artifacts follow the caller's existing projection failure policy.
+ * Fetches the member's projection and its artifacts in parallel, each through the caller's
+ * subject-specific query. Fails if either fails, so artifacts follow the caller's existing
+ * projection failure policy.
  */
 export const fetchMemberRunState = async <P>(input: Readonly<{
-  runId: string;
   fetchProjection: () => Promise<P>;
+  fetchFileChanges: () => Promise<RunFileChangeArtifact[]>;
 }>): Promise<MemberRunState<P>> => {
   const [projection, fileChanges] = await Promise.all([
     input.fetchProjection(),
-    fetchRunFileChanges(input.runId),
+    input.fetchFileChanges(),
   ]);
   return Object.freeze({ projection, fileChanges });
 };

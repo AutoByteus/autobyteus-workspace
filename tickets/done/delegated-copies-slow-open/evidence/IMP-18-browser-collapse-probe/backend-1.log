@@ -1,0 +1,351 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:53142
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:53142
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/db/development.db"
+
+SQLite database development.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:45368) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1792333642040,"pid":45368,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53145"}
+{"level":30,"time":1792333642063,"pid":45368,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53142"}
+[2026-10-18T14:27:22.063Z] [INFO] [server.runtime] Server listening on 127.0.0.1:53142
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: solution-designer
+Agent Definition created successfully with ID: architecture-reviewer
+Agent Definition created successfully with ID: implementation-engineer
+Agent Definition created successfully with ID: code-reviewer
+Agent Definition created successfully with ID: api-e2e-engineer
+Agent Definition created successfully with ID: delivery-engineer
+Agent Definition created successfully with ID: project-task-manager-probe
+Agent Team Definition created successfully with ID: software-engineering-team-probe
+Agent Team Definition created successfully with ID: late-engineering-team-probe
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Created and registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run project_task_manager_probe_951e3f68f15741eb832b82450fa031da: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run project_task_manager_probe_4ebaf36ec8214c6494395969df9cbcb5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run project_task_manager_probe_951e3f68f15741eb832b82450fa031da
+Created agent session 0ec0360c-9d3a-4587-b9a7-bdce2432f182 for run project_task_manager_probe_951e3f68f15741eb832b82450fa031da
+Agent WebSocket connected: session=0ec0360c-9d3a-4587-b9a7-bdce2432f182, run=project_task_manager_probe_951e3f68f15741eb832b82450fa031da
+Agent websocket attached for run project_task_manager_probe_4ebaf36ec8214c6494395969df9cbcb5
+Created agent session 435dfb98-ed23-417b-8643-8c74db0a4084 for run project_task_manager_probe_4ebaf36ec8214c6494395969df9cbcb5
+Agent WebSocket connected: session=435dfb98-ed23-417b-8643-8c74db0a4084, run=project_task_manager_probe_4ebaf36ec8214c6494395969df9cbcb5
+{"level":40,"time":1792333649120,"pid":45368,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.20516693592071533,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_cde802e2035a4a6c87dcbbd92fabdf5c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333649551,"pid":45368,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.10429203510284424,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_f9015e1b9d5d46f9929569bbd04b12f8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333649900,"pid":45368,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.14962506294250488,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_9d2b7e0029304d5b8cf2d0c10de4c817: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333650236,"pid":45368,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.09316599369049072,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_86800661898b4d808c450bf158435b09: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333650573,"pid":45368,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.09433293342590332,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_85a97bfb03fd4e6493a2dfab3d2e6cc3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333650912,"pid":45368,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.1058340072631836,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_ed384c24a0d14c8fb1d670cf67abb03b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333651250,"pid":45368,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.10208296775817871,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_131a64788fff4785b1f2e444f7e7434e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333651694,"pid":45368,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_w934j9vK5AtZwkxFPss1Tn_KW4OKxHMth9m9pNoNaG8","statusCode":405,"elapsedMs":0.09516704082489014,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_083b9b093806442dbd829f159dba41d2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/memory/agent_teams/software_engineering_team_probe_db076571fbbf4627b2383d6ef783b260/implementation_engineer_bce660062e6b42d399be35e077cd1060/raw_traces_active.jsonl
+{"level":40,"time":1792333652027,"pid":45368,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.0952080488204956,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run implementation_engineer_bce660062e6b42d399be35e077cd1060: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/memory/agent_teams/software_engineering_team_probe_db076571fbbf4627b2383d6ef783b260/implementation_engineer_bce660062e6b42d399be35e077cd1060/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/memory/agent_teams/software_engineering_team_probe_bdf8c2df71c74b77903d2674cc5ef838/implementation_engineer_9a59909f7f384deebf89f877afbd6de5/raw_traces_active.jsonl
+{"level":40,"time":1792333652244,"pid":45368,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.1109999418258667,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run implementation_engineer_9a59909f7f384deebf89f877afbd6de5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/memory/agent_teams/software_engineering_team_probe_bdf8c2df71c74b77903d2674cc5ef838/implementation_engineer_9a59909f7f384deebf89f877afbd6de5/raw_traces_active.jsonl
+Closed agent session 435dfb98-ed23-417b-8643-8c74db0a4084
+Agent WebSocket disconnected: 435dfb98-ed23-417b-8643-8c74db0a4084
+Closed agent session 0ec0360c-9d3a-4587-b9a7-bdce2432f182
+Agent WebSocket disconnected: 0ec0360c-9d3a-4587-b9a7-bdce2432f182
+Created terminal session a2dfa2f0-f052-47da-9bd5-48ddc40cf871 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Terminal WebSocket connected: a2dfa2f0-f052-47da-9bd5-48ddc40cf871
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Closed PTY session a2dfa2f0-f052-47da-9bd5-48ddc40cf871
+Terminal WebSocket disconnected: a2dfa2f0-f052-47da-9bd5-48ddc40cf871
+Created terminal session b54b39b9-f117-404f-b3f2-98bac7d015fd using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Terminal WebSocket connected: b54b39b9-f117-404f-b3f2-98bac7d015fd
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Closed PTY session b54b39b9-f117-404f-b3f2-98bac7d015fd
+Terminal WebSocket disconnected: b54b39b9-f117-404f-b3f2-98bac7d015fd
+Created terminal session fd18148f-3ddf-4177-a4f8-d6290ecfbe4f using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Terminal WebSocket connected: fd18148f-3ddf-4177-a4f8-d6290ecfbe4f
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Closed PTY session fd18148f-3ddf-4177-a4f8-d6290ecfbe4f
+Terminal WebSocket disconnected: fd18148f-3ddf-4177-a4f8-d6290ecfbe4f
+Created terminal session 88aa2ae4-8b75-45ed-9210-573474b86f54 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Terminal WebSocket connected: 88aa2ae4-8b75-45ed-9210-573474b86f54
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Closed PTY session 88aa2ae4-8b75-45ed-9210-573474b86f54
+Terminal WebSocket disconnected: 88aa2ae4-8b75-45ed-9210-573474b86f54
+Created terminal session a12f4850-32ef-4069-ac6a-c776be8a14b0 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Terminal WebSocket connected: a12f4850-32ef-4069-ac6a-c776be8a14b0
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Closed PTY session a12f4850-32ef-4069-ac6a-c776be8a14b0
+Terminal WebSocket disconnected: a12f4850-32ef-4069-ac6a-c776be8a14b0
+Created terminal session fce8f87d-9767-4d68-926e-640a8721b335 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Terminal WebSocket connected: fce8f87d-9767-4d68-926e-640a8721b335
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-hRFTGe
+Closed PTY session fce8f87d-9767-4d68-926e-640a8721b335
+Terminal WebSocket disconnected: fce8f87d-9767-4d68-926e-640a8721b335
+Agent websocket attached for run project_task_manager_probe_951e3f68f15741eb832b82450fa031da
+Created agent session 2787acca-1b71-4064-84c4-0e2a95b11db5 for run project_task_manager_probe_951e3f68f15741eb832b82450fa031da
+Agent WebSocket connected: session=2787acca-1b71-4064-84c4-0e2a95b11db5, run=project_task_manager_probe_951e3f68f15741eb832b82450fa031da
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+Agent websocket attached for run project_task_manager_probe_951e3f68f15741eb832b82450fa031da
+Created agent session 4f3f949d-496d-4fc7-9378-80b3b231ba1c for run project_task_manager_probe_951e3f68f15741eb832b82450fa031da
+Agent WebSocket connected: session=4f3f949d-496d-4fc7-9378-80b3b231ba1c, run=project_task_manager_probe_951e3f68f15741eb832b82450fa031da
+AGY compaction detection off for run project_task_manager_probe_951e3f68f15741eb832b82450fa031da: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333672301,"pid":45368,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.13212502002716064,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_48d727ee770d4f2ea688706565103eda: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333672626,"pid":45368,"hostname":"MacBookPro","reqId":"req-1b","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.09479200839996338,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run solution_designer_15f8a0fa110645a9aca875b7fca0783e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333672907,"pid":45368,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.13575005531311035,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-2TEbN4/workspace.
+Reusing registered workspace ID: agent_ws_af958e8c73bfdd3abf989f4c6e05933dbc999c14fc173821b009a3caea2fc1e1
+AGY compaction detection off for run implementation_engineer_bce660062e6b42d399be35e077cd1060: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792333673104,"pid":45368,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/mcp/agent-tools/agtrun_fQN-hLEIF57dH5B2wK-6oYXR3b1Pr8dYdt6w0rFlLDk","statusCode":405,"elapsedMs":0.09629201889038086,"msg":"http request completed"}
+Closed agent session 2787acca-1b71-4064-84c4-0e2a95b11db5
+Agent WebSocket disconnected: 2787acca-1b71-4064-84c4-0e2a95b11db5
+Closed agent session 4f3f949d-496d-4fc7-9378-80b3b231ba1c
+Agent WebSocket disconnected: 4f3f949d-496d-4fc7-9378-80b3b231ba1c
+[2026-10-18T14:28:18.642Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-18T14:28:18.663Z] [INFO] [server.runtime] Server closed cleanly.

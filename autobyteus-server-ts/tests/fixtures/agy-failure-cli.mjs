@@ -128,6 +128,22 @@ if (arg === "--version") {
     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
     const backgroundStep = /BACKGROUND_STEP:(\{[^}]*\})/.exec(content);
     if (backgroundStep && !content.includes("CALL_TOOL:")) { backgroundStepTurn(JSON.parse(backgroundStep[1])); return; }
+    // `GENERATE_IMAGE:<absolute path>` writes that file and streams the own-MCP generate_image call as AGY 1.2.14 does
+    // (same step shape as case mcp_calls), so any run, a delegated copy included, gets a real generated-output artifact.
+    const generateImage = /GENERATE_IMAGE:(\/\S+)/.exec(content);
+    if (generateImage && !content.includes("CALL_TOOL:")) {
+      const step_index = turns * 10 + 1;
+      const parameters = { Arguments: { prompt: "fixture image", output_file_path: generateImage[1] },
+        ServerName: "autobyteus_agent_tools", ToolName: "generate_image" };
+      const step = (state, extra = {}) => emit({ event: "step_update", step_update: { conversation_id, step_index, state,
+        step_type: "tool", tool_name: "call_mcp_tool", tool_info: { name: "call_mcp_tool", parameters, ...extra } } });
+      step("ACTIVE");
+      writeFileSync(generateImage[1], "fake image bytes");
+      step("DONE", { output: JSON.stringify({ file_path: generateImage[1] }) });
+      reply(turns * 10 + 2, "GENERATED");
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "GENERATED" } });
+      return;
+    }
     // HOLD_TURN opens one long tool step and leaves the turn running (the agent reads Running) until the
     // user stops it or its run is terminated. A message that also asks for a tool call is not held.
     if (content.includes("HOLD_TURN") && !content.includes("CALL_TOOL:") && !content.includes("CALL_TOOLS:")) {

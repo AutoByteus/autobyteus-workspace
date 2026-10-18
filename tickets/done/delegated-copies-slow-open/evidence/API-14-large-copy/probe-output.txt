@@ -1,0 +1,5 @@
+[2026-10-18T13:36:57.558Z] L-001 start: Running large hub: hub row → copy rows and hub click → conversation (AC-003 running, QR-001/QR-002)
+[2026-10-18T13:37:04.030Z] L-001 Pass
+[2026-10-18T13:37:04.030Z] L-010 start: Opening a copy whose stored conversation is several MB: shown within QR-002 with one projection and one artifact request
+[2026-10-18T13:38:39.478Z] L-010 Pass
+{"result":"Pass","label":"fix-large-copy","cases":{"S-API":"Not Run (filtered)","S-001":"Not Run (filtered)","S-002":"Not Run (filtered)","S-003":"Not Run (filtered)","S-ROWS":"Not Run (filtered)","L-001":"Pass","L-002":"Not Run (filtered)","L-003":"Not Run (filtered)","L-004":"Not Run (filtered)","L-008":"Not Run (filtered)","L-009":"Not Run (filtered)","L-010":"Pass","L-005":"Not Run (filtered)","L-006":"Not Run (filtered)","L-007":"Not Run (filtered)"},"errors":0,"cleanup":{"browserClosed":true,"frontend":{"pid":65675,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":65652,"status":"terminated","exit":0},"runRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/tmp/dcso-api-e2e/API-14-large-copy/evidence.json"}

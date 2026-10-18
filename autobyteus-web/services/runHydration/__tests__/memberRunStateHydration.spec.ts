@@ -42,29 +42,32 @@ describe('fetchRunFileChanges', () => {
 describe('fetchMemberRunState', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('fetches the projection and the artifacts in parallel', async () => {
+  it('fetches the projection and the artifacts in parallel, each through the caller\'s fetcher', async () => {
     const projection = deferred<{ id: string }>();
-    const artifacts = deferred<{ data: { getRunFileChanges: RunFileChangeArtifact[] } }>();
+    const artifacts = deferred<RunFileChangeArtifact[]>();
     const fetchProjection = vi.fn(() => projection.promise);
-    query.mockReturnValueOnce(artifacts.promise);
+    const fetchFileChanges = vi.fn(() => artifacts.promise);
 
-    const state = fetchMemberRunState({ runId: RUN, fetchProjection });
+    const state = fetchMemberRunState({ fetchProjection, fetchFileChanges });
     expect(fetchProjection).toHaveBeenCalledOnce();
-    expect(query).toHaveBeenCalledOnce();
-    artifacts.resolve({ data: { getRunFileChanges: [artifact('a.png')] } });
+    expect(fetchFileChanges).toHaveBeenCalledOnce();
+    artifacts.resolve([artifact('a.png')]);
     projection.resolve({ id: 'projection' });
 
     await expect(state).resolves.toEqual({ projection: { id: 'projection' }, fileChanges: [artifact('a.png')] });
+    expect(query).not.toHaveBeenCalled();
   });
 
   it('fails when the artifacts fail, exactly as when the projection fails (AC-007)', async () => {
-    query.mockResolvedValueOnce({ errors: [{ message: 'artifacts unavailable' }] });
-    await expect(fetchMemberRunState({ runId: RUN, fetchProjection: async () => ({}) }))
-      .rejects.toThrow('artifacts unavailable');
+    await expect(fetchMemberRunState({
+      fetchProjection: async () => ({}),
+      fetchFileChanges: () => Promise.reject(new Error('artifacts unavailable')),
+    })).rejects.toThrow('artifacts unavailable');
 
-    query.mockResolvedValueOnce({ data: { getRunFileChanges: [] } });
-    await expect(fetchMemberRunState({ runId: RUN, fetchProjection: () => Promise.reject(new Error('projection unavailable')) }))
-      .rejects.toThrow('projection unavailable');
+    await expect(fetchMemberRunState({
+      fetchProjection: () => Promise.reject(new Error('projection unavailable')),
+      fetchFileChanges: async () => [],
+    })).rejects.toThrow('projection unavailable');
   });
 });
 

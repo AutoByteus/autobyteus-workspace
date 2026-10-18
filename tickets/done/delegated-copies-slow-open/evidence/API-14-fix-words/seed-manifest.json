@@ -1,0 +1,476 @@
+{
+  "hostId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+  "otherHostId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+  "projectId": "project_671d7900-6649-45d1-96ad-77a818eea9a2",
+  "managerName": "Large Hub Manager Probe",
+  "workspace": "/tmp/dcso-api-e2e/seed10/workspace",
+  "archive": "/tmp/dcso-api-e2e/seed10/archive",
+  "taskIds": [
+    "project_task_f75299b0-212b-4838-9e12-5bbd2d433a24",
+    "project_task_4848e89e-211f-4085-8b45-c45bc083b3fa",
+    "project_task_7d6e4a4f-7e8c-4eca-b4d3-f74cfa66ce3e",
+    "project_task_22a3766e-3ff7-46e2-9d64-83b5399ac19c",
+    "project_task_c162901e-9e7a-4f52-82ee-8ea5ed64e7c4",
+    "project_task_64f14168-7c72-4c6e-8d48-19d2b66601ec",
+    "project_task_e080e577-6cee-428b-be74-a76e30009daf",
+    "project_task_bbb37064-962e-4e0e-b089-6af3d96c977c",
+    "project_task_5f9b776b-4eff-4cd3-8e6a-eb9ca610e436",
+    "project_task_2652ccb8-7830-4d64-9e31-7d7c8f21b4df"
+  ],
+  "otherTaskIds": [
+    "project_task_d5413c18-d7bf-42a2-81c0-1dee3404e63a",
+    "project_task_a60844ed-eeb2-4166-928a-0e9fa7699a67"
+  ],
+  "teams": [
+    {
+      "teamRunId": "large_hub_engineering_team_48cc97ae467344b5a5a23d465a5a71ee",
+      "taskId": "project_task_f75299b0-212b-4838-9e12-5bbd2d433a24",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba",
+        "platformAgentRunId": "c24f2534-9165-4e34-a6f4-6053d2d06eeb"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_5f4391431544435f98d75639af428917"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_3aa34be5c90448ba9c2e5a02f5bbda04"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_2b94fb953b81413b894376132d6795d7"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_61686b68c0984644839d01214b727097"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_1b65f01689464f2eb7f8b83bc46cbd4f"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_435a8d67457b4617b0fffb7f2a5cdf2f",
+      "taskId": "project_task_4848e89e-211f-4085-8b45-c45bc083b3fa",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610",
+        "platformAgentRunId": "fe681548-6f23-458e-ad99-bc08c5dd234f"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_23bd45f17dd8456cae61fc77385162f1"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_6b231447e211400ba1402289110bf165"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_e20bacb501ff4ce6913c16fb57dac282"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_1242e8dabd8c4b06a93bc1a335b2eed1"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_4060a69bd2c24eb482767263f475ed83",
+      "taskId": "project_task_7d6e4a4f-7e8c-4eca-b4d3-f74cfa66ce3e",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa",
+        "platformAgentRunId": "fbf14127-98fb-4664-9e87-e0c256e79a60"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_a31f4d2e7e1c442ebc3559d49012c33c"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_b08925ecea724b7c9776e96f9b834237"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_af0806efca0c4ac880f581cffa044c19"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_ee318d86f7c040d1915ab2a5b6d63ec0"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_c8980bbaacc44278a5dd293df97e5127",
+      "taskId": "project_task_22a3766e-3ff7-46e2-9d64-83b5399ac19c",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_82cbedde52874d05af882f09e1e59341",
+        "platformAgentRunId": "cc02f7a8-fa39-496f-a8a6-70300646d9bd"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_82cbedde52874d05af882f09e1e59341"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_05937476a8a4435ba87c7520af0dd5e8"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_e235d51da67f4baeb062285259589ecc"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_fefaaa3ef28c4de3b8609e19db6b6aa1"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_ae8c9e0f65744a4888534c0b7912fa8b"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_3a87aac313ad439bb94747b8f44512e8"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_cfd4d77c7dbe43a38f3c7acb1155058d",
+      "taskId": "project_task_c162901e-9e7a-4f52-82ee-8ea5ed64e7c4",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8",
+        "platformAgentRunId": "6f25eb75-9c5f-4653-8fdf-084614a2a56c"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_20e185dfb0944c558a887ab35c4d4d5f"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_fcb53946973d43b8890686804c3405c8"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_133e64873d6b4148bcbfe358b3990fb6"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_5cba2f59ab094c8fa54bf1b3e311f935"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_e7d4a1a1d9f14311880ed24c6141ca24"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_7cc929174d96417a83fdd14d3a832d7f",
+      "taskId": "project_task_64f14168-7c72-4c6e-8d48-19d2b66601ec",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_5048bf644108421d958a45bdd7040028",
+        "platformAgentRunId": "4d60eb9c-b06d-475e-8874-e63c6fd92783"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_5048bf644108421d958a45bdd7040028"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_c42172cc2c714747a758f2f16f4f1bdb"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_3865e75af6cd48edb6e5a0c30faef0f6"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_9939f317e64448c8907a9ab80f36ebac"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_4d57dc40aab644db892c1dc951bdcf55"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_232d524d8ec94fe9a396d151006decbe"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_80efc143d53f4ea388afcc6d3f7482b6",
+      "taskId": "project_task_e080e577-6cee-428b-be74-a76e30009daf",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb",
+        "platformAgentRunId": "bc2d7049-c152-4412-bd45-1c6274ea3299"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_72eb99264b0a4ec0afcb06b06fb964c9"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_62c946c2248b4b01aea7d070ef7bf82e"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_c3156b9635224afaa0b92a7a43cfe91e"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_5bd5cc665b3344fcb5828bcc3cda3351"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_4f2f286812bf439ba93110236b47c50d"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_fce6b9c4226c4c8fa7bff020e22b74e9",
+      "taskId": "project_task_bbb37064-962e-4e0e-b089-6af3d96c977c",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_daec13dfbf2246f9b05d23643f03663b",
+        "platformAgentRunId": "06d69d9b-f55a-4157-8150-311571fd3497"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_daec13dfbf2246f9b05d23643f03663b"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_ecd0085692d44d3ea509b75ed0ab0819"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_20ba306b96554e5c8371ad303ec06c6d"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_d7ccada4932d4e0585c6922504856ede"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_45a72b31c9d0434cbe28e5d1fa34460a"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_e195a00bd9e746abadced2fd1f5283c1"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_44f65b0015dd43cd9286a86b2903839a",
+      "taskId": "project_task_5f9b776b-4eff-4cd3-8e6a-eb9ca610e436",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_aa357110388e45c48596faf77a9881ed",
+        "platformAgentRunId": "448b92c0-dd3c-4094-8bde-21d71cbb98f2"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_aa357110388e45c48596faf77a9881ed"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_10037d5d7dbe4423a6842b8b3369b1b5"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_6352dc6406b744a99b808d93dcd69a76"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_5157bf77e9f14c8aa8699a34aa426fd4"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_0f0d88ce31674a3ca3699875523bcb7e"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_41a39b7343a24c9dac5c5a1b8e7ebd45"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_2b0067c0f36a4dfe8bcfa9a805a9164e",
+      "taskId": "project_task_2652ccb8-7830-4d64-9e31-7d7c8f21b4df",
+      "coordinator": {
+        "address": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_cffcca5438bf48af8139a9164a86b01f",
+        "platformAgentRunId": "a11f174c-3c22-42f3-aafc-00bff2339e58"
+      },
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_cffcca5438bf48af8139a9164a86b01f"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_833250b9bea041249c53714697513884"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_7bc039017c6d4ad492b9f53bc2503626"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_9ebeca1ba20242f29401d6e6f9338127"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_f5aae83acb48425db332c7c8e9f807c2"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_20413271372a478eae1e0f275e3ab09e"
+        }
+      ]
+    }
+  ],
+  "otherTeams": [
+    {
+      "teamRunId": "large_hub_engineering_team_1cddda2f40134c49985e625b72bf53ef",
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_eef52437d1c346d4a15bed1aa8fec207"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_500c8d9ef5154742abb665b7553eee05"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_ae530d0741874ce39bd2cb19443cb7ce"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_b7b95a7127d2457a89966972cf5fe121"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_7eef0bc921054ea6b72a4743314b6115"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_11be4cbd794e4bec8141a313edff40bc"
+        }
+      ]
+    },
+    {
+      "teamRunId": "large_hub_engineering_team_c3e8a7bbcc2543fdad373ab6b598bd91",
+      "members": [
+        {
+          "address": "/large_hub_engineering_team/solution_designer",
+          "agentRunId": "solution_designer_8f06fb1f618a47f7a6da4a597dd48450"
+        },
+        {
+          "address": "/large_hub_engineering_team/architecture_reviewer",
+          "agentRunId": "architecture_reviewer_2e04797d210247aba21b57f15f865831"
+        },
+        {
+          "address": "/large_hub_engineering_team/implementation_engineer",
+          "agentRunId": "implementation_engineer_f42286f6294a4f129d3ed108aed280c0"
+        },
+        {
+          "address": "/large_hub_engineering_team/code_reviewer",
+          "agentRunId": "code_reviewer_bfb5ba78a1e440b5a6026adf9ecaa6b8"
+        },
+        {
+          "address": "/large_hub_engineering_team/api_e2e_engineer",
+          "agentRunId": "api_e2e_engineer_d8640707a9bc4f188967f917e2ca3828"
+        },
+        {
+          "address": "/large_hub_engineering_team/delivery_engineer",
+          "agentRunId": "delivery_engineer_91ae83e9687c49b09c534e899c4b743e"
+        }
+      ]
+    }
+  ],
+  "markers": [
+    {
+      "index": 2,
+      "teamRunId": "large_hub_engineering_team_4060a69bd2c24eb482767263f475ed83",
+      "taskId": "project_task_7d6e4a4f-7e8c-4eca-b4d3-f74cfa66ce3e",
+      "address": "/large_hub_engineering_team/implementation_engineer",
+      "agentRunId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e",
+      "marker": "Persisted marker for copy 2"
+    },
+    {
+      "index": 3,
+      "teamRunId": "large_hub_engineering_team_c8980bbaacc44278a5dd293df97e5127",
+      "taskId": "project_task_22a3766e-3ff7-46e2-9d64-83b5399ac19c",
+      "address": "/large_hub_engineering_team/implementation_engineer",
+      "agentRunId": "implementation_engineer_e235d51da67f4baeb062285259589ecc",
+      "marker": "Persisted marker for copy 3"
+    }
+  ],
+  "messageLogObservation": {
+    "at": "2026-10-18T13:33:58.677Z",
+    "liveViewMessages": 4,
+    "liveViewReports": 2,
+    "storedMessages": 52,
+    "storedReports": 50,
+    "storedViewReportsAfterStop": 50
+  },
+  "shape": {
+    "teams": 10,
+    "childAgents": 60,
+    "unrelatedTeamRuns": 3,
+    "hubMessageLogBytes": 526925,
+    "hubViewBytes": 546826,
+    "memoryBytes": 2291015,
+    "memoryFolders": {
+      "agent_teams": 15,
+      "agents": 2,
+      "run_history_index.json": 0,
+      "team_run_history_index.json": 0
+    }
+  }
+}

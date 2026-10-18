@@ -2252,6 +2252,7 @@ export type Query = {
   agentPackages: Array<AgentPackage>;
   agentRunCollaboration?: Maybe<Scalars['JSON']['output']>;
   agentRunCollaborationMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
+  agentRunCollaborationMemberFileChanges: Array<RunFileChangeEntryObject>;
   agentRunCollaborationMemberProjection: AgentRunCollaborationMemberProjectionPayload;
   agentRunModelOptions: RunModelOptionsObject;
   agentTeamDefinition?: Maybe<AgentTeamDefinition>;
@@ -2385,6 +2386,13 @@ export type QueryAgentRunCollaborationArgs = {
 export type QueryAgentRunCollaborationMemberEventMonitorActiveTracePageArgs = {
   agentRunId: Scalars['String']['input'];
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  hostRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+};
+
+
+export type QueryAgentRunCollaborationMemberFileChangesArgs = {
+  agentRunId: Scalars['String']['input'];
   hostRunId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
 };
@@ -4539,6 +4547,15 @@ export type GetAgentRunCollaborationMemberProjectionQueryVariables = Exact<{
 
 
 export type GetAgentRunCollaborationMemberProjectionQuery = { __typename?: 'Query', agentRunCollaborationMemberProjection: { __typename?: 'AgentRunCollaborationMemberProjectionPayload', agentRunId: string, memberAddress: string, conversation: Array<any>, activities: Array<any>, summary?: string | null, lastActivityAt?: string | null, hasEarlierActiveTraceEvents: boolean } };
+
+export type GetAgentRunCollaborationMemberFileChangesQueryVariables = Exact<{
+  hostRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentRunCollaborationMemberFileChangesQuery = { __typename?: 'Query', agentRunCollaborationMemberFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
 
 export type GetDefinitionProblemsQueryVariables = Exact<{
   kind: DefinitionKind;
@@ -9493,6 +9510,51 @@ export function useGetAgentRunCollaborationMemberProjectionLazyQuery(variables?:
   return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>(GetAgentRunCollaborationMemberProjectionDocument, variables, options);
 }
 export type GetAgentRunCollaborationMemberProjectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>;
+export const GetAgentRunCollaborationMemberFileChangesDocument = gql`
+    query GetAgentRunCollaborationMemberFileChanges($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+  agentRunCollaborationMemberFileChanges(
+    hostRunId: $hostRunId
+    memberAddress: $memberAddress
+    agentRunId: $agentRunId
+  ) {
+    id
+    runId
+    path
+    type
+    status
+    sourceTool
+    sourceInvocationId
+    content
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetAgentRunCollaborationMemberFileChangesQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentRunCollaborationMemberFileChangesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunCollaborationMemberFileChangesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentRunCollaborationMemberFileChangesQuery({
+ *   hostRunId: // value for 'hostRunId'
+ *   memberAddress: // value for 'memberAddress'
+ *   agentRunId: // value for 'agentRunId'
+ * });
+ */
+export function useGetAgentRunCollaborationMemberFileChangesQuery(variables: GetAgentRunCollaborationMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberFileChangesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>(GetAgentRunCollaborationMemberFileChangesDocument, variables, options);
+}
+export function useGetAgentRunCollaborationMemberFileChangesLazyQuery(variables?: GetAgentRunCollaborationMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberFileChangesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>(GetAgentRunCollaborationMemberFileChangesDocument, variables, options);
+}
+export type GetAgentRunCollaborationMemberFileChangesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>;
 export const GetDefinitionProblemsDocument = gql`
     query GetDefinitionProblems($kind: DefinitionKind!) {
   definitionProblems(kind: $kind) {
