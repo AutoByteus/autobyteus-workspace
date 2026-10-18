@@ -8,11 +8,11 @@ import {
 import { GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 import { memberId, multiTeamView } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture'
 
-const io = vi.hoisted(() => ({ query: vi.fn(), holds: [] as Array<{ match(input: any): boolean; remaining: number; promise: Promise<void> }> }))
+const io = vi.hoisted(() => ({ query: vi.fn(), refreshTopology: vi.fn(), holds: [] as Array<{ match(input: any): boolean; remaining: number; promise: Promise<void> }> }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   applyRunNavigationEffect: vi.fn(), ensureWorkspaceByRootPath: vi.fn(async () => null),
-  resolveWorkspaceMetadataByRootPath: vi.fn(async () => null),
+  resolveWorkspaceMetadataByRootPath: vi.fn(async () => null), refreshRunNavigationTopology: io.refreshTopology,
 }) }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
@@ -73,6 +73,20 @@ const startedExecution = (socket: Socket, change_sequence: number) => socket.fra
     kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: multiTeamView(8).execution_tree.taskExecutions.at(-1),
   } },
 })
+const segment = { segment_id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' as const }
+const memberAddress = (copy: number, member: number) =>
+  `/software_engineering_team/${['solution_designer', 'architecture_reviewer', 'implementation_engineer', 'code_reviewer', 'api_e2e_engineer', 'delivery_engineer'][member]}`
+/** Live output of one copy: a segment start, then a content batch covering two sequences (autobyteus-139). */
+const liveOutput = (socket: Socket, first: number, copy: number, member: number) => {
+  const identity = { agent_run_id: memberId(copy, member), member_address: memberAddress(copy, member) }
+  socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence: first,
+    event: { kind: 'agent_presentation', ...identity, message: { type: 'SEGMENT_START', payload: { ...segment, metadata: null } } } } })
+  socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run',
+    change_sequence: first + 1, change_sequence_through: first + 2, event: { kind: 'agent_presentation_batch', items: [
+      { ...identity, message: { type: 'SEGMENT_CONTENT', payload: { ...segment, delta: 'live ' } } },
+      { ...identity, message: { type: 'SEGMENT_CONTENT', payload: { ...segment, delta: 'output' } } },
+    ] } } })
+}
 const shown = (store: ReturnType<typeof useAgentRunCollaborationStore>, agentRunId: string) =>
   store.contextFor('host-run')!.getAgentContext(agentRunId)!.state.conversation.messages.length
 
@@ -189,6 +203,41 @@ describe('Agent-root children load on demand', () => {
     expect(count(GetAgentRunCollaborationMemberFileChanges) - before.files).toBe(1)
     expect(count(GetAgentRunCollaborationMemberProjection, opened)).toBe(2)
     expect(count(GetAgentRunCollaboration)).toBe(0)
+    // The base's task_execution_started handling (SR-009) ran without error on the same frame.
+    expect(io.refreshTopology).toHaveBeenCalledWith('task-execution-started')
+  })
+
+  it('batched live output during an opened copy\'s load retries the load, which then commits (AC-006, autobyteus-139)', async () => {
+    const store = useAgentRunCollaborationStore(); store.syncHost('host-run', true)
+    await snapshot(Socket.instances[0]!)
+    const child = memberId(3, 1)
+    const release = holdChild(child)
+    store.selectChild('host-run', child); await flush()
+
+    liveOutput(Socket.instances[0]!, 5, 3, 1); await flush()
+    expect(store.contextFor('host-run')!.phase).toBe('live')
+    release(); await flush()
+
+    expect(store.contextFor('host-run')!.isChildHydrated(child)).toBe(true)
+    expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberFileChanges, child)).toBe(2)
+    expect(store.contextFor('host-run')!.changeSequence).toBe(7)
+  })
+
+  it('batched live output of an unopened copy loads nothing; opening it loads its stored conversation (AC-006, AC-007)', async () => {
+    const store = useAgentRunCollaborationStore(); store.syncHost('host-run', true)
+    await snapshot(Socket.instances[0]!)
+    const child = memberId(6, 2)
+
+    liveOutput(Socket.instances[0]!, 5, 6, 2); await flush()
+    expect(memberRequests()).toBe(0)
+    expect(shown(store, child)).toBe(1)
+    store.selectChild('host-run', child); await flush()
+
+    expect(store.contextFor('host-run')!.isChildHydrated(child)).toBe(true)
+    expect(store.contextFor('host-run')!.getAgentContext(child)!.state.conversation.messages)
+      .toMatchObject([{ type: 'ai', segments: [expect.objectContaining({ content: `stored ${child}` })] }])
+    expect(memberRequests()).toBe(2)
   })
 
   it('a stream snapshot while the selected child is still loading supersedes that load; only the new context commits', async () => {

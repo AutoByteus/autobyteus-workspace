@@ -129,8 +129,9 @@ A child's stored details load on demand (`agentRunCollaborationChildHydration.ts
 - **Ownership.** The store is the only owner of in-flight loads, keyed by
   (published context, child). A load whose context is no longer published, because
   it was republished or the host is stopping, ends `superseded` and writes nothing.
-  A live event or a shown local message during the fetch retries the load within the
-  same context, at most three attempts. A failure is logged with the host and child
+  A live event (single or an `agent_presentation_batch`) or a shown local message during
+  the fetch retries the load within the same context, at most three attempts. Live
+  presentation reaches every child's context, loaded or not. A failure is logged with the host and child
   and leaves the child unloaded, so selecting it again retries.
 - **Shown content.** A republication carries a loaded child's shown conversation into
   the new context (not its loaded mark), so the opened copy does not flash empty.
