@@ -5,13 +5,6 @@ const record = (value: unknown, label: string): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} must be an object.`);
   return value as Record<string, unknown>;
 };
-const exactKeys = (value: Record<string, unknown>, expected: readonly string[], label: string): void => {
-  const actual = Object.keys(value).sort();
-  const target = [...expected].sort();
-  if (actual.length !== target.length || actual.some((key, index) => key !== target[index])) {
-    throw new Error(`${label} has unsupported or missing field(s).`);
-  }
-};
 const required = (value: unknown, label: string): string => {
   if (typeof value !== "string" || !value || value !== value.trim()) throw new Error(`${label} must be a non-empty trimmed string.`);
   return value;
@@ -34,15 +27,15 @@ const references = (value: unknown, label: string): readonly string[] => {
   }));
 };
 
+/**
+ * Reads one message tolerantly (Data Migration Guideline §3): the seven message fields are required and
+ * validated; any other field is ignored and never reaches the result.
+ */
 export const validateCollaborationCommunicationMessage = (
   value: unknown,
   label = "message",
 ): CollaborationCommunicationMessage => {
   const message = record(value, label);
-  exactKeys(message, [
-    "messageId", "senderAgentRunId", "receiverAgentRunId", "content", "messageType",
-    "referenceFiles", "createdAt",
-  ], label);
   return Object.freeze({
     messageId: required(message.messageId, `${label}.messageId`),
     senderAgentRunId: required(message.senderAgentRunId, `${label}.senderAgentRunId`),
