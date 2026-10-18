@@ -1,0 +1,30 @@
+// SCRATCH (diagnostic, not durable): does terminating an AGY agent run held mid-turn (HOLD_TURN) hang, with or without a refused adoption?
+import "reflect-metadata";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { callTool, startCollaborationHarness, stringsOf, type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
+
+const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
+describe("scratch hold terminate", () => {
+  let h: CollaborationHarness; const ids: Rec = {};
+  beforeAll(async () => { h = await startCollaborationHarness("scratch-hold"); ids.w = await h.agentDefinition(`W ${Date.now()}`); ids.pm = await h.agentDefinition(`PM ${Date.now()}`, { toolNames: PROJECT_TOOLS }); }, 120_000);
+  afterAll(async () => { await h?.close(); }, 120_000);
+  const held = async () => {
+    const r = await h.startRoot("agent", { manager: ids.w });
+    r.sendTo(r.managerRunId, "Hello.");
+    await until(async () => stringsOf(await r.conversationOf(r.managerRunId, "/")).some((t) => /^OK/.test(t)), "answered", 60_000);
+    r.sendTo(r.managerRunId, "Work. HOLD_TURN");
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    return r;
+  };
+  const timedTerminate = async (rootId: string) => {
+    const t0 = Date.now();
+    const result = await Promise.race([h.terminate("agent", rootId).then(() => "done"), new Promise((resolve) => setTimeout(() => resolve("TIMEOUT"), 30_000))]);
+    console.log(`DEBUG terminate ${result} ${Date.now() - t0}ms`);
+    return result;
+  };
+  it("A: held, no adoption attempt", async () => {
+    const r = await held();
+    expect(await timedTerminate(r.rootId)).toBe("done");
+  }, 120_000);
+});

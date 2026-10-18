@@ -8,6 +8,7 @@
 | ARCH-REV-002 | Round 2 / re-review of SR-006 (2026-10-18) | SR-006 | Fail | Fail | ARCH-F-001, ARCH-F-002 resolved; ARCH-F-003 new |
 | ARCH-REV-003 | Round 3 / re-review of SR-007 (2026-10-18) | SR-007 | Fail | Pass | ARCH-F-003 resolved |
 | ARCH-REV-004 | Round 4 / targeted re-review of SR-008 (DI-001) | SR-008 | Pass | Pass | None new (one required implementation addition) |
+| ARCH-REV-005 | Round 5 / targeted re-review of SR-009 (CRR-005 F-002) | SR-009 | Pass | Pass | None new |
 
 ## Revision Entries
 
@@ -102,3 +103,25 @@ None
 - Material classification changes: None (Large / High).
 - Recommended recipient: `/software_engineering_team/implementation_engineer`; informational pass to `/software_engineering_team/solution_designer`.
 - Remaining risks or uncertainty: Project-delete revert caller (required addition); R-3 accepted; link-time equality incl. handoffs (implementation note).
+
+### ARCH-REV-005 — SR-009 targeted re-review (CRR-005 F-002): renderer rule for the sidebar after adoption; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/design-review-report.md`
+- Review round and trigger: round 5; SR-009 from `/software_engineering_team/solution_designer` after the code reviewer's failure-origin review CRR-005 (API/E2E F-002, Design Impact).
+- Relevant solution revision IDs: `SR-009`
+- Prior authoritative decision: `Pass`
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - The F-002 cause is verified in the renderer code. Open contexts become local rows, and there is no server history push.
+  - The renderer-only rule is accepted: rule 1 on `task_execution_started` by run id; rule 2 drops history-origin local rows absent from a later read.
+  - Side note: rule 2 also removes an open, inactive team run that the user archives (team archive keeps the local context), which is consistent with archive; to be confirmed by the implementer.
+  - **Factual correction (implementer IR-004, commit `fbc0f805bf`, verified):** the side note's premise was wrong. Team archive already removes the local context (`archiveTeamRunRecord` → `cleanupStoredTeamRunLocalState` → `removeTeamContext`, `runHistoryMutationActions.ts:84-110, 236-241`), so rule 2 changes nothing for archived runs. Accepted refinement: rule 2 respects the agent history's `limitPerAgent` window. The decision (`Pass`) is unchanged.
+
+#### Prior Finding Resolution
+
+None open (ARCH-F-001..ARCH-F-003 remain resolved).
+
+- New or remaining finding IDs: None.
+- Material classification changes: None (Large / High).
+- Recommended recipient: `/software_engineering_team/implementation_engineer`; informational pass to `/software_engineering_team/solution_designer`.
+- Remaining risks or uncertainty: Project-delete revert caller (round 4 requirement) still applies. The archived-team side note was withdrawn after IR-004.

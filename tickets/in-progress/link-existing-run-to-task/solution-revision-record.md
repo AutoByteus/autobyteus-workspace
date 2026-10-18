@@ -105,3 +105,19 @@
 - Requirements: REQ-005 refusals extended (archived, definition not in the catalog). No other behavior change.
 - Next: targeted architecture re-review (the "strictly additive" basis of ARCH-F-003 changed).
 - Review: ARCH-REV-004 Pass of SR-008 (2026-10-18, targeted); handed to the implementation engineer. Required addition recorded in the design: `ProjectService.deleteProject` also calls `revertUnfinished` (it removes Task files without `ProjectTaskService`'s Task delete).
+
+### SR-009 — Sidebar duplicate after adoption (CRR-005 / F-002)
+
+- Trigger: the code reviewer's failure-origin review CRR-005 of API/E2E F-002 (Design Impact): an adopted run opened
+  this session stays in its own sidebar group until restart. Confirmed: renderer local rows
+  (`runHistoryReadModel.ts:262-281`), team nodes (`runHistoryNavigationProjection.ts:180-187`); `task_execution_started`
+  only on the delegator's collaboration stream. My SR-004 assumption ("they leave their group because their history row
+  is removed") missed the renderer's local rows.
+- Decision (Solution Designer, within the direction; REQ-003 / BEH-002 / AC-001 / AC-003 unchanged): renderer rule
+  "Sidebar After Adoption" — retire on `task_execution_started`; drop history-origin local rows a later history read no
+  longer lists. No server change. Change Scope and file mapping updated.
+- Next: targeted architecture re-review (revised Large / High package), then implementation, source-review delta and the
+  API/E2E rerun the code reviewer listed.
+- Review: ARCH-REV-005 Pass of SR-009 (2026-10-18, targeted); handed to the implementation engineer. Side note recorded:
+  rule 2 also removes an open, inactive team run the user archives (team archive keeps the local context; the history
+  read omits archived inactive team runs) — consistent with archive; the implementer confirms and tests it.

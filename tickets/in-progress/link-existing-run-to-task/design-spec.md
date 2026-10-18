@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008` (SR-005 removed the list tool; SR-006 / SR-007 answer ARCH-REV-001 / -002; SR-008 answers the implementer's DI-001)
+- Current solution revision ID: `SR-009` (SR-009: renderer retires an adopted run's own-group row, after CRR-005 / F-002)
 - Approved requirements: SR-003, approved by the user 2026-10-18 (requirements-doc Document Status). SR-004 decisions
   DEC-108 (delegator kind) and DEC-109 (retry finishes a partial adoption) by the Solution Designer within the direction,
   the user informed ("you can reason about what is the most reasonable … decision").
@@ -63,6 +63,7 @@ Data (read-only, 2026-10-18): the PM's workspace (superrepo) holds 411 hand-star
 | ARCH-F-002 REQ-004 vs removing the empty collaboration package | package kept; REQ-004 unchanged |
 | Residual: application-bound runs | refused (eligibility) |
 | Residual: team admission | `TeamRunPackageCatalog.exclude` in step 4 |
+| CRR-005 F-002 (API/E2E) adopted run opened this session stays in its own group until restart | renderer rule "Sidebar After Adoption": retire on `task_execution_started`; drop history-origin local rows the server no longer lists |
 | DI-001 (implementer) team address frames differ (`/` vs catalog address) | step 3 rebases a team tree's addresses to the catalog address, reversibly; archived runs refused; definition must be in the catalog; `revertUnfinished` owner and timing defined |
 | ARCH-F-003 (ARCH-REV-002) step 3 rewrote a team tree into the task-agent shape | step 3 strictly additive through `TaskAgentOwnFiles.addTaskAgentSection`; record read back through the task-agent reader so the split write writes only the link; reversal restores the prior content; test added |
 | Residual: Memory page Teams list | an adopted team run leaves it, like every hub task team (8641c0ac FU-1); user informed |
@@ -81,9 +82,10 @@ like one the delegator started — and receives the Task as its next work. The d
   §Follow-up Task to an existing copy → "… or a run the user started", §Ownership "Borrowed, not adopted" → existing
   unowned agents are still never adopted implicitly; a hand-started run is adopted only by `delegate_task` with its
   run id; `collaboration_model.md` CM-6 note; `agent_communication.md` unchanged).
-- Deliberately left alone: new-copy delegation; copies' lifecycle, closure, reactivation, messaging scope; the sidebar
-  code (adopted runs appear under the delegator through the existing link rendering; they leave their group because
-  their history row is removed); workspaces.
+- Also in scope (SR-009, F-002): the renderer retires an adopted run's own-group row (see "Sidebar after adoption").
+- Deliberately left alone: new-copy delegation; copies' lifecycle, closure, reactivation, messaging scope; sidebar
+  grouping rules (adopted runs appear under the delegator through the existing link rendering); the server (no new
+  event); workspaces.
 - Follow-ups: adopting a run that has delegated runs of its own (re-parenting its chain to the delegator, CM-7);
   adopting across workspaces (with Task 6fb6e21b); delegators that are team members or organization agents (DEC-108).
 
@@ -176,6 +178,27 @@ None.
 - An agent run's standalone collaboration package (if present, it has no task executions — otherwise refused, REQ-007)
   is **kept** (REQ-004: nothing deleted). It is harmless: G1 hides the folder's standalone metadata, the readiness check
   skips task agent folders (8641c0ac D-6), and a cross-run scan reading its empty tree finds nothing.
+
+## Sidebar After Adoption (SR-009, CRR-005 F-002)
+
+Evidence: the renderer adds every run context opened this session to the history tree as a `source: 'local'` row
+(`autobyteus-web/stores/runHistoryReadModel.ts:262-281`) and team contexts to `teamNodes`
+(`stores/runHistoryNavigationProjection.ts:180-187`), whatever the server lists; the server has no history push. So an
+adopted run the user opened this session stays in its own group until restart, beside its new row under the delegator.
+`task_execution_started` reaches the renderer only on the delegator's collaboration stream
+(`services/agentCollaboration/agentRunCollaborationContext.ts`; team / org equivalents), i.e. when that run is open.
+
+Rule (renderer only; no server change): a run that has become a task agent is never shown as a top-level row.
+1. **Immediate:** when any open root's collaboration stream reports `task_execution_started` for a run id
+   (`agentRunId` or `teamRunId`) that the renderer also holds as a top-level run context, the renderer retires that
+   context's own-group row (agent row from the read model's local runs, team node from `teamNodes`). The run's context
+   and conversation stay usable; it is shown under its coordinator.
+2. **Authoritative on the next history read:** a top-level context row the renderer first opened **from a server
+   history row** is dropped from its own group when a later server history read no longer lists it. Runs created in
+   this session that the server has not listed yet (drafts and new runs) keep today's behavior.
+Together: the duplicate disappears at once when the delegator is open, and otherwise at the next history read; DONE
+then removes the row under the delegator as today (AC-003). Tests: web unit tests for both rules (agent and team);
+API/E2E rerun of the desktop check "adopt a run opened this session, then DONE and reopen" (D-1).
 
 ## Data-Flow Spine Inventory
 
@@ -309,6 +332,7 @@ The adopted run's records are exactly a catalog task agent's; no new field.
 | `run-history/store/agent-run-history-index-store.ts`, `team-run-history-index-store.ts` (+ catalogs) | remove the row; publish |
 | standalone root manager / team run manager | release an idle run's own session for handover |
 | `agent-tools/task-delegation/*` | description and refusal texts |
+| web: `stores/runHistoryReadModel.ts`, `stores/runHistoryNavigationProjection.ts`, the collaboration contexts' `task_execution_started` handling (agent / team / org) | retire an adopted run's own-group row (SR-009) |
 | docs | as Change Scope |
 
 ## Applied Patterns (If Any)

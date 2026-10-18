@@ -1,0 +1,17 @@
+{
+ "pm": "ado-project-manager",
+ "writer": "ado-writer",
+ "lead": "ado-review-lead",
+ "mate": "ado-review-mate",
+ "team": "ado-review-team",
+ "project": "project_4c2dd2f2-f41e-4973-92a9-495839b71ab9",
+ "taskTeam": {
+  "taskId": "project_task_4c2901ba-784e-4cc2-9f5c-51dd5943c83f",
+  "taskKey": "ado-desktop-project-1"
+ },
+ "taskAgent": {
+  "taskId": "project_task_652f796c-545f-4658-ba4a-3e1b3b18724a",
+  "taskKey": "ado-desktop-project-2"
+ },
+ "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-desktop-root-rH1HI4/workspace-ado"
+}

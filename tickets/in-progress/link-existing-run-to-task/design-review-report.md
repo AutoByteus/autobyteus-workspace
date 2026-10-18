@@ -7,20 +7,20 @@
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/solution-revision-record.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/design-spec.md` (SR-004 adoption design, reviewed on the SR-005 basis: DS-003 removed)
 - Supplemental Task Artifacts Reviewed: None. `superseded-*-link-only.md` are withdrawn history (SR-002 was paused before any result; no review artifact was written for it).
-- Relevant Solution Revision IDs: `SR-003` .. `SR-008`
+- Relevant Solution Revision IDs: `SR-003` .. `SR-009`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: `4`
-- Trigger: targeted re-review of SR-008 after the implementer's DI-001 (`implementation-design-impact.md`: team address frames differ), revising the ARCH-F-003 basis (`/software_engineering_team/solution_designer`)
-- Prior Review Round Reviewed: `3` (ARCH-REV-003, Pass)
-- Latest Authoritative Round: `4`
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: `5`
+- Trigger: targeted re-review of SR-009 after code review CRR-005 classed API/E2E F-002 as Design Impact (the renderer keeps the local rows of runs opened this session); design-spec §Sidebar After Adoption (`/software_engineering_team/solution_designer`)
+- Prior Review Round Reviewed: `4` (ARCH-REV-004, Pass)
+- Latest Authoritative Round: `5`
 - Current-State Evidence Basis: worktree at base `2f211340ee`, which includes Task 8641c0ac (merge `9b5cf4025d`). Code read:
   - `root-task-execution-lifecycle.ts:156-215` (`assignToExistingCopy`, `refuseCopyOutsideTree`, order: `assertAssignable` → `assignExistingTaskExecution` → deliver → `markStarted` / `markFailed`);
   - `project-task-service.ts:321-410` (`assertAssignable`, `assertCopyAssignable` → `assertTaskExecutionAssignable` over the run's history);
   - `task-execution-resource-service.ts:192` (`closedTaskExecutionsIn(hostRoot)`, host-root scoped);
   - `team-run-execution-tree-store.ts:24-54` (G2: `read` returns `null` for a `taskAgent` tree);
   - `team-run-package-catalog.ts` (`admit` / `exclude` / `isAdmitted`);
-  - `projects.md:632-660` (Link before resources; a crash leaves `starting` → `not_confirmed`; "Borrowed, not adopted"). Round 2: `run-history/store/task-agent-own-files.ts:84-98` (`writeTeam` writes `validateTaskAgentTeamTreePayload(tree)`); `task-agent-team-tree-schema.ts:20-66` (projection: no `teamDefinitionName`, members' `role` / `description` → `null`, extra keys ignored on read); `team-run-execution-tree-schema.ts:33,55` (team-run reader requires `rootTeam.teamDefinitionName`). Round 3: `task-execution-tree-split.ts:211-237` (`writeAgentIfChanged` / `writeTeamIfChanged` compare the candidate with the reader's projection of the file on disk and write only when different). Round 4: DI-001 evidence (`team-run-execution-tree-schema.ts:40-46` root `/`; `task-agent-team-tree-schema.ts:52-83` root = `taskAgent.address`; `task-execution-source-schema.ts:55-61`); messages keyed by run ids only (`collaboration-communication-message-schema.ts:43`); `ProjectService.deleteProject` → `ProjectStore.deleteProject` removes Task files without the `ProjectTaskService` delete path (`project-store.ts:150-167`).
+  - `projects.md:632-660` (Link before resources; a crash leaves `starting` → `not_confirmed`; "Borrowed, not adopted"). Round 2: `run-history/store/task-agent-own-files.ts:84-98` (`writeTeam` writes `validateTaskAgentTeamTreePayload(tree)`); `task-agent-team-tree-schema.ts:20-66` (projection: no `teamDefinitionName`, members' `role` / `description` → `null`, extra keys ignored on read); `team-run-execution-tree-schema.ts:33,55` (team-run reader requires `rootTeam.teamDefinitionName`). Round 3: `task-execution-tree-split.ts:211-237` (`writeAgentIfChanged` / `writeTeamIfChanged` compare the candidate with the reader's projection of the file on disk and write only when different). Round 4: DI-001 evidence (`team-run-execution-tree-schema.ts:40-46` root `/`; `task-agent-team-tree-schema.ts:52-83` root = `taskAgent.address`; `task-execution-source-schema.ts:55-61`); messages keyed by run ids only (`collaboration-communication-message-schema.ts:43`); `ProjectService.deleteProject` → `ProjectStore.deleteProject` removes Task files without the `ProjectTaskService` delete path (`project-store.ts:150-167`). Round 5 (web): `runHistoryReadModel.ts:250-281` (every open context becomes a `local` row); `runHistoryNavigationProjection.ts:170-187` (team contexts become `teamNodes`); `runHistoryMutationActions.ts:148-175, 249-256` (agent archive runs `cleanupStoredRunLocalState`; team archive only refreshes the tree); `team-run-history-service.ts` omits archived inactive team runs from the listing.
 
 ## Routing Classification Review
 
@@ -190,11 +190,11 @@ None.
 
 ## Review Decision
 
-`Pass` (round 4)
+`Pass` (round 5)
 
 ## Findings
 
-None open in round 4. ARCH-F-001..ARCH-F-003 remain resolved. ARCH-F-003's basis is revised by SR-008 (reversible rebase instead of a purely additive write), and its intent, an exactly reversible step 3, holds. One required implementation addition (the Project delete caller) is listed under Residual Risks. See `ARCH-REV-004`.
+None open in round 5 (SR-009 accepted; see `ARCH-REV-005`). Round 4: ARCH-F-001..ARCH-F-003 remain resolved. ARCH-F-003's basis is revised by SR-008 (reversible rebase instead of a purely additive write), and its intent, an exactly reversible step 3, holds. One required implementation addition (the Project delete caller) is listed under Residual Risks. See `ARCH-REV-004`.
 
 ## Classification
 
@@ -205,6 +205,12 @@ N/A (Pass).
 `/software_engineering_team/implementation_engineer` (primary), `/software_engineering_team/solution_designer` (informational).
 
 ## Residual Risks
+
+- Round 5 (SR-009, CRR-005 F-002):
+  - The renderer-only rule is accepted. It is needed because the SR-004 premise ("history row removed → row gone") ignored the renderer's local rows, which CRR-005 verified.
+  - Rule 1 (retire the own-group row on `task_execution_started` for a run held as a top-level context) matches by run id. A freshly delegated copy's id can never equal a top-level context, so it affects adopted runs only.
+  - Rule 2 (drop a history-origin local row once a later history read no longer lists it) also covers the delegator-closed case. **Correction (after IR-004):** the side note that rule 2 would newly hide an archived open team run was wrong. Team archive already removes the local team context (`archiveTeamRunRecord` → `cleanupStoredTeamRunLocalState` → `removeTeamContext`, `runHistoryMutationActions.ts:84-110, 236-241`; pinned by `runHistoryStore.spec.ts`), as agent archive does, so rule 2 adds no behavior there. The reviewer read only the outer `archiveTeamRunInHistoryStore`. Implementer refinement accepted: rule 2 respects the agent history's per-agent window (`limitPerAgent`), so only a read that would have listed the run can drop it.
+  - Tests: web unit tests for both rules (agent and team) and the D-1 desktop rerun, as listed.
 
 - Round 4 (SR-008, DI-001):
   - The reversible address rebase is accepted. Teams are flat, so `/` ↔ `A` is a prefix swap with an exact inverse. It covers root, members, coordinator and handoffs; `teamDefinitionName`, `role` and `description` are kept; messages and member folders are keyed by run id; the record is read back so only the link is written; the link's `startedAt` equals the own file's `startedAt` / `createdAt`.
@@ -221,7 +227,7 @@ N/A (Pass).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 4)
+- Review Decision: `Pass` (round 5)
 - Material-Premise Gate: `Pass` (P-001 and P-003 resolved; P-002 not reachable)
 - Notes: The core is sound:
   - adoption as a branch of `assignToExistingCopy` where the code refused today;
@@ -238,5 +244,7 @@ N/A (Pass).
   Round 2: both resolved. Remaining: make step 3 additive so the close-path reversal restores a team run (ARCH-F-003).
 
   Round 3: ARCH-F-003 resolved; the design is ready for implementation.
+
+  Round 5: the SR-009 renderer rule for the sidebar after adoption is sound.
 
   Round 4: the DI-001 resolution (reversible address rebase for team runs) is sound; ready for implementation with the Project-delete revert caller added.

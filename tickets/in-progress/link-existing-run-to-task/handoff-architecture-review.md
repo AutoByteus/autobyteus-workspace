@@ -1,4 +1,4 @@
-# Handoff — Architecture Design Complete (SR-004…SR-008, adoption; targeted re-review after the implementer's DI-001)
+# Handoff — Architecture Design Complete (SR-004…SR-009, adoption; targeted re-review of SR-009 after CRR-005 / F-002)
 
 - Package identifier: `link-existing-run-to-task` (Project Task `autobyteus-11`)
 - Result classification: `Architecture Design Complete`
