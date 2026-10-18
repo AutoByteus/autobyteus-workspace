@@ -459,16 +459,17 @@ target mode.
   list. A new copy arrives as `task_execution_started` (Team: `TASK_EXECUTION_STARTED`), which
   asks for a fresh view.
 - **Delegated-run Artifacts.**
-  - When a standalone run's delegated runs are hydrated, after a reload or on a
-    historical run, each run's recorded Agent Artifacts
-    (`getRunFileChanges(agentRunId)`) are fetched with its projection.
-  - They are committed with its Activity when the collaboration context is
-    published. This goes through
-    `services/agentCollaboration/agentRunCollaborationHydration.ts` (`commit`)
+  - A delegated run's recorded Agent Artifacts load when that run is opened,
+    together with its projection, through the hub-scoped
+    `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)`.
+    The rows themselves never fetch any run's artifacts.
+  - They are committed with its Activity and conversation in one step. This goes
+    through `services/agentCollaboration/agentRunCollaborationChildHydration.ts`
     and the shared `services/runHydration/memberRunStateHydration.ts`.
   - Newer live `FILE_CHANGE` rows are kept.
-  - An artifact fetch failure fails the collaboration hydration, as a
-    projection failure does.
+  - An artifact fetch failure fails that run's load, as a projection failure does.
+    The failure is logged with the run's identity, and opening the run again
+    retries.
 - **Names (F-03).** Rows, the Team/Org tab and "From <Sender>:" use one formatter,
   `utils/collaboration/memberDisplayName.ts` (`product prototyper`, and
   `Product Prototyper` in sentences). In a standalone run's Team tab the run's own
