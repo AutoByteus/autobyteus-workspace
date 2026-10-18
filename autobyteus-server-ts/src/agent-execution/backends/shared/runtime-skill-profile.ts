@@ -87,6 +87,23 @@ export class RuntimeSkillProfile {
 
   private async stage(): Promise<void> {
     this.assertAccepting();
+    const executionRoot = await fs.realpath(path.dirname(this.input.privateParent));
+    const projectRoot = await fs.realpath(this.workingDirectory);
+    if (!(await fs.stat(executionRoot)).isDirectory()) throw new Error("Private execution storage must be a directory.");
+    let privateRoot: string;
+    try { privateRoot = await fs.realpath(this.input.privateParent); }
+    catch (error) {
+      if (!missing(error)) throw error;
+      privateRoot = path.join(executionRoot, path.basename(this.input.privateParent));
+    }
+    const insideProject = (target: string) => {
+      const relative = path.relative(projectRoot, target);
+      return relative === "" || (!path.isAbsolute(relative) && relative !== ".." && !relative.startsWith(`..${path.sep}`));
+    };
+    if (insideProject(executionRoot) || insideProject(privateRoot)) {
+      throw new Error("Runtime skill storage must be outside the project, including aliases.");
+    }
+    this.assertAccepting();
     await fs.mkdir(this.input.privateParent, { recursive: true, mode: 0o700 });
     this.assertAccepting();
     await fs.mkdir(this.root, { mode: 0o700 });

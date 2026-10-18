@@ -1,5 +1,3 @@
-import { configuredSharedWorkspace } from "../../../../workspaces/shared-workspace-binding.js";
-import { scopedProjectGitEnvironment } from "../../../../runtime-management/shared/scoped-project-git-environment.js";
 import fs from "node:fs/promises";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import { createBackendPreparation } from "../../agent-run-backend-preparation.js";
@@ -89,14 +87,12 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
 
   private async launch(config: AgentRunConfig, runId: string, capsule: AgyRunCapsule, expectedId: string | null, assertAccepting: () => void, ownProcess: (process: AgyStreamProcess) => void): Promise<AgyAgentRunBackend> {
     const compactionDetection = await this.resolveCompactionDetection(runId);
-    const env = await configuredSharedWorkspace(capsule.manifest.workspacePath)
-      ? scopedProjectGitEnvironment(globalThis.process.env, capsule.manifest.workspacePath) : undefined;
     const process = new AgyStreamProcess();
     ownProcess(process);
     assertAccepting();
       const init = await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
         workspacePath: capsule.manifest.workspacePath, model: config.llmModelIdentifier,
-        conversationId: expectedId, env });
+        conversationId: expectedId });
       if (expectedId && init.conversation_id !== expectedId) throw new Error("AGY_CONVERSATION_ID_CONFLICT: exact restore returned a different conversation.");
       if (init.init.agent !== capsule.manifest.agentName) throw new Error("AGY_AGENT_NOT_LOADED: CLI did not select the generated main agent.");
       if (init.init.model !== config.llmModelIdentifier) throw new Error("AGY_MODEL_MISMATCH: CLI selected another model.");

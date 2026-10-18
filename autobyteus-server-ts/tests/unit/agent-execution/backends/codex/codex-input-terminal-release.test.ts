@@ -15,7 +15,6 @@ import { CodexThreadManager } from '../../../../../src/agent-execution/backends/
 import { CodexClientThreadRouter } from '../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js';
 import { CodexAppServerClient } from '../../../../../src/runtime-management/codex/client/codex-app-server-client.js';
 import { CodexAppServerClientManager } from '../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js';
-import type { CodexThreadCleanup } from '../../../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js';
 
 const deferred = () => {
   let resolve!: () => void;
@@ -30,8 +29,7 @@ async function harness() {
   const clients = new CodexAppServerClientManager({ createClient: () => client = new CodexAppServerClient({
     command: process.execPath, args: [fixture], cwd, env: {}, requestTimeoutMs: 2000,
   }) });
-  const cleanup = { cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined) };
-  const manager = new CodexThreadManager(clients, cleanup as unknown as CodexThreadCleanup, new CodexClientThreadRouter());
+  const manager = new CodexThreadManager(clients, new CodexClientThreadRouter());
   const create = async (runId: string) => {
     const context = new AgentRunContext({ runId,
       config: new AgentRunConfig({ runtimeKind: 'codex_app_server', agentDefinitionId: 'test-reader',
@@ -53,7 +51,7 @@ async function harness() {
     await client.close();
     await rm(cwd, { recursive: true, force: true });
   };
-  return { ...owned, create, protectedMember, client, manager, cleanup, close };
+  return { ...owned, create, protectedMember, client, manager, close };
 }
 
 describe('REQ-007/009/013 exact Codex input outcome before Task-owned release', () => {
@@ -123,7 +121,7 @@ describe('REQ-007/009/013 exact Codex input outcome before Task-owned release', 
       await vi.waitFor(() => expect(h.thread.currentStatus).toBe('IDLE'));
       await h.client.request('test/terminal', { threadId: h.thread.threadId, turnId });
       await entered.promise;
-      await vi.waitFor(() => expect(h.cleanup.cleanupPreparedWorkspaceSkills).toHaveBeenCalled());
+      await vi.waitFor(() => expect(h.manager.getThread(run.runId)).toBeNull());
       await h.client.request('test/barrier', {});
       expect(receipt).toBeNull();
       expect(run.getInputStateSnapshot().entries).toHaveLength(1);
@@ -165,9 +163,8 @@ describe('REQ-007/009/013 exact Codex input outcome before Task-owned release', 
       expect(h.manager.getThread(run.runId)).toBe(h.thread);
       expect(h.thread.activeTurnId).toBe(turnId);
       expect(run.getInputStateSnapshot().entries).toHaveLength(1);
-      // Existing independent skill cleanup can run even when turn proof fails;
-      // only exact thread/lease disposal is gated on the complete receipt.
-      expect(h.cleanup.cleanupPreparedWorkspaceSkills).toHaveBeenCalledTimes(1);
+      // Exact thread/lease disposal is gated on terminal proof.
+      expect(h.manager.getThread(run.runId)).toBe(h.thread);
       expect(facts.some(f => ['completed', 'interrupted', 'failed'].includes(f.kind))).toBe(false);
       const retry = run.forceReleaseRuntime();
       await vi.waitFor(async () => {
@@ -177,7 +174,7 @@ describe('REQ-007/009/013 exact Codex input outcome before Task-owned release', 
       await h.client.request('test/terminal', { threadId: h.thread.threadId, turnId });
       expect(await retry).toEqual({ accepted: true });
       expect(run.getInputStateSnapshot().entries).toEqual([]);
-      expect(h.cleanup.cleanupPreparedWorkspaceSkills).toHaveBeenCalledTimes(2);
+      expect(h.manager.getThread(run.runId)).toBeNull();
       const calls = await h.client.request<Array<{ method: string; params: Record<string, unknown> }>>('test/requests', {});
       expect(calls.filter(c => c.method === 'turn/start')).toHaveLength(1);
       expect(calls.filter(c => c.method === 'turn/interrupt').every(c => c.params.turnId === turnId && c.params.threadId === h.thread.threadId)).toBe(true);

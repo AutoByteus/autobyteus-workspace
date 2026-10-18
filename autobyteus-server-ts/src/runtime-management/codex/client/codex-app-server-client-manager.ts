@@ -1,4 +1,3 @@
-import { scopedProjectGitEnvironment } from "../../shared/scoped-project-git-environment.js";
 import path from "node:path";
 import { parseArgs, resolveLaunchCommand, resolveRequestTimeoutMs } from "./codex-app-server-launch-config.js";
 import { CodexAppServerClient } from "./codex-app-server-client.js";
@@ -21,8 +20,7 @@ export class CodexAppServerClientManager {
   private readonly closeListeners = new Set<CloseListener>();
   private readonly createClient: NonNullable<CodexAppServerClientManagerOptions["createClient"]>;
   constructor(options: CodexAppServerClientManagerOptions = {}) {
-    this.createClient = options.createClient ?? ((cwd, profile) => new CodexAppServerClient({
-      env: profile ? scopedProjectGitEnvironment(process.env, cwd) : undefined,
+    this.createClient = options.createClient ?? ((cwd) => new CodexAppServerClient({
       command: resolveLaunchCommand(), args: parseArgs(), cwd, requestTimeoutMs: resolveRequestTimeoutMs(),
     }));
   }

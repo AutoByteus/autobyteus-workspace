@@ -1,49 +1,47 @@
-# Shared network workspaces
+# Filesystem workspaces and external storage
 
-AutoByteus NFS is an independent OS service; see [the service guide](../../../autobyteus-nfs/README.md).
-Workspace registration remains metadata-only and does not mount storage or enumerate
-network directories at application startup.
+AutoByteus uses ordinary directory paths and filesystem APIs. It does not detect
+mounts, identify NFS or storage UUIDs, read host attachment descriptors, invoke a
+storage CLI, or perform storage admission before activation or terminal creation.
+Workspace registration remains metadata-only. Selecting a registered workspace
+preserves its resolution errors rather than silently substituting a temporary
+folder. The existing no-selection and unknown-ID fallback policy is unchanged.
 
-`SharedWorkspaceBinding` lazily reads the nonsecret host attachment descriptor. New
-run/restore preparation checks actual source/protocol, storage UUID and project access
-once. Missing descriptors keep ordinary local behavior. A known configured shared
-path is never deliberately replaced with a temp/cwd workspace. The service owns all
-mount/export administration. Normal explorer, file tools, PTY and REST streams are
-unchanged. Hard NFS outages can stall these calls and unrelated work; this version
-does **not** implement bounded outage isolation or per-action probes.
+Storage is an operator concern. [AutoByteus NFS](https://github.com/AutoByteus/autobyteus-nfs)
+is one independent host service; see its
+[filesystem usage guide](https://github.com/AutoByteus/autobyteus-nfs/blob/main/docs/filesystem-usage.md).
+The Docker launcher can use any operator-supplied directory through
+`AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR`: `<root>/shared` maps to the shared folder
+and `<root>/nodes/<name>` to that node's workspace. The launcher retains private
+settings, sign-ins and memory volumes but neither installs nor controls NFS.
 
-Claude/Codex/Grok configured skills for these paths are linked into an exact owned
-node-private profile registered before awaited preparation. Native discovery validates
-the real logical name/manifest path, including canonical source paths. Only observed
-native process/client close permits profile cleanup; a rejected close is not proof.
-The profile removes only its own wrappers/links, never source bytes or a peer profile.
-Codex's client key includes both project cwd and profile identity. Claude uses its
-skills-only plugin; Grok uses its supported private plugin argument/ACP discovery.
-None relocates provider authentication or changes normal permissions.
+## Configured skills and process ownership
 
-Managed catalog lookup selects the current matching source; it is not acquisition of
-a retained generation. Skills source Update/Remove retains its independent cleanup,
-so linked bytes may disappear. There is no copying, source pin, holder refcount,
-retirement queue or live profile retarget. AGY retains its existing private capsule,
-manifest identity and missing-source warn/skip restore rather than rebuilding from a
-new catalog winner. Ordinary local workspace materialization/collision policy remains.
+Claude, Codex and Grok use exact execution-private skill profiles on every
+filesystem. A profile is registered with its owner before awaited acquisition,
+in valid application-private execution storage outside the project, including
+symlink aliases. No configured bindings means no profile acquisition. Missing
+storage or unsupported native discovery refuses preparation; it does not fall
+back to project links. Configured collisions fail; ALL_INSTALLED prefers the
+user-owned project entry. Other adapters' genuine materializers remain.
 
-Exact-project Git trust is appended only in relevant runtime/terminal **child**
-environments, preserving inherited `GIT_CONFIG_*` entries. No global gitconfig or
-`process.env` trust mutation occurs. No shared project link publication is introduced.
+Native discovery checks the logical name and actual source manifest. A proven
+native process/client close precedes exact profile release. Cleanup removes only
+that profile's wrappers/links, never source bytes or a peer profile. Managed
+catalog lookup selects the current matching source; it does not retain an old
+generation. Source Update/Remove remains independent, so linked bytes can
+disappear. AGY retains its separate private capsule and missing-source policy.
 
-Healthy file/media/HTML/relative-asset/completed-artifact previews use the existing
-REST authorization/path/projection/MIME/error/stream contracts. Local unit fixtures
-and source inspection are not current-product shared-mount or physical LAN proof.
+AutoByteus does not inject `safe.directory` into Git environments. Explicit
+operator Git configuration and provider authentication remain independent.
+Normal explorer, PTY, tools and REST contracts are unchanged. Filesystem outages
+can stall ordinary operations; bounded outage isolation is not implemented.
 
-## Qualification boundary
+## Evidence and distribution boundary
 
-The delivered filesystem increment is validated with ordinary Linux commands in
-two generic containers sharing a real NFS mount in one Ubuntu VM, not through
-application acceptance. Native-Linux and Docker-Linux storage are sequential.
-This same-kernel/cache evidence does not qualify independent clients, physical
-hosts, Mac/cross-OS, external join or authenticated-agent behavior. Existing
-repository content/lifecycle regressions are supplementary, not proof of a new
-live editor journey. See the [service validation boundary](../../../autobyteus-nfs/README.md#validation-boundary).
-The service remains unpublished; neither an API regression Pass nor filesystem
-Pass changes the release lock or enables the Guide's install command.
+There is no paired NFS fixture or application/service protocol pin. Tests use
+ordinary owned directories and independent repository inputs. Future combined
+storage evidence must identify service/engine and application revisions, not
+claim that a service source hash attests arbitrary app code. The disabled Guide
+is informational: no qualified release or command is implied by extraction,
+component checks, historical filesystem evidence or an architecture review.

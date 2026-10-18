@@ -36,21 +36,21 @@ async function harness() {
       ? { kind: 'pending', code: 'TEST_PHYSICAL_PENDING', message: 'Controlled physical proof unavailable.' }
       : opening.release() };
   };
-  const skills = { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) };
   const mcp = { activateForRun: vi.fn(() => ({ kind: 'disabled' })), deactivateForRun: vi.fn(() => 0) };
-  const manager = new ClaudeSessionManager(mcp as never, {} as never, sdk as never, skills as never);
+  const manager = new ClaudeSessionManager(mcp as never, {} as never, sdk as never);
   const create = async (runId: string) => {
+    const privateSkillProfile = { release: vi.fn(async () => undefined), exposures: [], root: "/test-private" };
     const context = new AgentRunContext({ runId,
       config: new AgentRunConfig({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, agentDefinitionId: 'test-reader',
         llmModelIdentifier: 'haiku', autoExecuteTools: false }),
       runtimeContext: new ClaudeAgentRunContext({ carpenterSystemPrompt: 'Test-only reader',
         sessionConfig: buildClaudeSessionConfig({ model: 'haiku', workingDirectory: '/tmp', permissionMode: 'default' }),
-        runtimeToolExposure: buildRuntimeAgentToolExposure([]) }),
+        runtimeToolExposure: buildRuntimeAgentToolExposure([]), privateSkillProfile: privateSkillProfile as never }),
     });
     const session = await manager.createRunSession(context, () => undefined);
     const backend = new ClaudeAgentRunBackend(context, session);
     const run = new AgentRun({ context, backend, providerInputNormalizer: { normalizeForProvider: dispatch => dispatch } });
-    return { run, backend, session };
+    return { run, backend, session, privateSkillProfile };
   };
   const owned = await create('test-owned-reader');
   const protectedMember = await create('test-borrowed-member');
@@ -59,7 +59,7 @@ async function harness() {
   owned.run.subscribeToEvents(event => events.push(event.eventType));
   await owned.run.postUserMessage(new AgentInputUserMessage('Test saved Task packet'), { lifecycleObserver: f => facts.push(f) });
   await vi.waitFor(() => expect(owned.run.getInputStateSnapshot().entries[0]?.state).toBe('forwarded'));
-  return { ...owned, manager, sdk, skills, mcp, protectedMember, facts, events, releases,
+  return { ...owned, manager, sdk, mcp, protectedMember, facts, events, releases,
     failPhysical: (fail: boolean) => { physicalFailure = fail; },
     holdPhysical: (promise: Promise<void>) => { physicalGate = promise; },
     close: async () => { physicalFailure = false; physicalGate = Promise.resolve();
@@ -102,13 +102,13 @@ describe('CRF-008 exact Claude canonical input handoff', () => {
       expect(h.manager.requireRunSession(h.run.runId)).toBe(h.session);
       expect(h.facts.filter(f => f.kind === 'interrupted')).toHaveLength(1);
       expect(h.run.getInputStateSnapshot().entries).toEqual([]); // canonical outcome is not physical release proof
-      expect(h.skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledOnce();
+      expect(h.privateSkillProfile.release).not.toHaveBeenCalled();
       expect(h.mcp.deactivateForRun).toHaveBeenCalledExactlyOnceWith(h.run.runId);
       await expect(h.session.submitInput(new AgentInputUserMessage('late retry ingress'), { kind: 'start_turn' })).resolves.toMatchObject({ accepted: false });
       h.failPhysical(false);
       await expect(h.run.forceReleaseRuntime()).resolves.toEqual({ accepted: true });
       expect(h.releases).toHaveBeenCalledTimes(2);
-      expect(h.skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledOnce();
+      expect(h.privateSkillProfile.release).toHaveBeenCalledOnce();
       expect(h.mcp.deactivateForRun).toHaveBeenCalledOnce();
       expect(h.events.filter(e => e === AgentRunEventType.TURN_INTERRUPTED)).toHaveLength(1);
       expect(h.run.getInputStateSnapshot().run_instance_id).toBe(generation);
@@ -131,7 +131,7 @@ describe('CRF-008 exact Claude canonical input handoff', () => {
       void releasing.catch(() => undefined);
       await vi.waitFor(() => expect(h.releases).toHaveBeenCalledOnce());
       expect(denial).toMatchObject({ behavior: 'deny' });
-      expect(h.skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledOnce();
+      expect(h.privateSkillProfile.release).not.toHaveBeenCalled();
       expect(h.mcp.deactivateForRun).toHaveBeenCalledExactlyOnceWith(h.run.runId);
       expect(h.facts.filter(f => f.kind === 'interrupted')).toHaveLength(1);
       expect(receipt).toBeNull();
@@ -185,12 +185,12 @@ describe('CRF-008 exact Claude canonical input handoff', () => {
   it('retries only failed skills after successful handoff and physical proof', async () => {
     const h = await harness();
     try {
-      h.skills.cleanupMaterializedWorkspaceSkills.mockRejectedValueOnce(new Error('Controlled skill release failure'));
+      h.privateSkillProfile.release.mockRejectedValueOnce(new Error('Controlled skill release failure'));
       await expect(h.run.forceReleaseRuntime()).resolves.toMatchObject({ accepted: false });
       expect(h.manager.requireRunSession(h.run.runId)).toBe(h.session);
       await expect(h.run.forceReleaseRuntime()).resolves.toEqual({ accepted: true });
       expect(h.releases).toHaveBeenCalledOnce();
-      expect(h.skills.cleanupMaterializedWorkspaceSkills).toHaveBeenCalledTimes(2);
+      expect(h.privateSkillProfile.release).toHaveBeenCalledTimes(2);
       expect(h.mcp.deactivateForRun).toHaveBeenCalledOnce();
       expect(h.facts.filter(f => f.kind === 'interrupted')).toHaveLength(1);
       expect(h.manager.requireRunSession(h.protectedMember.run.runId)).toBe(h.protectedMember.session);
