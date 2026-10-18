@@ -16,13 +16,13 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002` (round 2; `API-REV-001` = round 1, Fail F-001)
 - Test progress log: `api-e2e-test-progress.md`
 - Execution coverage report (the record, results, confidence and broader-validation decision): `api-e2e-execution-coverage-report.md`
-- Current Investigation Round: 1
-- Trigger: code reviewer pass handoff (CRR-002) from `/software_engineering_team/code_reviewer`
-- Prior Investigation Reviewed: none (first round)
-- Latest Authoritative Investigation: this file, round 1
+- Current Investigation Round: 2
+- Trigger: round 1 — code reviewer pass CRR-002; round 2 — code reviewer pass CRR-004 of IR-003 (FO-001 → SR-007: Granite default, DEC-011, re-based QR-003/QR-004, O-1)
+- Prior Investigation Reviewed: round 1 (this file)
+- Latest Authoritative Investigation: this file, round 2 (see § Round 2 Rerun Plan)
 
 All paths are relative to the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search` unless absolute. Code under validation: branch `codex/project-task-semantic-search`, source commit `722b9b3918` (ticket docs `358b7f0123`); companion `/Users/normy/autobyteus_org/autobyteus-agents-project-task-semantic-search` @ `344da76`.
 
@@ -210,6 +210,30 @@ None.
 - Evidence to capture: GraphQL responses, DOM state from CDP, screenshots, footprint/RSS samples, `embeddings/` listings, sqlite row counts per model, container logs.
 - Owned processes and temporary state to clean up: the isolated instance and its data root; the test container and image; `/tmp/pts-api`.
 
+
+## Round 2 Rerun Plan (IR-003, commit `9f0df7eab3`)
+
+Validated in round 1: `722b9b3918`. Changed since (`git diff --name-only 722b9b3918 9f0df7eab3 -- . ':!tickets'`): `src/embeddings/catalog/embedding-model-catalog.ts` (default Granite, LEAF-IR floor 0.30), `src/embeddings/embedding-index.ts` + `models/embedding-model-files.ts` (O-1 readiness), `docs/modules/embeddings.md`, server tests (fixture: 24 unrelated queries; new `tests/helpers/project-task-search-backlogs.ts`; quality test with `TEST_EMBEDDING_SCALE`; one-line change in API-D01). No web, packaging, dependency, lockfile, schema or `autobyteus-ts` change; after `9f0df7eab3` only `tickets/` changed. New basis: SR-007 (DEC-002 Granite default, DEC-011: AC-001/AC-002/AC-004 hold for the default on Projects up to 1,000 Tasks; QR-003 ≈170 Tasks ≤ 3 min, 1,000 ≤ 20 min; QR-004 ≤ +800 MB indexing, ≤ +450 MB searching, ≤ +50 MB after 10 idle minutes; QR-005 unchanged).
+
+| Case ID | Decision | Reason |
+| --- | --- | --- |
+| API-R01 | Reused: IMP-01 | Ran on `9f0df7eab3`; `implementation/IMP-01-typecheck.log` `tsc exit=0` |
+| API-R02, API-R03 | Reused: IMP-02 | Ran on `9f0df7eab3`, includes the changed embeddings unit tests; `Test Files  726 passed \| 4 skipped (730)` |
+| API-R04 | Still valid (round 1) | Integration suite exercises no changed file (the embeddings quality test is gated and rerun as API-R06) |
+| API-D01, API-R05 | Rerun | API-D01 and the search E2E changed; the default model changed |
+| API-R06 | Rerun (default model, `TEST_EMBEDDING_SCALE=1`); LEAF-IR and EmbeddingGemma 2: Reused IMP-04, IMP-05 | DEC-011 is the round's key criterion; independent confirmation of IMP-03 |
+| API-R07 | Still valid (round 1) | No web code changed |
+| API-R08 | Rerun | Catalog file is on the licensing allowlist; cheap |
+| API-L01 (Docker) | Still valid (round 1) | Granite already ran in the Docker image (switch + 60/63 quality, API-L01); IR-003 changes are platform-independent catalog/readiness code; no dependency or packaging change |
+| API-L02a | Rerun | The packaged build must carry the new server code |
+| API-L02b + API-L03b | Rerun | First use now downloads Granite (55 MB); QR-003/QR-004 re-based on Granite |
+| API-L04 | Rerun | In-app quality with the Granite default: 60 and both 1,000-Task backlogs; board no-match state (C-12) |
+| API-L03c, API-L03d | Rerun | QR-001 with Granite; QR-004 searching and idle (C-13) |
+| API-L02e (edit part) | Rerun | QR-002 with Granite's per-Task cost |
+| API-L02f | Rerun | Restart with the Granite index; O-1 readiness (`loading`, not `downloading 0 of N`) |
+| API-L02g | Rerun | Switch from the Granite default to LEAF-IR and back to blank (AC-016) |
+| API-L02c, API-L02c2, API-L02d, API-L02e (delete parts), API-L02h, API-L05 | Still valid (round 1) | Board, search service, delete hooks, failure path and companion unchanged; readiness shape unchanged |
+
 ## Not Tested / Infeasible / Deferred
 
 | Behavior / Boundary | Reason | Risk | Only The User Can Check? | Required Follow-Up Or Escalation |
@@ -222,7 +246,7 @@ None.
 
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
-| C-08 confirmed: the default model's relevance floor (absolute `clearMatchFloor` 0.24, calibrated on the 60-Task fixture) does not keep unrelated queries unmatched on 1,000-Task backlogs: 6/12 (generated) and 4/12 (real product-domain text) of AC-004's defined set get meaning matches, up to 20 each; AC-001's "first 5" falls to 87.3% on the generated 1,000 backlog | `Design Impact` (preliminary; relevance-rule/calibration design, G2), with a requirement question on the backlog size AC-004 must hold for | execution report API-L04 | Failure-origin review (code reviewer), then Solution Designer |
+| (Round 1, resolved in round 2 by SR-007) C-08 confirmed: the default model's relevance floor (absolute `clearMatchFloor` 0.24, calibrated on the 60-Task fixture) does not keep unrelated queries unmatched on 1,000-Task backlogs: 6/12 (generated) and 4/12 (real product-domain text) of AC-004's defined set get meaning matches, up to 20 each; AC-001's "first 5" falls to 87.3% on the generated 1,000 backlog | `Design Impact` (preliminary; relevance-rule/calibration design, G2), with a requirement question on the backlog size AC-004 must hold for | execution report API-L04 | Failure-origin review (code reviewer), then Solution Designer |
 
 ## Investigation Decision
 
@@ -230,4 +254,4 @@ None.
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (API-D01 added)
 - Reroute Required Before Validation Execution: `No` (the reroute trigger above was found during execution; the result is in the execution report)
 - Recommended Owner If Reroute Required: N/A
-- Notes: results, confidence scores and the broader-validation decision are in `api-e2e-execution-coverage-report.md`.
+- Notes: results, confidence scores and the broader-validation decision are in `api-e2e-execution-coverage-report.md`. Round 2 (IR-003): no reroute; plan in § Round 2 Rerun Plan.

@@ -1,7 +1,8 @@
 // API/E2E probe (ticket evidence, not product code): drives a running AutoByteus server's public GraphQL API for the
 // Project Task search validation (seed data, search, readiness polling, quality and latency measurement).
 // Usage: node API-PROBE-search-driver.mjs <graphqlUrl> <command> [...args]
-//   seed <projectName> <rep60|backlog1000|backlog1000long> <backlog.json> <out-map.json>
+//   seed <projectName> <rep60|backlog1000|backlog1000long|backlog1000repo> <backlog.json> <out-map.json>
+//     (backlog1000repo needs `repoDistractors` in backlog.json: API-PROBE-add-repo-backlog.mjs)
 //   search <projectId> <query>
 //   until <projectId> <query> <READY|UNAVAILABLE|SETTLED> <timeoutSec>   (logs every readiness change with elapsed time)
 //   quality <projectId> <map.json> <backlog.json>                         (all paraphrases + unrelated sets)
@@ -24,13 +25,14 @@ if (command === 'seed') {
   const [name, set, backlogFile, outFile] = args
   const backlog = JSON.parse(fs.readFileSync(backlogFile, 'utf8'))
   const tasks = set === 'rep60' ? backlog.targets : set === 'backlog1000' ? [...backlog.targets, ...backlog.distractors]
-    : set === 'backlog1000long' ? [...backlog.targetsLong, ...backlog.distractors] : null
+    : set === 'backlog1000long' ? [...backlog.targetsLong, ...backlog.distractors]
+    : set === 'backlog1000repo' ? [...backlog.targets, ...(backlog.repoDistractors ?? [])] : null
   if (!tasks) throw new Error(`unknown set ${set}`)
   const { projectId } = (await gql('mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}', { i: { name } })).createProject
   const map = { projectId, set, tasks: {} }
   const started = Date.now()
   // Distractors first, targets last, so targets are not simply the oldest Tasks.
-  const ordered = set === 'rep60' ? tasks : [...tasks.filter((t) => t.id.startsWith('d')), ...tasks.filter((t) => !t.id.startsWith('d'))]
+  const ordered = set === 'rep60' ? tasks : [...tasks.filter((t) => /^[dr]\d/.test(t.id)), ...tasks.filter((t) => !/^[dr]\d/.test(t.id))]
   for (const task of ordered) {
     const created = (await gql('mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}', { i: { projectId, description: task.description } })).createProjectTask
     map.tasks[task.id] = { taskId: created.taskId, taskKey: created.taskKey, status: task.status }

@@ -59,3 +59,29 @@
 | 18:37 | API-L04 | Completed | Fail | LEAF-IR fails AC-004 at 1,000 Tasks (6/12 generated, 4/12 real text); Granite 12/12; EmbeddingGemma 12/12 (fixture + real text) |
 | 18:37 | (process) | Checkpoint | — | finalizing: report, evidence names/headers, cleanup, commit, handoff |
 | 18:38 | (process) | Checkpoint | — | cleanup done (instance stopped, data root, test image, /tmp/pts-api removed); report and revision record final |
+| 19:45 | (round 2) | Checkpoint | — | round 2 started for IR-003 (9f0df7eab3); plan in the investigation § Round 2 Rerun Plan |
+| 19:45 | API-L02a | Started | — | isolated-app start --build (background) |
+| 19:45 | API-R06 | Started | — | gated real-model check, default model, TEST_EMBEDDING_SCALE=1 (background) |
+| 19:51 | API-L02a | Completed | Pass | round 2 build iso-60493-231f; prune + runtime check pass; packaged default = Granite |
+| 19:52 | API-L03a | Started | — | round 2 seeding |
+| 19:53 | API-L03a | Completed | Pass | 2,060 Tasks seeded; no embeddings/ |
+| 19:53 | API-L02b | Started | — | round 2 first use on Backlog 1000 (Granite download + index) |
+| 19:53 | API-R06 | Completed | Pass | Granite default at scale (see evidence) |
+| 19:57 | API-L02b | Completed | Pass | Granite first use 221 s / 1,000 Tasks, target shown without retyping |
+| 19:57 | API-L03b | Completed | Pass | peak footprint +265 MB; 55 MB model; index files |
+| 19:57 | API-L04 | Started | — | round 2 in-app quality (Granite) on 60, 1,000 generated, 1,000 real text |
+| 19:57 | API-R05 | Started | — | e2e projects folder, clean env |
+| 19:59 | API-R05 | Completed | Pass | 6 files / 36 tests incl. API-D01 and the search E2E |
+| 20:01 | API-L04 | Checkpoint | — | in-app: 96.8/93.7/92.1% shown in first 5; 23/24 unrelated no match on all three |
+| 20:01 | API-L04 | Completed | Pass | board shows the no-match state for an unrelated query on both 1,000-Task Projects |
+| 20:02 | API-L03c | Started | — | round 2 latency + footprint while searching |
+| 20:03 | API-L03c | Completed | Pass | p90 46 ms; footprint while searching +298 MB; board update measured |
+| 20:03 | API-L02e | Completed | Pass | QR-002 with Granite |
+| 20:03 | API-L03d | Started | — | idle window: no instance interaction for 12 min |
+| 20:16 | API-L03d | Completed | Pass | idle: 405 MB → 137 MB after the 10-min stop (baseline 185) |
+| 20:16 | API-L02f | Started | — | round 2 restart + O-1 |
+| 20:16 | API-L02f | Completed | Pass | LOADING (O-1) then READY 1.25 s; edited Task found |
+| 20:16 | API-L02g | Started | — | Settings switch Granite → LEAF-IR → blank |
+| 20:17 | API-L02g | Completed | Pass | unknown id rejected; LEAF-IR then blank (Granite); only active model kept |
+| 20:17 | (process) | Checkpoint | — | round 2 cleanup: instance stopped, data root removed, /tmp/pts-api2 removed |
+| 20:19 | (round 2) | Completed | Pass | report, revision record API-REV-002 and investigation updated; committing and handing off |

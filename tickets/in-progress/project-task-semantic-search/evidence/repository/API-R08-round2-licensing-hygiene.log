@@ -1,0 +1,10 @@
+# API-R08 (round 2): python3 scripts/check_licensing.py; python3 scripts/check_repository_artifact_hygiene.py; python3 -m pytest -q scripts/tests/test_check_licensing.py; commit 9f0df7eab3 (HEAD 2253eec182, only tickets/ after it); ENV-1; Sun Oct 18 19:45:43 CEST 2026
+Licensing is consistent.
+Tracked files scanned: 6729
+exit=0
+Repository artifact hygiene check passed.
+Tracked files scanned: 72023
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit=0
+12 passed in 2.64s
