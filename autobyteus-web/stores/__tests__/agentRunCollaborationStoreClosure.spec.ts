@@ -20,14 +20,16 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () 
   hydrateAgentRunCollaborationChild: vi.fn(async () => 'hydrated'),
 }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
-vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn() }) }))
+const history = vi.hoisted(() => ({ applyRunNavigationEffect: () => undefined, refreshRunNavigationTopology: vi.fn() }))
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => history }))
 
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 import { buildClosureContext } from '~/services/agentCollaboration/__tests__/agentRootClosureFixture'
+import { useRunHistoryRetiredRunsStore } from '../runHistoryRetiredRuns'
 
 /** task-run-resources-workspace-cleanup REQ-009: a closed run cannot be selected; an open one returns to the host. */
 describe('agentRunCollaborationStore with closed task executions', () => {
-  beforeEach(() => { setActivePinia(createPinia()); stream.instances.length = 0; staged.closed = [] })
+  beforeEach(() => { setActivePinia(createPinia()); stream.instances.length = 0; staged.closed = []; history.refreshRunNavigationTopology.mockClear() })
 
   it('a stored view never selects a closed run, and a reload clears a selection whose Task became DONE', async () => {
     staged.closed = [{ agentRunId: 'writer-run' }]
@@ -58,5 +60,18 @@ describe('agentRunCollaborationStore with closed task executions', () => {
     service.options.onTaskExecutionsClosed(context)
     expect(store.selectedChild('host-run')).toBeNull()
     expect(store.taskRows('host-run').map((entry) => entry.row.rowKey)).not.toContain('agent:rb-run')
+  })
+
+  it('a started task execution (e.g. a run the user started, adopted) leaves its own sidebar group at once (SR-009 rule 1)', () => {
+    const store = useAgentRunCollaborationStore()
+    store.attach('host-run')
+    const service = stream.instances[0]!
+    service.options.onTaskExecutionStarted({ agentRunId: 'adopted-run' })
+    service.options.onTaskExecutionStarted({ teamRunId: 'adopted-team' })
+    expect([...useRunHistoryRetiredRunsStore().retiredRunIds].sort()).toEqual(['adopted-run', 'adopted-team'])
+    expect(history.refreshRunNavigationTopology).toHaveBeenCalledTimes(2)
+    service.options.onInactive() // the stream released: a late event from it changes nothing
+    service.options.onTaskExecutionStarted({ agentRunId: 'late-run' })
+    expect(useRunHistoryRetiredRunsStore().retiredRunIds.has('late-run')).toBe(false)
   })
 })

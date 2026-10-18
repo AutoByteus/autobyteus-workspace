@@ -1,0 +1,138 @@
+{"at":5666.2,"what":"ready","origin":"http://127.0.0.1:52086","interval":"default(500)","model":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234"}
+{"at":24111.2,"what":"worker address","addr":"/abt139_essay_worker"}
+{"at":24111.9,"what":"delegation requested"}
+{"at":46296.9,"what":"two children streaming","children":["abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883","abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"]}
+{"at":72023.9,"what":"children turn 1 done"}
+{"at":72028.2,"what":"phase2 sent to both children"}
+{"at":76843.6,"what":"phase2 both streaming"}
+{"at":84944.4,"what":"root terminated mid-answer"}
+{
+ "scenario": "collab",
+ "failure": null,
+ "S1": {
+  "frames": 225,
+  "gaps": 0,
+  "snapshots": [
+   {
+    "at": 5915.2,
+    "base": 0
+   }
+  ],
+  "startsAfterSnapshot": [
+   {
+    "expected": 1,
+    "first": 1
+   }
+  ],
+  "batches": 69,
+  "multiAgentBatches": 58,
+  "plainContent": 0,
+  "batchRange": {
+   "min": 2,
+   "median": 37,
+   "max": 59,
+   "total": 2464
+  },
+  "closedBy": {
+   "SEGMENT_START": 4,
+   "window": 60,
+   "AGENT_STATUS": 2,
+   "SEGMENT_END": 2,
+   "TOKEN_USAGE_UPDATED": 1
+  },
+  "spacing": {
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883": {
+    "batchesWithAgent": 68,
+    "windowClosed": 60,
+    "boundaryClosed": 8,
+    "windowGapMs": {
+     "n": 55,
+     "min": 506,
+     "median": 538,
+     "max": 735,
+     "under350": 0
+    },
+    "activeSeconds": 39.1,
+    "windowFramesPerSecond": 1.54
+   },
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246": {
+    "batchesWithAgent": 59,
+    "windowClosed": 55,
+    "boundaryClosed": 4,
+    "windowGapMs": {
+     "n": 50,
+     "min": 506,
+     "median": 539,
+     "max": 735,
+     "under350": 0
+    },
+    "activeSeconds": 38.6,
+    "windowFramesPerSecond": 1.43
+   }
+  },
+  "status": {
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246": {
+    "standaloneStatusFrames": 45,
+    "identicalToPreviousForwarded": 38,
+    "byValue": {
+     "initializing": 4,
+     "running": 39,
+     "idle": 2
+    }
+   },
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883": {
+    "standaloneStatusFrames": 61,
+    "identicalToPreviousForwarded": 54,
+    "byValue": {
+     "initializing": 4,
+     "running": 55,
+     "idle": 2
+    }
+   }
+  },
+  "stopCheck": {
+   "lifecycleAt": 84910.8,
+   "framesAfterInactive": 0,
+   "previousSequencedFrame": {
+    "type": "ROOT_EXECUTION_EVENT",
+    "at": 84840.4,
+    "gapMs": 70,
+    "batch": true
+   }
+  }
+ },
+ "s2Check": null,
+ "textCheck": [
+  {
+   "segKey": "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883|segment_ba6b2e0c68ab4b998ff81cc03b38afdc:reasoning_61e1146cafec43ff8691a29aa91bd820",
+   "chars": 613,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246|segment_89f88feccc744e4aa3d37899f56d8b94:reasoning_308b0a18ba454253812c65067ac3404e",
+   "chars": 333,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246|turn_0bebcfa57b114e31b7ed0a17b7fc37b3:1e14d115311c45cd8aff10d73ff2ca45",
+   "chars": 1659,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883|turn_9bd8bf5056374221870cdca6205c8c11:f0f5dbebdacf47b18e5e9bcc04409d3b",
+   "chars": 1733,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883|segment_8cbebc4ad08e49eda03fc73ffab3e4e7:reasoning_41c34e89d6d840f0b1fee6a5cc54bd71",
+   "chars": 586,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246|segment_dce90c5ae5e247ca886435eaec325915:reasoning_dbb8d873526d4a128d1497f1578860a1",
+   "chars": 743,
+   "inProjection": true
+  }
+ ],
+ "rootRemoved": true
+}

@@ -1,0 +1,13 @@
+# Case: DESK-01 — renderer long tasks (PerformanceObserver longtask, >50 ms) for the whole session 11:35–11:54; both at document load
+[
+ {
+  "start": 231,
+  "duration": 87,
+  "wall": 1792323309134
+ },
+ {
+  "start": 181,
+  "duration": 90,
+  "wall": 1792323491578
+ }
+]

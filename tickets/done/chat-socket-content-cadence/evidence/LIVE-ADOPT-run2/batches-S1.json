@@ -1,0 +1,628 @@
+[
+ {
+  "at": 16449.6,
+  "first": 33,
+  "through": 33,
+  "range": 1,
+  "items": 1,
+  "agents": 1,
+  "chars": 3,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 19857,
+  "first": 35,
+  "through": 35,
+  "range": 1,
+  "items": 1,
+  "agents": 1,
+  "chars": 5,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 20535.5,
+  "first": 37,
+  "through": 37,
+  "range": 1,
+  "items": 1,
+  "agents": 1,
+  "chars": 6,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 21740.6,
+  "first": 39,
+  "through": 46,
+  "range": 8,
+  "items": 1,
+  "agents": 1,
+  "chars": 14,
+  "closedBy": "SEGMENT_START",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 22242.7,
+  "first": 49,
+  "through": 89,
+  "range": 41,
+  "items": 2,
+  "agents": 2,
+  "chars": 82,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 22760.7,
+  "first": 91,
+  "through": 141,
+  "range": 51,
+  "items": 2,
+  "agents": 2,
+  "chars": 99,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 23331.2,
+  "first": 143,
+  "through": 191,
+  "range": 49,
+  "items": 2,
+  "agents": 2,
+  "chars": 89,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 23856.1,
+  "first": 193,
+  "through": 227,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 47,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 24369.7,
+  "first": 229,
+  "through": 279,
+  "range": 51,
+  "items": 2,
+  "agents": 2,
+  "chars": 47,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 24900.6,
+  "first": 281,
+  "through": 357,
+  "range": 77,
+  "items": 2,
+  "agents": 2,
+  "chars": 70,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 25406.3,
+  "first": 359,
+  "through": 435,
+  "range": 77,
+  "items": 2,
+  "agents": 2,
+  "chars": 108,
+  "closedBy": "AGENT_STATUS",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 25536.1,
+  "first": 437,
+  "through": 448,
+  "range": 12,
+  "items": 1,
+  "agents": 1,
+  "chars": 13,
+  "closedBy": "SEGMENT_START",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 26045.2,
+  "first": 451,
+  "through": 513,
+  "range": 63,
+  "items": 2,
+  "agents": 2,
+  "chars": 161,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 26558.9,
+  "first": 515,
+  "through": 581,
+  "range": 67,
+  "items": 2,
+  "agents": 2,
+  "chars": 166,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 27090.7,
+  "first": 583,
+  "through": 649,
+  "range": 67,
+  "items": 2,
+  "agents": 2,
+  "chars": 181,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 27602.4,
+  "first": 651,
+  "through": 711,
+  "range": 61,
+  "items": 2,
+  "agents": 2,
+  "chars": 149,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 28127.3,
+  "first": 713,
+  "through": 777,
+  "range": 65,
+  "items": 2,
+  "agents": 2,
+  "chars": 155,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 28645.3,
+  "first": 779,
+  "through": 843,
+  "range": 65,
+  "items": 2,
+  "agents": 2,
+  "chars": 180,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 29153.6,
+  "first": 845,
+  "through": 905,
+  "range": 61,
+  "items": 2,
+  "agents": 2,
+  "chars": 163,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 29663.1,
+  "first": 907,
+  "through": 973,
+  "range": 67,
+  "items": 2,
+  "agents": 2,
+  "chars": 157,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 30169.1,
+  "first": 975,
+  "through": 1033,
+  "range": 59,
+  "items": 2,
+  "agents": 2,
+  "chars": 160,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 30676.1,
+  "first": 1035,
+  "through": 1093,
+  "range": 59,
+  "items": 2,
+  "agents": 2,
+  "chars": 160,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 31190.7,
+  "first": 1095,
+  "through": 1161,
+  "range": 67,
+  "items": 2,
+  "agents": 2,
+  "chars": 222,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 31717.2,
+  "first": 1163,
+  "through": 1225,
+  "range": 63,
+  "items": 2,
+  "agents": 2,
+  "chars": 169,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 32228.7,
+  "first": 1227,
+  "through": 1279,
+  "range": 53,
+  "items": 2,
+  "agents": 2,
+  "chars": 133,
+  "closedBy": "AGENT_STATUS",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 32729.7,
+  "first": 1281,
+  "through": 1345,
+  "range": 65,
+  "items": 2,
+  "agents": 2,
+  "chars": 187,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 33251.6,
+  "first": 1347,
+  "through": 1409,
+  "range": 63,
+  "items": 2,
+  "agents": 2,
+  "chars": 182,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 33789,
+  "first": 1411,
+  "through": 1467,
+  "range": 57,
+  "items": 2,
+  "agents": 2,
+  "chars": 155,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 34302.3,
+  "first": 1469,
+  "through": 1535,
+  "range": 67,
+  "items": 2,
+  "agents": 2,
+  "chars": 158,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 34815.7,
+  "first": 1537,
+  "through": 1595,
+  "range": 59,
+  "items": 2,
+  "agents": 2,
+  "chars": 192,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 35336,
+  "first": 1597,
+  "through": 1665,
+  "range": 69,
+  "items": 2,
+  "agents": 2,
+  "chars": 193,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 35849.6,
+  "first": 1667,
+  "through": 1729,
+  "range": 63,
+  "items": 2,
+  "agents": 2,
+  "chars": 197,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e",
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"
+  ]
+ },
+ {
+  "at": 36240.3,
+  "first": 1731,
+  "through": 1776,
+  "range": 46,
+  "items": 2,
+  "agents": 2,
+  "chars": 141,
+  "closedBy": "SEGMENT_END",
+  "agentIds": [
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0",
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 36816.8,
+  "first": 1791,
+  "through": 1855,
+  "range": 65,
+  "items": 1,
+  "agents": 1,
+  "chars": 112,
+  "closedBy": "AGENT_STATUS",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 36994.4,
+  "first": 1857,
+  "through": 1880,
+  "range": 24,
+  "items": 1,
+  "agents": 1,
+  "chars": 44,
+  "closedBy": "SEGMENT_START",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 37495.3,
+  "first": 1883,
+  "through": 1945,
+  "range": 63,
+  "items": 1,
+  "agents": 1,
+  "chars": 156,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 38003.8,
+  "first": 1947,
+  "through": 2007,
+  "range": 61,
+  "items": 1,
+  "agents": 1,
+  "chars": 168,
+  "closedBy": "AGENT_STATUS",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 38506.2,
+  "first": 2009,
+  "through": 2073,
+  "range": 65,
+  "items": 1,
+  "agents": 1,
+  "chars": 184,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 39019.5,
+  "first": 2075,
+  "through": 2131,
+  "range": 57,
+  "items": 1,
+  "agents": 1,
+  "chars": 149,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 39538.4,
+  "first": 2133,
+  "through": 2201,
+  "range": 69,
+  "items": 1,
+  "agents": 1,
+  "chars": 197,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 40047.5,
+  "first": 2203,
+  "through": 2261,
+  "range": 59,
+  "items": 1,
+  "agents": 1,
+  "chars": 195,
+  "closedBy": "AGENT_STATUS",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 40552.6,
+  "first": 2263,
+  "through": 2323,
+  "range": 61,
+  "items": 1,
+  "agents": 1,
+  "chars": 168,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 41065.7,
+  "first": 2325,
+  "through": 2385,
+  "range": 61,
+  "items": 1,
+  "agents": 1,
+  "chars": 176,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 41620.8,
+  "first": 2387,
+  "through": 2453,
+  "range": 67,
+  "items": 1,
+  "agents": 1,
+  "chars": 184,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 42132.6,
+  "first": 2455,
+  "through": 2511,
+  "range": 57,
+  "items": 1,
+  "agents": 1,
+  "chars": 171,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ },
+ {
+  "at": 42385.4,
+  "first": 2513,
+  "through": 2550,
+  "range": 38,
+  "items": 1,
+  "agents": 1,
+  "chars": 93,
+  "closedBy": "SEGMENT_END",
+  "agentIds": [
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"
+  ]
+ }
+]

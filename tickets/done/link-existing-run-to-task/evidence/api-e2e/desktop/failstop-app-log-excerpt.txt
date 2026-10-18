@@ -1,0 +1,169 @@
+[2026-10-18T06:57:44.389Z] [WARN] [electron.embedded-server.stderr] (node:56570) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_projects, mcp__autobyteus_agent_tools__list_projects, list_project_tasks, mcp__autobyteus_agent_tools__list_project_tasks, create_project, mcp__autobyteus_agent_tools__create_project, update_project, mcp__autobyteus_agent_tools__updat
+[2026-10-18T06:57:44.389Z] [ERROR] [electron.embedded-server.stderr] (Use `AutoByteus --trace-warnings ...` to show where the warning was created)
+[2026-10-18T06:57:44.936Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1792306664935,"pid":56570,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_tvRMFdzS_SX5DU6qFY6U43Qix4jjOqmhxSlzLMCR_cU","statusCode":400,"elapsedMs":0.9065001010894775,"msg":"http request completed"}
+[2026-10-18T06:57:48.225Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'. Attempting graceful shutdown.
+[2026-10-18T06:57:48.229Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' requesting runtime to stop (timeout: 9.999s).
+[2026-10-18T06:57:48.229Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: d97d82d9-f838-472b-aae4-119fdd46507e, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.229Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Stop requested.
+[2026-10-18T06:57:48.230Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: d97d82d9-f838-472b-aae4-119fdd46507e, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.233Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: d97d82d9-f838-472b-aae4-119fdd46507e, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.237Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' asyncRun() loop has finished.
+[2026-10-18T06:57:48.237Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Running shutdown sequence on worker loop.
+[2026-10-18T06:57:48.237Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Shutdown resource cleanup completed successfully.
+[2026-10-18T06:57:48.239Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Shutdown sequence completed.
+[2026-10-18T06:57:48.239Z] [INFO] [electron.embedded-server.stdout] Unregistered AgentContext for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'.
+[2026-10-18T06:57:48.239Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Context unregistered.
+[2026-10-18T06:57:48.239Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' stop() method completed.
+[2026-10-18T06:57:48.239Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: d9457fd3-c671-41cf-96c5-2600002f0402) for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:48.244Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: d9457fd3-c671-41cf-96c5-2600002f0402) for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:48.371Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-desktop-root-rH1HI4/server-data/memory/agent_teams/ado_review_team_9e0b160e7b384ebbbd93df7284824afb/ado_review_mate_9799b7301b074cf39efd17dfe8e07054/raw_traces_active.jsonl
+[2026-10-18T06:57:48.442Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-desktop-root-rH1HI4/workspace-ado
+[2026-10-18T06:57:48.443Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-desktop-root-rH1HI4/workspace-ado.
+[2026-10-18T06:57:48.443Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_573e6c076256c614dbba322b2687b8151f6bb88736e3cdcac18ec2ae84311980
+[2026-10-18T06:57:48.446Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-desktop-root-rH1HI4/server-data/media
+[2026-10-18T06:57:48.449Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-18T06:57:48.450Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': LLM instance 'DeepSeekLLM' and 7 tools prepared and stored in state.
+[2026-10-18T06:57:48.450Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'. Config and State linked.
+[2026-10-18T06:57:48.450Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' with config: 'ADO Review Lead'.
+[2026-10-18T06:57:48.450Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'.
+[2026-10-18T06:57:48.450Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'. Total registered contexts: 2
+[2026-10-18T06:57:48.450Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'. Context registered.
+[2026-10-18T06:57:48.450Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' restored and stored successfully.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' requesting runtime to start.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Starting worker.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Starting...
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' asyncRun(): Starting.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Runtime init completed (event store initialized).
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Runtime init completed (status deriver initialized).
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Runtime init completed (AgentEventInbox initialized).
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' to become idle (timeout: 30s)...
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 982bc9e3-03e3-4dad-9038-b71a9d292221) initialized for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'. Subscribed to notifier.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Starting direct runtime bootstrap lifecycle.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Bootstrapper starting direct lifecycle execution.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Executing McpServerPrewarmingStep.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Executing SystemPromptProcessingStep.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': No configured skills. Skipping skill catalog.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Final processed system prompt configured and captured. Trace ID: rt_1792306608412_71b106ea-ae81-4e10-a409-ff9fe313d056. Final length: 6380.
+[2026-10-18T06:57:48.451Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-18T06:57:48.454Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.454Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' initialized successfully. Entering main event scheduler loop.
+[2026-10-18T06:57:48.461Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' has become idle.
+[2026-10-18T06:57:48.461Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 982bc9e3-03e3-4dad-9038-b71a9d292221) for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:48.461Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 052a2418-dba8-4b6e-8f3c-2ab1718e7224) initialized for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'. Subscribed to notifier.
+[2026-10-18T06:57:48.510Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.510Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.510Z] [INFO] [electron.embedded-server.stdout] Agent run 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': UserInputContextBuildingProcessor completed. Final content length: 370
+[2026-10-18T06:57:48.511Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.633Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'. Attempting graceful shutdown.
+[2026-10-18T06:57:48.633Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' requesting runtime to stop (timeout: 10s).
+[2026-10-18T06:57:48.634Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: d1f4c538-2e3b-4943-886a-41f9d5c6212b, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.634Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Stop requested.
+[2026-10-18T06:57:48.634Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: d1f4c538-2e3b-4943-886a-41f9d5c6212b, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.635Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: d1f4c538-2e3b-4943-886a-41f9d5c6212b, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.635Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' asyncRun() loop has finished.
+[2026-10-18T06:57:48.635Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Running shutdown sequence on worker loop.
+[2026-10-18T06:57:48.636Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Shutdown resource cleanup completed successfully.
+[2026-10-18T06:57:48.636Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Shutdown sequence completed.
+[2026-10-18T06:57:48.636Z] [INFO] [electron.embedded-server.stdout] Unregistered AgentContext for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'.
+[2026-10-18T06:57:48.636Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Context unregistered.
+[2026-10-18T06:57:48.636Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' stop() method completed.
+[2026-10-18T06:57:48.636Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: e725283c-90d2-4088-93b0-46aafcb16fbe) for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:48.643Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: e725283c-90d2-4088-93b0-46aafcb16fbe) for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:48.684Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-desktop-root-rH1HI4/server-data/memory/agent_teams/ado_review_team_9e0b160e7b384ebbbd93df7284824afb/ado_review_mate_9799b7301b074cf39efd17dfe8e07054/raw_traces_active.jsonl
+[2026-10-18T06:57:48.697Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-desktop-root-rH1HI4/workspace-ado
+[2026-10-18T06:57:48.697Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-desktop-root-rH1HI4/workspace-ado.
+[2026-10-18T06:57:48.697Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_573e6c076256c614dbba322b2687b8151f6bb88736e3cdcac18ec2ae84311980
+[2026-10-18T06:57:48.698Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-desktop-root-rH1HI4/server-data/media
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': LLM instance 'DeepSeekLLM' and 6 tools prepared and stored in state.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'. Config and State linked.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' with config: 'ADO Writer'.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'. Total registered contexts: 2
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'. Context registered.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' restored and stored successfully.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' requesting runtime to start.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Starting worker.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Starting...
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' asyncRun(): Starting.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Runtime init completed (event store initialized).
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Runtime init completed (status deriver initialized).
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Runtime init completed (AgentEventInbox initialized).
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' to become idle (timeout: 30s)...
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 7887f8b1-2dc6-47a5-a19d-ccf325eff7c1) initialized for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'. Subscribed to notifier.
+[2026-10-18T06:57:48.701Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Starting direct runtime bootstrap lifecycle.
+[2026-10-18T06:57:48.702Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.702Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Bootstrapper starting direct lifecycle execution.
+[2026-10-18T06:57:48.702Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-18T06:57:48.702Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Executing McpServerPrewarmingStep.
+[2026-10-18T06:57:48.702Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-18T06:57:48.702Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Executing SystemPromptProcessingStep.
+[2026-10-18T06:57:48.702Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': No configured skills. Skipping skill catalog.
+[2026-10-18T06:57:48.702Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Final processed system prompt configured and captured. Trace ID: rt_1792306668701_9c211651-bf79-4f90-a2ec-bc937514b377. Final length: 4619.
+[2026-10-18T06:57:48.702Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-18T06:57:48.703Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.703Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' initialized successfully. Entering main event scheduler loop.
+[2026-10-18T06:57:48.712Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' has become idle.
+[2026-10-18T06:57:48.712Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 7887f8b1-2dc6-47a5-a19d-ccf325eff7c1) for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:48.712Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 6bc5a8a0-cdef-493c-bc4e-0b13a372e6bc) initialized for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'. Subscribed to notifier.
+[2026-10-18T06:57:48.765Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.765Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:48.765Z] [INFO] [electron.embedded-server.stdout] Agent run 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': UserInputContextBuildingProcessor completed. Final content length: 334
+[2026-10-18T06:57:48.770Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.178Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-10-18T06:57:50.178Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.181Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.181Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.181Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.205Z] [ERROR] [electron.embedded-server.stderr] [AgentRun] listener failed for run 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Error: Rejected TOKEN_USAGE_UPDATED: agent token summary must not claim a Team root
+[2026-10-18T06:57:50.250Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' requesting runtime interrupt.
+[2026-10-18T06:57:50.250Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' requesting runtime interrupt.
+[2026-10-18T06:57:50.250Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.250Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.250Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.256Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.256Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.258Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.259Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.259Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.259Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.261Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'. Attempting graceful shutdown.
+[2026-10-18T06:57:50.261Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' requesting runtime to stop (timeout: 10s).
+[2026-10-18T06:57:50.261Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.261Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Stop requested.
+[2026-10-18T06:57:50.261Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.263Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2b1e61cb-de81-46a3-8c7f-c349abca0f00, AgentID: ado_review_lead_cdefca77cfe5435688274f5b519cb913) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.263Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' asyncRun() loop has finished.
+[2026-10-18T06:57:50.263Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Running shutdown sequence on worker loop.
+[2026-10-18T06:57:50.263Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Shutdown resource cleanup completed successfully.
+[2026-10-18T06:57:50.263Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Shutdown sequence completed.
+[2026-10-18T06:57:50.263Z] [INFO] [electron.embedded-server.stdout] Unregistered AgentContext for agent_id 'ado_review_lead_cdefca77cfe5435688274f5b519cb913'.
+[2026-10-18T06:57:50.263Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': Context unregistered.
+[2026-10-18T06:57:50.263Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913' stop() method completed.
+[2026-10-18T06:57:50.263Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 052a2418-dba8-4b6e-8f3c-2ab1718e7224) for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:50.274Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 052a2418-dba8-4b6e-8f3c-2ab1718e7224) for 'ado_review_lead_cdefca77cfe5435688274f5b519cb913': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:50.274Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'. Attempting graceful shutdown.
+[2026-10-18T06:57:50.275Z] [INFO] [electron.embedded-server.stdout] Agent 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' requesting runtime to stop (timeout: 10s).
+[2026-10-18T06:57:50.275Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.275Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Stop requested.
+[2026-10-18T06:57:50.275Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.288Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 4e8a3534-16b6-4f77-bc1d-75c8c6894440, AgentID: ado_writer_f443f8aeed79450bb2deec9f9d57d491) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T06:57:50.288Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' asyncRun() loop has finished.
+[2026-10-18T06:57:50.288Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Running shutdown sequence on worker loop.
+[2026-10-18T06:57:50.288Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Shutdown resource cleanup completed successfully.
+[2026-10-18T06:57:50.288Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Shutdown sequence completed.
+[2026-10-18T06:57:50.288Z] [INFO] [electron.embedded-server.stdout] Unregistered AgentContext for agent_id 'ado_writer_f443f8aeed79450bb2deec9f9d57d491'.
+[2026-10-18T06:57:50.288Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': Context unregistered.
+[2026-10-18T06:57:50.288Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491' stop() method completed.
+[2026-10-18T06:57:50.288Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 6bc5a8a0-cdef-493c-bc4e-0b13a372e6bc) for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:50.290Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 6bc5a8a0-cdef-493c-bc4e-0b13a372e6bc) for 'ado_writer_f443f8aeed79450bb2deec9f9d57d491': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T06:57:50.568Z] [INFO] [electron.embedded-server.stdout] Closed agent session 5d3b6d10-78b2-4dd6-b6b3-773bfc85cb64
+[2026-10-18T06:57:50.568Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 5d3b6d10-78b2-4dd6-b6b3-773bfc85cb64
+[2026-10-18T06:57:50.568Z] [INFO] [electron.embedded-server.stdout] Closed agent session 548e6465-49bf-4795-aa03-8ad5c13f5e48

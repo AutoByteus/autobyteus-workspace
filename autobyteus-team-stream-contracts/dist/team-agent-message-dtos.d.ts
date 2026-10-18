@@ -599,6 +599,31 @@ export declare const teamAgentPayloadSchemas: {
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
 };
+/**
+ * Response text a Team socket coalesced over one content window. Each item is the concatenated
+ * text of one member segment, in order of first appearance. The message covers the contiguous root
+ * sequences `[change_sequence, change_sequence_through]`, including absorbed identical status repeats.
+ */
+export declare const teamSegmentContentBatchPayloadSchema: z.ZodObject<{
+    change_sequence: z.ZodNumber;
+    change_sequence_through: z.ZodNumber;
+    items: z.ZodArray<z.ZodObject<{
+        segment_id: z.ZodString;
+        turn_id: z.ZodString;
+        segment_type: z.ZodEnum<{
+            text: "text";
+            tool_call: "tool_call";
+            write_file: "write_file";
+            edit_file: "edit_file";
+            run_bash: "run_bash";
+            reasoning: "reasoning";
+            media: "media";
+        }>;
+        delta: z.ZodString;
+        agent_run_id: z.ZodString;
+    }, z.core.$strict>>;
+}, z.core.$strict>;
+export type TeamSegmentContentBatchPayload = Readonly<z.infer<typeof teamSegmentContentBatchPayloadSchema>>;
 export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObject<{
     error_scope: z.ZodNull;
     error_effect: z.ZodNull;

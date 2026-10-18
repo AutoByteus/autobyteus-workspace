@@ -1,0 +1,49 @@
+Chat
+Agents
+Agent Teams
+Agent Orgs
+Projects
+Skills
+Memory
+Nodes
+Workspaces
+desk-workspace
+TEAMS
+Desk Team
+(1)
+/no_think Write a plain-prose essay of about 300 words about how lighthouses work. No headings, n...
+6m
+A
+alpha
+6m
+B
+beta
+6m
+ORGS
+Desk Org
+(1)
+/no_think Write a plain-prose essay of about 300 words about how bridges are built. No headings, ...
+6m
+A
+alpha
+B
+beta
+Temp Workspace
+Settings
+B
+beta - 16ED
+Idle
+You
+/no_think Write a plain-prose essay of about 300 words about how volcanoes erupt. No headings, no lists.
+B
+beta
+Thinking
+
+Volcanic eruptions represent one of Earth’s most powerful geological processes, driven by the immense heat and pressure deep within the planet. The story begins in the mantle, the thick layer of rock beneath the crust, where temperatures are high enough to melt stone into magma. Unlike the solid rock surrounding it, this molten material is less dense, causing it to slowly rise toward the surface. As the magma ascends, it collects in underground chambers known as magma reservoirs. Here, dissolved gases such as water vapor, carbon dioxide, and sulfur dioxide begin to separate from the liquid rock, forming bubbles that exert tremendous pressure on the surrounding crust.
+
+When this internal pressure exceeds the strength of the overlying rock, a fracture forms, creating a conduit for the magma to escape. The nature of the eruption depends largely on the magma’s viscosity and gas content. If the magma is runny and contains few gases, the eruption tends to be effusive, characterized by steady flows of lava that can travel great distances. Conversely, thick, silica-rich magma traps gases, leading to explosive eruptions that shatter the rock with tremendous force.
+
+Once the magma breaches the surface, it is called lava, and the fragmented rock and ash ejected into the air are collectively known as tephra. The rapid release of pressure causes the dissolved gases to expand violently, driving the eruption column skyward and potentially creating pyroclastic flows, which are fast-moving currents of hot gas and volcanic matter. Over time, the repeated accumulation of erupted material builds the characteristic cone shape of a volcano, completing a cycle that reshapes the landscape and contributes essential minerals to the soil.
+
+Context Files (0)
+(drag, paste, or upload)

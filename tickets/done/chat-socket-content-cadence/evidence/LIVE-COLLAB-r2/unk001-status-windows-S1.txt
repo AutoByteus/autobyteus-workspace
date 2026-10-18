@@ -1,0 +1,14 @@
+# Case: LIVE-COLLAB round 2 — status-window analysis (S1); Commit: 335f065cd1; Env: ENV-2
+# frames file: LIVE-COLLAB-r2/frames-S1.jsonl
+batch frames: 129; sequences per batch: {"n":129,"min":1,"median":31,"max":75}
+frames between consecutive batches (top patterns, of 129 gaps):
+  112 × [AGENT_STATUS:running]
+  6 × [SEGMENT_START,AGENT_STATUS:running]
+  2 × [AGENT_STATUS:running,SEGMENT_START,AGENT_STATUS:running,SEGMENT_START,AGENT_STATUS:running]
+  2 × [SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running,TOKEN_USAGE_UPDATED,AGENT_STATUS:running,AGENT_STATUS:running,TOOL_EXECUTION_STARTED,AGENT_STATUS:running,TOOL_LOG,AGENT_STATUS:running,TOOL_LOG,AGENT_STATUS:running,AGENT_STATUS:running,TOOL_EXECUTION…]
+  2 × [AGENT_STATUS:running,SEGMENT_START,AGENT_STATUS:running]
+  2 × [SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running,SEGMENT_END,AGENT_STATUS:running,TOKEN_USAGE_UPDATED,AGENT_STATUS:running,AGENT_STATUS:running,TOOL_EXECUTION_STARTED,AGENT_STATUS:running,TOOL_LOG,event:communication,AGENT_STATUS:running,TOOL_LOG,AGENT_STATUS:running,AGENT_STATUS:ru…]
+standalone statuses within 5 ms after a batch: identical-to-last-forwarded=16, changed-or-no-baseline=0
+  for those batches, ms since the previous sequenced frame (≈ window means a timer flush): {"n":16,"min":501,"median":501,"max":518}
+
+# Note: the one window-labelled batch pair 255 ms apart (batches-S1.json) is the Stop flush: batch seq 4850..4876 at t=153416 and ROOT_LIFECYCLE inactive at t=153416 (unsequenced, so the probe heuristic labels it 'window').

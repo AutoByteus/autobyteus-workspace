@@ -2,6 +2,9 @@ import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-s
 import { parseRawTraceFileAttachments } from "autobyteus-ts/memory/models/raw-trace-attachments.js";
 import fs from "node:fs/promises";
 import path from "node:path";
+// Migration-only module (only released app-data migrations import it), so it may read the frozen
+// append-only log layout (same-ID repair R-C).
+import { RELEASED_APPEND_ONLY_ROOT_MESSAGE_LOG_FILE } from "../../app-data-migrations/legacy/released-run-package-shapes/released-message-log-files-from-append-only.js";
 
 export class ContextFileRecordValidationError extends Error {}
 const parseRecordJson = (text: string): unknown => {
@@ -11,7 +14,8 @@ const parseRecordJson = (text: string): unknown => {
     throw error;
   }
 };
-export type ContextFileRecordSource = Readonly<{ filePath: string; kind: "trace" | "tasks" | "messages" }>;
+/** `message-lines`: a team or organization run's append-only message log file, one message per line. */
+export type ContextFileRecordSource = Readonly<{ filePath: string; kind: "trace" | "tasks" | "messages" | "message-lines" }>;
 export type LocatorTransform = (locator: string, field: string) => Promise<string>;
 const object = (value: unknown, field: string): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new ContextFileRecordValidationError(`${field} must be an object.`);
@@ -35,7 +39,8 @@ export async function listContextFileRecordSources(input: {
   for (const directory of new Set(input.rootDirectories)) {
     for (const entry of await entries(directory)) {
       const kind = /^(agent_org_)?task_delegation_records\.json$/.test(entry.name) ? "tasks"
-        : /^(team|agent_org)_communication_messages\.json$/.test(entry.name) ? "messages" : null;
+        : /^(team|agent_org)_communication_messages\.json$/.test(entry.name) ? "messages"
+          : RELEASED_APPEND_ONLY_ROOT_MESSAGE_LOG_FILE.test(entry.name) ? "message-lines" : null;
       if (kind && entry.isFile()) sources.push({ kind, filePath: path.join(directory, entry.name) });
     }
   }
@@ -57,7 +62,12 @@ export async function listContextFileRecordSources(input: {
   return sources.sort((a, b) => a.filePath.localeCompare(b.filePath));
 }
 
-/** File-bounded parsing. Unchanged JSONL lines and terminators retain their original bytes. */
+/**
+ * File-bounded parsing. Unchanged JSONL lines and terminators retain their original bytes. A
+ * `message-lines` file changes only `referenceFiles` locators, line by line, and keeps an unterminated
+ * final line (an append that never completed) as it is. This also applies to a sealed file of an
+ * append-only log: the one bounded exception to sealed-file immutability (DEC-008), at most once per file.
+ */
 export async function transformContextFileRecordLocators(
   source: ContextFileRecordSource, text: string, transform: LocatorTransform,
 ): Promise<string> {
@@ -98,6 +108,19 @@ export async function transformContextFileRecordLocators(
           changed = true;
         }
       }
+      if (changed) lines[i] = JSON.stringify(row);
+    }
+    return lines.join("");
+  }
+  if (source.kind === "message-lines") {
+    const lines = text.split(/(\r?\n)/);
+    // The element after the last terminator is an unterminated tail (or empty): kept as is.
+    for (let i = 0; i < lines.length - 1; i += 2) {
+      const line = lines[i]!;
+      if (!line.trim()) continue;
+      const row = object(parseRecordJson(line), `line ${i / 2 + 1}`);
+      changed = false;
+      await strings(row, "referenceFiles", `${source.filePath}:line ${i / 2 + 1}.referenceFiles`);
       if (changed) lines[i] = JSON.stringify(row);
     }
     return lines.join("");

@@ -45,8 +45,9 @@ export interface TeamAgentExecutionLocation {
   readonly containingTeamRunId: string;
 }
 
+/** One member's message; a SEGMENT_CONTENT_BATCH is applied as one SEGMENT_CONTENT per item. */
 export type TeamAgentStreamMessage = Exclude<TeamStreamServerMessage,
-  | { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' }
+  | { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'SEGMENT_CONTENT_BATCH' }
   | { type: 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE'
     | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' }>;
 

@@ -1,0 +1,7 @@
+# IMP-06-released-migrations.log excerpt of IMP-02-unit-full.log: released migrations with repair fixtures in runner order
+# command: pnpm -C autobyteus-server-ts test:unit (full suite); commit: 265ad100ce; env: Darwin 25.5.0, node v22.23.1; date: 2026-10-18
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts (25 tests) 1734ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts (14 tests) 1482ms
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts (13 tests) 2112ms
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts (8 tests) 4248ms
+ ✓ tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts (1 test) 1798ms

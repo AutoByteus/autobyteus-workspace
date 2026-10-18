@@ -103,7 +103,7 @@ Rules:
   `TEAM_COMMUNICATION_MESSAGE`; direct exact-run messages without team projection
   fields are ignored by this store.
 - The durable projection stores `teamRunId` once at
-  `agent_teams/<teamRunId>/team_communication_messages.json`; each message uses
+  `agent_teams/<teamRunId>/team_communication_messages_*.jsonl`; each message uses
   `senderAddress` and `receiverAddress` instead of duplicating sender/receiver
   generated instance ids, legacy member paths/route keys, or compatibility
   wrappers.
@@ -120,7 +120,7 @@ Rules:
   `payload.reference_file_entries`; message prose is not scanned and raw paths
   are not linkified.
 - One durable team-level projection is stored at
-  `agent_teams/<teamRunId>/team_communication_messages.json`.
+  `agent_teams/<teamRunId>/team_communication_messages_*.jsonl`.
 - Reference content opens by message-owned identity:
   `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 - The focused member sees sent/received message perspectives in the Team tab.
@@ -168,7 +168,7 @@ flowchart LR
   I[Accepted team-route INTER_AGENT_MESSAGE] --> J[TeamCommunicationMessageProcessor]
   J --> K[TEAM_COMMUNICATION_MESSAGE]
   K --> L[TeamCommunicationService]
-  L --> N[agent_teams/<teamRunId>/team_communication_messages.json]
+  L --> N[agent_teams/<teamRunId>/team_communication_messages_*.jsonl]
   K --> M[team websocket]
   M --> P[teamCommunicationStore]
   N --> O[GraphQL: getTeamCommunicationMessages]

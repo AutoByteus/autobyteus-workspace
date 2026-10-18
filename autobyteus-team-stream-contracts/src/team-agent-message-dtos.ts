@@ -48,6 +48,20 @@ export const teamAgentPayloadSchemas = {
   FILE_CHANGE: withExecution(agentPresentationPayloadSchemas.FILE_CHANGE),
 } as const;
 
+/**
+ * Response text a Team socket coalesced over one content window. Each item is the concatenated
+ * text of one member segment, in order of first appearance. The message covers the contiguous root
+ * sequences `[change_sequence, change_sequence_through]`, including absorbed identical status repeats.
+ */
+export const teamSegmentContentBatchPayloadSchema = z.object({
+  change_sequence: z.number().int().positive(),
+  change_sequence_through: z.number().int().positive(),
+  items: z.array(agentPresentationPayloadSchemas.SEGMENT_CONTENT.extend({ agent_run_id: nonEmptyStringSchema }).strict()).min(1),
+}).strict().refine((payload) => payload.change_sequence_through >= payload.change_sequence, {
+  message: "change_sequence_through must not be lower than change_sequence.",
+});
+export type TeamSegmentContentBatchPayload = Readonly<z.infer<typeof teamSegmentContentBatchPayloadSchema>>;
+
 const errorExecution = {
   change_sequence: z.number().int().positive().nullable(),
   agent_run_id: nonEmptyStringSchema.nullable(),

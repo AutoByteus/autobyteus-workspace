@@ -1,0 +1,10 @@
+# Case: REPO-09 (prepare)
+# Command (from the worktree root): pnpm -C autobyteus-web exec nuxt prepare
+# Commit: e24ff6b333
+# Environment: ENV-1 (macOS 26.5.2 arm64, Node v22.23.1, worktree /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence)
+# Date: 2026-10-18 09:48 (local, file write time)
+# ----
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.

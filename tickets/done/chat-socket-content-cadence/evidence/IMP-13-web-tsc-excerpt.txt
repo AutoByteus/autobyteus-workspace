@@ -1,0 +1,22 @@
+# IMP-13 (web-tsc)
+# Command: NODE_OPTIONS=--max-old-space-size=8192 pnpm -C autobyteus-web exec tsc --noEmit -p tsconfig.json
+# Commit: 335f065cd1
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-18T12:24:27Z
+
+../autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-contract.ts(16,5): error TS4115: This parameter property must have an 'override' modifier because it overrides a member in base class 'RootTaskPersistenceFinalizationIndeterminateError'.
+# Excerpt: tracked-source errors only. Lines under the untracked build outputs electron-dist/ and resources/ are left out (they make up 7342 of 8013 error lines).
+# Full log (not committed, 2674718 bytes): /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/evidence/IMP-13-web-tsc.log
+
+## Tracked-source error lines: 671
+## New versus the pre-merge branch run (IR-001, /tmp/t139-web-tsc.log), by file and code:
+   1 ../autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts: error TS2345
+   2 ../autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts: error TS2345
+
+## Their full lines:
+../autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts(27,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseTool<unknown, Record<string, unknown>, string>'.
+../autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts(31,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseTool<unknown, Record<string, unknown>, string>'.
+../autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts(35,10): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseTool<unknown, Record<string, unknown>, string>'.
+../autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts(58,21): error TS2345: Argument of type 'typeof DelegateTaskTool' is not assignable to parameter of type 'ToolClass'.
+../autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts(224,67): error TS2345: Argument of type 'readonly import("/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/autobyteus-ts@file+autobyteus-ts_ws@8.19.0/node_modules/autobyteus-ts/dist/llm/models").LLMModel[]' is not assignable to parameter of type 'readonly import("/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-ts/dist/llm/models").LLMModel[]'.
+../autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts(245,67): error TS2345: Argument of type 'readonly import("/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/autobyteus-ts@file+autobyteus-ts_ws@8.19.0/node_modules/autobyteus-ts/dist/llm/models").LLMModel[]' is not assignable to parameter of type 'readonly import("/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-ts/dist/llm/models").LLMModel[]'.

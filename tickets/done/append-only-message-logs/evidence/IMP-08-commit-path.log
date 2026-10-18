@@ -1,0 +1,3 @@
+# IMP-08-commit-path.log excerpt of IMP-02-unit-full.log: engine, adapters, append plan, coordinator retry
+# command: pnpm -C autobyteus-server-ts test:unit (full suite); commit: 265ad100ce; env: Darwin 25.5.0, node v22.23.1; date: 2026-10-18
+ ✓ tests/unit/agent-collaboration/communication-commit-path.test.ts (10 tests) 157ms

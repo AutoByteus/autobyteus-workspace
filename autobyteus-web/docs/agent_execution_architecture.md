@@ -527,6 +527,18 @@ aliases, member/source path or route-key fallbacks, represented-Team compatibili
 or generated-run-id inference. Complete snapshots and live events reconcile
 through the same execution model and exact serialized address.
 
+A run that became a task agent is never a top-level row, even when this session
+still holds its context (a run the user started and a Project Task Manager
+adopted, server `projects.md` §A Task for a run the user started).
+`runHistoryRetiredRuns` holds the retired run ids, and the navigation projection
+builds top-level rows without them (`withoutRetiredRuns`): a run reported by an
+Agent root's collaboration stream as `task_execution_started` is retired at once,
+and a run a history read listed is retired when a later read no longer lists it
+although it would have (agent history lists only the newest runs per agent, so a
+run that merely fell out of that window stays). A run listed again is shown
+again; runs no read has listed yet (drafts, runs created this session) keep their
+local rows.
+
 Delegated children are shown only in the global Workspaces/run-history tree,
 as ordinary rows. That tree composes stable history rows with pure
 renderer-only transient display rows from the execution view in
@@ -1575,11 +1587,14 @@ The service layer bridges the gap between the WebSocket transport and the applic
       task/member identity and required task-navigation mutation first, then
       uses the same projector for the resolved context.
   4.  Applies each `SEGMENT_CONTENT` message once and immediately because the
-      server has already shaped the transport cadence.
+      server has already shaped the transport cadence. On the sequenced Team,
+      Org and delegated-agent streams, content arrives as a content batch, and
+      each of its items is applied as one `SEGMENT_CONTENT` (see below).
 
 ### Server-Owned Stream-Content Cadence And Immediate Frontend Projection
 
-Standalone and team WebSocket sessions use the same server-side
+Every chat WebSocket session (standalone Agent, AgentTeam, AgentOrg and the
+delegated agents of a standalone run) uses the same server-side
 `AgentStreamWebSocketEgress`. Runtime and provider adapters still publish every
 fine-grained canonical event; only the client-bound WebSocket content lane is
 shaped. The policy does not select a different path for AutoByteus, Codex,
@@ -1614,8 +1629,22 @@ Claude, a particular provider, or a particular model.
 - Team routing still resolves structural members and transient task-agent or
   task-team children before applying the message. The server egress preserves
   the mapped identity and does not guess frontend context.
+- The Team, Org and delegated-agent streams are sequenced: the client needs
+  every root `change_sequence` after its snapshot exactly once and in order, and
+  reopens on a gap. Their reply text therefore arrives only as a content batch
+  (`SEGMENT_CONTENT_BATCH` on Team; a `ROOT_EXECUTION_EVENT` whose event is
+  `agent_presentation_batch` on Org and delegated agents). One batch covers the
+  contiguous sequences `[change_sequence, change_sequence_through]`, including
+  absorbed identical status repeats, and may hold items of several agents in
+  order. `sequencedStreamRange.ts` (`advanceSequencedStream`) accepts a frame
+  only when its first sequence is the next expected one and continues after its
+  last; the Team view state, `agentOrgExecutionContext` and
+  `agentRunCollaborationContext` then apply each item as one `SEGMENT_CONTENT`
+  through the normal handler. Every other frame covers its one sequence. The
+  server rules are in `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
+  (Client-Bound Content Cadence).
 
-The WebSocket payload type and final content remain unchanged. Raw runtime
+The standalone payload type and the final content remain unchanged. Raw runtime
 events, internal subscribers, raw traces, working-context snapshots, run
 history, and other persisted data remain fine-grained/unchanged and require no
 migration. A physically lost/closed socket still has no replay guarantee; the

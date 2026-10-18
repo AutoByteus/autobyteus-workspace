@@ -138,14 +138,15 @@ memory/agents/<hostRunId>/
   run_metadata.json
   collaboration/
     collaboration_tree.json        # subjectKind "agent", host, taskExecutions (a link per task agent)
-    communication_messages.json    # schemaVersion 1, hostRunId, messages (the host's own log)
+    communication_messages_active.jsonl  # the host's own message log, one message per line
+    communication_messages_000001.jsonl  # sealed files once the log has rotated (4 MiB each)
 memory/agents/<childRunId>/        # a delegated Agent copy: a run of its own
   run_metadata.json                # its facts and catalog source + taskAgent { coordinatingRun, delegatorAgentRunId, address, origin, … }
-  communication_messages.json      # its own message log
+  communication_messages_active.jsonl  # its own message log (plus sealed files)
   raw_traces_active.jsonl, …       # its memory
 memory/agent_teams/<teamRunId>/    # a delegated Team copy: a run of its own
   team_run_execution_tree.json     # its members, coordinator, handoffs and source + taskAgent
-  team_communication_messages.json # its own message log
+  team_communication_messages_active.jsonl # its own message log (plus sealed files)
   <agentRunId>/...                 # its members' memory
 ```
 

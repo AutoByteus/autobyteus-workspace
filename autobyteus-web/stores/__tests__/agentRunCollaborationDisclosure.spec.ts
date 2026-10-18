@@ -12,7 +12,7 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () 
   hydrateAgentRunCollaborationChild: hydration.hydrateChild,
 }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
-vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn(), resolveWorkspaceMetadataByRootPath: vi.fn(async () => null) }) }))
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn(), refreshRunNavigationTopology: vi.fn(), resolveWorkspaceMetadataByRootPath: vi.fn(async () => null) }) }))
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
 

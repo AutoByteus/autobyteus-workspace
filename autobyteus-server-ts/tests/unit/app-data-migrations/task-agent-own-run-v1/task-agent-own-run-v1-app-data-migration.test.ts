@@ -15,6 +15,8 @@ import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history
 import { StandaloneRootPackageStore } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { validateStandaloneRootTreePayload } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
 import { TaskAgentMessageLogs } from "../../../../src/run-history/store/task-agent-message-logs.js";
+import { MessageLog } from "../../../../src/run-history/store/message-log.js";
+import { convertMessageLogsAsOnStartup } from "../../../helpers/append-only-message-log-startup.js";
 import {
   HUB_MESSAGES,
   NEW_FOLDERS,
@@ -207,7 +209,14 @@ describe("a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)"
     await store.writeTree(path.join(memory, "agents/hub/collaboration"), loaded);
 
     expect((await migrate(memory)).status).toBe("SUCCEEDED");
-    expect(await logIds(path.join(memory, "agents/c7-helper/communication_messages.json"))).toEqual(["m4", "m-between"]);
+    // The app writes its own log in the append-only layout; own-run merges the coordinating log's messages
+    // into the released JSON log beside it, and the append-only conversion (registered last, same start)
+    // merges that into the log (F-PENDING-OWN-RUN).
+    expect(await logIds(path.join(memory, "agents/c7-helper/communication_messages.json"))).toEqual(["m4"]);
+    expect((await convertMessageLogsAsOnStartup(memory)).status).toBe("SUCCEEDED");
+    expect((await new MessageLog(path.join(memory, "agents/c7-helper"), "communication_messages").read())?.map((entry) => entry.messageId))
+      .toEqual(["m4", "m-between"]);
+    await expect(fs.access(path.join(memory, "agents/c7-helper/communication_messages.json"))).rejects.toMatchObject({ code: "ENOENT" });
     expect((await readJson(path.join(memory, "agents/hub/collaboration/collaboration_tree.json"))).taskExecutions.map((task: any) => task.agentRunId ?? task.teamRunId))
       .toEqual(["c1-reviewer", "c2-team-a", "c2-team-b", "never-ran", "c7-helper"]);
   });

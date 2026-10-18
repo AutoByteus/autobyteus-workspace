@@ -86,7 +86,7 @@ Team Communication.
 - Serve Agent Artifact bytes by `runId + canonical path` through
   `/runs/:runId/file-change-content`.
 - Keep Team Communication message/reference storage for accepted team-route
-  deliveries separate at `agent_teams/<teamRunId>/team_communication_messages.json`.
+  deliveries separate in the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`).
 - Treat source invocation ids as opaque tool-call identities when correlating
   `FILE_CHANGE` context. The context store is keyed by exact source invocation
   id only: numeric/provider ordinals such as `run_bash:0`, semantic-looking

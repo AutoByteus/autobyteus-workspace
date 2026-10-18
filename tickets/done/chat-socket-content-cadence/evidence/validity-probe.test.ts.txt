@@ -1,0 +1,104 @@
+// TEMPORARY validity probe for Task autobyteus-139. Not durable coverage; deleted after the run.
+import { describe, expect, it, vi } from "vitest";
+import { parseTeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
+import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
+import { AgentStreamWebSocketEgress } from "../../../../src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress.js";
+import { ServerMessage, ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
+import { AgentOrgStreamHandler } from "../../../../src/services/agent-streaming/agent-org-stream-handler.js";
+import { AgentCollaborationStreamHandler } from "../../../../src/services/agent-streaming/agent-collaboration-stream-handler.js";
+import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
+import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { emptyStandaloneRootMessages, emptyStandaloneRootTree } from "../../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
+
+const N = 30;
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const content = (i: number) => ({ type: "SEGMENT_CONTENT" as const, payload: {
+  segment_id: "seg-1", turn_id: "turn-1", segment_type: "text" as const, delta: `${String(i).padStart(2, "0")}|` } });
+const report = (label: string, frames: { at: number; type: string }[], t0: number) => {
+  const c = frames.filter((f) => f.type === "content");
+  const within350 = c.filter((f) => f.at - t0 < 350).length;
+  console.log(`T139-PROBE ${label}: ${c.length} content frames for ${N} deltas; ${within350} within 350 ms of the burst`);
+  return { total: c.length, within350 };
+};
+
+describe("T139 validity probe", () => {
+  it("standalone /ws/agent egress (control)", async () => {
+    const frames: { at: number; type: string }[] = [];
+    const egress = new AgentStreamWebSocketEgress({ readIntervalMs: () => 500,
+      sendRaw: (raw) => frames.push({ at: Date.now(), type: JSON.parse(raw).type === "SEGMENT_CONTENT" ? "content" : "other" }) });
+    const t0 = Date.now();
+    for (let i = 0; i < N; i += 1) egress.send(new ServerMessage(ServerMessageType.SEGMENT_CONTENT,
+      { id: "seg-1", turn_id: "turn-1", segment_type: "text", delta: `${i}|` }));
+    await wait(650);
+    const r = report("standalone /ws/agent", frames, t0);
+    expect(r.within350).toBe(0);
+    egress.dispose();
+  });
+
+  it("team /ws/agent-team egress with real team SEGMENT_CONTENT shape", async () => {
+    const frames: { at: number; type: string }[] = [];
+    const egress = new AgentStreamWebSocketEgress({ readIntervalMs: () => 500,
+      sendRaw: (raw) => frames.push({ at: Date.now(), type: JSON.parse(raw).type === "SEGMENT_CONTENT" ? "content" : "other" }) });
+    const t0 = Date.now();
+    for (let i = 0; i < N; i += 1) {
+      const m = content(i);
+      egress.send(parseTeamStreamServerMessage({ type: m.type, payload: { ...m.payload, change_sequence: i + 1, agent_run_id: "member-run" } }) as never);
+    }
+    await wait(650);
+    report("team /ws/agent-team", frames, t0);
+    egress.dispose();
+  });
+
+  it("org /ws/agent-org handler (real handler, publisher)", async () => {
+    const orgRunId = "org-run-1";
+    const agent = testOrgAgentNode("/director", "agent-run-1");
+    const tree = testAgentOrgExecutionTree({ orgRunId, members: [agent] });
+    const messages = { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId, messages: [] };
+    const execution = createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity(orgRunId), memberAddress: agent.address, agentRunId: agent.agentRunId });
+    const publisher = new RootEventPublisher<AgentOrgRunEvent>();
+    const statuses = [{ execution, details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const }];
+    const snapshot = { tree, closedTaskExecutions: [], messages, statuses, inputStates: [] };
+    const run = { orgRunId, isActive: () => true, openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot),
+      executeAgentCommand: vi.fn(), executeAgentCommandWithExecutionKind: vi.fn() };
+    const handler = new AgentOrgStreamHandler({ getActive: (id: string) => id === orgRunId ? run : null, recordRunActivity: vi.fn(async () => undefined) } as never);
+    const frames: { at: number; type: string }[] = [];
+    const sequences: number[] = [];
+    const rawOrg: string[] = [];
+    const sid = await handler.connect({ send: (raw: string) => { rawOrg.push(raw);
+      const m = CollaborationStreamServerMessageSchema.parse(JSON.parse(raw));
+      const isContent = m.type === "ROOT_EXECUTION_EVENT" && (m.payload.event as { message?: { type?: string } }).message?.type === "SEGMENT_CONTENT";
+      if (m.type === "ROOT_EXECUTION_EVENT") sequences.push(m.payload.change_sequence);
+      frames.push({ at: Date.now(), type: isContent ? "content" : "other" });
+    }, close: vi.fn() } as never, orgRunId);
+    console.log("T139-PROBE org session: " + String(sid));
+    const t0 = Date.now();
+    for (let i = 0; i < N; i += 1) publisher.publish({ kind: "agent_presentation", execution, message: content(i) } as never);
+    await wait(650);
+    report("org /ws/agent-org", frames, t0);
+    console.log("T139-PROBE org raw types: " + JSON.stringify(rawOrg.map((r) => r.slice(0, 160))));
+    console.log(`T139-PROBE org sequences: ${sequences.join(",")}`);
+  });
+
+  it("agent-collaboration /ws/agent-collaboration handler (real handler, publisher)", async () => {
+    const HOST = "host-run";
+    const tree = emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: HOST, agentDefinitionId: "assistant" }, createdAt: "2026-09-30T00:00:00.000Z" });
+    const publisher = new RootEventPublisher<never>();
+    const snapshot = { tree, closedTaskExecutions: [], messages: emptyStandaloneRootMessages(HOST), statuses: [], inputStates: [] };
+    const root = { ensureHostReady: vi.fn(async () => ({ runId: HOST })), isHostLive: () => true, getExecutionTreeSnapshot: () => tree,
+      openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot as never) };
+    const handler = new AgentCollaborationStreamHandler({ resolveRoot: async () => root as never, getActive: () => root as never });
+    const frames: { at: number; type: string }[] = [];
+    await handler.connect({ send: (raw: string) => {
+      const m = CollaborationStreamServerMessageSchema.parse(JSON.parse(raw));
+      const isContent = m.type === "ROOT_EXECUTION_EVENT" && (m.payload.event as { message?: { type?: string } }).message?.type === "SEGMENT_CONTENT";
+      frames.push({ at: Date.now(), type: isContent ? "content" : "other" });
+    }, close: vi.fn() } as never, HOST);
+    const t0 = Date.now();
+    const execution = { memberAddress: "/helper", agentRunId: "child-run" };
+    for (let i = 0; i < N; i += 1) publisher.publish({ kind: "agent_presentation", execution, message: content(i) } as never);
+    await wait(650);
+    report("collaboration /ws/agent-collaboration", frames, t0);
+  });
+});

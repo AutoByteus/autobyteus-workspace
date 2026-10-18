@@ -212,9 +212,9 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       rootTeamRunId: run.teamRunId,
       ancestorTeamRunIds: [],
     });
-    const entries = (await fs.readdir(rootDir)).filter((name) => name.endsWith(".json"));
+    const entries = (await fs.readdir(rootDir)).filter((name) => name.endsWith(".json") || name.endsWith(".jsonl"));
     expect(entries.sort()).toEqual([
-      "team_communication_messages.json",
+      "team_communication_messages_active.jsonl",
       "team_run_execution_tree.json",
     ]);
     const tree = JSON.parse(await fs.readFile(path.join(rootDir, "team_run_execution_tree.json"), "utf8"));

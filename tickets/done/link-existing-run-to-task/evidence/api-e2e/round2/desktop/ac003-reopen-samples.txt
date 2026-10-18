@@ -1,0 +1,18 @@
+--- t+5s
+workspace-ado|AP|ADO Project Manager|(1)|<PM run>|now|ado review team|Review the one-line project summary 'A tiny note app' and reply to the Project Manager with one improvement.|AW|ado writer|Write a one-sentence tagline for a tiny note app and send it to the Project Manager.|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|5m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in on
+
+--- t+10s
+workspace-ado|AP|ADO Project Manager|(1)|<PM run>|now|ado review team|Review the one-line project summary 'A tiny note app' and reply to the Project Manager with one improvement.|AW|ado writer|Write a one-sentence tagline for a tiny note app and send it to the Project Manager.|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|5m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in on
+
+--- t+15s
+workspace-ado|AP|ADO Project Manager|(1)|<PM run>|now|ado review team|Review the one-line project summary 'A tiny note app' and reply to the Project Manager with one improvement.|AW|ado writer|Write a one-sentence tagline for a tiny note app and send it to the Project Manager.|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|5m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in on
+
+--- t+20s
+workspace-ado|AP|ADO Project Manager|(1)|<PM run>|now|ado review team|Review the one-line project summary 'A tiny note app' and reply to the Project Manager with one improvement.|AW|ado writer|Write a one-sentence tagline for a tiny note app and send it to the Project Manager.|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|5m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in on
+
+--- t+25s
+workspace-ado|AP|ADO Project Manager|(1)|<PM run>|now|ado review team|Review the one-line project summary 'A tiny note app' and reply to the Project Manager with one improvement.|AW|ado writer|Write a one-sentence tagline for a tiny note app and send it to the Project Manager.|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|5m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in on
+
+--- t+30s
+workspace-ado|AP|ADO Project Manager|(1)|<PM run>|now|ado review team|Review the one-line project summary 'A tiny note app' and reply to the Project Manager with one improvement.|AW|ado writer|Write a one-sentence tagline for a tiny note app and send it to the Project Manager.|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|5m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in on
+

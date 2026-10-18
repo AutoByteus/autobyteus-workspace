@@ -2,15 +2,24 @@
 
 ## Scope
 
-Defines current standalone and Team WebSocket message ownership after provider
-normalization and canonical `AgentRun` lifecycle admission. It covers transport
-identity, strict Team DTOs, commands, segment/error semantics, presentation
-cadence, and close behavior.
+Defines current chat WebSocket message ownership (standalone Agent, AgentTeam,
+AgentOrg and delegated agents) after provider normalization and canonical
+`AgentRun` lifecycle admission. It covers transport identity, strict Team DTOs,
+commands, segment/error semantics, presentation cadence, and close behavior.
 
 ## Endpoints
 
-- standalone Agent: `/ws/agent/:runId`
-- AgentTeam: `/ws/agent-team/:teamRunId`
+- standalone Agent: `/ws/agent/:runId` (the Agent's own chat);
+- AgentTeam: `/ws/agent-team/:teamRunId` (`@autobyteus/team-stream-contracts`);
+- AgentOrg: `/ws/agent-org/:orgRunId`, and
+- delegated agents of a standalone run: `/ws/agent-collaboration/:hostRunId`,
+  both with the `ROOT_EXECUTION_EVENT` envelope of
+  `@autobyteus/collaboration-stream-contracts`.
+
+The Team, Org and delegated-agent streams are **sequenced**: every root event a
+frame carries has the root's `change_sequence`, and clients require every
+sequence after their snapshot's `base_change_sequence` exactly once and in order
+(a gap or reorder makes them reopen). The standalone stream is not sequenced.
 
 A WebSocket session is a transport subscriber. It does not own provider parsing,
 turn/segment lifecycle, persistence, Team topology, task delegation, or runtime
@@ -20,12 +29,15 @@ identity.
 
 - `src/services/agent-streaming/agent-stream-handler.ts`
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
+- `src/services/agent-streaming/agent-org-stream-handler.ts`
+- `src/services/agent-streaming/agent-collaboration-stream-handler.ts`
 - `src/services/agent-streaming/agent-run-event-message-mapper.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`
 - `src/services/agent-streaming/team-run-event-websocket-mapper.ts`
 - `src/services/agent-streaming/team-execution-address-command-parser.ts`
 - `src/services/agent-streaming/websocket-egress`
 - `@autobyteus/team-stream-contracts`
+- `@autobyteus/collaboration-stream-contracts`
 
 ## Canonical Upstream Boundary
 
@@ -132,14 +144,30 @@ The finite segment type vocabulary is:
 text | tool_call | write_file | edit_file | run_bash | reasoning | media
 ```
 
-Team wire shapes are:
+Team segment events carry the member's `change_sequence` and `agent_run_id`:
 
 ```text
-SEGMENT_START   { agent_execution, segment_id, turn_id, segment_type, metadata }
-SEGMENT_CONTENT { agent_execution, segment_id, turn_id, segment_type, delta }
-SEGMENT_END     { agent_execution, segment_id, turn_id, metadata,
+SEGMENT_START   { change_sequence, agent_run_id, segment_id, turn_id, segment_type, metadata }
+SEGMENT_CONTENT { change_sequence, agent_run_id, segment_id, turn_id, segment_type, delta }
+SEGMENT_END     { change_sequence, agent_run_id, segment_id, turn_id, metadata,
                   interrupted, reason, failed, error }
 ```
+
+`SEGMENT_CONTENT` is what the Team socket's egress receives. On the wire, reply
+text of the sequenced streams leaves only as a content batch (see Client-Bound
+Content Cadence):
+
+```text
+Team:          SEGMENT_CONTENT_BATCH { change_sequence, change_sequence_through,
+                                       items: [{ agent_run_id, segment_id, turn_id, segment_type, delta }] }
+Org, agents:   ROOT_EXECUTION_EVENT  { root_subject_kind, root_run_id, change_sequence, change_sequence_through,
+                                       event: { kind: "agent_presentation_batch",
+                                                items: [{ member_address, agent_run_id, message: SEGMENT_CONTENT }] } }
+```
+
+A batch covers the contiguous root sequences `[change_sequence,
+change_sequence_through]` and has at least one item. `change_sequence_through`
+exists only on batches; every other frame covers its one sequence.
 
 Standalone transport exposes the equivalent canonical Agent payload. A turn is
 required for every segment event. Type is required on start and content but is
@@ -265,14 +293,20 @@ stop-then-delete sequence.
 
 ## Client-Bound Content Cadence
 
-Each connection owns one presentation-only egress:
+Every chat socket sends through its own presentation-only egress
+(`AgentStreamWebSocketEgress`), after the root's snapshot barrier. The first
+pending content opens a fixed window using
+`AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS` (the Live response streaming
+setting; default 500 ms, range 100–2,000 ms). A changed setting applies to the
+next newly opened window.
 
-- the first pending content message opens a fixed window using
-  `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS` (default 500 ms, range
-  100–2,000 ms);
+Standalone `/ws/agent` (unsequenced):
+
 - adjacent content coalesces only when every payload field except `delta` is
   deeply equal, so exact execution/turn/segment/type identity remains distinct;
-- immediate companion messages do not seal/reset pending content; and
+- `CONNECTED`, acknowledgements, token usage and running/initializing status
+  pass immediately without sealing or resetting pending content; exact repeated
+  statuses are suppressed; and
 - lifecycle, tool boundaries, errors, terminal status, completion,
   interruption, and unknown types flush earlier content first.
 
@@ -280,8 +314,28 @@ Each connection owns one presentation-only egress:
 received (its subscribe snapshot counts), so routine event batches do not end a
 window early; a new revision is a boundary that flushes earlier content first.
 
+Team, Org and delegated agents (sequenced). Nothing may leave a sequence
+uncovered or overtake earlier sequences, so the rules differ:
+
+- while a window is open, content of any agents and segments joins one pending
+  batch with one ordered item per content identity (agent run, turn, segment,
+  type), in order of first appearance; each item's text stays in order;
+- a status identical to the last status this connection forwarded or absorbed
+  for the same agent run (the routine "running" before every delta) is
+  absorbed into the batch's range while a batch is pending; with no pending
+  batch, or with no earlier status on this connection, it is forwarded;
+- at the window's end, or when any other sequenced message or a sequence that
+  does not continue the range arrives, the batch leaves as one frame covering
+  everything it absorbed; the other message follows it;
+- only `CONNECTED` and `AGENT_COMMAND_ACK` (unsequenced) may pass a pending
+  batch. Token usage, statuses that changed, `ERROR`, lifecycle and every other
+  message flush it first; and
+- clients apply a frame only when its first sequence is the next expected one,
+  then continue after its last.
+
 This cadence does not affect runtime listeners, memory, history, file-change
-projection, application output, or Team adaptation.
+projection, application output, the Team lifecycle observer, inspections, or
+Team adaptation: they read the root's events directly and unthrottled.
 
 ## Error And Close Semantics
 
@@ -289,6 +343,11 @@ projection, application output, or Team adaptation.
 - resolved run with unavailable stream: `*_STREAM_UNAVAILABLE`, close `1011`;
 - malformed Team DTO or wrong/missing execution address: reject without
   compatibility repair;
+- server-initiated close (an inactive root, a projection failure): the closing
+  `ROOT_LIFECYCLE` or `ERROR` is sent through the egress, which sends pending
+  text first, and then the socket closes. A root `lifecycle` event takes a root
+  sequence but leaves as the unsequenced `ROOT_LIFECYCLE`; an inactive root
+  ends the stream;
 - socket loss: dispose connection-local cadence/status filter state; do not
   claim delivery or replay of unsendable buffered output.
 

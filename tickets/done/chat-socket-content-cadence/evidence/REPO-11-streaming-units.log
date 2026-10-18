@@ -1,0 +1,329 @@
+# Case: REPO-11 (streaming-units)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming --no-watch
+# Commit: 4b3c8a08ef; Env: ENV-1 (macOS 26.5.2 arm64, node v22.23.1); Date: 2026-10-18 15:44
+# ----
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts[2m > [22m[2mAgentStreamHandler system-instruction diagnostics[2m > [22m[2mretains identifiers and derived length without serializing exact prompt content
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 2978[2mms[22m[39m
+     [33m[2m✓[22m[39m retains identifiers and derived length without serializing exact prompt content [33m 2978[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts[2m > [22m[2mAgentOrgStreamHandler[2m > [22m[2msends pending reply text before the inactive lifecycle, then closes (autobyteus-139)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+[22m[39mCreated agent session 021bf5b8-bc8d-47c9-bbb4-b3e727ab2d6b for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+[22m[39mAgent Team WebSocket connected: session=021bf5b8-bc8d-47c9-bbb4-b3e727ab2d6b, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+[22m[39mClosed agent session 021bf5b8-bc8d-47c9-bbb4-b3e727ab2d6b
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mCreated agent session 0a32c00f-cd84-4f61-a17d-173efd165281 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mAgent Team WebSocket connected: session=0a32c00f-cd84-4f61-a17d-173efd165281, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mClosed agent session 0a32c00f-cd84-4f61-a17d-173efd165281
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mCreated agent session 75786111-1cf7-44af-8631-273e7300c940 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mAgent Team WebSocket connected: session=75786111-1cf7-44af-8631-273e7300c940, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mClosed agent session 75786111-1cf7-44af-8631-273e7300c940
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mCreated agent session e23c3c55-599a-450a-97de-b90f12c27cc2 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mAgent Team WebSocket connected: session=e23c3c55-599a-450a-97de-b90f12c27cc2, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mClosed agent session e23c3c55-599a-450a-97de-b90f12c27cc2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mCreated agent session 623d7bbe-4ee2-4889-b196-42c3421c6b7c for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mAgent Team WebSocket connected: session=623d7bbe-4ee2-4889-b196-42c3421c6b7c, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mClosed agent session 623d7bbe-4ee2-4889-b196-42c3421c6b7c
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mCreated agent session 372312ec-7103-4ce2-b564-b0d3eceedec7 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mAgent Team WebSocket connected: session=372312ec-7103-4ce2-b564-b0d3eceedec7, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mClosed agent session 372312ec-7103-4ce2-b564-b0d3eceedec7
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to a run identity and sends CONNECTED plus projected status without restoring runtime
+[22m[39mCreated agent session 40c63664-e28f-41ac-91ec-78316f905c83 for run agent-123
+Agent WebSocket connected: session=40c63664-e28f-41ac-91ec-78316f905c83, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to run events through the AgentRun subject for active runtime-managed runs
+[22m[39mCreated agent session 889368c0-1b73-4365-bae3-a1fbd4a95614 for run runtime-run-1
+Agent WebSocket connected: session=889368c0-1b73-4365-bae3-a1fbd4a95614, run=runtime-run-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps Codex AgentRunEvents directly to websocket messages for single-agent runs
+[22m[39mCreated agent session 9a3c4331-39a0-4515-8f14-7a9daef0743f for run runtime-run-2
+Agent WebSocket connected: session=9a3c4331-39a0-4515-8f14-7a9daef0743f, run=runtime-run-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps turn lifecycle AgentRunEvents directly to websocket messages
+[22m[39mCreated agent session 74340719-5fea-49f4-ad23-5d97ffe43cdf for run runtime-run-3
+Agent WebSocket connected: session=74340719-5fea-49f4-ad23-5d97ffe43cdf, run=runtime-run-3
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mregisters the websocket connection for run-scoped live message broadcasts
+[22m[39mCreated agent session a2c6ddcf-c400-4f8f-a88c-7f2c9df1225d for run agent-123
+Agent WebSocket connected: session=a2c6ddcf-c400-4f8f-a88c-7f2c9df1225d, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mpublishes terminal offline status to an already-connected websocket when a run terminates
+[22m[39mCreated agent session 0c18bc48-12e3-4670-a6a3-7735c9fe638d for run run-terminate-1
+Agent WebSocket connected: session=0c18bc48-12e3-4670-a6a3-7735c9fe638d, run=run-terminate-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles SEND_MESSAGE through the command coordinator and returns an ACK
+[22m[39mCreated agent session 79634d85-5b0b-478d-9617-33398c978b3d for run agent-123
+Agent WebSocket connected: session=79634d85-5b0b-478d-9617-33398c978b3d, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mdefers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+[22m[39mCreated agent session 297e922d-4519-4d8c-ada7-0d3d1fd2f7a9 for run agent-123
+Agent WebSocket connected: session=297e922d-4519-4d8c-ada7-0d3d1fd2f7a9, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mCreated agent session d4180362-5ea2-4045-bb5c-b98ef3287512 for run agent-123
+Agent WebSocket connected: session=d4180362-5ea2-4045-bb5c-b98ef3287512, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mINTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mCreated agent session 71ffb37f-712b-4fa9-a50f-6703c862be14 for run agent-123
+Agent WebSocket connected: session=71ffb37f-712b-4fa9-a50f-6703c862be14, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mAgent websocket session '71ffb37f-712b-4fa9-a50f-6703c862be14' lost its active run subscription for run 'agent-123'.
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mAgent websocket session '71ffb37f-712b-4fa9-a50f-6703c862be14' lost its active run subscription for run 'agent-123'.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mreturns exactly one same-socket acknowledgement for an accepted interrupt
+[22m[39mCreated agent session b4c38d22-e0e5-4c7a-9cd6-44ce3bc19133 for run agent-123
+Agent WebSocket connected: session=b4c38d22-e0e5-4c7a-9cd6-44ce3bc19133, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mrejects an empty interrupt command id before runtime execution
+[22m[39mCreated agent session d329eccf-fbe6-433c-a1b3-738b5c3e2da2 for run agent-123
+Agent WebSocket connected: session=d329eccf-fbe6-433c-a1b3-738b5c3e2da2, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mCreated agent session 631cff0e-13cd-4033-9543-5fac7927e30a for run agent-123
+Agent WebSocket connected: session=631cff0e-13cd-4033-9543-5fac7927e30a, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mINTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles tool approvals for active sessions
+[22m[39mCreated agent session 3c737047-2c3f-4c62-aba6-dd6e1ecbb046 for run agent-123
+Agent WebSocket connected: session=3c737047-2c3f-4c62-aba6-dd6e1ecbb046, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mignores messages for unknown sessions
+[22m[39mMessage for unknown session: missing
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts[2m > [22m[2mAgentCollaborationStreamHandler[2m > [22m[2msends pending reply text before a projection-failure ERROR, then closes (autobyteus-139)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/team-execution-view-projector.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/team-execution-view-projector.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/sequenced-stream-shapes.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/launch-selection-dto-projection.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/sequenced-content-cadence-scheduler.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/launch-source-dto-projection.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcreates sessions successfully
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mthrows when creating a duplicate session
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mallows multiple sessions for the same agent
+[22m[39mCreated agent session s1 for run agent-123
+Created agent session s2 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions by ID
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses sessions and removes them
+[22m[39mCreated agent session s1 for run agent-123
+Closed agent session s1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mlists active sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session-manager.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/payload-serialization.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mconnects and reports connected state
+[22m[39mAgentSession s1 connected to run agent-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mprevents connecting a closed session
+[22m[39mAgentSession s2 closed
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mcloses and resets connected state
+[22m[39mAgentSession s3 connected to run agent-3
+AgentSession s3 closed
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-broadcaster.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m18 passed[39m[22m[90m (18)[39m
+[2m      Tests [22m [1m[32m166 passed[39m[22m[90m (166)[39m
+[2m   Start at [22m 15:45:00
+[2m   Duration [22m 10.41s[2m (transform 2.62s, setup 143ms, import 5.15s, tests 3.23s, environment 1ms)[22m
+
+# exit 0

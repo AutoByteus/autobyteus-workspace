@@ -3,17 +3,23 @@ import path from "node:path";
 
 export type RunPackageFileRole = string;
 
+/** Stages at which nothing new became durable (`not_renamed`); the last two are message-log appends. */
 export type RunPackagePreRenameStage =
   | "prepare_directory"
   | "write_temp"
   | "sync_temp"
   | "close_temp"
-  | "rename";
+  | "rename"
+  | "prepare_append"
+  | "append_line";
 
+/** Stages after which the write may be durable (`renamed_finalization_indeterminate`); the last two are message-log appends. */
 export type RunPackageDirectoryFinalizationStage =
   | "open_directory"
   | "sync_directory"
-  | "close_directory";
+  | "close_directory"
+  | "restore_size"
+  | "sync_file";
 
 export type RunPackageFileWriteResult<TFile extends RunPackageFileRole = RunPackageFileRole> =
   | Readonly<{

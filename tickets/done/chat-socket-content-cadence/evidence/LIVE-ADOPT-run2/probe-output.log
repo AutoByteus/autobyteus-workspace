@@ -1,0 +1,126 @@
+{"at":2800.2,"what":"ready","origin":"http://127.0.0.1:60263","interval":"default(500)","model":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234"}
+{"at":7040.8,"what":"hand-started run answered","handId":"abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e"}
+{"at":7252.8,"what":"adoption + delegation requested"}
+{"at":15557.9,"what":"task executions started","executions":[{"address":"/abt139_essay_worker","agentRunId":"abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e","platformAgentRunId":"abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e","delegatorAgentRunId":"abt139_pm_437376ece3f64ce6bc3819f87d2d1324","startedAt":"2026-10-18T12:44:09.423Z","source":{"kind":"agent","agentDefinitionId":"abt139-essay-worker","launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234","llmConfig":null,"autoExecuteTools":true,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abt139-live-Che18F/workspace"}}},{"address":"/abt139_essay_worker","agentRunId":"abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0","platformAgentRunId":null,"delegatorAgentRunId":"abt139_pm_437376ece3f64ce6bc3819f87d2d1324","startedAt":"2026-10-18T12:44:21.826Z","source":{"kind":"agent","agentDefinitionId":"abt139-essay-worker","launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234","llmConfig":null,"autoExecuteTools":true,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abt139-live-Che18F/workspace"},"launchSource":{"origin":"inherited","fallbacks":[]}}}]}
+{"at":22367.1,"what":"adopted run and copy streaming","adopted":"abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e","copy":"abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0"}
+{"at":42523.1,"what":"both turns done"}
+{"at":44084.9,"what":"terminate returned","ms":50,"result":{"success":true,"message":"Agent run terminated successfully."}}
+{
+ "scenario": "adopt",
+ "failure": null,
+ "S1": {
+  "frames": 156,
+  "gaps": 0,
+  "snapshots": [
+   {
+    "at": 7154,
+    "base": 0
+   }
+  ],
+  "startsAfterSnapshot": [
+   {
+    "expected": 1,
+    "first": 1
+   }
+  ],
+  "batches": 46,
+  "multiAgentBatches": 28,
+  "plainContent": 0,
+  "batchRange": {
+   "min": 1,
+   "median": 61,
+   "max": 77,
+   "total": 2457
+  },
+  "closedBy": {
+   "window": 36,
+   "SEGMENT_START": 3,
+   "AGENT_STATUS": 5,
+   "SEGMENT_END": 2
+  },
+  "spacing": {
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e": {
+    "batchesWithAgent": 46,
+    "windowClosed": 36,
+    "boundaryClosed": 10,
+    "windowGapMs": {
+     "n": 29,
+     "min": 506,
+     "median": 518,
+     "max": 3407,
+     "under350": 0
+    },
+    "activeSeconds": 25.9,
+    "windowFramesPerSecond": 1.39
+   },
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0": {
+    "batchesWithAgent": 28,
+    "windowClosed": 25,
+    "boundaryClosed": 3,
+    "windowGapMs": {
+     "n": 22,
+     "min": 506,
+     "median": 518,
+     "max": 571,
+     "under350": 0
+    },
+    "activeSeconds": 14,
+    "windowFramesPerSecond": 1.79
+   }
+  },
+  "status": {
+   "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e": {
+    "standaloneStatusFrames": 44,
+    "identicalToPreviousForwarded": 39,
+    "byValue": {
+     "initializing": 3,
+     "running": 39,
+     "idle": 2
+    }
+   },
+   "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0": {
+    "standaloneStatusFrames": 29,
+    "identicalToPreviousForwarded": 24,
+    "byValue": {
+     "initializing": 3,
+     "running": 24,
+     "idle": 2
+    }
+   }
+  },
+  "stopCheck": {
+   "lifecycleAt": 44053.6,
+   "framesAfterInactive": 0,
+   "previousSequencedFrame": {
+    "type": "ROOT_EXECUTION_EVENT",
+    "at": 42393.9,
+    "gapMs": 1660,
+    "batch": false
+   }
+  }
+ },
+ "s2Check": null,
+ "textCheck": [
+  {
+   "segKey": "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e|segment_f45c297c2f644d718e6db69791c1308d:reasoning_47517e76b3284e5f92a5d17c5c0674de",
+   "chars": 2272,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0|segment_99a1ea44e8d7487db14fcab187a9d7fc:reasoning_21653c9680e14265bf10d3055f79ad85",
+   "chars": 294,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0|turn_c36c29c30ba8487eaa4f8223bf5b27d7:57de79bdf5374c669848276661e4e454",
+   "chars": 1734,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e|turn_04911d922a9c48409d75ed7f0675a238:1f67fc167d294ed3880045b83f59a401",
+   "chars": 1841,
+   "inProjection": true
+  }
+ ],
+ "rootRemoved": true
+}

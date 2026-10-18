@@ -1,0 +1,95 @@
+{
+  "scenario": "host-stop",
+  "model": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+  "marks": [
+    {
+      "at": 2186.3,
+      "what": "ready",
+      "origin": "http://127.0.0.1:60366",
+      "interval": "default(500)",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234"
+    },
+    {
+      "at": 6611.7,
+      "what": "pm streaming"
+    },
+    {
+      "at": 63849.4,
+      "what": "terminate returned",
+      "ms": 54236,
+      "result": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    },
+    {
+      "at": 65852.1,
+      "what": "pm socket after stop",
+      "lastFrames": [
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS:initializing",
+        "AGENT_STATUS:idle",
+        "AGENT_STATUS:offline"
+      ]
+    }
+  ],
+  "rootId": "abt139_pm_6731fbaf1ae44285856f5240f38f036f",
+  "failure": null,
+  "textCheck": [],
+  "s2Check": null,
+  "analyses": {
+    "S1": {
+      "frames": 4,
+      "typeCounts": {
+        "CONNECTED": 1,
+        "ROOT_EXECUTION_VIEW_SNAPSHOT": 1,
+        "ROOT_LIFECYCLE": 2
+      },
+      "coverage": {
+        "snapshots": [
+          {
+            "at": 2384.4,
+            "base": 0
+          }
+        ],
+        "frames": 0,
+        "gaps": [],
+        "startsAfterSnapshot": []
+      },
+      "batchCount": 0,
+      "multiAgentBatches": 0,
+      "plainSegmentContentFrames": 0,
+      "batchRange": null,
+      "closedByCounts": {},
+      "spacing": {},
+      "statusSummary": {},
+      "lifecycle": [
+        {
+          "at": 2384.6,
+          "type": "ROOT_LIFECYCLE",
+          "payload": {
+            "root_subject_kind": "agent",
+            "root_run_id": "abt139_pm_6731fbaf1ae44285856f5240f38f036f",
+            "is_active": true
+          }
+        },
+        {
+          "at": 9618.7,
+          "type": "ROOT_LIFECYCLE",
+          "payload": {
+            "root_subject_kind": "agent",
+            "root_run_id": "abt139_pm_6731fbaf1ae44285856f5240f38f036f",
+            "is_active": false
+          }
+        }
+      ],
+      "stopCheck": {
+        "lifecycleAt": 9618.7,
+        "framesAfterInactive": 0,
+        "previousSequencedFrame": null
+      },
+      "batchesSample": [],
+      "batchesTotal": 0
+    }
+  }
+}

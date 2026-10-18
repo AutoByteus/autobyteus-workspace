@@ -1,0 +1,7 @@
+# IMP-04-store-and-readiness.log excerpt of IMP-02-unit-full.log: MessageLog, stores, own files, readiness
+# command: pnpm -C autobyteus-server-ts test:unit (full suite); commit: 265ad100ce; env: Darwin 25.5.0, node v22.23.1; date: 2026-10-18
+ ✓ tests/unit/run-history/store/message-log.test.ts (19 tests) 1320ms
+ ✓ tests/unit/run-history/store/task-agent-message-logs.test.ts (7 tests) 1147ms
+ ✓ tests/unit/run-history/store/task-agent-own-run-stores.test.ts (11 tests) 1202ms
+ ✓ tests/unit/run-history/services/root-run-package-readiness-index.test.ts (12 tests) 1870ms
+ ✓ tests/unit/run-history/services/team-run-package-catalog.test.ts (2 tests) 243ms

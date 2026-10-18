@@ -224,3 +224,43 @@ Observations and out-of-scope items:
 - Critical ACs lacking direct proof: none
 - Behavior only the user can check: `None`
 - Next recipient: per `get_handoff_rules` (Pass on the reviewed route → test-code review)
+
+## Evidence Index
+
+> Delivery note (DR-001): this section was added unchanged from the durable index at `/Users/normy/autobyteus_org/autobyteus-delivery-receipts/workspace-skill-collision-fix/EVIDENCE-INDEX.md`, at the request of the user through the Project Task Manager. At delivery, `16-desktop-page-checks.txt` (E16p) was also copied into this ticket's `evidence/` folder. The other archived evidence files have no `#` header; the headed copies are in `/Users/normy/autobyteus_org/autobyteus-delivery-receipts/workspace-skill-collision-fix/evidence/`.
+
+Commits:
+- `810408bcee`: the validated implementation.
+- `c59da62e70`: merge of the v1.5.6-beta.3 base at 11:21:39. Its source is the same as `810408bcee` apart from the skill-update-notice text.
+- `1f9aae5817` and `1c69409a85`: the API/E2E test commits, made at 11:33:09. Earlier runs used those test edits while they were still uncommitted.
+
+Live runs:
+- `cd autobyteus-server-ts`
+- environment: `env -i PATH HOME USER LOGNAME TMPDIR`, with the real HOME for the CLI logins
+- Codex used a throwaway `CODEX_HOME` holding only a link to the host `auth.json`.
+
+| ID | File (`evidence/…`) | Case / AC | Command or step | Commit | Proves | Key line |
+| --- | --- | --- | --- | --- | --- | --- |
+| E01 | `01-typecheck.log` | API-01 / AC-106, AC-107 | `pnpm -C autobyteus-server-ts typecheck` | 810408bcee | production src typechecks | `exit=0` |
+| E02 | `02-ac106-search.log` | API-01 / AC-106 | grep over `src` for the private-profile/NFS skill symbols | 810408bcee | no private-path code left; the only hit is the unrelated local variable `privateSkill` in `configured-agent-skill-resolver.ts` | `configured-agent-skill-resolver.ts:129: const privateSkill` |
+| E03 | `03-unit-backends.log` | API-02 / AC-103..105 | `vitest run tests/unit/agent-execution/backends` | 810408bcee | restored beta.1 backend tests and the 15-case regression test pass | `Test Files 85 passed`, `Tests 1070 passed` |
+| E04 | `04-test-unit.log` | API-02 / AC-107 | `pnpm test:unit` | 810408bcee | full unit suite green | `Test Files 716 passed`, `Tests 5830 passed` |
+| E05 | `05-test-integration.log` | API-02 / AC-107 | `pnpm test:integration`, run alone | 810408bcee (merge landed mid-run; irrelevant to these suites) | full integration suite green | `Test Files 76 passed`, `Tests 396 passed` |
+| E05a | `05a-test-integration-contended-run.log` | API-02 / diagnostic | first integration run, in parallel with my gated run | 810408bcee | the discarded run failed from shared test-DB contention I caused, not from the change | `database is locked` |
+| E06 | `06-codex-live-bootstrapper.log` | API-03 / AC-101, AC-103 | `RUN_CODEX_E2E=1 vitest run tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts` | 810408bcee + test edits | real Codex `skills/list` reports the user's absolute `.codex/skills` link at its real path; new and restored runs materialize nothing; the link is untouched | `CODEX_LIVE_USER_LINK_SKILLS_LIST […"path":"…/package/agents/solution-designer/skills/…/SKILL.md","scope":"repo"…]`, `Tests 4 passed` |
+| E07 | `07-live-skill-links-claude.log` | API-05..07 / AC-101, 102, 104, 105 | `RUN_CLAUDE_E2E=1 vitest run tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts` (haiku) | 810408bcee + test edits | Claude answers from the linked skill on a new run and after restore; a brand-new team member starts; a same-named workspace skill is refused for configured skills and used for all-installed | `SKILL_LINKS_LIVE_NEW_RUN claude …"tools":["Skill"]`, `…TEAM_MEMORY_BEFORE…"memberFoldersBefore":["team_communication_messages.json","team_run_execution_tree.json"]`, `…COLLISION…Workspace skill path collision`, `…ALL_INSTALLED…OWNCODE` |
+| E08 | `08-live-skill-links-codex.log` | API-05..07 / same | same test, `RUN_CODEX_E2E=1` (gpt-5.6-luna) | 810408bcee + test edits | same as E07 on Codex | `SKILL_LINKS_LIVE_*` lines, `Tests 3 passed` |
+| E09 | `09-live-skill-links-grok.log` | API-05..07 / same | same test, `RUN_GROK_E2E=1` (grok-4.7) | 810408bcee + test edits | same as E07 on Grok; Grok reached the skill by searching (see E10) | `SKILL_LINKS_LIVE_NEW_RUN grok …"tools":["grep","run_bash","read_file"]`, `Tests 3 passed` |
+| E10 | `10-grok-native-skill-discovery-probe.txt` | API-11 / AC-101 Grok fidelity, follow-up F7 | temporary probe: `grok agent --no-leader stdio` ACP `_x.ai/skills/list` and `grok inspect` | n/a (Grok CLI 1.0.62 only) | Grok does not list workspace `.grok/skills` skills itself, whether they are folders or links; this is beta.1-level behavior | `probe rows []`, `scopes ["user","bundled"]`, `Project trusted: no` |
+| E10s | `10-grok-skills-list-probe.mjs.txt` | API-11 | probe source | n/a | the exact probe used for E10 | — |
+| E11 | `11-agy-linked-skills-smoke.log` | API-08 / AC-107 (BEH-104) | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=…/agy-failure-cli.mjs vitest run tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts` (empty HOME) | 810408bcee | Antigravity skill behavior unchanged | `Tests 8 passed` |
+| E12 | `12-claude-gated-suites.log` | API-09 / AC-107 | `RUN_CLAUDE_E2E=1` session manager, backend factory, websocket interrupt/resume | 810408bcee + test edits | after the baseline fix, the restored Claude session and cleanup path pass live | `claude-session-manager… (9 tests)` ✓, `…interrupt-resume… (9 tests)` ✓ (backend-factory failures here came before the stub fix; superseded by E12b) |
+| E12b | `12b-claude-backend-factory-gated.log` | API-09 / AC-107 | `RUN_CLAUDE_E2E=1 vitest run …claude-agent-run-backend-factory.integration.test.ts` | c59da62e70 + test edits | 6/8 pass; the 2 browser-tool cases are out of scope (their fixture never exposes Agent Tools MCP; same in beta.1) | `Tests 2 failed / 6 passed`, `Condition not met within 90000ms` |
+| E13 | `13-codex-gated-integration.log` | API-10 / out of scope | `RUN_CODEX_E2E=1` Codex backend-factory, thread-manager, thread and client-manager integration | c59da62e70 + test edits | stale before any skill code runs (retired models, removed APIs; same in beta.1); follow-up sent | `did not return gpt-5.4-mini`, `manager.getClient is not a function` |
+| E13b | `13b-codex-live-e2e.log` | API-10b / out of scope | `RUN_CODEX_E2E=1` Codex memory-persistence and interrupted-compaction E2E | 1c69409a85 | stale: they call the removed `prepareNewAgentRun` (removed in 028cca2312); follow-up sent | `manager.prepareNewAgentRun is not a function` |
+| E14 | `14-post-merge-typecheck-unit.log` | API-12 / AC-107 | `pnpm typecheck && vitest run tests/unit/{agent-execution,skills,skill-update-notices,runtime-management}` | c59da62e70 + test edits | rerun by impact after the merge: green | `Test Files 168 passed`, `Tests 1800 passed` |
+| E15 | `15-post-merge-e2e-skills.log` | API-04, API-12 / AC-101, 105, 107 | `vitest run tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts` (clean env) | c59da62e70 + test edits | non-gated skills E2E, including a brand-new run with and without same-skill links | `Tests 35 passed` |
+| E16p | `16-desktop-page-checks.txt` (receipts only) | API-13 / AC-101, AC-102 | browser-automation page checks on isolated instance `iso-60176-ff92` | build of c59da62e70 | in the packaged app, new runs and post-restart "continue" answer from the linked skill on Claude, Codex and Grok; written afterwards from the live check results | `DESKTOP-NEW-7Q4` ×3, `DESKTOP-CONT-9K2` ×3 |
+| E16-01..08 | `16-desktop-01-package-imported.png` … `16-desktop-08-grok-continue.png` | API-13 / AC-101, AC-102 | screenshots, one per journey step (import, run config, three new runs, three continues) | build of c59da62e70 | visual support for E16p | the code under each answer |
+| E16l | `16-desktop-instance-log-excerpt.txt` | API-13 / AC-101, AC-102 | counts over the instance log | build of c59da62e70 | no ENOENT, collision, `ACTIVATION_FAILED` or `runtime-skill-profiles` in the desktop run | `ENOENT: 0`, `Workspace skill path collision: 0` |
+| — | `validated-commit.txt`, `validated-commit-post-merge.txt` | — | `git rev-parse HEAD` at the start of each phase | — | commit anchors | `810408bcee…`, `c59da62e70…` |

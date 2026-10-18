@@ -1,0 +1,135 @@
+# Case: DESK-01 — renderer socket analysis (CDP recording of the renderer's own /ws/agent-team, /ws/agent-org, /ws/agent-collaboration frames)
+# Command: node evidence/desk-analyze-renderer.mjs evidence/DESK-01/renderer-recording.jsonl evidence/DESK-01/renderer-sockets
+# Commit: e24ff6b333; Env: ENV-3 iso-53150-351f; Date: 2026-10-18 13:56
+{
+ "recording": "DESK-01/renderer-recording.jsonl",
+ "sockets": [
+  {
+   "socket": 1,
+   "url": "ws://127.0.0.1:53151/ws/agent-team/desk_team_eb3525844255472bb1698c8c7d3ddd9d",
+   "created": true,
+   "closed": false,
+   "frames": 235,
+   "snapshots": [
+    7038
+   ],
+   "gaps": [],
+   "batches": 103,
+   "twoAgentBatches": 20,
+   "batchToBatchGapMs": {
+    "n": 102,
+    "min": 38,
+    "p10": 505,
+    "median": 523,
+    "under350": 3
+   },
+   "plainSegmentContent": 0,
+   "consoleInPeriod": [
+    "warning: Segment not found for end event: segment_2111ab6311b54e0488f52a17a037d917:reasoning_8c43c7541eed48998c6f465907067433"
+   ],
+   "file": "DESK-01/renderer-sockets/socket-1-agent-team.jsonl"
+  },
+  {
+   "socket": 2,
+   "url": "ws://127.0.0.1:53151/ws/agent-org/desk_org_8233cbd221a447389df370233098e3af",
+   "created": true,
+   "closed": true,
+   "frames": 0,
+   "snapshots": [],
+   "gaps": [],
+   "batches": 0,
+   "twoAgentBatches": 0,
+   "batchToBatchGapMs": null,
+   "plainSegmentContent": 0,
+   "consoleInPeriod": [
+    "log:warning: WebSocket connection to 'ws://127.0.0.1:53151/ws/agent-org/desk_org_8233cbd221a447389df370233098e3af' failed: WebSocket is closed before the connection is established."
+   ],
+   "file": "DESK-01/renderer-sockets/socket-2-agent-org.jsonl"
+  },
+  {
+   "socket": 3,
+   "url": "ws://127.0.0.1:53151/ws/agent-org/desk_org_8233cbd221a447389df370233098e3af",
+   "created": true,
+   "closed": false,
+   "frames": 475,
+   "snapshots": [
+    0
+   ],
+   "gaps": [],
+   "batches": 206,
+   "twoAgentBatches": 88,
+   "batchToBatchGapMs": {
+    "n": 205,
+    "min": 42,
+    "p10": 503,
+    "median": 518,
+    "under350": 5
+   },
+   "plainSegmentContent": 0,
+   "consoleInPeriod": [],
+   "file": "DESK-01/renderer-sockets/socket-3-agent-org.jsonl"
+  },
+  {
+   "socket": 4,
+   "url": "ws://127.0.0.1:53151/ws/agent-collaboration/desk_pm_8519d769a66742a0b901c6c80bec377c",
+   "created": true,
+   "closed": true,
+   "frames": 4,
+   "snapshots": [
+    0
+   ],
+   "gaps": [],
+   "batches": 0,
+   "twoAgentBatches": 0,
+   "batchToBatchGapMs": null,
+   "plainSegmentContent": 0,
+   "consoleInPeriod": [],
+   "file": "DESK-01/renderer-sockets/socket-4-agent-collaboration.jsonl"
+  },
+  {
+   "socket": 5,
+   "url": "ws://127.0.0.1:53151/ws/agent-collaboration/desk_pm_8519d769a66742a0b901c6c80bec377c",
+   "created": true,
+   "closed": true,
+   "frames": 16,
+   "snapshots": [
+    2
+   ],
+   "gaps": [],
+   "batches": 0,
+   "twoAgentBatches": 0,
+   "batchToBatchGapMs": null,
+   "plainSegmentContent": 0,
+   "consoleInPeriod": [],
+   "file": "DESK-01/renderer-sockets/socket-5-agent-collaboration.jsonl"
+  },
+  {
+   "socket": 6,
+   "url": "ws://127.0.0.1:53151/ws/agent-collaboration/desk_pm_8519d769a66742a0b901c6c80bec377c",
+   "created": true,
+   "closed": false,
+   "frames": 1822,
+   "snapshots": [
+    28
+   ],
+   "gaps": [],
+   "batches": 846,
+   "twoAgentBatches": 150,
+   "batchToBatchGapMs": {
+    "n": 845,
+    "min": 29,
+    "p10": 513,
+    "median": 550,
+    "under350": 8
+   },
+   "plainSegmentContent": 0,
+   "consoleInPeriod": [],
+   "file": "DESK-01/renderer-sockets/socket-6-agent-collaboration.jsonl"
+  }
+ ],
+ "gapOrReopenConsoleLines": 0,
+ "consoleWarningsAndErrors": [
+  "2026-10-18T11:38:22.403Z warning: Segment not found for end event: segment_2111ab6311b54e0488f52a17a037d917:reasoning_8c43c7541eed48998c6f465907067433",
+  "2026-10-18T11:39:50.552Z log:warning: WebSocket connection to 'ws://127.0.0.1:53151/ws/agent-org/desk_org_8233cbd221a447389df370233098e3af' failed: WebSocket is closed before the connection is established."
+ ]
+}

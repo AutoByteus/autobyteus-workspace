@@ -257,6 +257,41 @@ describe("AgentOrgStreamHandler", () => {
     });
   });
 
+  it("sends pending reply text before the inactive lifecycle, then closes (autobyteus-139)", async () => {
+    const test = harness(); const client = connection();
+    expect(await test.handler.connect(client.socket, orgRunId)).toBeTruthy();
+    test.publisher.publish({ kind: "agent_presentation", execution, message: { type: "SEGMENT_CONTENT", payload: {
+      segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "last words",
+    } } });
+    expect(client.sent).toHaveLength(3);
+    test.publisher.publish({ kind: "lifecycle", isActive: false });
+    const emitted = client.sent.slice(3).map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)));
+    expect(emitted).toMatchObject([
+      { type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1, change_sequence_through: 1, event: {
+        kind: "agent_presentation_batch", items: [{ agent_run_id: agent.agentRunId, message: { payload: { delta: "last words" } } }],
+      } } },
+      { type: "ROOT_LIFECYCLE", payload: { is_active: false } },
+    ]);
+    await Promise.resolve();
+    expect(client.socket.close).toHaveBeenCalledWith(1000);
+  });
+
+  it("drops pending reply text when the client disconnects (autobyteus-139)", async () => {
+    const test = harness(); const client = connection();
+    const sessionId = await test.handler.connect(client.socket, orgRunId);
+    vi.useFakeTimers();
+    try {
+      test.publisher.publish({ kind: "agent_presentation", execution, message: { type: "SEGMENT_CONTENT", payload: {
+        segment_id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "unsent",
+      } } });
+      test.handler.disconnect(sessionId!);
+      vi.advanceTimersByTime(2_000);
+      expect(client.sent).toHaveLength(3);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("fails closed when the requested Org root is not active", async () => {
     const client = connection(); const handler = new AgentOrgStreamHandler({ getActive: () => null } as never);
     expect(await handler.connect(client.socket, "missing")).toBeNull();

@@ -1,0 +1,197 @@
+{"at":2591.8,"what":"ready","origin":"http://127.0.0.1:59846","interval":"default(500)","model":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234"}
+{"at":34438.9,"what":"worker address","addr":"/abt139_essay_worker"}
+{"at":34445.1,"what":"delegation requested"}
+{"at":56653.8,"what":"two children streaming","children":["abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800","abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8"]}
+{"at":137019.9,"what":"children turn 1 done"}
+{"at":137020.8,"what":"phase2 sent to both children"}
+{"at":145372.3,"what":"phase2 both streaming"}
+{"at":163410.5,"what":"root terminated mid-answer"}
+{
+ "scenario": "collab",
+ "failure": null,
+ "S1": {
+  "frames": 454,
+  "gaps": 0,
+  "snapshots": [
+   {
+    "at": 2716.9,
+    "base": 0
+   }
+  ],
+  "startsAfterSnapshot": [
+   {
+    "expected": 1,
+    "first": 1
+   }
+  ],
+  "batches": 129,
+  "multiAgentBatches": 49,
+  "plainContent": 0,
+  "batchRange": {
+   "min": 1,
+   "median": 31,
+   "max": 75,
+   "total": 4557
+  },
+  "closedBy": {
+   "window": 101,
+   "SEGMENT_START": 6,
+   "AGENT_STATUS": 16,
+   "SEGMENT_END": 6
+  },
+  "spacing": {
+   "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800": {
+    "batchesWithAgent": 83,
+    "windowClosed": 66,
+    "boundaryClosed": 17,
+    "windowGapMs": {
+     "n": 51,
+     "min": 255,
+     "median": 524,
+     "max": 620,
+     "under350": 1
+    },
+    "activeSeconds": 97.7,
+    "windowFramesPerSecond": 0.68
+   },
+   "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8": {
+    "batchesWithAgent": 95,
+    "windowClosed": 74,
+    "boundaryClosed": 21,
+    "windowGapMs": {
+     "n": 57,
+     "min": 255,
+     "median": 525,
+     "max": 613,
+     "under350": 1
+    },
+    "activeSeconds": 96.9,
+    "windowFramesPerSecond": 0.76
+   }
+  },
+  "status": {
+   "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800": {
+    "standaloneStatusFrames": 102,
+    "identicalToPreviousForwarded": 95,
+    "byValue": {
+     "initializing": 4,
+     "running": 96,
+     "idle": 2
+    }
+   },
+   "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8": {
+    "standaloneStatusFrames": 123,
+    "identicalToPreviousForwarded": 116,
+    "byValue": {
+     "initializing": 4,
+     "running": 117,
+     "idle": 2
+    }
+   }
+  },
+  "stopCheck": {
+   "lifecycleAt": 153416,
+   "framesAfterInactive": 0,
+   "previousSequencedFrame": {
+    "type": "ROOT_EXECUTION_EVENT",
+    "at": 153416,
+    "gapMs": 0,
+    "batch": true
+   }
+  }
+ },
+ "s2Check": null,
+ "textCheck": [
+  {
+   "segKey": "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800|segment_33189690ffc24afc86ad12bb503d42fe:reasoning_ff596cad83cd48808f6e2dac5fd4e1d5",
+   "chars": 325,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8|segment_8dabc89ae81243c9a88e949aa781dd17:reasoning_7f405a5720e94a349cc2aff176b2c3cf",
+   "chars": 2234,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800|turn_19a6fddfc01249a7862697133bb203bf:90f559a8c6da488488e8d119daa7288d",
+   "chars": 2008,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8|turn_4a9e4a84e0c04614ba0a4e8c4c81ccec:dd5ff261971a44c0ad64f93647242128",
+   "chars": 2,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800|981169156",
+   "chars": 357,
+   "inProjection": false
+  },
+  {
+   "segKey": "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800|segment_603a1258ef344338b7ea84ca7de8b86b:reasoning_f56cb23f3c534dc9aaa1934f045ff2ce",
+   "chars": 803,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800|turn_c710d8d12a184d708e0d8d140d2631c6:72f9cf1e295c4ebbaeeaec8cc8d958fe",
+   "chars": 2,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8|932750712",
+   "chars": 1975,
+   "inProjection": false
+  },
+  {
+   "segKey": "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8|segment_2cb6413245e04947a24bfd7953af4f1f:reasoning_3d5ddfd51206402fa28cc4b0adf2541a",
+   "chars": 205,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800|761218443",
+   "chars": 323,
+   "inProjection": false
+  },
+  {
+   "segKey": "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8|turn_d24d2a48d9d841a0b8626021dd7b43a7:dd679aa9d71c4b3ca1a513459634454c",
+   "chars": 2,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800|segment_4566ed6bd6324334b2583dfb29088659:reasoning_c69f450240424d1c9e765bb5e1f14c5f",
+   "chars": 734,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800|turn_43b22f50c9d340abb3e0ada32c8c4d74:7d9e271ebd8c45ddb48978805b13c434",
+   "chars": 120,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8|161375125",
+   "chars": 1942,
+   "inProjection": false
+  },
+  {
+   "segKey": "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8|segment_f2c46affbc1e49e39a46e6455a2783dc:reasoning_9bfdc0eea03d48c981d9760a69d90202",
+   "chars": 2495,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8|turn_c35ddfd8fc694932864fa35927c32e54:2bd3c798634442d98fa331a8fe2e1870",
+   "chars": 68,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8|segment_fa0898e857a247ce9e22000f55d4a56b:reasoning_1047854962344c21aad03b3fa085028d",
+   "chars": 569,
+   "inProjection": true
+  },
+  {
+   "segKey": "abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800|segment_2d84423128bb4910a26b9fc0d7357e7b:reasoning_84ad2eec89a942c1b9d4064907a92964",
+   "chars": 708,
+   "inProjection": true
+  }
+ ],
+ "rootRemoved": true
+}
