@@ -14,7 +14,6 @@ import {
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import type { CodexAppServerMessage } from "../../../src/agent-execution/backends/codex/thread/codex-app-server-message.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
@@ -165,17 +164,11 @@ const createCodexFactory = (input: {
   workspaceRoot: string;
   runId: string;
 }): CodexAgentRunBackendFactory => {
-  const threadBootstrapper = new CodexThreadBootstrapper(
-    {
+  const threadBootstrapper = new CodexThreadBootstrapper({
       activateForRun: () => ({ kind: "not_exposed" }),
-    },
-    {
-      materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }),
-    } as never,
-    {
+    }, {
       resolveWorkingDirectory: async () => input.workspaceRoot,
-    } as never,
-    {
+    } as never, {
       getAgentDefinitionById: async () => ({
         name: "Codex Live Memory Agent",
         instructions:
@@ -184,17 +177,12 @@ const createCodexFactory = (input: {
         skillNames: [],
         toolNames: [],
       }),
-    } as never,
-    {
+    } as never, {
       resolveConfiguredSkillBindingsForAgent: () => [],
-    } as never,
-    input.clientManager,
+    } as never
   );
 
-  return new CodexAgentRunBackendFactory(
-    input.threadManager,
-    threadBootstrapper,
-    new CodexThreadCleanup(undefined, input.clientManager),
+  return new CodexAgentRunBackendFactory(input.threadManager, threadBootstrapper
   );
 };
 
@@ -257,10 +245,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     if (process.env.CODEX_MEMORY_E2E_MODEL?.trim()) {
@@ -469,10 +454,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const recorder = new AgentRunMemoryRecorder();
@@ -621,10 +603,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const recorder = new AgentRunMemoryRecorder();

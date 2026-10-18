@@ -1,0 +1,174 @@
+{"attached":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-state-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat","startedAt":"2026-10-18T04:51:45.888Z"}
+{
+  "11492.236": {
+    "url": "ws://127.0.0.1:51036/ws/agent/lighthouse_writer_670b3f0e162d48419ab9fab17ccc1192",
+    "frames": 138,
+    "closed": false,
+    "typeCounts": {
+      "CONNECTED": 1,
+      "AGENT_STATUS": 12,
+      "AGENT_INPUT_STATE": 13,
+      "AGENT_COMMAND_ACK": 3,
+      "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+      "TURN_STARTED": 3,
+      "SEGMENT_START": 5,
+      "SEGMENT_CONTENT": 88,
+      "SEGMENT_END": 5,
+      "TURN_INTERRUPTED": 1,
+      "TOKEN_USAGE_UPDATED": 2,
+      "ASSISTANT_COMPLETE": 2,
+      "TURN_COMPLETED": 2
+    },
+    "inputStateRevisions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "inputStateRepeats": 0,
+    "inputStates": [
+      {
+        "ts": 758251.547045,
+        "revision": 1,
+        "entries": []
+      },
+      {
+        "ts": 758251.548421,
+        "revision": 2,
+        "entries": [
+          {
+            "state": "queued",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "ts": 758251.554111,
+        "revision": 3,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "ts": 758251.560235,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "ts": 758265.326929,
+        "revision": 5,
+        "entries": []
+      },
+      {
+        "ts": 758378.923453,
+        "revision": 6,
+        "entries": [
+          {
+            "state": "queued",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "ts": 758378.926262,
+        "revision": 7,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "ts": 758378.929772,
+        "revision": 8,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "ts": 758390.640953,
+        "revision": 9,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "ts": 758399.245595,
+        "revision": 10,
+        "entries": [
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "ts": 758399.24893,
+        "revision": 11,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "ts": 758399.24986,
+        "revision": 12,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "ts": 758433.820448,
+        "revision": 13,
+        "entries": []
+      }
+    ],
+    "contentFrames": 88,
+    "contentGaps": {
+      "n": 83,
+      "min": 49,
+      "median": 522,
+      "max": 780,
+      "under350": 4
+    },
+    "flushTriggers": {
+      "window": 83,
+      "SEGMENT_END": 3,
+      "SEGMENT_START": 1,
+      "AGENT_INPUT_STATE": 1
+    }
+  }
+}

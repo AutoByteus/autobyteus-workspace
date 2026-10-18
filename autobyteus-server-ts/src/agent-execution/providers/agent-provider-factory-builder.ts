@@ -11,11 +11,8 @@ import {
 } from "../backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { CodexAgentRunBackendFactory } from "../backends/codex/backend/codex-agent-run-backend-factory.js";
 import { CodexThreadBootstrapper } from "../backends/codex/backend/codex-thread-bootstrapper.js";
-import type { CodexThreadCleanup } from "../backends/codex/backend/codex-thread-cleanup.js";
 import type { CodexWorkspaceResolver } from "../backends/codex/codex-workspace-resolver.js";
 import type { CodexThreadManager } from "../backends/codex/thread/codex-thread-manager.js";
-import type { WorkspaceSkillMaterializer } from "../backends/shared/workspace-skill-materializer.js";
-import type { CodexAppServerClientManager } from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { AgyAgentRunBackendFactory } from "../backends/antigravity/backend/agy-agent-run-backend-factory.js";
 import type { AcpAgentRunBackendFactory } from "../backends/acp/backend/acp-agent-run-backend-factory.js";
 import { createGrokBuildAgentRunBackendFactory } from "../backends/grok/grok-build-agent-run-backend-factory.js";
@@ -36,15 +33,11 @@ export type AgentProviderFactoryBuilderProcessInput = Readonly<{
     waitForIdle: AutoByteusAgentIdleWaiter;
   }>;
   codex: Readonly<{
-    workspaceSkillMaterializer: WorkspaceSkillMaterializer;
     workspaceResolver: CodexWorkspaceResolver;
-    clientManager: CodexAppServerClientManager;
     threadManager: CodexThreadManager;
-    threadCleanup: CodexThreadCleanup;
   }>;
   claude: Readonly<{
     workspaceResolver: ClaudeWorkspaceResolver;
-    workspaceSkillMaterializer: WorkspaceSkillMaterializer;
     sdkClient: ClaudeSdkClient;
   }>;
 }>;
@@ -110,18 +103,14 @@ const freezeProcessInput = (
   }
   const codex = requireRecord(input.codex, "codex");
   for (const field of [
-    "workspaceSkillMaterializer",
     "workspaceResolver",
-    "clientManager",
     "threadManager",
-    "threadCleanup",
   ] as const) {
     requireLeaf(codex[field], `codex.${field}`);
   }
   const claude = requireRecord(input.claude, "claude");
   for (const field of [
     "workspaceResolver",
-    "workspaceSkillMaterializer",
     "sdkClient",
   ] as const) {
     requireLeaf(claude[field], `claude.${field}`);
@@ -162,17 +151,14 @@ export const createAgentProviderFactoryBuilder = (
 
       const codexBootstrapper = new CodexThreadBootstrapper(
         input.agentToolMcpRunSessions,
-        process.codex.workspaceSkillMaterializer,
         process.codex.workspaceResolver,
         input.agentDefinitionService,
         process.skillService,
-        process.codex.clientManager,
       );
       const claudeSessionManager = new ClaudeSessionManager(
         input.agentToolMcpRunSessions,
         process.workspaceManager,
         process.claude.sdkClient,
-        process.claude.workspaceSkillMaterializer,
       );
       return Object.freeze({
         autoByteus: new AutoByteusAgentRunBackendFactory({
@@ -188,7 +174,6 @@ export const createAgentProviderFactoryBuilder = (
         codex: new CodexAgentRunBackendFactory(
           process.codex.threadManager,
           codexBootstrapper,
-          process.codex.threadCleanup,
         ),
         antigravity: new AgyAgentRunBackendFactory(
           input.agentDefinitionService, process.skillService,
@@ -203,7 +188,6 @@ export const createAgentProviderFactoryBuilder = (
           claudeSessionManager,
           new ClaudeSessionBootstrapper(
             process.claude.workspaceResolver,
-            process.claude.workspaceSkillMaterializer,
             input.agentDefinitionService,
             process.skillService,
           ),

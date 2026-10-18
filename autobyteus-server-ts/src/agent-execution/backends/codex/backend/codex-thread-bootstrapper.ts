@@ -1,24 +1,13 @@
 import { preparePrivateRuntimeSkills } from "../../shared/prepare-private-runtime-skills.js";
 import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
-import fs from "node:fs";
-import path from "node:path";
 import {
   workspaceCollisionPolicyForScope,
-  type WorkspaceCollisionPolicy,
 } from "../../shared/workspace-skill-collision-policy.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
 import { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
 import { SkillService } from "../../../../skills/services/skill-service.js";
-import {
-  getCodexWorkspaceSkillMaterializer,
-} from "../codex-workspace-skill-materializer.js";
-import type {
-  MaterializedWorkspaceSkill,
-  WorkspaceSkillMaterializer,
-  WorkspaceSkillReconciliationRequest,
-} from "../../shared/workspace-skill-materializer.js";
 import {
   getCodexWorkspaceResolver,
   type CodexWorkspaceResolver,
@@ -28,7 +17,6 @@ import {
   resolveCodexSessionReasoningEffort,
   resolveCodexSessionServiceTier,
 } from "../codex-app-server-model-normalizer.js";
-import type { ConfiguredAgentSkillBinding } from "../../../../skills/domain/configured-agent-skill-binding.js";
 import {
   buildCodexThreadConfig,
   CodexApprovalPolicy,
@@ -39,10 +27,6 @@ import {
   buildCodexDynamicToolSpecs,
   type CodexDynamicToolRegistration,
 } from "../codex-dynamic-tool.js";
-import {
-  getCodexAppServerClientManager,
-  type CodexAppServerClientManager,
-} from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   DEFAULT_CODEX_SANDBOX_MODE,
@@ -65,53 +49,6 @@ import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-c
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
-};
-
-type DiscoverableSkillLookupClient = {
-  request<T = unknown>(
-    method: string,
-    params: Record<string, unknown> | undefined,
-  ): Promise<T>;
-};
-
-const asTrimmedString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-const asObjectRecord = (value: unknown): Record<string, unknown> | null =>
-  value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
-
-const canonicalSkillDirectory = (value: string): string => {
-  const directory = path.basename(value) === "SKILL.md" ? path.dirname(value) : value;
-  try {
-    return fs.realpathSync(directory);
-  } catch {
-    return path.resolve(directory);
-  }
-};
-
-/** Enabled `skills/list` entries: name → the real skill directories Codex found for it. */
-const collectDiscoverableSkillPaths = (payload: unknown): Map<string, string[]> => {
-  const result = new Map<string, string[]>();
-  const root = asObjectRecord(payload);
-  const data = Array.isArray(root?.data) ? root.data : [];
-  for (const entryValue of data) {
-    const entry = asObjectRecord(entryValue);
-    const skills = Array.isArray(entry?.skills) ? entry.skills : [];
-    for (const skillValue of skills) {
-      const skill = asObjectRecord(skillValue);
-      if (skill?.enabled !== true) {
-        continue;
-      }
-      const skillName = asTrimmedString(skill?.name);
-      const skillPath = asTrimmedString(skill?.path);
-      if (skillName) {
-        result.set(skillName, [...(result.get(skillName) ?? []), ...(skillPath ? [canonicalSkillDirectory(skillPath)] : [])]);
-      }
-    }
-  }
-  return result;
 };
 
 export const resolveApprovalPolicyForAutoExecuteTools = (
@@ -188,29 +125,23 @@ export const resolveDefaultModel = (): string | null => {
 };
 
 export class CodexThreadBootstrapper {
-  private readonly workspaceSkillMaterializer: WorkspaceSkillMaterializer;
   private readonly workspaceResolver: CodexWorkspaceResolver;
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly skillService: SkillService;
-  private readonly clientManager: CodexAppServerClientManager;
   private readonly agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
 
   constructor(
     agentToolMcpRunSessions: AgentToolMcpRunSessionActivator,
-    workspaceSkillMaterializer: WorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
     workspaceResolver: CodexWorkspaceResolver = getCodexWorkspaceResolver(),
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
-    clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
   ) {
     if (!agentToolMcpRunSessions) {
       throw new Error("Codex Agent Tools MCP run-session activator is required.");
     }
-    this.workspaceSkillMaterializer = workspaceSkillMaterializer;
     this.workspaceResolver = workspaceResolver;
     this.agentDefinitionService = agentDefinitionService;
     this.skillService = skillService;
-    this.clientManager = clientManager;
     this.agentToolMcpRunSessions = agentToolMcpRunSessions;
   }
 
@@ -271,21 +202,12 @@ export class CodexThreadBootstrapper {
       bindings: configuredSkillBindings, skills: this.skillService, guard,
       collisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
     });
-    const materializedConfiguredSkills = privateSkillProfile ? [] : await this.prepareWorkspaceSkills({
-      runId: runContext.runId,
-      workingDirectory,
-      configuredSkillBindings,
-      guard,
-      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
-    });
-
     return new AgentRunContext({
       runId: runContext.runId,
       config: runContext.config,
       runtimeContext: new CodexAgentRunContext({
         codexThreadConfig,
         privateSkillProfile,
-        materializedConfiguredSkills,
         dynamicToolHandlers: buildCodexDynamicToolHandlerMap(
           dynamicToolRegistrations,
         ),
@@ -355,76 +277,4 @@ export class CodexThreadBootstrapper {
     return materializeCodexAgentToolsMcpThreadConfig(result.descriptor);
   }
 
-  private async prepareWorkspaceSkills(input: {
-    runId: string;
-    workingDirectory: string;
-    configuredSkillBindings: ConfiguredAgentSkillBinding[];
-    workspaceCollisionPolicy: WorkspaceCollisionPolicy;
-    guard: ProviderPreparationGuard;
-  }): Promise<MaterializedWorkspaceSkill[]> {
-    const requests = await this.planWorkspaceSkillRequests(input);
-    const prepared = await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
-      runId: input.runId,
-      onAcquired: input.guard.ownSkill, assertAccepting: input.guard.assertAccepting,
-      workingDirectory: input.workingDirectory,
-      requests,
-      workspaceCollisionPolicy: input.workspaceCollisionPolicy,
-    });
-    return prepared.materializedSkills;
-  }
-
-  private async planWorkspaceSkillRequests(input: {
-    workingDirectory: string;
-    configuredSkillBindings: ConfiguredAgentSkillBinding[];
-    guard: ProviderPreparationGuard;
-  }): Promise<WorkspaceSkillReconciliationRequest[]> {
-    if (input.configuredSkillBindings.length === 0) {
-      return [];
-    }
-
-    input.guard.assertAccepting();
-    const lease = this.clientManager.beginAcquire(input.workingDirectory);
-    input.guard.ownCodexClient?.(lease);
-    let client: DiscoverableSkillLookupClient | null = null;
-    try {
-      client = await lease.acquire();
-      input.guard.assertAccepting();
-      const response = await client.request<unknown>("skills/list", {
-        cwds: [input.workingDirectory],
-        forceReload: true,
-      });
-      const discoverableSkillPaths = collectDiscoverableSkillPaths(response);
-      return input.configuredSkillBindings.map((binding) => {
-        if (binding.kind === "unresolved") {
-          return { kind: "reconcile-unresolved", name: binding.name };
-        }
-        const skillName = asTrimmedString(binding.skill.name);
-        const codexPaths = (skillName && discoverableSkillPaths.get(skillName)) || [];
-        // D-19: Codex discovers the catalog's copy natively only when every entry it lists for the
-        // name is that copy. A different copy (e.g. a stale `~/.codex/skills` one) is exposed.
-        const chosenPath = canonicalSkillDirectory(binding.skill.rootPath);
-        const otherPaths = codexPaths.filter((codexPath) => codexPath !== chosenPath);
-        if (codexPaths.length > 0 && otherPaths.length === 0) {
-          return { kind: "reconcile-discoverable", skill: binding.skill };
-        }
-        if (otherPaths.length > 0) {
-          logger.warn(
-            `codex-runtime-duplicate: skill='${binding.skill.name}', codexPaths='${otherPaths.join(",")}', chosenPath='${chosenPath}'; exposing the chosen copy in the workspace.`,
-          );
-        }
-        return { kind: "expose-resolved", skill: binding.skill };
-      });
-    } catch (error) {
-      logger.warn(
-        `Failed to preflight discoverable Codex skills for '${input.workingDirectory}'; falling back to workspace materialization: ${String(error)}`,
-      );
-      return input.configuredSkillBindings.map((binding) =>
-        binding.kind === "resolved"
-          ? { kind: "expose-resolved", skill: binding.skill }
-          : { kind: "reconcile-unresolved", name: binding.name }
-      );
-    } finally {
-      await lease.release();
-    }
-  }
 }

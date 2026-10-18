@@ -1,0 +1,1318 @@
+{
+  "label": "base",
+  "failure": null,
+  "runId": "pb001_live_stream_7c746151_9b56513571724cbba799e6142d42f163",
+  "origin": "http://127.0.0.1:49434",
+  "model": "qwen3.6-35b-a3b",
+  "sent": [
+    {
+      "at": 2745.7,
+      "socket": "A",
+      "content": "Write a plain-prose essay of about 350 words about how lighthouses work and their history. No headings, no lists.",
+      "messageId": "probe-30e26159-29f4-40ed-9551-391017772404"
+    },
+    {
+      "at": 18056.4,
+      "socket": "A",
+      "content": "Now write a plain-prose paragraph of about 200 words about tides. No headings, no lists.",
+      "messageId": "probe-879146ed-5777-4245-b3fe-27d92073eaaa"
+    }
+  ],
+  "socketA": {
+    "frames": 10266,
+    "typeCounts": {
+      "CONNECTED": 1,
+      "AGENT_STATUS": 10,
+      "AGENT_INPUT_STATE": 5136,
+      "AGENT_COMMAND_ACK": 2,
+      "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+      "TURN_STARTED": 2,
+      "SEGMENT_START": 4,
+      "SEGMENT_CONTENT": 5100,
+      "SEGMENT_END": 4,
+      "TOKEN_USAGE_UPDATED": 2,
+      "ASSISTANT_COMPLETE": 2,
+      "TURN_COMPLETED": 2
+    },
+    "inputStateRepeats": 5127,
+    "inputStates": [
+      {
+        "at": 2696.4,
+        "revision": 1,
+        "entries": []
+      },
+      {
+        "at": 2749.1,
+        "revision": 2,
+        "entries": [
+          {
+            "state": "queued",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 2750.5,
+        "revision": 2,
+        "entries": [
+          {
+            "state": "queued",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 2752.5,
+        "revision": 3,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 2759,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 2759.5,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 2760.1,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16552.7,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16553.1,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16591.9,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16625.1,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16647.5,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16680.6,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16753.5,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16753.6,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16846.7,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16912.7,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16933.4,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16933.5,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16933.6,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16933.7,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 16987.4,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 17021,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 17066.1,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 17066.3,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 17087.9,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 17088,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 17143.9,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 17176.8,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      },
+      {
+        "at": 17198.8,
+        "revision": 4,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          }
+        ]
+      }
+    ],
+    "contentFrames": 5100,
+    "contentGapStats": {
+      "n": 5096,
+      "min": 0,
+      "median": 22,
+      "max": 206,
+      "under350": 5096
+    },
+    "windowGapStats": {
+      "n": 0
+    },
+    "flushTriggerCounts": {
+      "AGENT_INPUT_STATE": 5100
+    },
+    "earlyFlushes": [
+      {
+        "at": 16588.9,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 36,
+        "deltaLength": 5,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16624.9,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 36,
+        "deltaLength": 6,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16647.5,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 23,
+        "deltaLength": 2,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16680.5,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 33,
+        "deltaLength": 6,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16753.5,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 73,
+        "deltaLength": 4,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16753.6,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 2,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16846.7,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 93,
+        "deltaLength": 6,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16912.7,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 66,
+        "deltaLength": 3,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16933.4,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 21,
+        "deltaLength": 6,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16933.5,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 2,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16933.6,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 1,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16933.7,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 1,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 16987.4,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 54,
+        "deltaLength": 6,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 17021,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 34,
+        "deltaLength": 6,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 17066.1,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 45,
+        "deltaLength": 2,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 17066.3,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 5,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 17087.8,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 22,
+        "deltaLength": 5,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 17088,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 1,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 17143.9,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 56,
+        "deltaLength": 9,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      },
+      {
+        "at": 17176.8,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 33,
+        "deltaLength": 4,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 4
+      }
+    ],
+    "textLengthBySegment": {
+      "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61": 12299,
+      "turn_daed8621362f451eaacc30592d9cb526:c84f214850004c5aac72bc84e3ae280a": 2032,
+      "segment_2f6a5d77dcf4409f8dade6ea924eb1f1:reasoning_16195dff50ac43f0a3bb96f28f89cd2b": 9394,
+      "turn_f4859d7e1d5b438ba860cef4f821ba42:e35cc07f46bb4179a7f55d7b01916d0b": 1495
+    },
+    "earlyFlushesTotal": 5096,
+    "inputStatesTotal": 5136,
+    "inputStateRevisionsTotal": 5136,
+    "inputStateRevisionsDistinct": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "socketB": {
+    "frames": 10031,
+    "typeCounts": {
+      "CONNECTED": 1,
+      "AGENT_STATUS": 8,
+      "AGENT_INPUT_STATE": 5018,
+      "SEGMENT_CONTENT": 4990,
+      "SEGMENT_START": 3,
+      "SEGMENT_END": 4,
+      "TOKEN_USAGE_UPDATED": 2,
+      "ASSISTANT_COMPLETE": 2,
+      "TURN_COMPLETED": 2,
+      "TURN_STARTED": 1
+    },
+    "inputStateRepeats": 5013,
+    "inputStates": [
+      {
+        "at": 19272.1,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19274,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19361.8,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19410.3,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19470.1,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19470.1,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19560.8,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19583.4,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19583.9,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19621.7,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19621.7,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19666.4,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19702.5,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19825,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19859.2,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19859.2,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19893.5,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19947.5,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 19947.6,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20018.7,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20058.1,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20058.1,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20091.3,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20130.2,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20193.7,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20215.9,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20250.9,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20274.1,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20298.6,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      },
+      {
+        "at": 20332.4,
+        "revision": 5,
+        "entries": [
+          {
+            "state": "forwarded",
+            "content": "Write a plain-prose essay of about 350 w"
+          },
+          {
+            "state": "queued",
+            "content": "Now write a plain-prose paragraph of abo"
+          }
+        ]
+      }
+    ],
+    "contentFrames": 4990,
+    "contentGapStats": {
+      "n": 4986,
+      "min": 0,
+      "median": 22,
+      "max": 194,
+      "under350": 4986
+    },
+    "windowGapStats": {
+      "n": 0
+    },
+    "flushTriggerCounts": {
+      "AGENT_INPUT_STATE": 4990
+    },
+    "earlyFlushes": [
+      {
+        "at": 19361.6,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 88,
+        "deltaLength": 10,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19410.2,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 49,
+        "deltaLength": 4,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19470.1,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 60,
+        "deltaLength": 6,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19470.1,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 4,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19560.7,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 91,
+        "deltaLength": 6,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19583.4,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 23,
+        "deltaLength": 8,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19583.8,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 1,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19621.7,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 38,
+        "deltaLength": 2,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19621.7,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 1,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19666.4,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 45,
+        "deltaLength": 10,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19702.5,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 36,
+        "deltaLength": 6,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19825,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 123,
+        "deltaLength": 9,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19859.1,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 34,
+        "deltaLength": 8,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19859.2,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 1,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19893.5,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 34,
+        "deltaLength": 2,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19947.5,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 54,
+        "deltaLength": 5,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 19947.6,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 5,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 20018.7,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 71,
+        "deltaLength": 5,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 20058,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 39,
+        "deltaLength": 7,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      },
+      {
+        "at": 20058.1,
+        "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+        "segment_type": "reasoning",
+        "gapFromPrevContentMs": 0,
+        "deltaLength": 3,
+        "followedBy": "AGENT_INPUT_STATE",
+        "followedByRevision": 5
+      }
+    ],
+    "textLengthBySegment": {
+      "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61": 11843,
+      "turn_daed8621362f451eaacc30592d9cb526:c84f214850004c5aac72bc84e3ae280a": 2032,
+      "segment_2f6a5d77dcf4409f8dade6ea924eb1f1:reasoning_16195dff50ac43f0a3bb96f28f89cd2b": 9394,
+      "turn_f4859d7e1d5b438ba860cef4f821ba42:e35cc07f46bb4179a7f55d7b01916d0b": 1495
+    },
+    "earlyFlushesTotal": 4986,
+    "inputStatesTotal": 5018,
+    "inputStateRevisionsTotal": 5018,
+    "inputStateRevisionsDistinct": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "queuedMessage": {
+    "sentAt": 18056.4,
+    "inputStateAt": 18057.6,
+    "delayMs": 1,
+    "revision": 5,
+    "entries": [
+      {
+        "state": "forwarded",
+        "content": "Write a plain-prose essay of about 350 w"
+      },
+      {
+        "state": "queued",
+        "content": "Now write a plain-prose paragraph of abo"
+      }
+    ],
+    "frameBefore": {
+      "type": "AGENT_INPUT_STATE",
+      "at": 17976,
+      "gapMs": 81.6
+    }
+  },
+  "reconnect": {
+    "firstFrameOnB": {
+      "type": "CONNECTED",
+      "at": 19269.4
+    },
+    "snapshotRevision": 5,
+    "snapshotEntries": [
+      {
+        "state": "forwarded",
+        "content": "Write a plain-prose essay of about 350 w"
+      },
+      {
+        "state": "queued",
+        "content": "Now write a plain-prose paragraph of abo"
+      }
+    ],
+    "aRevisionsAfterBJoin": [
+      6,
+      6,
+      7,
+      7,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+    ],
+    "bRevisionsAfterSnapshot": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "bGotEveryLaterRevision": false,
+    "aRevisionsAfterBJoinCount": 2354,
+    "bRevisionsAfterSnapshotCount": 5017
+  },
+  "textConsistencyAB": [
+    {
+      "segment": "segment_fc3e34f5496b4e8eaa766d89f70235a2:reasoning_3607f82fb97a4496bf780e35876c4f61",
+      "aLen": 12299,
+      "bLen": 11843,
+      "bIsSuffixOfA": true,
+      "identical": false
+    },
+    {
+      "segment": "turn_daed8621362f451eaacc30592d9cb526:c84f214850004c5aac72bc84e3ae280a",
+      "aLen": 2032,
+      "bLen": 2032,
+      "bIsSuffixOfA": true,
+      "identical": true
+    },
+    {
+      "segment": "segment_2f6a5d77dcf4409f8dade6ea924eb1f1:reasoning_16195dff50ac43f0a3bb96f28f89cd2b",
+      "aLen": 9394,
+      "bLen": 9394,
+      "bIsSuffixOfA": true,
+      "identical": true
+    },
+    {
+      "segment": "turn_f4859d7e1d5b438ba860cef4f821ba42:e35cc07f46bb4179a7f55d7b01916d0b",
+      "aLen": 1495,
+      "bLen": 1495,
+      "bIsSuffixOfA": true,
+      "identical": true
+    }
+  ],
+  "note": "Compacted from the probe summary: arrays truncated to their first entries; totals recorded alongside. Full traces: frames-A.jsonl.gz, frames-B.jsonl.gz."
+}

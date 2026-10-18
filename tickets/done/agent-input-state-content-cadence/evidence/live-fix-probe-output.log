@@ -1,0 +1,141 @@
+{
+  "label": "fix",
+  "failure": null,
+  "A": {
+    "frames": 184,
+    "revisions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "repeats": 0,
+    "contentFrames": 145,
+    "gaps": {
+      "n": 141,
+      "min": 10,
+      "median": 518,
+      "max": 592,
+      "under350": 3
+    },
+    "triggers": {
+      "window": 141,
+      "AGENT_INPUT_STATE": 1,
+      "SEGMENT_END": 2,
+      "SEGMENT_START": 1
+    },
+    "early": 3
+  },
+  "B": {
+    "frames": 167,
+    "revisions": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "repeats": 0,
+    "contentFrames": 139,
+    "gaps": {
+      "n": 135,
+      "min": 10,
+      "median": 518,
+      "max": 593,
+      "under350": 4
+    },
+    "triggers": {
+      "window": 135,
+      "SEGMENT_START": 2,
+      "SEGMENT_END": 2
+    },
+    "early": 4
+  },
+  "queued": {
+    "sentAt": 90302,
+    "inputStateAt": 90304.1,
+    "delayMs": 2,
+    "revision": 5,
+    "entries": [
+      {
+        "state": "forwarded",
+        "content": "Write a plain-prose essay of about 350 w"
+      },
+      {
+        "state": "queued",
+        "content": "Now write a plain-prose paragraph of abo"
+      }
+    ],
+    "frameBefore": {
+      "type": "SEGMENT_CONTENT",
+      "at": 90304.1,
+      "gapMs": 0
+    }
+  },
+  "reconnect": {
+    "firstFrameOnB": {
+      "type": "CONNECTED",
+      "at": 91510.1
+    },
+    "snapshotRevision": 5,
+    "snapshotEntries": [
+      {
+        "state": "forwarded",
+        "content": "Write a plain-prose essay of about 350 w"
+      },
+      {
+        "state": "queued",
+        "content": "Now write a plain-prose paragraph of abo"
+      }
+    ],
+    "aRevisionsAfterBJoin": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "bRevisionsAfterSnapshot": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "bGotEveryLaterRevision": true
+  },
+  "text": [
+    {
+      "segment": "segment_1c257b06f06a4cafb01d6a4fc28470e6:reasoning_7eddbb5137ab4bb5be6c4480f25adcfc",
+      "aLen": 5659,
+      "bLen": 4843,
+      "bIsSuffixOfA": true,
+      "identical": false
+    },
+    {
+      "segment": "turn_1b38bfda89944a6dbdd1192946e57a72:1edd909b0ce14fb182b5bd7bfcb3366b",
+      "aLen": 2372,
+      "bLen": 2372,
+      "bIsSuffixOfA": true,
+      "identical": true
+    },
+    {
+      "segment": "segment_61cee6ced938416293ff8e6b5ab6335d:reasoning_fee342ab3fc347feaae36658d32d496a",
+      "aLen": 8711,
+      "bLen": 8711,
+      "bIsSuffixOfA": true,
+      "identical": true
+    },
+    {
+      "segment": "turn_1e1d5845a7df471ab53dbad192a9e94c:b6b3c2d8c4a5441d9147a00608dcbf63",
+      "aLen": 1556,
+      "bLen": 1556,
+      "bIsSuffixOfA": true,
+      "identical": true
+    }
+  ],
+  "rootRemoved": true
+}

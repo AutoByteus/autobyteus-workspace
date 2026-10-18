@@ -240,11 +240,7 @@ const createClaudeAgentRun = async (input: {
     // No exposed tools means this fixture creates no MCP entries to deactivate.
     deactivateForRun: () => 0,
   };
-  const sessionManager = new ClaudeSessionManager(
-    agentToolMcpRunSessions,
-    {} as never,
-    input.sdkClient,
-    { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
+  const sessionManager = new ClaudeSessionManager(agentToolMcpRunSessions, {} as never, input.sdkClient
   );
   // The test holds the returned session itself, so it needs no ownership callback.
   const session = await sessionManager.createRunSession(runContext, () => undefined);

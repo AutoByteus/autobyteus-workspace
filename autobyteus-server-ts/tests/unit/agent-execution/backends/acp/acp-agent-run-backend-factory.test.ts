@@ -16,7 +16,7 @@ import { AcpAgentRunBackendFactory } from "../../../../../src/agent-execution/ba
 import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend.js";
 import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-context.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
-import { getGrokWorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/grok/grok-workspace-skill-materializer.js";
+import { WorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import {
   FAKE_ACP_AGENT,
   fixturePath,
@@ -61,7 +61,7 @@ const createFactory = (fixture: string, options: {
     skills: { resolveSkillScope: () => options.skillScope ?? "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [] } as unknown as SkillService,
     workspaces: { resolveWorkingDirectory: async () => workingDirectory },
     mcpSessions: mcpSessions as unknown as AgentToolMcpRunSessionActivator,
-    skillMaterializer: (options.skillMaterializer ?? getGrokWorkspaceSkillMaterializer()) as ReturnType<typeof getGrokWorkspaceSkillMaterializer>,
+    skillMaterializer: (options.skillMaterializer ?? new WorkspaceSkillMaterializer({ runtimeLabel: "Fixture ACP", workspaceSkillsRootSegments: [".grok", "skills"] })) as WorkspaceSkillMaterializer,
   });
   const recorded = () => fs.existsSync(recordFile)
     ? fs.readFileSync(recordFile, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line)) : [];

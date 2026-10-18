@@ -2,10 +2,9 @@ import path from "node:path";
 import type { SkillService } from "../../../skills/services/skill-service.js";
 import type { ConfiguredAgentSkillBinding } from "../../../skills/domain/configured-agent-skill-binding.js";
 import type { WorkspaceCollisionPolicy } from "./workspace-skill-collision-policy.js";
-import { configuredSharedWorkspace, isWithinSharedRoot } from "../../../workspaces/shared-workspace-binding.js";
 import { RuntimeSkillProfile, type PrivateSkillRuntime } from "./runtime-skill-profile.js";
 
-/** Runtime preparation follows the common activation's binding admission. */
+/** Configured exposure is application-private on every workspace. */
 export async function preparePrivateRuntimeSkills(input: {
   runtime: PrivateSkillRuntime;
   workingDirectory: string;
@@ -15,10 +14,10 @@ export async function preparePrivateRuntimeSkills(input: {
   skills: Pick<SkillService, "resolveManagedSkillForMaterialization">;
   guard: { assertAccepting(): void; ownSkillProfile?(profile: RuntimeSkillProfile): void };
 }): Promise<RuntimeSkillProfile | null> {
-  const binding = await configuredSharedWorkspace(input.workingDirectory);
-  if (!binding) return null;
-  if (!input.memoryDir || isWithinSharedRoot(binding.mountRoot, input.memoryDir)) {
-    throw new Error("Shared runtime skills require node-private execution storage.");
+  input.guard.assertAccepting();
+  if (!input.bindings.length) return null;
+  if (!input.memoryDir || !path.isAbsolute(input.memoryDir)) {
+    throw new Error("Runtime skills require absolute application-private execution storage.");
   }
   if (!input.guard.ownSkillProfile) throw new Error("Private runtime profile requires its exact preparation owner.");
   const profile = new RuntimeSkillProfile({

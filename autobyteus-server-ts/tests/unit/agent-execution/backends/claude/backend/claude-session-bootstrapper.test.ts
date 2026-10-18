@@ -4,7 +4,6 @@ import { AgentRunContext } from "../../../../../../src/agent-execution/domain/ag
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/domain/configured-agent-skill-binding.js";
 import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
@@ -40,11 +39,7 @@ const createRunContext = (input: {
   });
 
 const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillScope: "CONFIGURED" | "ALL_INSTALLED" = "CONFIGURED") => {
-  const workspaceSkillMaterializer = { materializeConfiguredWorkspaceSkills: vi.fn(async (input: { requests?: unknown[] }) => ({ materializedSkills: [], effectiveRequests: input.requests ?? [] })) };
-  const bootstrapper = new ClaudeSessionBootstrapper(
-    { resolveWorkingDirectory: vi.fn(async () => WORKING_DIRECTORY) } as any,
-    workspaceSkillMaterializer as any,
-    {
+  const bootstrapper = new ClaudeSessionBootstrapper({ resolveWorkingDirectory: vi.fn(async () => WORKING_DIRECTORY) } as any, {
       getAgentDefinitionById: vi.fn(async () => ({
         name: "Professor agent",
         instructions: "Teach the class.",
@@ -52,10 +47,9 @@ const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillS
         skillNames: bindings.map((binding) => binding.kind === "resolved" ? binding.skill.name : binding.name),
         toolNames: [],
       })),
-    } as any,
-    { resolveSkillScope: () => skillScope, resolveConfiguredSkillBindingsForAgent: vi.fn(() => bindings) } as any,
+    } as any, { resolveSkillScope: () => skillScope, resolveConfiguredSkillBindingsForAgent: vi.fn(() => bindings) } as any
   );
-  return { bootstrapper, workspaceSkillMaterializer };
+  return { bootstrapper };
 };
 
 describe("ClaudeSessionBootstrapper", () => {
@@ -67,7 +61,7 @@ describe("ClaudeSessionBootstrapper", () => {
       createRunContext({
         autoExecuteTools: true,
         memberExecutionContext,
-      }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
+      }), { assertAccepting: () => undefined },
     );
 
     expect(runContext.runtimeContext.sessionConfig).toMatchObject({
@@ -86,57 +80,6 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Working Environment");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Bash Operating Practice");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## File And Directory Practice");
-  });
-
-  it("maps resolved and unresolved bindings to shared reconciliation requests in order", async () => {
-    const skill = new Skill({
-      name: "claude-skill",
-      description: "test",
-      content: "# Claude skill",
-      rootPath: "/tmp/claude-skill",
-    });
-    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
-      { kind: "resolved", skill },
-      { kind: "unresolved", name: "missing-skill" },
-    ]);
-
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
-      autoExecuteTools: false,
-    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
-
-    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(expect.objectContaining({
-      runId: "run-claude-standalone",
-      workingDirectory: WORKING_DIRECTORY,
-      requests: [
-        { kind: "expose-resolved", skill },
-        { kind: "reconcile-unresolved", name: "missing-skill" },
-      ],
-      workspaceCollisionPolicy: "fail",
-    }));
-    expect(runContext.runtimeContext.configuredSkills).toEqual([skill]);
-  });
-
-  it("prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)", async () => {
-    const skill = new Skill({ name: "installed-skill", description: "d", content: "# c", rootPath: "/skills/installed-skill" });
-    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
-      { kind: "resolved", skill },
-    ], "ALL_INSTALLED");
-
-    await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
-
-    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
-      expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace" }));
-  });
-  it("uses refreshed effective requests rather than the pre-preparation generation", async () => {
-    const oldSkill = new Skill({ name: "writer", description: "old", content: "old", rootPath: "/g1" });
-    const currentSkill = new Skill({ name: "writer", description: "current", content: "new", rootPath: "/g2" });
-    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([{ kind: "resolved", skill: oldSkill }]);
-    workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills.mockResolvedValue({
-      materializedSkills: [], effectiveRequests: [{ kind: "expose-resolved", skill: currentSkill }],
-    });
-    const context = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }),
-      { assertAccepting: () => undefined, ownSkill: () => undefined });
-    expect(context.runtimeContext.configuredSkills).toEqual([currentSkill]);
   });
 
 });

@@ -17,7 +17,6 @@ import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import type { AgentRunInputLifecycle } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
-import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import { CodexModelCatalog } from "../../../src/llm-management/services/codex-model-catalog.js";
@@ -254,20 +253,14 @@ const createFactory = async (input: {
       waitForIdle: inert,
     },
     codex: {
-      workspaceSkillMaterializer: {
-        materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }),
-        cleanupMaterializedWorkspaceSkills: async () => undefined,
-      } as never,
       workspaceResolver: {
         resolveWorkingDirectory: async () => input.workspaceRoot,
       } as never,
       clientManager: input.clientManager,
       threadManager: input.threadManager,
-      threadCleanup: new CodexThreadCleanup(undefined, input.clientManager),
     },
     claude: {
       workspaceResolver: inert,
-      workspaceSkillMaterializer: inert,
       sdkClient: inert,
     },
   });
@@ -348,10 +341,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-events";
@@ -451,10 +441,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-approve";
@@ -563,10 +550,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-fail";
@@ -651,10 +635,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-deny";
@@ -749,10 +730,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-auto-exec";
@@ -836,10 +814,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-steer";
@@ -929,10 +904,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(
       clientManager,
@@ -1042,10 +1014,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(
       clientManager,
@@ -1161,10 +1130,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-browser-tool";
@@ -1268,10 +1234,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = `run-codex-backend-publish-artifacts-${randomUUID()}`;
@@ -1428,10 +1391,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     clientManager = new CodexAppServerClientManager(
       (cwd) => new CodexAppServerClient({ cwd }),
     );
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexModelIdentifier(
       clientManager,

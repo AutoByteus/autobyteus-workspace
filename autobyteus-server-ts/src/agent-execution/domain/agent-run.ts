@@ -68,6 +68,8 @@ export class AgentRun {
   private readonly runInstanceId = randomUUID();
   private inputRevision = 0;
   private lastInputSignature = '';
+  /** The highest input-state revision every current listener has received. */
+  private publishedInputRevision = 0;
   private readonly compactionRecovery: AgentRunCompactionRecovery;
   private uncertainInputDispatch: ClaimedInputDispatch | null = null;
   private activeInputDispatch: Promise<void> | null = null;
@@ -160,8 +162,11 @@ export class AgentRun {
     let closed = false;
     void this.dispatchQueue.enqueue(this.runId, () => {
       if (closed) return;
-      this.listeners.add(listener); this.reconcileRecovery();
-      try { listener(this.inputStateEvent()); } catch (error) { logger.warn(`[AgentRun] snapshot listener failed: ${String(error)}`); }
+      this.reconcileRecovery();
+      const snapshot = this.inputStateEvent();
+      this.broadcastUnpublishedInputState(snapshot);
+      this.listeners.add(listener);
+      try { listener(snapshot); } catch (error) { logger.warn(`[AgentRun] snapshot listener failed: ${String(error)}`); }
     });
     return () => { closed = true; this.listeners.delete(listener); };
   }
@@ -425,7 +430,15 @@ export class AgentRun {
   }
 
   private publishInputState(): void {
-    dispatchRuntimeEvent({ listeners: this.listeners, event: this.inputStateEvent(),
+    this.broadcastUnpublishedInputState(this.inputStateEvent());
+  }
+
+  /** Sends each input-state revision once: a revision listeners already have is not repeated. */
+  private broadcastUnpublishedInputState(event: AgentRunEvent): void {
+    const revision = (event.payload as AgentInputStateDto).revision;
+    if (revision === this.publishedInputRevision) return;
+    this.publishedInputRevision = revision;
+    dispatchRuntimeEvent({ listeners: this.listeners, event,
       onListenerError: error => logger.warn(`[AgentRun] input projection listener failed: ${String(error)}`) });
   }
 

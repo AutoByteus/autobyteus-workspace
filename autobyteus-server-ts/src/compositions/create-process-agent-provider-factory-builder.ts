@@ -10,13 +10,9 @@ import {
 import type { WorkspaceManager } from "../workspaces/workspace-manager.js";
 import { SkillService } from "../skills/services/skill-service.js";
 import { createAvailableLlm } from "../agent-execution/backends/autobyteus/available-llm-construction.js";
-import { getCodexWorkspaceSkillMaterializer } from "../agent-execution/backends/codex/codex-workspace-skill-materializer.js";
 import { getCodexWorkspaceResolver } from "../agent-execution/backends/codex/codex-workspace-resolver.js";
-import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { getCodexThreadManager } from "../agent-execution/backends/codex/thread/codex-thread-manager.js";
-import { getCodexThreadCleanup } from "../agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { getClaudeWorkspaceResolver } from "../agent-execution/backends/claude/claude-workspace-resolver.js";
-import { getClaudeWorkspaceSkillMaterializer } from "../agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 import { getClaudeSdkClient } from "../runtime-management/claude/client/claude-sdk-client.js";
 import {
   createAgentProviderFactoryBuilder,
@@ -45,15 +41,11 @@ export const createProcessAgentProviderFactoryBuilder = (input: Readonly<{
       waitForIdle: waitForAgentToBeIdle,
     },
     codex: {
-      workspaceSkillMaterializer: getCodexWorkspaceSkillMaterializer(),
       workspaceResolver: getCodexWorkspaceResolver(),
-      clientManager: getCodexAppServerClientManager(),
       threadManager: getCodexThreadManager(),
-      threadCleanup: getCodexThreadCleanup(),
     },
     claude: {
       workspaceResolver: getClaudeWorkspaceResolver(),
-      workspaceSkillMaterializer: getClaudeWorkspaceSkillMaterializer(),
       sdkClient: getClaudeSdkClient(),
     },
   });
