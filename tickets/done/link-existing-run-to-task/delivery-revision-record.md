@@ -5,6 +5,8 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | code_reviewer package after CRR-008 pass | N/A | Verified (AC-007 pending the user's check on the beta); finalized | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, release-notes.md |
+| DR-002 | The user's beta decision | Finalized | Beta v1.5.6-beta.5 published (4/4 workflows) | release-deployment-report.md, beta-v1.5.6-beta.5-release-notes.md |
+| DR-003 | AC-007 run by the PM on the user's install | AC-007 pending | Refused as designed (REQ-007): Requirement Gap, routed to the Solution Designer | delivery-revision-record.md |
 
 ## Revision Entries
 
@@ -28,3 +30,15 @@
   - Result: **Completed**.
 - Notes: curated `beta-v1.5.6-beta.5-release-notes.md` applied after all workflows finished, with the generated changelog line kept. The tag, assets and pre-release flag are unchanged. Deviation: curated notes on a beta (as before).
 - AC-007: the user's check on this beta is pending. The terminal return follows it.
+
+### DR-003 — AC-007 on the user's install: refused as designed (Requirement Gap)
+
+- Trigger: the user asked delegation through the Project Task Manager instead of a manual check (2026-10-18). The PM ran the AC-007 journey in the user's app on v1.5.6-beta.5.
+- The PM chose team run `software_engineering_team_ffde3bd0879c42ec8e246d15568b8159`: the only hand-started run working on `autobyteus-10`, in the PM's workspace.
+- `delegate_task {target_team_run_id, task_id: autobyteus-10}` returned `delegated: false`: "This run has delegated runs of its own, so it can't be given a Task yet. Delegate the Task to a new task agent with recipient_address."
+- Checked on disk, read-only: the run's tree is unchanged since the upgrade (mtime 05:10:56), has no `taskAgent` section, and links one delegated run, a PM copy started 2026-10-08 that is closed. `autobyteus-10` is unchanged (IN_PROGRESS, updatedAt 2026-10-08).
+- Judgement:
+  - The product behaved as approved: REQ-007 / DEC-107 refuse a run that has delegated runs of its own (any, closed included), with a clear reason and no change (AC-004 behavior confirmed on the real install).
+  - AC-007 as written cannot pass: the user's own target run is in the refused class. DEC-107's data had already shown that 10 of 411 team runs and 3 of 25 agent runs fall in this class.
+  - Classification: **Requirement Gap**, for the Solution Designer. Options: accept this ticket with AC-007 restated and take up the follow-up (the design already lists "adopting a run that has delegated runs of its own", CM-7); or narrow that follow-up to runs whose delegated runs are all closed, which needs no re-parenting of live runs, as in this case.
+- Repository finalization and the beta stay as completed (DR-001, DR-002). Terminal return: not sent; routed to `/software_engineering_team/solution_designer`.
