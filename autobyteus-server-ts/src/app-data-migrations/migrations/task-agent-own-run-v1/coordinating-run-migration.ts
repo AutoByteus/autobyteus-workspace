@@ -1,10 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
-import type { CollaborationCommunicationMessage } from "../../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { TaskAgentMessageLogs } from "../../../run-history/store/task-agent-message-logs.js";
 import { parseTaskAgentRunMetadata } from "../../../run-history/store/task-agent-own-file-schema.js";
 import { TaskAgentOwnFiles } from "../../../run-history/store/task-agent-own-files.js";
 import { taskAgentOwnMetadata, taskAgentTeamOwnTree, taskExecutionLinkOf } from "../../../run-history/store/task-agent-own-records.js";
@@ -12,9 +10,13 @@ import { validateTaskAgentTeamTreePayload } from "../../../run-history/store/tas
 import {
   ReleasedAgentOrgCommunicationMessagesReader,
   ReleasedTeamCommunicationMessagesReader,
-  validateStandaloneRootMessages,
   type TaskExecution,
 } from "../../legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
+import {
+  ReleasedTaskAgentMessageLogs,
+  validateStandaloneRootMessages,
+  type CollaborationCommunicationMessage,
+} from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import type { ReleasedCoordinatingTree, ReleasedTaskEntry } from "./released-coordinating-trees.js";
 
 /**
@@ -57,7 +59,7 @@ const plan = (tree: ReleasedCoordinatingTree): PlannedTaskAgent[] => {
 
 export class CoordinatingRunMigration {
   private readonly files: TaskAgentOwnFiles;
-  private readonly logs: TaskAgentMessageLogs;
+  private readonly logs: ReleasedTaskAgentMessageLogs;
 
   constructor(private readonly input: Readonly<{
     memoryDir: string;
@@ -67,7 +69,7 @@ export class CoordinatingRunMigration {
     readBackWithCurrentStore(): Promise<unknown>;
   }>) {
     this.files = new TaskAgentOwnFiles(input.memoryDir, input.writer);
-    this.logs = new TaskAgentMessageLogs(input.memoryDir, input.writer);
+    this.logs = new ReleasedTaskAgentMessageLogs(input.memoryDir, input.writer);
   }
 
   private get coordinatingRun(): TaskAgentCoordinatingRun {

@@ -2,7 +2,7 @@
 // origin/personal@f2924a2b0. Owned by released app-data migrations; current runtime must not import it.
 import type { AgentOrgRunExecutionTreeSnapshot } from "./agent-org-run-execution-tree-v1.js";
 import type { AgentOrgTaskDelegationRecordsFileV1 } from "./agent-org-task-delegation-records-v1.js";
-import type { AgentOrgCommunicationMessagesFile } from "../../../agent-org-execution/persistence/agent-org-communication-messages.js";
+import type { AgentOrgCommunicationMessagesFile } from "./released-message-logs-before-append-only.js";
 import { AgentOrgExecutionIndex } from "./agent-org-execution-index-v1.js";
 
 export type AgentOrgStatePackage = Readonly<{

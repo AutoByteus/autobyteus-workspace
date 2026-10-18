@@ -32,15 +32,11 @@ export type {
 } from "./released-trees-before-task-agent-own-run/agent-org-run-execution-tree.js";
 export type {
   StandaloneRootHost,
-  StandaloneRootMessagesFile,
   StandaloneRootTreeFile,
 } from "./released-trees-before-task-agent-own-run/standalone-root-tree.js";
 export { validateTeamRunExecutionTreePayload } from "./released-trees-before-task-agent-own-run/team-run-execution-tree-schema.js";
 export { validateAgentOrgRunExecutionTreePayload } from "./released-trees-before-task-agent-own-run/agent-org-run-execution-tree-schema.js";
-export {
-  validateStandaloneRootMessages,
-  validateStandaloneRootTreePayload,
-} from "./released-trees-before-task-agent-own-run/standalone-root-tree-schema.js";
+export { validateStandaloneRootTreePayload } from "./released-trees-before-task-agent-own-run/standalone-root-tree-schema.js";
 export {
   canonicalNonRootAddress,
   isoTimestamp,

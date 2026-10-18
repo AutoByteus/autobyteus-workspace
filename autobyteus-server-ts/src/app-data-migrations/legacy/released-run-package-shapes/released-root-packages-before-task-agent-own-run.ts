@@ -9,9 +9,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME } from "../../../agent-org-execution/persistence/agent-org-communication-messages.js";
 import { validateAgentOrgStatePackage } from "../../../agent-org-execution/services/agent-org-state-package-validator.js";
-import { TEAM_COMMUNICATION_MESSAGES_FILE_NAME } from "../../../services/team-communication/team-communication-store.js";
+import { AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME, TEAM_COMMUNICATION_MESSAGES_FILE_NAME } from "./released-message-logs-before-append-only.js";
 import { AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
 import { TEAM_RUN_EXECUTION_TREE_FILE_NAME } from "../../../run-history/store/team-run-execution-tree-path.js";
 import { validateTeamRunStatePackage } from "../../../run-history/services/team-run-state-package-validator.js";

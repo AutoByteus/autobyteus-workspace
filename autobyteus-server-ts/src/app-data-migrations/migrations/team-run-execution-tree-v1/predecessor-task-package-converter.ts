@@ -9,7 +9,7 @@ import { TeamExecutionIndex } from "./team-execution-v1-index.js";
 import { addTaskExecutionToTree } from "./team-run-execution-tree-v1-mutator.js";
 import type { TaskDelegationRecordV1, TaskDelegationRecordsSnapshot, TaskUpdate } from "../../legacy/released-run-package-shapes/team-task-delegation-record-v1.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../../services/team-communication/team-communication-messages-file.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { validateTeamRunStatePackage } from "./team-run-state-package-v1-validator.js";
 import {
   addressKey, array, object, parseAddress, referencePaths, text,

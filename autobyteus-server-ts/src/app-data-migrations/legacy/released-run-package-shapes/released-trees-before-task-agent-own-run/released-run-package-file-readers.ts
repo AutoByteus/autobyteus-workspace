@@ -6,14 +6,16 @@
 // `null`. Owned by released app-data migrations; current runtime must not import it.
 
 import fs from "node:fs/promises";
-import { getAgentOrgCommunicationMessagesPath } from "../../../../agent-org-execution/persistence/agent-org-communication-messages-store.js";
-import type { AgentOrgCommunicationMessagesFile } from "../../../../agent-org-execution/persistence/agent-org-communication-messages.js";
-import { validateAgentOrgCommunicationMessages } from "../../../../agent-org-execution/persistence/agent-org-communication-messages-schema.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../../run-history/store/agent-org-run-execution-tree-path.js";
 import { getTeamRunExecutionTreePath } from "../../../../run-history/store/team-run-execution-tree-path.js";
-import type { TeamCommunicationMessagesFile } from "../../../../services/team-communication/team-communication-messages-file.js";
-import { validateTeamCommunicationMessagesPayload } from "../../../../services/team-communication/team-communication-messages-schema.js";
-import { getTeamCommunicationMessagesPath } from "../../../../services/team-communication/team-communication-store.js";
+import {
+  getAgentOrgCommunicationMessagesPath,
+  getTeamCommunicationMessagesPath,
+  validateAgentOrgCommunicationMessages,
+  validateTeamCommunicationMessagesPayload,
+  type AgentOrgCommunicationMessagesFile,
+  type TeamCommunicationMessagesFile,
+} from "../released-message-logs-before-append-only.js";
 import type { AgentOrgRunExecutionTreeFile } from "./agent-org-run-execution-tree.js";
 import { validateAgentOrgRunExecutionTreePayload } from "./agent-org-run-execution-tree-schema.js";
 import { getStandaloneRootTreePath } from "../../../../standalone-agent-run-root/persistence/standalone-root-tree-path.js";

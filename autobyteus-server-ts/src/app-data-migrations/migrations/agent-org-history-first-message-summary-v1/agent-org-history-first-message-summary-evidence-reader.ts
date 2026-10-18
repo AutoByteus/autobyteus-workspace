@@ -8,7 +8,7 @@ import {
 } from "autobyteus-ts/memory/store/raw-trace-archive-manifest.js";
 import { getAgentTeamAddressBasename } from "../../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
-import type { AgentOrgCommunicationMessagesFile } from "../../../agent-org-execution/persistence/agent-org-communication-messages.js";
+import type { AgentOrgCommunicationMessagesFile } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import type { AgentOrgTaskDelegationRecordsFileV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1.js";
 import type { AgentOrgInternalDeliveryEvidence } from "./agent-org-history-first-message-summary-classifier.js";
 
