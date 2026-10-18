@@ -36,3 +36,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: typecheck pass; unit 5895 passed with one load timeout that passes alone (IMP-02b); integration 396 passed, with one test updated to the designed outcome and passing (IMP-03b); details in the handoff's Checks Run.
 - Next recipient or routing: `/software_engineering_team/code_reviewer`.
 - Remaining limitations or risks: R-2, R-3, DEC-008 (handoff Known Risks); E2E suites, AC-008 and AC-009 not run here. Follow-up: an unused import in `team-communication-projection-address-migration.ts` (not touched).
+
+### Review pass recorded — CRR-001 (no new implementation round)
+
+- Code review of IR-001 passed (`code-review-report.md`, `code-review-revision-record.md`, CRR-001); the reviewer routed the package to `/software_engineering_team/api_e2e_engineer`.
+- Non-blocking CR-001 (stale doc comment naming `communication_messages.json` at `src/standalone-agent-run-root/domain/standalone-root-tree.ts:29`) is deferred to the next implementation round that touches the code, as the reviewer asked.
