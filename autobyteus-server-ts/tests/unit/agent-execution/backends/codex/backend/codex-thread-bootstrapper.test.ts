@@ -123,7 +123,6 @@ const createAgentToolMcpDescriptor = (enabledTools: string[] = ["send_message_to
 const createBootstrapper = (input: {
   skills: Skill[];
   bindings?: ConfiguredAgentSkillBinding[];
-  requestImplementation: () => Promise<unknown>;
   toolNames?: string[];
   agentToolsDescriptor?: AgentToolMcpDescriptor;
   skillScope?: "CONFIGURED" | "ALL_INSTALLED";
@@ -225,7 +224,7 @@ describe("CodexThreadBootstrapper", () => {
           },
         }) : null;
       const { bootstrapper } = createBootstrapper({
-        skills: [], requestImplementation: async () => ({ data: [] }),
+        skills: [],
       });
       const created = await bootstrapper.bootstrapForCreate(createRunContext({ memberExecutionContext }), { assertAccepting: () => undefined });
       const restored = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ memberExecutionContext }), { assertAccepting: () => undefined });
@@ -266,7 +265,6 @@ describe("CodexThreadBootstrapper", () => {
 
     const { bootstrapper } = createBootstrapper({
       skills: [],
-      requestImplementation: async () => ({ data: [] }),
     });
     const runContext = await bootstrapper.bootstrapForCreate(
       createRunContext({ autoExecuteTools: true }), { assertAccepting: () => undefined },
@@ -281,7 +279,6 @@ describe("CodexThreadBootstrapper", () => {
 
     const { bootstrapper } = createBootstrapper({
       skills: [],
-      requestImplementation: async () => ({ data: [] }),
     });
     const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: true }), { assertAccepting: () => undefined });
 
@@ -296,7 +293,6 @@ describe("CodexThreadBootstrapper", () => {
 
     const { bootstrapper } = createBootstrapper({
       skills: [],
-      requestImplementation: async () => ({ data: [] }),
     });
     const memberExecutionContext = createMemberExecutionContext();
 
@@ -339,7 +335,6 @@ describe("CodexThreadBootstrapper", () => {
 
     const { bootstrapper } = createBootstrapper({
       skills: [],
-      requestImplementation: async () => ({ data: [] }),
     });
     const memberExecutionContext = createMemberExecutionContext();
 
@@ -358,7 +353,6 @@ describe("CodexThreadBootstrapper", () => {
   it("normalizes llmConfig service_tier into Codex thread serviceTier", async () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(
@@ -377,7 +371,6 @@ describe("CodexThreadBootstrapper", () => {
   it("passes gpt-5.6-luna to Codex thread configuration unchanged", async () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
@@ -396,7 +389,6 @@ describe("CodexThreadBootstrapper", () => {
     async (submittedEffort, expectedEffort) => {
       const { bootstrapper } = createBootstrapper({
         skills: [],
-        requestImplementation: async () => ({ data: [] }),
       });
 
       const runContext = await bootstrapper.bootstrapForCreate(
@@ -422,7 +414,6 @@ describe("CodexThreadBootstrapper", () => {
     async (_label, llmConfig) => {
       const { bootstrapper } = createBootstrapper({
         skills: [],
-        requestImplementation: async () => ({ data: [] }),
       });
 
       const runContext = await bootstrapper.bootstrapForCreate(
@@ -443,7 +434,6 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper: noBrowserToolBootstrapper } = createBootstrapper({
       skills: [],
       toolNames: [],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const noBrowserToolRunContext = await noBrowserToolBootstrapper.bootstrapForCreate(
@@ -459,7 +449,6 @@ describe("CodexThreadBootstrapper", () => {
       skills: [],
       toolNames: ["open_tab"],
       agentToolsDescriptor: createAgentToolMcpDescriptor([]),
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const noBridgeRunContext = await noBridgeBootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
@@ -471,7 +460,6 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper, agentToolMcpRunSessions } = createBootstrapper({
       skills: [],
       toolNames: ["send_message_to"],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
@@ -508,7 +496,6 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper, agentToolMcpRunSessions } = createBootstrapper({
       skills: [],
       toolNames: ["read_application_state"],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
@@ -538,7 +525,6 @@ describe("CodexThreadBootstrapper", () => {
         ...createAgentToolMcpDescriptor(),
         serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-restored",
       },
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext(), { assertAccepting: () => undefined });
@@ -560,7 +546,6 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper, agentToolMcpRunSessions } = createBootstrapper({
       skills: [skill],
       toolNames: ["send_message_to"],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     await expect(bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined })).rejects.toThrow(
@@ -577,7 +562,6 @@ describe("CodexThreadBootstrapper", () => {
       skills: [],
       toolNames: ["open_tab"],
       agentToolsDescriptor: createAgentToolMcpDescriptor([]),
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
@@ -593,7 +577,6 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
       toolNames: ["send_message_to", "open_tab", "read_page"],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
@@ -612,7 +595,6 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
       toolNames: ["publish_artifacts"],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
@@ -631,7 +613,6 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
       toolNames: ["generate_image", "generate_speech", "read_file"],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
@@ -650,7 +631,6 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
       toolNames: ["publish_artifact"],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
@@ -662,7 +642,6 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
       toolNames: ["publish_artifacts", "publish_artifact"],
-      requestImplementation: async () => ({ data: [] }),
     });
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
