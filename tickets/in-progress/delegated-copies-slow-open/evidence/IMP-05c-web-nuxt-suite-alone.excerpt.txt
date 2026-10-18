@@ -1,0 +1,14 @@
+# Excerpt of IMP-05c-web-nuxt-suite-alone.log (full log next to this file)
+# Check: IMP-05c-web-nuxt-suite-alone
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open && pnpm -C autobyteus-web test:nuxt --run)
+# Commit: 54e5356ae6 (docs(collaboration): copies load on open; hub-scoped copy artifacts)
+# Working tree: 0 tracked changes
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T11:42:19Z
+# ----
+# ---- result lines
+      Tests  4490 passed | 5 skipped (4495)
+   Duration  811.88s (transform 82.88s, setup 5542.72s, collect 489.48s, tests 110.50s, environment 465.39s, prepare 312.43s)
+   Start at  13:42:22
+ Test Files  634 passed | 2 skipped (636)
+# ---- exit code: 0

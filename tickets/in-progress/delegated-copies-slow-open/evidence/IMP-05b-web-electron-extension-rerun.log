@@ -1,0 +1,41 @@
+# Check: IMP-05b-web-electron-extension-rerun
+# Command: (cd autobyteus-web && pnpm test:nuxt --run electron/extensions/__tests__/managedExtensionService.spec.ts)
+# Commit: 54e5356ae6 (docs(collaboration): copies load on open; hub-scoped copy artifacts)
+# Working tree: 0 tracked changes
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.1
+# Date: 2026-10-18T11:38:17Z
+# ----
+
+> autobyteus@1.5.6-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run electron/extensions/__tests__/managedExtensionService.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-web
+
+stderr | electron/extensions/__tests__/managedExtensionService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | electron/extensions/__tests__/managedExtensionService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts (3 tests) 5318ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  3768ms
+   ✓ ManagedExtensionService > preserves enabled state and language mode across reinstall  991ms
+   ✓ ManagedExtensionService > marks a broken installation as requiring attention  559ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  13:38:25
+   Duration  23.57s (transform 9.57s, setup 16.57s, collect 167ms, tests 5.32s, environment 423ms, prepare 458ms)
+
+# ---- exit code: 0

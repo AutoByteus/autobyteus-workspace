@@ -1,0 +1,21 @@
+# Check: IMP-09 (summary of IMP-09-browser-collapse-probe/evidence.json)
+# Command: (cd autobyteus-web && pnpm test:e2e:delegated-team-default-collapse --output-dir <ticket>/evidence/IMP-09-browser-collapse-probe)
+# Commit: 54e5356ae6; server dist built from it (pnpm -C autobyteus-server-ts build)
+# Environment: macOS 26.5.2, node v22.23.1, headless 155.0.8059.84
+# Date: 2026-10-18T11:56:56.681Z
+# Probe result: Pass; cases: B-001=Pass, P-001=Pass, B-002=Pass, B-003=Pass, B-004=Pass, B-006=Pass, B-005=Pass
+# Browser errors: 0; failed requests: 132 (all net::ERR_ABORTED on /_nuxt/ dev modules during navigation, none with a GraphQL operation)
+# Cleanup: {"browserClosed": true, "frontend": {"pid": 40761, "status": "terminated", "exit": "SIGTERM"}, "backend": {"pid": 39935, "status": "terminated", "exit": 0}, "dataRootRemoved": true, "backendPortClosed": true, "frontendPortClosed": true}
+# Hub project_task_manager_probe_333b4b5a4de7469985b347b154ce0e9e: 7 task Teams, 42 child agents
+# ---- every GraphQL read of copy details or artifacts during the whole probe (operation, run) -> count
+  15  GetAgentRunCollaboration  host
+   5  GetAgentRunCollaboration  project_task_manager_probe_61aed1ddf0aa49f7bf87a81d8dd65b8f
+   5  GetAgentRunCollaborationMemberFileChanges  implementation_engineer_67dd057a96bd4d67af145e7eb70d1f4d
+   3  GetAgentRunCollaborationMemberFileChanges  solution_designer_231c3c826f2948fba7ddd752db5e924e
+   5  GetAgentRunCollaborationMemberProjection  implementation_engineer_67dd057a96bd4d67af145e7eb70d1f4d
+   3  GetAgentRunCollaborationMemberProjection  solution_designer_231c3c826f2948fba7ddd752db5e924e
+  30  GetRunFileChanges  host
+# ---- P-001 cold/warm samples: member requests per cold host selection
+cold-frontend-store-1: rows 15.2 ms; GetAgentRunCollaborationMemberProjection 1; GetAgentRunCollaborationMemberFileChanges 1; requests {"GetTaskWorkerTasks": 3, "GetRunProjection": 2, "GetAgentRunResumeConfig": 2, "GetRunFileChanges": 2, "GetAgentRunCollaboration": 2, "GetSkills": 1, "GetSkillImprovementCapability": 1, "GetAgentRunCollaborationMemberProjection": 1, "GetAgentRunCollaborationMemberFileChanges": 1}
+cold-frontend-store-2: rows 12.4 ms; GetAgentRunCollaborationMemberProjection 1; GetAgentRunCollaborationMemberFileChanges 1; requests {"GetTaskWorkerTasks": 3, "GetRunProjection": 2, "GetAgentRunResumeConfig": 2, "GetRunFileChanges": 2, "GetAgentRunCollaboration": 2, "GetSkills": 1, "GetSkillImprovementCapability": 1, "GetAgentRunCollaborationMemberProjection": 1, "GetAgentRunCollaborationMemberFileChanges": 1}
+cold-frontend-store-3: rows 13.2 ms; GetAgentRunCollaborationMemberProjection 1; GetAgentRunCollaborationMemberFileChanges 1; requests {"GetTaskWorkerTasks": 3, "GetRunProjection": 2, "GetAgentRunResumeConfig": 2, "GetRunFileChanges": 2, "GetAgentRunCollaboration": 2, "GetSkills": 1, "GetSkillImprovementCapability": 1, "GetAgentRunCollaborationMemberProjection": 1, "GetAgentRunCollaborationMemberFileChanges": 1}
