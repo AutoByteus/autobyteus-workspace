@@ -22,7 +22,7 @@ export const RELEASED_APPEND_ONLY_ROOT_MESSAGE_LOG_FILE = /^(team|agent_org)_com
 const escape = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** The log's files in read order: sealed files by index, then the active file. */
-export const listReleasedAppendOnlyMessageLogFiles = async (
+const listReleasedAppendOnlyMessageLogFiles = async (
   dir: string,
   baseName: ReleasedAppendOnlyMessageLogBaseName,
 ): Promise<string[]> => {

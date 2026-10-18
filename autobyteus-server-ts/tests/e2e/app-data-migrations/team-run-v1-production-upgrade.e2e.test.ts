@@ -772,6 +772,13 @@ const countTokenRows = (databasePath: string): { legacy: number; current: number
 };
 
 /** The end of the startup chain: the Org-like released root is an AgentOrg V1 package with all content. */
+/** A run's message log in the append-only layout: sealed files in index order, then the active file. */
+const readMessageLog = (dir: string, baseName: string): unknown[] => {
+  const names = fs.readdirSync(dir).filter((name) => new RegExp(`^${baseName}_(\\d{6}|active)\\.jsonl$`).test(name));
+  const ordered = [...names.filter((name) => !name.endsWith("_active.jsonl")).sort(), ...names.filter((name) => name.endsWith("_active.jsonl"))];
+  return ordered.flatMap((name) => fs.readFileSync(path.join(dir, name), "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line) as unknown));
+};
+
 const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>): void => {
   const { rootTeamRunId, supported } = scenario;
   expect(fs.existsSync(supported.metadataPath)).toBe(false);
@@ -840,11 +847,10 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
     agentDefinitionId: "autobyteus-memory-compactor",
     taskAgent: { coordinatingRun: { kind: "agent_org", runId: rootTeamRunId }, address: "/research/reviewer", origin: "configured_place" },
   });
-  const messages = JSON.parse(fs.readFileSync(path.join(supported.orgDir, "agent_org_communication_messages.json"), "utf8"));
+  // Startup ends with the append-only message log conversion: the org's log is JSON Lines.
+  const messages = { messages: readMessageLog(supported.orgDir, "agent_org_communication_messages") };
+  expect(fs.existsSync(path.join(supported.orgDir, "agent_org_communication_messages.json"))).toBe(false);
   expect(messages).toMatchObject({
-    schemaVersion: 1,
-    subjectKind: "agent_org",
-    orgRunId: rootTeamRunId,
     messages: [
       expect.objectContaining({
         messageId: `${rootTeamRunId}-address-message`,
@@ -942,10 +948,10 @@ const assertV2TeamPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>)
       ]),
     },
   });
-  const messages = JSON.parse(fs.readFileSync(path.join(scenario.supported.rootDir, "team_communication_messages.json"), "utf8"));
+  // Startup ends with the append-only message log conversion: the team's log is JSON Lines.
+  const messages = { messages: readMessageLog(scenario.supported.rootDir, "team_communication_messages") };
+  expect(fs.existsSync(path.join(scenario.supported.rootDir, "team_communication_messages.json"))).toBe(false);
   expect(messages).toMatchObject({
-    schemaVersion: 1,
-    rootTeamRunId: scenario.rootTeamRunId,
     messages: [
       expect.objectContaining({
         senderAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
