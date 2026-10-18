@@ -22,6 +22,8 @@ import {
   buildAgentCollaborationMemberFinalContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
+import { useRunHistoryRetiredRunsStore } from '~/stores/runHistoryRetiredRuns'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
 
 /**
  * The client side of standalone runs' collaboration roots: the task children brought in with
@@ -68,6 +70,12 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     if (selected && !context.isListed(selected)) selection[hostRunId] = null
   }
 
+  /** A run that became this host's task agent (e.g. adopted) leaves its own sidebar group at once (SR-009). */
+  const retireTopLevelRow = (execution: Readonly<{ agentRunId: string } | { teamRunId: string }>) => {
+    useRunHistoryRetiredRunsStore().retireTaskExecution(execution)
+    useRunHistoryStore().refreshRunNavigationTopology('task-execution-started')
+  }
+
   const attach = (hostRunId: string): AgentRunCollaborationStreamingService => {
     assertNotTerminating(hostRunId)
     inspections.delete(hostRunId)
@@ -85,6 +93,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       onInactive: () => { if (isCurrent()) services.delete(hostRunId) },
       reportError: (message) => { if (isCurrent()) errors[hostRunId] = message },
       onTaskExecutionsClosed: (context) => { if (isCurrent()) returnToHostWhenUnlisted(hostRunId, context) },
+      onTaskExecutionStarted: (execution) => { if (isCurrent()) retireTopLevelRow(execution) },
     })
     services.set(hostRunId, service)
     service.connect()

@@ -874,6 +874,11 @@ Task line, idle-shut-down and woken by it, stopped and removed from the
 sidebar on DONE or CANCELLED, reactivated by it. No file moves or is copied.
 An adopted team's members may remember their old `/` addresses; their
 handoff rules and restored team context give the new ones.
+In the web sidebar a run the user opened this session leaves its own group at
+once when the delegator's collaboration stream reports its
+`task_execution_started`, and otherwise at the next history read that no longer
+lists it (design SR-009); its open conversation stays usable under the
+delegator.
 
 **Stopped halfway.** Every step is recognized from the files: the same
 delegator's retry continues at the first missing step (the run's open entry is

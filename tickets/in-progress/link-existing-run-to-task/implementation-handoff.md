@@ -7,15 +7,16 @@ base `origin/personal` `2f211340ee`.
 ## Upstream Artifact Package
 
 - Upstream review applicability and handoff-rule result: independent architecture review selected (Large / High);
-  ARCH-REV-004 `Pass` for SR-008 (after the implementer's DI-001). Implementation routes to Code Review.
+  ARCH-REV-004 `Pass` for SR-008 (after the implementer's DI-001); ARCH-REV-005 `Pass` for SR-009 (the sidebar after
+  adoption, CRR-005 F-002). Implementation routes to Code Review.
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/requirements-doc.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/investigation-notes.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/solution-revision-record.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/design-spec.md` (SR-008)
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/design-spec.md` (SR-009; §Sidebar After Adoption)
 - Supplemental task artifacts: `implementation-design-impact.md` (DI-001, resolved in SR-008) in the same folder
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/architecture-review-revision-record.md`
-- Triggering rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/code-review-report.md` (CRR-003, failure-origin review of API-REV-001: `api-e2e-execution-report.md` in the same folder)
+- Triggering rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/code-review-report.md` (CRR-005, failure-origin review of API-REV-002 F-002 → SR-009; earlier CRR-003 for API-REV-001)
 
 ## Current Implementation Summary
 
@@ -27,14 +28,14 @@ leaves, and the Task is delivered as the next message of its own conversation. E
 so a stopped adoption is finished by the same delegator's retry; an unfinished adoption is undone when its Task is
 closed or deleted, or its Project deleted. Nothing is moved, copied or deleted.
 
-- Implementation cycle: `Rework` (IR-003: Local Fix for CRR-003 F-001, F-003; IR-002: Local Fix for CRR-001 CR-001..CR-003; IR-001 initial baseline)
+- Implementation cycle: `Rework` (IR-004: SR-009 for CRR-005 F-002; IR-003: Local Fix for CRR-003 F-001, F-003; IR-002: Local Fix for CRR-001 CR-001..CR-003; IR-001 initial baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
-- Related solution revision IDs: `SR-008`
-- Related architecture-review revision IDs: `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001` (Fail, Local Fix), `CRR-002` (Pass), `CRR-003` (Fail, Local Fix: F-001, F-003; F-002 held)
-- Related API/E2E / delivery revision IDs: `API-REV-001` / `N/A`
-- Triggering finding IDs: `F-001`, `F-003` (IR-003); `CR-001`, `CR-002`, `CR-003` (IR-002); DI-001 was raised before implementation and resolved in SR-008
+- Current implementation revision ID: `IR-004`
+- Related solution revision IDs: `SR-008`, `SR-009`
+- Related architecture-review revision IDs: `ARCH-REV-004`, `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-001` (Fail, Local Fix), `CRR-002` (Pass), `CRR-003` (Fail, Local Fix: F-001, F-003; F-002 held), `CRR-004` (Pass), `CRR-005` (Design Impact: F-002)
+- Related API/E2E / delivery revision IDs: `API-REV-001`, `API-REV-002` / `N/A`
+- Triggering finding IDs: `F-002` (IR-004); `F-001`, `F-003` (IR-003); `CR-001`, `CR-002`, `CR-003` (IR-002); DI-001 was raised before implementation and resolved in SR-008
 
 ## Routing Classification (Mandatory)
 
@@ -62,6 +63,7 @@ closed or deleted, or its Project deleted. Nothing is moved, copied or deleted.
 | BEH-002, BEH-003 / REQ-003, REQ-004; AC-003 | Shown, coordinated and closed like any task agent; nothing deleted | existing delegated-run paths (the run is in the delegator's tree; started event published at commit) | Unchanged code; DONE stop tested at root level; the agent run's empty collaboration package is kept |
 | Agent-facing texts | `delegate_task` description and run-id parameters | `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` | Implemented |
 | REQ-002, adoption step 5 (F-003) | The Task as the adopted run's next work, without claiming an earlier Task | `task-execution-input.ts` `buildAdoptedRunTaskMessage`, chosen by `deliverAssignedTask` for an adoption (also a resumed one); a returning copy keeps `buildExistingCopyTaskMessage` | Implemented (IR-003). First line: `New Task assigned to you: <Task key>. This is the work to do now.` (then the unchanged body). The returning-copy text is unchanged: `New Task assigned to you: <Task key>. Your previous Task is closed; this is the work to do now.` |
+| SR-009 §Sidebar After Adoption (F-002); AC-001, AC-003 for a run opened this session | A run that became a task agent is never a top-level row; its context stays usable | Web: `stores/runHistoryRetiredRuns.ts` (new: rule 1 `retireTaskExecution`, rule 2 `reconcileHistoryRead`, `withoutRetiredRuns`); `runHistoryNavigationStoreActions.ts` (projection built without retired runs); `runHistoryLoadActions.ts` (each workspace read reconciles); `agentRunCollaborationStreamingService.ts` (`onTaskExecutionStarted`); `agentRunCollaborationStore.ts` (retires + refreshes the topology) | Implemented (IR-004); see Important Assumptions (4)–(6) |
 | REQ-004 with BEH-002 (F-001) | An adopted run's usage is attributed under its current root; its earlier records are left as they are | `token-usage/services/token-usage-run-accumulator.ts`: `run_summary_after_event.root_team_run_id` is the observation's root (current execution context), not the stored record's | Implemented (IR-003). The PM's Agent root no longer rejects an adopted team member's `TOKEN_USAGE_UPDATED` (ADO-4). The stored record keeps the earlier team root |
 | Docs | `projects.md` §Ownership, new §A Task for a run the user started; `collaboration_model.md` CM-6 row | docs | Implemented |
 
@@ -98,6 +100,24 @@ revert, service hooks), `ProjectService.deleteProject`, catalogs, own files, com
 3. **Task delete.** A deleted Task's entries stay as they are today (open entries stay open). For an unfinished
    adoption the undo also closes its entry (`closeEntry`), so the restored run belongs to no Task and can be adopted
    again. Entries that are not unfinished adoptions are untouched.
+4. **Rule 1 is wired for the Agent root only (SR-009).** The design says "any open root's collaboration stream". Only
+   an Agent root adopts (DEC-108). A Team or Org root's `task_execution_started` names only a new copy, and a new copy
+   is never a top-level context, so a hook there would have no observable effect. Rule 2 still covers every case.
+   Adding the hook to those roots would be one line each if wanted (`teamExecutionViewState.ts`,
+   `agentOrgStreamingService.ts`; the latter is at 474 effective lines).
+5. **Rule 2 respects the agent history window.** Agent history lists only the newest `limitPerAgent` runs per agent
+   (6 on desktop, 5 on mobile); team history lists every run except archived inactive ones. "A later read no longer
+   lists it" therefore counts only when that read would have listed the run: its agent group came back with fewer
+   than `limitPerAgent` rows, or the run is newer than the oldest listed row. Without this, an open run of a busy agent
+   would leave its group as soon as newer runs pushed it out of the window. Retirement by rule 2 is undone if a later
+   read lists the run again. Rule 1 retirement is permanent for the session, because a started task agent never
+   returns to the history.
+6. **Archive (the reviewer's "please confirm").** The premise does not hold in the current code. Team archive already
+   drops the local team context: `archiveTeamRunRecord` → `cleanupStoredTeamRunLocalState` → `removeTeamContext`,
+   asserted by the existing `runHistoryStore.spec.ts` "archiveTeamRun removes local team state …". Agent archive does
+   the same through `cleanupStoredRunLocalState`. So an archived open run already left its group at once, and rule 2
+   changes nothing there. Covered by "archiving an open team run takes it out of its group, and the next read keeps
+   it out" (passes with and without the change). Rule 2's only practical new effect is adoption.
 - The busy probe treats `running` and `initializing` as a running turn (DEC-104).
 - A hand-started agent run that was prepared but never started (no `startedAt`) is refused ("never started"): it has no
   conversation to continue, and its own file could not be read back as a task agent. Not in the design's refusal list;
@@ -107,9 +127,10 @@ revert, service hooks), `ProjectService.deleteProject`, catalogs, own files, com
 
 ## Known Risks
 
-- **History change publication.** SR-008 says "history change published" at step 4. The server has no history push;
-  the web re-reads history. The adopted run appears under the delegator at once (its `task_execution_started` event);
-  its own-group row leaves on the sidebar's next history read. To confirm in the real-app check (R-1 accepted).
+- **History change publication (F-002, resolved by SR-009 / IR-004).** The server has no history push. The renderer
+  now retires the adopted run's own-group row on the delegator's `task_execution_started` (measured at 3 ms in the
+  rendered check), or at the next history read (the sidebar re-reads every 5 s; about 4 s measured). A selected run
+  that is retired keeps its open conversation in the centre pane.
 - R-2 (a partial adoption shows `not_confirmed` until retried) and R-3 (an adopted team's members remember `/`
   addresses) as accepted in the design.
 - Memory page Teams list: an adopted team run leaves it (8641c0ac FU-1), as the design notes.
@@ -135,7 +156,9 @@ revert, service hooks), `ProjectService.deleteProject`, catalogs, own files, com
 - Shared structures remain tight: `Yes` (no new persisted field; the adopted run's records are a catalog task agent's).
 - Size guardrails: `Yes`. `project-task-service.ts` 498 → 490 non-empty lines and `agent-run-history-catalog-service.ts`
   499 → 465 (both were over the guardrail's spirit before; code moved to new owned files). Lifecycle 446 → 487.
-  Standalone root 442.
+  Standalone root 442. IR-004 web: new `runHistoryRetiredRuns.ts` 108;
+  `runHistoryLoadActions.ts` 462 → 464, `agentRunCollaborationStore.ts` 288, streaming service 252,
+  `runHistoryNavigationStoreActions.ts` 62 (effective non-empty lines). `runHistoryStore.ts` (498) is untouched.
 
 ## Persisted Data Transition Check
 
@@ -147,6 +170,34 @@ revert, service hooks), `ProjectService.deleteProject`, catalogs, own files, com
 - The worktree needed `pnpm install` and `pnpm prebuild` (autobyteus-ts build, Prisma client) before typecheck/tests.
 
 ## Local Implementation Checks Run
+
+IR-004 (SR-009, F-002):
+- Web unit tests:
+  - `stores/__tests__/runHistoryStore.spec.ts` › "top-level rows of runs that left the history", through the real
+    `fetchTree` and projection:
+    - rule 2 for an open agent run and an open team run (dropped, then shown again when listed);
+    - the per-agent window (kept while only pushed out; dropped once a read would have listed it);
+    - a run no read listed is never dropped;
+    - rule 1 before any read, where a stale read can't bring the run back;
+    - archive of an open team.
+    
+    Without the change, the three rule cases fail and the two preserved-behavior cases pass.
+  - `agentRunCollaborationStoreClosure.spec.ts`: the Agent root's `onTaskExecutionStarted` retires agent and team ids
+    and refreshes the topology; a released stream changes nothing.
+  - `agentRunCollaborationStreamingService.spec.ts`: a `task_execution_started` frame reaches the owner and the stream
+    still reloads.
+- `agentRunCollaborationDisclosure.spec.ts`: its `runHistoryStore` mock gained `refreshRunNavigationTopology`, which
+  the new hook calls.
+  - Cause: without it, the hook threw before the reload.
+  - Ordering: the stream now notifies only after its own reload handling, so the stream never depends on the sidebar
+    hook.
+- Web `pnpm test:nuxt --run`: 632 files / 4480 tests passed (2 files / 3 tests skipped). Summary:
+  `evidence/implementation/IR-004-web-unit.log`.
+- Guards: `guard:web-boundary`, `guard:localization-boundary` and `audit:localization-literals` all exit 0.
+- Web typecheck (`tsc -p .nuxt/tsconfig.json`): 7997 errors with and without the change (environmental at base, e.g.
+  `@apollo/client/core` types). None in a new or changed line.
+- Server unchanged; the round-4 requirement holds: Project delete → `afterDelete` →
+  `ProjectTaskService.afterProjectDeleted` → `revertUnfinishedAdoptions` (since IR-001; `task-execution-adoption.test.ts`).
 
 IR-003 (after CRR-003):
 - F-001: new case in `tests/unit/token-usage/services/token-usage-run-accumulator.test.ts`, "claims the observation's
@@ -209,10 +260,34 @@ IR-001:
 
 ## Frontend Rendered-Result Check
 
-- Not applicable for code (no web change). The sidebar / board behaviour of an adopted run is the existing
-  delegated-run rendering; checked in the real-app run (below).
+- **Applicable** (IR-004 changes the Workspaces sidebar).
+- **Surface:** a local check built on the `task-closure-tree` browser probe's own stack, run in a clean env:
+  - Nuxt dev, the worktree's built backend (`dist/app.js` built from this commit's server source), fresh headless
+    Chrome, a test-owned data root;
+  - the scripted AGY CLI, so the PM calls the real `delegate_task` / `update_task` / `send_message_to`.
+  
+  It is implementation self-validation, not a durable probe case; the script is kept as
+  `evidence/implementation/IR-004-adoption-sidebar-check/ir004-adoption-sidebar-check.mjs.txt`.
+- **Journey and results:**
+  - The user had opened a hand-started agent run (from its history row) and the PM.
+  - The PM adopts it:
+    - its own-group row left 3 ms after the link (rule 1);
+    - its "Release Notes Writer" group, now empty, went too;
+    - it appears under the PM with its Task line;
+    - it stays out of its own group after a history read.
+  - DONE removed it from under the PM; reopening and a message brought it back there, never to its own group.
+  - A second page opened only the hand-started team run (TEAMS). On adoption the team row left at the next history
+    read (about 4 s, rule 2); the conversation stayed readable in the centre pane.
+  - A reload shows neither run in its own group.
+  - No browser errors; cleanup receipt complete.
+- **Evidence:** `evidence/implementation/IR-004-adoption-sidebar-check/`: `evidence.json` and screenshots 01–06; the
+  backend log was removed after the pass.
+- **Not covered here:** the Electron shell and real models (D-1, API/E2E).
 
 ## Downstream Coverage Hints / Suggested Scenarios
+
+- IR-004 (CRR-005's verification): web tests, guards, and the D-1 desktop check "adopt a run opened this session, then
+  DONE and reopen". A durable browser-probe case could reuse the local check's journey; that is API/E2E's choice.
 
 - Real-app check on an isolated instance with hand-built data (AC-001..003): a PM run, a hand-started team run and agent
   run in its workspace, a Project Task; the PM adopts each; the run leaves its group and appears under the PM with the

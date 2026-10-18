@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-001 | Architecture Reviewer / ARCH-REV-004 Pass on design-spec SR-008 / round 1 | N/A (DI-001 resolved before code) | `Initial Baseline` | SR-008, ARCH-REV-004 | Adoption implemented; ready for Code Review |
 | IR-002 | Code Reviewer / code-review-report.md / CRR-001 round 1 | CR-001, CR-002, CR-003 | `Local Fix` | SR-008, ARCH-REV-004, CRR-001 | Today's refusal kept for runs that are no run the user started; refusal e2e run; unused declarations removed; doc step wording |
 | IR-003 | Code Reviewer / code-review-report.md / CRR-003 failure-origin review of API-REV-001 | F-001, F-003 (F-002 held) | `Local Fix` | SR-008, ARCH-REV-004, CRR-003, API-REV-001 | Live token summary claims the observation's current root; adoption-specific Task message |
+| IR-004 | Architecture Reviewer / ARCH-REV-005 Pass of SR-009 (after CRR-005, API-REV-002 F-002) | F-002 | `Design Revision Implementation` | SR-009, ARCH-REV-005, CRR-005, API-REV-002 | Renderer retires an adopted run's own-group row: at once on `task_execution_started`, else at the next history read |
 
 ## Revision Entries
 
@@ -76,3 +77,45 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: build typecheck clean; the new accumulator case fails without the fix (`expected 'hand-started-team' to be null`) and passes with it; `vitest run tests/unit` 724 files / 5883 tests passed (4 files / 7 tests skipped); API/E2E's ADO file (uncommitted, theirs) in a clean env: 4/4 passed including ADO-4 (`evidence/implementation/IR-003-ADO-e2e.log`).
 - Next recipient or routing: Code Reviewer (source-review delta of F-001 and F-003), then API/E2E reruns.
 - Remaining limitations or risks: the token-meter observation in the handoff (Known Risks), reported, not decided; F-002 held.
+
+### IR-004 — SR-009: the sidebar after adoption (F-002)
+
+- Triggering role, report path, and round: Architecture Reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/architecture-review-revision-record.md` (ARCH-REV-005 Pass of SR-009). SR-009 answers CRR-005 (`code-review-report.md`, Design Impact) for API-REV-002 F-002.
+- Triggering finding IDs: F-002
+- Classification: `Design Revision Implementation`
+- Prior authoritative result: IR-003 (CRR-004 Pass). An adopted run the user opened this session stayed in its own sidebar group until restart.
+- Current authoritative result: the renderer never shows a run that became a task agent as a top-level row. Rule 1: it is retired at once when the delegator's Agent-root stream reports `task_execution_started`. Rule 2: otherwise it is retired at the next history read that no longer lists it, provided that read would have listed it. The server is unchanged. Classification unchanged (Large / High).
+- Related solution revision IDs: SR-009
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: CRR-005
+- Related API/E2E revision IDs: API-REV-002
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: the approved design revision.
+- Approved behavior or requirement IDs affected: AC-001 ("not under TEAMS"), AC-003 ("removed from the sidebar on DONE") for a run opened this session; REQ-003.
+- Implementation delta:
+  - New `autobyteus-web/stores/runHistoryRetiredRuns.ts`:
+    - the Pinia store `runHistoryRetiredRuns`, with task-execution ids (rule 1), departed ids (rule 2) and the runs reads have listed;
+    - `reconcileHistoryRead(groups, limitPerAgent)`;
+    - `withoutRetiredRuns(sources, retired)`.
+  - `runHistoryNavigationStoreActions.ts`: the projection is built from `withoutRetiredRuns(...)`, covering history rows, agent contexts and team contexts.
+  - `runHistoryLoadActions.ts`: each successful workspace history read calls `reconcileHistoryRead` with its `limitPerAgent`.
+  - `agentRunCollaborationStreamingService.ts`: new `onTaskExecutionStarted` option, called after the stream's own handling (reload).
+  - `agentRunCollaborationStore.ts`: the option retires the run and refreshes the navigation topology.
+  - Docs:
+    - web `agent_execution_architecture.md` (top-level rows);
+    - server `projects.md` (Effect of an adoption in the sidebar).
+- Changed files or areas: the 5 web source files above. Tests:
+  - `runHistoryStore.spec.ts` (5 new cases);
+  - `agentRunCollaborationStoreClosure.spec.ts` (1 new case and its `runHistoryStore` mock);
+  - `agentRunCollaborationStreamingService.spec.ts` (1 new case);
+  - `agentRunCollaborationDisclosure.spec.ts` (its `runHistoryStore` mock gains `refreshRunNavigationTopology`).
+  
+  Also the 2 docs, the handoff and the evidence.
+- Local validation and result:
+  - Web unit suite: 632 files / 4480 tests passed.
+  - The three new rule cases fail without the change; the two preserved-behavior cases pass both ways.
+  - Web guards: all three pass.
+  - Web typecheck: no new error (the same 7997 environmental errors with and without the change).
+  - Rendered check on a real stack (Nuxt dev, built backend, headless Chrome, scripted AGY), `evidence/implementation/IR-004-adoption-sidebar-check/`: Pass.
+- Next recipient or routing: Code Reviewer (source-review delta of SR-009), then API/E2E reruns the web tests, the guards and D-1.
+- Remaining limitations or risks: rule 1 is wired for the Agent root only (see the handoff's Important Assumptions). The reviewer's archive premise did not hold: archive already drops the local context, so nothing changed there.

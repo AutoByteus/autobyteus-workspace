@@ -9,6 +9,7 @@ import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import { useRunHistoryRetiredRunsStore } from '~/stores/runHistoryRetiredRuns';
 import {
   ListWorkspaceRunHistory,
 } from '~/graphql/queries/runHistoryQueries';
@@ -126,6 +127,7 @@ export const fetchRunHistoryTree = async (
         }
         if (workspaceGeneration !== store.workspaceRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
         store.workspaceGroups = result.data?.listWorkspaceRunHistory || [];
+        useRunHistoryRetiredRunsStore().reconcileHistoryRead(store.workspaceGroups, limitPerAgent);
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: null };
         store.error = null;
         store.refreshRunNavigationTopology('workspace-history-ready');
