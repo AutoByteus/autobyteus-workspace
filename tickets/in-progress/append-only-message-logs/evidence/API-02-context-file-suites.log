@@ -1,0 +1,39 @@
+# Case: API-02, Memory Sync and context-file suites
+# Memory Sync: part of the whole-folder run (API-04-e2e-folder.log): memory-sync-multiprocess.e2e.test.ts (1 test) and memory-sync-api.e2e.test.ts pass
+# Context-file process suites are gated by RUN_CONTEXT_FILE_PROCESS_E2E (skipped in the whole-folder run), so they ran separately:
+# Command (this branch, 78b42de3ae + test changes): env -i PATH HOME=/private/tmp/aoml-api/home-XXXX TMPDIR USER RUN_CONTEXT_FILE_PROCESS_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts --no-watch
+# Date: 2026-10-18 14:27 CEST
+
+ ✓ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts (4 tests) 21145ms
+     ✓ preserves incomplete roots while missing historical references fail only at requested access in both hosts  6566ms
+     ✓ starts both hosts when all historical roots are excluded and executes genuinely new work  4829ms
+     ✓ skips terminal SUCCEEDED without auditing historical references or hiding readable conversations  4979ms
+     ✓ ignores and retains released journal residue without treating it as current startup authority  4770ms
+ ❯ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts (6 tests | 1 failed) 20684ms
+     ✓ delivers agent image/file bytes through HTTP, WS and synchronous provider reads, then survives restart  3423ms
+     ✓ delivers team image/file bytes through HTTP, WS and synchronous provider reads, then survives restart  3598ms
+     ✓ rejects uncontained and cross-owner final-file symlinks at HTTP access without blocking valid attachments  1927ms
+     ✓ uploads, previews and removes Team drafts before launch, then binds remaining bytes to the returned exact execution  1993ms
+     × converts a copied retained duplicate-address package before admission and preserves bytes, history and inert released residue across restart 3583ms
+     ✓ resumes an eligible interrupted old/current corpus without a journal or overwriting later current writes  6159ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected '{"detail":"File not found."}' to be 'other execution image.png' // Object.is equality
+ ❯ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:164:114
+      Tests  1 failed | 9 passed (10)
+exit=1
+
+# Same failing file on the BASE 65cf41c6b4 (own detached worktree /private/tmp/aoml-api/base, pnpm install, prebuild, server build):
+# Command: env -i PATH HOME=/private/tmp/aoml-api/home-XXXX TMPDIR USER RUN_CONTEXT_FILE_PROCESS_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts --no-watch
+
+     ✓ delivers agent image/file bytes through HTTP, WS and synchronous provider reads, then survives restart  3861ms
+     ✓ delivers team image/file bytes through HTTP, WS and synchronous provider reads, then survives restart  3269ms
+     ✓ rejects uncontained and cross-owner final-file symlinks at HTTP access without blocking valid attachments  1809ms
+     ✓ uploads, previews and removes Team drafts before launch, then binds remaining bytes to the returned exact execution  1850ms
+     × converts a copied retained duplicate-address package before admission and preserves bytes, history and inert released residue across restart 3425ms
+     ✓ resumes an eligible interrupted old/current corpus without a journal or overwriting later current writes  5778ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected '{"detail":"File not found."}' to be 'other execution image.png' // Object.is equality
+      Tests  1 failed | 5 passed (6)
+exit=1
+
+# Cause (not this change): the test adds a team task execution "retained-task" and writes its context files under agent_teams/<team>/retained-task/context_files (the layout before 20261017_task_agent_own_run_v1). Since own-run (on the base), a task agent's context files resolve from its own folder agents/<agentRunId> (context-file-layout.ts:67 owner.memoryDir; contract L1), so the server answers 404 "File not found." on both commits. Out of this ticket's scope; reported as a follow-up.
