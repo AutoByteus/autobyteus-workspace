@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | API-REV-001 Pass from `api_e2e_engineer` (direct route) | N/A | Base already current; docs synced; waiting for user verification (AC-005) | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/dr-001/` |
 | DR-002 | User verification "now finalize and release a new beta" | DR-001 waiting | Re-integrated twice (17, then 28 commits; no conflicts), checks pass; finalization and beta `v1.5.6-beta.3` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-002/` |
+| DR-003 | Finalization and beta publication | DR-002 in progress | **Delivery Completed**: on `personal`; beta `v1.5.6-beta.3` tagged; rollout started (wait waived by user); cleanup done | `release-deployment-report.md`, this record |
 
 ## Revision Entries
 
@@ -44,3 +45,10 @@
   - web segments 60/60.
 - Renewed user verification: not needed. The base changes do not touch the notice text, and the behavior is unchanged.
 - Release: beta `v1.5.6-beta.3` (other tickets took beta.1 and beta.2).
+
+### DR-003 — Finalized; beta v1.5.6-beta.3 published
+
+- `--no-ff` merge `4964c61836` and release commit `65cf41c6b4` pushed to `personal` after a fetch-and-check; tag `v1.5.6-beta.3` pushed.
+- Rollout at close: Android succeeded; Desktop, Docker and iOS were still running. The user said on 2026-10-18: "As long as it's finalized, then you can mark as done", so the rollout was not awaited.
+- Cleanup: the local worktree and the local `codex/` and `finalize/` branches are removed; the remote ticket branch is kept.
+- Terminal return to `/solution_designer`: `Sent`.
