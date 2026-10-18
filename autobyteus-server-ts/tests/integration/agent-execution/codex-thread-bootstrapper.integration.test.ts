@@ -186,11 +186,17 @@ const listSkills = async (
   manager: CodexAppServerClientManager,
   workspaceRoot: string,
 ): Promise<ListedSkill[]> => {
-  const client = await manager.getClient(workspaceRoot);
-  const response = await client.request<unknown>("skills/list", {
-    cwds: [workspaceRoot],
-    forceReload: true,
-  });
+  const lease = manager.beginAcquire(workspaceRoot);
+  let response: unknown;
+  try {
+    const client = await lease.acquire();
+    response = await client.request<unknown>("skills/list", {
+      cwds: [workspaceRoot],
+      forceReload: true,
+    });
+  } finally {
+    await lease.release();
+  }
   const root = asObjectRecord(response);
   const data = Array.isArray(root?.data) ? root.data : [];
   const results: ListedSkill[] = [];
@@ -209,6 +215,9 @@ const listSkills = async (
   }
   return results;
 };
+
+/** Accepts every acquisition; the test releases materialized skills itself. */
+const acceptingGuard = { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined };
 
 const createBootstrapper = (input: {
   workspaceRoot: string;
@@ -276,7 +285,7 @@ describeCodexBootstrapperIntegration(
     });
 
     it(
-      "discovers a real repo-local Codex skill by logical name and skips runtime materialization for the same configured skill",
+      "exposes the configured copy when live Codex discovery lists a different repo-local copy with the same name (D-19)",
       async () => {
         const workspaceRoot = await createTempDir("codex-bootstrapper-live-workspace");
         cleanupRoots.add(workspaceRoot);
@@ -322,9 +331,18 @@ describeCodexBootstrapperIntegration(
           materializer,
         });
 
-        const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+        const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), acceptingGuard);
 
-        expect(runContext.runtimeContext.materializedConfiguredSkills).toEqual([]);
+        // D-19 (beta.1): Codex lists only a different copy, so the configured copy is exposed in the workspace.
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("codex-runtime-duplicate"));
+        expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
+        const canonicalLinkPath = path.join(workspaceRoot, ".codex", "skills", skillName);
+        expect(runContext.runtimeContext.materializedConfiguredSkills[0]).toMatchObject({
+          name: skillName,
+          materializedRootPath: canonicalLinkPath,
+        });
+        expect(await fs.readlink(canonicalLinkPath)).toBe(path.resolve(configuredSkill.rootPath));
         expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
           mcp_servers: {
             autobyteus_agent_tools: {
@@ -337,7 +355,9 @@ describeCodexBootstrapperIntegration(
         const workspaceSkillEntries = await fs.readdir(
           path.join(workspaceRoot, ".codex", "skills"),
         );
-        expect(workspaceSkillEntries).toEqual([folderName]);
+        expect(workspaceSkillEntries.sort()).toEqual([folderName, skillName].sort());
+        await materializer.cleanupMaterializedWorkspaceSkills(runContext.runtimeContext.materializedConfiguredSkills);
+        await expect(fs.lstat(canonicalLinkPath)).rejects.toMatchObject({ code: "ENOENT" });
       },
       60_000,
     );
@@ -392,6 +412,7 @@ describeCodexBootstrapperIntegration(
 
         const runContext = await bootstrapper.bootstrapForCreate(
           createRunContext("gpt-5.6-luna"),
+          acceptingGuard,
         );
 
         expect(runContext.runtimeContext.codexThreadConfig.model).toBe("gpt-5.6-luna");
@@ -452,7 +473,7 @@ describeCodexBootstrapperIntegration(
           materializer,
         });
 
-        const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+        const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), acceptingGuard);
 
         expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
         const [descriptor] = runContext.runtimeContext.materializedConfiguredSkills;
