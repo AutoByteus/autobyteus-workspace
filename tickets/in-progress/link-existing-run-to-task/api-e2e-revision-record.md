@@ -50,3 +50,38 @@
 - **TR-002:** ADO-3 waits for the busy turn to start (its `CALL_TOOLS:` message recorded) instead of sleeping 2 s.
 - **Rerun:** ADO-3 alone, Pass.
 - **Result:** Pass. No product change; the verdict of round 3 stands.
+
+## Revision Index (from API-REV-005; earlier entries above use the previous format)
+
+| Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
+| --- | --- | --- | --- | --- |
+| API-REV-005 | implementation_engineer, `implementation-handoff.md` IR-005, round 5 | SR-018, IR-005, CRR-009 (record only) | API-REV-004: Pass (adoption, later withdrawn) | Pass / 95% |
+
+### API-REV-005 — Withdraw adoption validated (SR-018)
+
+- Triggering role, report path, and round: implementation_engineer, `implementation-handoff.md` (IR-005), round 5.
+- Triggering finding or case IDs: N/A (removal requested by the user).
+- Related revision IDs: SR-018, IR-005; CRR-009 (an independent source review, Pass, record only).
+- Why recorded: the first validation of the withdrawal. The adoption plan of API-REV-001..004 is superseded.
+- Coverage decisions or durable test paths changed:
+  - added `tests/e2e/projects/hand-started-run-refusal.e2e.test.ts` (WDR-1);
+  - the ADO file is removed (by the implementation);
+  - baseline fix `43aa0bcb36` updates three stale e2e tests from earlier tickets.
+- Cases added, changed, removed, or rechecked:
+  - WDR-R01..R10 reused (IMP-01..IMP-10, same commit);
+  - WDR-1 and WDR-2 added;
+  - WDR-3..WDR-5 desktop journeys added.
+- Commands, environment, fixture, or broader-validation delta: the whole server e2e with the gate on (clean env, resolved `HOME`); an isolated branch build with real models (Haiku 5.5, DeepSeek V4 Flash); a temporary base worktree to classify failures.
+
+#### Prior Failure Resolution
+
+None. The adoption rounds ended at Pass; FU-1/FU-2 (AGY terminate during a held turn) stays with the Project Task Manager.
+
+- Canonical artifacts and sections updated: the coverage investigation (rewritten for SR-018), the execution report (rewritten for SR-018), `api-e2e-test-progress.md` (new), this entry. `api-e2e-validation-ledger.md` is the adoption rounds' ledger, kept as the record; the report's Cases table replaces it.
+- Prior result and confidence: API-REV-004 Pass.
+- Current result and confidence: Pass, 95%.
+- New or remaining failure IDs: None in scope. Three stale tests from earlier tickets were fixed (baseline fix).
+- Recommended owner: delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - kept fix 2 on legacy mixed-root data is unit-proven only (IMP-08);
+  - RM-004 and RM-005 belong to delivery.

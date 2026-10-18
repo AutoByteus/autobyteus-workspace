@@ -1,0 +1,15 @@
+# WDR-3 nothing-written check after the PM's two refused delegate_task calls
+# Steps: GraphQL on the instance (srv 65200) and files in its owned data root
+# Commit: 1005f9eaaf (code ffeea43dac), build 1.5.6-beta, instance iso-65199-3241
+# Date: 2026-10-18T19:23:03Z
+
+PM tree task agents:
+  writer in tree: False | team in tree: False | closed: []
+Task run entries (agent_run_resources.json files):
+  files:        0
+
+Own files contain taskAgent:
+0
+0
+History lists them:
+  writer: True | team: True
