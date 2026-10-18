@@ -10,7 +10,6 @@ import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agen
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -72,7 +71,7 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
       createClient: (cwd) => new CodexAppServerClient({ command: "codex",
         args: ["app-server", "-c", "model_auto_compact_token_limit=20000"], cwd, requestTimeoutMs: 45_000 }),
     });
-    threadManager = new CodexThreadManager(clientManager, undefined, new CodexClientThreadRouter());
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter());
     const available = (await new CodexModelCatalog(clientManager).listModels(workspaceRoot))
       .map((model) => model.model_identifier);
     const model = [process.env.CODEX_COMPACTION_E2E_MODEL?.trim(), "gpt-5.6-luna", "gpt-5.4-mini", "gpt-5.6-sol"]
@@ -85,14 +84,13 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
       autoByteusBackendFactory: unusedBackendFactory,
       codexBackendFactory: new CodexAgentRunBackendFactory(threadManager, new CodexThreadBootstrapper(
         { activateForRun: () => ({ kind: "not_exposed" }) },
-        { materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }) } as never,
         { resolveWorkingDirectory: async () => workspaceRoot } as never,
         { getAgentDefinitionById: async () => ({ name: "Codex Compaction Agent", skillNames: [], toolNames: [],
           instructions: "Reply exactly as asked. Do not use tools.", description: "Compaction probe agent." }) } as never,
         { resolveConfiguredSkillBindingsForAgent: () => [], resolveSkillScope: () => "CONFIGURED",
           hasEffectiveSkills: () => false } as never,
         clientManager,
-      ), new CodexThreadCleanup(undefined, clientManager)),
+      )),
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,

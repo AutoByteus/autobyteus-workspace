@@ -1,3 +1,4 @@
+import type { RuntimeSkillProfile, RuntimeSkillExposure } from "../../../src/agent-execution/backends/shared/runtime-skill-profile.js";
 import "reflect-metadata";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -15,14 +16,11 @@ import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/ag
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
-import { CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
-import { WorkspaceSkillMaterializer, type MaterializedWorkspaceSkill } from "../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import type { CodexWorkspaceResolver } from "../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import type { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import type { ProviderPreparationGuard } from "../../../src/agent-execution/backends/provider-preparation-guard.js";
 import type { AgentToolMcpRunSessionActivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -244,6 +242,7 @@ const createRuntimeRunConfig = (input: {
 
 const createCodexRunContext = (input: {
   runId: string;
+  memoryDir: string;
   agentDefinitionId: string;
   workspaceId: string;
 }): AgentRunContext<null> =>
@@ -252,6 +251,7 @@ const createCodexRunContext = (input: {
     config: createRuntimeRunConfig({
       agentDefinitionId: input.agentDefinitionId,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memoryDir: input.memoryDir,
       workspaceId: input.workspaceId,
     }),
     runtimeContext: null,
@@ -261,51 +261,38 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
   const workspaceResolver = {
     resolveWorkingDirectory: vi.fn(async () => workingDirectory),
   } as unknown as CodexWorkspaceResolver;
-  // Codex discovers no skills natively here, so every configured skill is exposed in the workspace.
-  const clientManager = {
-    beginAcquire: vi.fn(() => ({
-      acquire: vi.fn(async () => ({ request: vi.fn(async () => ({ data: [] })) })),
-      release: vi.fn(async () => undefined),
-    })),
-  } as unknown as CodexAppServerClientManager;
   const agentToolMcpRunSessions = {
     activateForRun: vi.fn(() => ({ kind: "not_exposed" as const })),
   } satisfies AgentToolMcpRunSessionActivator;
-  return new CodexThreadBootstrapper(
-    agentToolMcpRunSessions,
-    new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE),
-    workspaceResolver,
-    AgentDefinitionService.getInstance(),
-    SkillService.getInstance(),
-    clientManager,
+  return new CodexThreadBootstrapper(agentToolMcpRunSessions, workspaceResolver, AgentDefinitionService.getInstance(), SkillService.getInstance()
   );
 };
 
-/** The enclosing factory owns acquired resources; this probe accepts every acquisition and keeps none. */
+/** The probe registers each exact profile before acquisition and releases it at teardown. */
+const profiles: RuntimeSkillProfile[] = [];
 const acceptingPreparationGuard = {
   assertAccepting: () => undefined,
-  ownSkill: () => undefined,
-  ownCodexClient: () => undefined,
+  ownSkillProfile: (profile: RuntimeSkillProfile) => { profiles.push(profile); },
 } satisfies ProviderPreparationGuard;
 
 const expectMaterializedSkillSymlink = async (input: {
-  materialized: MaterializedWorkspaceSkill | undefined;
+  materialized: RuntimeSkillExposure | undefined;
   expectedName: string;
   expectedSourceRootPath: string;
   expectedContent: string;
 }): Promise<void> => {
   expect(input.materialized).toBeDefined();
   const materialized = input.materialized!;
-  expect(materialized.name).toBe(input.expectedName);
-  expect(materialized.sourceRootPath).toBe(path.resolve(input.expectedSourceRootPath));
+  expect(materialized.skill.name).toBe(input.expectedName);
+  expect(materialized.sourceRoot).toBe(await fs.realpath(input.expectedSourceRootPath));
 
-  const stats = await fs.lstat(materialized.materializedRootPath);
+  const stats = await fs.lstat(materialized.linkRoot);
   expect(stats.isSymbolicLink()).toBe(true);
-  await expect(fs.realpath(materialized.materializedRootPath)).resolves.toBe(
+  await expect(fs.realpath(materialized.linkRoot)).resolves.toBe(
     await fs.realpath(input.expectedSourceRootPath),
   );
   await expect(
-    fs.readFile(path.join(materialized.materializedRootPath, "SKILL.md"), "utf-8"),
+    fs.readFile(path.join(materialized.linkRoot, "SKILL.md"), "utf-8"),
   ).resolves.toContain(input.expectedContent);
 };
 
@@ -395,6 +382,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    for (const profile of profiles.splice(0)) await profile.release();
     for (const filePath of cleanupPaths) {
       await fs.rm(filePath, { recursive: true, force: true }).catch(() => undefined);
     }
@@ -453,6 +441,8 @@ describe("Agent package private skills GraphQL e2e", () => {
     const { externalRoot } = await bootstrapPackageService(unique);
     const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), `codex-private-skills-workspace-${unique}-`));
     cleanupPaths.add(workspaceRoot);
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "codex-private-execution-"));
+    cleanupPaths.add(memoryDir);
 
     const singleAgentId = `codex-single-agent-${unique}`;
     const multiAgentId = `codex-multi-agent-${unique}`;
@@ -500,15 +490,15 @@ describe("Agent package private skills GraphQL e2e", () => {
     const bootstrapper = createCodexBootstrapper(workspaceRoot);
     const singleRunContext = await bootstrapper.bootstrapForCreate(
       createCodexRunContext({
-        runId: `codex-single-run-${unique}`,
+        runId: `codex-single-run-${unique}`, memoryDir,
         agentDefinitionId: singleAgentId,
         workspaceId: "runtime_ws_private_skills",
       }),
       acceptingPreparationGuard,
     );
-    expect(singleRunContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
+    expect(singleRunContext.runtimeContext.privateSkillProfile!.exposures).toHaveLength(1);
     const singleMaterializedByName = new Map(
-      singleRunContext.runtimeContext.materializedConfiguredSkills.map((skill) => [skill.name, skill]),
+      singleRunContext.runtimeContext.privateSkillProfile!.exposures.map((exposure) => [exposure.skill.name, exposure]),
     );
     await expectMaterializedSkillSymlink({
       materialized: singleMaterializedByName.get(singleSkillName),
@@ -519,19 +509,19 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const multiRunContext = await bootstrapper.bootstrapForCreate(
       createCodexRunContext({
-        runId: `codex-multi-run-${unique}`,
+        runId: `codex-multi-run-${unique}`, memoryDir,
         agentDefinitionId: multiAgentId,
         workspaceId: "runtime_ws_private_skills",
       }),
       acceptingPreparationGuard,
     );
-    expect(multiRunContext.runtimeContext.materializedConfiguredSkills).toHaveLength(2);
-    expect(multiRunContext.runtimeContext.materializedConfiguredSkills.map((skill) => skill.name)).toEqual([
+    expect(multiRunContext.runtimeContext.privateSkillProfile!.exposures).toHaveLength(2);
+    expect(multiRunContext.runtimeContext.privateSkillProfile!.exposures.map((exposure) => exposure.skill.name)).toEqual([
       toneSkillName,
       outlineSkillName,
     ]);
     const multiMaterializedByName = new Map(
-      multiRunContext.runtimeContext.materializedConfiguredSkills.map((skill) => [skill.name, skill]),
+      multiRunContext.runtimeContext.privateSkillProfile!.exposures.map((exposure) => [exposure.skill.name, exposure]),
     );
     await expectMaterializedSkillSymlink({
       materialized: multiMaterializedByName.get(toneSkillName),
@@ -545,9 +535,7 @@ describe("Agent package private skills GraphQL e2e", () => {
       expectedSourceRootPath: outlineSkillDir,
       expectedContent: "Codex outline private skill content",
     });
-    await expect(fs.readdir(path.join(workspaceRoot, ".codex", "skills"))).resolves.toEqual(
-      expect.arrayContaining([singleSkillName, toneSkillName, outlineSkillName]),
-    );
+    await expect(fs.readdir(workspaceRoot)).resolves.toEqual([]);
   });
 
   it("passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config", async () => {

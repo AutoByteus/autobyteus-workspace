@@ -30,7 +30,6 @@ BASH_LAUNCHER_SOURCES = [
     BASH_MODULE_DIR / "container-config.sh",
     BASH_MODULE_DIR / "docker-runtime.sh",
     BASH_MODULE_DIR / "commands.sh",
-    BASH_MODULE_DIR / "nfs-attachment.sh",
 ]
 POWERSHELL_LAUNCHER_SOURCES = [
     POWERSHELL_LAUNCHER,

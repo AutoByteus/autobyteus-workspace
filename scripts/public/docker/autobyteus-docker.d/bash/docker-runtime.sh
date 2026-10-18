@@ -308,7 +308,6 @@ start_node() {
     fail "Container ${container_name} already exists and is not managed by this launcher. Use --name with another friendly name."
   fi
 
-  resolve_nfs_attachment "$node_name"
   log "Checking image ${image_ref}"
   docker pull "$image_ref"
   desired_image_id="$(image_id_for "$image_ref")"

@@ -9,10 +9,6 @@ import {
   type ClaudeWorkspaceResolver,
 } from "../claude-workspace-resolver.js";
 import {
-  getClaudeWorkspaceSkillMaterializer,
-} from "../claude-workspace-skill-materializer.js";
-import type { MaterializedWorkspaceSkill, WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
-import {
   buildClaudeSessionConfig,
   DEFAULT_CLAUDE_PERMISSION_MODE,
 } from "../session/claude-session-config.js";
@@ -22,24 +18,17 @@ import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-c
 
 export class ClaudeSessionBootstrapper {
   private readonly workspaceResolver: ClaudeWorkspaceResolver;
-  private readonly workspaceSkillMaterializer: WorkspaceSkillMaterializer;
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly skillService: SkillService;
 
   constructor(
     workspaceResolver: ClaudeWorkspaceResolver = getClaudeWorkspaceResolver(),
-    workspaceSkillMaterializer: WorkspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer(),
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
   ) {
     this.workspaceResolver = workspaceResolver;
-    this.workspaceSkillMaterializer = workspaceSkillMaterializer;
     this.agentDefinitionService = agentDefinitionService;
     this.skillService = skillService;
-  }
-
-  releaseSkills(skills: MaterializedWorkspaceSkill[]): Promise<void> {
-    return this.workspaceSkillMaterializer.cleanupMaterializedWorkspaceSkills(skills);
   }
 
   async bootstrapForCreate(
@@ -81,23 +70,8 @@ export class ClaudeSessionBootstrapper {
       bindings: configuredSkillBindings, skills: this.skillService, guard,
       collisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
     });
-    const preparedSkills = privateSkillProfile
-      ? { materializedSkills: [], effectiveRequests: privateSkillProfile.exposures.map(entry => ({ kind: "expose-resolved" as const, skill: entry.skill })) }
-      : await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
-        runId: runContext.runId,
-        onAcquired: guard.ownSkill, assertAccepting: guard.assertAccepting,
-        workingDirectory,
-        requests: configuredSkillBindings.map((binding) =>
-          binding.kind === "resolved"
-            ? { kind: "expose-resolved", skill: binding.skill }
-            : { kind: "reconcile-unresolved", name: binding.name }
-        ),
-        workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
-      });
     guard.assertAccepting();
-    const materializedConfiguredSkills = preparedSkills.materializedSkills;
-    const configuredSkills = preparedSkills.effectiveRequests.flatMap((request) =>
-      request.kind === "reconcile-unresolved" ? [] : [request.skill]);
+    const configuredSkills = privateSkillProfile?.exposures.map(entry => entry.skill) ?? [];
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
@@ -118,7 +92,6 @@ export class ClaudeSessionBootstrapper {
         carpenterSystemPrompt,
         runtimeToolExposure,
         configuredSkills,
-        materializedConfiguredSkills,
         sessionId: existingRuntimeContext?.sessionId ?? null,
         hasCompletedTurn: existingRuntimeContext?.hasCompletedTurn ?? false,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,
