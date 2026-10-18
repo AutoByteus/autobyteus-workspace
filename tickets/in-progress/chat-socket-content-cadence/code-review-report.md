@@ -16,8 +16,8 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
-- Current Review Round: `2`
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: `3`
 - Review Scope: `Targeted Delta Review`
 - Review Scope Evidence (round >1):
   - The delta since round 1 is the base merge `b3666d458f` (origin/personal `cf14704473`) and the test-only commit `335f065cd1`.
@@ -26,9 +26,23 @@
 - Trigger: Implementation Engineer `Local Fix complete` (IR-002) for delivery DR-001 (integration merge conflict)
 - Delivery Revision Record Reviewed: `delivery-revision-record.md` (DR-001), `release-deployment-report.md` › Escalation / Reroute
 - Prior Review Round Reviewed: `1` (CRR-001 Pass; CRR-002 test review Not Applicable)
-- Latest Authoritative Round: `2`
+- Latest Authoritative Round: `3`
 - Code under review: branch `codex/chat-socket-content-cadence`, code HEAD `335f065cd1` (ticket docs `002d28586b`), merged base `origin/personal` `cf14704473` (merge `b3666d458f`). Round 1 reviewed `e24ff6b333` on base `f3124db10f`
 - Failure-origin fields: N/A
+
+## Round 3 — Targeted Delta Review (DR-002 Re-Integration, Test Import Fix)
+
+- Trigger: Implementation Engineer `Local Fix complete` (IR-003) for delivery DR-002.
+- Code: commit `4b3c8a08ef` (docs and evidence `f59892f6fc`), after delivery's merge `8f91efb2cd` of `origin/personal` `8945d0c8a2`.
+
+| Delta | Evidence | Result |
+| --- | --- | --- |
+| `4b3c8a08ef`, `chat-socket-content-cadence.integration.test.ts` (test only, one hunk) | Base `f6bf477c3f` deleted `team-communication-messages-schema.ts`, so the file failed to load. The Team scenario now builds the live root's in-memory `{schemaVersion: 1, rootTeamRunId, messages}` with `validateCollaborationCommunicationMessageArray`, the same pattern the base used in `agent-team-stream-handler.test.ts` L24-26 | Pass. Only the fixture changed; the cadence assertions are unchanged |
+| Removed module still referenced? | `grep team-communication-messages-schema` in `src` and `tests`: none | Pass |
+| Re-integration overlap with ticket areas | `git diff --name-only 8f91efb2cd^1 8f91efb2cd`, filtered to ticket areas: only the base's own `agent-team-stream-handler.test.ts` and `team-execution-view-projector.test.ts`. No ticket source file changed | Pass |
+| Recorded checks | IMP-14: cadence file 18/18 on 3 runs (log tail shows `18 passed`, exit 0). IMP-15: integration prepare. IMP-16: `test:integration` 415 passed | Accepted; not rerun (unchanged since they ran) |
+
+Implementation source, structural checks and the scorecard are unchanged from round 1.
 
 ## Round 2 — Targeted Delta Review (DR-001 Integration Merge)
 
@@ -252,6 +266,7 @@ No new follow-ups from this review. The implementation engineer recorded FU-A (s
 - Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`, by handoff rule; delivery asked for the package back after the fix (DR-001), which the handoff records
 - Notes:
+  - Round 3 (CRR-005, Targeted Delta Review): Pass. A test-only fixture fix for the base's removed module (DR-002); code HEAD `4b3c8a08ef`.
   - Round 2 (CRR-003, Targeted Delta Review): Pass. The conflict resolution in the DR-001 merge is correct and mechanical; the test-only fix keeps assertion strength. Code HEAD `335f065cd1`.
   - The implementation follows SR-002 DS-002 rules 1-5 and the contract rows.
   - D-1 (snapshot clears baselines), D-2 (shared root-execution egress factory) and D-3 (filter guard) are accepted.

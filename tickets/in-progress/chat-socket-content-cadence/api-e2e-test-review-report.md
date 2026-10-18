@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: `2`
-- Trigger: API/E2E round 2 Pass, API-REV-002, from `/software_engineering_team/api_e2e_engineer`, after IR-002 (DR-001 integration merge) and source review CRR-003. Round 1 (CRR-002) was `Not Applicable`
+- Review Round: `3`
+- Trigger: API/E2E round 3 Pass, API-REV-003, after IR-003 (DR-002 test import fix) and source review CRR-005. Rounds 1-2 (CRR-002, CRR-004) were `Not Applicable`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-002, Approved)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (unchanged since CRR-001)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-002)
@@ -11,26 +11,26 @@
 - Supplemental Task Artifacts Reviewed As Context: the `evidence/` folder through the execution report's Cases table (not re-reviewed as code)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md` (ARCH-REV-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001)
-- Original Code Review Report: `code-review-report.md` (CRR-003, round 2 Pass)
+- Original Code Review Report: `code-review-report.md` (CRR-005, round 3 Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
+- Current Code Review Revision ID: `CRR-006`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-002)
-- Delivery Revision Record Reviewed As Context: `delivery-revision-record.md` (DR-001)
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-003)
+- Delivery Revision Record Reviewed As Context: `delivery-revision-record.md` (DR-001, DR-002)
 - API/E2E Result: `Pass`
 - Final Validation Confidence: 95.9% (target 95% met; no category below 90%)
-- Prior unresolved test-review findings rechecked: None (CRR-002 had no findings)
+- Prior unresolved test-review findings rechecked: None (CRR-002 and CRR-004 had no findings)
 - Project testing guideline(s) applied: `TESTING.md` in the worktree, as recorded in the coverage investigation. No conflicts with this skill.
 - Supported Product Scenario Basis Confirmed: `Yes` (SCN-002..004 unchanged; live runs exercised them through the real UI and public APIs)
 
 ## Changed Durable Test Scope
 
-- Code under test: HEAD `335f065cd1`, which is merge `b3666d458f` of base `cf14704473` plus the test-only fix reviewed in CRR-003.
-- API/E2E round 2 commit `db6ee5f048` adds only `tickets/in-progress/chat-socket-content-cadence/**`.
-- Verified with `git diff --name-only 335f065cd1..db6ee5f048`: no path outside `tickets/`.
-- Round 1 (`4b236dff42`) was the same; API/E2E changed no durable test code in either round.
-- The only durable test change since CRR-002 is the implementation's `335f065cd1` (`TeamStreamingService.spec.ts`), reviewed in source review CRR-003, not here.
+- Code under test: `4b3c8a08ef` (re-integration merge `8f91efb2cd` of base `8945d0c8a2` plus the test-only fix reviewed in CRR-005).
+- API/E2E round 3 commit `94a90892eb` adds only `tickets/**`.
+- Verified with `git diff --name-only 4b3c8a08ef..94a90892eb`: no path outside `tickets/`.
+- The same holds for rounds 1 and 2; API/E2E changed no durable test code.
+- The durable test changes since CRR-002 are the implementation's `335f065cd1` and `4b3c8a08ef`, both reviewed in source review (CRR-003, CRR-005), not here.
 
 | Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
@@ -60,7 +60,7 @@ Round 1 notes: API/E2E recorded three non-blocking observations outside this cha
 
 They stay with API/E2E's report and are not duplicated here.
 
-- Sent to: `/project_task_manager` (the "Requested by" agent in the requirements doc). It carries FU-API-1 exactly as recorded in `api-e2e-execution-coverage-report.md` › Round 2 Follow-Up.
+- Sent to: `/project_task_manager` (the "Requested by" agent in the requirements doc) during round 2. It carried FU-API-1 exactly as recorded in `api-e2e-execution-coverage-report.md` › Round 2 Follow-Up. The Task manager confirmed that it was recorded as its own Task (TODO). Round 3: no new follow-ups.
 
 ## Latest Authoritative Result
 
@@ -68,4 +68,4 @@ They stay with API/E2E's report and are not duplicated here.
 - Changed durable test paths reviewed: None
 - Unresolved finding IDs: None
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
-- Notes: Source review CRR-003 (round 2 Pass) is authoritative for the code at `335f065cd1`. API/E2E round 2 passed (95.9%), including the live delegated-agent rerun, the run-adoption case and the fresh desktop build. The package is ready for delivery.
+- Notes: Source review CRR-005 (round 3 Pass) is authoritative for the code at `4b3c8a08ef`. API/E2E round 3 passed (95.9%; REPO-11 at HEAD: cadence 18/18 ×3, streaming units 166/166, typecheck, server unit 5950). The live and desktop evidence from rounds 1-2 is still valid by impact. The package is ready for delivery.
