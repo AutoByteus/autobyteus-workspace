@@ -1,0 +1,6 @@
+fixture 60 embedded in 1055 ms
+templated 1000 embedded in 74624 ms
+repo 1000 embedded in 69582 ms
+fixture 60 embedded in 2895 ms
+templated 1000 embedded in 199536 ms
+repo 1000 embedded in 187866 ms

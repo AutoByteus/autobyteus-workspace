@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-006` (design revision after architecture review ARCH-REV-001; SR-005 was the first design round) on the approved SR-004 requirements
+- Current solution revision ID: `SR-007` (design revision after failure origin FO-001: default model and calibration basis; SR-005 first round, SR-006 after ARCH-REV-001) on the approved SR-007 requirements
 - Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-004` (REQ-001…REQ-015, AC-001…AC-016, QR-001…QR-008, DEC-001…DEC-010), approved by the **user** on 2026-10-18 in the Solution Designer conversation ("Okay… I think you can go on now for your design.").
 - Behavior-defining supplements and their approval references: none. `model-evaluation-report.md` is evidence for DEC-002 (approved with the requirements).
 - Design status: `Ready`
@@ -14,6 +14,31 @@
   - `TESTING.md`, `RELEASE.md`.
 - Project design-principle conflicts or discrepancies: none found.
   - DESIGN.md rule 5 ("prefer bounded change to the existing owner over speculative frameworks") and the user's explicit requirement for a reusable embedding layer (REQ-011) and a switchable model (REQ-015) are reconciled by keeping the layer to the four owners those requirements need, with no plugin registry, no generic search framework and no per-collection model selection.
+
+## Failure-Origin Resolution (FO-001 → SR-007)
+
+API/E2E (API-REV-001 F-001, API-L04) found that the default LEAF-IR relevance calibration, derived on the 60-Task fixture (G2), fails AC-004 and AC-001 on 1,000-Task backlogs. Code review classified it as `Design Impact` FO-001 (code-review round 3). Evidence and remedy:
+
+- **Rule evaluation** (`probes/fo-001/rule-evaluation.txt`; full score lists from the production `dist` runner and pinned files):
+  - No LEAF-IR rule passes both AC-001 (≥ 90% shown in the first 5) and AC-004 (≥ 90% no-match) at 1,000 Tasks. Tested: floor 0.24–0.36 × margins 0.045/0.02, z-score gates and z-score membership.
+  - Granite with its shipped calibration (floor 0.78, margin 0.02) passes on all three backlogs: fixture 96.8% / 95.8%; 1,000 generated 93.7% / 95.8%; 1,000 real-text 92.1% / 95.8%.
+- **User decision (SR-007, 2026-10-18):** the default becomes `granite-embedding-small-english-r2`. QR-003 and QR-004 are re-based on Granite (≤ 3 min per ≈ 170 Tasks, ≤ 20 min per 1,000; ≤ 800 MB peak / ≤ 450 MB searching). DEC-011: AC-001, AC-002 and AC-004 hold for the default model up to 1,000 Tasks.
+- **Design changes:**
+
+| Change | Sections |
+| --- | --- |
+| `DEFAULT_EMBEDDING_MODEL_ID = "granite-embedding-small-english-r2"`. Blank setting = Granite. The setting description lists Granite first as the default | Final File Responsibility Mapping (catalog, setting), Terminology, Interface row (setting), Concrete Examples |
+| LEAF-IR stays in the catalog as the fast option for small Projects. Its calibration becomes floor 0.30, margin 0.045 (fixture 95.2% / 95.8% passes QR-007; better at scale than 0.24: generated 87.3% / 91.7%, real-text 90.5% / 83.3%). Its entry description states that relevance degrades on large Projects | Catalog row, G2 |
+| G2 calibration basis: the default model is calibrated and verified on the 60-Task fixture **and** on 1,000-Task backlogs (the API/E2E generator `API-PROBE-generate-backlog.mjs`, seed 20261018, and the real-text backlog of `API-PROBE-score-analysis.mjs`). Alternatives are verified on the fixture (QR-007), with scale results recorded in `docs/modules/embeddings.md` | G2 |
+| Optional O-1: while existing model files are only being verified, readiness reports phase `loading` (not `downloading 0 of N MB`) | G7 |
+
+Rework sequence and validation impact:
+
+1. **Catalog and setting:** default id, LEAF-IR calibration, entry descriptions, setting description.
+2. **Tests** that assert the default id or depend on it, and the gated real-model calibration output.
+3. **Docs:** `docs/modules/embeddings.md` (default, per-model scale results), server-settings description, web `docs/projects.md` if it names the model.
+4. **Optional O-1.**
+5. **API/E2E reruns:** API-L04 (1,000-Task backlogs, board), API-R06, and the cost measurements API-L03b/c/d (QR-003/QR-004 now with Granite as default; AC-015).
 
 ## Architecture Review Resolution (ARCH-REV-001 → SR-006)
 
@@ -124,7 +149,14 @@ Add a server-side embedding layer with a switchable model catalog. Use it in a P
   - Docker image size (no pruning there);
   - the voice-input Electron extension mechanism (Electron-only, not reused, per REQ-012).
 - **Follow-ups (not fixed here):**
-  - FU-1: a front-end model chooser/downloader (user: "maybe in the future"), built on `EmbeddingIndex.modelStatus()` / `retryModel()` and the active-model setting;
+  - FU-1: a front-end "Search model" settings area (user, 2026-10-18), built on `EmbeddingIndex.modelStatus()` / `retryModel()` and the active-model setting. It would let the user:
+    - see the catalog models with language, size and cost;
+    - download a model ahead of time with progress;
+    - select the active model;
+    - see the index state per Project;
+    - press "Index now" or "Rebuild index" instead of waiting for the first search.
+
+    Automatic first-search preparation stays as the default path. **Sent** to `/project_task_manager` on 2026-10-18 at the user's request.
   - FU-2: proxy-aware downloads for servers behind an HTTP proxy, if a user reports it (RSK-002). The existing server fetches have the same limitation;
   - FU-3: Task `autobyteus-126` (key lookup) overlaps the same search box. The user removed key lookup from this ticket. The Project Task Manager should decide that Task's fate, and if kept it must build on the server-side exact tier introduced here, not on the removed client predicate;
   - FU-4: if `ProjectStore.listTasks` file reads become the dominant search cost at large backlogs (measured, QR-001), add a read cache under the Task store owner (DESIGN.md: measure first).
@@ -171,7 +203,7 @@ Add a server-side embedding layer with a switchable model catalog. Use it in a P
 - **Item:** `{ id, text }` supplied by the consumer; the layer never reads product data itself.
 - **Fingerprint:** SHA-256 of the item text exactly as embedded (document prefix + text). A changed fingerprint means re-embed.
 - **Catalog entry / model definition:** everything model-specific (source, files, checksums, prompts, output kind, token limit, relevance calibration).
-- **Active model:** the catalog entry selected by the server setting `AUTOBYTEUS_EMBEDDING_MODEL` (default `mdbr-leaf-ir`).
+- **Active model:** the catalog entry selected by the server setting `AUTOBYTEUS_EMBEDDING_MODEL` (default `granite-embedding-small-english-r2` since SR-007).
 - **Readiness:** `ready` | `preparing {phase, done, total}` | `unavailable {reason}` for the active model and a collection.
 - **Exact match / meaning match:** case-insensitive description containment (today's rule) / a relevant result of the embedding query.
 
@@ -363,7 +395,7 @@ Pushing readiness over `/ws/projects` was considered and rejected: that feed car
 | GraphQL `searchProjectTasks(projectId: String!, query: String!): ProjectTaskSearchResult!` | Tasks of one Project | Board transport | `projectId` | Result: `matches [{taskId, match: EXACT\|MEANING}]`, `meaningSearch {state: READY\|PREPARING\|UNAVAILABLE, phase, done, total, reason}` |
 | GraphQL `retryEmbeddingModel: Boolean!` | Active model | Retry | none | Mutation |
 | Tool `search_project_tasks({project_id, query, limit?})` | Tasks of one Project | Agent transport | `project_id` | Result `{projectId, tasks: [{taskId: <key>, status, summary, match}], meaningSearch: {state, note?}}`; `limit` 1–30, default 10 |
-| Setting `AUTOBYTEUS_EMBEDDING_MODEL` | Active model | Operator choice | catalog id | `allowedValues` = catalog ids; blank = default |
+| Setting `AUTOBYTEUS_EMBEDDING_MODEL` | Active model | Operator choice | catalog id | `allowedValues` = catalog ids; blank = default (Granite) |
 
 ## Interface Boundary Check
 
@@ -442,7 +474,7 @@ Drafted, then tightened. The final table below is authoritative. Changes during 
 | File | Owning Subsystem | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `src/embeddings/catalog/embedding-model-definition.ts` | embeddings | type | `EmbeddingModelDefinition` type | One shape | — |
-| `src/embeddings/catalog/embedding-model-catalog.ts` | embeddings | `EmbeddingModelCatalog` | The three approved catalog entries (DEC-002): `mdbr-leaf-ir` (default), `granite-embedding-small-english-r2`, `embeddinggemma-2` (multilingual; verified on WASM, cost stated in the entry's description); `getEmbeddingModelDefinition(id)`, `DEFAULT_EMBEDDING_MODEL_ID` | Data + lookup | definition |
+| `src/embeddings/catalog/embedding-model-catalog.ts` | embeddings | `EmbeddingModelCatalog` | The three approved catalog entries (DEC-002, SR-007): `granite-embedding-small-english-r2` (default; floor 0.78, margin 0.02), `mdbr-leaf-ir` (fast; small Projects; floor 0.30, margin 0.045), `embeddinggemma-2` (multilingual; verified on WASM, cost stated in the entry's description); `getEmbeddingModelDefinition(id)`, `DEFAULT_EMBEDDING_MODEL_ID` | Data + lookup | definition |
 | `src/embeddings/catalog/embedding-model-setting.ts` | embeddings | setting | `AUTOBYTEUS_EMBEDDING_MODEL` key, description (lists each model with language and cost), allowed values (catalog ids; blank allowed = default), `resolveActiveEmbeddingModel()` (read at use time; blank → default; an unknown value, e.g. set directly in an env file, → default plus one logged warning naming the value (R-6)) | One setting | catalog |
 | `src/embeddings/models/embedding-model-files.ts` | embeddings | `EmbeddingModelFiles` | Per-model folder, ensure (verify / download / verify / rename), progress callback, `removeAllExcept(id)` | Download and integrity concern | definition |
 | `src/embeddings/runtime/embedding-worker.ts` | embeddings | worker entry | Self-contained: load ort-web (WASM, threads) + tokenizer from paths in `workerData`, embed request handling, protocol types | Worker boundary | none (by rule) |
@@ -509,7 +541,7 @@ Drafted, then tightened. The final table below is authoritative. Changes during 
 | --- | --- | --- | --- |
 | A future collection (conversations) | `getEmbeddingIndex().search("agent-run-messages/<runId>", messages.map(m => ({id: m.id, text: m.text})), query)`, with one new consumer service and no change in `src/embeddings/` | Adding `if (collection.startsWith("conversation"))` inside the index, or a conversation-specific table | Proves REQ-011 / AC-013 |
 | Switching models | Operator sets `AUTOBYTEUS_EMBEDDING_MODEL=granite-embedding-small-english-r2`. The next search shows "Preparing… downloading", then "indexing N of M", then ready; old rows/files removed | Mixing old LEAF-IR vectors with Granite query vectors; requiring a restart; a model `if/else` in the worker | REQ-015 |
-| Catalog entry (default) | `{id: "mdbr-leaf-ir", source: {repo: "MongoDB/mdbr-leaf-ir", revision: "4262131b32c3182bd06e67e92ae69d7bd66e0c5c"}, onnxFile: "onnx/model_quantized.onnx", files: [{path: "onnx/model_quantized.onnx", sha256: "8c08cb4e…5718", bytes: 220597}, {path: "onnx/model_quantized.onnx_data", sha256: "e77ea96a…3f8b", bytes: 22954752}, {path: "tokenizer.json", sha256: "da0e7993…62a0"}, {path: "tokenizer_config.json", sha256: "46ac231e…07b4"}], maxTokens: 512, queryPrefix: "Represent this sentence for searching relevant passages: ", documentPrefix: "", output: "sentence_embedding", relevance: {clearMatchFloor: <calibrated>, nearBestMargin: <calibrated>}, licence: "Apache-2.0", languages: ["en"]}` (full hashes in investigation notes) | Hard-coding prompts or pooling in the worker | Everything model-specific is data |
+| Catalog entry (LEAF-IR; the default since SR-007 is Granite, same shape) | `{id: "mdbr-leaf-ir", source: {repo: "MongoDB/mdbr-leaf-ir", revision: "4262131b32c3182bd06e67e92ae69d7bd66e0c5c"}, onnxFile: "onnx/model_quantized.onnx", files: [{path: "onnx/model_quantized.onnx", sha256: "8c08cb4e…5718", bytes: 220597}, {path: "onnx/model_quantized.onnx_data", sha256: "e77ea96a…3f8b", bytes: 22954752}, {path: "tokenizer.json", sha256: "da0e7993…62a0"}, {path: "tokenizer_config.json", sha256: "46ac231e…07b4"}], maxTokens: 512, queryPrefix: "Represent this sentence for searching relevant passages: ", documentPrefix: "", output: "sentence_embedding", relevance: {clearMatchFloor: <calibrated>, nearBestMargin: <calibrated>}, licence: "Apache-2.0", languages: ["en"]}` (full hashes in investigation notes) | Hard-coding prompts or pooling in the worker | Everything model-specific is data |
 | Board merge | Query "docker". Exact tier: every Task containing "docker", ordered by meaning score then `updatedAt`. Meaning tier: the near-best Tasks not already exact. Lanes show both, best-first | Showing only meaning matches and losing literal matches; or fusing BM25 into one score | REQ-002/REQ-003; probe evidence |
 | Readiness during first use | `{matches: [exact…], meaningSearch: {state: PREPARING, phase: INDEXING, done: 40, total: 170}}`; the board re-queries every 2 s | Blocking the GraphQL call until indexing ends; showing an error | REQ-009 |
 
@@ -528,7 +560,7 @@ Transport (GraphQL, tool) → Task search policy (`projects/search`) → embeddi
 ## Change / Refactor Sequence
 
 1. **Dependencies.** Add `onnxruntime-web` (pin exact, e.g. `1.30.0`) and `@huggingface/tokenizers` (`0.2.0`) to `autobyteus-server-ts`.
-2. **Catalog.** Definition type, catalog with the three approved entries (LEAF-IR default, Granite small R2, EmbeddingGemma 2), setting file, and registration in `ServerSettingsService`. Then verify and calibrate every entry on the production stack (§G2). If any entry fails verification, stop and return a `Design Impact` to the Solution Designer: changing the approved catalog is the user's decision.
+2. **Catalog.** Definition type, catalog with the three approved entries (Granite small R2 default since SR-007, LEAF-IR, EmbeddingGemma 2), setting file, and registration in `ServerSettingsService`. Then verify and calibrate every entry on the production stack (§G2). If any entry fails verification, stop and return a `Design Impact` to the Solution Designer: changing the approved catalog is the user's decision.
 3. **Embeddings internals.** `EmbeddingModelFiles` → worker + runner → `EmbeddingVectorStore` → readiness/relevance → `EmbeddingIndex` (+ unit tests with a fake runner and a test collection, AC-013).
 4. **Task search.** `ProjectTaskSearchService` + delete hooks (+ unit tests).
 5. **Transport.** GraphQL `searchProjectTasks`, `retryEmbeddingModel`; tool `search_project_tasks` (contract, manifest, native class); server E2E.
@@ -574,7 +606,7 @@ Transport (GraphQL, tool) → Task search policy (`projects/search`) → embeddi
 - **G2 Catalog entry verification and calibration** (required for each of the three approved entries; a failure is a `Design Impact` to the Solution Designer, never a silent drop):
   - Pin the repo revision; compute SHA-256 of every file at that revision (LEAF-IR ONNX hashes are already verified; the official tokenizer hashes are in the investigation notes).
   - Run the entry on the production stack (ort-web + tokenizers) over the synthetic test data package and confirm rankings meet QR-007.
-  - Derive `relevance.clearMatchFloor` and `nearBestMargin` with the procedure in `model-evaluation-report.md` §4. The margin is the p95 of "top score minus relevant score"; the floor separates on-topic from off-topic top scores.
+  - Derive `relevance.clearMatchFloor` and `nearBestMargin` with the procedure in `model-evaluation-report.md` §4. **SR-007:** the default model must pass AC-001 and AC-004 on the 60-Task fixture and on both 1,000-Task backlogs (API/E2E `evidence/probes/API-PROBE-generate-backlog.mjs`, seed 20261018; `API-PROBE-score-analysis.mjs` real-text set). A calibration derived on the fixture alone is not sufficient for the default. The margin is the p95 of "top score minus relevant score"; the floor separates on-topic from off-topic top scores.
   - Record the values and the evidence in the catalog file comments and the validation report.
   - The official LEAF-IR tokenizer differs from the community export used in the probes; verify rankings with the official file.
   - EmbeddingGemma 2:
@@ -603,7 +635,7 @@ Transport (GraphQL, tool) → Task search policy (`projects/search`) → embeddi
   - `fetch` with an idle/connect timeout (no total timeout).
   - Stream to `<file>.part`, hash while writing, verify size + SHA-256, `rename`.
   - Single flight per model.
-  - Readiness progress counts bytes.
+  - Readiness progress counts bytes. While existing files are only being verified (no download), report phase `loading`, not `downloading` (O-1).
   - The URL form is `https://huggingface.co/<repo>/resolve/<revision>/<path>`.
 - **G8 Store:**
   - Open lazily.

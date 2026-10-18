@@ -4,7 +4,7 @@
 - From: Solution Designer (software engineering team), 2026-10-18
 - Result classification: `Architecture Design Complete`, `task_size=Large`, `architectural_risk=High`
 - Route applied: handoff rule "Large or High → independent architecture review", recipient `/software_engineering_team/architecture_reviewer`
-- Current solution revision: `SR-006` (design revised after review ARCH-REV-001; SR-005 was the first round) on approved requirements `SR-004`
+- Current solution revision: `SR-007` (design revised for FO-001; SR-005 first round, SR-006 after ARCH-REV-001) on approved requirements `SR-007`
 
 ## Original Request And Goals
 
@@ -38,7 +38,7 @@ The Project Task Manager delegated this Task on the user's GO-AHEAD (2026-10-18)
 ## Design Summary
 
 - **Generic layer `autobyteus-server-ts/src/embeddings/`** (product-agnostic; public boundary `EmbeddingIndex`):
-  - Model catalog plus the server setting `AUTOBYTEUS_EMBEDDING_MODEL` (default `mdbr-leaf-ir`; Granite small R2; EmbeddingGemma 2, verified on WASM, multilingual and heavy).
+  - Model catalog plus the server setting `AUTOBYTEUS_EMBEDDING_MODEL` (default `granite-embedding-small-english-r2` since SR-007; LEAF-IR fast option; EmbeddingGemma 2, verified on WASM, multilingual and heavy).
   - The model is downloaded on first need from a pinned Hugging Face revision, SHA-256 verified.
   - A worker-thread runner uses `onnxruntime-web` (WASM) and `@huggingface/tokenizers`, with 4 threads max and a 10-minute idle stop.
   - `node:sqlite` vector store `<appData>/embeddings/embeddings.sqlite`, a disposable cache.
@@ -101,7 +101,7 @@ Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-se
 - `requirements-doc.md`: approved requirements (SR-004)
 - `investigation-notes.md`: evidence, including the architecture-phase evidence section
 - `design-spec.md`: the design (SR-005)
-- `solution-revision-record.md`: SR-001…SR-006
+- `solution-revision-record.md`: SR-001…SR-007
 - `design-review-report.md`, `architecture-review-revision-record.md`: owned by the architecture reviewer (round 1)
 - `model-evaluation-report.md`: model experiments and conclusions (evidence for DEC-002)
 - `probes/`: reproducible probe scripts and raw results (linked from the notes and the report)
@@ -121,6 +121,25 @@ Re-review scope, as the reviewer stated: AR-001…AR-003. The design spec's new 
   - DS-003: collection generations; results that arrive after cancellation are discarded, never written.
   - Interface row `forgetTask`/`forgetProject` updated to match.
 - **R-1…R-8:** applied as described in the resolution table. R-4 was probed: threads work inside a `worker_thread`. R-8 became FU-5.
+
+## SR-007 Revision (failure origin FO-001; user-approved requirement delta)
+
+- **Trigger:** code review round 3, FO-001 / C-08 (`code-review-report.md`), from API/E2E API-REV-001 F-001 (API-L04). With LEAF-IR as default, AC-004 and AC-001 fail on 1,000-Task backlogs.
+- **Solution Designer evidence** (`probes/fo-001/`): no LEAF-IR rule passes both criteria at 1,000 Tasks; Granite's shipped calibration passes on the fixture and both 1,000-Task backlogs.
+- **User approval** (2026-10-18): requirements `Approved` at SR-007.
+  - Default model → Granite Small English R2.
+  - DEC-011: AC-001/AC-002/AC-004 hold for the default up to 1,000 Tasks.
+  - QR-003: ≤ 3 min per ≈ 170 Tasks, ≤ 20 min per 1,000.
+  - QR-004: ≤ 800 MB peak / ≤ 450 MB searching.
+- **Design changes:** design spec section "Failure-Origin Resolution (FO-001 → SR-007)".
+  - Default id; setting description.
+  - LEAF-IR calibration 0.30 / 0.045 (fast option for small Projects).
+  - G2 requires at-scale calibration for the default.
+  - Optional O-1: report `loading` while only verifying files.
+  - Rework sequence and API/E2E reruns (API-L04, API-R06, API-L03b/c/d).
+- **Unchanged:** architecture, boundaries, persistence, interfaces. Classification stays Large/High.
+- **Re-review scope:** the SR-007 sections only.
+- **Code at review time:** branch `codex/project-task-semantic-search`; source `722b9b3918`, evidence `8981a99256` / `68441864d1`.
 
 ## Expected Next Action
 

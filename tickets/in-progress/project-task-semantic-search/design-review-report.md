@@ -2,18 +2,21 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/tickets/in-progress/project-task-semantic-search/requirements-doc.md` (SR-004, Approved by user 2026-10-18)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/tickets/in-progress/project-task-semantic-search/requirements-doc.md` (SR-007 = SR-004 baseline plus a delta the user approved on 2026-10-18)
 - Upstream Investigation Notes: `.../investigation-notes.md` (incl. "Architecture-phase evidence")
-- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-005)
-- Reviewed Design Spec: `.../design-spec.md` (SR-006; incl. "Architecture Review Resolution" table)
-- Supplemental Task Artifacts Reviewed: `model-evaluation-report.md` (evidence for DEC-002), `probes/` (evidence; round 2 adds `probes/egemma2-wasm-q8.json` and `probes/worker-thread-probe/`), `architecture-design-handoff.md`
-- Relevant Solution Revision IDs: SR-004 (approved requirements), SR-005 (design round 1), SR-006 (design revision answering ARCH-REV-001)
+- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-007)
+- Reviewed Design Spec: `.../design-spec.md` (SR-007: "Failure-Origin Resolution (FO-001 → SR-007)", plus the SR-006 "Architecture Review Resolution" table)
+- Supplemental Task Artifacts Reviewed: `model-evaluation-report.md` (evidence for DEC-002), `probes/` (round 2: `egemma2-wasm-q8.json`, `worker-thread-probe/`; round 3: `fo-001/rule-evaluation.txt`, `fo-001/embedding-times.txt`), `architecture-design-handoff.md`, `code-review-report.md` (round 3: FO-001 / C-08, O-1)
+- Relevant Solution Revision IDs: SR-004, SR-005, SR-006, SR-007 (user-approved requirement delta and design revision for FO-001)
 - Architecture Review Revision Record: `.../architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: Solution Designer re-review request for SR-006 (2026-10-18)
-- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, Fail — Design Impact, AR-001…AR-003)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: Solution Designer re-review request for SR-007, which answers code-review failure origin FO-001 (2026-10-18)
+- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, Pass); round 1 (`ARCH-REV-001`, Fail)
+- Latest Authoritative Round: 3
+- Round 3 code evidence: worktree HEAD `68441864d1` (implementation source `722b9b3918`). In `src/embeddings/catalog/embedding-model-catalog.ts`:
+  - the default is still `LEAF_IR.id` (L91), with LEAF-IR floor 0.24 and margin 0.045;
+  - Granite has `maxTokens 1024`, floor 0.78 and margin 0.02, the same values FO-001 evaluated, so the Granite evidence matches what will ship.
 - Current-State Evidence Basis: worktree `codex/project-task-semantic-search` @ base `55bff1f5ee` (only ticket docs uncommitted). Read: `autobyteus-web/components/projects/ProjectTaskBoard.vue` (predicate L60–67, Cancelled filter L55–59, locator L82–87); `autobyteus-server-ts/package.json` (ESM, `tsc` build to `dist`); `src/services/server-settings-service.ts` (`allowedValues` rejection L324, runtime `config.set`); `src/config/streaming-content-flush-interval-setting.ts` (resolve-or-default pattern); `src/projects/services/project-task-service.ts` (`listTasks` L95 builds views; `deleteTask` L194); `project-service.ts` (`deleteProject` L185); `project-task-views.ts`; `stores/project-store.ts` (`listTasks` L92); `agent-tools/project-tasks/project-task-tool-manifest.ts` (error mapping); `autobyteus-web/scripts/prepare-server.mjs` (`pruneNativePrebuilds`); `LICENSING.md`, `scripts/check_licensing.py`, `autobyteus-web/public/THIRD_PARTY_NOTICES/`; web `composables/projects/`, `graphql/queries/`, `localization/messages/{en,zh-CN}`; root `DESIGN.md`.
 
 ## Routing Classification Review
@@ -41,6 +44,13 @@
 | BEH-003 | System | Pass | Pass | Pass | Confirmed | — (AR-003 resolved) |
 | BEH-004 | System / User | Pass | Pass | Pass | Confirmed | — (AR-002 resolved) |
 | BEH-005 | Contract / Operational | Pass | Pass | Pass | Confirmed | — (AR-001 resolved) |
+
+Round 3: the basis is SR-007. The user approved the delta on 2026-10-18 ("go a head for the switching"):
+- DEC-002: the default is Granite Small English R2;
+- DEC-011 (new): AC-001, AC-002 and AC-004 hold for the default model up to 1,000 Tasks; the other catalog models are verified on the fixture, with their behavior at scale documented;
+- QR-003 and QR-004 are re-based on Granite.
+
+The design follows the delta exactly. BEH-001 and BEH-005 stay `Confirmed`. No spine, boundary, interface or persistence changes.
 
 Round 2: requirements unchanged (SR-004). The SR-006 changes are confined to evidence, risks, guidance and DS-003/DS-006 detail, so unaffected structural verdicts from round 1 stand.
 
@@ -181,6 +191,7 @@ Round 2: requirements unchanged (SR-004). The SR-006 changes are confined to evi
 | Task/Project files, `production.db` | Not Affected | Pass | Pass | N/A | Pass | — |
 | New `embeddings.sqlite` | Discard or Rebuild (rename-aside + recreate) | Pass | Pass | N/A | Pass | Matches AC-009 and requirements' acceptable-loss statement |
 | Model files | Discard or Rebuild | Pass | Pass | N/A | Pass | Inactive models removed after switch (QR-005) |
+| Round 3: default-model change (blank setting → Granite) | Not Affected | Pass | Pass | N/A | Pass | The feature has not been released (branch unmerged into `origin/personal`), so no user install has a LEAF-IR index. Any dev or test instance with one goes through the existing switch path (DS-007, rows read by `model_id`). No migration needed |
 
 ## Change / Refactor Safety Verdict
 
@@ -216,31 +227,42 @@ Round 2: requirements unchanged (SR-004). The SR-006 changes are confined to evi
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-None. The round-1 gap (EmbeddingGemma 2 unverified on WASM) is closed by `probes/egemma2-wasm-q8.json`: ort-web, 4 threads, r@5 0.957, r@10 0.986 (QR-007 met).
+None.
 
 ## Review Decision
 
-`Pass` — the behavior basis is confirmed, AR-001…AR-003 are resolved in the current canonical design spec (SR-006), and no in-scope machinery depends on an unsupported premise. The design is ready for implementation.
+`Pass`. The SR-007 behavior basis is user-approved and confirmed. The FO-001 design revision follows it, and no in-scope machinery depends on an unsupported premise. The revised design is ready for implementation rework.
 
 ## Findings
 
-None open. Round-2 verification of the round-1 findings (details in `ARCH-REV-002`):
+None open.
 
-- **AR-001 — Resolved.**
-  - EmbeddingGemma 2 was run on the production WASM stack: r@1 0.913, r@5 0.957, r@10 0.986, MRR 0.940; 4,270 ms per Task; RSS 1,134 MB loaded / 1,522 MB peak.
-  - The catalog keeps all three approved entries unconditionally: file mapping, sequence step 2, G2.
-  - The contingency is now consistent everywhere (RSK-006, G2, step 2, escalation trigger): any verification failure goes back to the Solution Designer as a `Design Impact` for the user's decision.
-  - Model-specific cost is stated for operators (RSK-009; setting description; `embeddings.md`), which QR-003 allows ("other catalog models may be slower, stated per model").
-  - The empty-modality-input handling (G2) is generic, driven by the session's input metadata, not a per-model branch. It fits the design's "everything model-specific is data" rule.
-- **AR-002 — Resolved.**
-  - G11 maps REQ-013/AC-014:
-    - npm `LICENSE*`/`NOTICE*`/`package.json` are kept through the G6 prune;
-    - no `THIRD_PARTY_NOTICES` entry is needed, consistent with `LICENSING.md`, which keeps that folder for vendored code;
-    - models are not shipped, and each one's licence and source are recorded in the catalog and `docs/modules/embeddings.md`;
-    - `check_licensing.py` and the hygiene check run in validation.
-- **AR-003 — Resolved.**
-  - DS-006 and the `forgetTask`/`forgetProject` interface row: the hooks are synchronous calls that never throw and never await indexing (QR-006).
-  - DS-003: per-collection generations are bumped synchronously by drop, remove, model switch and sync removals, and checked before every store write and cache update. A late batch is discarded (MP-001).
+### Round 3 verification (FO-001 → SR-007, details in `ARCH-REV-003`)
+
+- **Root cause and remedy belong at the design level.**
+  - FO-001 is a calibration-basis inadequacy. G2 calibrated on the 60-Task fixture alone, and the code reviewer kept it out of the implementation-defect category.
+  - `probes/fo-001/rule-evaluation.txt` (production `dist` runner and pinned files) shows that no tested LEAF-IR rule meets both AC-001 (≥ 90% of targets in the first 5) and AC-004 (≥ 90% no-match on unrelated queries) on the 1,000-Task backlogs. The tested rules are absolute floors 0.24–0.36 with margins 0.045/0.02, z-score gates, and z-score gates with item membership. The best floor, 0.32, gives 87.3% / 91.7% generated and 88.9% / 91.7% real-text.
+  - Granite with its shipped 0.78 / 0.02 passes all three backlogs: fixture 96.8% / 95.8%, generated 93.7% / 95.8%, real-text 92.1% / 95.8%.
+  - So the remedy (change the default) is evidence-led. Changing the approved default needed the user, and the user approved it (SR-007, DEC-002 / DEC-011).
+- **The design matches the approved delta:**
+  - default id `granite-embedding-small-english-r2`, also used when the setting is blank;
+  - the catalog still holds three entries, as DEC-002 requires;
+  - LEAF-IR becomes the fast option for small Projects, floor 0.30 / margin 0.045: fixture 95.2% / 95.8%, and its description states that relevance degrades on large Projects. DEC-011 requires only fixture verification for non-default models.
+  - G2 now requires the default to be calibrated at 1,000 Tasks.
+  - O-1 is cosmetic: `loading` while existing files are only verified. It is optional, uses the existing readiness union and changes no contract.
+- **Re-based targets hold.**
+  - QR-003: Granite took 188–200 s per 1,000 Tasks on the same host (`embedding-times.txt`), against a 20-minute target.
+  - QR-004: about 720 MB peak on the WASM probe, against 800 MB.
+  - QR-005: Granite's files are 55 MB, within 60 MB.
+  - Granite's `maxTokens` of 1024 in the catalog matches the inputs measured.
+- **Structure is unchanged.**
+  - Spines, boundaries, interfaces, persistence and the removal plan are untouched; the round 1–2 verdicts stand.
+  - The rework sequence (catalog, tests, docs, O-1, then the API/E2E reruns API-L04, API-R06 and API-L03b/c/d) is realistic and covers AC-001, AC-004 and AC-015.
+  - Classification stays Large/High.
+
+### Round 1 findings
+
+AR-001…AR-003 were resolved in round 2 (`ARCH-REV-002`) and are unaffected by SR-007.
 
 ## Classification
 
@@ -252,26 +274,29 @@ N/A — `Pass`.
 
 ## Residual Risks
 
-- Round-1 recommendations, all now in the design:
-  - R-1, R-3 and R-7 in G4;
-  - R-2 in the `EmbeddingIndex.search` row (`scoreIds` → `scores`);
-  - R-4 probed (`probes/worker-thread-probe/`: 4 threads in a `worker_thread`, 2.4× faster than 1 thread);
-  - R-5 in the Dependency Rules;
-  - R-6 in the setting row;
-  - R-8 recorded as follow-up FU-5.
-- For implementation and validation to watch:
-  - RSK-002: model download behind proxies (FU-2).
-  - RSK-004: per-model calibration margin. Calibrate all three entries per G2.
-  - RSK-005 / RSK-009: WASM memory. EmbeddingGemma 2 reaches about 1.5 GB at peak and about 12 min to index today's backlog on an M1 Max. This is acceptable as an opt-in, operator-chosen model with its cost stated.
-  - RSK-008: `listTasks` builds full views per search; measure under QR-001 (FU-4).
-- The implementation-time escalation triggers in the design spec stay binding:
-  - a catalog entry fails verification;
-  - QR-001…QR-005 are missed on the built app;
-  - a server-push channel is needed;
-  - an existing owner must change beyond the listed hooks.
+- **R-9 — The default's calibration margin at scale is thin (RSK-004).**
+  - On real-text 1,000 Tasks, AC-001 is 92.1% against the 90% target, and a floor of 0.81 drops it to 84.1%.
+  - Recommendation for implementation and validation:
+    - keep the at-scale check reproducible as a gated test or a documented probe rerun, so a later model or tokenizer pin change cannot silently break DEC-011;
+    - API-L04 must use the shipped values.
+- **R-10 — QR-003 on real-length Tasks.**
+  - The 188–200 s evidence comes from the FO-001 runner; the earlier lean probe measured about 487 ms per real Task (82 s for 170 Tasks).
+  - On a laptop 2–3× slower, the 170-Task target of ≤ 3 min is close.
+  - API-L03b/c/d should measure real-length descriptions. The design's escalation trigger applies if a target is missed.
+- **R-11 — QR-004 peak margin.** About 720 MB measured against 800 MB; measure in API-L03.
+- **R-12 — Bookkeeping in documents the Solution Designer owns** (non-blocking; these documents are not normative for implementation):
+  - `requirements-doc.md` L13 lists the baseline as "DEC-001…DEC-010", without DEC-011;
+  - the QR-007 conditions column still says "default LEAF-IR";
+  - the `solution-revision-record.md` SR-007 index row still shows "Ready for Approval / Needs Revision", although the entry records the approval;
+  - `architecture-design-handoff.md` L41 still says default `mdbr-leaf-ir`.
+- Carried forward:
+  - RSK-002: model download behind proxies (FU-2);
+  - RSK-005 / RSK-009: WASM memory;
+  - RSK-008: `listTasks` builds full views per search (FU-4);
+  - the design's implementation-time escalation triggers.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001 and MP-002 are `Reachable`; both are addressed by bounded statements in DS-003 and G4; no machinery depends on an unsupported premise)
-- Notes: Round 2 checked AR-001…AR-003 and the R-1…R-8 changes against the SR-006 design spec, investigation notes and new probe evidence. The round-1 structural verdicts for unaffected sections stand.
+- Material-Premise Gate: `Pass` (no new premise in round 3; MP-001 and MP-002 remain addressed)
+- Notes: Round 3 checked the SR-007 FO-001 revision against the user-approved delta, the `probes/fo-001` evidence and the current catalog code. The round 1–2 structural verdicts stand.

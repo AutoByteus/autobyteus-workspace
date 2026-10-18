@@ -2,16 +2,45 @@
 
 ## Document Status
 
-- Status: `Approved`
-- Current solution revision ID: `SR-004`
+- Status: `Approved` (SR-007)
+- Current solution revision ID: `SR-007`
 - Package identifier: `project-task-semantic-search`
 - Request / ticket: Project Task `autobyteus-71` (`project_task_9b35671b-5079-4dff-90ef-e62a71289ed9`), "Local semantic search for Project Tasks, built on a reusable local embedding layer"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's GO-AHEAD of 2026-10-18
 - Requirements owner: Solution Designer (software engineering team)
 - Date: 2026-10-18
-- Approved by and reference: `User`, 2026-10-18, in the Solution Designer conversation. After the full set was presented (lanes/near-best rule, LEAF-IR default with switchable catalog, server download on first use, targets, `search_project_tasks`) and the user asked "which model you will use by default?" (answer: MongoDB LEAF-IR), the user said: *"Okay… I think you can go on now for your design."*
-- Exact approved requirements baseline / solution revision: this document at `SR-004` (REQ-001…REQ-015, AC-001…AC-016, QR-001…QR-008, DEC-001…DEC-010)
+- Approved by and reference: `User`, 2026-10-18, in the Solution Designer conversation. After the full set was presented (lanes/near-best rule, LEAF-IR default with switchable catalog, server download on first use, targets, `search_project_tasks`) and the user asked "which model you will use by default?" (answer: MongoDB LEAF-IR), the user said: *"Okay… I think you can go on now for your design."* **SR-007 delta:** approved by the user on 2026-10-18 (\"go a head for the switching\"), in reply to the presented option A (Granite default) with its re-based targets and the scale statement.
+- Exact approved requirements baseline / solution revision: this document at `SR-007` (SR-004 baseline + SR-007 delta) (REQ-001…REQ-015, AC-001…AC-016, QR-001…QR-008, DEC-001…DEC-011)
 - Behavior-defining supplements and their approved versions: none (probe artifacts are evidence only)
+
+## Delta SR-007 (approved by the user, 2026-10-18)
+
+Trigger: code review FO-001 (API/E2E API-L04). With the default model LEAF-IR, AC-004 and AC-001 fail on 1,000-Task backlogs:
+
+| Backlog | Unrelated queries with no match | Targets shown in the first 5 |
+| --- | --- | --- |
+| 60 Tasks | 92% | 97% |
+| 1,000 generated Tasks | 58% | 87% |
+| 1,000 real-text Tasks | 42% | 90.5% |
+
+Solution Designer analysis (`probes/fo-001/rule-evaluation.txt`):
+
+- No relevance rule makes LEAF-IR meet both bars at 1,000 Tasks; tested were the floor from 0.24 to 0.36, two margins and score-distribution (z-score) rules. Its ranking itself drops (target in the top 5 of the generated backlog: at most 87–89% with any cut-off).
+- Granite Small English R2 with its shipped calibration meets both on all three backlogs:
+
+| Backlog | Targets shown in the first 5 | Unrelated queries with no match |
+| --- | --- | --- |
+| 60 Tasks | 96.8% | 95.8% |
+| 1,000 generated Tasks | 93.7% | 95.8% |
+| 1,000 real-text Tasks | 92.1% | 95.8% |
+
+Approved changes (the user, 2026-10-18, replying to the option A proposal with its targets: *"go a head for the switching"*):
+
+- **DEC-002 (default model):** the default becomes `granite-embedding-small-english-r2`. LEAF-IR and EmbeddingGemma 2 stay in the catalog (LEAF-IR as the fast option for small Projects).
+- **DEC-011 (new; scale of AC-001/AC-002/AC-004):** these criteria hold for Projects of up to 1,000 Tasks (the QR-001 scale), measured on the 60-Task fixture and on 1,000-Task backlogs.
+- **QR-003 (re-based on Granite):** download ≤ 60 MB; background indexing of ≈ 170 Tasks within 3 minutes and of 1,000 Tasks within 20 minutes on a typical laptop. Evidence: on the same host and runner, Granite embedded 1,000 Tasks in 188–200 s against LEAF-IR's 70–75 s (`probes/fo-001/embedding-times.txt`); LEAF-IR took ≈ 107 s in the app.
+- **QR-004 (re-based on Granite):** server memory added ≤ 800 MB at peak while indexing and ≤ 450 MB while only searching; back to ≤ +50 MB after 10 idle minutes. Measured on the WASM probe: Granite ≈ 370 MB loaded, ≈ 720 MB peak.
+- **QR-005:** unchanged (Granite's files are 55 MB, within 60 MB).
 
 ## Problem And Desired Outcome
 
@@ -164,11 +193,11 @@ Proposed targets, to be agreed with the user (DEC-004). Measurement basis: `inve
 | --- | --- | --- | --- | --- | --- |
 | QR-001 | REQ-001, AC-015 | Performance | Board results update within 0.5 s after typing stops; server search time ≤ 150 ms at p90 | Project with up to 1,000 Tasks; meaning search ready | Measure server timing + UI |
 | QR-002 | REQ-007, AC-008 | Performance | A created/edited Task is found by meaning within 10 s (typically ~2 s); deletions take effect immediately | Ready index | Server test timing |
-| QR-003 | REQ-009, AC-010 | Performance | With the default model: one-time download ≤ 60 MB. Background indexing of today's backlog (≈ 170 Tasks) finishes within 2 minutes, and 1,000 Tasks within 10 minutes. Exact search works throughout. Other catalog models may be slower (stated per model in the catalog). | Typical laptop CPU (measured default model: 170 Tasks in 18 s on an M1 Max, ≈ 0.1 s per Task) | Measure on the build |
-| QR-004 | AC-015 | Resource | With the default model, server memory added by meaning search is ≤ 600 MB at peak while indexing and ≤ 350 MB while only searching. It returns to near the baseline (≤ +50 MB) after 10 minutes without searches or Task edits. | Measured default model ≈ 270 MB loaded, ≈ 480 MB peak; server baseline ≈ 400 MB | Measure RSS |
-| QR-005 | AC-015, AC-016 | Resource | Index storage ≤ 10 MB per 1,000 Tasks. Model files of the default ≤ 60 MB. Only the active model's files and vectors are kept after a switch completes. | Expected ≈ 1.5–3 MB per 1,000 Tasks | Measure files |
+| QR-003 | REQ-009, AC-010 | Performance | With the default model (Granite Small English R2, SR-007): one-time download ≤ 60 MB. Background indexing of today's backlog (≈ 170 Tasks) finishes within 3 minutes, and 1,000 Tasks within 20 minutes. Exact search works throughout. Other catalog models differ (stated per model in the catalog). | Typical laptop CPU. Same-host runner evidence: Granite 188–200 s per 1,000 Tasks vs LEAF-IR 70–75 s | Measure on the build |
+| QR-004 | AC-015 | Resource | With the default model, server memory added by meaning search is ≤ 800 MB at peak while indexing and ≤ 450 MB while only searching. It returns to near the baseline (≤ +50 MB) after 10 minutes without searches or Task edits. | WASM probe: Granite ≈ 370 MB loaded, ≈ 720 MB peak (in-process RSS) | Measure (footprint) |
+| QR-005 | AC-015, AC-016 | Resource | Index storage ≤ 10 MB per 1,000 Tasks. Model files of the default ≤ 60 MB (Granite 55 MB). Only the active model's files and vectors are kept after a switch completes. | Expected ≈ 1.5 MB per 1,000 Tasks (384 dimensions) | Measure files |
 | QR-006 | REQ-010, AC-012 | Performance | No model loading or indexing during server startup; Task create/edit/delete add no waiting for search | — | Test / timing |
-| QR-007 | REQ-001, AC-002 | Quality | Representative paraphrase set: target Task in top 5 for ≥ 90% of queries and top 10 for ≥ 95% (for every catalog model) | Measured on real Tasks (69 queries): default LEAF-IR 98.6% / 100%; Granite 95.7% / 100%; EmbeddingGemma 2 97.1% / 98.6% | Probe + synthetic durable test |
+| QR-007 | REQ-001, AC-002 | Quality | Representative paraphrase set: target Task in top 5 for ≥ 90% of queries and top 10 for ≥ 95% (for every catalog model) | Measured on real Tasks (69 queries): default Granite 95.7% / 100% (SR-007); LEAF-IR 98.6% / 100%; EmbeddingGemma 2 97.1% / 98.6% | Probe + synthetic durable test |
 | QR-008 | REQ-013, AC-014 | Compatibility | Same behavior on all supported desktop platforms and Docker images; no native binary that a platform lacks | — | CI builds + Docker smoke |
 
 ## Data Continuity And Acceptable Loss
@@ -183,7 +212,7 @@ Proposed targets, to be agreed with the user (DEC-004). Measurement basis: `inve
 
 | Contract / Dependency | Required Behavior Or Constraint | Evidence / Authority | Uncertainty Or Risk |
 | --- | --- | --- | --- |
-| Embedding model catalog (default: MongoDB LEAF-IR `mdbr-leaf-ir`, Apache-2.0; also Granite Small English R2, EmbeddingGemma 2) | Compact, CPU, permissive licence; switchable (REQ-015) | `model-evaluation-report.md` | Default is English-only; a multilingual environment switches to EmbeddingGemma 2 |
+| Embedding model catalog (default since SR-007: IBM Granite Small English R2, Apache-2.0; also MongoDB LEAF-IR, EmbeddingGemma 2) | Compact, CPU, permissive licence; switchable (REQ-015) | `model-evaluation-report.md` | Default is English-only; a multilingual environment switches to EmbeddingGemma 2 |
 | CPU inference runtime + tokenizer | Runs on every supported platform with no missing native binary | investigation-notes runtime table | WASM speed vs native |
 | Model file host (one-time download) | Pinned version, integrity-checked | DEC-003 | Network availability on first use |
 | Project Task Manager package (companion repo `autobyteus-agents`) | Selects the tool; skill guidance | REQ-006 | Separate PR in that repository |
@@ -199,7 +228,7 @@ Proposed targets, to be agreed with the user (DEC-004). Measurement basis: `inve
 
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
-| ASM-001 | Task text is mostly English | English default model (DEC-002) | 166/168 real Tasks are English; a multilingual model is available in the catalog | Mitigated by REQ-015 |
+| ASM-001 | Task text is mostly English | English default model (DEC-002, Granite) | 166/168 real Tasks are English; a multilingual model is available in the catalog | Mitigated by REQ-015 |
 | ASM-002 | A one-time model download on first use (default ≈ 24 MB) is acceptable | DEC-003 | User confirms DEC-003 | Pending user |
 | ASM-003 | Typical laptops are 2–4× slower than the M1 Max benchmark host | Target headroom | Validation measures on the build | Open |
 
@@ -208,7 +237,7 @@ Proposed targets, to be agreed with the user (DEC-004). Measurement basis: `inve
 | Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-001 | Which Tasks count as matches by meaning, and how does the board show them? | Every Task has some similarity score, so without a rule search returns the whole board; it sets visible behavior | (a) Keep lanes, best-first per lane; matches = exact matches + the meaning matches nearly as relevant as the best one (cap 20), none when even the best is weak; (b) switch to a single ranked list while searching; (c) show everything ranked | (a) keeps the familiar board and status controls (the request says enhance, not replace) and keeps lane counts meaningful. On the real backlog, the "nearly as relevant as the best" rule showed 1 meaning match typically and 9 at p90, and always included the intended Task (40/40). Off-topic queries scored clearly lower, so they show no-match. Words that appear in Tasks still bring every exact match. **Recommend (a).** | User | Decided (user approved 2026-10-18) |
-| DEC-002 | Which model is the default, and which models does the catalog offer? | Quality, speed, memory, language, licence | `model-evaluation-report.md`, round 2 (11 current models, 69 queries on the real Tasks, WASM cost). Top tier within 2–4 queries: Voyage 4 nano, Granite Small English R2, EmbeddingGemma 2, LEAF-IR. Cost differs up to 22×. | **Default: MongoDB LEAF-IR.** It is top-tier quality (top 5 98.6%) at the lowest cost (WASM: 18 s for today's backlog, 5 ms queries, 24 MB), which matters for future high-volume collections such as conversations. **Catalog also offers:** Granite Small English R2 (best first result, long inputs) and EmbeddingGemma 2 (multilingual, Apache-2.0). Voyage 4 nano is excluded (22× CPU, about 1.3 GB). The round 1 recommendation (Granite) is superseded. | User (default) | Decided (user approved 2026-10-18) |
+| DEC-002 | Which model is the default, and which models does the catalog offer? | Quality, speed, memory, language, licence | `model-evaluation-report.md`, round 2; FO-001 scale evidence (`probes/fo-001/`) | SR-004 chose LEAF-IR for cost. **SR-007:** at 1,000 Tasks LEAF-IR cannot meet AC-001 and AC-004 under any relevance rule tested, while Granite's shipped calibration meets both on the 60-Task fixture and on both 1,000-Task backlogs. **Default: Granite Small English R2.** Catalog also offers LEAF-IR (fastest; suits small Projects) and EmbeddingGemma 2 (multilingual). | User | Decided (user approved SR-004; default changed in SR-007) |
 | DEC-003 | How does the model reach the server? | Installer size, offline use, one code path for every server (desktop, Docker, self-hosted) | (a) The server downloads the active model once on first need (default ≈ 24 MB, pinned version, checksum-verified) into its own data folder; (b) bundle it into every desktop build and Docker image (self-hosted builds would also need it) | (a) is one server-side path everywhere: desktop, Docker, self-hosted servers and dev. Installers and images don't grow, no model weights go into git or CI, and nothing depends on Electron (REQ-012). The cost is that first use needs network once from the server; offline first use shows "unavailable" and exact search still works. **Recommend (a).** | User | Decided (user approved 2026-10-18) |
 | DEC-004 | Performance and resource targets | "Requirements and performance expectations agreed with the user" | QR-001…QR-008 from measurements | Targets set with headroom over the measured values (see QR table) | User | Decided (user approved 2026-10-18) |
 | DEC-005 | Agent tool shape | Usability for agents | Name `search_project_tasks` (user, 2026-10-18, after first saying `search_tasks`: "search project tasks please my mistake. because there are tool like list project tasks"); `project_id` first, then `query`; optional `limit`; no status filter; compact items | The user chose the name (consistent with `list_project_tasks`) and parameter order. Per Project, like `list_project_tasks`; `taskId` = key as in every Project tool. No status filter (keep it simple): each result shows its status. A compact result keeps agent context small; full details stay in `list_project_tasks`. | User (name, order); Solution Designer (rest) | Decided |
@@ -217,6 +246,7 @@ Proposed targets, to be agreed with the user (DEC-004). Measurement basis: `inve
 | DEC-008 | Board search scope | Consistency | Per Project (board shows one Project) | Matches the board and the tool | Solution Designer | Decided |
 | DEC-009 | Behavior while preparing/unavailable | First-use UX | Exact matches + one status line; results refresh when ready; tool waits briefly (bounded) for readiness before answering, then reports state | Agents act on results, so a short bounded wait avoids false "no such Task" conclusions; the board never waits | Solution Designer | Decided |
 | DEC-010 | Storage technology | User delegated it (2026-10-18) | Architecture decision | Decided in the design (local file storage, no server) | Solution Designer | Decided (design) |
+| DEC-011 | At which Project size must AC-001, AC-002 and AC-004 hold? | Acceptance scale (FO-001 question 1) | QR-001 says up to 1,000 Tasks | They hold for the default model on Projects of up to 1,000 Tasks, verified on the 60-Task fixture and on 1,000-Task backlogs (generated and real-text). Other catalog models are verified on the fixture (QR-007), with their scale behavior documented. | User (SR-007) | Decided |
 
 ## Traceability
 

@@ -10,6 +10,7 @@
 | SR-004 | Mixed (Evidence + Requirements) | User challenge of the model investigation and request for a switchable model (2026-10-18) | N/A | Ready for Approval | Approved | DEC-002, REQ-015 (new), UC-006, SCN-008, AC-016, QR-003, QR-004, QR-005, QR-007, Out Of Scope, Non-Goals | Model evaluation redone with 11 current models (report written); default recommendation LEAF-IR; switchable model catalog required; front-end model download deferred |
 | SR-005 | Design | Architecture design on approved SR-004 | N/A | N/A (no design) | Design Ready | BEH-001…BEH-005; REQ-001…REQ-015 | `design-spec.md` written; task_size Large, architectural_risk High |
 | SR-006 | Design | Architecture review ARCH-REV-001: Fail, Design Impact (`design-review-report.md`) | AR-001, AR-002, AR-003; R-1…R-8 | Design Ready (reviewed: Fail) | Design Ready (revised) | BEH-003, BEH-004, BEH-005; REQ-007, REQ-013, REQ-015, QR-006, QR-007 | EmbeddingGemma 2 verified on WASM and kept; licence mapping; delete cleanup never waits; recommendations applied |
+| SR-007 | Mixed (Evidence + Requirements) | Code review failure origin FO-001 (API-REV-001 F-001, API-L04): `Design Impact` | FO-001, C-08 | Approved (SR-004) / Design Ready | Requirements Approved (SR-007); design Ready (revised; ARCH-REV-003 Pass) | DEC-002, DEC-011 (new), AC-001, AC-002, AC-004, QR-003, QR-004 | **Approved by the user** ("go a head for the switching"): default model → Granite; DEC-011 AC scale up to 1,000 Tasks; QR-003/QR-004 re-based; design revised (default id, LEAF-IR calibration 0.30/0.045, G2 at-scale basis, O-1) |
 
 ## Revision Entries
 
@@ -132,3 +133,32 @@
 - 2026-10-18: `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_a0649733ed664b98994f7a77b7dcdce1`) reported **Pass**, ARCH-REV-002, on SR-004 requirements and the SR-006 design. AR-001…AR-003 are resolved and there are no open findings.
 - Report: `design-review-report.md`; record: `architecture-review-revision-record.md`.
 - The reviewer delivered the primary handoff to `/software_engineering_team/implementation_engineer`. The Solution Designer does not repeat it.
+
+### SR-007 — Failure origin FO-001: the default model's relevance does not hold at 1,000 Tasks
+
+- Phase and classification: Mixed. The evidence round is a `Design Impact` (calibration basis); the remedy changes approved decisions, which makes it a `Requirement Gap`.
+- Trigger: `/software_engineering_team/code_reviewer` (run `code_reviewer_cbd4eb1d7fd64728ac4114c14a22416d`), `code-review-report.md` round 3, FO-001 / C-08, from API/E2E API-REV-001 F-001 (case API-L04, `api-e2e-execution-coverage-report.md`). Source `722b9b3918`; evidence `8981a99256`, `68441864d1`.
+- Evidence added by the Solution Designer (`probes/fo-001/`):
+  - Full per-query score lists for LEAF-IR and Granite on the 60-Task fixture, the 1,000 generated Tasks (API/E2E generator, seed 20261018) and 1,000 real-text Tasks, using the production `dist` runner, catalog and pinned files.
+  - Rule evaluation: no LEAF-IR rule passes AC-001 and AC-004 at 1,000 Tasks (floor sweep, z-score rules). Granite's shipped calibration passes on every backlog. Embedding time on the same host: LEAF-IR 70–75 s, Granite 188–200 s per 1,000 Tasks.
+- Prior / current status: requirements `Approved` (SR-004) → `Ready for Approval` (delta); design `Ready` → `Needs Revision` (catalog default, G2 calibration basis at 1,000 Tasks).
+- Proposed delta: see the requirements doc, section "Proposed Delta SR-007".
+- Intended behavior changed: `Yes` (default model; scale statement; resource targets).
+- Approval impact: requires the user's approval in the Solution Designer conversation.
+- **User approval:** 2026-10-18, in the Solution Designer conversation, in reply to the option A proposal with its targets: *"go a head for the switching basically if earlier you designed in a way that using another model is faily easy right?"* Requirements are `Approved` at SR-007.
+- **Design revision:** see the "Failure-Origin Resolution (FO-001 → SR-007)" section of the design spec.
+  - Default `granite-embedding-small-english-r2`.
+  - LEAF-IR calibration floor 0.30 / margin 0.045 (fast option for small Projects).
+  - G2 requires at-scale calibration for the default.
+  - O-1 (verifying ≠ downloading).
+  - Classification unchanged (Large/High).
+- **Next action:** apply the handoff rules (revised Large/High package → architecture reviewer), then implementation, source review and API/E2E reruns (API-L04, API-R06, API-L03b/c/d).
+
+### Review receipt — ARCH-REV-003 (informational, no new SR round)
+
+- 2026-10-18: `/software_engineering_team/architecture_reviewer` reported **Pass**, ARCH-REV-003, on SR-007, with no new findings. It delivered the primary handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer does not repeat it.
+- Bookkeeping R-12 (non-blocking) corrected as factual fixes:
+  - requirements baseline list now includes DEC-011;
+  - QR-007 conditions name Granite as the default;
+  - the SR-007 index row status is updated;
+  - the handoff file's default model is updated.
