@@ -4,9 +4,12 @@ import { shallowReactive } from 'vue'
 import { buildMultiTeamContext, memberId, multiTeamView, teamId } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture'
 import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 
-const hydration = vi.hoisted(() => ({ read: vi.fn(), stage: vi.fn() }))
+const hydration = vi.hoisted(() => ({ read: vi.fn(), build: vi.fn(), hydrateChild: vi.fn(async () => 'hydrated') }))
 vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
-  readAgentRunCollaboration: hydration.read, stageAgentRunCollaborationContext: hydration.stage,
+  readAgentRunCollaboration: hydration.read, buildAgentRunCollaborationContext: hydration.build,
+}))
+vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
+  hydrateAgentRunCollaborationChild: hydration.hydrateChild,
 }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn(), resolveWorkspaceMetadataByRootPath: vi.fn(async () => null) }) }))
@@ -39,7 +42,7 @@ describe('standalone delegated Team disclosure', () => {
     setActivePinia(createPinia()); vi.clearAllMocks(); Socket.instances.length = 0
     vi.stubGlobal('WebSocket', Socket)
     hydration.read.mockImplementation(async (host: string) => multiTeamView(7, host))
-    hydration.stage.mockImplementation(async ({ view }) => ({ context: shallowReactive(buildMultiTeamContext(view)), commit: vi.fn() }))
+    hydration.build.mockImplementation(async ({ view }) => shallowReactive(buildMultiTeamContext(view)))
   })
 
   it('a fresh stored manager lists seven collapsed Teams, with all 42 child contexts intact', async () => {

@@ -13,9 +13,12 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', async ()
   const { buildClosureContext, closureView } = await import('~/services/agentCollaboration/__tests__/agentRootClosureFixture')
   return {
     readAgentRunCollaboration: vi.fn(async () => ({})),
-    stageAgentRunCollaborationContext: vi.fn(async () => ({ context: buildClosureContext(closureView(staged.closed)), commit: () => undefined })),
+    buildAgentRunCollaborationContext: vi.fn(async () => buildClosureContext(closureView(staged.closed))),
   }
 })
+vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
+  hydrateAgentRunCollaborationChild: vi.fn(async () => 'hydrated'),
+}))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn() }) }))
 

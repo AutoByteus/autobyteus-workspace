@@ -6,7 +6,8 @@ import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
 import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext'
-import { stageAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
+import { buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
+import { GetAgentRunCollaborationMemberFileChanges, GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 import { useAgentRunStore } from '../agentRunStore'
 import { useAgentContextsStore } from '../agentContextsStore'
@@ -42,10 +43,15 @@ const nativeView = () => {
 const envelope = (view: ReturnType<typeof nativeView> | null) => ({ data: { agentRunCollaboration: view && {
   root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view,
 } } })
-const emptyProjection = ({ variables }: any) => ({ data: { agentRunCollaborationMemberProjection: {
-  agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
-  conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
-} } })
+const emptyProjection = ({ query, variables }: any) => query === GetAgentRunCollaborationMemberFileChanges
+  ? { data: { agentRunCollaborationMemberFileChanges: [] } }
+  : { data: { agentRunCollaborationMemberProjection: {
+    agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
+    conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+  } } }
+const memberRequests = (query: unknown, agentRunId: string) =>
+  io.query.mock.calls.filter(([input]) => input.query === query && input.variables.agentRunId === agentRunId).length
+const flush = async () => { for (let i = 0; i < 20; i++) await Promise.resolve() }
 let view: ReturnType<typeof nativeView>
 beforeEach(() => {
   setActivePinia(createPinia()); vi.clearAllMocks(); io.streams.length = 0; view = nativeView()
@@ -130,7 +136,7 @@ it.each(['state', 'instance', 'runtime', 'address', 'root', 'release', 'node', '
     if (kind === 'instance') child.state.inputProjection = { runInstanceId: 'new-instance', revision: 0 }
     if (kind === 'runtime') child.config.runtimeKind = 'codex_app_server'
     if (kind === 'address') root.index.agents.set('pp-run', { ...root.index.requireAgent('pp-run'), address: '/wrong' as never })
-    if (kind === 'root') store.contexts = { ...store.contexts, 'host-run': (await stageAgentRunCollaborationContext({ hostRunId: 'host-run', view })).context }
+    if (kind === 'root') store.contexts = { ...store.contexts, 'host-run': await buildAgentRunCollaborationContext({ hostRunId: 'host-run', view }) }
     if (kind === 'release') store.release('host-run')
     if (kind === 'node') useWindowNodeContextStore().bindingRevision++
     if (kind === 'host-state') host.state = Object.assign(Object.create(Object.getPrototypeOf(host.state)), host.state)
@@ -155,24 +161,30 @@ it('inspection failure after success retains Stopped and history; an empty cold 
   expect(useAgentActivityStore().getActivities('cua-run')).toEqual([])
 })
 
-it.each(['view', 'member'])('captures ALL revisions before deferred %s fetch; conflict changes no member/config/activity/selection', async point => {
+it.each(['view', 'member'])('a live activity change during the %s fetch never fails the inspection; the selected child loads against fresh revisions', async point => {
   const { store, root, activities } = await setup()
   store.selectChild('host-run', 'pp-run'); store.toggleTaskTeam('host-run', 'team-run')
-  const before = root.listAgentContextEntries().map(e => ({ ...e, state: e.context.state, config: e.context.config }))
+  await flush()
+  expect(root.isChildHydrated('pp-run')).toBe(true)
+  const projectionsBefore = memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run')
   const delay = deferred(); io.query.mockImplementation(async input => {
-    if ((point === 'view' && input.variables.runId) || (point === 'member' && input.variables.agentRunId === 'pp-run')) await delay.promise
+    if ((point === 'view' && input.variables.runId)
+      || (point === 'member' && input.query === GetAgentRunCollaborationMemberProjection && input.variables.agentRunId === 'pp-run')) await delay.promise
     return input.variables.runId ? envelope(view) : emptyProjection(input)
   })
-  const pending = store.inspect('host-run'); await nextTick(); await nextTick()
-  seed(root.getAgentContext('pp-run')!, 'concurrent')
-  const revs = before.map(e => activities.getActivityContentRevision(e.agentRunId))
-  delay.resolve(null); await pending
-  expect(store.errors['host-run']).toContain('activity changed')
-  expect(store.contextFor('host-run')).toBe(root)
-  before.forEach((e, i) => {
-    expect(e.context.state).toBe(e.state); expect(e.context.config).toBe(e.config)
-    expect(activities.getActivityContentRevision(e.agentRunId)).toBe(revs[i])
-  })
+  const pending = store.inspect('host-run'); await flush()
+  seed(store.contextFor('host-run')!.getAgentContext('pp-run')!, 'concurrent')
+  const revision = activities.getActivityContentRevision('pp-run')
+  delay.resolve(null); await pending; await flush()
+  const next = store.contextFor('host-run')!
+  expect(store.errors['host-run']).toBeNull()
+  expect(next).not.toBe(root)
+  // The retained AgentContext object moved to the new context, which loaded the child itself.
+  expect(next.getAgentContext('pp-run')).toBe(root.getAgentContext('pp-run'))
+  expect(next.isChildHydrated('pp-run')).toBe(true)
+  expect(activities.getActivityContentRevision('pp-run')).toBeGreaterThan(revision)
+  // A change during the member fetch costs one retry; during the view fetch, nothing.
+  expect(memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run') - projectionsBefore).toBe(point === 'member' ? 2 : 1)
   expect(store.selectedChild('host-run')).toBe('pp-run'); expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(true)
 })
 
@@ -186,15 +198,17 @@ it.each(['null', 'view', 'error'])('stale %s inspection after attach cannot remo
   expect(store.attach('host-run')).toBe(service)
 })
 
-it('preflights every retained identity before committing any activity or swapping earlier contexts', async () => {
+it('preflights every retained identity before swapping earlier contexts or loading a child', async () => {
   const { store, root, activities } = await setup()
-  const candidate = (await stageAgentRunCollaborationContext({ hostRunId: 'host-run', view })).context
+  const candidate = await buildAgentRunCollaborationContext({ hostRunId: 'host-run', view })
   candidate.index.agents.set('pp-run', { ...candidate.index.requireAgent('pp-run'), address: '/wrong' as never })
   const old = root.getAgentContext('cua-run')!; const state = old.state; const config = old.config
-  const commit = vi.fn(); store.attach('host-run')
-  expect(() => io.streams[0].options.publish(candidate, commit)).toThrow('retained identity')
-  expect(commit).not.toHaveBeenCalled(); expect(old.state).toBe(state); expect(old.config).toBe(config)
+  store.attach('host-run')
+  const queries = io.query.mock.calls.length
+  expect(() => io.streams[0].options.publish(candidate)).toThrow('retained identity')
+  expect(old.state).toBe(state); expect(old.config).toBe(config)
   expect(store.contextFor('host-run')).toBe(root); expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('started')
+  expect(io.query.mock.calls.length).toBe(queries)
 })
 
 
@@ -214,7 +228,7 @@ it('release invalidates old stream callbacks and old inspection finally cannot d
   const nextRoot = store.contextFor('host-run')
   const nextStream = store.attach('host-run')
   oldStream.options.onInactive(); oldStream.options.reportError('stale')
-  expect(() => oldStream.options.publish(root, vi.fn())).toThrow('ownership released')
+  expect(() => oldStream.options.publish(root)).toThrow('ownership released')
   expect(store.attach('host-run')).toBe(nextStream); expect(store.contextFor('host-run')).toBe(nextRoot)
   expect(store.errors['host-run']).toBeNull()
 })

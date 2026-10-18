@@ -7,7 +7,10 @@ import { buildMultiTeamContext, memberId, multiTeamView } from '~/services/agent
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
 vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: vi.fn(async () => multiTeamView()),
-  stageAgentRunCollaborationContext: vi.fn(async ({ view }) => ({ context: shallowReactive(buildMultiTeamContext(view)), commit: vi.fn() })),
+  buildAgentRunCollaborationContext: vi.fn(async ({ view }) => shallowReactive(buildMultiTeamContext(view))),
+}))
+vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
+  hydrateAgentRunCollaborationChild: vi.fn(async () => 'hydrated'),
 }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ getTeamMemberInspectionAttempt: () => null }) }))
 // Summary lookup/Projects feed is a separate boundary, not the disclosure owner under test.
