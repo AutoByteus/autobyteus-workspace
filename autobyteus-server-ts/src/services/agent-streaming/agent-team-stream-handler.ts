@@ -8,8 +8,6 @@ import {
 } from "@autobyteus/team-stream-contracts";
 import { AgentInputUserMessage, ContextFile, ContextFileType } from "autobyteus-ts";
 import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-run.js";
-import type { SequencedRootEvent } from "../../agent-team-execution/services/team-run-event-publisher.js";
-import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import { AgentSession } from "./agent-session.js";
@@ -19,6 +17,8 @@ import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "
 import { handleTeamInterruptGenerationCommand } from "./team-interrupt-generation-command-handler.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
 import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
+import { createSequencedStreamEgressControlComposition } from "./websocket-egress/agent-stream-egress-control-composition.js";
+import { teamStreamSequencedShape } from "./websocket-egress/team-stream-sequenced-shape.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 
@@ -73,6 +73,7 @@ export class AgentTeamStreamHandler {
     const egress = new AgentStreamWebSocketEgress<TeamStreamServerMessage>({
       sendRaw: (payload) => connection.send(payload),
       serialize: (message) => serializeTeamStreamServerMessage(parseTeamStreamServerMessage(message)),
+      createControls: (options) => createSequencedStreamEgressControlComposition(teamStreamSequencedShape, options),
       onSendError: (error) => console.error(`Team WebSocket egress failed: session=${sessionId}, run=${teamRunId}: ${String(error)}`),
     });
     this.sessionConnections.set(sessionId, connection);
@@ -227,13 +228,8 @@ export class AgentTeamStreamHandler {
     await this.teamRunService.recordRunActivity(root, { summary: payload.content });
   }
 
-  convertTeamEvent(root: RootTeamRun, event: SequencedRootEvent<TeamRunEvent>): TeamStreamServerMessage {
-    return projectSequencedTeamRunEvent(root, event);
-  }
-
   static parseMessage(raw: string): TeamStreamClientMessage { return parseTeamStreamClientMessage(raw); }
 
-  private getTeamRun(teamRunId: string): RootTeamRun | null { return this.teamRunService.getActiveTeamRun(teamRunId); }
   private resolveTeamRun(teamRunId: string): Promise<RootTeamRun | null> { return this.teamRunService.resolveActiveTeamRun(teamRunId); }
 
   private closeWithTeamNotFound(

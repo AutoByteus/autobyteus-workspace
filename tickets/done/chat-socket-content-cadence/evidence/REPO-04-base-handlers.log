@@ -1,0 +1,381 @@
+# Case: REPO-04
+# Command (from the worktree root): the 3 handlers (agent-org/agent-collaboration/agent-team-stream-handler.ts) replaced by `git show f3124db10f:<path>`, then the REPO-03 command, then `git checkout` (diff vs HEAD empty). Expected: behavior cases fail
+# Commit: e24ff6b333
+# Environment: ENV-1 (macOS 26.5.2 arm64, Node v22.23.1, worktree /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence)
+# Date: 2026-10-18 09:33 (local, file write time)
+# ----
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 95736ac2-43cc-42eb-afd0-67f8cb1b61ea for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent Team WebSocket connected: session=95736ac2-43cc-42eb-afd0-67f8cb1b61ea, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mClosed agent session 95736ac2-43cc-42eb-afd0-67f8cb1b61ea
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 8b5f9876-bc64-4a62-80e8-6fea5281898b for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent Team WebSocket connected: session=8b5f9876-bc64-4a62-80e8-6fea5281898b, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mClosed agent session 8b5f9876-bc64-4a62-80e8-6fea5281898b
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session f3a3f369-dbb9-4326-ad42-7303176b332d for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent Team WebSocket connected: session=f3a3f369-dbb9-4326-ad42-7303176b332d, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mClosed agent session f3a3f369-dbb9-4326-ad42-7303176b332d
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 71ebee75-7c14-45ea-9ad1-973edc1df05d for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent Team WebSocket connected: session=71ebee75-7c14-45ea-9ad1-973edc1df05d, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mClosed agent session 71ebee75-7c14-45ea-9ad1-973edc1df05d
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 0aded4c1-508d-4ef0-913f-c4af61e6f1e4 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent Team WebSocket connected: session=0aded4c1-508d-4ef0-913f-c4af61e6f1e4, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mClosed agent session 0aded4c1-508d-4ef0-913f-c4af61e6f1e4
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 0ef44fcf-f250-401a-af79-3f98e446c4a2 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent Team WebSocket connected: session=0ef44fcf-f250-401a-af79-3f98e446c4a2, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Org /ws/agent-org'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mClosed agent session 0ef44fcf-f250-401a-af79-3f98e446c4a2
+
+ [31m❯[39m tests/integration/agent/chat-socket-content-cadence.integration.test.ts [2m([22m[2m18 tests[22m[2m | [22m[31m15 failed[39m[2m)[22m[33m 6741[2mms[22m[39m
+[31m     [31m×[31m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)[39m[33m 695[2mms[22m[39m
+[31m     [31m×[31m coalesces two interleaved agents into one batch, each agent's text in order (AC-009)[39m[33m 667[2mms[22m[39m
+[31m     [31m×[31m lets a boundary from either interleaved agent close the batch first (AC-009, AC-004)[39m[32m 112[2mms[22m[39m
+[31m     [31m×[31m delivers pending text before every boundary, immediately and contiguously (AC-004)[39m[32m 113[2mms[22m[39m
+     [32m✓[39m leaves direct root subscribers unthrottled while the socket holds the text (AC-005)[32m 12[2mms[22m[39m
+[31m     [31m×[31m uses a changed interval only for the next newly opened window (AC-003)[39m[33m 662[2mms[22m[39m
+[31m     [31m×[31m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)[39m[33m 674[2mms[22m[39m
+[31m     [31m×[31m coalesces two interleaved agents into one batch, each agent's text in order (AC-009)[39m[33m 666[2mms[22m[39m
+[31m     [31m×[31m lets a boundary from either interleaved agent close the batch first (AC-009, AC-004)[39m[32m 111[2mms[22m[39m
+[31m     [31m×[31m delivers pending text before every boundary, immediately and contiguously (AC-004)[39m[32m 117[2mms[22m[39m
+     [32m✓[39m leaves direct root subscribers unthrottled while the socket holds the text (AC-005)[32m 18[2mms[22m[39m
+[31m     [31m×[31m uses a changed interval only for the next newly opened window (AC-003)[39m[33m 660[2mms[22m[39m
+[31m     [31m×[31m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)[39m[33m 668[2mms[22m[39m
+[31m     [31m×[31m coalesces two interleaved agents into one batch, each agent's text in order (AC-009)[39m[33m 663[2mms[22m[39m
+[31m     [31m×[31m lets a boundary from either interleaved agent close the batch first (AC-009, AC-004)[39m[32m 110[2mms[22m[39m
+[31m     [31m×[31m delivers pending text before every boundary, immediately and contiguously (AC-004)[39m[32m 113[2mms[22m[39m
+     [32m✓[39m leaves direct root subscribers unthrottled while the socket holds the text (AC-005)[32m 16[2mms[22m[39m
+[31m     [31m×[31m uses a changed interval only for the next newly opened window (AC-003)[39m[33m 660[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 15 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Team /ws/agent-team'[2m > [22msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Org /ws/agent-org'[2m > [22msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'delegated agents /ws/agent-collaborat…'[2m > [22msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[31m[1mAssertionError[22m: expected [] to have a length of 1 but got +0[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ 0[39m
+
+[36m [2m❯[22m tests/integration/agent/chat-socket-content-cadence.integration.test.ts:[2m284:21[22m[39m
+    [90m282| [39m    [35mawait[39m [34mwait[39m([34m300[39m)[33m;[39m
+    [90m283| [39m    const batches = test.live().filter((frame) => frame.label === "BAT…
+    [90m284| [39m    [34mexpect[39m(batches)[33m.[39m[34mtoHaveLength[39m([34m1[39m)[33m;[39m
+    [90m   | [39m                    [31m^[39m
+    [90m285| [39m    [34mexpect[39m(batches[[34m0[39m][33m![39m[33m.[39mtexts)[33m.[39m[34mtoEqual[39m([[32m`A:[39m[36m${[39mdeltas[33m.[39m[34mjoin[39m([32m""[39m)[36m}[39m[32m`[39m])[33m;[39m
+    [90m286| [39m    [34mexpect[39m(batches[[34m0[39m][33m![39m[33m.[39mat [33m-[39m openedAt)[33m.[39m[34mtoBeGreaterThanOrEqual[39m([34m450[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Team /ws/agent-team'[2m > [22mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Org /ws/agent-org'[2m > [22mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'delegated agents /ws/agent-collaborat…'[2m > [22mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[31m[1mAssertionError[22m: expected [] to deeply equal [ [ 'A:a0a1a2a3a4a5a6a7a8a9', …(1) ] ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [[39m
+[32m-   [[39m
+[32m-     "A:a0a1a2a3a4a5a6a7a8a9",[39m
+[32m-     "B:b0b1b2b3b4b5b6b7b8b9",[39m
+[32m-   ],[39m
+[32m- ][39m
+[31m+ [][39m
+
+[36m [2m❯[22m tests/integration/agent/chat-socket-content-cadence.integration.test.ts:[2m304:49[22m[39m
+    [90m302| [39m    [35mawait[39m [34mwait[39m([34m300[39m)[33m;[39m
+    [90m303| [39m    const batches = test.live().filter((frame) => frame.label === "BAT…
+    [90m304| [39m    [34mexpect[39m(batches[33m.[39m[34mmap[39m((frame) [33m=>[39m frame[33m.[39mtexts))[33m.[39m[34mtoEqual[39m([[
+    [90m   | [39m                                                [31m^[39m
+    [90m305| [39m      `A:${Array.from({ length: 10 }, (_, round) => `a${round}`).join(…
+    [90m306| [39m      `B:${Array.from({ length: 10 }, (_, round) => `b${round}`).join(…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Team /ws/agent-team'[2m > [22mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Org /ws/agent-org'[2m > [22mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'delegated agents /ws/agent-collaborat…'[2m > [22mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[31m[1mAssertionError[22m: expected [ [ 'SEGMENT_START', [] ], …(5) ] to deeply equal [ [ 'SEGMENT_START', [] ], …(3) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -6,15 +6,20 @@[39m
+[2m    [[22m
+[2m      "SEGMENT_START",[22m
+[2m      [],[22m
+[2m    ],[22m
+[2m    [[22m
+[32m-     "BATCH",[39m
+[31m+     "SEGMENT_CONTENT",[39m
+[31m+     [],[39m
+[31m+   ],[39m
+[2m    [[22m
+[32m-       "A:xy",[39m
+[32m-       "B:1",[39m
+[31m+     "SEGMENT_CONTENT",[39m
+[31m+     [],[39m
+[2m    ],[22m
+[31m+   [[39m
+[31m+     "SEGMENT_CONTENT",[39m
+[31m+     [],[39m
+[2m    ],[22m
+[2m    [[22m
+[2m      "SEGMENT_END",[22m
+[2m      [],[22m
+[2m    ],[22m
+
+[36m [2m❯[22m tests/integration/agent/chat-socket-content-cadence.integration.test.ts:[2m317:68[22m[39m
+    [90m315| [39m    test[33m.[39mpublish[33m.[39m[34mboundary[39m([32m"B"[39m[33m,[39m [32m"segment_end"[39m)[33m;[39m
+    [90m316| [39m    [35mawait[39m [34mwait[39m([34m100[39m)[33m;[39m
+    [90m317| [39m    expect(test.live().map((frame) => [frame.label, frame.texts])).toE…
+    [90m   | [39m                                                                   [31m^[39m
+    [90m318| [39m      ["SEGMENT_START", []], ["SEGMENT_START", []], ["BATCH", ["A:xy",…
+    [90m319| [39m    ])[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Team /ws/agent-team'[2m > [22mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[31m[1mAssertionError[22m: expected [ 'SEGMENT_CONTENT', …(11) ] to deeply equal [ 'BATCH', …(11) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "TOOL_EXECUTION_STARTED",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "ERROR",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "TOKEN_USAGE_UPDATED",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "TASK_EXECUTIONS_CLOSED",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "AGENT_STATUS:idle",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "SEGMENT_END",[22m
+[2m  ][22m
+
+[36m [2m❯[22m tests/integration/agent/chat-socket-content-cadence.integration.test.ts:[2m334:46[22m[39m
+    [90m332| [39m    [35mawait[39m [34mwait[39m([34m100[39m)[33m;[39m
+    [90m333| [39m    [35mconst[39m live [33m=[39m test[33m.[39m[34mlive[39m()[33m.[39m[34mslice[39m([34m1[39m)[33m;[39m
+    [90m334| [39m    expect(live.map((frame) => frame.label)).toEqual(boundaries.flatMa…
+    [90m   | [39m                                             [31m^[39m
+    [90m335| [39m      tool: "TOOL_EXECUTION_STARTED", error: "ERROR", token_usage: "TO…
+    [90m336| [39m      task_event: scenario === teamScenario ? "TASK_EXECUTIONS_CLOSED"…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Team /ws/agent-team'[2m > [22muses a changed interval only for the next newly opened window (AC-003)
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Org /ws/agent-org'[2m > [22muses a changed interval only for the next newly opened window (AC-003)
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'delegated agents /ws/agent-collaborat…'[2m > [22muses a changed interval only for the next newly opened window (AC-003)
+[31m[1mAssertionError[22m: expected [] to deeply equal [ [ 'A:first' ] ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [[39m
+[32m-   [[39m
+[32m-     "A:first",[39m
+[32m-   ],[39m
+[32m- ][39m
+[31m+ [][39m
+
+[36m [2m❯[22m tests/integration/agent/chat-socket-content-cadence.integration.test.ts:[2m366:96[22m[39m
+    [90m364| [39m    expect(test.live().filter((frame) => frame.label === "BATCH")).toH…
+    [90m365| [39m    [35mawait[39m [34mwait[39m([34m300[39m)[33m;[39m
+    [90m366| [39m    expect(test.live().filter((frame) => frame.label === "BATCH").map(…
+    [90m   | [39m                                                                                               [31m^[39m
+    [90m367| [39m    test[33m.[39mpublish[33m.[39m[34mcontent[39m([32m"A"[39m[33m,[39m [32m"second"[39m)[33m;[39m
+    [90m368| [39m    [35mawait[39m [34mwait[39m([34m650[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'Org /ws/agent-org'[2m > [22mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22mcontent cadence on 'delegated agents /ws/agent-collaborat…'[2m > [22mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[31m[1mAssertionError[22m: expected [ 'SEGMENT_CONTENT', …(11) ] to deeply equal [ 'BATCH', …(11) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "TOOL_EXECUTION_STARTED",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "ERROR",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "TOKEN_USAGE_UPDATED",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "task_executions_closed",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "AGENT_STATUS:idle",[22m
+[32m-   "BATCH",[39m
+[31m+   "SEGMENT_CONTENT",[39m
+[2m    "SEGMENT_END",[22m
+[2m  ][22m
+
+[36m [2m❯[22m tests/integration/agent/chat-socket-content-cadence.integration.test.ts:[2m334:46[22m[39m
+    [90m332| [39m    [35mawait[39m [34mwait[39m([34m100[39m)[33m;[39m
+    [90m333| [39m    [35mconst[39m live [33m=[39m test[33m.[39m[34mlive[39m()[33m.[39m[34mslice[39m([34m1[39m)[33m;[39m
+    [90m334| [39m    expect(live.map((frame) => frame.label)).toEqual(boundaries.flatMa…
+    [90m   | [39m                                             [31m^[39m
+    [90m335| [39m      tool: "TOOL_EXECUTION_STARTED", error: "ERROR", token_usage: "TO…
+    [90m336| [39m      task_event: scenario === teamScenario ? "TASK_EXECUTIONS_CLOSED"…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m15 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (18)[39m
+[2m   Start at [22m 09:33:00
+[2m   Duration [22m 11.74s[2m (transform 3.05s, setup 25ms, import 4.48s, tests 6.74s, environment 0ms)[22m
+

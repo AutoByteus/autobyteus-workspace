@@ -43,7 +43,7 @@ const createBackend = (input: {
   const backend = {
     runId: input.runId,
     runtimeKind,
-    inputCapabilities: { kind: "start_only" },
+    inputCapabilities: { activeTurnAppend: "unsupported" },
     compactionRecovery: { kind: "unsupported" },
     getContext: () => new AgentRunContext({ runId: input.runId, config, runtimeContext: null }),
     getPlatformAgentRunId: () => input.platformAgentRunId ?? null,

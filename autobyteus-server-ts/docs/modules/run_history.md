@@ -457,10 +457,11 @@ Standalone agent persisted files:
   and the skill improver; those runs never host delegated copies)
 - optional collaboration package (created lazily with the first delegated copy):
   `memory/agents/<runId>/collaboration/collaboration_tree.json` (host identity and
-  a link per task agent) and `communication_messages.json` (the host's own log).
+  a link per task agent) and the host's own message log (`communication_messages_*.jsonl`,
+  see Message logs below).
   Each task agent is a run of its own: an agent at `memory/agents/<childRunId>/`
   (its `run_metadata.json` carries a `taskAgent` section and its catalog source,
-  plus its own `communication_messages.json`), a task Team at
+  plus its own `communication_messages` log), a task Team at
   `memory/agent_teams/<taskTeamRunId>/` (its own tree and log, members inside).
   The standalone metadata reader treats a task agent's `run_metadata.json` as
   absent (G1), so task agents never appear as their own history rows. See
@@ -536,8 +537,8 @@ Team persisted files:
   can persist `raw_traces_active.jsonl`; only native AutoByteus continuation
   owns new `working_context_snapshot.json` writes.
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical Team/Agent directory, for example `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<agentRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
-- versioned team communication projection:
-  `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
+- message log: `memory/agent_teams/<rootTeamRunId>/team_communication_messages_active.jsonl`
+  plus sealed `team_communication_messages_<6 digits>.jsonl` files (see Message logs below)
 - older packages may still contain a released
   `task_delegation_records.json`; it is neither required nor read, and it stays
   untouched on disk
@@ -553,8 +554,28 @@ AgentOrg persisted files:
   direct mounted Teams with their direct Agents, handoffs, effective launch
   configurations, concrete identities, application binding, and delegated child
   executions; read tolerantly and written exactly like the Team tree
-- versioned communication projection:
-  `memory/agent_orgs/<orgRunId>/agent_org_communication_messages.json`
+- message log: `memory/agent_orgs/<orgRunId>/agent_org_communication_messages_active.jsonl`
+  plus sealed `agent_org_communication_messages_<6 digits>.jsonl` files
+
+Message logs (append-only, since `append-only-message-logs`):
+
+- Each run's message log is a set of JSON Lines files in the run's folder, named by family:
+  `communication_messages` (a standalone host's log in `collaboration/`, or a task agent's
+  own log in `agents/<id>/`), `team_communication_messages` (a team run or a task agent team),
+  `agent_org_communication_messages` (an org run). `MessageLog`
+  (`src/run-history/store/message-log.ts`) is the only owner of these files.
+- A message is appended to `<base>_active.jsonl` as one line (exactly the seven message fields,
+  compact JSON) and synced. When the active file has reached 4 MiB, it is renamed to the next sealed
+  file `<base>_<6-digit index>.jsonl`; appends and rotation never write a sealed file again (the one
+  exception: the released locator migration's one-time startup repair, DEC-008). A message larger
+  than the limit is stored whole.
+- Reading takes the sealed files in index order, then the active file; a line counts only when its
+  `\n` is present (an unfinished last line is an append that never returned success, and the next
+  append cuts it off); any other invalid line fails the read; each message ID is kept once; the
+  result is sorted by `createdAt`. A log file has no header or version: the folder names its run.
+- Startup migration `20261018_append_only_message_logs_v1` converted the earlier JSON logs
+  (`<base>.json`) and removed each after it read back equal. A JSON message log left in a team or
+  org package is retired residue: readiness does not admit that run.
 - older packages may still contain a released
   `agent_org_task_delegation_records.json`; it is neither required nor read
 - rooted member runtime artifacts below `memory/agent_orgs/<orgRunId>/...`,
@@ -870,7 +891,7 @@ rows.
 Team Communication messages are also outside the member replay bundle. Accepted
 team communication events are processor input; derived
 `TEAM_COMMUNICATION_MESSAGE` events are projected once per team run into
-`agent_teams/<teamRunId>/team_communication_messages.json`. Historical Team tab
+the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`). Historical Team tab
 hydration reads that projection through `getTeamCommunicationMessages(teamRunId)`,
 and referenced content opens by persisted message-owned identity at
 `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
@@ -1050,7 +1071,7 @@ For AgentOrg runs:
    their direct Agents, exact configuration/identity, handoffs, and delegated
    children.
 2. `AgentOrgStatePackageLoader` reads that tree with
-   `agent_org_communication_messages.json`; a Team package is never a fallback.
+   the org's message log (`agent_org_communication_messages_*.jsonl`); a Team package is never a fallback.
 3. Restore rematerializes the stored Org scope and provider identities. Team
    focus resolves to that mounted Team's stored direct coordinator; the Org has
    no coordinator or first-member fallback.

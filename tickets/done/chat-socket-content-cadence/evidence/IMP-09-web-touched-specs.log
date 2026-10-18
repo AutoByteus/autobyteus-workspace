@@ -1,0 +1,362 @@
+# IMP-09 (web-touched-specs)
+# Command: pnpm -C autobyteus-web test:nuxt run services/agentCollaboration services/agentOrgExecution services/teamExecution services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+# Commit: b3666d458f
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T12:17:05Z
+
+
+> autobyteus@1.5.6-beta.5 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web
+> cross-env NUXT_TEST=true vitest run services/agentCollaboration services/agentOrgExecution services/teamExecution services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts (13 tests) 18ms
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > becomes ready only after the exact connected root and complete authoritative snapshot
+Team WebSocket transport connected
+
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (15 tests) 14ms
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > acts on the first rejected gap effect once and cannot revive the failed instance
+Rejected Team execution message (TEAM_EXECUTION_CHANGE_SEQUENCE_GAP): Expected change sequence 1, received 2.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > rejects and stops a candidate whose snapshot base does not match
+Rejected invalid Team WebSocket message: Error: TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: Expected 7, received 8.
+    at TeamStreamingService.dispatchMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentStreaming/TeamStreamingService.ts:330:15[90m)[39m
+    at handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentStreaming/TeamStreamingService.ts:260:16[90m)[39m
+    at emit [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentStreaming/__tests__/TeamStreamingService.spec.ts:69:31[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentStreaming/__tests__/TeamStreamingService.spec.ts:433:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1574:12)
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (14 tests) 53ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts (6 tests) 23ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts (7 tests) 17ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts (8 tests) 12ms
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports upload failure without replay and preserves a newer real textarea draft
+Context file upload failed for 'notes.txt': Error: upload rejected
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:197:40
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports finalize failure without replay and preserves a newer real textarea draft
+Failed to send message via activeContextStore: Error: finalize rejected
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:209:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports finalize failure without replay and preserves a newer real textarea draft
+Error sending requirement: Error: finalize rejected
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:209:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > restores a finalized attachment after rejected Send and opens/removes it without deleting the retained file
+Failed to send message via activeContextStore: Error: Input rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > restores a finalized attachment after rejected Send and opens/removes it without deleting the retained file
+Error sending requirement: Error: Input rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts (9 tests) 466ms
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (16 tests) 1433ms
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > restores an untouched rejected draft/attachments and shows local error without history or replay
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContextBatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves focus-switched drafts/attachments when ACK is rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgExecutionContextBatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > commits newer textarea edits before rejection restoration
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > commits newer textarea edits before rejection restoration
+Error sending requirement: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves an actual typed-then-cleared draft and empty attachments when the prior send is rejected
+Error sending requirement: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > rejects an already disconnected send without consuming its draft
+Failed to send message via activeContextStore: Error: AgentOrg send target is not ready or is stale.
+    at submit [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mstores/agentOrgContextsStore.ts:191:40[90m)[39m
+    at Object.send [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mstores/agentOrgContextsStore.ts:247:74[90m)[39m
+    at Proxy.send [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mstores/activeContextStore.ts:282:18[90m)[39m
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/[4mpinia[24m/dist/pinia.mjs:1399:26)
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:237:25
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves a newer attachment-only draft after rejection
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > handles a synchronous transport failure and retires its pending command
+Failed to send message via activeContextStore: Error: transport failed
+    at Socket.<anonymous> [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:258:67[90m)[39m
+    at Socket.mockCall (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+spy@3.2.4/node_modules/[4m@vitest/spy[24m/dist/index.js:96:15)
+    at Socket.send (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/tinyspy@4.0.4/node_modules/[4mtinyspy[24m/dist/index.js:47:80)
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:255:16
+    at new Promise (<anonymous>)
+    at AgentOrgStreamingService.command [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:242:12[90m)[39m
+    at AgentOrgStreamingService.sendPrepared [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:204:17[90m)[39m
+    at submit [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mstores/agentOrgContextsStore.ts:227:21[90m)[39m
+    at Object.send [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mstores/agentOrgContextsStore.ts:247:74[90m)[39m
+    at Proxy.send [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mstores/activeContextStore.ts:282:18[90m)[39m
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves the exact newer draft and focus through existing verified recovery after a pending disconnect
+Failed to send message via activeContextStore: Error: AgentOrg stream closed before command acknowledgement.
+    at AgentOrgStreamingService.rejectPending [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:504:22[90m)[39m
+    at Socket.socket.onclose [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:129:12[90m)[39m
+    at Socket.close [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:45:10[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:285:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts (4 tests) 4ms
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContextBatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts (5 tests) 20ms
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > defers view disposal until the exact pending submission finishes without touching another draft
+Failed to send message via activeContextStore: Error: Input was rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:387:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:282:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:343:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:116:26
+
+stdout | services/agentOrgExecution/__tests__/agentOrgExecutionContextBatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores only on deliberate agent-director Send, preserves real input/identity through readiness and sends once
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+    at Proxy.send [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mstores/activeContextStore.ts:280:59[90m)[39m
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/[4mpinia[24m/dist/pinia.mjs:1399:26)
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:425:25
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+ ✓ services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts (3 tests) 12ms
+stdout | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores only on deliberate agent-team-worker-configured Send, preserves real input/identity through readiness and sends once
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+    at Proxy.send [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mstores/activeContextStore.ts:280:59[90m)[39m
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/[4mpinia[24m/dist/pinia.mjs:1399:26)
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:425:25
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts (2 tests) 4ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (11 tests) 23ms
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > keeps stopped exact tasks read-only, not continuable configured lookalikes
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+    at Proxy.send [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mstores/activeContextStore.ts:280:59[90m)[39m
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/[4mpinia[24m/dist/pinia.mjs:1399:26)
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:448:25
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContextBatch.spec.ts (3 tests) 7ms
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores untouched input on failed restore, keeps deliberate discard and releases the root guard
+Failed to send message via activeContextStore: Error: restore rejected
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:457:40
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores untouched input on failed restore, keeps deliberate discard and releases the root guard
+Failed to send message via activeContextStore: Error: restore rejected again
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts:467:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgExecutionContextBatch.spec.ts (3 tests) 13ms
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org strict candidate and terminal boundaries > renders truthful en recovery on the retained history route after Restore succeeds but readiness exhausts
+Failed to send message via activeContextStore: Error: socket unavailable
+    at AgentOrgStreamingService.scheduleTransparentRecovery [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:410:28[90m)[39m
+    at AgentOrgStreamingService.attemptTransparentRecovery [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:437:23[90m)[39m
+    at run [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:419:17[90m)[39m
+    at callTimer (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/[4mvitest[24m/dist/chunks/vi.bdSIJ99Y.js:2211:25)
+    at Object.next (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/[4mvitest[24m/dist/chunks/vi.bdSIJ99Y.js:2934:18)
+    at Immediate.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/[4mvitest[24m/dist/chunks/vi.bdSIJ99Y.js:3034:44)
+[90m    at processImmediate (node:internal/timers:484:21)[39m
+
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org strict candidate and terminal boundaries > renders truthful zh-CN recovery on the retained history route after Restore succeeds but readiness exhausts
+Failed to send message via activeContextStore: Error: socket unavailable
+    at AgentOrgStreamingService.scheduleTransparentRecovery [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:410:28[90m)[39m
+    at AgentOrgStreamingService.attemptTransparentRecovery [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:437:23[90m)[39m
+    at run [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:419:17[90m)[39m
+    at callTimer (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/[4mvitest[24m/dist/chunks/vi.bdSIJ99Y.js:2211:25)
+    at Object.next (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/[4mvitest[24m/dist/chunks/vi.bdSIJ99Y.js:2934:18)
+    at Immediate.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/[4m.pnpm[24m/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/[4mvitest[24m/dist/chunks/vi.bdSIJ99Y.js:3034:44)
+[90m    at processImmediate (node:internal/timers:484:21)[39m
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts (25 tests) 1963ms
+stdout | services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts (2 tests) 7ms
+stderr | services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgExecutionViewIndex.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts (3 tests) 4ms
+stdout | services/agentOrgExecution/__tests__/agentOrgExecutionViewIndex.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgExecutionViewIndex.spec.ts (2 tests) 3ms
+
+ Test Files  19 passed (19)
+      Tests  151 passed (151)
+   Start at  14:17:08
+   Duration  11.43s (transform 5.02s, setup 72.70s, collect 5.78s, tests 4.10s, environment 4.54s, prepare 2.85s)
+
+# exit: 0

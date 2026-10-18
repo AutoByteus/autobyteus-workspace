@@ -1,0 +1,10 @@
+# IMP-10 AC-001 baseline: today's whole-file rewrite vs a one-line append (design probe)
+# command: node tickets/in-progress/append-only-message-logs/probes/cost.mjs <fresh temp dir>
+# data: synthesized 82 x 270 KB org log (~22 MB), never user data
+# commit: 725fe7ed20 (probe is independent of the source change); env: Darwin 25.5.0, node v22.23.1; date: 2026-10-18T11:12:14Z
+rewrite ms/bytes [ 192, 22282247 ]
+append  ms/bytes [ 8, 120185 ]
+rewrite ms/bytes [ 145, 22282247 ]
+append  ms/bytes [ 9, 120185 ]
+rewrite ms/bytes [ 180, 22282247 ]
+append  ms/bytes [ 10, 120185 ]

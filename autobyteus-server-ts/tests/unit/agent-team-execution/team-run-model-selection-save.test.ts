@@ -53,7 +53,7 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
   memoryDirs.push(memoryDir);
   const packageDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: 'root', ancestorTeamRunIds: [] });
   await new TeamRunExecutionTreeStore().write(packageDir, saved);
-  writeAttachmentSidecars(packageDir, 'team', 'root');
+  writeAttachmentSidecars(packageDir, 'team');
   const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => 'task' }),
     executionTreeStore: { read, write } as any, modelSelectionValidator: new RunModelSelectionService(catalog, capacity) });

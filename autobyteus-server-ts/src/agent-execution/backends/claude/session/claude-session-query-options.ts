@@ -20,7 +20,7 @@ export const resolveClaudeSessionQueryOptions = async (input: {
   const sessionConfig = runContext.runtimeContext.sessionConfig;
   const toolingInput = {
     runtimeToolExposure: runContext.runtimeContext.runtimeToolExposure,
-    hasMaterializedSkills: (runContext.runtimeContext.privateSkillProfile?.exposures.length ?? 0) > 0,
+    hasMaterializedSkills: runContext.runtimeContext.materializedConfiguredSkills.length > 0,
     memberExecutionContext: runContext.config.memberExecutionContext,
   };
   const configuredToolingOptions = resolveClaudeSessionToolingOptions(toolingInput);
@@ -37,10 +37,6 @@ export const resolveClaudeSessionQueryOptions = async (input: {
   const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
   return {
     systemPrompt: runContext.runtimeContext.carpenterSystemPrompt,
-    ...(runContext.runtimeContext.privateSkillProfile ? {
-      privateSkillPlugin: { path: runContext.runtimeContext.privateSkillProfile.root,
-        names: runContext.runtimeContext.privateSkillProfile.exposures.map(entry => `autobyteus-configured:${entry.skill.name}`) },
-    } : {}),
     sessionBinding: input.binding,
     model: sessionConfig.model,
     workingDirectory: sessionConfig.workingDirectory,

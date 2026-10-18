@@ -1,0 +1,11 @@
+# IMP-08 (web-nuxt-prepare)
+# Command: pnpm -C autobyteus-web exec nuxt prepare
+# Commit: b3666d458f
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T12:17:04Z
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+# exit: 0

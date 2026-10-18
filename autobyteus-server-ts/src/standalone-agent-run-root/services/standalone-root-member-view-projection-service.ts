@@ -10,6 +10,11 @@ import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadat
 import type { EventMonitorActiveTracePage } from "../../run-history/projection/event-monitor-active-trace-page-types.js";
 import { AgentRunViewProjectionService, type RunProjection } from "../../run-history/services/agent-run-view-projection-service.js";
 import {
+  RunFileChangeProjectionService,
+  getRunFileChangeProjectionService,
+} from "../../run-history/services/run-file-change-projection-service.js";
+import type { RunFileChangeEntry } from "../../services/run-file-changes/run-file-change-types.js";
+import {
   StandaloneRootLocationService,
   type LocatedStandaloneRootAgentExecution,
 } from "./standalone-root-location-service.js";
@@ -31,18 +36,25 @@ export interface StandaloneRootMemberRunProjection {
   hasEarlierActiveTraceEvents: boolean;
 }
 
-/** Stored conversation projection of one Agent-root child (task Agent or task-Team member). */
+/**
+ * Views of one Agent-root child (task Agent or task-Team member) by its exact identity inside one
+ * hub: stored conversation projection, event-monitor pages and artifact list. Only the named hub's
+ * tree is read.
+ */
 export class StandaloneRootMemberViewProjectionService {
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: StandaloneRootLocationService;
+  private readonly injectedFileChanges: RunFileChangeProjectionService | null;
 
   constructor(options: {
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: StandaloneRootLocationService;
+    runFileChangeProjectionService?: RunFileChangeProjectionService;
   } = {}) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
+    this.injectedFileChanges = options.runFileChangeProjectionService ?? null;
     this.locations = options.locations ?? new StandaloneRootLocationService({
       memoryDir,
       roots: { getActiveTree: (hostRunId) => getStandaloneAgentRunRootManager().getActiveTree(hostRunId) },
@@ -74,6 +86,12 @@ export class StandaloneRootMemberViewProjectionService {
     });
     const index = new StandaloneRootExecutionIndex(location.tree);
     return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
+  }
+
+  /** The child's artifacts: live while the hub is active, else its stored file changes. */
+  async getFileChanges(hostRunId: string, memberAddress: string, agentRunId: string): Promise<RunFileChangeEntry[]> {
+    const location = await this.requireLocation(hostRunId, memberAddress, agentRunId);
+    return (this.injectedFileChanges ?? getRunFileChangeProjectionService()).getLocatedCollaborationMemberProjection(location);
   }
 
   private async requireLocation(hostRunId: string, memberAddress: string, agentRunId: string) {

@@ -780,7 +780,9 @@ Current runtime, storage, history, GraphQL, and stream readers consume one
 validated current package per root TeamRun:
 
 - `team_run_execution_tree.json`; and
-- versioned `team_communication_messages.json`.
+- its message log, `team_communication_messages_active.jsonl` plus sealed
+  `team_communication_messages_<6 digits>.jsonl` files (append-only JSON Lines; see
+  [Run History](./run_history.md), Message logs).
 
 On disk a team run's tree links its task agents (`{address, agentRunId |
 teamRunId, delegatorAgentRunId?, startedAt}`); each task agent's facts are in its

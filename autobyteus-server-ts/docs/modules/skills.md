@@ -397,8 +397,9 @@ uses exactly one copy of a name if a duplicate appears outside the app.
 Runtimes read skill files from disk, so an edit is visible to the next read.
 What an agent already read into its conversation can be stale. When a folder
 of a skill used by an active or resumable run changes, that run receives one
-platform notice naming the changed skills and files and the current
-`SKILL.md` path. Busy runs get it like an agent message; idle or stopped runs
+platform notice naming each changed skill package with its current folder and
+listing exactly the files that changed, were added or were removed. Busy runs
+get it like an agent message; idle or stopped runs
 get it with their next input. See
 [Skill Update Notices](./skill_update_notices.md).
 

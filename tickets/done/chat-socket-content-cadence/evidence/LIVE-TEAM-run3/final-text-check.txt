@@ -1,0 +1,21 @@
+# Case: LIVE-TEAM run 3 — final text: socket S1 vs persisted projection (equality)
+# Command: node evidence/check-final-text.mjs evidence/LIVE-TEAM-run3
+# Commit: e24ff6b333; Env: ENV-2; Date: 2026-10-18 13:21
+# frames: LIVE-TEAM-run3/frames-S1.jsonl; projections: LIVE-TEAM-run3/projections.json
+abt139_alpha_cb1bb1b56d4742d78f696f2cf100d10b: 2 projection entries, 2 streamed segments
+  #1 projection reasoning (7839 chars) vs streamed reasoning (7839 chars): EQUAL
+  #2 projection message/assistant (1650 chars) vs streamed text (1650 chars): EQUAL
+abt139_beta_ecd7196999504323987feeebb6c70f6a: 2 projection entries, 2 streamed segments
+  #1 projection reasoning (3749 chars) vs streamed reasoning (3749 chars): EQUAL
+  #2 projection message/assistant (1654 chars) vs streamed text (1654 chars): EQUAL
+RESULT: ALL EQUAL
+
+# Same check for S2 (opened mid-stream): its reasoning is a suffix only, by design (the earlier part is in its snapshot), so DIFFERENT is expected there; its text segment (fully after the join) must be EQUAL
+# frames: LIVE-TEAM-run3/frames-S2.jsonl; projections: LIVE-TEAM-run3/projections.json
+abt139_alpha_cb1bb1b56d4742d78f696f2cf100d10b: 2 projection entries, 2 streamed segments
+  #1 projection reasoning (7839 chars) vs streamed reasoning (7540 chars): DIFFERENT | projection tail: "eeds* (actual output matches the draft exactly)\n   *(Done.)*" | streamed tail: "eeds* (actual output matches the draft exactly)\n   *(Done.)*"
+  #2 projection message/assistant (1650 chars) vs streamed text (1650 chars): EQUAL
+abt139_beta_ecd7196999504323987feeebb6c70f6a: 2 projection entries, 2 streamed segments
+  #1 projection reasoning (3749 chars) vs streamed reasoning (3421 chars): DIFFERENT | projection tail: "n to another.\n\nWord count looks good. No headings, no lists." | streamed tail: "n to another.\n\nWord count looks good. No headings, no lists."
+  #2 projection message/assistant (1654 chars) vs streamed text (1654 chars): EQUAL
+RESULT: MISMATCH

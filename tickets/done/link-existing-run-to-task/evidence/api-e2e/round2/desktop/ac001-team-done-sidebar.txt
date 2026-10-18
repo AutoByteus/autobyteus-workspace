@@ -1,0 +1,1 @@
+workspace-ado|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-sentence tagline for a tiny note app and send it to the Project Manager.|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|6m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in one sentence.|5m|L|lead|5m|M|mate|5m|Settings|

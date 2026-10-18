@@ -1,0 +1,13 @@
+# Case: API-05 (new durable E2E: AOML-1, AOML-2)
+# Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" USER="$USER" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts --no-watch
+# Commit: 78b42de3ae + the new test file (committed with this round's test commit; see the handoff)
+# Environment: macOS Darwin 25.5.0, node v22.23.1; built server dist of this worktree; scripted AGY CLI tests/fixtures/agy-failure-cli.mjs (linked_skills)
+# Date: 2026-10-18 14:13 CEST
+
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 16817ms
+     ✓ AOML-1 converts every usable log with nothing lost, keeps the unusable ones with a warning, serves the same history and references, and a second start changes nothing  6219ms
+     ✓ AOML-2 runs that ran on the release are converted, resumed and messaged: one line per owner log in each family (sealed files untouched), a delegated team gets an empty append-only log, references of old and new messages resolve, and a restart serves every message  10597ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Duration  19.43s (transform 1.49s, setup 25ms, import 2.17s, tests 16.82s, environment 0ms)
+exit=0

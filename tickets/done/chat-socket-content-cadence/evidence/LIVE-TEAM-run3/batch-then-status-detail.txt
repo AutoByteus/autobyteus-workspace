@@ -1,0 +1,35 @@
+# Case: LIVE-TEAM run 3 — the batches followed within 5 ms by a standalone status and arriving < 500 ms after the previous sequenced frame (client receive times)
+# Command: node (inline) over evidence/LIVE-TEAM-run3/frames-S1.jsonl; Commit: e24ff6b333; Env: ENV-2
+# Reading: '>>' marks the batch. In each case the batch follows the previous batch by >= 504 ms (window chaining), and the next status is an identical 'running' for an agent; the scheduler absorbs identical statuses only while a batch is pending (rule 4), so a status landing right after a timer flush is forwarded. The 486 ms case is client receive jitter on the preceding status frame.
+   27872.3 SEGMENT_CONTENT_BATCH 724 770  [["alpha",63],["beta_",65]]
+   27931.1 AGENT_STATUS 771  running beta_ 
+   28434.1 SEGMENT_CONTENT_BATCH 772 822  [["beta_",60],["alpha",55]]
+   28461.2 AGENT_STATUS 823  running alpha 
+>> 28959.4 SEGMENT_CONTENT_BATCH 824 860  [["alpha",41],["beta_",56]]
+   28959.6 AGENT_STATUS 861  running alpha 
+   29460.9 SEGMENT_CONTENT_BATCH 862 906  [["alpha",42],["beta_",57]]
+---
+   41841.5 SEGMENT_CONTENT_BATCH 1928 1972  [["beta_",49],["alpha",68]]
+   41901.7 AGENT_STATUS 1973  running alpha 
+   42401.4 SEGMENT_CONTENT_BATCH 1974 2024  [["alpha",78],["beta_",60]]
+   42550.3 AGENT_STATUS 2025  running alpha 
+>> 43050.1 SEGMENT_CONTENT_BATCH 2026 2072  [["alpha",72],["beta_",61]]
+   43050.4 AGENT_STATUS 2073  running alpha 
+   43552.1 SEGMENT_CONTENT_BATCH 2074 2124  [["alpha",65],["beta_",61]]
+---
+   44078.5 SEGMENT_CONTENT_BATCH 2126 2164  [["alpha",35],["beta_",57]]
+   44110.4 AGENT_STATUS 2165  running alpha 
+   44611.5 SEGMENT_CONTENT_BATCH 2166 2198  [["alpha",30],["beta_",42]]
+   44615.4 AGENT_STATUS 2199  running beta_ 
+>> 45115.2 SEGMENT_CONTENT_BATCH 2200 2250  [["beta_",51],["alpha",52]]
+   45118.7 AGENT_STATUS 2251  running alpha 
+   45619.3 SEGMENT_CONTENT_BATCH 2252 2296  [["alpha",51],["beta_",41]]
+---
+   77144.2 SEGMENT_CONTENT_BATCH 4740 4772  [["alpha",77]]
+   77181.9 AGENT_STATUS 4773  running alpha 
+   77683.1 SEGMENT_CONTENT_BATCH 4774 4806  [["alpha",102]]
+   77720.7 AGENT_STATUS 4807  running alpha 
+>> 78207 SEGMENT_CONTENT_BATCH 4808 4838  [["alpha",78]]
+   78207.3 AGENT_STATUS 4839  running alpha 
+   78710 SEGMENT_CONTENT_BATCH 4840 4864  [["alpha",66]]
+---

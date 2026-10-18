@@ -2,8 +2,10 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { TaskDelegationRecordsV1Store } from "../legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
-import type { TeamCommunicationMessagesFile } from "../../services/team-communication/team-communication-messages-file.js";
-import { validateTeamCommunicationMessagesPayload } from "../../services/team-communication/team-communication-messages-schema.js";
+import {
+  validateTeamCommunicationMessagesPayload,
+  type TeamCommunicationMessagesFile,
+} from "../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import type { ValidatedTeamRunStatePackage } from "./team-run-execution-tree-v1/team-run-state-package-v1-validator.js";
 import { validateTeamRunStatePackage } from "./team-run-execution-tree-v1/team-run-state-package-v1-validator.js";
 import { TeamRunExecutionTreeV1Store } from "./team-run-execution-tree-v1/team-run-execution-tree-v1-store.js";

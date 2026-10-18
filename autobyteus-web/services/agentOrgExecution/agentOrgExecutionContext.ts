@@ -19,6 +19,8 @@ import type {
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
 import { toAgentPresentationProjectionMessage } from '~/services/agentStreaming/teamStreamDtoAdapters'
 import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStreamMessageProjector'
+import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
+import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { AgentOrgExecutionViewIndex, type OrgWorkspaceSelection, type OrgAgentViewIdentity, type OrgTeamViewIdentity } from './agentOrgExecutionViewIndex'
 import {
@@ -204,26 +206,18 @@ export class AgentOrgExecutionContext {
     return true
   }
 
-  applyEvent(changeSequence: number, event: AgentOrgExecutionEventDto): AgentOrgEventApplication {
+  /** Applies one root event, or a content batch covering `[changeSequence, changeSequenceThrough]`. */
+  applyEvent(changeSequence: number, event: AgentOrgExecutionEventDto, changeSequenceThrough = changeSequence): AgentOrgEventApplication {
     if (this.phase !== 'live') throw new Error('AgentOrg context is not accepting stream events.')
-    if (changeSequence !== this.nextChangeSequence) {
+    const following = advanceSequencedStream(this.nextChangeSequence, { first: changeSequence, through: changeSequenceThrough })
+    if (following === null) {
       this.requireReopen(`Expected change sequence ${this.nextChangeSequence}, received ${changeSequence}.`)
       throw new Error(this.error!)
     }
     if (event.kind === 'agent_presentation') {
-      const address = this.index.agents.get(event.agent_run_id)?.address
-      const context = this.contexts.get(event.agent_run_id)
-      if (!context || address !== event.member_address) {
-        this.requireReopen(`Agent presentation identity '${event.agent_run_id}' is not in the context.`)
-        throw new Error(this.error!)
-      }
-      dispatchAgentStreamMessage(
-        toAgentPresentationProjectionMessage(event.message, event.agent_run_id),
-        {
-          kind: 'agent_org_member', context, orgRunId: this.orgRunId,
-          agentRunId: event.agent_run_id, memberAddress: event.member_address,
-        },
-      )
+      this.dispatchPresentation([event])
+    } else if (event.kind === 'agent_presentation_batch') {
+      this.dispatchPresentation(event.items)
     } else if (event.kind === 'task_execution_started') {
       // A new delegated child needs new contexts; reload through a checkpoint.
       this.validateTaskExecutionStarted(event)
@@ -265,8 +259,31 @@ export class AgentOrgExecutionContext {
         },
       }
     }
-    this.nextChangeSequence += 1
+    this.nextChangeSequence = following
     return 'applied'
+  }
+
+  /** Every identity is checked before any message is dispatched; batch items apply in order. */
+  private dispatchPresentation(entries: readonly Readonly<{
+    agent_run_id: string; member_address: string; message: AgentPresentationMessage
+  }>[]): void {
+    const targets = entries.map((entry) => {
+      const context = this.contexts.get(entry.agent_run_id)
+      if (!context || this.index.agents.get(entry.agent_run_id)?.address !== entry.member_address) {
+        this.requireReopen(`Agent presentation identity '${entry.agent_run_id}' is not in the context.`)
+        throw new Error(this.error!)
+      }
+      return { entry, context }
+    })
+    for (const { entry, context } of targets) {
+      dispatchAgentStreamMessage(
+        toAgentPresentationProjectionMessage(entry.message, entry.agent_run_id),
+        {
+          kind: 'agent_org_member', context, orgRunId: this.orgRunId,
+          agentRunId: entry.agent_run_id, memberAddress: entry.member_address,
+        },
+      )
+    }
   }
 
   setActive(active: boolean): void {

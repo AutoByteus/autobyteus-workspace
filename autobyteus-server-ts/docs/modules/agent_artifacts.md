@@ -77,10 +77,16 @@ Team Communication.
   live projection only for runs attached to it and reads any other run fresh
   from `file_changes.json`, so every recorded artifact stays listable and
   previewable without a restart.
+- A standalone run's delegated copies are listed through the hub-scoped
+  `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)`
+  (see [Standalone Agent Run Root](./standalone_agent_run_root.md)), which reads
+  only that run's tree and shares
+  `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection` with the
+  run-id path.
 - Serve Agent Artifact bytes by `runId + canonical path` through
   `/runs/:runId/file-change-content`.
 - Keep Team Communication message/reference storage for accepted team-route
-  deliveries separate at `agent_teams/<teamRunId>/team_communication_messages.json`.
+  deliveries separate in the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`).
 - Treat source invocation ids as opaque tool-call identities when correlating
   `FILE_CHANGE` context. The context store is keyed by exact source invocation
   id only: numeric/provider ordinals such as `run_bash:0`, semantic-looking

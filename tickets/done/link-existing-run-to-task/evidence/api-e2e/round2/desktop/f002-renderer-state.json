@@ -1,0 +1,126 @@
+{
+ "workspaceGroups": "[{\"ws\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado2-desktop-root-ZQVPuP/workspace-ado\",\"agents\":[[\"ADO Project Manager\",[\"ado_project_manager_b95e07caa966451280b2a8e5d990edaa\"]]],\"teams\":[]}]",
+ "found": [
+  {
+   "path": "np.workspaceNodes[1].agents[1].runs[0]",
+   "runId": "ado_writer_b2d683f22cc54afe952f70d20dfca5f0",
+   "summary": "Hello, please introduce yourself in one sentence.",
+   "lastActivityAt": "2026-10-18T08:37:18.890Z",
+   "currentStatus": "offline",
+   "lastKnownStatus": "IDLE",
+   "isActive": false,
+   "source": "local",
+   "isDraft": false
+  },
+  {
+   "path": "np.teamNodes[0]",
+   "teamRunId": "ado_review_team_8d5e58e389fe4212b0c033fb1aa112d4",
+   "teamDefinitionId": "ado-review-team",
+   "teamDefinitionName": "ADO Review Team",
+   "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado",
+   "summary": "Hello team, please introduce yourselves in one sentence.",
+   "lastActivityAt": "2026-10-18T08:37:51.016Z",
+   "isActive": false,
+   "deleteLifecycle": "READY",
+   "focusedAgentRunId": "ado_review_lead_f1769d22b72a4f5b8ec544535685cecc"
+  },
+  {
+   "path": "np.teamNodes[0].rootTeam",
+   "teamRunId": "ado_review_team_8d5e58e389fe4212b0c033fb1aa112d4",
+   "kind": "agent_team",
+   "memberAddress": "/",
+   "displayName": "ADO Review Team",
+   "agentRunId": null,
+   "teamDefinitionId": "ado-review-team",
+   "teamRunIdForNode": "ado_review_team_8d5e58e389fe4212b0c033fb1aa112d4",
+   "coordinatorAddress": "/lead",
+   "workspaceRootPath": null,
+   "summary": "Hello team, please introduce yourselves in one sentence.",
+   "lastActivityAt": "2026-10-18T08:37:51.016Z",
+   "currentStatus": null,
+   "isActive": false,
+   "deleteLifecycle": "READY"
+  },
+  {
+   "path": "np.teamNodes[0].rootTeam.children[0]",
+   "teamRunId": "ado_review_team_8d5e58e389fe4212b0c033fb1aa112d4",
+   "kind": "agent",
+   "memberAddress": "/lead",
+   "displayName": "lead",
+   "agentRunId": "ado_review_lead_f1769d22b72a4f5b8ec544535685cecc",
+   "teamRunIdForNode": null,
+   "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado",
+   "summary": "Hello team, please introduce yourselves in one sentence.",
+   "lastActivityAt": "2026-10-18T08:37:51.016Z",
+   "currentStatus": "offline",
+   "isActive": false,
+   "deleteLifecycle": "READY"
+  },
+  {
+   "path": "np.teamNodes[0].rootTeam.children[1]",
+   "teamRunId": "ado_review_team_8d5e58e389fe4212b0c033fb1aa112d4",
+   "kind": "agent",
+   "memberAddress": "/mate",
+   "displayName": "mate",
+   "agentRunId": "ado_review_mate_495b47fc580c4c388df6aa8ddffd1071",
+   "teamRunIdForNode": null,
+   "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado",
+   "summary": "Hello team, please introduce yourselves in one sentence.",
+   "lastActivityAt": "2026-10-18T08:37:51.016Z",
+   "currentStatus": "offline",
+   "isActive": false,
+   "deleteLifecycle": "READY"
+  },
+  {
+   "path": "np.teamNodes[0].members[0]",
+   "teamRunId": "ado_review_team_8d5e58e389fe4212b0c033fb1aa112d4",
+   "kind": "agent",
+   "memberAddress": "/lead",
+   "displayName": "lead",
+   "agentRunId": "ado_review_lead_f1769d22b72a4f5b8ec544535685cecc",
+   "teamRunIdForNode": null,
+   "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado",
+   "summary": "Hello team, please introduce yourselves in one sentence.",
+   "lastActivityAt": "2026-10-18T08:37:51.016Z",
+   "currentStatus": "offline",
+   "isActive": false,
+   "deleteLifecycle": "READY"
+  },
+  {
+   "path": "np.teamNodes[0].members[1]",
+   "teamRunId": "ado_review_team_8d5e58e389fe4212b0c033fb1aa112d4",
+   "kind": "agent",
+   "memberAddress": "/mate",
+   "displayName": "mate",
+   "agentRunId": "ado_review_mate_495b47fc580c4c388df6aa8ddffd1071",
+   "teamRunIdForNode": null,
+   "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado",
+   "summary": "Hello team, please introduce yourselves in one sentence.",
+   "lastActivityAt": "2026-10-18T08:37:51.016Z",
+   "currentStatus": "offline",
+   "isActive": false,
+   "deleteLifecycle": "READY"
+  },
+  {
+   "path": "np.teamNodes[0].executionRows[0]",
+   "kind": "stable_member",
+   "rowKey": "agent:ado_review_lead_f1769d22b72a4f5b8ec544535685cecc",
+   "teamRunId": "ado_review_team_8d5e58e389fe4212b0c033fb1aa112d4",
+   "memberAddress": "/lead",
+   "agentRunId": "ado_review_lead_f1769d22b72a4f5b8ec544535685cecc",
+   "teamRunIdForNode": null,
+   "memberKind": "agent",
+   "displayName": "lead",
+   "depth": 0,
+   "hasChildren": false
+  }
+ ],
+ "resumeKeys": [
+  "ado_writer_b2d683f22cc54afe952f70d20dfca5f0",
+  "ado_project_manager_b95e07caa966451280b2a8e5d990edaa"
+ ],
+ "collabContexts": [
+  "ado_writer_b2d683f22cc54afe952f70d20dfca5f0",
+  "ado_project_manager_b95e07caa966451280b2a8e5d990edaa"
+ ]
+}

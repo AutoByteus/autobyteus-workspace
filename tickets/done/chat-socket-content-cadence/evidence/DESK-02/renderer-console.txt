@@ -1,0 +1,2 @@
+# Case: DESK-02 — console warnings/errors (CDP) for the whole session
+

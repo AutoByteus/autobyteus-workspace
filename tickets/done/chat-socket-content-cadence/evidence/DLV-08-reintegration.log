@@ -1,0 +1,769 @@
+# HEAD 8f91efb2cd
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+# typecheck exit 0
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts[2m > [22m[2mAgentStreamHandler system-instruction diagnostics[2m > [22m[2mretains identifiers and derived length without serializing exact prompt content
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 3587[2mms[22m[39m
+     [33m[2m✓[22m[39m retains identifiers and derived length without serializing exact prompt content [33m 3587[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts[2m > [22m[2mAgentOrgStreamHandler[2m > [22m[2msends pending reply text before the inactive lifecycle, then closes (autobyteus-139)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 85[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/collaboration-public-tree-projection.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 48[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+[22m[39mCreated agent session 03d287b1-9f4d-493d-b5cc-8a8ff8a7fd5a for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+[22m[39mAgent Team WebSocket connected: session=03d287b1-9f4d-493d-b5cc-8a8ff8a7fd5a, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+[22m[39mClosed agent session 03d287b1-9f4d-493d-b5cc-8a8ff8a7fd5a
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mCreated agent session bc8fae04-8897-4390-91bf-b2d10343f61b for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mAgent Team WebSocket connected: session=bc8fae04-8897-4390-91bf-b2d10343f61b, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mClosed agent session bc8fae04-8897-4390-91bf-b2d10343f61b
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mCreated agent session ebcfcad9-3b5c-4b5c-be4c-6dd2aeae8427 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mAgent Team WebSocket connected: session=ebcfcad9-3b5c-4b5c-be4c-6dd2aeae8427, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mClosed agent session ebcfcad9-3b5c-4b5c-be4c-6dd2aeae8427
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mCreated agent session 8975565f-24b6-457f-a6b3-ad2fc414093d for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mAgent Team WebSocket connected: session=8975565f-24b6-457f-a6b3-ad2fc414093d, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mClosed agent session 8975565f-24b6-457f-a6b3-ad2fc414093d
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mCreated agent session 51a4a395-230c-4acc-98e0-60c27beb2574 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mAgent Team WebSocket connected: session=51a4a395-230c-4acc-98e0-60c27beb2574, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mClosed agent session 51a4a395-230c-4acc-98e0-60c27beb2574
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mCreated agent session 703d71ef-4349-4970-b7da-43358d54a2c5 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mAgent Team WebSocket connected: session=703d71ef-4349-4970-b7da-43358d54a2c5, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mClosed agent session 703d71ef-4349-4970-b7da-43358d54a2c5
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts[2m > [22m[2mAgentCollaborationStreamHandler[2m > [22m[2msends pending reply text before a projection-failure ERROR, then closes (autobyteus-139)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to a run identity and sends CONNECTED plus projected status without restoring runtime
+[22m[39mCreated agent session bcb4a881-198e-427b-87e5-434f225224ab for run agent-123
+Agent WebSocket connected: session=bcb4a881-198e-427b-87e5-434f225224ab, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to run events through the AgentRun subject for active runtime-managed runs
+[22m[39mCreated agent session d2fbbe05-39ea-4540-b4c4-d66010dec2ac for run runtime-run-1
+Agent WebSocket connected: session=d2fbbe05-39ea-4540-b4c4-d66010dec2ac, run=runtime-run-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps Codex AgentRunEvents directly to websocket messages for single-agent runs
+[22m[39mCreated agent session 31a87b3f-92ca-4a93-a216-49f1da3d175d for run runtime-run-2
+Agent WebSocket connected: session=31a87b3f-92ca-4a93-a216-49f1da3d175d, run=runtime-run-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps turn lifecycle AgentRunEvents directly to websocket messages
+[22m[39mCreated agent session 79ebaa84-d8e3-4460-9b41-38eb54b682f4 for run runtime-run-3
+Agent WebSocket connected: session=79ebaa84-d8e3-4460-9b41-38eb54b682f4, run=runtime-run-3
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mregisters the websocket connection for run-scoped live message broadcasts
+[22m[39mCreated agent session 35104311-f328-45f8-b6ad-a9b0e17d484d for run agent-123
+Agent WebSocket connected: session=35104311-f328-45f8-b6ad-a9b0e17d484d, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mpublishes terminal offline status to an already-connected websocket when a run terminates
+[22m[39mCreated agent session bf91af4b-c609-424e-b2a2-c3a92852f475 for run run-terminate-1
+Agent WebSocket connected: session=bf91af4b-c609-424e-b2a2-c3a92852f475, run=run-terminate-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles SEND_MESSAGE through the command coordinator and returns an ACK
+[22m[39mCreated agent session d1bbba7c-9251-46e3-8e36-55c0289da865 for run agent-123
+Agent WebSocket connected: session=d1bbba7c-9251-46e3-8e36-55c0289da865, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mdefers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+[22m[39mCreated agent session 745b49fc-50dc-4a4e-b16b-0cb57929d4ee for run agent-123
+Agent WebSocket connected: session=745b49fc-50dc-4a4e-b16b-0cb57929d4ee, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mCreated agent session c6ee415d-2422-498a-9e05-f1af16095d51 for run agent-123
+Agent WebSocket connected: session=c6ee415d-2422-498a-9e05-f1af16095d51, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mINTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mCreated agent session 00abb5cf-3831-49e2-8fb8-c08b03286ff4 for run agent-123
+Agent WebSocket connected: session=00abb5cf-3831-49e2-8fb8-c08b03286ff4, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mAgent websocket session '00abb5cf-3831-49e2-8fb8-c08b03286ff4' lost its active run subscription for run 'agent-123'.
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mAgent websocket session '00abb5cf-3831-49e2-8fb8-c08b03286ff4' lost its active run subscription for run 'agent-123'.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mreturns exactly one same-socket acknowledgement for an accepted interrupt
+[22m[39mCreated agent session 47c2eaad-43d4-4495-bc21-501d3d3c185f for run agent-123
+Agent WebSocket connected: session=47c2eaad-43d4-4495-bc21-501d3d3c185f, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mrejects an empty interrupt command id before runtime execution
+[22m[39mCreated agent session c58f5b17-deaf-462f-8f91-2e1cc440fba8 for run agent-123
+Agent WebSocket connected: session=c58f5b17-deaf-462f-8f91-2e1cc440fba8, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mCreated agent session 774a14af-1700-44f9-a60d-b6ccc729299c for run agent-123
+Agent WebSocket connected: session=774a14af-1700-44f9-a60d-b6ccc729299c, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mINTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles tool approvals for active sessions
+[22m[39mCreated agent session 8542875e-adea-445d-b6dc-6b4a69bcd198 for run agent-123
+Agent WebSocket connected: session=8542875e-adea-445d-b6dc-6b4a69bcd198, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mignores messages for unknown sessions
+[22m[39mMessage for unknown session: missing
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/team-execution-view-projector.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/team-execution-view-projector.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/sequenced-stream-shapes.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/sequenced-content-cadence-scheduler.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/launch-source-dto-projection.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/launch-selection-dto-projection.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-collaboration-task-lifetime-projection.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcreates sessions successfully
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mthrows when creating a duplicate session
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mallows multiple sessions for the same agent
+[22m[39mCreated agent session s1 for run agent-123
+Created agent session s2 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions by ID
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses sessions and removes them
+[22m[39mCreated agent session s1 for run agent-123
+Closed agent session s1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mlists active sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session-manager.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/payload-serialization.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-broadcaster.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mconnects and reports connected state
+[22m[39mAgentSession s1 connected to run agent-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mprevents connecting a closed session
+[22m[39mAgentSession s2 closed
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mcloses and resets connected state
+[22m[39mAgentSession s3 connected to run agent-3
+AgentSession s3 closed
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m18 passed[39m[22m[90m (18)[39m
+[2m      Tests [22m [1m[32m166 passed[39m[22m[90m (166)[39m
+[2m   Start at [22m 15:22:32
+[2m   Duration [22m 10.94s[2m (transform 2.82s, setup 136ms, import 5.19s, tests 3.84s, environment 1ms)[22m
+
+# streaming-units exit 0
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/integration/agent/chat-socket-content-cadence.integration.test.ts [2m([22m[2m0 test[22m[2m)[22m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m [ tests/integration/agent/chat-socket-content-cadence.integration.test.ts ][22m
+[31m[1mError[22m: Cannot find module '../../../src/services/team-communication/team-communication-messages-schema.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/integration/agent/chat-socket-content-cadence.integration.test.ts'[39m
+[36m [2m❯[22m tests/integration/agent/chat-socket-content-cadence.integration.test.ts:[2m37:1[22m[39m
+    [90m 35| [39mimport { createTeamAgentStatusDetails } from "../../../src/agent-team-…
+    [90m 36| [39mimport { validateTeamRunExecutionTreePayload } from "../../../src/run-…
+    [90m 37| [39mimport { validateTeamCommunicationMessagesPayload } from "../../../src…
+    [90m   | [39m[31m^[39m
+    [90m 38| [39mimport type { AgentOrgRunEvent } from "../../../src/agent-org-executio…
+    [90m 39| [39mimport type { StandaloneRootEvent } from "../../../src/standalone-agen…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [2mno tests[22m
+[2m   Start at [22m 15:22:44
+[2m   Duration [22m 3.86s[2m (transform 2.40s, setup 21ms, import 0ms, tests 0ms, environment 0ms)[22m
+
+# cadence run 1 exit 1
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/integration/agent/chat-socket-content-cadence.integration.test.ts [2m([22m[2m0 test[22m[2m)[22m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m [ tests/integration/agent/chat-socket-content-cadence.integration.test.ts ][22m
+[31m[1mError[22m: Cannot find module '../../../src/services/team-communication/team-communication-messages-schema.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/integration/agent/chat-socket-content-cadence.integration.test.ts'[39m
+[36m [2m❯[22m tests/integration/agent/chat-socket-content-cadence.integration.test.ts:[2m37:1[22m[39m
+    [90m 35| [39mimport { createTeamAgentStatusDetails } from "../../../src/agent-team-…
+    [90m 36| [39mimport { validateTeamRunExecutionTreePayload } from "../../../src/run-…
+    [90m 37| [39mimport { validateTeamCommunicationMessagesPayload } from "../../../src…
+    [90m   | [39m[31m^[39m
+    [90m 38| [39mimport type { AgentOrgRunEvent } from "../../../src/agent-org-executio…
+    [90m 39| [39mimport type { StandaloneRootEvent } from "../../../src/standalone-agen…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [2mno tests[22m
+[2m   Start at [22m 15:22:48
+[2m   Duration [22m 3.72s[2m (transform 2.33s, setup 21ms, import 0ms, tests 0ms, environment 0ms)[22m
+
+# cadence run 2 exit 1
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/integration/agent/chat-socket-content-cadence.integration.test.ts [2m([22m[2m0 test[22m[2m)[22m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m [ tests/integration/agent/chat-socket-content-cadence.integration.test.ts ][22m
+[31m[1mError[22m: Cannot find module '../../../src/services/team-communication/team-communication-messages-schema.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/integration/agent/chat-socket-content-cadence.integration.test.ts'[39m
+[36m [2m❯[22m tests/integration/agent/chat-socket-content-cadence.integration.test.ts:[2m37:1[22m[39m
+    [90m 35| [39mimport { createTeamAgentStatusDetails } from "../../../src/agent-team-…
+    [90m 36| [39mimport { validateTeamRunExecutionTreePayload } from "../../../src/run-…
+    [90m 37| [39mimport { validateTeamCommunicationMessagesPayload } from "../../../src…
+    [90m   | [39m[31m^[39m
+    [90m 38| [39mimport type { AgentOrgRunEvent } from "../../../src/agent-org-executio…
+    [90m 39| [39mimport type { StandaloneRootEvent } from "../../../src/standalone-agen…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [2mno tests[22m
+[2m   Start at [22m 15:22:52
+[2m   Duration [22m 3.75s[2m (transform 2.35s, setup 22ms, import 0ms, tests 0ms, environment 0ms)[22m
+
+# cadence run 3 exit 1
+
+> autobyteus-server-ts@0.1.1 test:integration:prepare /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+> node ./scripts/integration-test-prerequisites.mjs prepare
+
+
+[integration prerequisites] server build (with shared packages)
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 105ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+[integration prerequisites] application frontend SDK
+
+> @autobyteus/application-frontend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-application-frontend-sdk
+> tsc -p tsconfig.build.json
+
+
+[integration prerequisites] application devkit
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+
+[integration prerequisites] Brief Studio importable package
+AgentFactory (Singleton) initialized.
+(node:44163) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+# integration-prepare exit 0

@@ -74,7 +74,7 @@ const createNormalizer = async () => {
   ));
 
   await fs.writeFile(path.join(rootTeamDir, "task_delegation_records.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId, records: []}));
-  await fs.writeFile(path.join(rootTeamDir, "team_communication_messages.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId, messages: []}));
+  await fs.writeFile(path.join(rootTeamDir, "team_communication_messages_active.jsonl"), "");
   await fs.writeFile(path.join(memoryDir, "agents", "standalone-run", "run_metadata.json"), JSON.stringify({runId: "standalone-run", agentDefinitionId: "def", workspaceRootPath: "/workspace", memoryDir, llmModelIdentifier: "model", runtimeKind: "autobyteus"}));
   await new RootRunPackageReadinessIndex(memoryDir).rebuild();
   const normalizer = new AgentRunProviderInputNormalizer(

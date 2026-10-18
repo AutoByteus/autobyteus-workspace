@@ -28,6 +28,7 @@ import {
 import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -166,10 +167,12 @@ const createFactory = (input: {
   toolNames?: string[];
 }) => {
   const inert = Object.freeze({}) as never;
-
+  const workspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer();
   const builder = createAgentProviderFactoryBuilder({
     workspaceManager: getWorkspaceManager(),
     skillService: {
+      resolveSkillScope: () => "CONFIGURED",
+      hasEffectiveSkills: () => false,
       resolveConfiguredSkillBindingsForAgent: () => [],
     } as never,
     autoByteus: {
@@ -185,16 +188,17 @@ const createFactory = (input: {
       waitForIdle: inert,
     },
     codex: {
-
+      workspaceSkillMaterializer: inert,
       workspaceResolver: inert,
       clientManager: inert,
       threadManager: inert,
-
+      threadCleanup: inert,
     },
     claude: {
       workspaceResolver: {
         resolveWorkingDirectory: async () => input.workspaceRoot,
       } as never,
+      workspaceSkillMaterializer,
       sdkClient: getClaudeSdkClient(),
     },
   });
@@ -208,7 +212,7 @@ const createFactory = (input: {
         toolNames: input.toolNames ?? [],
       }),
     } as never,
-    agentToolMcpRunSessions: { activateForRun: () => ({ kind: "not_exposed" as const }) },
+    agentToolMcpRunSessions: { activateForRun: () => ({ kind: "not_exposed" as const }), deactivateForRun: () => 0 },
     applicationAgentTools: null,
   }).claude;
   const sessionManager = (factory as unknown as {
@@ -230,7 +234,9 @@ const writeBackendEventLog = async (testName: string, events: AgentRunEvent[]): 
   );
 };
 
-const wrapAgentRun = (backend: Awaited<ReturnType<ClaudeAgentRunBackendFactory["createBackend"]>>) =>
+type PreparedClaudeBackend = Awaited<ReturnType<ReturnType<ClaudeAgentRunBackendFactory["beginPreparation"]>["prepare"]>>;
+
+const wrapAgentRun = (backend: PreparedClaudeBackend) =>
   Object.assign(new AgentRun({
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     context: backend.getContext(),
@@ -238,12 +244,12 @@ const wrapAgentRun = (backend: Awaited<ReturnType<ClaudeAgentRunBackendFactory["
   }), { backend });
 
 const createAgentRun = async (factory: ClaudeAgentRunBackendFactory, runId: string, config: AgentRunConfig) =>
-  wrapAgentRun(await factory.createBackend(config, runId));
+  wrapAgentRun(await factory.beginPreparation({ kind: "new", config, runId }).prepare());
 
 const restoreAgentRun = async (
   factory: ClaudeAgentRunBackendFactory,
-  context: Parameters<ClaudeAgentRunBackendFactory["restoreBackend"]>[0],
-) => wrapAgentRun(await factory.restoreBackend(context));
+  context: Extract<Parameters<ClaudeAgentRunBackendFactory["beginPreparation"]>[0], { kind: "restore" }>["context"],
+) => wrapAgentRun(await factory.beginPreparation({ kind: "restore", context }).prepare());
 
 describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live transport)", () => {
   let sessionManager: ClaudeSessionManager | null = null;

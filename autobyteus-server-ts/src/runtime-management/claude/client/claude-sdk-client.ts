@@ -1,4 +1,3 @@
-import { validateClaudePrivateSkills } from "./claude-private-skill-discovery.js";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
@@ -67,7 +66,6 @@ type ClaudeApiKeyResolver = () => Promise<SecretValue>;
 /** Options for one long-lived streaming-input session (one Claude CLI process). */
 export type ClaudeSdkStreamingSessionOptions = {
   systemPrompt: string;
-  privateSkillPlugin?: { path: string; names: readonly string[] };
   sessionBinding: ClaudeSdkSessionBinding;
   model: string;
   workingDirectory: string | null;
@@ -278,17 +276,14 @@ export class ClaudeSdkClient {
         };
         queryOptions.spawnClaudeCodeProcess = control.spawn;
         queryOptions.stderr = control.stderr;
-        const raw = await runInClaudeSdkSessionSpawnCriticalSection(async () => {
+        await runInClaudeSdkSessionSpawnCriticalSection(async () => {
           control.assertAccepting();
           return withGuardedProcessCwd(options.workingDirectory, async () => {
             control.assertAccepting();
             const raw = queryFn({ prompt: control.channel, options: queryOptions });
             control.registerQuery(raw); // before shape checks/any additional await
-            return raw;
           });
         });
-        if (options.privateSkillPlugin) await validateClaudePrivateSkills(raw, options.privateSkillPlugin.names);
-        control.assertAccepting();
       },
     });
   }
@@ -420,7 +415,6 @@ export class ClaudeSdkClient {
       ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),
       ...(options.stderr ? { stderr: options.stderr } : {}),
       settingSources,
-      ...(options.privateSkillPlugin ? { plugins: [{ type: "local", path: options.privateSkillPlugin.path }] } : {}),
       // Per-call usage arrives only on `message_delta` stream events (token-meter-accuracy D-2).
       includePartialMessages: true,
       ...(options.thinking ? { thinking: options.thinking } : {}),

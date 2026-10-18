@@ -351,7 +351,8 @@ AgentOrg has its own durable family:
 memory/agent_org_run_history_index.json
 memory/agent_orgs/<org-run-id>/
   agent_org_run_execution_tree.json
-  agent_org_communication_messages.json
+  agent_org_communication_messages_active.jsonl   # the org's message log (append-only JSON Lines)
+  agent_org_communication_messages_000001.jsonl   # sealed files once the log has rotated
   <rooted member memory...>        # direct agents and mounted teams' members
 memory/agents/<task-agent-run-id>/       # a task agent of the org: a run of its own (own run_metadata.json with taskAgent, own log)
 memory/agent_teams/<task-team-run-id>/   # a task agent team of the org: its own tree (with taskAgent), log and members

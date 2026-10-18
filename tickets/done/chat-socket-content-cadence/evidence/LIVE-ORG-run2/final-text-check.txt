@@ -1,0 +1,11 @@
+# Case: LIVE-ORG run 2 — final text: socket vs persisted projection (equality)
+# Command: node evidence/check-final-text.mjs evidence/LIVE-ORG-run2
+# Commit: e24ff6b333; Env: ENV-2; Date: 2026-10-18 13:18
+# frames: LIVE-ORG-run2/frames-S1.jsonl; projections: LIVE-ORG-run2/projections.json
+abt139_org_alpha_c8bc82b8eff44346b17542e1f25b0e4e: 2 projection entries, 1 streamed segments
+  #1 projection reasoning (1181 chars) vs streamed reasoning (1181 chars): EQUAL
+  #2 projection message/assistant (0 chars) vs streamed - (0 chars): EQUAL
+abt139_org_beta_24f2b4d8cb534e36b5a7dc9df8d918c5: 2 projection entries, 1 streamed segments
+  #1 projection reasoning (1178 chars) vs streamed reasoning (1178 chars): EQUAL
+  #2 projection message/assistant (0 chars) vs streamed - (0 chars): EQUAL
+RESULT: ALL EQUAL

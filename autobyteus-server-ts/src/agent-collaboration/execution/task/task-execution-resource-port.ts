@@ -33,6 +33,14 @@ export type ExistingTaskExecutionAssignInput = Readonly<{
   hostRoot: RootExecutionIdentity; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string; taskId: string; assignedBy: string;
 }>;
 
+/** A run's current assignment as the Task side knows it: its open entry, else its latest. */
+export type CurrentTaskAssignment = Readonly<{
+  taskId: string; open: boolean; role: TaskExecutionRole; assignedBy?: string; hostRoot: RootExecutionIdentity; started: boolean;
+}>;
+
+/** Adopting a run the user started (design SR-008): the delegator's assignment of the run at its catalog address. */
+export type AdoptedRunAssignInput = ExistingTaskExecutionAssignInput & Readonly<{ recipientAddress: string }>;
+
 export interface TaskExecutionResourcePort {
   /**
    * Saved work for a non-owned assignment of a Project Task named by `reference` (the agent's `task_id`: its key
@@ -86,6 +94,13 @@ export interface TaskExecutionResourcePort {
    * and appends the copy's new `starting` assignment entry to the Task (earlier entries are kept).
    */
   assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void>;
+  /** The run's current assignment (its open entry, else its latest); `null` when it belongs to no Task and never did. */
+  currentAssignmentOf(execution: TaskExecutionReference): CurrentTaskAssignment | null;
+  /**
+   * The adoption commit: re-checks under the run's and then the Task's ordering that the Task is an open Project
+   * Task and the run has no open entry, then appends the run's `starting` assignment entry.
+   */
+  assignAdoptedRun(input: AdoptedRunAssignInput): Promise<void>;
   /**
    * The live status of these task executions of a root may have changed (an agent in them changed
    * status, or the root stopped admitting). Synchronous; never throws and never reads files.
@@ -100,6 +115,11 @@ export type TaskExecutionReopenResult = Readonly<{ taskId: string; reopened: boo
 /** Task → runtime: stop exactly these closed agent runs in one host root. `null`: the root is not active. */
 export type TaskExecutionReleaseRequest = (hostRoot: RootExecutionIdentity, executions: readonly TaskExecutionReference[])
   => Promise<readonly TaskExecutionStopResult[]> | null;
+/**
+ * Task → runtime: undo the unfinished adoption of a run the user started (its own file names this host root, the
+ * root's tree has no link to it). Resolves `true` when it was undone, `false` when there was none to undo.
+ */
+export type UnfinishedAdoptionRevertRequest = (hostRoot: RootExecutionIdentity, execution: TaskExecutionReference) => Promise<boolean>;
 export type TaskExecutionStopResult = Readonly<{
   execution: TaskExecutionReference; stopped: boolean; error?: Readonly<{ code: string; message: string }>;
 }>;

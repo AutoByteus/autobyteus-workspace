@@ -4,6 +4,7 @@ import {
   teamAgentErrorPayloadSchema,
   teamAgentPayloadSchemas,
   teamInterruptCommandAckPayloadSchema,
+  teamSegmentContentBatchPayloadSchema,
   type TeamAgentMessageType,
 } from "./team-agent-message-dtos.js";
 import {
@@ -46,6 +47,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   message("SEGMENT_START", teamAgentPayloadSchemas.SEGMENT_START),
   message("SEGMENT_CONTENT", teamAgentPayloadSchemas.SEGMENT_CONTENT),
   message("SEGMENT_END", teamAgentPayloadSchemas.SEGMENT_END),
+  message("SEGMENT_CONTENT_BATCH", teamSegmentContentBatchPayloadSchema),
   message("AGENT_STATUS", teamAgentPayloadSchemas.AGENT_STATUS),
   message("COMPACTION_STATUS", teamAgentPayloadSchemas.COMPACTION_STATUS),
   message("COMPACTION_BLOCKED", teamAgentPayloadSchemas.COMPACTION_BLOCKED),
@@ -87,6 +89,7 @@ type TeamAgentServerMessage = {
 
 export type TeamStreamServerMessage =
   | TeamAgentServerMessage
+  | Readonly<{ type: "SEGMENT_CONTENT_BATCH"; payload: Readonly<z.infer<typeof teamSegmentContentBatchPayloadSchema>> }>
   | Readonly<{ type: "CONNECTED"; payload: z.infer<typeof teamConnectedPayloadSchema> }>
   | Readonly<{ type: "TEAM_RUN_LIFECYCLE"; payload: z.infer<typeof teamRunLifecyclePayloadSchema> }>
   | Readonly<{ type: "TEAM_EXECUTION_VIEW_SNAPSHOT"; payload: z.infer<typeof teamExecutionViewSnapshotPayloadSchema> }>

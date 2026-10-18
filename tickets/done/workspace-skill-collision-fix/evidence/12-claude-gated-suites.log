@@ -1,0 +1,343 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL01
+Created agent session 017b27b4-6ab6-4727-9c30-d9ed54e64acb for run claude-runtime-error-API-CL01
+Agent WebSocket connected: session=017b27b4-6ab6-4727-9c30-d9ed54e64acb, run=claude-runtime-error-API-CL01
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session 017b27b4-6ab6-4727-9c30-d9ed54e64acb
+Agent WebSocket disconnected: 017b27b4-6ab6-4727-9c30-d9ed54e64acb
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL02
+Created agent session 6522ad4c-f2a4-404b-ad53-c8fb28ad5fbf for run claude-runtime-error-API-CL02
+Agent WebSocket connected: session=6522ad4c-f2a4-404b-ad53-c8fb28ad5fbf, run=claude-runtime-error-API-CL02
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session 6522ad4c-f2a4-404b-ad53-c8fb28ad5fbf
+Agent WebSocket disconnected: 6522ad4c-f2a4-404b-ad53-c8fb28ad5fbf
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL03
+Created agent session 4f85bbb4-0c6f-4b78-bdc1-3aac64e19d11 for run claude-runtime-error-API-CL03
+Agent WebSocket connected: session=4f85bbb4-0c6f-4b78-bdc1-3aac64e19d11, run=claude-runtime-error-API-CL03
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session 4f85bbb4-0c6f-4b78-bdc1-3aac64e19d11
+Agent WebSocket disconnected: 4f85bbb4-0c6f-4b78-bdc1-3aac64e19d11
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL04
+Created agent session 0c8527f7-b410-461c-b9f9-83987ce14992 for run claude-runtime-error-API-CL04
+Agent WebSocket connected: session=0c8527f7-b410-461c-b9f9-83987ce14992, run=claude-runtime-error-API-CL04
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session 0c8527f7-b410-461c-b9f9-83987ce14992
+Agent WebSocket disconnected: 0c8527f7-b410-461c-b9f9-83987ce14992
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mAgent websocket attached for run claude-ws-interrupt-same-process
+Created agent session f4ee4266-70a5-4932-a151-1c8804217748 for run claude-ws-interrupt-same-process
+Agent WebSocket connected: session=f4ee4266-70a5-4932-a151-1c8804217748, run=claude-ws-interrupt-same-process
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mClosed agent session f4ee4266-70a5-4932-a151-1c8804217748
+Agent WebSocket disconnected: f4ee4266-70a5-4932-a151-1c8804217748
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mdelivers a message sent to a busy agent into the running turn (AC-003)
+[22m[39mAgent websocket attached for run claude-ws-busy-append
+Created agent session 3d5b8533-a5fe-4672-a788-ccbe778352df for run claude-ws-busy-append
+Agent WebSocket connected: session=3d5b8533-a5fe-4672-a788-ccbe778352df, run=claude-ws-busy-append
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mdelivers a message sent to a busy agent into the running turn (AC-003)
+[22m[39mClosed agent session 3d5b8533-a5fe-4672-a788-ccbe778352df
+Agent WebSocket disconnected: 3d5b8533-a5fe-4672-a788-ccbe778352df
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[22m[39mAgent websocket attached for run claude-ws-append-after-settle
+Created agent session f2ca0657-aa98-4b85-90fe-1326072d154b for run claude-ws-append-after-settle
+Agent WebSocket connected: session=f2ca0657-aa98-4b85-90fe-1326072d154b, run=claude-ws-append-after-settle
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[22m[39mClosed agent session f2ca0657-aa98-4b85-90fe-1326072d154b
+Agent WebSocket disconnected: f2ca0657-aa98-4b85-90fe-1326072d154b
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[22m[39mAgent websocket attached for run claude-ws-background-notice
+Created agent session 8dd76172-7e9f-45da-881c-29eca484b164 for run claude-ws-background-notice
+Agent WebSocket connected: session=8dd76172-7e9f-45da-881c-29eca484b164, run=claude-ws-background-notice
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[22m[39mClosed agent session 8dd76172-7e9f-45da-881c-29eca484b164
+Agent WebSocket disconnected: 8dd76172-7e9f-45da-881c-29eca484b164
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket interrupt/resume live E2E[2m > [22m[2muses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+[22m[39mAgent websocket attached for run claude-live-ws-5eab8b50-23f8-420a-8ada-32734283fca9
+Created agent session 1d5c5685-5105-4fd2-b3d6-752a0006ebd5 for run claude-live-ws-5eab8b50-23f8-420a-8ada-32734283fca9
+Agent WebSocket connected: session=1d5c5685-5105-4fd2-b3d6-752a0006ebd5, run=claude-live-ws-5eab8b50-23f8-420a-8ada-32734283fca9
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket interrupt/resume live E2E[2m > [22m[2muses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+[22m[39mClosed agent session 1d5c5685-5105-4fd2-b3d6-752a0006ebd5
+Agent WebSocket disconnected: 1d5c5685-5105-4fd2-b3d6-752a0006ebd5
+
+ [32m✓[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 12650[2mms[22m[39m
+     [33m[2m✓[22m[39m API-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn [33m 353[2mms[22m[39m
+     [33m[2m✓[22m[39m uses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn [33m 11400[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/claude-session-manager.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/integration/agent-execution/claude-session-manager.integration.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 71191[2mms[22m[39m
+     [33m[2m✓[22m[39m creates a run session, adopts the SDK session id, and serves conversation from the session boundary [33m 6037[2mms[22m[39m
+     [33m[2m✓[22m[39m restores a run session against the same Claude session id and continues the conversation [33m 8904[2mms[22m[39m
+     [33m[2m✓[22m[39m requests tool approval and completes the tool-backed turn after approval [33m 8685[2mms[22m[39m
+     [33m[2m✓[22m[39m requests tool approval and denies the tool-backed turn without creating the target file [33m 10007[2mms[22m[39m
+     [33m[2m✓[22m[39m auto-executes a tool-backed turn without emitting approval requests [33m 7832[2mms[22m[39m
+     [33m[2m✓[22m[39m interrupts a tool-backed turn while approval is pending and leaves the target file untouched [33m 7398[2mms[22m[39m
+     [33m[2m✓[22m[39m terminates a run while approval is pending and removes the run session without creating the target file [33m 8925[2mms[22m[39m
+     [33m[2m✓[22m[39m restores the Claude session after an auto-executed tool turn and continues the same conversation [33m 13142[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m8 failed[39m[2m)[22m[33m 11438[2mms[22m[39m
+[31m     [31m×[31m converts status and text events for a normal Claude backend turn[39m[33m 1428[2mms[22m[39m
+[31m     [31m×[31m converts approval, tool execution, and success events for an approved Claude Write tool turn[39m[33m 1326[2mms[22m[39m
+[31m     [31m×[31m converts deny events for a Claude tool approval rejection[39m[33m 1494[2mms[22m[39m
+[31m     [31m×[31m auto-executes a Claude Write tool turn without approval events[39m[33m 1263[2mms[22m[39m
+[31m     [31m×[31m interrupts a pending Claude tool approval through the backend and emits deny/idle events[39m[33m 1447[2mms[22m[39m
+[31m     [31m×[31m restores a Claude backend after a tool-using turn and continues the same conversation[39m[33m 1481[2mms[22m[39m
+[31m     [31m×[31m executes open_tab through the live Claude Agent Tools MCP path[39m[33m 1520[2mms[22m[39m
+[31m     [31m×[31m executes the full browser tool surface through the live Claude Agent Tools MCP path[39m[33m 1477[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 8 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22mconverts status and text events for a normal Claude backend turn
+[31m[1mTypeError[22m: this.skillService.resolveSkillScope is not a function[39m
+[36m [2m❯[22m ClaudeSessionBootstrapper.bootstrapInternal src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:[2m87:84[22m[39m
+    [90m 85| [39m          [33m:[39m { kind[33m:[39m [32m"reconcile-unresolved"[39m[33m,[39m name[33m:[39m binding[33m.[39mname }
+    [90m 86| [39m      )[33m,[39m
+    [90m 87| [39m      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.…
+    [90m   | [39m                                                                                   [31m^[39m
+    [90m 88| [39m    })[33m;[39m
+    [90m 89| [39m    guard[33m.[39m[34massertAccepting[39m()[33m;[39m
+[90m [2m❯[22m Object.prepare src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts:[2m40:13[22m[39m
+[90m [2m❯[22m createAgentRun tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m245:16[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m310:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22mconverts approval, tool execution, and success events for an approved Claude Write tool turn
+[31m[1mTypeError[22m: this.skillService.resolveSkillScope is not a function[39m
+[36m [2m❯[22m ClaudeSessionBootstrapper.bootstrapInternal src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:[2m87:84[22m[39m
+    [90m 85| [39m          [33m:[39m { kind[33m:[39m [32m"reconcile-unresolved"[39m[33m,[39m name[33m:[39m binding[33m.[39mname }
+    [90m 86| [39m      )[33m,[39m
+    [90m 87| [39m      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.…
+    [90m   | [39m                                                                                   [31m^[39m
+    [90m 88| [39m    })[33m;[39m
+    [90m 89| [39m    guard[33m.[39m[34massertAccepting[39m()[33m;[39m
+[90m [2m❯[22m Object.prepare src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts:[2m40:13[22m[39m
+[90m [2m❯[22m createAgentRun tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m245:16[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m401:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22mconverts deny events for a Claude tool approval rejection
+[31m[1mTypeError[22m: this.skillService.resolveSkillScope is not a function[39m
+[36m [2m❯[22m ClaudeSessionBootstrapper.bootstrapInternal src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:[2m87:84[22m[39m
+    [90m 85| [39m          [33m:[39m { kind[33m:[39m [32m"reconcile-unresolved"[39m[33m,[39m name[33m:[39m binding[33m.[39mname }
+    [90m 86| [39m      )[33m,[39m
+    [90m 87| [39m      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.…
+    [90m   | [39m                                                                                   [31m^[39m
+    [90m 88| [39m    })[33m;[39m
+    [90m 89| [39m    guard[33m.[39m[34massertAccepting[39m()[33m;[39m
+[90m [2m❯[22m Object.prepare src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts:[2m40:13[22m[39m
+[90m [2m❯[22m createAgentRun tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m245:16[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m498:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22mauto-executes a Claude Write tool turn without approval events
+[31m[1mTypeError[22m: this.skillService.resolveSkillScope is not a function[39m
+[36m [2m❯[22m ClaudeSessionBootstrapper.bootstrapInternal src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:[2m87:84[22m[39m
+    [90m 85| [39m          [33m:[39m { kind[33m:[39m [32m"reconcile-unresolved"[39m[33m,[39m name[33m:[39m binding[33m.[39mname }
+    [90m 86| [39m      )[33m,[39m
+    [90m 87| [39m      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.…
+    [90m   | [39m                                                                                   [31m^[39m
+    [90m 88| [39m    })[33m;[39m
+    [90m 89| [39m    guard[33m.[39m[34massertAccepting[39m()[33m;[39m
+[90m [2m❯[22m Object.prepare src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts:[2m40:13[22m[39m
+[90m [2m❯[22m createAgentRun tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m245:16[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m574:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22minterrupts a pending Claude tool approval through the backend and emits deny/idle events
+[31m[1mTypeError[22m: this.skillService.resolveSkillScope is not a function[39m
+[36m [2m❯[22m ClaudeSessionBootstrapper.bootstrapInternal src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:[2m87:84[22m[39m
+    [90m 85| [39m          [33m:[39m { kind[33m:[39m [32m"reconcile-unresolved"[39m[33m,[39m name[33m:[39m binding[33m.[39mname }
+    [90m 86| [39m      )[33m,[39m
+    [90m 87| [39m      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.…
+    [90m   | [39m                                                                                   [31m^[39m
+    [90m 88| [39m    })[33m;[39m
+    [90m 89| [39m    guard[33m.[39m[34massertAccepting[39m()[33m;[39m
+[90m [2m❯[22m Object.prepare src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts:[2m40:13[22m[39m
+[90m [2m❯[22m createAgentRun tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m245:16[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m645:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22mrestores a Claude backend after a tool-using turn and continues the same conversation
+[31m[1mTypeError[22m: this.skillService.resolveSkillScope is not a function[39m
+[36m [2m❯[22m ClaudeSessionBootstrapper.bootstrapInternal src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:[2m87:84[22m[39m
+    [90m 85| [39m          [33m:[39m { kind[33m:[39m [32m"reconcile-unresolved"[39m[33m,[39m name[33m:[39m binding[33m.[39mname }
+    [90m 86| [39m      )[33m,[39m
+    [90m 87| [39m      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.…
+    [90m   | [39m                                                                                   [31m^[39m
+    [90m 88| [39m    })[33m;[39m
+    [90m 89| [39m    guard[33m.[39m[34massertAccepting[39m()[33m;[39m
+[90m [2m❯[22m Object.prepare src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts:[2m40:13[22m[39m
+[90m [2m❯[22m createAgentRun tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m245:16[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m718:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22mexecutes open_tab through the live Claude Agent Tools MCP path
+[31m[1mTypeError[22m: this.skillService.resolveSkillScope is not a function[39m
+[36m [2m❯[22m ClaudeSessionBootstrapper.bootstrapInternal src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:[2m87:84[22m[39m
+    [90m 85| [39m          [33m:[39m { kind[33m:[39m [32m"reconcile-unresolved"[39m[33m,[39m name[33m:[39m binding[33m.[39mname }
+    [90m 86| [39m      )[33m,[39m
+    [90m 87| [39m      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.…
+    [90m   | [39m                                                                                   [31m^[39m
+    [90m 88| [39m    })[33m;[39m
+    [90m 89| [39m    guard[33m.[39m[34massertAccepting[39m()[33m;[39m
+[90m [2m❯[22m Object.prepare src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts:[2m40:13[22m[39m
+[90m [2m❯[22m createAgentRun tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m245:16[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m832:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22mexecutes the full browser tool surface through the live Claude Agent Tools MCP path
+[31m[1mTypeError[22m: this.skillService.resolveSkillScope is not a function[39m
+[36m [2m❯[22m ClaudeSessionBootstrapper.bootstrapInternal src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts:[2m87:84[22m[39m
+    [90m 85| [39m          [33m:[39m { kind[33m:[39m [32m"reconcile-unresolved"[39m[33m,[39m name[33m:[39m binding[33m.[39mname }
+    [90m 86| [39m      )[33m,[39m
+    [90m 87| [39m      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.…
+    [90m   | [39m                                                                                   [31m^[39m
+    [90m 88| [39m    })[33m;[39m
+    [90m 89| [39m    guard[33m.[39m[34massertAccepting[39m()[33m;[39m
+[90m [2m❯[22m Object.prepare src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts:[2m40:13[22m[39m
+[90m [2m❯[22m createAgentRun tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m245:16[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m927:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[31m8 failed[39m[22m[2m | [22m[1m[32m18 passed[39m[22m[90m (26)[39m
+[2m   Start at [22m 11:13:52
+[2m   Duration [22m 112.76s[2m (transform 7.86s, setup 69ms, import 16.06s, tests 95.28s, environment 0ms)[22m
+
+exit=1

@@ -116,4 +116,26 @@ describe("AgentCollaborationStreamHandler", () => {
     expect(root.ensureHostReady).toHaveBeenCalledOnce();
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "accepted" } });
   });
+
+  it("sends pending reply text before a projection-failure ERROR, then closes (autobyteus-139)", async () => {
+    let listener: ((event: unknown) => void) | null = null;
+    const root = { ...fakeRoot(), openPackageSnapshotConnection: vi.fn(async () => ({
+      snapshot: { tree, closedTaskExecutions: [], messages: emptyStandaloneRootMessages(HOST), statuses: [], inputStates: [] },
+      baseChangeSequence: 0,
+      subscribe: vi.fn((next: (event: unknown) => void) => { listener = next; return () => undefined; }),
+      close: vi.fn(),
+    })) };
+    const { wire, close } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never });
+    listener!({ changeSequence: 1, event: { kind: "agent_presentation", execution: { memberAddress: "/helper", agentRunId: "child-run" },
+      message: { type: "SEGMENT_CONTENT", payload: { segment_id: "s-1", turn_id: "t-1", segment_type: "text", delta: "partial" } } } });
+    expect(wire).toHaveLength(3);
+    listener!({ changeSequence: 2, event: { kind: "task_execution_started", host: { hostKind: "root", hostRunId: HOST },
+      taskExecution: { agentRunId: "not-in-tree" } } });
+    expect(wire.slice(3)).toMatchObject([
+      { type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1, change_sequence_through: 1, event: { kind: "agent_presentation_batch" } } },
+      { type: "ERROR", payload: { code: "AGENT_ROOT_STREAM_PROJECTION_FAILED" } },
+    ]);
+    await Promise.resolve();
+    expect(close).toHaveBeenCalledWith(1011);
+  });
 });

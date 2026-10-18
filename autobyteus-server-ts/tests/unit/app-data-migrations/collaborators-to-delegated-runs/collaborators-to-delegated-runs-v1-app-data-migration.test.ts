@@ -122,10 +122,11 @@ const readAll = async (_f: Fixture, dirs: Awaited<ReturnType<typeof seedAllFamil
 const runIds = (tasks: readonly { agentRunId?: string; teamRunId?: string }[]) => tasks.map((task) => task.agentRunId ?? task.teamRunId);
 
 describe("20261015_collaborators_to_delegated_runs_v1", () => {
-  it("is registered right before task-agent-own-run (which is last), required on startup and startup-only", () => {
+  it("is registered right before task-agent-own-run (followed only by the append-only log conversion), required on startup and startup-only", () => {
     const definitions = (new AppDataMigrationRegistry() as unknown as { definitions: { id: string; requiredOnStartup?: boolean; executionPolicy?: string }[] }).definitions;
-    const ours = definitions.at(-2)!;
-    expect(definitions.at(-1)!.id).toBe(TASK_AGENT_OWN_RUN_V1_MIGRATION_ID);
+    const ours = definitions.at(-3)!;
+    expect(definitions.at(-2)!.id).toBe(TASK_AGENT_OWN_RUN_V1_MIGRATION_ID);
+    expect(definitions.at(-1)!.id).toBe("20261018_append_only_message_logs_v1");
     expect(ours.id).toBe(COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID);
     expect(ours).toMatchObject({ id: "20261015_collaborators_to_delegated_runs_v1", requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
   });

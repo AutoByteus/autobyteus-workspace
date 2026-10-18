@@ -1,0 +1,17 @@
+// Temporary probe: ask a real `grok agent` (ACP over stdio) which skills it discovers for a workspace.
+import { spawn } from "node:child_process";
+const [cwd, extraArgs] = [process.argv[2], process.argv.slice(3)];
+const child = spawn(process.env.GROK || "grok", ["agent", ...extraArgs, "stdio"], { cwd, stdio: ["pipe", "pipe", "inherit"] });
+let buf = ""; const pending = new Map(); let id = 0;
+child.stdout.on("data", (d) => { buf += d; let i; while ((i = buf.indexOf("\n")) >= 0) { const line = buf.slice(0, i); buf = buf.slice(i + 1);
+  try { const m = JSON.parse(line); if (m.id != null && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } } catch {} } });
+const call = (method, params) => new Promise((resolve) => { const n = ++id; pending.set(n, resolve); child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id: n, method, params }) + "\n"); });
+const timer = setTimeout(() => { console.log("TIMEOUT"); child.kill(); process.exit(2); }, 60000);
+const init = await call("initialize", { protocolVersion: 1, clientCapabilities: { fs: { readTextFile: false, writeTextFile: false } } });
+console.log("init _meta", JSON.stringify(init.result?._meta ?? init.error ?? null).slice(0, 300));
+const listed = await call("_x.ai/skills/list", { cwd, refresh: true });
+const rows = listed.result?.skills ?? listed.result?.result?.skills ?? null;
+console.log("skills/list error", JSON.stringify(listed.error ?? null));
+console.log("probe rows", JSON.stringify((rows ?? []).filter((r) => String(r.name).startsWith("link-probe")), null, 1));
+console.log("total rows", rows?.length, "scopes", JSON.stringify([...new Set((rows ?? []).map((r) => r.scope ?? r.source ?? r.plugin_name ?? "?"))]));
+clearTimeout(timer); child.kill(); process.exit(0);

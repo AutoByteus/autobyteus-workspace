@@ -9,6 +9,7 @@ import { buildConversationFromProjection } from './runProjectionConversation';
 import { buildActivitiesFromProjection } from './runProjectionActivityHydration';
 import { fetchExactTeamMemberProjection } from './teamRunContextHydrationService';
 import { commitMemberRunStates, fetchMemberRunState } from './memberRunStateHydration';
+import { fetchRunFileChanges } from './runFileChangeHydrationService';
 import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
 import {
   primeRecentEventMonitorBaseline,
@@ -66,8 +67,8 @@ const attemptHydration = async (
   const activityStore = useAgentActivityStore();
   const expectedActivityRevision = activityStore.getActivityContentRevision(agentRunId);
   const { projection, fileChanges } = await fetchMemberRunState({
-    runId: agentRunId,
     fetchProjection: () => fetchExactTeamMemberProjection(rootTeamRunId, agentRunId),
+    fetchFileChanges: () => fetchRunFileChanges(agentRunId),
   });
   let conversation = buildConversationFromProjection(
     agentRunId,

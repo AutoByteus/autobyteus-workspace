@@ -1,0 +1,8 @@
+# Case: DESK-02 — renderer long tasks (>50 ms) for the whole session; one at document load
+[
+ {
+  "start": 167,
+  "duration": 79,
+  "wall": 1792328016587
+ }
+]

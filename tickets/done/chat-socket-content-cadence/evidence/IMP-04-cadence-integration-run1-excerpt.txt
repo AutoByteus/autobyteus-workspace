@@ -1,0 +1,21 @@
+# IMP-04 (cadence-integration-run1)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent/chat-socket-content-cadence.integration.test.ts --no-watch
+# Commit: b3666d458f
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T12:04:22Z
+
+# Excerpt of IMP-04-cadence-integration-run1.log: summary lines
+
+ ✓ tests/integration/agent/chat-socket-content-cadence.integration.test.ts (18 tests) 10254ms
+     ✓ sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)  692ms
+     ✓ coalesces two interleaved agents into one batch, each agent's text in order (AC-009)  666ms
+     ✓ uses a changed interval only for the next newly opened window (AC-003)  1820ms
+     ✓ sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)  681ms
+     ✓ coalesces two interleaved agents into one batch, each agent's text in order (AC-009)  671ms
+     ✓ uses a changed interval only for the next newly opened window (AC-003)  1824ms
+     ✓ sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)  682ms
+     ✓ coalesces two interleaved agents into one batch, each agent's text in order (AC-009)  668ms
+     ✓ uses a changed interval only for the next newly opened window (AC-003)  1826ms
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+# exit: 0

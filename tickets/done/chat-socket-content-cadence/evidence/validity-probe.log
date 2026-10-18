@@ -1,0 +1,125 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/services/agent-streaming/zz-t139-validity-probe.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/zz-t139-validity-probe.test.ts[2m > [22m[2mT139 validity probe[2m > [22m[2mstandalone /ws/agent egress (control)
+[22m[39mT139-PROBE standalone /ws/agent: 1 content frames for 30 deltas; 0 within 350 ms of the burst
+
+[90mstdout[2m | tests/unit/services/agent-streaming/zz-t139-validity-probe.test.ts[2m > [22m[2mT139 validity probe[2m > [22m[2mteam /ws/agent-team egress with real team SEGMENT_CONTENT shape
+[22m[39mT139-PROBE team /ws/agent-team: 30 content frames for 30 deltas; 30 within 350 ms of the burst
+
+[90mstdout[2m | tests/unit/services/agent-streaming/zz-t139-validity-probe.test.ts[2m > [22m[2mT139 validity probe[2m > [22m[2morg /ws/agent-org handler (real handler, publisher)
+[22m[39mT139-PROBE org session: 76c47b24-ccda-48f0-9fea-8b28ca510fbc
+
+[90mstdout[2m | tests/unit/services/agent-streaming/zz-t139-validity-probe.test.ts[2m > [22m[2mT139 validity probe[2m > [22m[2morg /ws/agent-org handler (real handler, publisher)
+[22m[39mT139-PROBE org /ws/agent-org: 30 content frames for 30 deltas; 30 within 350 ms of the burst
+T139-PROBE org raw types: ["{\"type\":\"CONNECTED\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"session_id\":\"76c47b24-ccda-48f0-9fea-8b28ca510fbc\"}}","{\"type\":\"ROOT_EXECUTION_VIEW_SNAPSHOT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"root_org\":{\"base_change_sequence\":0,\"is_active\":tru","{\"type\":\"ROOT_LIFECYCLE\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"is_active\":true}}","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":1,\"event\":{\"kind\":\"agent_presentation\",\"me","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":2,\"event\":{\"kind\":\"agent_presentation\",\"me","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":3,\"event\":{\"kind\":\"agent_presentation\",\"me","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":4,\"event\":{\"kind\":\"agent_presentation\",\"me","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":5,\"event\":{\"kind\":\"agent_presentation\",\"me","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":6,\"event\":{\"kind\":\"agent_presentation\",\"me","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":7,\"event\":{\"kind\":\"agent_presentation\",\"me","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":8,\"event\":{\"kind\":\"agent_presentation\",\"me","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":9,\"event\":{\"kind\":\"agent_presentation\",\"me","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":10,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":11,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":12,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":13,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":14,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":15,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":16,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":17,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":18,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":19,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":20,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":21,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":22,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":23,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":24,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":25,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":26,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":27,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":28,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":29,\"event\":{\"kind\":\"agent_presentation\",\"m","{\"type\":\"ROOT_EXECUTION_EVENT\",\"payload\":{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"org-run-1\",\"change_sequence\":30,\"event\":{\"kind\":\"agent_presentation\",\"m"]
+T139-PROBE org sequences: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30
+
+[90mstdout[2m | tests/unit/services/agent-streaming/zz-t139-validity-probe.test.ts[2m > [22m[2mT139 validity probe[2m > [22m[2magent-collaboration /ws/agent-collaboration handler (real handler, publisher)
+[22m[39mT139-PROBE collaboration /ws/agent-collaboration: 30 content frames for 30 deltas; 30 within 350 ms of the burst
+
+ [32m✓[39m tests/unit/services/agent-streaming/zz-t139-validity-probe.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 2628[2mms[22m[39m
+     [33m[2m✓[22m[39m standalone /ws/agent egress (control) [33m 653[2mms[22m[39m
+     [33m[2m✓[22m[39m team /ws/agent-team egress with real team SEGMENT_CONTENT shape [33m 654[2mms[22m[39m
+     [33m[2m✓[22m[39m org /ws/agent-org handler (real handler, publisher) [33m 661[2mms[22m[39m
+     [33m[2m✓[22m[39m agent-collaboration /ws/agent-collaboration handler (real handler, publisher) [33m 659[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 07:32:53
+[2m   Duration [22m 8.93s[2m (transform 4.29s, setup 37ms, import 5.53s, tests 2.63s, environment 0ms)[22m
+

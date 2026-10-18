@@ -1,0 +1,75 @@
+# Case: MUT-01 — temporary mutants of agent-run.ts; tests: agent-run.test.ts + agent-status-websocket.integration.test.ts
+# Commit: a3c4982721; Date: 2026-10-18 16:31; each mutant restored with git checkout (diff vs HEAD empty)
+
+## Mutant (a): advanceInputRevision never advances (`this.inputRevision += 1;` removed)
+ autobyteus-server-ts/src/agent-execution/domain/agent-run.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+     ✓ projects only autobyteus status transitions to a real standalone socket while preserving canonical companions 40ms
+     ✓ projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions 20ms
+     ✓ projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions 18ms
+     ✓ coalesces a representative fine-grained canonical stream into one default-window content frame  659ms
+     ✓ uses a changed interval only for the active socket's next newly opened window  1826ms
+     × sends no repeated input state during a content window and a queued message's new revision right after the pending content 16ms
+     ✓ preserves B while rejecting a retired turn's late segment content across reconnect 33ms
+     ✓ keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination 29ms
+     ✓ normalizes only the private provider dispatch while observers retain the admitted message 54ms
+     ✓ returns admission before an idle start dispatch settles and records forwarding once 52ms
+     ✓ claims exact active Codex append and exposes only that atomic turn id 1ms
+     ✓ appends input posted while an earlier input's turn is running (IMP-DI-001, AC-015) 3ms
+     ✓ starts a definitely-undelivered append as the next turn instead of failing it (AC-016) 23ms
+     ✓ resolves a requeued append only at the next turn's terminal when the old turn ended mid-dispatch (CR-001) 74ms
+     ✓ admits Claude/AutoByteus input while active and starts it only after terminal 1ms
+     ✓ retains anonymous-turn input until the canonical terminal instead of guessing 1ms
+     ✓ keeps several next-turn inputs FIFO and one provider invocation at a time 55ms
+     ✓ orders synchronous start and terminal facts behind forwarding result 52ms
+     ✓ does not retry or convert a rejected append 53ms
+     ✓ settles reject-after-start as one protocol failure without retry 55ms
+     ✓ keeps append-capable input FIFO-owned through interrupt acceptance until terminal 55ms
+     ✓ resumes exact active-turn append after interrupt rejection 55ms
+     ✓ resumes exact active-turn append after interrupt failure 56ms
+     ✓ reserves one no-id interrupt and lets a canonical terminal win provider-result ordering 55ms
+     ✓ rejects an interrupt target mismatch before provider I/O 1ms
+     ✓ passes an anonymous canonical active turn as exact null provider mechanics 0ms
+     ✓ keeps an earlier reservation intact until its owner commits and the released input terminates 110ms
+     ✓ keeps quiescence pending until an earlier reservation owner cancels 1ms
+     ✓ keeps admission closed after committed provider termination rejects 1ms
+     ✓ retries the same prepared AgentRun after a nonterminal provider termination result 1ms
+     ✓ drains claimed and queued inputs in FIFO order before provider termination 118ms
+     ✓ returns null without side effects when quiescent preparation sees an active turn 1ms
+     ✓ prepares an already-quiescent run and ordinary cancellation reopens admission 0ms
+     ✓ root shutdown silently invalidates reservations and cancels admitted pre-forward input once 1ms
+     ✓ tracks provider-started pre-turn work through canonical interruption before completing the root fence 52ms
+     ✓ interrupts an already-active approval-wait turn before the root fence completes 52ms
+     ✓ waits for the provider interrupt request even when canonical terminal truth arrives first 51ms
+     ✓ is not quiescent for idle shutdown while the runtime reports a running background task, and admission stays open 0ms
+     ✓ prepares an idle run once its background task has ended 0ms
+     ✓ explicit termination and the root-shutdown fence never wait for a running background task (AC-007) 0ms
+     ✓ does not reopen root-fenced admission when an earlier prepared termination is cancelled 0ms
+     ✓ fails retained input once and closes admission on a runtime-global terminal error 0ms
+     ✓ rejects input while the runtime is offline 0ms
+     ✓ rejects invalid typed input without provider effect 0ms
+     ✓ preserves source callback order and rejects cross-run publication 0ms
+     ✓ settles accepted when the turn completes after a rejected interrupt, with no second interrupt (F-1) 52ms
+     ✓ ends a failed attempt at the bound, keeps input fenced, and lets the next call start a new attempt (F-2, F-3) 2ms
+     ✓ shares one pending attempt between concurrent callers and keeps an accepted result latched (F-3) 53ms
+     ✓ fails only the attempt whose interrupt throws; the next call interrupts again (F-3) 52ms
+     ✓ shares one preparation promise, one try-if-quiescent promise and one backend termination 53ms
+     × sends no already-delivered revision after content batches and broadcasts a queued input once (AC-002) 1016ms
+     × gives each new subscriber the current snapshot without repeating it to existing subscribers (AC-004a) 55ms
+     × broadcasts a revision first produced by a pull read on the next publish (AC-004b) 54ms
+     × broadcasts a revision first produced by a subscribe snapshot to existing subscribers before the new snapshot (AC-004b) 1058ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed (2)
+      Tests  5 failed | 49 passed (54)
+RESTORED
+
+## Mutant (b): read order swapped (reconcile() before pendingSnapshot())
+ autobyteus-server-ts/src/agent-execution/domain/agent-run.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ Test Files  2 passed (2)
+      Tests  54 passed (54)
+RESTORED
+
+## Reading
+- Mutant (a) is killed: 5 PB-001 publish-once/snapshot cases fail (`agent-run.test.ts` AC-002/AC-004a/AC-004b and the socket case "sends no repeated input state…"). The refactored revision step is guarded.
+- Mutant (b) survives, as expected: it is an equivalent mutant. `AgentRunCompactionRecovery.reconcile()` (`src/agent-execution/input/agent-run-compaction-recovery.ts`) writes only its own `observed`, `admissionCut` and `claim`. It reads `highWaterMark()` but does not change the pending entries, and `pendingSnapshot()` reads admission state only. The two calls commute, so no test can observe their order. The implementation keeps the original order anyway (CODE-01).

@@ -1,0 +1,67 @@
+# Case: DESK-02 — renderer socket analysis (CDP recording of the renderer's own sockets)
+# Command: node evidence/desk-analyze-renderer.mjs evidence/DESK-02/renderer-recording.jsonl <tmp split dir>
+# Commit: 335f065cd1; Env: ENV-3 iso-60835-5403; Date: 2026-10-18 15:03
+{
+ "recording": "DESK-02/renderer-recording.jsonl",
+ "sockets": [
+  {
+   "socket": 1,
+   "url": "ws://127.0.0.1:60836/ws/agent-collaboration/desk_pm_671abc1e8cdf4d6494cc20169d54a84f",
+   "created": true,
+   "closed": true,
+   "frames": 4,
+   "snapshots": [
+    0
+   ],
+   "gaps": [],
+   "batches": 0,
+   "twoAgentBatches": 0,
+   "batchToBatchGapMs": null,
+   "plainSegmentContent": 0,
+   "consoleInPeriod": [],
+   "file": "/tmp/abt139-desk02-split/socket-1-agent-collaboration.jsonl"
+  },
+  {
+   "socket": 2,
+   "url": "ws://127.0.0.1:60836/ws/agent-collaboration/desk_pm_671abc1e8cdf4d6494cc20169d54a84f",
+   "created": true,
+   "closed": true,
+   "frames": 18,
+   "snapshots": [
+    1
+   ],
+   "gaps": [],
+   "batches": 0,
+   "twoAgentBatches": 0,
+   "batchToBatchGapMs": null,
+   "plainSegmentContent": 0,
+   "consoleInPeriod": [],
+   "file": "/tmp/abt139-desk02-split/socket-2-agent-collaboration.jsonl"
+  },
+  {
+   "socket": 3,
+   "url": "ws://127.0.0.1:60836/ws/agent-collaboration/desk_pm_671abc1e8cdf4d6494cc20169d54a84f",
+   "created": true,
+   "closed": false,
+   "frames": 1723,
+   "snapshots": [
+    29
+   ],
+   "gaps": [],
+   "batches": 834,
+   "twoAgentBatches": 35,
+   "batchToBatchGapMs": {
+    "n": 833,
+    "min": 132,
+    "p10": 508,
+    "median": 534,
+    "under350": 3
+   },
+   "plainSegmentContent": 0,
+   "consoleInPeriod": [],
+   "file": "/tmp/abt139-desk02-split/socket-3-agent-collaboration.jsonl"
+  }
+ ],
+ "gapOrReopenConsoleLines": 0,
+ "consoleWarningsAndErrors": []
+}

@@ -319,6 +319,26 @@ describe('AgentOrgStreamingService', () => {
     }
   })
 
+  it('passes a received content batch with its covered range to the context (autobyteus-139)', async () => {
+    const first = candidate()
+    vi.mocked(first.applyEvent).mockReturnValue('applied')
+    mocks.hydrate.mockResolvedValueOnce(first)
+    const publish = vi.fn()
+    const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError: vi.fn() })
+    service.connect()
+    const socket = TestWebSocket.instances[0]!
+    socket.emit(connected)
+    socket.emit(snapshot)
+    await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
+    const event = { kind: 'agent_presentation_batch', items: [{ member_address: '/direct', agent_run_id: 'agent-run',
+      message: { type: 'SEGMENT_CONTENT', payload: { segment_id: 's-1', turn_id: 't-1', segment_type: 'text', delta: 'xy' } } }] }
+    socket.emit({ type: 'ROOT_EXECUTION_EVENT', payload: {
+      root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5, change_sequence_through: 9, event,
+    } })
+    await vi.waitFor(() => expect(first.applyEvent).toHaveBeenCalledWith(5, event, 9))
+    expect(TestWebSocket.instances).toHaveLength(1)
+  })
+
   it('checkpoint-hydrates a fresh task activation instead of publishing a partial context', async () => {
     const first = candidate()
     vi.mocked(first.applyEvent).mockReturnValue('checkpoint_required')
@@ -356,7 +376,8 @@ describe('AgentOrgStreamingService', () => {
     recoverySocket.emit(connected)
     recoverySocket.emit(snapshot)
     await vi.waitFor(() => expect(publish).toHaveBeenLastCalledWith(second, expect.any(Function)))
-    expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'task_execution_started' }))
+    // A single event carries no change_sequence_through (only content batches cover a range).
+    expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'task_execution_started' }), undefined)
     expect(first.requireReopen).not.toHaveBeenCalled()
     expect(reportError).not.toHaveBeenCalled()
     expect(mocks.query).toHaveBeenCalledTimes(2)

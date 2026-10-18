@@ -23,7 +23,7 @@ export const DELEGATE_TASK_LLM_DESCRIPTION = [
   "Delegate a task to an agent or agent team. Use exactly one mode:",
   "(1) recipient_address and description, with optional reference_files: creates a new task agent (or task agent team) that works on the task you describe;",
   "(2) recipient_address and task_id: creates a new task agent (or task agent team) for that saved Task (its description and files);",
-  "(3) exactly one of target_agent_run_id or target_team_run_id, with task_id: gives the saved Task to one of your task agents (or task agent teams), which continues with its conversation; use it for follow-up work that builds on what that task agent already did. This works only when you made its most recent assignment and its current Task is DONE or CANCELLED; that earlier Task stays closed.",
+  "(3) exactly one of target_agent_run_id or target_team_run_id, with task_id: gives the saved Task to a run that already exists, which continues with its conversation; use it for follow-up work that builds on what that run already did. It may be one of your task agents (or task agent teams), when you made its most recent assignment and its current Task is DONE or CANCELLED (that earlier Task stays closed). If you are a standalone agent run, it may also be an idle agent run or team run the user started in your own workspace: it then becomes your task agent for that Task, shown under you and closed with the Task.",
   "Never supply project_id. Delegating to yourself, a teammate or your own team is refused.",
   "The task description and reference files become the task agent's first message (for a task agent team, its coordinator receives them), together with your run id.",
   "If you are a task agent yourself (another agent delegated your task to you or to your team), task_id is refused, and a delegation with a description returns no task_id: the new task agent's work is part of your Task. Otherwise, a delegation with a description also creates a Task with no Project and returns its task_id.",
@@ -34,10 +34,10 @@ export const DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION =
   "Only for a new task agent: the exact address of an available agent or agent team, beginning with '/'. Every call with an address creates another task agent or task agent team. Omit it when you give a Task to one of your task agents with target_agent_run_id or target_team_run_id.";
 
 export const DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION =
-  "One of your task agent teams, by the target_team_run_id an earlier delegation returned (the team's run id, not its coordinator's). Supply only it and task_id.";
+  "One of your task agent teams, by the target_team_run_id an earlier delegation returned, or a team run the user started (the team's run id, not its coordinator's). Supply only it and task_id.";
 
 export const DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION =
-  "One of your task agents, by the target_agent_run_id an earlier delegation returned. Supply only it and task_id. A task agent team's coordinator's run id is refused: use target_team_run_id for a task agent team.";
+  "One of your task agents, by the target_agent_run_id an earlier delegation returned, or an agent run the user started. Supply only it and task_id. A team's coordinator's or member's run id is refused: use target_team_run_id for a team.";
 
 export const DELEGATE_TASK_ID_DESCRIPTION =
   "A saved Project Task's ID on this node: its key (e.g. autobyteus-42), as list_project_tasks shows it; its saved text and files are used. With recipient_address: a new task agent works on the Task. With target_agent_run_id or target_team_run_id: that task agent takes on the Task. Blank, unknown, ambiguous, DONE or CANCELLED Tasks fail.";

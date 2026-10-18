@@ -25,7 +25,7 @@ it("finalizes and reads only the selected execution despite repeated address and
   await new TeamRunExecutionTreeStore().write(teamDir, validateTeamRunExecutionTreePayload({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions: [
     { address: "/worker", agentRunId: "task", platformAgentRunId: null, delegatorAgentRunId: "configured", startedAt: "2026-09-01T00:00:00.000Z" },
   ] } }, "team"));
-  await fs.writeFile(path.join(teamDir, "team_communication_messages.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId: "team", messages: []}));
+  await fs.writeFile(path.join(teamDir, "team_communication_messages_active.jsonl"), "");
   const layout = new ContextFileLayout({ appDataDir: root, memoryDir });
   const resolver = () => new ContextFileOwnerResolver({ memoryDir, locations: createStoredTeamRunExecutionTreeLocationService(memoryDir) });
   const cleanup = new ContextFileDraftCleanupService(layout);

@@ -1,0 +1,22 @@
+# Case: LIVE-COLLAB round 2 — final text: socket S1 vs persisted member projection (equality)
+# Command: node evidence/check-final-text.mjs evidence/LIVE-COLLAB-r2; Commit: 335f065cd1 (dist built at b3666d458f, same server code); Env: ENV-2; Date: 2026-10-18 14:35
+# frames: LIVE-COLLAB-r2/frames-S1.jsonl; projections: LIVE-COLLAB-r2/projections.json
+abt139_essay_worker_79bd54fa86a54fc5986aec1ea6435800: 8 projection entries, 7 streamed segments
+  #1 projection reasoning (324 chars) vs streamed reasoning (324 chars): EQUAL
+  #2 projection message/assistant (2004 chars) vs streamed text (2004 chars): EQUAL
+  #3 projection reasoning (802 chars) vs streamed reasoning (802 chars): EQUAL
+  #4 projection message/assistant (0 chars) vs streamed text (0 chars): EQUAL
+  #5 projection reasoning (733 chars) vs streamed reasoning (733 chars): EQUAL
+  #6 projection message/assistant (118 chars) vs streamed text (118 chars): EQUAL
+  #7 projection reasoning (708 chars) vs streamed reasoning (708 chars): EQUAL
+  #8 projection message/assistant (0 chars) vs streamed - (0 chars): EQUAL
+abt139_essay_worker_f8f6bc993b6e4881b8be83a4116586c8: 8 projection entries, 7 streamed segments
+  #1 projection reasoning (2233 chars) vs streamed reasoning (2233 chars): EQUAL
+  #2 projection message/assistant (0 chars) vs streamed text (0 chars): EQUAL
+  #3 projection reasoning (204 chars) vs streamed reasoning (204 chars): EQUAL
+  #4 projection message/assistant (0 chars) vs streamed text (0 chars): EQUAL
+  #5 projection reasoning (2494 chars) vs streamed reasoning (2494 chars): EQUAL
+  #6 projection message/assistant (66 chars) vs streamed text (66 chars): EQUAL
+  #7 projection reasoning (569 chars) vs streamed reasoning (569 chars): EQUAL
+  #8 projection message/assistant (0 chars) vs streamed - (0 chars): EQUAL
+RESULT: ALL EQUAL

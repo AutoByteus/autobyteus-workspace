@@ -362,6 +362,7 @@ describe("AgentStreamHandler", () => {
     });
     let isActive = true;
     const backend = {
+      inputCapabilities: { activeTurnAppend: "unsupported" as const },
       compactionRecovery: { kind: "unsupported" as const },
       runId,
       runtimeKind: "codex_app_server",

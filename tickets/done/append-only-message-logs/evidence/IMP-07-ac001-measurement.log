@@ -1,0 +1,5 @@
+# IMP-07 excerpt of IMP-02-unit-full.log: AC-001 measurement
+# command: pnpm -C autobyteus-server-ts test:unit (full suite); commit: 265ad100ce; env: Darwin 25.5.0, node v22.23.1; date: 2026-10-18
+stdout | tests/unit/run-history/store/message-log-append-cost.test.ts > append cost on a large log (AC-001) > writes only the new message's line on the 22 MB profile, the same as on an empty log, and reads none of the existing content
+[AC-001] log 22.2 MiB in 6 files; append of 123099 bytes: written 123099 bytes, read 1 byte(s), 10.8 ms (empty log: written 123099 bytes, 15.7 ms)
+ ✓ tests/unit/run-history/store/message-log-append-cost.test.ts (1 test) 667ms

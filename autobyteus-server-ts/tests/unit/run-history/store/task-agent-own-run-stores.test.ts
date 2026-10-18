@@ -99,8 +99,8 @@ describe("a delegation writes the task agent's own files first, then its link (D
       taskAgent: { coordinatingRun: { kind: "agent", runId: HOST }, delegatorAgentRunId: HOST, address: "/product_team", origin: "catalog" },
     });
     expect("teamDefinitionName" in ownTeam.rootTeam).toBe(false);
-    expect(await readJson(path.join(f.memory, "agent_teams", "team-run", "team_communication_messages.json")))
-      .toEqual({ schemaVersion: 1, rootTeamRunId: "team-run", messages: [] });
+    // A new task agent team gets an empty log in the append-only layout (BEH-007).
+    expect(await fs.readFile(path.join(f.memory, "agent_teams", "team-run", "team_communication_messages_active.jsonl"), "utf8")).toBe("");
     // The coordinating folder holds nothing of a task agent (L3).
     expect((await fs.readdir(f.dir)).sort()).toEqual(["collaboration_tree.json"]);
 

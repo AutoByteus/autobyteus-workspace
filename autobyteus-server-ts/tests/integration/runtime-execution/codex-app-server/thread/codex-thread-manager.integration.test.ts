@@ -143,7 +143,10 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
 
@@ -180,7 +183,10 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
 
@@ -232,7 +238,10 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
 

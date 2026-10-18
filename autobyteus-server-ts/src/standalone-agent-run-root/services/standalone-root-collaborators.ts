@@ -9,6 +9,7 @@ import type {
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import { getCollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
 
 /**
@@ -62,6 +63,11 @@ export class StandaloneRootCollaborators {
 
   catalogTaskSource(input: Readonly<{ address: string; senderRunId: string }>): Promise<CatalogTaskSource | null> {
     return this.admission.catalogTaskSource(this.portFor(input.senderRunId), input);
+  }
+
+  /** The address under which the catalog offers this definition to the viewer; `null` when it does not (adoption, design SR-008). */
+  async catalogAddressOf(viewerAgentRunId: string, kind: "agent" | "agent_team", definitionId: string): Promise<AgentTeamAddress | null> {
+    return (await this.admission.policy.catalogAddressMap(this.portFor(viewerAgentRunId))).addressFor({ kind, definitionId });
   }
 
   private get admission(): CollaboratorAdmission { return this.options.admission ?? getCollaboratorAdmission(); }

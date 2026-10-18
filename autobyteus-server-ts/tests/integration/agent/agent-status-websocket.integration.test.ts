@@ -7,6 +7,7 @@ import type {
   AgentRunBackend,
   AgentRunSourceEventBatchListener,
 } from "../../../src/agent-execution/backends/agent-run-backend.js";
+import type { AgentRunBackendInputDispatchResult } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
@@ -50,7 +51,7 @@ const event = (
 
 class ScriptedAgentRunBackend implements AgentRunBackend {
   readonly context: AgentRunContext<null>;
-  readonly inputCapabilities = { kind: "start_only" } as const;
+  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
   active = true;
   private snapshot: AgentRuntimeLifecycleSnapshot;
@@ -98,8 +99,12 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     return () => this.sourceListeners.delete(listener);
   }
 
-  async postUserMessage(): Promise<{ accepted: true }> {
-    return { accepted: true };
+  hasRunningBackgroundTasks(): boolean {
+    return false;
+  }
+
+  async dispatchUserInput(): Promise<AgentRunBackendInputDispatchResult> {
+    throw new Error("dispatchUserInput is not used by this harness.");
   }
 
   async approveToolInvocation(): Promise<{ accepted: true }> {
@@ -147,8 +152,9 @@ const waitForOpen = (socket: WebSocket, timeoutMs = 2_000): Promise<void> =>
   });
 
 /**
- * Status and content frames in arrival order. AGENT_INPUT_STATE companions (the input-queue
- * projection) are not part of this status/content contract and are left out of the trace.
+ * Status and content frames in arrival order. `AGENT_INPUT_STATE` frames are left out of this
+ * status/content trace on purpose. A changed input state is a cadence boundary (it flushes pending
+ * content first); the PB-001 cases below assert that directly.
  */
 const captureMessages = (socket: WebSocket): WsMessage[] => {
   const messages: WsMessage[] = [];

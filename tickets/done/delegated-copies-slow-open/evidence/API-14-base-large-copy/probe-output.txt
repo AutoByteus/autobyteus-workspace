@@ -1,0 +1,28 @@
+[2026-10-18T13:39:15.528Z] L-001 start: Running large hub: hub row → copy rows and hub click → conversation (AC-003 running, QR-001/QR-002)
+[2026-10-18T13:39:22.190Z] L-001 Pass
+[2026-10-18T13:39:22.190Z] L-010 start: Opening a copy whose stored conversation is several MB: shown within QR-002 with one projection and one artifact request
+[2026-10-18T13:39:59.451Z] L-010 Fail: locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="workspace-agent-run-task-tree"][data-run-id="large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"]').locator('[data-test="workspace-team-transient-execution-row"]:not([aria-hidden="true"])[data-agent-run-id="code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"]')
+    - locator resolved to <div tabindex="0" aria-level="2" role="treeitem" data-v-2746c134="" data-v-1d89963f="" data-tree-depth="1" aria-selected="false" data-node-kind="agent" data-row-kind="transient_execution" data-transient-kind="task_team_child" data-test="workspace-team-transient-execution-row" data-member-address="/large_hub_engineering_team/code_reviewer" data-agent-run-id="code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3" data-team-run-id="large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6" title="Temporary ta…>…</div>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <button type="button" data-v-2746c134="" data-test="workspace-task-worker-task-summary" title="Show Task in Projects: Engineering Task 4" aria-label="Show Task in Projects: Engineering Task 4" data-task-id="project_task_22a3766e-3ff7-46e2-9d64-83b5399ac19c" class="-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo…>Engineering Task 4</button> from <div tabindex="0" aria-level="1" role="treeitem" data-v-2746c134="" data-v-1d89963f="" data-tree-depth="0" aria-selected="false" aria-expanded="false" data-node-kind="agent_team" data-transient-kind="task_team" data-row-kind="transient_execution" data-member-address="/large_hub_engineering_team" data-test="workspace-team-transient-execution-row" data-team-run-id="large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6" title="Temporary task team · large hub engineering team · /large_hub_engineerin…>…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <button type="button" data-v-2746c134="" data-test="workspace-task-worker-task-summary" title="Show Task in Projects: Engineering Task 3" aria-label="Show Task in Projects: Engineering Task 3" data-task-id="project_task_7d6e4a4f-7e8c-4eca-b4d3-f74cfa66ce3e" class="-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo…>Engineering Task 3</button> from <div tabindex="0" aria-level="1" role="treeitem" data-v-2746c134="" data-v-1d89963f="" data-tree-depth="0" aria-selected="false" aria-expanded="false" data-node-kind="agent_team" data-transient-kind="task_team" data-row-kind="transient_execution" data-member-address="/large_hub_engineering_team" data-test="workspace-team-transient-execution-row" data-team-run-id="large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6" title="Temporary task team · large hub engineering team · /large_hub_engineerin…>…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 20ms
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - performing click action
+
+{"result":"Fail","label":"base-large-copy","cases":{"S-API":"Not Run (filtered)","S-001":"Not Run (filtered)","S-002":"Not Run (filtered)","S-003":"Not Run (filtered)","S-ROWS":"Not Run (filtered)","L-001":"Pass","L-002":"Not Run (filtered)","L-003":"Not Run (filtered)","L-004":"Not Run (filtered)","L-008":"Not Run (filtered)","L-009":"Not Run (filtered)","L-010":"Fail"},"errors":0,"cleanup":{"browserClosed":true,"frontend":{"pid":69307,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":69283,"status":"terminated","exit":0},"runRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/tmp/dcso-api-e2e/API-14-base-large-copy/evidence.json"}

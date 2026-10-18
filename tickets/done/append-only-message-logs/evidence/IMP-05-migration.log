@@ -1,0 +1,4 @@
+# IMP-05-migration.log excerpt of IMP-02-unit-full.log: append-only migration and frozen-reader repairs
+# command: pnpm -C autobyteus-server-ts test:unit (full suite); commit: 265ad100ce; env: Darwin 25.5.0, node v22.23.1; date: 2026-10-18
+ ✓ tests/unit/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts (13 tests) 5863ms
+ ✓ tests/unit/app-data-migrations/released-message-log-repairs.test.ts (5 tests) 145ms

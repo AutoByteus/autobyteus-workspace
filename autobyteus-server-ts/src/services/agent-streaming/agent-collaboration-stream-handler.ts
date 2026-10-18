@@ -15,9 +15,8 @@ import {
 import type { StandaloneAgentRunRoot } from "../../standalone-agent-run-root/domain/standalone-agent-run-root.js";
 import { projectAgentCollaborationEvent, projectAgentCollaborationView } from "./agent-collaboration-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
+import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
 
-const serialize = (message: CollaborationStreamServerMessage): string =>
-  JSON.stringify(CollaborationStreamServerMessageSchema.parse(message));
 const error = (code: string, message: string): CollaborationStreamServerMessage =>
   CollaborationStreamServerMessageSchema.parse({ type: "ERROR", payload: { code, message } });
 const commandAck = (
@@ -48,7 +47,7 @@ const commandAck = (
  * restarted for them. Commands for the host itself stay on `/ws/agent/:runId`.
  */
 export class AgentCollaborationStreamHandler {
-  private readonly sessions = new Map<string, { connection: WebSocketConnection; hostRunId: string; close(): void }>();
+  private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; hostRunId: string; close(): void }>();
 
   constructor(private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">) {}
 
@@ -62,48 +61,53 @@ export class AgentCollaborationStreamHandler {
 
   async connect(connection: WebSocketConnection, hostRunIdInput: string): Promise<string | null> {
     const hostRunId = hostRunIdInput.trim();
+    // Every message to this socket leaves through its egress; an ERROR or ROOT_LIFECYCLE sent
+    // before a close flushes pending content first.
+    const egress = createRootExecutionStreamEgress(connection, `agent root '${hostRunId}'`);
     let root;
     try {
       root = await this.readyRoot(hostRunId);
     } catch (cause) {
-      connection.send(serialize(error("AGENT_ROOT_UNAVAILABLE", cause instanceof Error ? cause.message : String(cause))));
+      egress.send(error("AGENT_ROOT_UNAVAILABLE", cause instanceof Error ? cause.message : String(cause)));
+      egress.dispose();
       connection.close(4004);
       return null;
     }
     const sessionId = randomUUID();
     const barrier = await root.openPackageSnapshotConnection();
     try {
-      connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
+      egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "CONNECTED", payload: { root_subject_kind: "agent", root_run_id: hostRunId, session_id: sessionId },
-      })));
-      connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
+      }));
+      egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
         payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot, baseChangeSequence: barrier.baseChangeSequence }),
-      })));
+      }));
       const unsubscribe = barrier.subscribe((event) => {
         try {
           const projected = projectAgentCollaborationEvent(hostRunId, root.getExecutionTreeSnapshot(), event);
-          if (projected) connection.send(serialize(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected })));
+          if (projected) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
         } catch (cause) {
-          connection.send(serialize(error("AGENT_ROOT_STREAM_PROJECTION_FAILED", cause instanceof Error ? cause.message : String(cause))));
+          egress.send(error("AGENT_ROOT_STREAM_PROJECTION_FAILED", cause instanceof Error ? cause.message : String(cause)));
           queueMicrotask(() => { this.disconnect(sessionId); connection.close(1011); });
           return;
         }
         if (event.event.kind === "lifecycle") {
-          connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
+          egress.send(CollaborationStreamServerMessageSchema.parse({
             type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: event.event.isActive },
-          })));
+          }));
           if (!event.event.isActive) queueMicrotask(() => { this.disconnect(sessionId); connection.close(1000); });
         }
       });
-      connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
+      egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: true },
-      })));
-      this.sessions.set(sessionId, { connection, hostRunId, close: unsubscribe });
+      }));
+      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
-      connection.send(serialize(error("AGENT_ROOT_STREAM_UNAVAILABLE", String(cause))));
+      egress.send(error("AGENT_ROOT_STREAM_UNAVAILABLE", String(cause)));
+      egress.dispose();
       connection.close(1011);
       return null;
     }
@@ -116,7 +120,7 @@ export class AgentCollaborationStreamHandler {
     try {
       message = CollaborationStreamClientMessageSchema.parse(JSON.parse(raw));
     } catch (cause) {
-      session.connection.send(serialize(error("AGENT_ROOT_COMMAND_INVALID", cause instanceof Error ? cause.message : String(cause))));
+      session.egress.send(error("AGENT_ROOT_COMMAND_INVALID", cause instanceof Error ? cause.message : String(cause)));
       return;
     }
     try {
@@ -133,10 +137,10 @@ export class AgentCollaborationStreamHandler {
             focusedAgentRunId: target, mentions: toCollaboratorMentions(message.payload.mentions),
           });
           if (!admission.admitted) {
-            session.connection.send(serialize(commandAck(
+            session.egress.send(commandAck(
               message, "rejected", admission.code, admission.message,
               "collaboratorName" in admission ? admission.collaboratorName : undefined,
-            )));
+            ));
             return;
           }
           content = composeCollaboratorMentionNote(content, admission.collaborators);
@@ -153,17 +157,17 @@ export class AgentCollaborationStreamHandler {
             metadata: { input_origin: "user_message", message_id: message.payload.message_id, dedupe_key: message.payload.dedupe_key },
           }),
         });
-        session.connection.send(serialize(commandAck(message, result.accepted ? "accepted" : "rejected",
-          result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null)));
+        session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
+          result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null));
         return;
       }
       const result = await root.executeAgentCommand(target, message.type === "INTERRUPT_GENERATION"
         ? { kind: "interrupt" }
         : { kind: "approve_tool", invocationId: message.payload.invocation_id, approved: message.type === "APPROVE_TOOL", reason: message.payload.reason });
-      session.connection.send(serialize(commandAck(message, result.accepted ? "accepted" : "rejected",
-        result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null)));
+      session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
+        result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null));
     } catch (cause) {
-      session.connection.send(serialize(commandAck(message, "failed", "AGENT_ROOT_COMMAND_FAILED", cause instanceof Error ? cause.message : String(cause))));
+      session.egress.send(commandAck(message, "failed", "AGENT_ROOT_COMMAND_FAILED", cause instanceof Error ? cause.message : String(cause)));
     }
   }
 

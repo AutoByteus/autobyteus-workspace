@@ -85,7 +85,7 @@ describe("system task notification memory trace (REQ-003, ARCH-F-004)", () => {
 
   it("records a skill update notice combined into an input as one system notice beside the unchanged user message", async () => {
     const { accumulator, readTraces } = await setup();
-    const notice = "[Platform notice — skill updated]\n- code-review (/s/code-review/SKILL.md): SKILL.md";
+    const notice = "[Platform notice — skill updated]\n\nYour skill package `code-review` has been updated (/s/code-review).\n\nChanged files:\n- SKILL.md (changed)";
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-3" }));
     // The observer reports the input as admitted (the combined provider message is never recorded).
     accumulator.recordForwardedUserMessage(forwarded(new AgentInputUserMessage("Please review PR 12."), "turn-3"));
@@ -107,7 +107,7 @@ describe("system task notification memory trace (REQ-003, ARCH-F-004)", () => {
 
   it("records a notice-only skill update message once, as a system notice and never as a user message", async () => {
     const { accumulator, readTraces } = await setup();
-    const notice = "[Platform notice — skill updated]\n- deep-research: no longer available";
+    const notice = "[Platform notice — skill updated]\n\nYour skill package `deep-research` is no longer available.\n\nDo not rely on a skill that is no longer available.";
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-4" }));
     accumulator.recordForwardedUserMessage(forwarded(buildSkillUpdateNoticeMessage(notice), "turn-4"));
     accumulator.recordRunEvent(event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {

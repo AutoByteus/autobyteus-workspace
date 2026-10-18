@@ -64,11 +64,7 @@ const writeCurrentTeamPackage = (input: {
     ],
   });
   writeText(path.join(rootDir, "team_run_execution_tree.json"), `${JSON.stringify(tree, null, 2)}\n`);
-  writeText(path.join(rootDir, "team_communication_messages.json"), `${JSON.stringify({
-    schemaVersion: 1,
-    rootTeamRunId: input.rootTeamRunId,
-    messages: [],
-  }, null, 2)}\n`);
+  writeText(path.join(rootDir, "team_communication_messages_active.jsonl"), "");
   return { rootDir, memberDir: path.join(rootDir, input.agentRunId) };
 };
 

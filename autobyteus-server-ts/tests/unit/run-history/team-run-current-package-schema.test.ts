@@ -7,7 +7,6 @@ import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/st
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
-import { validateTeamCommunicationMessagesPayload } from "../../../src/services/team-communication/team-communication-messages-schema.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const historicalScenarioRoot = path.resolve(
@@ -31,11 +30,11 @@ const currentTree = () => testExecutionTree({
 describe("TeamRun current (tree + messages) state package", () => {
   it("validates one native flat Team tree with exact Team sidecars", () => {
     const executionTree = validateTeamRunExecutionTreePayload(currentTree());
-    const communicationMessages = validateTeamCommunicationMessagesPayload({
-      schemaVersion: 1,
+    const communicationMessages = Object.freeze({
+      schemaVersion: 1 as const,
       rootTeamRunId: executionTree.rootTeam.teamRunId,
       messages: [],
-    }, executionTree.rootTeam.teamRunId);
+    });
 
     expect(validateTeamRunStatePackage({
       executionTree,

@@ -52,7 +52,7 @@ beforeEach(async () => {
   ];
   const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath('org');
   await new AgentOrgRunExecutionTreeStore().write(dir, validateAgentOrgRunExecutionTreePayload(raw, 'org'));
-  writeAttachmentSidecars(dir, 'org', 'org');
+  writeAttachmentSidecars(dir, 'org');
   treeFile = path.join(dir, 'agent_org_run_execution_tree.json'); treeBytes = await fs.readFile(treeFile);
   layout = new ContextFileLayout({ appDataDir: config.root, memoryDir });
   local = new ContextFileLocalPathResolver({ layout, baseUrl: 'http://app.test', ownerResolver: new ContextFileOwnerResolver({

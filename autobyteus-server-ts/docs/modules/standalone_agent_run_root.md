@@ -138,14 +138,15 @@ memory/agents/<hostRunId>/
   run_metadata.json
   collaboration/
     collaboration_tree.json        # subjectKind "agent", host, taskExecutions (a link per task agent)
-    communication_messages.json    # schemaVersion 1, hostRunId, messages (the host's own log)
+    communication_messages_active.jsonl  # the host's own message log, one message per line
+    communication_messages_000001.jsonl  # sealed files once the log has rotated (4 MiB each)
 memory/agents/<childRunId>/        # a delegated Agent copy: a run of its own
   run_metadata.json                # its facts and catalog source + taskAgent { coordinatingRun, delegatorAgentRunId, address, origin, … }
-  communication_messages.json      # its own message log
+  communication_messages_active.jsonl  # its own message log (plus sealed files)
   raw_traces_active.jsonl, …       # its memory
 memory/agent_teams/<teamRunId>/    # a delegated Team copy: a run of its own
   team_run_execution_tree.json     # its members, coordinator, handoffs and source + taskAgent
-  team_communication_messages.json # its own message log
+  team_communication_messages_active.jsonl # its own message log (plus sealed files)
   <agentRunId>/...                 # its members' memory
 ```
 
@@ -181,6 +182,19 @@ each. Deleting the host's run keeps its copies' folders (detached). The location
   never restores. `agentRunCollaborationMemberProjection` and
   `agentRunCollaborationMemberEventMonitorActiveTracePage` read a child's conversation (sender
   addresses of agent-to-agent deliveries are resolved from the root's index).
+  `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)` returns a
+  child's Agent Artifacts. Like the other two, it locates the child inside the named run's
+  tree only, so its cost does not depend on how many other team, org or standalone runs are
+  stored. It then reads through `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection`,
+  the same active-versus-stored rule the run-id `getRunFileChanges` uses for collaboration
+  members:
+  - While the host's root is active, the result is the child's live projection, as for Team
+    members.
+  - Otherwise it is the child's stored `file_changes.json`.
+
+  The run-id path still finds a copy through the stored-only cross-family lookup, so for
+  copies it always read the stored file. The web client opens a copy's artifacts through the
+  scoped query.
   `collaboratorMentionCandidates(rootSubjectKind: "agent", rootRunId, focusedAgentRunId)` lists
   the `@` options for one focused agent (the host or a child). `focusedAgentRunId` is required
   for Agent roots, and the stored root answers per focused agent too.

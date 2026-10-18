@@ -30,6 +30,7 @@ import {
   type MemberRunState,
   type MemberRunStateCommit,
 } from './memberRunStateHydration';
+import { fetchRunFileChanges } from './runFileChangeHydrationService';
 import { createTeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
 import {
   createTeamAgentContext,
@@ -108,8 +109,8 @@ const fetchExactTeamMemberRunState = (
   teamRunId: string,
   agentRunId: string,
 ): Promise<TeamMemberRunState> => fetchMemberRunState({
-  runId: agentRunId,
   fetchProjection: () => fetchExactTeamMemberProjection(teamRunId, agentRunId),
+  fetchFileChanges: () => fetchRunFileChanges(agentRunId),
 });
 
 /** A member whose projection or artifacts cannot be loaded is left unhydrated (null) as a whole. */

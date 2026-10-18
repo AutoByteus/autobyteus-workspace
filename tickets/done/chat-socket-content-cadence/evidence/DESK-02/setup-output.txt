@@ -1,0 +1,12 @@
+# Case: DESK-02 setup — demo data via the instance's public GraphQL/WebSocket API
+# Command: node evidence/desk2-setup.mjs --backend http://127.0.0.1:60836 --workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-T93gwB/desk-workspace
+# Commit: 335f065cd1; Env: ENV-3 (iso-60835-5403); Date: 2026-10-18 14:54
+{
+ "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+ "worker": "desk-essay-worker",
+ "pm": "desk-pm",
+ "projectId": "project_7fcc142d-7ece-4443-8634-10bc38e1645e",
+ "taskId": "project_task_52e44453-cdee-4245-8027-a786cc05a409",
+ "handStartedRunId": "desk_essay_worker_46786959a5fa4f8b998ceed9c024ce71",
+ "handStartedTurnCompleted": true
+}

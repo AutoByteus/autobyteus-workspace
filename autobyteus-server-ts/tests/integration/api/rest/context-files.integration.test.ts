@@ -163,7 +163,7 @@ const writeExecutionTree = async (input: {
   });
   await new TeamRunExecutionTreeStore().write(teamDir,
     validateTeamRunExecutionTreePayload({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions } }, input.rootTeamRunId));
-  writeAttachmentSidecars(teamDir, "team", input.rootTeamRunId);
+  writeAttachmentSidecars(teamDir, "team");
 };
 
 describe("REST context-files routes", () => {

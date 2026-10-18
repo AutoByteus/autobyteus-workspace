@@ -29,7 +29,6 @@ import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execu
 import { AgentOrgRun, type AgentOrgRunPackageSnapshot } from "../domain/agent-org-run.js";
 import { AgentOrgCommunicationMessagesStore } from "../persistence/agent-org-communication-messages-store.js";
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
-import { validateAgentOrgCommunicationMessages } from "../persistence/agent-org-communication-messages-schema.js";
 import { AgentOrgStatePackageLoader } from "./agent-org-state-package-loader.js";
 import { validateAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
 import { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
@@ -109,12 +108,7 @@ export class AgentOrgRunManager {
     const orgRunId = tree.rootOrg.orgRunId;
     const state = validateAgentOrgStatePackage({
       executionTree: tree,
-      communicationMessages: validateAgentOrgCommunicationMessages({
-        schemaVersion: 1,
-        subjectKind: "agent_org",
-        orgRunId,
-        messages: [],
-      }, orgRunId),
+      communicationMessages: Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: Object.freeze([]) }),
     });
     return this.withTransition(orgRunId, () => this.materialize(state, "fresh", true));
   }
