@@ -1,0 +1,16 @@
+diff --git a/autobyteus-server-ts/src/agent-execution/events/dispatch-processed-agent-run-events.ts b/autobyteus-server-ts/src/agent-execution/events/dispatch-processed-agent-run-events.ts
+index c74e0678a1..099514fd67 100644
+--- a/autobyteus-server-ts/src/agent-execution/events/dispatch-processed-agent-run-events.ts
++++ b/autobyteus-server-ts/src/agent-execution/events/dispatch-processed-agent-run-events.ts
+@@ -24,10 +24,10 @@ export const dispatchProcessedAgentRunEvents = async (input: {
+     return;
+   }
+ 
++  const runtimeLifecycleSnapshot = input.getRuntimeLifecycleSnapshot(); // E3: as of arrival
+   await input.dispatchQueue.enqueue(
+     input.runContext.runId,
+     async () => {
+-      const runtimeLifecycleSnapshot = input.getRuntimeLifecycleSnapshot();
+       const finalEvents = await (input.pipeline ?? getDefaultAgentRunEventPipeline()).process({
+         runContext: input.runContext,
+         events: input.events,

@@ -1,0 +1,17 @@
+# IMP-05
+# Command: pnpm -C autobyteus-server-ts test:integration
+# Commit: f4490d258a
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-18T16:57:15Z
+
+
+# Excerpt. Full log (not committed,   820658 bytes): /tmp/IMP-05-integration-full.log
+
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (12 tests) 1465ms
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts (8 tests) 3418ms
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts (11 tests) 16ms
+ ✓ tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts (1 test) 97ms
+ ✓ tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts (1 test) 36ms
+ Test Files  76 passed | 17 skipped (93)
+      Tests  396 passed | 65 skipped (461)
+exit 0
