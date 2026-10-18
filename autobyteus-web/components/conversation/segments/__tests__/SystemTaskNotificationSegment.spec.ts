@@ -79,4 +79,36 @@ describe('SystemTaskNotificationSegment', () => {
     }
     expect(mountSegment('Task finished successfully.').find('[data-testid="system-task-notification-label"]').exists()).toBe(false);
   });
+
+  it('renders the per-package changed-files notice as separate paragraphs and one list item per file', () => {
+    // The text `buildSkillUpdateNoticeText` produces for one updated package (server, skill-update-notices).
+    const wrapper = mountSegment([
+      '[Platform notice — skill updated]',
+      '',
+      'Your skill package `agent-package-creation` has been updated (/skills/agent-package-creation).',
+      '',
+      'Changed files:',
+      '- references/package-anti-patterns.md (changed)',
+      '- references/new-guide.md (added)',
+      '- scripts/old.sh (removed)',
+      '',
+      'Re-read the updated files before continuing work that relies on this skill.',
+      'Removed files are no longer available.',
+    ].join('\n'), 'system.skill_update_notifier');
+
+    expect(wrapper.get('[data-testid="system-task-notification-label"]').text()).toBe('Skill updated');
+    expect(wrapper.find('pre').exists()).toBe(false);
+    expect(wrapper.get('code').text()).toBe('agent-package-creation');
+    expect(wrapper.findAll('li').map((item) => item.text())).toEqual([
+      'references/package-anti-patterns.md (changed)',
+      'references/new-guide.md (added)',
+      'scripts/old.sh (removed)',
+    ]);
+    const paragraphs = wrapper.findAll('p').map((paragraph) => paragraph.text());
+    expect(paragraphs.some((text) => text.startsWith('Your skill package') && text.endsWith('(/skills/agent-package-creation).'))).toBe(true);
+    expect(paragraphs.some((text) => text.startsWith('Re-read the updated files before continuing work that relies on this skill.'))).toBe(true);
+    // The closing lines are not swallowed into the last list item.
+    expect(wrapper.findAll('li').at(-1)!.text()).not.toContain('Re-read');
+    expect(wrapper.text()).not.toContain('SKILL.md');
+  });
 });

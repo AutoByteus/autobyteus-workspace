@@ -12,7 +12,6 @@
 // once it has connected (recordings made without MCP servers carry none).
 import fs from "node:fs";
 import readline from "node:readline";
-import path from "node:path";
 
 const rows = fs.readFileSync(process.env.FAKE_ACP_FIXTURE, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line));
 const idMap = new Map();
@@ -24,16 +23,7 @@ const send = (message) => process.stdout.write(`${JSON.stringify(message)}\n`);
 readline.createInterface({ input: process.stdin }).on("line", (line) => {
   if (!line.trim()) return;
   if (process.env.FAKE_ACP_RECORD) fs.appendFileSync(process.env.FAKE_ACP_RECORD, `${line}\n`);
-  const message = JSON.parse(line);
-  const pluginIndex = process.argv.indexOf("--plugin-dir");
-  if (message.method === "_x.ai/skills/list" && pluginIndex !== -1) {
-    const skillsRoot = path.join(process.argv[pluginIndex + 1], "skills");
-    const skills = fs.readdirSync(skillsRoot).map(name => ({ name, enabled:true,
-      path:path.join(skillsRoot,name,"SKILL.md"), plugin_name:"autobyteus-configured" }));
-    send({jsonrpc:"2.0",id:message.id,result:{result:{skills}}});
-    return;
-  }
-  received.push(message);
+  received.push(JSON.parse(line));
   waiter?.();
 });
 

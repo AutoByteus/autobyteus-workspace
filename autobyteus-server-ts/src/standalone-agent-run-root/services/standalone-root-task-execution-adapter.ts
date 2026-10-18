@@ -9,7 +9,7 @@ import { beginRootTaskActivation, type RegisteredTaskActivation, type TaskExecut
   type TaskExecutionActivationPreparation,
 } from "../../agent-collaboration/execution/task/root-task-execution-adapter.js";
 import type { DelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
-import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { TaskExecution, TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import {
   TaskDelegationError,
   TaskExecutionTeardownIndeterminateError,
@@ -291,6 +291,25 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
       }
       assertOpen();
     }
+  }
+
+  /**
+   * Adoption (design SR-008): a run the user started joins the tree as this root's task agent. Its own file already
+   * holds the record's facts, so the split write writes only its link; the run starts offline and is restored by delivery.
+   */
+  commitAdoptedExecution(record: TaskExecution): Promise<TaskExecutionActivationCommitResult> {
+    const host = createTaskExecutionHostIdentity({ root: this.root, hostKind: "root", hostRunId: this.root.rootRunId, hostAddress: "/" });
+    let nextTree: StandaloneRootTreeSnapshot | null = null;
+    return this.options.persistence.commitTaskActivation({
+      prepareAgainstCurrent: () => ({ nextTree: nextTree = addStandaloneRootTaskExecution({ tree: this.options.getTree(), execution: record }) }),
+      abortBeforeDurability: async () => undefined,
+      commitAfterDurability: () => {
+        if (!nextTree) throw new Error("Agent-root adoption tree was not prepared.");
+        this.options.replaceTree(nextTree);
+        this.options.publishTaskExecutionStarted(host, "agentRunId" in record
+          ? Object.freeze({ agentRunId: record.agentRunId }) : Object.freeze({ teamRunId: record.teamRunId }));
+      },
+    });
   }
 
   tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean> { return this.shutDown(reference, "idle"); }

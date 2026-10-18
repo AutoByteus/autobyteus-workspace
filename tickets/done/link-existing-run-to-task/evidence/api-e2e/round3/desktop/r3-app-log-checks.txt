@@ -1,0 +1,4 @@
+# usage rejections / listener failures / fail-stop in the whole session:
+0
+# runtime interrupts:
+0

@@ -1,6 +1,7 @@
 import path from "node:path";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { revertUnfinishedAdoptionOffline } from "../agent-collaboration/execution/task/hand-started-run-adoption.js";
 import { TaskExecutionResourceService } from "../projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../projects/stores/task-execution-resource-store.js";
 import { ProjectsLayout } from "../projects/stores/projects-layout.js";
@@ -23,6 +24,7 @@ import {
 export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   activeRootDirectory: ActiveCollaborationRootDirectory;
   appDataDir: string;
+  memoryDir: string;
 }>): Promise<TaskExecutionResourcePort> => {
   const adHocTasksLayout = new AdHocTasksLayout(path.join(deps.appDataDir, "ad-hoc-tasks"));
   const taskExecutionResources = new TaskExecutionResourceService(new TaskExecutionResourceStore(
@@ -33,6 +35,12 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
     adHocTasks: new AdHocTaskStore(adHocTasksLayout),
     requestRelease: (hostRoot, executions) =>
       deps.activeRootDirectory.resolve(hostRoot)?.releaseTaskExecutions?.(executions) ?? null,
+    // An unfinished adoption is undone on its delegator root's queue when that root is active, else from the files.
+    revertUnfinishedAdoption: (hostRoot, execution) => {
+      const root = deps.activeRootDirectory.resolve(hostRoot);
+      return root?.revertUnfinishedAdoption ? root.revertUnfinishedAdoption(execution)
+        : revertUnfinishedAdoptionOffline(deps.memoryDir, hostRoot, execution);
+    },
     // A Task root's live status comes only from its hosting root; an inactive root answers offline.
     workerStatus: (hostRoot, execution) => {
       const root = deps.activeRootDirectory.resolve(hostRoot);

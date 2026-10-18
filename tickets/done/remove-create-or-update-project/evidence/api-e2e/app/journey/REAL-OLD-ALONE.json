@@ -1,0 +1,31 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "launch": {
+    "success": true,
+    "message": "Agent run created successfully.",
+    "runId": "pts_old_alone_192c908cbc294390af3b0ee2b10431c6"
+  },
+  "outcome": {
+    "noProjectCreated": true
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "content": "Create a Project named \"PTS Real OldAlone 8793\". If you have no tool that can create a Project, say so.",
+      "media": null,
+      "ts": 1792302030.466
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "I can't create that Project. My only Project mutation tool, `create_or_update_project`, has been removed, and I have no other tool that can create a Project. I haven't changed anything.",
+      "media": null,
+      "ts": 1792302033.799
+    }
+  ],
+  "toolNamesInConversation": [
+    "create_or_update_project"
+  ]
+}

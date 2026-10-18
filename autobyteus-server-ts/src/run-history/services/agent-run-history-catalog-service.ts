@@ -8,11 +8,12 @@ import type { AgentRunHistoryIndexRowRecord } from "../store/agent-run-history-i
 import { AgentRunHistoryIndexStore } from "../store/agent-run-history-index-store.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
-import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { AgentRunHistoryIdentityResolver } from "./agent-run-history-identity.js";
 import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
 import { compactSummary } from "./run-history-service-helpers.js";
+import { cloneRows, getState, normalizeRow, type CatalogState } from "./agent-run-history-catalog-state.js";
+export { resetAgentRunHistoryCatalogState } from "./agent-run-history-catalog-state.js";
 import {
   createStandaloneRunLiveness,
   type AgentRunActivityLookup,
@@ -28,13 +29,6 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-type CatalogState = {
-  initialized: boolean;
-  initPromise: Promise<void> | null;
-  rows: Map<string, AgentRunHistoryIndexRowRecord>;
-  queue: Promise<void>;
-};
-
 type CatalogMutationResult<T> = {
   value: T;
   shouldFlush: boolean;
@@ -45,53 +39,6 @@ type AgentDefinitionLookup = {
     agentDefinitionId: string,
   ): Promise<{ name?: string | null } | null>;
 };
-
-const catalogStates = new Map<string, CatalogState>();
-
-const getState = (memoryDir: string): CatalogState => {
-  const key = path.resolve(memoryDir);
-  const existing = catalogStates.get(key);
-  if (existing) {
-    return existing;
-  }
-  const created: CatalogState = {
-    initialized: false,
-    initPromise: null,
-    rows: new Map(),
-    queue: Promise.resolve(),
-  };
-  catalogStates.set(key, created);
-  return created;
-};
-
-export const resetAgentRunHistoryCatalogState = (memoryDir: string): void => {
-  const state = catalogStates.get(path.resolve(memoryDir));
-  if (!state) {
-    return;
-  }
-  state.initialized = false;
-  state.initPromise = null;
-  state.rows = new Map();
-};
-
-const normalizeRow = (
-  row: AgentRunHistoryIndexRowRecord,
-): AgentRunHistoryIndexRowRecord => ({
-  runId: row.runId.trim(),
-  agentDefinitionId: row.agentDefinitionId.trim(),
-  agentName: row.agentName.trim() || row.agentDefinitionId.trim(),
-  workspaceRootPath: canonicalizeWorkspaceRootPath(row.workspaceRootPath),
-  summary: compactSummary(row.summary),
-  createdAt: row.createdAt,
-  archivedAt: row.archivedAt ?? null,
-  terminatedAt: row.terminatedAt ?? null,
-  ...(row.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
-});
-
-const cloneRows = (
-  rows: Map<string, AgentRunHistoryIndexRowRecord>,
-): Map<string, AgentRunHistoryIndexRowRecord> =>
-  new Map(Array.from(rows.entries()).map(([runId, row]) => [runId, { ...row }]));
 
 const isPreparedIdentity = (metadata: AgentRunMetadata): boolean =>
   Boolean(metadata.preparedAt) && !metadata.startedAt;
@@ -113,7 +60,7 @@ export class AgentRunHistoryCatalogService {
   private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
 
   constructor(
-    private readonly memoryDir: string,
+    memoryDir: string,
     dependencies: {
       indexStore?: AgentRunHistoryIndexStore;
       metadataStore?: AgentRunMetadataStore;
@@ -287,6 +234,22 @@ export class AgentRunHistoryCatalogService {
       rows.set(input.runId, normalizeRow({ ...row, hasCollaboration: true }));
       return { value: undefined, shouldFlush: true };
     });
+  }
+
+  /** The run's row in the history index, admitted or not; null when it has none. */
+  async indexedRowOf(runId: string): Promise<RunHistoryIndexRow | null> {
+    return this.enqueueValue(async () => this.state.rows.get(runId.trim()) ?? null);
+  }
+
+  /** Adoption (step 4): the run is now a task agent; it leaves the user's history and is no longer admitted. */
+  async removeAdoptedRun(runId: string): Promise<void> {
+    await this.mutate(async (rows) => ({ value: undefined, shouldFlush: rows.delete(runId.trim()) }));
+    this.readiness.excludeCurrent("agent", runId, "Adopted as a task agent.");
+  }
+
+  /** Revert of an unfinished adoption: the run's file is hand-started again; its row (never removed) is admitted again. */
+  readmitHandStartedRun(runId: string): Promise<void> {
+    return this.readiness.admitCurrent("agent", runId);
   }
 
   async archiveRun(rawRunId: string): Promise<CatalogMutationResultMessage> {

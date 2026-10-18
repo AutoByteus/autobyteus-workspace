@@ -1,4 +1,3 @@
-import { preparePrivateRuntimeSkills, privateSkillInstructions } from "../../shared/prepare-private-runtime-skills.js";
 import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
@@ -9,6 +8,10 @@ import {
   type ClaudeWorkspaceResolver,
 } from "../claude-workspace-resolver.js";
 import {
+  getClaudeWorkspaceSkillMaterializer,
+} from "../claude-workspace-skill-materializer.js";
+import type { MaterializedWorkspaceSkill, WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
+import {
   buildClaudeSessionConfig,
   DEFAULT_CLAUDE_PERMISSION_MODE,
 } from "../session/claude-session-config.js";
@@ -18,17 +21,24 @@ import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-c
 
 export class ClaudeSessionBootstrapper {
   private readonly workspaceResolver: ClaudeWorkspaceResolver;
+  private readonly workspaceSkillMaterializer: WorkspaceSkillMaterializer;
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly skillService: SkillService;
 
   constructor(
     workspaceResolver: ClaudeWorkspaceResolver = getClaudeWorkspaceResolver(),
+    workspaceSkillMaterializer: WorkspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer(),
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
   ) {
     this.workspaceResolver = workspaceResolver;
+    this.workspaceSkillMaterializer = workspaceSkillMaterializer;
     this.agentDefinitionService = agentDefinitionService;
     this.skillService = skillService;
+  }
+
+  releaseSkills(skills: MaterializedWorkspaceSkill[]): Promise<void> {
+    return this.workspaceSkillMaterializer.cleanupMaterializedWorkspaceSkills(skills);
   }
 
   async bootstrapForCreate(
@@ -65,17 +75,25 @@ export class ClaudeSessionBootstrapper {
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
-    const privateSkillProfile = await preparePrivateRuntimeSkills({
-      runtime: "claude", workingDirectory, memoryDir: runContext.config.memoryDir,
-      bindings: configuredSkillBindings, skills: this.skillService, guard,
-      collisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
+    const preparedSkills = await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
+      runId: runContext.runId,
+      onAcquired: guard.ownSkill, assertAccepting: guard.assertAccepting,
+      workingDirectory,
+      requests: configuredSkillBindings.map((binding) =>
+        binding.kind === "resolved"
+          ? { kind: "expose-resolved", skill: binding.skill }
+          : { kind: "reconcile-unresolved", name: binding.name }
+      ),
+      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
     });
     guard.assertAccepting();
-    const configuredSkills = privateSkillProfile?.exposures.map(entry => entry.skill) ?? [];
+    const materializedConfiguredSkills = preparedSkills.materializedSkills;
+    const configuredSkills = preparedSkills.effectiveRequests.flatMap((request) =>
+      request.kind === "reconcile-unresolved" ? [] : [request.skill]);
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
-    }) + (privateSkillProfile ? privateSkillInstructions(privateSkillProfile) : "");
+    });
     const sessionConfig = buildClaudeSessionConfig({
       model: runContext.config.llmModelIdentifier,
       workingDirectory,
@@ -88,10 +106,10 @@ export class ClaudeSessionBootstrapper {
       config: runContext.config,
       runtimeContext: new ClaudeAgentRunContext({
         sessionConfig,
-        privateSkillProfile,
         carpenterSystemPrompt,
         runtimeToolExposure,
         configuredSkills,
+        materializedConfiguredSkills,
         sessionId: existingRuntimeContext?.sessionId ?? null,
         hasCompletedTurn: existingRuntimeContext?.hasCompletedTurn ?? false,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,

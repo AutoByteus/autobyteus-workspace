@@ -1,0 +1,8 @@
+
+> autobyteus@1.5.6-beta.1 test:e2e:task-closure-tree /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-web
+> node tests/e2e/task-closure-tree-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/tct-diag/br012-alone --cases BR-012
+
+RCUP-DIAG center {"url":"http://127.0.0.1:63019/chat?id=manager_exagent_0628_c67b722fc6d54589a1708b70b0004390","taskB2":"project_task_4691329a-d963-46fd-9ab8-1f5d570c4125","hasPre":true,"hasNew":true,"center":"R\nreviewer\nIdle\nYou\nYou have a new task from the agent with sender address \"/manager_exagent_0628\" and sender run id \"manager_exagent_0628_c67b722fc6d54589a1708b70b0004390\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nReview the docs site.\nR\nreviewer\n\nOK\n\nR\nreviewer\n\nFrom Manager Exagent 0628:\n\nDocs review notes. PRE-B-6610\n\nOK\n\nR\nreviewer\n\nFrom Manager Exagent 0628:\n\nNew Task assigned to you: prototype-launch-exagent-cdef91-3. Your previous Task is closed; this is the work to do now.\n\nDescription:\nTidy the docs-site review wording you proposed.\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)"}
+Task closure tree probe: Fail. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/tct-diag/br012-alone/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

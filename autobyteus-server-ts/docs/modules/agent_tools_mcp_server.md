@@ -250,7 +250,7 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - `delegate_task` from `src/agent-tools/task-delegation`
 - `publish_artifacts`
 - `list_projects`, `list_project_tasks`, `create_project`, `update_project`,
-  `create_or_update_project` (deprecated), `create_task`, `update_task` from
+  `create_task`, `update_task` from
   `src/agent-tools/project-tasks`
 
 The catalog filters by the session's resolved effective tool names. That set is
@@ -324,10 +324,6 @@ category-wide native task exposure are not restored.
   entire change. Registration/existence are not required; Save never registers or
   creates folders. Old workspace_id rows are rejected, not translated.
   Result is saved projectId/name/description and workspaceRootPath/description only.
-- `create_or_update_project({project_id?, name?, description?, workspaces?})` →
-  `{project}` is **deprecated** and kept unchanged for the transition: without
-  project_id it runs as `create_project`, with it as `update_project`. It will be
-  removed in a later release.
 - `create_task` → `{task}`. `{project_id, description, context_files?, depends_on?}`:
   required nonempty description, **omit status** and `task_id` (new TODO with
   the Project's next key).

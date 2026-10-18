@@ -3,14 +3,13 @@ import { parseArgs, resolveLaunchCommand, resolveRequestTimeoutMs } from "./code
 import { CodexAppServerClient } from "./codex-app-server-client.js";
 
 type CloseListener = (error: Error | null) => void;
-export type CodexPrivateSkillRoots = Readonly<{ id: string; skillsRoot: string }>;
-export interface CodexAppServerClientManagerOptions { createClient?: (cwd: string, profile?: CodexPrivateSkillRoots) => CodexAppServerClient; }
+export interface CodexAppServerClientManagerOptions { createClient?: (cwd: string) => CodexAppServerClient; }
 export interface CodexAppServerClientLease {
   acquire(): Promise<CodexAppServerClient>;
   release(): Promise<void>;
 }
 type ClientEntry = {
-  key: string; cwd: string; profile?: CodexPrivateSkillRoots; client: CodexAppServerClient | null; startPromise: Promise<CodexAppServerClient> | null;
+  key: string; client: CodexAppServerClient | null; startPromise: Promise<CodexAppServerClient> | null;
   holders: number; closing: boolean; closeAttempt: Promise<void> | null;
 };
 
@@ -18,21 +17,19 @@ type ClientEntry = {
 export class CodexAppServerClientManager {
   private readonly entries = new Map<string, ClientEntry>();
   private readonly closeListeners = new Set<CloseListener>();
-  private readonly createClient: NonNullable<CodexAppServerClientManagerOptions["createClient"]>;
+  private readonly createClient: (cwd: string) => CodexAppServerClient;
   constructor(options: CodexAppServerClientManagerOptions = {}) {
     this.createClient = options.createClient ?? ((cwd) => new CodexAppServerClient({
       command: resolveLaunchCommand(), args: parseArgs(), cwd, requestTimeoutMs: resolveRequestTimeoutMs(),
     }));
   }
 
-  beginAcquire(cwd: string, profile?: CodexPrivateSkillRoots): CodexAppServerClientLease {
-    cwd = path.resolve(cwd?.trim() || process.cwd());
-    const key = JSON.stringify([cwd, profile?.id ?? null]);
+  beginAcquire(cwd: string): CodexAppServerClientLease {
+    const key = path.resolve(cwd?.trim() || process.cwd());
     let entry = this.entries.get(key);
     if (entry?.closing) throw new Error(`Codex client generation for '${key}' has unresolved cleanup.`);
-    if (entry && entry.profile?.skillsRoot !== profile?.skillsRoot) throw new Error("Codex private profile layout cannot change within one process.");
     if (!entry) {
-      entry = { key, cwd, profile: profile ? Object.freeze({ id: profile.id, skillsRoot: profile.skillsRoot }) : undefined, client: null, startPromise: null, holders: 0, closing: false, closeAttempt: null };
+      entry = { key, client: null, startPromise: null, holders: 0, closing: false, closeAttempt: null };
       this.entries.set(key, entry);
     }
     const exact = entry;
@@ -97,7 +94,7 @@ export class CodexAppServerClientManager {
   }
 
   private async startClient(entry: ClientEntry): Promise<CodexAppServerClient> {
-    const client = this.createClient(entry.cwd, entry.profile);
+    const client = this.createClient(entry.key);
     entry.client = client; // before start/initialize: failure retains the lowest concrete owner
     client.onClose((error) => {
       if (entry.client !== client) return;
@@ -111,7 +108,6 @@ export class CodexAppServerClientManager {
       clientInfo: { name: "autobyteus-server-ts", version: "0.1.1" }, capabilities: { experimentalApi: true },
     });
     client.notify("initialized", {});
-    if (entry.profile) await client.request("skills/extraRoots/set", { extraRoots: [entry.profile.skillsRoot] });
     if (entry.closing) throw new Error("Codex client closed during initialization.");
     return client;
   }

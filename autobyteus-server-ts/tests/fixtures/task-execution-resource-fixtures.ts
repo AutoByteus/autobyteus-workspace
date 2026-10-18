@@ -1,5 +1,5 @@
 import type { TaskDelegationOutcome } from "../../src/agent-collaboration/execution/task/task-delegation-command.js";
-import type { ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner, TaskExecutionResourcePort, TaskExecutionReopenInput, TaskExecutionRole } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { AdoptedRunAssignInput, CurrentTaskAssignment, ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner, TaskExecutionResourcePort, TaskExecutionReopenInput, TaskExecutionRole } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../src/agent-collaboration/execution/task/task-execution-reference.js";
 
@@ -20,6 +20,8 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   readonly links: NewTaskExecutionLinkInput[] = [];
   /** Every committed existing-copy assignment, in order. */
   readonly assignments: ExistingTaskExecutionAssignInput[] = [];
+  /** Every committed adoption of a run the user started, in order. */
+  readonly adoptions: AdoptedRunAssignInput[] = [];
   /** Test hook awaited inside `assignExistingTaskExecution` before the commit re-checks and writes. */
   beforeAssignCommit?: (input: ExistingTaskExecutionAssignInput) => Promise<void> | void;
   /** Test hook awaited inside `linkNewTaskExecution` before the write commits. */
@@ -141,6 +143,21 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   }
   /** Every status-change notification, in order. */
   readonly statusChanges: Array<{ hostRoot: RootExecutionIdentity; references: TaskExecutionReference[] }> = [];
+  currentAssignmentOf(execution: TaskExecutionReference): CurrentTaskAssignment | null {
+    const entry = this.entry(execution);
+    return entry ? { taskId: entry.taskId, open: entry.open, role: entry.role, ...(entry.assignedBy ? { assignedBy: entry.assignedBy } : {}),
+      hostRoot: entry.hostRoot, started: entry.start === "started" } : null;
+  }
+  /** Like the Projects side: an open Project Task, and a run with no open entry; a closed earlier entry is replaced as current. */
+  async assignAdoptedRun(input: AdoptedRunAssignInput): Promise<void> {
+    if (this.damaged.has(input.taskId)) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task run data could not be read.");
+    if (this.tasks.get(input.taskId)?.done !== false) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE or unknown.");
+    const previous = this.entry(input.execution);
+    if (previous?.open) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "The run already belongs to a Task.");
+    this.entries.set(taskExecutionReferenceKey(input.execution), { taskId: input.taskId, hostRoot: input.hostRoot, execution: input.execution,
+      role: "assigned", assignedBy: input.assignedBy, open: true, start: "starting", ...(previous?.everStarted ? { everStarted: true as const } : {}) });
+    this.adoptions.push(input);
+  }
   taskExecutionsStatusChanged(hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void {
     this.statusChanges.push({ hostRoot, references: [...references] });
   }

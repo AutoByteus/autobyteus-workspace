@@ -1,4 +1,3 @@
-import { discoverCodexPrivateSkills } from "./codex-private-skill-discovery.js";
 import type { CodexAppServerClientLease } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import {
   getCodexAppServerClientManager,
@@ -10,6 +9,10 @@ import {
   getCodexClientThreadRouter,
   type CodexClientThreadRouter,
 } from "./codex-client-thread-router.js";
+import {
+  getCodexThreadCleanup,
+  type CodexThreadCleanup,
+} from "../backend/codex-thread-cleanup.js";
 import { resolveThreadId } from "./codex-thread-id-resolver.js";
 import { createCodexThreadStartupGate } from "./codex-thread-startup-gate.js";
 import { CodexThread } from "./codex-thread.js";
@@ -26,15 +29,18 @@ export class CodexThreadManager {
   private readonly released = new WeakSet<CodexRunContext>();
   private readonly threads = new Map<string, CodexThread>();
   private readonly clientManager: CodexAppServerClientManager;
+  private readonly threadCleanup: CodexThreadCleanup;
   private readonly clientThreadRouter: CodexClientThreadRouter;
   private readonly systemInstructionCaptureService: SystemInstructionCaptureService;
 
   constructor(
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
+    threadCleanup: CodexThreadCleanup = getCodexThreadCleanup(),
     clientThreadRouter: CodexClientThreadRouter = getCodexClientThreadRouter(),
     systemInstructionCaptureService: SystemInstructionCaptureService = getSystemInstructionCaptureService(),
   ) {
     this.clientManager = clientManager;
+    this.threadCleanup = threadCleanup;
     this.clientThreadRouter = clientThreadRouter;
     this.systemInstructionCaptureService = systemInstructionCaptureService;
   }
@@ -87,12 +93,13 @@ export class CodexThreadManager {
           thread.clearListeners(); thread.clearApprovalRecords(); thread.clearPendingMcpToolCalls(); thread.unbindAll();
         } catch (error) { errors.push(error); }
       }
+      try { await this.threadCleanup.cleanupPreparedWorkspaceSkills(context.runtimeContext.materializedConfiguredSkills); }
+      catch (error) { errors.push(error); }
       if (!errors.length) {
         try { await owner.lease.release(); } catch (error) { errors.push(error); }
       }
       if (errors.length) throw new AggregateError(errors, "Codex exact thread cleanup failed.");
       if (!owner.settled) throw new Error("Codex thread startup continuation still pending.");
-      await context.runtimeContext.privateSkillProfile?.release();
       this.preparations.delete(context.runId);
       this.runContexts.delete(context.runId);
       this.threads.delete(context.runId);
@@ -113,7 +120,7 @@ export class CodexThreadManager {
     if (this.preparations.has(runContext.runId)) throw new Error("Codex thread still owns preparation/cleanup.");
     const config = runContext.runtimeContext.codexThreadConfig;
     const owner: ThreadPreparation = {
-      context: runContext, lease: this.clientManager.beginAcquire(config.workingDirectory, runContext.runtimeContext.privateSkillProfile ?? undefined),
+      context: runContext, lease: this.clientManager.beginAcquire(config.workingDirectory),
       thread: null, cancelled: false, settled: false, releaseAttempt: null,
     };
     this.preparations.set(runContext.runId, owner);
@@ -125,11 +132,6 @@ export class CodexThreadManager {
     try {
     const client = await owner.lease.acquire();
     assertCurrent();
-    if (runContext.runtimeContext.privateSkillProfile) {
-      const instructions = await discoverCodexPrivateSkills(client, config.workingDirectory, runContext.runtimeContext.privateSkillProfile);
-      assertCurrent();
-      config.baseInstructions = (config.baseInstructions ?? "") + instructions;
-    }
     const thread = new CodexThread({ runContext, client, startup: createCodexThreadStartupGate() });
     owner.thread = thread;
     this.threads.set(runContext.runId, thread);

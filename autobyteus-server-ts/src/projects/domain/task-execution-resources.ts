@@ -106,6 +106,10 @@ export const linkExistingTaskExecution = (file: TaskExecutionResourceFile, link:
   return { taskId: file.taskId, executionResources: [...file.executionResources, entryOf({ ...link, role: "assigned" }, now)] };
 };
 
+/** Closes only the copy's last entry in this file (an unfinished adoption reverted when its Task is deleted); a closed entry is unchanged. */
+export const closeTaskExecutionEntry = (file: TaskExecutionResourceFile, execution: TaskExecutionReference, now: string): TaskExecutionResourceFile =>
+  updateLatestEntry(file, execution, r => r.closedAt === null ? { ...r, closedAt: now } : r);
+
 /** `start` is set once on the copy's last entry; an entry that already started or failed is left unchanged. */
 export const settleTaskExecutionStart = (file: TaskExecutionResourceFile, execution: TaskExecutionReference,
   outcome: { start: "started" } | { start: "failed"; error: { code: string; message: string } }): TaskExecutionResourceFile => {

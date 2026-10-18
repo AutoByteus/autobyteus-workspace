@@ -1,0 +1,386 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:92805) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: ado-manager-849b3a
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: ado-worker-849b3a
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: ado-lead-849b3a
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: ado-mate-849b3a
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: ado-helper-849b3a
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: ado-team-849b3a
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mCreated and registered workspace ID: agent_ws_1abb09faad9e13995b3cd2c0eea60098b5f240a022ee1652bd8bd238615b2c14
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mReusing registered workspace ID: agent_ws_1abb09faad9e13995b3cd2c0eea60098b5f240a022ee1652bd8bd238615b2c14
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAGY compaction detection off for run ado_manager_849b3a_54b271c9a9d54f80846f6c100e4b1543: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent websocket attached for run ado_manager_849b3a_54b271c9a9d54f80846f6c100e4b1543
+Created agent session ca159547-94f4-4f90-a9e0-182c91e0f6f4 for run ado_manager_849b3a_54b271c9a9d54f80846f6c100e4b1543
+Agent WebSocket connected: session=ca159547-94f4-4f90-a9e0-182c91e0f6f4, run=ado_manager_849b3a_54b271c9a9d54f80846f6c100e4b1543
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mReusing registered workspace ID: agent_ws_1abb09faad9e13995b3cd2c0eea60098b5f240a022ee1652bd8bd238615b2c14
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mReusing registered workspace ID: agent_ws_1abb09faad9e13995b3cd2c0eea60098b5f240a022ee1652bd8bd238615b2c14
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mAGY compaction detection off for run ado_manager_849b3a_ee6a3cf5f6124a87b512719968bcb23c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mAgent websocket attached for run ado_manager_849b3a_ee6a3cf5f6124a87b512719968bcb23c
+Created agent session 3b641d1a-11bc-4835-aaaa-02fa333dc45f for run ado_manager_849b3a_ee6a3cf5f6124a87b512719968bcb23c
+Agent WebSocket connected: session=3b641d1a-11bc-4835-aaaa-02fa333dc45f, run=ado_manager_849b3a_ee6a3cf5f6124a87b512719968bcb23c
+
+[90mstderr[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/memory/agents/ado_manager_849b3a_ee6a3cf5f6124a87b512719968bcb23c/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mReusing registered workspace ID: agent_ws_1abb09faad9e13995b3cd2c0eea60098b5f240a022ee1652bd8bd238615b2c14
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mAGY compaction detection off for run ado_lead_849b3a_886fdf0a2a5145b1a438a4bb925d5df8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mReusing registered workspace ID: agent_ws_1abb09faad9e13995b3cd2c0eea60098b5f240a022ee1652bd8bd238615b2c14
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mAgent team websocket attached for team run ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e
+Created agent session 53401c7f-a936-41fc-926f-32463a9c3056 for run ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mAgent Team WebSocket connected: session=53401c7f-a936-41fc-926f-32463a9c3056, run=ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mReusing registered workspace ID: agent_ws_1abb09faad9e13995b3cd2c0eea60098b5f240a022ee1652bd8bd238615b2c14
+
+[90mstderr[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/memory/agent_teams/ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e/ado_lead_849b3a_1f0172166e6746e6852c343ed8d5888d/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/memory/agent_teams/ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e/ado_lead_849b3a_1f0172166e6746e6852c343ed8d5888d/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mAGY compaction detection off for run ado_lead_849b3a_1f0172166e6746e6852c343ed8d5888d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/memory/agent_teams/ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e/ado_lead_849b3a_1f0172166e6746e6852c343ed8d5888d/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ado-e2e-BgQNED/workspace.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mReusing registered workspace ID: agent_ws_1abb09faad9e13995b3cd2c0eea60098b5f240a022ee1652bd8bd238615b2c14
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mAGY compaction detection off for run ado_lead_849b3a_1f0172166e6746e6852c343ed8d5888d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39m[AgentRun] listener failed for run 'ado_lead_849b3a_1f0172166e6746e6852c343ed8d5888d': Error: Rejected TOKEN_USAGE_UPDATED: agent token summary must not claim a Team root
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mClosed agent session 53401c7f-a936-41fc-926f-32463a9c3056
+
+[90mstderr[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[22m[39mSEND_MESSAGE command not accepted for agent run ado_manager_849b3a_ee6a3cf5f6124a87b512719968bcb23c: [ACTIVATION_FAILED] Collaboration root 'agent:ado_manager_849b3a_ee6a3cf5f6124a87b512719968bcb23c' is already active or reserved.
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mClosed agent session ca159547-94f4-4f90-a9e0-182c91e0f6f4
+Agent WebSocket disconnected: ca159547-94f4-4f90-a9e0-182c91e0f6f4
+
+[90mstdout[2m | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22m[2mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mClosed agent session 3b641d1a-11bc-4835-aaaa-02fa333dc45f
+Agent WebSocket disconnected: 3b641d1a-11bc-4835-aaaa-02fa333dc45f
+
+ [31m❯[39m tests/e2e/projects/hand-started-run-adoption.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m3 skipped[39m[2m)[22m[33m 62317[2mms[22m[39m
+     [2m[90m↓[39m[22m ADO-1 an agent run the user started is adopted, keeps its files and conversation, closes on DONE and is reactivated after reopening
+     [2m[90m↓[39m[22m ADO-2 a team run the user started is adopted; its members message each other and the PM; DONE closes it
+     [2m[90m↓[39m[22m ADO-3 refusals through the real tool say why and change nothing
+[31m     [31m×[31m ADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running[39m[33m 61503[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/hand-started-run-adoption.e2e.test.ts[2m > [22mA Task given to a run the user started (adoption, real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22mADO-4 an adopted team's members report token usage like any task team's, and the PM's root keeps running
+[31m[1mError[22m: Error: Timed out waiting for agent / tool result for CALL_TOOL:{"name":"send_message_to","arguments":{"target_agent_run_id":"ado_lead_849b3a_1f0172166e6746e6852c34; the agent's conversation ends: ["assistant","CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":true,\\\"code\\\":\\\"DELIVERED\\\",\\\"message\\\":\\\"Message delivered.\\\",\\\"target_agent_run_id\\\":\\\"ado_lead_849b3a_886fdf0a2a5145b1a438a4bb925d5df8\\\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"ado_lead_849b3a_886fdf0a2a5145b1a438a4bb925d5df8\"}}","message","user","CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"target_team_run_id\":\"ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e\",\"task_id\":\"project_task_9f534dce-7421-474d-809a-6a13450bbcca\"}}","message","assistant","CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"delegated\\\": true,\\n  \\\"target_kind\\\": \\\"team\\\",\\n  \\\"target_team_run_id\\\": \\\"ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e\\\",\\n  \\\"target_team_coordinator_agent_run_id\\\": \\\"ado_lead_849b3a_1f0172166e6746e6852c343ed8d5888d\\\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"team\",\"target_team_run_id\":\"ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e\",\"target_team_coordinator_agent_run_id\":\"ado_lead_849b3a_1f0172166e6746e6852c343ed8d5888d\"}}"]; raw trace tail:
+{"id":"rt_1792308761276_a21d9cb5-8680-4d8f-b6fb-12e6a66c5468","ts":1792308761.276,"turn_id":"c303b922-2856-4d3f-a99d-2b00ecffb6b9","seq":1,"trace_type":"user","content":"CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/ado_team_849b3a\",\"description\":\"Control: review one line.\"}}","source_event":"AgentRun.postUserMessage"}
+{"id":"rt_1792308761771_e02e3759-5a2f-4f76-b51a-c80955514d52","ts":1792308761.771,"turn_id":"c303b922-2856-4d3f-a99d-2b00ecffb6b9","seq":2,"trace_type":"assistant","content":"CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"delegated\\\": true,\\n  \\\"target_kind\\\": \\\"team\\\",\\n  \\\"target_team_run_id\\\": \\\"ado_team_849b3a_2aa07b3985ef424186f861d2c8f30187\\\",\\n  \\\"target_team_coordinator_agent_run_id\\\": \\\"ado_lead_849b3a_886fdf0a2a5145b1a438a4bb925d5df8\\\",\\n  \\\"task_id\\\": \\\"ad_hoc_task_83d53516-91af-43b6-807a-d5fd199a512b\\\"\\n}\"}],\"structuredContent\
+{"id":"rt_1792308761835_220721da-1624-4996-81e9-394d202a846f","ts":1792308761.835,"turn_id":"ab7f0f8e-4831-433d-bb65-78e8a4286012","seq":1,"trace_type":"user","content":"CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"target_agent_run_id\":\"ado_lead_849b3a_886fdf0a2a5145b1a438a4bb925d5df8\",\"content\":\"Still there? new task team 830343\"}}","source_event":"AgentRun.postUserMessage"}
+{"id":"rt_1792308761880_4c0d91ff-60fe-4bcc-8edf-d77cdecea7e7","ts":1792308761.88,"turn_id":"ab7f0f8e-4831-433d-bb65-78e8a4286012","seq":2,"trace_type":"assistant","content":"CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":true,\\\"code\\\":\\\"DELIVERED\\\",\\\"message\\\":\\\"Message delivered.\\\",\\\"target_agent_run_id\\\":\\\"ado_lead_849b3a_886fdf0a2a5145b1a438a4bb925d5df8\\\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"ado_lead_849b3a_886fdf0a2a5145b1a438a4bb925d5df8\"}}","source_e
+{"id":"rt_1792308762231_95ac6bcf-a017-4383-afd3-edca185a1305","ts":1792308762.231,"turn_id":"5dc2f61a-b0e3-4d53-b3a9-440ee52b2004","seq":1,"trace_type":"user","content":"CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"target_team_run_id\":\"ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e\",\"task_id\":\"project_task_9f534dce-7421-474d-809a-6a13450bbcca\"}}","source_event":"AgentRun.postUserMessage"}
+{"id":"rt_1792308762549_63be2ebf-3482-4243-9a6f-847332b87512","ts":1792308762.549,"turn_id":"5dc2f61a-b0e3-4d53-b3a9-440ee52b2004","seq":2,"trace_type":"assistant","content":"CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"delegated\\\": true,\\n  \\\"target_kind\\\": \\\"team\\\",\\n  \\\"target_team_run_id\\\": \\\"ado_team_849b3a_91e2628cca4c4fc2bb98c5eeceb7505e\\\",\\n  \\\"target_team_coordinator_agent_run_id\\\": \\\"ado_lead_849b3a_1f0172166e6746e6852c343ed8d5888d\\\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"team\",\"target_team_run_id\":\"ado_tea[39m
+[36m [2m❯[22m tests/e2e/helpers/collaboration-root-harness.ts:[2m241:41[22m[39m
+
+[90m [2m❯[22m Object.calls tests/e2e/helpers/collaboration-root-harness.ts:[2m239:7[22m[39m
+[90m [2m❯[22m stillRunning tests/e2e/projects/hand-started-run-adoption.e2e.test.ts:[2m235:20[22m[39m
+[90m [2m❯[22m tests/e2e/projects/hand-started-run-adoption.e2e.test.ts:[2m260:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m3 skipped[39m[90m (4)[39m
+[2m   Start at [22m 09:32:31
+[2m   Duration [22m 71.26s[2m (transform 5.92s, setup 25ms, import 8.39s, tests 62.32s, environment 0ms)[22m
+
