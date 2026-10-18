@@ -1,0 +1,542 @@
+{
+  "backend": "http://127.0.0.1:50483",
+  "startedAt": "2026-10-18T05:40:15.755Z",
+  "cases": {
+    "APP-OLD-MIXED": {
+      "result": "Pass",
+      "launch": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "pts_old_listed_b1f39488fe2e46db97d67df9f4c34e6b"
+      },
+      "runId": "pts_old_listed_b1f39488fe2e46db97d67df9f4c34e6b",
+      "definitionToolNames": [
+        "list_projects",
+        "create_or_update_project",
+        "create_project",
+        "update_project",
+        "list_project_tasks",
+        "create_task",
+        "update_task",
+        "read_file"
+      ],
+      "exposedToolNames": [
+        "create_project",
+        "create_task",
+        "delegate_task",
+        "list_project_tasks",
+        "list_projects",
+        "send_message_to",
+        "update_project",
+        "update_task"
+      ],
+      "calls": [
+        {
+          "tool": "create_or_update_project",
+          "arguments": {
+            "name": "Must not be created (old name)"
+          },
+          "refused": true,
+          "agentError": [
+            {
+              "type": "ERROR",
+              "payload": {
+                "code": "AGY_TURN_ERROR",
+                "message": "MCP error -32602: Unknown MCP tool",
+                "error_scope": "turn",
+                "error_effect": "terminal",
+                "turn_id": "6edc25fd-c05c-4ce4-b5a3-8c4a0c57f9a0"
+              }
+            }
+          ]
+        },
+        {
+          "tool": "create_project",
+          "arguments": {
+            "name": "PTS OldListed 9f51",
+            "description": "via create_project"
+          },
+          "isError": false,
+          "result": {
+            "project": {
+              "projectId": "project_a26e154f-966b-4b69-b0d8-6d948fc9c7be",
+              "name": "PTS OldListed 9f51",
+              "description": "via create_project",
+              "workspaces": []
+            }
+          }
+        },
+        {
+          "tool": "update_project",
+          "arguments": {
+            "project_id": "project_a26e154f-966b-4b69-b0d8-6d948fc9c7be",
+            "description": "via update_project"
+          },
+          "isError": false,
+          "result": {
+            "project": {
+              "projectId": "project_a26e154f-966b-4b69-b0d8-6d948fc9c7be",
+              "name": "PTS OldListed 9f51",
+              "description": "via update_project",
+              "workspaces": []
+            }
+          }
+        }
+      ]
+    },
+    "APP-OLD-ALONE": {
+      "result": "Pass",
+      "launch": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "pts_old_alone_273c04f72c9740f0ad6e5f1b10ffcedb"
+      },
+      "runId": "pts_old_alone_273c04f72c9740f0ad6e5f1b10ffcedb",
+      "definitionToolNames": [
+        "create_or_update_project"
+      ],
+      "exposedToolNames": [
+        "delegate_task",
+        "send_message_to"
+      ],
+      "calls": [
+        {
+          "tool": "create_or_update_project",
+          "arguments": {
+            "name": "Must not be created (alone)"
+          },
+          "refused": true,
+          "agentError": [
+            {
+              "type": "ERROR",
+              "payload": {
+                "code": "AGY_TURN_ERROR",
+                "message": "MCP error -32602: Unknown MCP tool",
+                "error_scope": "turn",
+                "error_effect": "terminal",
+                "turn_id": "dce17042-5da3-4576-a689-4ab16e7a272a"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "APP-NEW": {
+      "result": "Pass",
+      "launch": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "pts_new_tools_6778b04dd24a40519bb673eda10c3d8f"
+      },
+      "runId": "pts_new_tools_6778b04dd24a40519bb673eda10c3d8f",
+      "definitionToolNames": [
+        "list_projects",
+        "create_project",
+        "update_project"
+      ],
+      "exposedToolNames": [
+        "create_project",
+        "delegate_task",
+        "list_projects",
+        "send_message_to",
+        "update_project"
+      ],
+      "descriptions": {
+        "create_project": {
+          "description": "Create a Project on the current node: required name, optional description and workspaces (absolute node-local folder paths; registration not required). Returns the saved Project (projectId, name, description, workspaces). Does not delegate work.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Trimmed non-empty Project name.",
+                "type": "string"
+              },
+              "description": {
+                "description": "Optional Project description.",
+                "type": "string"
+              },
+              "workspaces": {
+                "description": "Optional workspace links. Use absolute folder paths on this node; registration and existence are not required.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workspace_path": {
+                      "description": "Absolute folder path on this node; no shell expansion or registration required.",
+                      "type": "string"
+                    },
+                    "description": {
+                      "description": "Optional link description.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "workspace_path"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "update_project": {
+          "description": "Update a known Project by its project_id: name, description and/or workspaces. Omitted fields are kept; blank description clears. A supplied workspaces list replaces ALL links ([] unlinks all, folders are not deleted); retained links keep omitted descriptions. Returns the saved Project.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "project_id": {
+                "description": "Known Project identity to update. Never resolved by name.",
+                "type": "string"
+              },
+              "name": {
+                "description": "Trimmed non-empty Project name; omit to keep.",
+                "type": "string"
+              },
+              "description": {
+                "description": "Project description; omit to keep, blank to clear.",
+                "type": "string"
+              },
+              "workspaces": {
+                "description": "Complete desired workspace links, not append. Omit to keep; [] unlinks all without deleting folders. Use absolute folder paths on this node; registration and existence are not required.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workspace_path": {
+                      "description": "Absolute folder path on this node; no shell expansion or registration required.",
+                      "type": "string"
+                    },
+                    "description": {
+                      "description": "Link description; omit to keep a retained link's description, blank to clear. New links default to blank.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "workspace_path"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "project_id"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stored": {
+        "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+        "name": "PTS New 24e9 renamed",
+        "description": "made",
+        "workspaces": []
+      },
+      "calls": [
+        {
+          "tool": "create_project",
+          "arguments": {
+            "name": "PTS New 24e9",
+            "description": "made",
+            "workspaces": [
+              {
+                "workspace_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-a",
+                "description": "A"
+              }
+            ]
+          },
+          "isError": false,
+          "result": {
+            "project": {
+              "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+              "name": "PTS New 24e9",
+              "description": "made",
+              "workspaces": [
+                {
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-a",
+                  "description": "A"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "tool": "update_project",
+          "arguments": {
+            "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7",
+            "name": "PTS New 24e9 renamed"
+          },
+          "isError": false,
+          "result": {
+            "project": {
+              "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+              "name": "PTS New 24e9 renamed",
+              "description": "made",
+              "workspaces": [
+                {
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-a",
+                  "description": "A"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "tool": "update_project",
+          "arguments": {
+            "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7",
+            "workspaces": [
+              {
+                "workspace_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-b"
+              }
+            ]
+          },
+          "isError": false,
+          "result": {
+            "project": {
+              "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+              "name": "PTS New 24e9 renamed",
+              "description": "made",
+              "workspaces": [
+                {
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-b",
+                  "description": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "tool": "update_project",
+          "arguments": {
+            "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7",
+            "workspaces": []
+          },
+          "isError": false,
+          "result": {
+            "project": {
+              "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+              "name": "PTS New 24e9 renamed",
+              "description": "made",
+              "workspaces": []
+            }
+          }
+        },
+        {
+          "tool": "create_project",
+          "arguments": {
+            "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7",
+            "name": "Must not be created"
+          },
+          "isError": true,
+          "result": {
+            "error": {
+              "code": "PROJECT_TOOL_ARGUMENT_INVALID",
+              "message": "Unsupported tool argument."
+            }
+          }
+        },
+        {
+          "tool": "update_project",
+          "arguments": {
+            "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7"
+          },
+          "isError": true,
+          "result": {
+            "error": {
+              "code": "PROJECT_PATCH_REQUIRED",
+              "message": "Supply name, description and/or workspaces to update a Project."
+            }
+          }
+        },
+        {
+          "tool": "update_project",
+          "arguments": {
+            "name": "x"
+          },
+          "isError": true,
+          "result": {
+            "error": {
+              "code": "PROJECT_TOOL_ARGUMENT_INVALID",
+              "message": "project_id must be a non-empty string."
+            }
+          }
+        },
+        {
+          "tool": "create_project",
+          "arguments": {
+            "name": "  "
+          },
+          "isError": true,
+          "result": {
+            "error": {
+              "code": "PROJECT_NAME_REQUIRED",
+              "message": "Project name is required."
+            }
+          }
+        }
+      ]
+    },
+    "REAL-OLD-MIXED": {
+      "result": "Pass",
+      "runtimeKind": "claude_agent_sdk",
+      "model": "haiku",
+      "launch": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "pts_old_listed_f0b68e7a694f4042948c54ce5e0151cf"
+      },
+      "outcome": {
+        "projectId": "project_862c758d-7778-4d6a-9552-66de29578c92",
+        "name": "PTS Real OldListed 8793",
+        "description": "real update",
+        "workspaces": []
+      },
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Create a Project named \"PTS Real OldListed 8793\" with description \"real create\". Then change its description to \"real update\". Report both tool results.",
+          "media": null,
+          "ts": 1792302024.189
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01TwssCud3DeNHkycmxzNPi1",
+          "role": null,
+          "content": "",
+          "toolName": "create_project",
+          "toolArgs": {
+            "name": "PTS Real OldListed 8793",
+            "description": "real create"
+          },
+          "toolResult": "{\"project\":{\"projectId\":\"project_862c758d-7778-4d6a-9552-66de29578c92\",\"name\":\"PTS Real OldListed 8793\",\"description\":\"real create\",\"workspaces\":[]}}",
+          "toolError": null,
+          "media": null,
+          "ts": 1792302027.323
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01Be2Vw9LkfDd1bQQ9tbwiRQ",
+          "role": null,
+          "content": "",
+          "toolName": "update_project",
+          "toolArgs": {
+            "project_id": "project_862c758d-7778-4d6a-9552-66de29578c92",
+            "description": "real update"
+          },
+          "toolResult": "{\"project\":{\"projectId\":\"project_862c758d-7778-4d6a-9552-66de29578c92\",\"name\":\"PTS Real OldListed 8793\",\"description\":\"real update\",\"workspaces\":[]}}",
+          "toolError": null,
+          "media": null,
+          "ts": 1792302028.338
+        }
+      ],
+      "toolNamesInConversation": [
+        "create_project",
+        "update_project"
+      ]
+    },
+    "REAL-OLD-ALONE": {
+      "result": "Pass",
+      "runtimeKind": "claude_agent_sdk",
+      "model": "haiku",
+      "launch": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "pts_old_alone_192c908cbc294390af3b0ee2b10431c6"
+      },
+      "outcome": {
+        "noProjectCreated": true
+      },
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Create a Project named \"PTS Real OldAlone 8793\". If you have no tool that can create a Project, say so.",
+          "media": null,
+          "ts": 1792302030.466
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "I can't create that Project. My only Project mutation tool, `create_or_update_project`, has been removed, and I have no other tool that can create a Project. I haven't changed anything.",
+          "media": null,
+          "ts": 1792302033.799
+        }
+      ],
+      "toolNamesInConversation": [
+        "create_or_update_project"
+      ]
+    },
+    "REAL-NEW": {
+      "result": "Pass",
+      "runtimeKind": "claude_agent_sdk",
+      "model": "haiku",
+      "launch": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "pts_new_tools_2c8bc3425fd04bf1b9584db47bf6156a"
+      },
+      "outcome": {
+        "projectId": "project_6fff11e3-6a81-4789-b3e8-0e12bfc4f5f7",
+        "name": "PTS Real New 8793",
+        "description": "real update",
+        "workspaces": []
+      },
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Create a Project named \"PTS Real New 8793\" with description \"real create\". Then change its description to \"real update\". Report both tool results.",
+          "media": null,
+          "ts": 1792302039.636
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_019ykEGHHVJpq5QErDd2v6Ez",
+          "role": null,
+          "content": "",
+          "toolName": "create_project",
+          "toolArgs": {
+            "name": "PTS Real New 8793",
+            "description": "real create"
+          },
+          "toolResult": "{\"project\":{\"projectId\":\"project_6fff11e3-6a81-4789-b3e8-0e12bfc4f5f7\",\"name\":\"PTS Real New 8793\",\"description\":\"real create\",\"workspaces\":[]}}",
+          "toolError": null,
+          "media": null,
+          "ts": 1792302043.237
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01QRWtkWczXVyKxYVGc822W9",
+          "role": null,
+          "content": "",
+          "toolName": "update_project",
+          "toolArgs": {
+            "project_id": "project_6fff11e3-6a81-4789-b3e8-0e12bfc4f5f7",
+            "description": "real update"
+          },
+          "toolResult": "{\"project\":{\"projectId\":\"project_6fff11e3-6a81-4789-b3e8-0e12bfc4f5f7\",\"name\":\"PTS Real New 8793\",\"description\":\"real update\",\"workspaces\":[]}}",
+          "toolError": null,
+          "media": null,
+          "ts": 1792302044.726
+        }
+      ],
+      "toolNamesInConversation": [
+        "create_project",
+        "update_project"
+      ]
+    },
+    "NATIVE-LAUNCH": {
+      "result": "Pass",
+      "launch": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "pts_old_listed_77109f5f90584c4cb5336ac0ec23b8f4"
+      },
+      "markerTime": "2026-10-18T05:40:51.159Z"
+    }
+  },
+  "finishedAt": "2026-10-18T05:40:51.192Z"
+}

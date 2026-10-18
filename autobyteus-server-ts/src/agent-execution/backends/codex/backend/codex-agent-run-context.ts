@@ -1,14 +1,11 @@
 import type { RuntimeSkillProfile } from "../../shared/runtime-skill-profile.js";
-import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
 import type { CodexThreadConfig } from "../thread/codex-thread-config.js";
-import type { CodexThreadCleanupTarget } from "./codex-thread-cleanup.js";
 import type { AgentRunContext as SharedAgentRunContext } from "../../../domain/agent-run-context.js";
 import type { CodexDynamicToolHandlerMap } from "../codex-dynamic-tool.js";
 
 export class CodexAgentRunContext {
   readonly privateSkillProfile: RuntimeSkillProfile | null;
   readonly codexThreadConfig: CodexThreadConfig;
-  readonly materializedConfiguredSkills: MaterializedWorkspaceSkill[];
   readonly dynamicToolHandlers: CodexDynamicToolHandlerMap;
   threadId: string | null;
   activeTurnId: string | null;
@@ -16,25 +13,18 @@ export class CodexAgentRunContext {
   constructor(input: {
     codexThreadConfig: CodexThreadConfig;
     privateSkillProfile?: RuntimeSkillProfile | null;
-    materializedConfiguredSkills?: MaterializedWorkspaceSkill[] | null;
     dynamicToolHandlers?: CodexDynamicToolHandlerMap | null;
     threadId?: string | null;
     activeTurnId?: string | null;
   }) {
     this.privateSkillProfile = input.privateSkillProfile ?? null;
     this.codexThreadConfig = input.codexThreadConfig;
-    this.materializedConfiguredSkills = input.materializedConfiguredSkills ?? [];
     this.dynamicToolHandlers = { ...(input.dynamicToolHandlers ?? {}) };
     this.threadId = input.threadId ?? null;
     this.activeTurnId = input.activeTurnId ?? null;
   }
 
-  toCleanupTarget(): CodexThreadCleanupTarget {
-    return {
-      workingDirectory: this.codexThreadConfig.workingDirectory,
-      materializedConfiguredSkills: this.materializedConfiguredSkills,
-    };
-  }
+
 }
 
 export type CodexRunContext = SharedAgentRunContext<CodexAgentRunContext>;

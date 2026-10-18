@@ -123,22 +123,11 @@ describe("Brief package team prompt authority", () => {
         ),
       },
     }));
-    const bootstrapper = new CodexThreadBootstrapper(
-      { activateForRun } as never,
-      {
-        materializeConfiguredWorkspaceSkills: vi.fn(async (input) => ({ materializedSkills: [], effectiveRequests: input.requests ?? [] })),
-      } as never,
-      {
+    const bootstrapper = new CodexThreadBootstrapper({ activateForRun } as never, {
         resolveWorkingDirectory: vi.fn(async () => workspaceRoot),
-      } as never,
-      definitions.agentDefinitionService,
-      {
+      } as never, definitions.agentDefinitionService, {
         resolveSkillScope: () => "CONFIGURED", resolveConfiguredSkillBindingsForAgent: vi.fn(() => []),
-      } as never,
-      {
-        acquireClient: vi.fn(),
-        releaseClient: vi.fn(async () => undefined),
-      } as never,
+      } as never
     );
 
     const result = await bootstrapper.bootstrapForCreate(new AgentRunContext({
@@ -154,7 +143,7 @@ describe("Brief package team prompt authority", () => {
         memberExecutionContext,
       }),
       runtimeContext: null,
-    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    }), { assertAccepting: () => undefined });
 
     const prompt = result.runtimeContext.codexThreadConfig.baseInstructions;
     expect(memberExecutionContext.authoredEnclosingScopeInstruction).toBe(packageTeam.instructions.trim());

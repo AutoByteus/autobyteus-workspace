@@ -1,4 +1,3 @@
-import { resolveNativeSharedWorkspace, nativeSharedTerminalData } from "./native-shared-workspace.js";
 import fs from "node:fs/promises";
 import {
   AgentConfig,
@@ -301,7 +300,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     let workspaceInstance = workspaceId
       ? this.workspaceManager.getWorkspaceById(workspaceId)
       : undefined;
-    if (workspaceId && !workspaceInstance) workspaceInstance = await resolveNativeSharedWorkspace(this.workspaceManager, workspaceId);
+    if (workspaceId && !workspaceInstance && await this.workspaceManager.getRegisteredWorkspaceRootPath(workspaceId)) {
+      workspaceInstance = await this.workspaceManager.getOrCreateWorkspace(workspaceId);
+    }
     if (workspaceId && !workspaceInstance) {
       logger.warn(
         `Workspace with ID ${workspaceId} not found. Falling back to temp workspace.`,
@@ -428,7 +429,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       RuntimeKind.AUTOBYTEUS;
 
     const initialCustomData = {
-      ...await nativeSharedTerminalData(workspaceRootPath),
       agent_definition_id: agentDefinitionId,
       is_first_user_turn: true,
       workspace_id: workspaceInstance?.workspaceId ?? null,

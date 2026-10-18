@@ -1,0 +1,679 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60917
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60917
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/db/development.db"
+
+SQLite database development.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:78021) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1792300856901,"pid":78021,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:60920"}
+{"level":30,"time":1792300856932,"pid":78021,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:60917"}
+[2026-10-18T05:20:56.933Z] [INFO] [server.runtime] Server listening on 127.0.0.1:60917
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Created and registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+Agent Definition created successfully with ID: manager-bragent-e939
+Agent Definition created successfully with ID: release-notes-writer-bragent-e939
+Agent Definition created successfully with ID: fact-checker-bragent-e939
+Agent Definition created successfully with ID: researcher-bragent-e939
+Agent Team Definition created successfully with ID: docs-review-team-bragent-e939
+Agent Team Definition created successfully with ID: delivery-team-bragent-e939
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created agent session 0f2c4b84-4b09-4b8d-91e2-d946187051a4 for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent WebSocket connected: session=0f2c4b84-4b09-4b8d-91e2-d946187051a4, run=manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+{"level":40,"time":1792300869905,"pid":78021,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_nGUx_IDAveoYtEO0dOQuVMnC37Ony7Evugf8IMUf_t8","statusCode":405,"elapsedMs":0.23733305931091309,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_bragent_e939_6d17d5e502684f3b8317022385987099: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300870369,"pid":78021,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_WPCsEj6PRrsMaI_BkQNVOPcRRQ1Sw4NAQ_WJ8ujf6Q0","statusCode":405,"elapsedMs":0.17808401584625244,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run fact_checker_bragent_e939_8ebb086e8bcd439989e98530906ff761: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300870822,"pid":78021,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_p2oSZN2eGNIOGKeYLbhlQUXGef_n4HOIEIFQeM11sgc","statusCode":405,"elapsedMs":0.16866695880889893,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run researcher_bragent_e939_5150196a322b47a088a81ba8a0f86352: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300871216,"pid":78021,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_nGUx_IDAveoYtEO0dOQuVMnC37Ony7Evugf8IMUf_t8","statusCode":405,"elapsedMs":0.22808301448822021,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_bragent_e939_16444704cceb49e6be2ee8ba4a2ec158: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300871610,"pid":78021,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_nGUx_IDAveoYtEO0dOQuVMnC37Ony7Evugf8IMUf_t8","statusCode":405,"elapsedMs":0.6973329782485962,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_bragent_e939_24bb4e1709a24ff69f7b5e892ec3bd09: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created agent session d3d6f7a0-2c89-41a1-9428-c52a320f41de for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent WebSocket connected: session=d3d6f7a0-2c89-41a1-9428-c52a320f41de, run=manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created terminal session 15dd713d-e5e2-4aa7-8b14-122777fc7e12 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 15dd713d-e5e2-4aa7-8b14-122777fc7e12
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_bragent_e939_9cd08c35ead5471e90a1a917a1305fd4/fact_checker_bragent_e939_5161219154c3497481726414e6220910/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_bragent_e939_9cd08c35ead5471e90a1a917a1305fd4/fact_checker_bragent_e939_5161219154c3497481726414e6220910/raw_traces_active.jsonl
+{"level":40,"time":1792300878333,"pid":78021,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_nGUx_IDAveoYtEO0dOQuVMnC37Ony7Evugf8IMUf_t8","statusCode":405,"elapsedMs":1.7347919940948486,"msg":"http request completed"}
+Closed PTY session 15dd713d-e5e2-4aa7-8b14-122777fc7e12
+Terminal WebSocket disconnected: 15dd713d-e5e2-4aa7-8b14-122777fc7e12
+{"level":40,"time":1792300878575,"pid":78021,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_nGUx_IDAveoYtEO0dOQuVMnC37Ony7Evugf8IMUf_t8","statusCode":405,"elapsedMs":0.3179579973220825,"msg":"http request completed"}
+{"level":40,"time":1792300879683,"pid":78021,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_nGUx_IDAveoYtEO0dOQuVMnC37Ony7Evugf8IMUf_t8","statusCode":405,"elapsedMs":0.17654204368591309,"msg":"http request completed"}
+{"level":40,"time":1792300879795,"pid":78021,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_nGUx_IDAveoYtEO0dOQuVMnC37Ony7Evugf8IMUf_t8","statusCode":405,"elapsedMs":0.18129205703735352,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_bragent_e939_8e987ac8b1ac456d9095e4bc117c8e87: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_bragent_e939_9cd08c35ead5471e90a1a917a1305fd4/fact_checker_bragent_e939_5161219154c3497481726414e6220910/raw_traces_active.jsonl
+{"level":40,"time":1792300880581,"pid":78021,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_8Jm7AHneT-2NkSYrt3QBjy8pJX1Q7KQFkpudLF801rU","statusCode":405,"elapsedMs":0.17849993705749512,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run fact_checker_bragent_e939_012c68752a9442638cb5cbf134a945a4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_bragent_e939_9cd08c35ead5471e90a1a917a1305fd4/fact_checker_bragent_e939_5161219154c3497481726414e6220910/raw_traces_active.jsonl
+{"level":40,"time":1792300881058,"pid":78021,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/mcp/agent-tools/agtrun_nGUx_IDAveoYtEO0dOQuVMnC37Ony7Evugf8IMUf_t8","statusCode":405,"elapsedMs":0.19033300876617432,"msg":"http request completed"}
+{"level":40,"time":1792300881332,"pid":78021,"hostname":"MacBookPro","reqId":"req-1b","method":"GET","url":"/mcp/agent-tools/agtrun_E1mgJ2diRTNylxdsPwwmCRHsFwYDnsJPJsth1VIAJ5Q","statusCode":405,"elapsedMs":0.17045891284942627,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run researcher_bragent_e939_d7b73cb5b2be425080dc5444c867862e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_bragent_e939_9cd08c35ead5471e90a1a917a1305fd4/fact_checker_bragent_e939_5161219154c3497481726414e6220910/raw_traces_active.jsonl
+Closed agent session 0f2c4b84-4b09-4b8d-91e2-d946187051a4
+Agent WebSocket disconnected: 0f2c4b84-4b09-4b8d-91e2-d946187051a4
+Closed agent session d3d6f7a0-2c89-41a1-9428-c52a320f41de
+Agent WebSocket disconnected: d3d6f7a0-2c89-41a1-9428-c52a320f41de
+Agent Definition created successfully with ID: manager-brteam-1cb5
+Agent Definition created successfully with ID: release-notes-writer-brteam-1cb5
+Agent Definition created successfully with ID: fact-checker-brteam-1cb5
+Agent Definition created successfully with ID: researcher-brteam-1cb5
+Agent Team Definition created successfully with ID: docs-review-team-brteam-1cb5
+Agent Team Definition created successfully with ID: delivery-team-brteam-1cb5
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+Agent team websocket attached for team run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Created agent session 4b2e5bb5-90c2-44a9-9c67-b7e4319ec81c for run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Agent Team WebSocket connected: session=4b2e5bb5-90c2-44a9-9c67-b7e4319ec81c, run=delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run manager_brteam_1cb5_4c70beafa21e4f33b39524b70b041210: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300882714,"pid":78021,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/mcp/agent-tools/agtrun_oOvYY_MANnmn1M7hLJ4auiBNvj6N6NXe-vrmd9QrC6I","statusCode":405,"elapsedMs":0.17995798587799072,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_brteam_1cb5_8ca37fcb55424b7997966c272a825152: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300883163,"pid":78021,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/mcp/agent-tools/agtrun_9M0qGpQVmyuSVB2dUPIKkNIlptbHOGrprr8GYCpVraY","statusCode":405,"elapsedMs":0.19291603565216064,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run fact_checker_brteam_1cb5_ff37a481fe0947fd91414e8091349140: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300883566,"pid":78021,"hostname":"MacBookPro","reqId":"req-1n","method":"GET","url":"/mcp/agent-tools/agtrun_uk_MuejncAizOuPnzqnPLuIEJ_C_05pOJ8C158X5L9A","statusCode":405,"elapsedMs":0.1727079153060913,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run researcher_brteam_1cb5_64119b7db15d4ab9bf9c432bae3237a0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300883885,"pid":78021,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/mcp/agent-tools/agtrun_oOvYY_MANnmn1M7hLJ4auiBNvj6N6NXe-vrmd9QrC6I","statusCode":405,"elapsedMs":0.11791694164276123,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_brteam_1cb5_b7ad705059464750ba8ab0261f2ca15c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300884273,"pid":78021,"hostname":"MacBookPro","reqId":"req-1v","method":"GET","url":"/mcp/agent-tools/agtrun_oOvYY_MANnmn1M7hLJ4auiBNvj6N6NXe-vrmd9QrC6I","statusCode":405,"elapsedMs":0.11695802211761475,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_brteam_1cb5_5bb4775f9662422885ae3c531712e157: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Created terminal session cf83632b-8afc-40bb-a466-73033944c714 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: cf83632b-8afc-40bb-a466-73033944c714
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created agent session 9b8d10b4-13b9-47e2-a0df-321203dd6a71 for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent WebSocket connected: session=9b8d10b4-13b9-47e2-a0df-321203dd6a71, run=manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brteam_1cb5_7105cfd79f11454cb1036d1aed25e54f/fact_checker_brteam_1cb5_1fa645b662e5440097e4965f73316886/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Created agent session f1fdcfe4-3edf-4848-a6e7-88b1810dd7fe for run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Agent Team WebSocket connected: session=f1fdcfe4-3edf-4848-a6e7-88b1810dd7fe, run=delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+{"level":40,"time":1792300886719,"pid":78021,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/mcp/agent-tools/agtrun_oOvYY_MANnmn1M7hLJ4auiBNvj6N6NXe-vrmd9QrC6I","statusCode":405,"elapsedMs":0.16254198551177979,"msg":"http request completed"}
+{"level":40,"time":1792300887052,"pid":78021,"hostname":"MacBookPro","reqId":"req-23","method":"GET","url":"/mcp/agent-tools/agtrun_oOvYY_MANnmn1M7hLJ4auiBNvj6N6NXe-vrmd9QrC6I","statusCode":405,"elapsedMs":0.14029204845428467,"msg":"http request completed"}
+{"level":40,"time":1792300888093,"pid":78021,"hostname":"MacBookPro","reqId":"req-27","method":"GET","url":"/mcp/agent-tools/agtrun_oOvYY_MANnmn1M7hLJ4auiBNvj6N6NXe-vrmd9QrC6I","statusCode":405,"elapsedMs":0.1658329963684082,"msg":"http request completed"}
+{"level":40,"time":1792300888215,"pid":78021,"hostname":"MacBookPro","reqId":"req-2b","method":"GET","url":"/mcp/agent-tools/agtrun_oOvYY_MANnmn1M7hLJ4auiBNvj6N6NXe-vrmd9QrC6I","statusCode":405,"elapsedMs":0.2996249198913574,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_brteam_1cb5_803508f5d7234009a4ed2f7561e3f488: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300888663,"pid":78021,"hostname":"MacBookPro","reqId":"req-2f","method":"GET","url":"/mcp/agent-tools/agtrun_sh56bMj7Ao2ThBBgWUE7craCZrgKnQF5mpXSlPzufJk","statusCode":405,"elapsedMs":0.14508306980133057,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run fact_checker_brteam_1cb5_23b9ba8d47924e7e960f6b3b400a9cc9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300889097,"pid":78021,"hostname":"MacBookPro","reqId":"req-2j","method":"GET","url":"/mcp/agent-tools/agtrun_Oojnqp6W54iJFZxHP80KLYM67I3mnF0mby23pGFsqOw","statusCode":405,"elapsedMs":0.15699994564056396,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run researcher_brteam_1cb5_bc464372fddd43848570359549050561: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300889483,"pid":78021,"hostname":"MacBookPro","reqId":"req-2n","method":"GET","url":"/mcp/agent-tools/agtrun_oOvYY_MANnmn1M7hLJ4auiBNvj6N6NXe-vrmd9QrC6I","statusCode":405,"elapsedMs":1.0339159965515137,"msg":"http request completed"}
+Closed agent session 4b2e5bb5-90c2-44a9-9c67-b7e4319ec81c
+Closed agent session 9b8d10b4-13b9-47e2-a0df-321203dd6a71
+Agent WebSocket disconnected: 9b8d10b4-13b9-47e2-a0df-321203dd6a71
+Closed agent session f1fdcfe4-3edf-4848-a6e7-88b1810dd7fe
+Agent Definition created successfully with ID: manager-brorg-1fbb
+Closed PTY session cf83632b-8afc-40bb-a466-73033944c714
+Terminal WebSocket disconnected: cf83632b-8afc-40bb-a466-73033944c714
+Agent Definition created successfully with ID: release-notes-writer-brorg-1fbb
+Agent Definition created successfully with ID: fact-checker-brorg-1fbb
+Agent Definition created successfully with ID: researcher-brorg-1fbb
+Agent Team Definition created successfully with ID: docs-review-team-brorg-1fbb
+Agent Team Definition created successfully with ID: delivery-team-brorg-1fbb
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run manager_brorg_1fbb_40324fef50954b4ebd85bb20a1dd432f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300891021,"pid":78021,"hostname":"MacBookPro","reqId":"req-2r","method":"GET","url":"/mcp/agent-tools/agtrun_KS4vtqCOtTLPIW-dMBvVrWKYMXduIy-r1kWzEMoP8sw","statusCode":405,"elapsedMs":0.4920409917831421,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_brorg_1fbb_b9e1a1caa75a43b3ab97ef74766e3751: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300891425,"pid":78021,"hostname":"MacBookPro","reqId":"req-2v","method":"GET","url":"/mcp/agent-tools/agtrun_rQNHSLzjwow9sTcE-J08b4NqmolJl-1I-XQp_rXOIyk","statusCode":405,"elapsedMs":0.1179579496383667,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run fact_checker_brorg_1fbb_2726a6e3c0e44bd2919e14d2d70de916: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300891977,"pid":78021,"hostname":"MacBookPro","reqId":"req-2z","method":"GET","url":"/mcp/agent-tools/agtrun_kT770s_ZpxqnNy_H-baf7KfLgAWJdTBmF_c9LTxNOrQ","statusCode":405,"elapsedMs":0.16883301734924316,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run researcher_brorg_1fbb_76d46d87dc0e40b0a12e45fce613be64: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300892373,"pid":78021,"hostname":"MacBookPro","reqId":"req-33","method":"GET","url":"/mcp/agent-tools/agtrun_KS4vtqCOtTLPIW-dMBvVrWKYMXduIy-r1kWzEMoP8sw","statusCode":405,"elapsedMs":0.3714998960494995,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_brorg_1fbb_472874fb32bb48a388a32ba98f66f674: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300892780,"pid":78021,"hostname":"MacBookPro","reqId":"req-37","method":"GET","url":"/mcp/agent-tools/agtrun_KS4vtqCOtTLPIW-dMBvVrWKYMXduIy-r1kWzEMoP8sw","statusCode":405,"elapsedMs":0.13233399391174316,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_brorg_1fbb_9356d6215b3741b7be0ab9fa66221321: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created agent session 7e644382-870d-42fe-9a06-10b51394fe01 for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent WebSocket connected: session=7e644382-870d-42fe-9a06-10b51394fe01, run=manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brteam_1cb5_7105cfd79f11454cb1036d1aed25e54f/fact_checker_brteam_1cb5_1fa645b662e5440097e4965f73316886/raw_traces_active.jsonl
+Created terminal session 7e81f8aa-8673-4341-8159-5a315698ec2f using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 7e81f8aa-8673-4341-8159-5a315698ec2f
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Created agent session eeaab2d3-421b-4c24-92b6-0431d282bfe1 for run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Agent Team WebSocket connected: session=eeaab2d3-421b-4c24-92b6-0431d282bfe1, run=delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+{"level":40,"time":1792300895071,"pid":78021,"hostname":"MacBookPro","reqId":"req-3b","method":"GET","url":"/mcp/agent-tools/agtrun_KS4vtqCOtTLPIW-dMBvVrWKYMXduIy-r1kWzEMoP8sw","statusCode":405,"elapsedMs":0.17104196548461914,"msg":"http request completed"}
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+{"level":40,"time":1792300895315,"pid":78021,"hostname":"MacBookPro","reqId":"req-3f","method":"GET","url":"/mcp/agent-tools/agtrun_KS4vtqCOtTLPIW-dMBvVrWKYMXduIy-r1kWzEMoP8sw","statusCode":405,"elapsedMs":0.17237508296966553,"msg":"http request completed"}
+{"level":40,"time":1792300896314,"pid":78021,"hostname":"MacBookPro","reqId":"req-3j","method":"GET","url":"/mcp/agent-tools/agtrun_KS4vtqCOtTLPIW-dMBvVrWKYMXduIy-r1kWzEMoP8sw","statusCode":405,"elapsedMs":0.6267080307006836,"msg":"http request completed"}
+{"level":40,"time":1792300896428,"pid":78021,"hostname":"MacBookPro","reqId":"req-3n","method":"GET","url":"/mcp/agent-tools/agtrun_KS4vtqCOtTLPIW-dMBvVrWKYMXduIy-r1kWzEMoP8sw","statusCode":405,"elapsedMs":0.1393749713897705,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_brorg_1fbb_8dd23b35f6c44076adb5be2eb9d29c4a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+{"level":40,"time":1792300896812,"pid":78021,"hostname":"MacBookPro","reqId":"req-3r","method":"GET","url":"/mcp/agent-tools/agtrun_iivSzsbcJXHyFRBYlNxGMWmlIRrX8WrfrIBA9pVesFc","statusCode":405,"elapsedMs":0.1916670799255371,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run fact_checker_brorg_1fbb_c4cf0fb98dfb4d06b6c5a73ea0e43b7c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+{"level":40,"time":1792300897159,"pid":78021,"hostname":"MacBookPro","reqId":"req-3v","method":"GET","url":"/mcp/agent-tools/agtrun_Mub_02jfpl7H9QxJplpa3WxvQ7wyOM_w0_R0pRZqESE","statusCode":405,"elapsedMs":0.14170897006988525,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run researcher_brorg_1fbb_6dc9601fc4644795a1864f4a6aba5487: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+{"level":40,"time":1792300897629,"pid":78021,"hostname":"MacBookPro","reqId":"req-3z","method":"GET","url":"/mcp/agent-tools/agtrun_KS4vtqCOtTLPIW-dMBvVrWKYMXduIy-r1kWzEMoP8sw","statusCode":405,"elapsedMs":0.3101249933242798,"msg":"http request completed"}
+Closed agent session eeaab2d3-421b-4c24-92b6-0431d282bfe1
+Closed agent session 7e644382-870d-42fe-9a06-10b51394fe01
+Agent WebSocket disconnected: 7e644382-870d-42fe-9a06-10b51394fe01
+Closed PTY session 7e81f8aa-8673-4341-8159-5a315698ec2f
+Terminal WebSocket disconnected: 7e81f8aa-8673-4341-8159-5a315698ec2f
+Agent Definition created successfully with ID: manager-rmagent-5ebc
+Agent Definition created successfully with ID: release-notes-writer-rmagent-5ebc
+Agent Definition created successfully with ID: fact-checker-rmagent-5ebc
+Agent Definition created successfully with ID: researcher-rmagent-5ebc
+Agent Team Definition created successfully with ID: docs-review-team-rmagent-5ebc
+Agent Team Definition created successfully with ID: delivery-team-rmagent-5ebc
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Created agent session 3c548b0d-faab-4d56-a950-94b97c2dc054 for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Agent WebSocket connected: session=3c548b0d-faab-4d56-a950-94b97c2dc054, run=manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+{"level":40,"time":1792300899156,"pid":78021,"hostname":"MacBookPro","reqId":"req-43","method":"GET","url":"/mcp/agent-tools/agtrun_nGYBUuFkaeT6v78uax7lJdGNgzwAKaBPG5x8W_Yefbo","statusCode":405,"elapsedMs":0.991041898727417,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_rmagent_5ebc_9c4f2ab6de934a84806e0172097f3d3f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300899591,"pid":78021,"hostname":"MacBookPro","reqId":"req-47","method":"GET","url":"/mcp/agent-tools/agtrun_ol7AUnW8-zfKU3s6Vw-P72VkuaoohidJTliFVG-abd0","statusCode":405,"elapsedMs":0.2050420045852661,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run fact_checker_rmagent_5ebc_0637f22b2a3d45a08aa05bc22421ab9f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300900006,"pid":78021,"hostname":"MacBookPro","reqId":"req-4c","method":"GET","url":"/mcp/agent-tools/agtrun_SUszvuYtmu9B9JMBQUs-lzU8DM7vslxzvixG9Xss9I4","statusCode":405,"elapsedMs":0.15641701221466064,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run researcher_rmagent_5ebc_399a46647b3b4347bbb5534707dec528: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300900320,"pid":78021,"hostname":"MacBookPro","reqId":"req-4f","method":"GET","url":"/mcp/agent-tools/agtrun_nGYBUuFkaeT6v78uax7lJdGNgzwAKaBPG5x8W_Yefbo","statusCode":405,"elapsedMs":0.17241597175598145,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_rmagent_5ebc_a811524374734855bf3ec6d62fd53a3c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created agent session 92792c69-a5f0-4a03-8af9-5c1612cd7371 for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent WebSocket connected: session=92792c69-a5f0-4a03-8af9-5c1612cd7371, run=manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created terminal session e44d1f30-3386-4b3b-b4ab-1b93464481e9 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: e44d1f30-3386-4b3b-b4ab-1b93464481e9
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Created agent session 72837b30-a574-44ba-9190-c36bf62e6bc9 for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Agent WebSocket connected: session=72837b30-a574-44ba-9190-c36bf62e6bc9, run=manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brteam_1cb5_7105cfd79f11454cb1036d1aed25e54f/fact_checker_brteam_1cb5_1fa645b662e5440097e4965f73316886/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Created agent session 6bec8c77-e6cd-405e-893f-46effe9bbd50 for run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Agent Team WebSocket connected: session=6bec8c77-e6cd-405e-893f-46effe9bbd50, run=delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+{"level":40,"time":1792300902450,"pid":78021,"hostname":"MacBookPro","reqId":"req-4j","method":"GET","url":"/mcp/agent-tools/agtrun_nGYBUuFkaeT6v78uax7lJdGNgzwAKaBPG5x8W_Yefbo","statusCode":405,"elapsedMs":0.16349995136260986,"msg":"http request completed"}
+Closed PTY session e44d1f30-3386-4b3b-b4ab-1b93464481e9
+Terminal WebSocket disconnected: e44d1f30-3386-4b3b-b4ab-1b93464481e9
+Closed agent session 3c548b0d-faab-4d56-a950-94b97c2dc054
+Agent WebSocket disconnected: 3c548b0d-faab-4d56-a950-94b97c2dc054
+Closed agent session 92792c69-a5f0-4a03-8af9-5c1612cd7371
+Agent WebSocket disconnected: 92792c69-a5f0-4a03-8af9-5c1612cd7371
+Closed agent session 72837b30-a574-44ba-9190-c36bf62e6bc9
+Agent WebSocket disconnected: 72837b30-a574-44ba-9190-c36bf62e6bc9
+Closed agent session 6bec8c77-e6cd-405e-893f-46effe9bbd50
+Agent Definition created successfully with ID: manager-rmteam-c698
+Agent Definition created successfully with ID: release-notes-writer-rmteam-c698
+Agent Definition created successfully with ID: fact-checker-rmteam-c698
+Agent Definition created successfully with ID: researcher-rmteam-c698
+Agent Team Definition created successfully with ID: docs-review-team-rmteam-c698
+Agent Team Definition created successfully with ID: delivery-team-rmteam-c698
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+Agent team websocket attached for team run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Created agent session 51231d21-907e-482e-81fa-e36bbd3e56ec for run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Agent Team WebSocket connected: session=51231d21-907e-482e-81fa-e36bbd3e56ec, run=delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run manager_rmteam_c698_d196af7faa98440e80a9db6404a25e18: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300903794,"pid":78021,"hostname":"MacBookPro","reqId":"req-4n","method":"GET","url":"/mcp/agent-tools/agtrun_ra02HU6loAbT5kt1SPduSOS1i2U-7ayPBg9wc9c6_j4","statusCode":405,"elapsedMs":0.3785409927368164,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_rmteam_c698_125dff68b7e84ae9809fdf07b51a5037: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300904314,"pid":78021,"hostname":"MacBookPro","reqId":"req-4r","method":"GET","url":"/mcp/agent-tools/agtrun_rrfXAS1jGOv8ZtDOaKBDVAjeS_7Uc8CbNYMambrNJOY","statusCode":405,"elapsedMs":0.13083302974700928,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run fact_checker_rmteam_c698_2752af4c473348ca9e4f04b18c4bf2be: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300904761,"pid":78021,"hostname":"MacBookPro","reqId":"req-4v","method":"GET","url":"/mcp/agent-tools/agtrun_x2ATZoTjSHALwfn5wX4G2GKsWv5N60wBbtMHMetFcws","statusCode":405,"elapsedMs":0.5119160413742065,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run researcher_rmteam_c698_f6d42d4d1dae446b94c1ad0070eac3d3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792300905088,"pid":78021,"hostname":"MacBookPro","reqId":"req-4z","method":"GET","url":"/mcp/agent-tools/agtrun_ra02HU6loAbT5kt1SPduSOS1i2U-7ayPBg9wc9c6_j4","statusCode":405,"elapsedMs":0.24024999141693115,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/workspace.
+Reusing registered workspace ID: agent_ws_273a633bc2c20a29c931e1b2311ce920a9774fb2cc1d0c4d9a01c6b0a500d0cb
+AGY compaction detection off for run release_notes_writer_rmteam_c698_eb2524fd20774370b1e628b79f6e00e3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created agent session f0e9a758-ba87-4afb-90c8-87a745f0a87a for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent WebSocket connected: session=f0e9a758-ba87-4afb-90c8-87a745f0a87a, run=manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent websocket attached for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Created agent session 5bdf8ced-2e8b-4481-bd1a-0ca444701946 for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Agent WebSocket connected: session=5bdf8ced-2e8b-4481-bd1a-0ca444701946, run=manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Created terminal session 520e35bf-a05b-4d29-b6a2-6f941b4f093b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 520e35bf-a05b-4d29-b6a2-6f941b4f093b
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Created agent session 78a312be-ae55-4e6f-97d5-491dde2cd157 for run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Agent Team WebSocket connected: session=78a312be-ae55-4e6f-97d5-491dde2cd157, run=delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brteam_1cb5_7105cfd79f11454cb1036d1aed25e54f/fact_checker_brteam_1cb5_1fa645b662e5440097e4965f73316886/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Created agent session 36963a9a-7609-4484-b7eb-e78b4c601904 for run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Agent Team WebSocket connected: session=36963a9a-7609-4484-b7eb-e78b4c601904, run=delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+{"level":40,"time":1792300907568,"pid":78021,"hostname":"MacBookPro","reqId":"req-53","method":"GET","url":"/mcp/agent-tools/agtrun_ra02HU6loAbT5kt1SPduSOS1i2U-7ayPBg9wc9c6_j4","statusCode":405,"elapsedMs":0.17337501049041748,"msg":"http request completed"}
+Closed agent session 51231d21-907e-482e-81fa-e36bbd3e56ec
+Closed agent session 78a312be-ae55-4e6f-97d5-491dde2cd157
+Closed agent session 5bdf8ced-2e8b-4481-bd1a-0ca444701946
+Agent WebSocket disconnected: 5bdf8ced-2e8b-4481-bd1a-0ca444701946
+Closed agent session 36963a9a-7609-4484-b7eb-e78b4c601904
+Closed agent session f0e9a758-ba87-4afb-90c8-87a745f0a87a
+Agent WebSocket disconnected: f0e9a758-ba87-4afb-90c8-87a745f0a87a
+Closed PTY session 520e35bf-a05b-4d29-b6a2-6f941b4f093b
+Terminal WebSocket disconnected: 520e35bf-a05b-4d29-b6a2-6f941b4f093b
+Created terminal session 46f35364-9b20-4b34-87d2-76a7b812e4af using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 46f35364-9b20-4b34-87d2-76a7b812e4af
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created agent session 9922d3c6-cd92-41bb-a52b-eb99891f4022 for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent WebSocket connected: session=9922d3c6-cd92-41bb-a52b-eb99891f4022, run=manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent websocket attached for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Created agent session 7f36fca8-dca5-4da3-a618-30423a478a0c for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Agent WebSocket connected: session=7f36fca8-dca5-4da3-a618-30423a478a0c, run=manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Agent team websocket attached for team run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Created agent session dbb67e0b-e45e-4ba0-8530-a4fcd6f9a30a for run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Agent Team WebSocket connected: session=dbb67e0b-e45e-4ba0-8530-a4fcd6f9a30a, run=delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brteam_1cb5_7105cfd79f11454cb1036d1aed25e54f/fact_checker_brteam_1cb5_1fa645b662e5440097e4965f73316886/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Created agent session 990b35f6-1cc3-4b83-8bb5-5ff6b210c8cf for run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Agent Team WebSocket connected: session=990b35f6-1cc3-4b83-8bb5-5ff6b210c8cf, run=delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_bragent_e939_9cd08c35ead5471e90a1a917a1305fd4/fact_checker_bragent_e939_5161219154c3497481726414e6220910/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_bragent_e939_9cd08c35ead5471e90a1a917a1305fd4/fact_checker_bragent_e939_5161219154c3497481726414e6220910/raw_traces_active.jsonl
+Closed PTY session 46f35364-9b20-4b34-87d2-76a7b812e4af
+Terminal WebSocket disconnected: 46f35364-9b20-4b34-87d2-76a7b812e4af
+Closed agent session 7f36fca8-dca5-4da3-a618-30423a478a0c
+Agent WebSocket disconnected: 7f36fca8-dca5-4da3-a618-30423a478a0c
+Closed agent session 9922d3c6-cd92-41bb-a52b-eb99891f4022
+Agent WebSocket disconnected: 9922d3c6-cd92-41bb-a52b-eb99891f4022
+Closed agent session dbb67e0b-e45e-4ba0-8530-a4fcd6f9a30a
+Closed agent session 990b35f6-1cc3-4b83-8bb5-5ff6b210c8cf
+Agent websocket attached for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created agent session ebd2379c-edad-49a7-8a31-39658effce9c for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent WebSocket connected: session=ebd2379c-edad-49a7-8a31-39658effce9c, run=manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent websocket attached for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Created agent session a354bee4-c7f5-4bdf-88af-f0705db4c196 for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Agent WebSocket connected: session=a354bee4-c7f5-4bdf-88af-f0705db4c196, run=manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Agent team websocket attached for team run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Created agent session 07d5922b-681c-4ed8-8958-e861ba53a989 for run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Agent Team WebSocket connected: session=07d5922b-681c-4ed8-8958-e861ba53a989, run=delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brteam_1cb5_7105cfd79f11454cb1036d1aed25e54f/fact_checker_brteam_1cb5_1fa645b662e5440097e4965f73316886/raw_traces_active.jsonl
+Created terminal session 8adc48b1-4df3-4d7d-bc52-9d244f08b6da using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 8adc48b1-4df3-4d7d-bc52-9d244f08b6da
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Created agent session c1e39817-53d5-4928-9bd4-4aa7c46d6815 for run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Agent Team WebSocket connected: session=c1e39817-53d5-4928-9bd4-4aa7c46d6815, run=delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Closed agent session a354bee4-c7f5-4bdf-88af-f0705db4c196
+Agent WebSocket disconnected: a354bee4-c7f5-4bdf-88af-f0705db4c196
+Closed agent session c1e39817-53d5-4928-9bd4-4aa7c46d6815
+Closed agent session ebd2379c-edad-49a7-8a31-39658effce9c
+Agent WebSocket disconnected: ebd2379c-edad-49a7-8a31-39658effce9c
+Closed agent session 07d5922b-681c-4ed8-8958-e861ba53a989
+Closed PTY session 8adc48b1-4df3-4d7d-bc52-9d244f08b6da
+Terminal WebSocket disconnected: 8adc48b1-4df3-4d7d-bc52-9d244f08b6da
+Agent websocket attached for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Created agent session 369e6505-a3ec-47c1-8202-d0dccf1e252a for run manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent WebSocket connected: session=369e6505-a3ec-47c1-8202-d0dccf1e252a, run=manager_bragent_e939_250549baf90a450da2ef15ec1c1638f6
+Agent websocket attached for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Created agent session 53131eed-4635-4a4b-ab53-d88010184297 for run manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Agent WebSocket connected: session=53131eed-4635-4a4b-ab53-d88010184297, run=manager_rmagent_5ebc_1433eaaa245e415e962cf94b94bca4d0
+Created terminal session d1212168-971e-4535-8974-3beeb07f14b8 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: d1212168-971e-4535-8974-3beeb07f14b8
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Created agent session b6a40f22-3c9b-4963-80d5-af6bb3078121 for run delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Agent Team WebSocket connected: session=b6a40f22-3c9b-4963-80d5-af6bb3078121, run=delivery_team_rmteam_c698_100f80f43b7949918044f36479eb7392
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brteam_1cb5_7105cfd79f11454cb1036d1aed25e54f/fact_checker_brteam_1cb5_1fa645b662e5440097e4965f73316886/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Created agent session cfdabcf3-44f9-42a3-b56f-456a9048c0f7 for run delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Agent Team WebSocket connected: session=cfdabcf3-44f9-42a3-b56f-456a9048c0f7, run=delivery_team_brteam_1cb5_9b073c48fc054a378f9767f45d205cdb
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/release_notes_writer_brorg_1fbb_91c6ce4e8f1240978b39266a6201c100/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/fact_checker_brorg_1fbb_49b0caa3ad284a38af7192d735df7013/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/fact_checker_brorg_1fbb_ca9b8c84b2bf4b2bad99f8bc1eac938a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_orgs/delivery_org_brorg_1fbb_0456cb5f9c2043beb1fa1be80ab9b675/docs_review_team_brorg_1fbb_7b9bb3385fd74f60b9f473175e5c31a8/release_notes_writer_brorg_1fbb_c76163e0b47949b8a65b548f5cd53f21/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-yKidkA/memory/agent_teams/docs_review_team_brorg_1fbb_5908dfc87b5745b489440fc4c131cf36/fact_checker_brorg_1fbb_6e8d5a917a5c45aea601be04700fa092/raw_traces_active.jsonl
+Closed agent session cfdabcf3-44f9-42a3-b56f-456a9048c0f7
+Closed agent session 369e6505-a3ec-47c1-8202-d0dccf1e252a
+Agent WebSocket disconnected: 369e6505-a3ec-47c1-8202-d0dccf1e252a
+Closed agent session 53131eed-4635-4a4b-ab53-d88010184297
+Agent WebSocket disconnected: 53131eed-4635-4a4b-ab53-d88010184297
+Closed agent session b6a40f22-3c9b-4963-80d5-af6bb3078121
+[2026-10-18T05:21:59.442Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed PTY session d1212168-971e-4535-8974-3beeb07f14b8
+Terminal WebSocket disconnected: d1212168-971e-4535-8974-3beeb07f14b8
+[2026-10-18T05:21:59.736Z] [INFO] [server.runtime] Server closed cleanly.

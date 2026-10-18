@@ -1,0 +1,36 @@
+{
+  "launch": {
+    "success": true,
+    "message": "Agent run created successfully.",
+    "runId": "pts_old_alone_273c04f72c9740f0ad6e5f1b10ffcedb"
+  },
+  "runId": "pts_old_alone_273c04f72c9740f0ad6e5f1b10ffcedb",
+  "definitionToolNames": [
+    "create_or_update_project"
+  ],
+  "exposedToolNames": [
+    "delegate_task",
+    "send_message_to"
+  ],
+  "calls": [
+    {
+      "tool": "create_or_update_project",
+      "arguments": {
+        "name": "Must not be created (alone)"
+      },
+      "refused": true,
+      "agentError": [
+        {
+          "type": "ERROR",
+          "payload": {
+            "code": "AGY_TURN_ERROR",
+            "message": "MCP error -32602: Unknown MCP tool",
+            "error_scope": "turn",
+            "error_effect": "terminal",
+            "turn_id": "dce17042-5da3-4576-a689-4ab16e7a272a"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -10,10 +10,6 @@ import {
   getCodexClientThreadRouter,
   type CodexClientThreadRouter,
 } from "./codex-client-thread-router.js";
-import {
-  getCodexThreadCleanup,
-  type CodexThreadCleanup,
-} from "../backend/codex-thread-cleanup.js";
 import { resolveThreadId } from "./codex-thread-id-resolver.js";
 import { createCodexThreadStartupGate } from "./codex-thread-startup-gate.js";
 import { CodexThread } from "./codex-thread.js";
@@ -30,18 +26,15 @@ export class CodexThreadManager {
   private readonly released = new WeakSet<CodexRunContext>();
   private readonly threads = new Map<string, CodexThread>();
   private readonly clientManager: CodexAppServerClientManager;
-  private readonly threadCleanup: CodexThreadCleanup;
   private readonly clientThreadRouter: CodexClientThreadRouter;
   private readonly systemInstructionCaptureService: SystemInstructionCaptureService;
 
   constructor(
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
-    threadCleanup: CodexThreadCleanup = getCodexThreadCleanup(),
     clientThreadRouter: CodexClientThreadRouter = getCodexClientThreadRouter(),
     systemInstructionCaptureService: SystemInstructionCaptureService = getSystemInstructionCaptureService(),
   ) {
     this.clientManager = clientManager;
-    this.threadCleanup = threadCleanup;
     this.clientThreadRouter = clientThreadRouter;
     this.systemInstructionCaptureService = systemInstructionCaptureService;
   }
@@ -94,8 +87,6 @@ export class CodexThreadManager {
           thread.clearListeners(); thread.clearApprovalRecords(); thread.clearPendingMcpToolCalls(); thread.unbindAll();
         } catch (error) { errors.push(error); }
       }
-      try { await this.threadCleanup.cleanupPreparedWorkspaceSkills(context.runtimeContext.materializedConfiguredSkills); }
-      catch (error) { errors.push(error); }
       if (!errors.length) {
         try { await owner.lease.release(); } catch (error) { errors.push(error); }
       }

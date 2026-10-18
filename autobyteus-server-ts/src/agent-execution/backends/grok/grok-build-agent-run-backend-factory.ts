@@ -8,7 +8,6 @@ import {
   type AcpWorkingDirectoryResolver,
 } from "../acp/backend/acp-agent-run-backend-factory.js";
 import { grokBuildSessionProfile } from "./grok-build-session-profile.js";
-import { getGrokWorkspaceSkillMaterializer } from "./grok-workspace-skill-materializer.js";
 
 /** Binds the shared ACP backend factory to the Grok Build launch and session profiles. */
 export const createGrokBuildAgentRunBackendFactory = (input: Readonly<{
@@ -24,5 +23,4 @@ export const createGrokBuildAgentRunBackendFactory = (input: Readonly<{
   skills: input.skills,
   workspaces: input.workspaces,
   mcpSessions: input.mcpSessions,
-  skillMaterializer: getGrokWorkspaceSkillMaterializer(),
 });

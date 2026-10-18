@@ -276,6 +276,10 @@ Each connection owns one presentation-only egress:
 - lifecycle, tool boundaries, errors, terminal status, completion,
   interruption, and unknown types flush earlier content first.
 
+`AGENT_INPUT_STATE` is sent only for a revision the subscriber has not yet
+received (its subscribe snapshot counts), so routine event batches do not end a
+window early; a new revision is a boundary that flushes earlier content first.
+
 This cadence does not affect runtime listeners, memory, history, file-change
 projection, application output, or Team adaptation.
 

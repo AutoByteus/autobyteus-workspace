@@ -7,7 +7,7 @@ import { getProjectService, resetProjectServiceForTests } from "../../../../src/
 import { resetProjectTaskServiceForTests } from "../../../../src/projects/services/project-task-service.js";
 import { resetProjectStoreForTests } from "../../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../../src/projects/context/project-task-context-store.js";
-import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateOrUpdateProjectTool, CreateTaskTool, UpdateTaskTool, registerProjectTaskTools } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
+import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool, registerProjectTaskTools } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
 import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
@@ -15,16 +15,17 @@ import { resolveClaudeSessionToolingOptions } from "../../../../src/agent-execut
 import * as projectServices from "../../../../src/projects/services/project-service.js";
 import { ProjectService } from "../../../../src/projects/services/project-service.js";
 import { getProjectStore } from "../../../../src/projects/stores/project-store.js";
-import { buildProjectTaskToolSchema, parseCreateProjectInput, parseCreateTaskInput, parseProjectTaskToolInput, parseUpdateProjectInput, parseUpdateTaskInput } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
+import { PROJECT_TASK_TOOL_NAMES, buildProjectTaskToolSchema, isProjectTaskToolName, parseCreateTaskInput, parseProjectTaskToolInput, parseUpdateTaskInput } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
+import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 const provider = new ProjectTaskToolsMcpAdapterProvider();
 const mcp = async (name: string, args: Record<string, unknown>) => {
   const result = await provider.getAdapters().find((a) => a.definition.name === name)!.execute({rawArguments: args, session: {} as never});
   if (result.kind === "mcp_tool_result") return result.result;
   throw new Error("Expected structured domain result.");
 };
-const PROJECT_TOOLS = {create_project: CreateProjectTool, update_project: UpdateProjectTool, create_or_update_project: CreateOrUpdateProjectTool} as const;
+const PROJECT_TOOLS = {create_project: CreateProjectTool, update_project: UpdateProjectTool} as const;
 type ProjectMutationToolName = keyof typeof PROJECT_TOOLS;
 const PROJECT_TOOL_NAMES = Object.keys(PROJECT_TOOLS) as ProjectMutationToolName[];
 /** Runs a failing call through the native class and the MCP adapter, checks that both report the same error, and returns it. */
@@ -42,9 +43,6 @@ const PATCH_REQUIRED = ["PROJECT_PATCH_REQUIRED", "Supply name, description and/
 const PROJECT_ID_INVALID = invalidArg("project_id must be a non-empty string.");
 const UNSUPPORTED = invalidArg("Unsupported tool argument.");
 const WORKSPACE_NOT_PLAIN = invalidArg("Each workspace must be a plain object.");
-// create_or_update_project as released in v1.5.5-beta.2; it must not change during the transition (AC-004).
-const OLD_DESCRIPTION = "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference absolute node-local folder paths: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Returns saved metadata and links; does not register/delete workspaces or delegate work.";
-const OLD_SCHEMA_JSON = '{"type":"object","properties":{"project_id":{"description":"Known Project identity for patch; omit to create. Never resolved by name.","type":"string"},"name":{"description":"Trimmed non-empty Project name; required for create, optional for patch.","type":"string"},"description":{"description":"Project description; omit to preserve on patch, blank to clear.","type":"string"},"workspaces":{"description":"Complete desired workspace links, not append. Omit to preserve on patch; [] unlinks all without deleting folders. Use absolute folder paths on this node; registration and existence are not required.","type":"array","items":{"type":"object","properties":{"workspace_path":{"description":"Absolute folder path on this node; no shell expansion or registration required.","type":"string"},"description":{"description":"Link description; omit to preserve a retained link, blank to clear. New links default to blank.","type":"string"}},"required":["workspace_path"]}}},"required":[]}';
 describe("Project data tools — actual native preparation/execute and selected MCP adapter", () => {
   let root: string, projectId: string;
   beforeEach(async () => {
@@ -99,21 +97,19 @@ describe("Project data tools — actual native preparation/execute and selected 
       expect(listed.description).toBe(Tool.getDescription());
       expect(listed.inputSchema.toJsonSchema()).toEqual(native);
       // A description names no other tool: an agent may not have it.
-      expect(Tool.getDescription()).not.toMatch(/create_or_update_project|create_project|update_project/);
+      expect(Tool.getDescription()).not.toMatch(/create_project|update_project/);
     }
     expect(CreateProjectTool.getDescription()).toMatch(/^Create a Project on the current node: required name/);
     expect(CreateProjectTool.getDescription()).not.toMatch(/project_id|patch|update/i);
     expect(UpdateProjectTool.getDescription()).toMatch(/^Update a known Project by its project_id.*replaces ALL links \(\[\] unlinks all/);
   });
 
-  it("keeps create_or_update_project's name, description and schema byte-identical (AC-004)", () => {
-    expect(CreateOrUpdateProjectTool.getName()).toBe("create_or_update_project");
-    expect(CreateOrUpdateProjectTool.getDescription()).toBe(OLD_DESCRIPTION);
-    const native = CreateOrUpdateProjectTool.getArgumentSchema().toJsonSchema();
-    expect(JSON.stringify(native)).toBe(OLD_SCHEMA_JSON);
-    const listed = provider.getAdapters().find(a => a.definition.name === "create_or_update_project")!.definition;
-    expect(listed.description).toBe(OLD_DESCRIPTION);
-    expect(JSON.stringify(listed.inputSchema.toJsonSchema())).toBe(OLD_SCHEMA_JSON);
+  it("has exactly the six Project/Task tools on the contract, the MCP adapters and the native registry; the removed create_or_update_project is unknown (REQ-001, REQ-002)", () => {
+    const current = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
+    expect([...PROJECT_TASK_TOOL_NAMES]).toEqual(current);
+    expect(provider.getAdapters().map(a => a.definition.name)).toEqual(current);
+    expect(defaultToolRegistry.listToolNames().filter(name => isProjectTaskToolName(name) || /project/.test(name)).sort()).toEqual([...current].sort());
+    expect(isProjectTaskToolName("create_or_update_project")).toBe(false);
   });
 
   it("documents one optional additive context_files string array on create_task and update_task, identical on native and MCP (AC-011)", async () => {
@@ -162,25 +158,6 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect((await getProjectService().listProjectSummaries()).some(p => p.name === "Abort")).toBe(false);
   });
 
-  it("create_or_update_project still creates without project_id and patches with it, with today's results (AC-004)", async () => {
-    const tool = new CreateOrUpdateProjectTool();
-    const created = JSON.parse(await tool.execute(null, {name: " Old create ", description: " Goal "}));
-    expect(created).toEqual({project: {projectId: expect.any(String), name: "Old create", description: "Goal", workspaces: []}});
-    const args = {project_id: created.project.projectId, name: " Old renamed "};
-    const patched = JSON.parse(await tool.execute(null, args));
-    expect(patched).toEqual({project: {...created.project, name: "Old renamed"}});
-    expect((await mcp("create_or_update_project", {project_id: args.project_id, description: " Updated "})).structuredContent)
-      .toEqual({project: {...patched.project, description: "Updated"}});
-    expect(JSON.parse(await tool.execute(null, {project_id: args.project_id, description: " "})))
-      .toEqual({project: {...patched.project, description: ""}});
-    expect(((await mcp("create_or_update_project", {name: "Old defaults"})).structuredContent as typeof created).project)
-      .toEqual({projectId: expect.any(String), name: "Old defaults", description: "", workspaces: []});
-    // It parses exactly as the tool it runs as.
-    expect(parseProjectTaskToolInput("create_or_update_project", args)).toEqual(parseUpdateProjectInput(args));
-    expect(parseProjectTaskToolInput("create_or_update_project", {name: " x ", workspaces: []})).toEqual(parseCreateProjectInput({name: " x ", workspaces: []}));
-    await expect(tool.execute(null, {name: "Abort"}, {signal: AbortSignal.abort()})).rejects.toThrow("aborted before start");
-  });
-
   it("preserves nested omission through public native preparation/coercion and MCP replacement/clear", async () => {
     const store = getProjectStore();
     const lookup = vi.fn(async () => { throw new Error("Registry must not gate tool writes"); });
@@ -189,29 +166,26 @@ describe("Project data tools — actual native preparation/execute and selected 
     vi.spyOn(projectServices, "getProjectService").mockReturnValue(service);
     const tasks = vi.spyOn(store, "listTasks").mockRejectedValue(new Error("Task reads must not gate tool write acknowledgements"));
     const links = [{workspace_path: ` ${wsA} `, description: " UI "}, {workspace_path: wsB, description: "Backend"}];
-    for (const [create, update] of [["create_project", "update_project"], ["create_or_update_project", "create_or_update_project"]] as const) {
-      const tool = new PROJECT_TOOLS[update]();
-      const created = JSON.parse(await new PROJECT_TOOLS[create]().execute(null, {name: `Linked ${create}`, description: "Goal", workspaces: links}));
-      expect(created.project.workspaces).toEqual([{workspaceRootPath: wsA, description: "UI"}, {workspaceRootPath: wsB, description: "Backend"}]);
-      const saved = await store.readProject(created.project.projectId);
-      const args = {project_id: created.project.projectId, workspaces: [{workspace_path: wsA}]};
-      expect(await tool.prepareExecution(null, args)).toBeDefined();
-      expect(parseProjectTaskToolInput(update, args)).toEqual(args);
-      expect(JSON.parse(await tool.execute(null, args))).toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: "UI"}]}});
-      expect((await mcp(update, args)).structuredContent).toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: "UI"}]}});
-      expect((await store.readProject(args.project_id))!.workspaces).toEqual([saved!.workspaces[0]]);
-      expect((await mcp(update, {project_id: args.project_id, workspaces: [{workspace_path: wsA, description: " "}]})).structuredContent)
-        .toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: ""}]}});
-      expect(JSON.parse(await tool.execute(null, {project_id: args.project_id, workspaces: []}))).toEqual({project: {...created.project, workspaces: []}});
-    }
+    const tool = new UpdateProjectTool();
+    const created = JSON.parse(await new CreateProjectTool().execute(null, {name: "Linked", description: "Goal", workspaces: links}));
+    expect(created.project.workspaces).toEqual([{workspaceRootPath: wsA, description: "UI"}, {workspaceRootPath: wsB, description: "Backend"}]);
+    const saved = await store.readProject(created.project.projectId);
+    const args = {project_id: created.project.projectId, workspaces: [{workspace_path: wsA}]};
+    expect(await tool.prepareExecution(null, args)).toBeDefined();
+    expect(parseProjectTaskToolInput("update_project", args)).toEqual(args);
+    expect(JSON.parse(await tool.execute(null, args))).toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: "UI"}]}});
+    expect((await mcp("update_project", args)).structuredContent).toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: "UI"}]}});
+    expect((await store.readProject(args.project_id))!.workspaces).toEqual([saved!.workspaces[0]]);
+    expect((await mcp("update_project", {project_id: args.project_id, workspaces: [{workspace_path: wsA, description: " "}]})).structuredContent)
+      .toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: ""}]}});
+    expect(JSON.parse(await tool.execute(null, {project_id: args.project_id, workspaces: []}))).toEqual({project: {...created.project, workspaces: []}});
     expect(tasks).not.toHaveBeenCalled();
     expect(lookup).not.toHaveBeenCalled();
     await expect(fs.access(wsA)).rejects.toThrow();
     await expect(fs.access(wsB)).rejects.toThrow();
   });
 
-  // Today's create_or_update_project errors, pinned by code AND message (AC-004). The old tool must keep them, and the
-  // tool it runs as (update_project with project_id, create_project without) must return the same error (AC-001, AC-002).
+  // Project argument errors, pinned by code AND message: update_project when project_id is present, otherwise create_project.
   // Order matters: unknown keys before project_id; project_id before fields; name/patch requirements after field validation.
   it.each([
     [{}, ...NAME_REQUIRED],
@@ -261,10 +235,9 @@ describe("Project data tools — actual native preparation/execute and selected 
     [{name: "x", workspaces: [{workspace_path: "ws", description: 123}]}, ...invalidArg("Workspace description must be a string.")],
     [{name: "x", workspaces: [{workspace_path: "ws", extra: true}]}, ...invalidArg("Unsupported workspace argument.")],
     [{name: "x", workspaces: [{workspace_path: "/work/site"}, {workspace_path: "/work/site/../site/"}]}, "WORKSPACE_ALREADY_LINKED", "Duplicate workspace links are not allowed."],
-  ])("rejects malformed Project input before native coercion, identically on the old tool and the tool it runs as: %j", async (args, code, message) => {
+  ])("rejects malformed Project input before native coercion with MCP parity: %j", async (args, code, message) => {
     const before = await getProjectService().listProjectSummaries();
     const expected = {error: {code, message}};
-    expect(await projectToolError("create_or_update_project", args)).toEqual(expected);
     expect(await projectToolError(Object.hasOwn(args, "project_id") ? "update_project" : "create_project", args)).toEqual(expected);
     expect(await getProjectService().listProjectSummaries()).toEqual(before);
   });
@@ -290,7 +263,7 @@ describe("Project data tools — actual native preparation/execute and selected 
     },
   );
 
-  it("returns service validation errors without partial metadata or implicit upsert, identically on the old tool", async () => {
+  it("returns service validation errors without partial metadata or implicit upsert", async () => {
     const file = path.join(root, "projects", projectId, "project.json");
     const before = await fs.readFile(file, "utf8");
     for (const [name, args, code] of [
@@ -300,7 +273,6 @@ describe("Project data tools — actual native preparation/execute and selected 
     ] as const) {
       const error = await projectToolError(name, {...args});
       expect(error).toMatchObject({error: {code}});
-      expect(await projectToolError("create_or_update_project", {...args})).toEqual(error);
       expect(await fs.readFile(file, "utf8")).toBe(before);
       expect(await getProjectService().listProjectSummaries()).toHaveLength(1);
     }
@@ -323,8 +295,6 @@ describe("Project data tools — actual native preparation/execute and selected 
     for (const [name, args] of [
       ["create_project", {name: "Recorded but unconfirmed"}],
       ["update_project", {project_id: projectId, description: "Saved goal"}],
-      ["create_or_update_project", {name: "Old recorded but unconfirmed"}],
-      ["create_or_update_project", {project_id: projectId, description: "Old saved goal"}],
     ] as const) {
       const result = mode === "native"
         ? await new PROJECT_TOOLS[name]().execute(null, args).then(() => null, e => JSON.parse(e.message))
@@ -332,9 +302,8 @@ describe("Project data tools — actual native preparation/execute and selected 
       expect(result).toEqual({error: {code: "PROJECT_OPERATION_UNCONFIRMED", message: "Project change could not be confirmed. Check the saved Project before repeating."}});
       expect(JSON.stringify(result)).not.toMatch(/private|rollback/);
     }
-    const names = (await store.listProjects()).map(p => p.name);
-    expect(names).toEqual(expect.arrayContaining(["Recorded but unconfirmed", "Old recorded but unconfirmed"]));
-    expect((await store.readProject(projectId))!.description).toBe("Old saved goal");
+    expect((await store.listProjects()).some(p => p.name === "Recorded but unconfirmed")).toBe(true);
+    expect((await store.readProject(projectId))!.description).toBe("Saved goal");
   });
 
   it("shares business reads and compact TODO create/known-ID status acknowledgements", async () => {
@@ -419,11 +388,11 @@ describe("Project data tools — actual native preparation/execute and selected 
   it("exposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases", () => {
     const catalog = new AgentToolMcpCatalog({providers: [provider]});
     expect(catalog.resolveConfiguredSupportedToolNames(buildRuntimeAgentToolExposure([]))).toEqual([]);
-    const exposure = buildRuntimeAgentToolExposure(["list_projects", "list_project_tasks", "create_project", "update_project", "create_or_update_project", "create_task", "update_task"]);
+    const exposure = buildRuntimeAgentToolExposure(["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"]);
     expect(exposure.enabledProjectTaskToolNames).toEqual(exposure.requestedToolNames);
     expect(catalog.resolveConfiguredSupportedToolNames(exposure)).toEqual(exposure.requestedToolNames);
     expect(catalog.resolveConfiguredSupportedToolNames(buildRuntimeAgentToolExposure(["list_projects"]))).toEqual(["list_projects"]);
-    // Each Project mutation tool alone is exactly that tool (AC-003); the old name alone keeps its tool (AC-004).
+    // Each Project mutation tool alone is exactly that tool.
     for (const name of PROJECT_TOOL_NAMES) {
       const mutatorOnly = buildRuntimeAgentToolExposure([name]);
       expect(mutatorOnly.enabledProjectTaskToolNames).toEqual([name]);

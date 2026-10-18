@@ -199,10 +199,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
 
@@ -258,10 +255,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-thread-live-steer";
@@ -341,10 +335,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
 
@@ -412,10 +403,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
 
@@ -482,10 +470,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
           requestTimeoutMs: 45_000,
         }),
     });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter()
     );
     const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
 

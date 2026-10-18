@@ -13,11 +13,7 @@ import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../../he
 const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
 const createManager = (sdkClient: unknown, activator = { activateForRun: vi.fn(), deactivateForRun: vi.fn(() => 0) }) =>
-  new ClaudeSessionManager(
-    activator as never,
-    {} as never,
-    sdkClient as never,
-    { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) } as never,
+  new ClaudeSessionManager(activator as never, {} as never, sdkClient as never
   );
 
 const createRunContext = (input: { runId: string; sessionId?: string }) =>

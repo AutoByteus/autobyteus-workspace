@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-AUTOBYTEUS_DOCKER_BASH_MODULES=(core.sh container-config.sh docker-runtime.sh nfs-attachment.sh commands.sh)
+AUTOBYTEUS_DOCKER_BASH_MODULES=(core.sh container-config.sh docker-runtime.sh commands.sh)
 AUTOBYTEUS_DOCKER_PUBLIC_SOURCE_BASE_DEFAULT="https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker"
 AUTOBYTEUS_DOCKER_BASH_ENTRY_NAME="autobyteus-docker.sh"
 AUTOBYTEUS_DOCKER_BASH_INSTALL_NAME="autobyteus-docker"
