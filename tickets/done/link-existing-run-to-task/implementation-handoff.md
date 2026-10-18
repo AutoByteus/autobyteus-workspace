@@ -2,7 +2,7 @@
 
 Ticket: link-existing-run-to-task (Project Task `autobyteus-11`). Worktree
 `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption`, branch `codex/withdraw-adoption`, base
-`origin/personal` `2b04a9971d`. Code commit: `ffeea43dac`.
+`origin/personal` `2b04a9971d`. Code commit: `ffeea43dac` (IR-005); merge of `origin/personal` `04ec416617` (project-task-semantic-search) with its adoption hooks removed: `a130f4a86f` (IR-006).
 
 The adoption handoffs of IR-001..IR-004 are superseded; they are summarized in `implementation-revision-record.md`
 and kept in the branch history.
@@ -18,11 +18,11 @@ and kept in the branch history.
 - Supplemental task artifacts: `withdrawn-adoption-contract.md` (record only); `handoff-implementation-withdraw.md`
 - Design review report: `N/A — not applicable` (no independent review selected for SR-018)
 - Architecture review revision record: `N/A — not applicable` (as above)
-- Triggering rework report: N/A. The user's rule, passed on by the Solution Designer during the round: remove all
+- Triggering rework report: IR-006, `delivery-revision-record.md` DR-004 (the integration blocker). IR-005: N/A; the user's rule, passed on by the Solution Designer during the round: remove all
   adoption logic; keep any fix in the merge that is useful on its own, listed below with its evidence; ask only when
   unclear.
 
-All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/tickets/in-progress/link-existing-run-to-task/`.
+All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/tickets/done/link-existing-run-to-task/` (archived by delivery, DR-004).
 
 ## Current Implementation Summary
 
@@ -32,14 +32,14 @@ your task agents. Use a run id that delegate_task returned to you, or delegate t
 recipient_address."). Every later ticket's change is kept, and three of the merge's fixes that are useful without adoption
 are kept (see Kept Fixes). The ticket folder stays as the record.
 
-- Implementation cycle: `Rework` (removal)
+- Implementation cycle: `Rework` (removal; IR-006 Local Fix on the new base)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-005`
+- Current implementation revision ID: `IR-006`
 - Related solution revision IDs: `SR-018`
 - Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-009` (Pass, IR-005)
+- Related API/E2E revision IDs: `API-REV-005` (Pass, IR-005)
+- Related delivery revision IDs: `DR-004`
 - Triggering finding IDs: `N/A`
 
 ## Routing Classification (Mandatory)
@@ -63,7 +63,7 @@ are kept (see Kept Fixes). The ticket folder stays as the record.
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | RM-001 | Every adoption change of `4e738acc66` removed; the pre-adoption refusal is back | Reverse diff on product paths. Removed: the adoption owner and run facts (`hand-started-run-adoption.ts`, `hand-started-runs.ts`, `standalone-root-adoption.ts`), the own-file shape, the lifecycle branch, the queue kind, the error code, the port methods, the Task-side assignment, revert and calls, the catalog row removal and readmission, the composition wiring, the agent-facing texts, the adopted-run message, the docs, the ADO e2e tests, the fixtures and the unit tests; web rule 1 of the sidebar rule | Done. The adoption identifiers' hit set equals the pre-merge tree (IMP-09). The refusal is pinned by CPW-R3 (IMP-04) |
-| RM-002 | Later tickets' changes kept | The conflicts are resolved by removing adoption lines only. `task-agent-own-files.ts` is byte-identical to append-only-message-logs' own version (`f6bf477c3f`). The web streaming service keeps autobyteus-139's `change_sequence_through` and delegated-copies-slow-open's comment; its spec keeps autobyteus-139's batch test. `agentRunCollaborationLazyChildren.spec.ts` keeps its ticket's test minus the SR-009 rule-1 assertion added at merge time (its ticket version `291545c66f` had none) | Done. Server and web suites green (IMP-02, IMP-03, IMP-05) |
+| RM-002 | Later tickets' changes kept | IR-006: project-task-semantic-search was built on top of adoption. Its search cleanup is kept (`forgetProject` in `project-service.ts`, `forgetTask` in `project-task-service.ts`, the `searchCleanup` dependency); the adoption hooks it carried are removed (`afterDelete` → `afterProjectDeleted` with `TASK_ADOPTION_REVERT_FAILED`, `revertUnfinishedAdoptionsOfDeleted`, `revertUnfinishedAdoption` in the process-instance `Pick`). IR-005: the conflicts are resolved by removing adoption lines only. `task-agent-own-files.ts` is byte-identical to append-only-message-logs' own version (`f6bf477c3f`). The web streaming service keeps autobyteus-139's `change_sequence_through` and delegated-copies-slow-open's comment; its spec keeps autobyteus-139's batch test. `agentRunCollaborationLazyChildren.spec.ts` keeps its ticket's test minus the SR-009 rule-1 assertion added at merge time (its ticket version `291545c66f` had none) | Done. Server and web suites green (IMP-02, IMP-03, IMP-05) |
 | RM-003 | No migration | None written | N/A |
 | RM-004 | Ticket folder kept; release notes say adoption was withdrawn | Ticket folder untouched by the code commit | Delivery |
 
@@ -133,7 +133,7 @@ Web: `agentRunCollaborationStore.ts`, the streaming service, `runHistoryRetiredR
 
 ## Checks Run
 
-All evidence is in `evidence/implementation/` in the ticket folder. Every check ran on content identical to `ffeea43dac`.
+All evidence is in `evidence/implementation/` in the ticket folder. IMP-01..IMP-10 ran on content identical to `ffeea43dac` (IR-005); IMP-11..IMP-15 ran on `a130f4a86f` (IR-006) after `pnpm install` and `prebuild`, because the base's server `package.json` changed.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -147,8 +147,13 @@ All evidence is in `evidence/implementation/` in the ticket folder. Every check 
 | IMP-08 | token accumulator test with the kept fix, and with the accumulator from `4e738acc66^1` | `ffeea43dac` | same | kept fix 2 | Kept fix 2 | Pass / Fail as expected | `IMP-08-token-root-fix-with-without.log` | `4 passed`; without: `expected null to be 'team-b'` |
 | IMP-09 | `git grep` of the adoption identifiers and texts at `4e738acc66^1` and `ffeea43dac`, compared | `ffeea43dac` | — | whole tree outside tickets | RM-001 | Pass | `IMP-09-adoption-symbol-search.log` | `RESULT: identical hit set` (9 = 9) |
 | IMP-10 | `runHistoryStore.spec.ts -t 'left the history'` | `ffeea43dac` | same | kept fix 1 | Kept fix 1 | Pass | `IMP-10-sidebar-rule2.log` | four ✓, `4 passed` |
+| IMP-11 | server build typecheck after the merge | `a130f4a86f` | same | all server source | RM-001, RM-002 | Pass | `IMP-11-merge-server-typecheck.log` | `error TS count: 0` |
+| IMP-12 | server unit; `test:integration:prepare`; `test:integration` | `a130f4a86f` | same | server, semantic search included | RM-002 | Pass | `IMP-12-merge-server-unit-integration.log` | unit `733 passed` / `5973 passed`; integration `77 passed` / `415 passed` |
+| IMP-13 | adoption identifiers at `a130f4a86f` compared with `4e738acc66^1` | `a130f4a86f` | — | whole tree outside tickets | RM-001 | Pass | `IMP-13-merge-adoption-symbol-search.log` | the only new hits are in `hand-started-run-refusal.e2e.test.ts` (WDR-1) |
+| IMP-14 | clean-env e2e: the refusal set, `hand-started-run-refusal`, `project-task-search`, `project-task-search-model-unavailable` | `a130f4a86f` | same | refusal, Project / Task delete with search cleanup | RM-001, RM-002 | Pass | `IMP-14-merge-e2e.log` (excerpt), `.full.log` | `WDR-1 …` ✓; `6 passed`; `29 passed \| 3 skipped` |
+| IMP-15 | web `test:nuxt --run` and the three guards | `a130f4a86f` | same | web | RM-002 | Pass | `IMP-15-merge-web-unit-guards.log` | `636 passed`, `4516 passed`; three `exit 0` |
 
-- Not run, and why: the whole server e2e suite and browser probes are left to API/E2E. Only the three refusal-pinning
+- Not run, and why: the whole server e2e suite (TESTING.md rule 4 asks for a full rerun after the base's `package.json` change) and browser probes are left to API/E2E. Only the three refusal-pinning
   e2e files ran here. No rendered check was run (see below).
 
 ## Frontend Rendered-Result Check (When Applicable)

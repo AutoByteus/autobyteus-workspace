@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-003 | Code Reviewer / code-review-report.md / CRR-003 failure-origin review of API-REV-001 | F-001, F-003 (F-002 held) | `Local Fix` | SR-008, ARCH-REV-004, CRR-003, API-REV-001 | Live token summary claims the observation's current root; adoption-specific Task message |
 | IR-004 | Architecture Reviewer / ARCH-REV-005 Pass of SR-009 (after CRR-005, API-REV-002 F-002) | F-002 | `Design Revision Implementation` | SR-009, ARCH-REV-005, CRR-005, API-REV-002 | Renderer retires an adopted run's own-group row: at once on `task_execution_started`, else at the next history read |
 | IR-005 | Solution Designer / handoff-implementation-withdraw.md (SR-018) | N/A | `Removal` | SR-018 (the cancelled full-adoption round SR-010..SR-017 produced no IR) | Adoption withdrawn: merge `4e738acc66` reverted on product paths; three general fixes kept |
+| IR-006 | Delivery Engineer / delivery-revision-record.md DR-004 (integration blocker) | N/A | `Local Fix` | SR-018, CRR-009, API-REV-005, DR-004 | `origin/personal` (project-task-semantic-search) merged; its adoption hooks removed, its search cleanup kept |
 
 ## Revision Entries
 
@@ -155,3 +156,35 @@ The current code and `implementation-handoff.md` remain authoritative.
   - Evidence: `evidence/implementation/IMP-01`..`IMP-10`.
 - Next recipient or routing: API/E2E (Medium / Low, direct route).
 - Remaining limitations or risks: none known. The beta's release notes must say the adoption feature was withdrawn (RM-004, delivery).
+
+### IR-006 — DR-004 Local Fix: merge project-task-semantic-search, removing the adoption hooks it carried
+
+- Triggering role, report path, and round: Delivery Engineer, `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/tickets/done/link-existing-run-to-task/delivery-revision-record.md` (DR-004, integration blocker).
+- Triggering finding IDs: N/A (integration conflict)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-005 (`ffeea43dac`; CRR-009 Pass; API-REV-005 Pass), blocked at final integration because `origin/personal` advanced with project-task-semantic-search, which was built on top of adoption.
+- Current authoritative result: merge commit `a130f4a86f` (`origin/personal` `04ec416617` into `codex/withdraw-adoption`). Semantic search is kept; every adoption hook it carried is removed.
+- Related solution revision IDs: SR-018
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: CRR-009
+- Related API/E2E revision IDs: API-REV-005
+- Related delivery revision IDs: DR-004
+- Why this implementation revision is recorded: the delivery engineer's Local Fix (RM-001 and RM-002 on the new base).
+- Approved behavior or requirement IDs affected: RM-001, RM-002.
+- Implementation delta: two conflicts, resolved by hand.
+  - `autobyteus-server-ts/src/projects/services/project-service.ts`:
+    - kept: the `processProjectTaskSearchCleanup` import, the `searchCleanup` dependency and `forgetProject` after a delete;
+    - removed: the `getProjectTaskService` import and the `afterDelete` → `afterProjectDeleted` call with its `TASK_ADOPTION_REVERT_FAILED` log;
+    - `deleteProject` is now: delete, `projectRemoved`, `forgetProject`.
+  - `autobyteus-server-ts/src/projects/services/project-task-service.ts`:
+    - kept: `forgetTask` in `deleteTask`, and `searchCleanup` in the process-instance `Pick`;
+    - removed: `revertUnfinishedAdoptionsOfDeleted` and `revertUnfinishedAdoption`.
+  - No other file of the new base carries adoption. `project-task-execution-resource-composition.ts` merged without conflict and holds only search additions. The adoption-identifier search finds no new hit except API/E2E's withdrawal test (IMP-13).
+- Changed files or areas: the two files above (in the merge commit).
+- Local validation and result (on `a130f4a86f`, after `pnpm install` and `prebuild`, because the server `package.json` changed):
+  - server: typecheck 0 errors; unit 733 files / 5973 tests; integration 77 files / 415 tests;
+  - e2e: the refusal set, the withdrawal refusal (WDR-1) and semantic search's two e2e files, 29 passed / 3 skipped;
+  - web: 636 files / 4516 tests; the guards pass;
+  - evidence: IMP-11..IMP-15.
+- Next recipient or routing: API/E2E. The rechecked classification stays Medium / Low; TESTING.md rule 4 applies (full rerun, because the base's `package.json` changed).
+- Remaining limitations or risks: none known. `project-task-service.ts` is at 500 effective lines on the new base (semantic search's growth; the withdrawal adds none).
