@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Test-code review pass CRR-002 (`/software_engineering_team/code_reviewer`) | N/A | `Delivery Completed`: verified from the evidence, finalized into `origin/personal` @ `1ca9be9fdf`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `evidence/delivery/` |
+| DR-002 | User installed v1.5.6-beta.6 and asked delivery to check it on their install | DR-001 `Delivery Completed` (DEC-001 own-data check open) | `Delivery Completed`; DEC-001 own-data check passed (read-only observation) | `delivery-revision-record.md`, `handoff-summary.md` |
 
 ## Revision Entries
 
@@ -47,3 +48,21 @@
   - R-2/R-3 runs kept on JSON are not admitted, with a warning;
   - DEC-008 is covered in-process only;
   - DEC-001: the user's own ≈113 MB is observed after a release.
+
+### DR-002 — The user's own-data check after v1.5.6-beta.6 (DEC-001)
+
+- Delivery round and trigger: the user installed v1.5.6-beta.6 (which contains merge `1ca9be9fdf`; the beta was cut by another delivery) and asked delivery to check that append-only message logs work on their install.
+- Method: read-only. Delivery read the user's data folder, the migration ledger (`sqlite3` in read-only mode) and the migration log. The running app was not touched, nothing was written, no migration or test ran on user data (TESTING.md).
+- What was observed:
+  - The installed app is `1.5.6-beta.6`; all four release workflows for the tag succeeded.
+  - `20261018_append_only_message_logs_v1`: `SUCCEEDED_WITH_WARNINGS`, attempts 1, `Scanned 733; migrated 731; skipped 2; failed 0`, 14.4 s for ≈110 MB of logs (DEC-001 / QR-003 on real data).
+  - The 2 skipped logs are `PRESERVED_UNSUPPORTED: The run has no tree file.`: two old team folders not in `team_run_history_index.json`, so they were not visible before the update either (R-2/R-3, as designed).
+  - 741 JSONL files, 10 sealed; the largest logs are split into ≈4.5 MB files.
+  - Four active logs written after the conversion: every line complete with exactly seven keys, unique ids, `createdAt` order, trailing `\n`; no sealed file written after the conversion.
+  - Append on real data: snapshot of size + SHA-256 of all 741 files at 19:45; a team message arrived at 19:53. 740 files identical. The changed `team_communication_messages_active.jsonl` grew 729,785 → 732,094 B; its first 729,785 B hash to the snapshot's `a12a5b64…`; the added 2,309 B are exactly one complete line (AC-001/AC-003 shape on real data).
+  - 109 JSON logs remain under `memory/imports/docker-node-1/`: the Memory Sync mirror of the user's Docker nodes, which still run the previous `:beta` image. They are not this install's runs and convert on that node when it is upgraded.
+- Not observed live on the user's data (covered by API/E2E before release): a rotation during use, a message written to two owner logs, opening old runs in the UI (left to the user).
+- Current authoritative result: `Delivery Completed`; DEC-001 closed.
+- Follow-up candidate (out of scope, not filed): whether Memory Sync's import removes the mirrored `*.json` copies after a remote node converts.
+- Terminal return to `/solution_designer`: `Sent` (addendum to DR-001, after this record was pushed).
+- Next recipient/action: Solution Designer.

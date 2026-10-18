@@ -24,6 +24,7 @@
 
 - Verified from the evidence. Every critical acceptance criterion, AC-001..AC-010, is directly proven; see `release-deployment-report.md` > Verification.
 - No user check is needed before finalization. Under DEC-001, the conversion time and append timing on the user's own ≈113 MB of data are for the user to observe after a release that carries this change. TESTING.md forbids running them on user data.
+- DR-002: after installing v1.5.6-beta.6, the user asked delivery to check. Read-only observation of their install: conversion `Scanned 733; migrated 731; skipped 2; failed 0` in 14.4 s; a real message after the conversion added exactly one line, with the old bytes and all other files unchanged. DEC-001 is closed.
 
 ## Release Decision
 
