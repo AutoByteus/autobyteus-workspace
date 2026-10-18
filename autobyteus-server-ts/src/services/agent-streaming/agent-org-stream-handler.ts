@@ -11,9 +11,8 @@ import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionView } from "./a
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
+import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
 
-const serialize = (message: CollaborationStreamServerMessage): string =>
-  JSON.stringify(CollaborationStreamServerMessageSchema.parse(message));
 const error = (code: string, message: string): CollaborationStreamServerMessage =>
   CollaborationStreamServerMessageSchema.parse({ type: "ERROR", payload: { code, message } });
 const commandAck = (
@@ -39,40 +38,44 @@ const commandAck = (
 
 /** Native AgentOrg stream. It does not reuse or reinterpret the Team envelope. */
 export class AgentOrgStreamHandler {
-  private readonly sessions = new Map<string, { connection: WebSocketConnection; orgRunId: string; close(): void }>();
+  private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; orgRunId: string; close(): void }>();
   constructor(private readonly service: Pick<AgentOrgRunService, "getActive" | "recordRunActivity">) {}
 
   async connect(connection: WebSocketConnection, orgRunIdInput: string): Promise<string | null> {
     const orgRunId = orgRunIdInput.trim();
+    // Every message to this socket leaves through its egress; an ERROR or ROOT_LIFECYCLE sent
+    // before a close flushes pending content first.
+    const egress = createRootExecutionStreamEgress(connection, `AgentOrg run '${orgRunId}'`);
     const run = orgRunId ? this.service.getActive(orgRunId) : null;
     if (!run) {
-      connection.send(serialize(error("AGENT_ORG_NOT_ACTIVE", `AgentOrg run '${orgRunId}' is not active.`)));
+      egress.send(error("AGENT_ORG_NOT_ACTIVE", `AgentOrg run '${orgRunId}' is not active.`));
+      egress.dispose();
       connection.close(4004);
       return null;
     }
     const sessionId = randomUUID();
     const barrier = await run.openPackageSnapshotConnection();
     try {
-      connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
+      egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "CONNECTED",
         payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, session_id: sessionId },
-      })));
-      connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
+      }));
+      egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
         payload: projectAgentOrgExecutionView(run, barrier.snapshot, barrier.baseChangeSequence),
-      })));
+      }));
       const unsubscribe = barrier.subscribe((event) => {
         try {
           const projected = projectAgentOrgExecutionEvent(run, event);
-          if (projected) connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
+          if (projected) egress.send(CollaborationStreamServerMessageSchema.parse({
             type: "ROOT_EXECUTION_EVENT",
             payload: projected,
-          })));
+          }));
         } catch (cause) {
-          connection.send(serialize(error(
+          egress.send(error(
             "AGENT_ORG_STREAM_PROJECTION_FAILED",
             cause instanceof Error ? cause.message : String(cause),
-          )));
+          ));
           queueMicrotask(() => {
             this.disconnect(sessionId);
             connection.close(1011);
@@ -80,25 +83,26 @@ export class AgentOrgStreamHandler {
           return;
         }
         if (event.event.kind === "lifecycle") {
-          connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
+          egress.send(CollaborationStreamServerMessageSchema.parse({
             type: "ROOT_LIFECYCLE",
             payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, is_active: event.event.isActive },
-          })));
+          }));
           if (!event.event.isActive) queueMicrotask(() => {
             this.disconnect(sessionId);
             connection.close(1000);
           });
         }
       });
-      connection.send(serialize(CollaborationStreamServerMessageSchema.parse({
+      egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_LIFECYCLE",
         payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, is_active: true },
-      })));
-      this.sessions.set(sessionId, { connection, orgRunId, close: unsubscribe });
+      }));
+      this.sessions.set(sessionId, { egress, orgRunId, close: () => { unsubscribe(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
-      connection.send(serialize(error("AGENT_ORG_STREAM_UNAVAILABLE", String(cause))));
+      egress.send(error("AGENT_ORG_STREAM_UNAVAILABLE", String(cause)));
+      egress.dispose();
       connection.close(1011);
       return null;
     }
@@ -111,10 +115,10 @@ export class AgentOrgStreamHandler {
     try {
       message = CollaborationStreamClientMessageSchema.parse(JSON.parse(raw));
     } catch (cause) {
-      session.connection.send(serialize(error(
+      session.egress.send(error(
         "AGENT_ORG_COMMAND_INVALID",
         cause instanceof Error ? cause.message : String(cause),
-      )));
+      ));
       return;
     }
     try {
@@ -131,10 +135,10 @@ export class AgentOrgStreamHandler {
         });
         if (!admission.admitted) {
           // Nothing was posted; the client keeps the draft and shows the notice.
-          session.connection.send(serialize(commandAck(
+          session.egress.send(commandAck(
             message, "rejected", admission.code, admission.message,
             "collaboratorName" in admission ? admission.collaboratorName : undefined,
-          )));
+          ));
           return;
         }
         content = composeCollaboratorMentionNote(content, admission.collaborators);
@@ -182,19 +186,19 @@ export class AgentOrgStreamHandler {
           console.error(`Accepted AgentOrg input history summary commit failed for '${session.orgRunId}':`, cause);
         }
       }
-      session.connection.send(serialize(commandAck(
+      session.egress.send(commandAck(
         message,
         result.accepted ? "accepted" : "rejected",
         result.accepted ? null : result.code ?? "AGENT_ORG_COMMAND_REJECTED",
         result.message ?? null,
-      )));
+      ));
     } catch (cause) {
-      session.connection.send(serialize(commandAck(
+      session.egress.send(commandAck(
         message,
         "failed",
         "AGENT_ORG_COMMAND_FAILED",
         cause instanceof Error ? cause.message : String(cause),
-      )));
+      ));
     }
   }
 
