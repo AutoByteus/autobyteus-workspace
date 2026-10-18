@@ -5,12 +5,12 @@ The record and the result of the current round. The adoption rounds (API-REV-001
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-005`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-006`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 5, the first of the withdrawal; implementation IR-005 ready for direct API/E2E validation
+- Round and trigger: round 6 (latest), delivery DR-004 Local Fix → implementation IR-006 (merge of project-task-semantic-search). Round 5 (IR-005) is kept below as the earlier result. The ticket folder is now `tickets/done/link-existing-run-to-task/`
 - Prior round reviewed: API-REV-004 (adoption, Pass, then withdrawn by the user)
 - Deviations from the investigation's plan, and why: None
-- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/tickets/in-progress/link-existing-run-to-task/evidence/api-e2e/withdraw/` (the commit holding it is given in the handoff)
+- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/tickets/done/link-existing-run-to-task/evidence/api-e2e/withdraw/` (round 6 under `r6/`; the commit holding it is given in the handoff)
 
 ## Routing Classification
 
@@ -129,9 +129,72 @@ The record and the result of the current round. The adoption rounds (API-REV-001
 | Data root `wdr-desktop-root-BBVP5h` (with the test vault) | Yes | deleted | gone; no database in the evidence |
 | Temp `HOME`s for e2e | Yes | removed after each run | removed |
 | Temporary base worktree `_tmp-wdr-base-check` (`2b04a9971d`), used to classify WDR-2's failures | Yes | `git worktree remove --force` | removed |
+| Round 6: isolated instance `iso-53797-e01b` and its data root `wdr6-desktop-root-rJryaE` (with the test vault) | Yes | `isolated-app stop`; data root deleted | stopped, record removed, data root gone; no database in the evidence |
+| Round 6: desktop helpers copied to `r6/desktop/`, `wdr6.py` | Yes | kept as evidence of the method | — |
 | Desktop helper scripts (`desktop/b.sh`, `gq.sh`, `ui.sh`, `type.js`, `mk.py`, `pm-send.mjs`), `import-secrets.exp` | Yes | kept as evidence of the method | — |
 
+## Round 6 (API-REV-006): IR-006, the merge of project-task-semantic-search
+
+- Tested: `d95425d711`; its product content equals the merge `a130f4a86f` (`origin/personal` `04ec416617` merged in).
+- Rerun plan (TESTING.md "Rerun by impact" rule 4): `package.json`, `pnpm-lock.yaml` and the GraphQL schema changed, so every case is Rerun.
+  - The implementer's checks on the same commit are reused (WDR-R11..R15).
+  - I reran the whole server e2e and the desktop journeys, and added WDR-6 for the conflict-resolved delete paths.
+- Environments:
+  - ENV-2b: `d95425d711`, the whole server e2e, settings as ENV-2;
+  - ENV-3b: an isolated instance `iso-53797-e01b` of the `d95425d711` build, real models as ENV-3, an owned data root (deleted).
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| WDR-R11 | RM-001, RM-002 | server types | Reused: IMP-11 | — | Pass | | | same commit `a130f4a86f` |
+| WDR-R12 | RM-002 | server unit and integration | Reused: IMP-12 | — | Pass | | | same commit; after `pnpm install` and `prebuild` |
+| WDR-R13 | RM-001 | adoption identifiers | Reused: IMP-13 | — | Pass | | | only new hits are WDR-1's test |
+| WDR-R14 | RM-001, RM-002 | refusal set, WDR-1, `project-task-search`, `project-task-search-model-unavailable` e2e | Reused: IMP-14 | — | Pass | | | these also ran inside WDR-2 |
+| WDR-R15 | RM-002 | web, guards | Reused: IMP-15 | — | Pass | | | same commit |
+| WDR-2 | AC-006, RM-002 | whole server e2e | as round 5 | ENV-2b | Pass | `r6/WDR-2-server-e2e.excerpt.log`, `r6/WDR-2-server-e2e.full.log` | `Test Files  119 passed \| 49 skipped (168)`; `failed files: 0`; ✓ `hand-started-run-refusal`, `project-task-search`, `project-task-search-model-unavailable`, `projects-graphql`, `project-task-boundaries`, the three round-5 baseline-fixed files | 49 skips are live-provider gates |
+| WDR-3 | RM-001 | real app: the PM asked to give Tasks to a writer and a team run the user started | as round 5 | ENV-3b | Pass | `r6/desktop/WDR-3-nothing-written.txt`, `r6/desktop/WDR-3-pm-refused.png`, `r6/desktop/WDR-3-sidebar-before.txt`, `r6/desktop/WDR-3-sidebar-after.txt` | `{"delegated":false,"message":"ado_writer_790e… is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address."}` (and the team's); `writer in tree: False \| team in tree: False`; `Task run entries files: 0`; `taskAgent in own files: 0 0`; `history lists writer: True \| team: True` | |
+| WDR-4 | RM-006 kept fix 1 | real app sidebar, external archive / delete | as round 5 | ENV-3b | Pass | `r6/desktop/WDR-4-sidebar-samples.txt`, `r6/desktop/WDR-4-retired-state.json`, `r6/desktop/WDR-4-after-external-archive-delete.png` | four `"success": true`; `t+2s … <PM run>\|now\|AW\|ado writer\|…\|Settings\|` (both rows gone); `"departed":["ado_writer_790e…","ado_review_team_5906…"]`, `"writerContextStill":true` | left at the next history read, within 2–3 s |
+| WDR-5 | AC-006, RM-006 kept fix 2 | real app copy lifecycle | as round 5 | ENV-3b | Pass | `r6/desktop/WDR-5-samples.txt` | `"Every day, neatly planned."`; `closed after DONE: [{'agentRunId': 'ado_writer_39a4…'}]`; after reopen the `ado writer` row is back and `"Plan your days."` | |
+| WDR-6 | RM-002 (the merge's conflict resolutions in `deleteTask` / `deleteProject`) | real app: delete a DONE Task that had a delegated copy, a never-assigned Task, then the Project | the PM delegated `wdr6-project-1` to a new task agent and set it DONE (composer); then `wdr6.py delete` (the board's `deleteProjectTask` / `deleteProject`) | ENV-3b | Pass | `r6/desktop/WDR-6-delete-task-project.txt`, `r6/desktop/WDR-6-setup.json`, `r6/desktop/wdr6.py`, `r6/desktop/WDR-6-attempt1-script-error.txt` | `delete wdr6-project-1 (DONE): {"data": {"deleteProjectTask": true}}`; `delete wdr6-project-2 (TODO): … true`; `tasks after: {"projectTasks": []}`; `delete Project: {"data": {"deleteProject": true}}`; `projects after: []`; server log: `error/warn lines … 0`, `adoption / search-cleanup failures … 0` | Attempt 1 hit a quoting bug in my shell script: its Task deletes never ran, and the Project delete removed the Tasks (the attempt's log is kept). Redone with `wdr6.py` |
+
+### Acceptance-Criteria Proof (round 6)
+
+| Acceptance-Criteria ID | Critical | Proven By Case IDs | Result |
+| --- | --- | --- | --- |
+| RM-001 | Yes | WDR-3, WDR-R13, WDR-R14 (WDR-1), WDR-2 (WDR-1 inside) | Proven |
+| RM-002 | Yes | WDR-R11, WDR-R12, WDR-R15, WDR-2, WDR-6 | Proven |
+| RM-003 | No | nothing written | Proven |
+| RM-004, RM-005 | No | — | Not Proven here (delivery) |
+| RM-006 | Yes | WDR-4 (fix 1), WDR-5 (fix 2), WDR-2 under the resolved-`HOME` rule (fix 3) | Proven |
+| AC-006 | Yes | WDR-2, WDR-5, WDR-R12, WDR-R15 | Proven |
+
+### Validation Confidence Scorecard (round 6)
+
+| Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty |
+| --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 93% | 96% | WDR-R11..R15, WDR-2, WDR-3..6 | RM-004/RM-005 are delivery-owned |
+| Changed-boundary execution directness | 93% | 96% | WDR-6 drives the resolved delete paths on the real app; WDR-R14 their search cleanup | none material |
+| Cross-boundary integration realism and mock gap | 90% | 95% | real models in WDR-3..6 | WDR-4's second client is the same GraphQL API |
+| Environment, configuration, identity, and fixture fidelity | 92% | 95% | `pnpm install` / `prebuild` on the new base; clean env; a new branch build | none material |
+| Failure, edge-case, lifecycle, and recovery evidence | 90% | 95% | refusals, DONE/reopen, external archive/delete, deleting a DONE Task with a copy and a never-assigned Task | kept fix 2 on legacy data is unit-proven only |
+| User-surface, browser, and desktop-shell confidence | 75% | 95% | WDR-3..6 | no shell change |
+| Durable regression coverage quality and relevance | 95% | 95% | whole e2e green, including semantic search | none material |
+
+- Overall post-repository confidence: 90%. Final: 95% (simple average). No category below 90%. Every critical criterion is directly proven.
+- Broader validation: `Required`, executed (Project Desktop Validation, WDR-3..6).
+
 ## Latest Authoritative Result
+
+- Result: `Pass` (round 6, `d95425d711`; product `a130f4a86f`)
+- Criteria not proven, or parts only the user can check: RM-004 and RM-005 belong to delivery. None is only the user's to check.
+- Preliminary classification and recommended owner: N/A
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/delivery_engineer`
+- Notes:
+  - No durable test changed in round 6.
+  - Round 5's durable changes stand: WDR-1 (`014e9581da`) and the baseline fix `43aa0bcb36`.
+  - Test-code review: `Not Required — direct low-risk route`.
+  - Round 5's result is kept below for the record.
+
+## Round 5 Result (earlier, superseded by round 6)
 
 - Result: `Pass`
 - Criteria not proven, or parts only the user can check: RM-004 and RM-005 belong to delivery (release notes saying adoption was withdrawn; a new beta). None is only the user's to check.

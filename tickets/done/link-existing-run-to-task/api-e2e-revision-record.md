@@ -56,6 +56,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-005 | implementation_engineer, `implementation-handoff.md` IR-005, round 5 | SR-018, IR-005, CRR-009 (record only) | API-REV-004: Pass (adoption, later withdrawn) | Pass / 95% |
+| API-REV-006 | implementation_engineer, IR-006 (DR-004 Local Fix), round 6 | SR-018, IR-006, DR-004 | API-REV-005: Pass / 95% | Pass / 95% |
 
 ### API-REV-005 — Withdraw adoption validated (SR-018)
 
@@ -85,3 +86,33 @@ None. The adoption rounds ended at Pass; FU-1/FU-2 (AGY terminate during a held 
 - Remaining risks, blocked evidence, or untested scope:
   - kept fix 2 on legacy mixed-root data is unit-proven only (IMP-08);
   - RM-004 and RM-005 belong to delivery.
+
+### API-REV-006 — Re-validation after merging project-task-semantic-search (DR-004 Local Fix)
+
+- Triggering role, report path, and round: implementation_engineer, `implementation-handoff.md` IR-006, round 6. Delivery DR-004 had found the new `origin/personal` (semantic search) conflicting with the withdrawal.
+- Triggering finding or case IDs: DR-004 (integration conflict in `project-service.ts` / `project-task-service.ts`).
+- Related revision IDs: SR-018, IR-006, DR-004.
+- Why recorded: the merge `a130f4a86f` changed shared foundations (`package.json`, lockfile, GraphQL schema), so TESTING.md rule 4 makes every case Rerun.
+- Coverage decisions or durable test paths changed: none this round.
+- Cases added, changed, removed, or rechecked:
+  - WDR-R11..R15 reused (IMP-11..IMP-15, same commit);
+  - WDR-2 rerun (whole e2e: 119 passed, 49 skipped, 0 failed);
+  - WDR-3, WDR-4, WDR-5 rerun on a new build;
+  - WDR-6 added (deleting a DONE Task with a copy, a never-assigned Task, and the Project on the real app).
+- Commands, environment, fixture, or broader-validation delta: a new isolated build of `d95425d711`; otherwise as round 5.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| DR-004 integration conflict (adoption hooks in semantic search's delete paths) | Local Fix (implementation) | resolved in IR-006 by keeping the search cleanup and dropping the adoption hooks | WDR-6, WDR-R14, WDR-2 |
+
+- Canonical artifacts and sections updated: the investigation's "Round 6 Plan"; the report's "Round 6" section and Latest Authoritative Result; the progress log; this entry.
+- Prior result and confidence: Pass, 95%.
+- Current result and confidence: Pass, 95%.
+- New or remaining failure IDs: None.
+- Recommended owner: delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - kept fix 2 on legacy mixed-root data is unit-proven only;
+  - RM-004 and RM-005 belong to delivery.
+- Process note: WDR-6's first attempt failed on my own shell quoting (no product effect). It was redone with a small Python driver, and both attempts are kept.

@@ -174,3 +174,25 @@ None.
 - Proceed To API/E2E Execution: `Yes`
 - Repository-Resident Durable Coverage Will Be Added: `Yes` (WDR-1)
 - Reroute Required Before Validation Execution: `No`
+
+
+## Round 6 Plan (API-REV-006): DR-004 Local Fix, IR-006
+
+- Trigger: implementation_engineer IR-006. Merge `a130f4a86f` brings in `origin/personal` `04ec416617` (project-task-semantic-search); docs commit `d95425d711` (no product change: `git diff --name-only a130f4a86f d95425d711 -- . ':!tickets'` is 0 files). The ticket folder is now at `tickets/done/link-existing-run-to-task/` (archived by delivery).
+- What changed since my validation `014e9581da`:
+  - 60 product files from semantic search, including `autobyteus-server-ts/package.json`, `pnpm-lock.yaml` and `src/api/graphql/schema.ts`;
+  - the two conflict resolutions in `project-service.ts` (`deleteProject`) and `project-task-service.ts` (`deleteTask`, the process-instance `Pick`), which keep `searchCleanup` and drop the adoption hooks.
+- Decision (TESTING.md "Rerun by impact" rule 4): a shared foundation changed (dependencies, lockfile, schema), so **every case is Rerun**.
+
+| Case ID | Decision | How |
+| --- | --- | --- |
+| WDR-R11 | Rerun, by reusing IMP-11 (server typecheck) | same commit `a130f4a86f` |
+| WDR-R12 | Rerun, by reusing IMP-12 (server unit, integration) | same commit |
+| WDR-R13 | Rerun, by reusing IMP-13 (adoption identifiers) | same commit |
+| WDR-R14 | Rerun, by reusing IMP-14 (refusal set, WDR-1, `project-task-search`, `project-task-search-model-unavailable` e2e) | same commit |
+| WDR-R15 | Rerun, by reusing IMP-15 (web, guards) | same commit |
+| WDR-2 | Rerun myself | the whole server e2e on `d95425d711`, gate on, clean env, resolved `HOME`; it covers semantic search's remaining e2e |
+| WDR-3, WDR-4, WDR-5 | Rerun myself | a new isolated branch build, real models |
+| WDR-6 (new) | Add, as a journey | real app: delete a Task that had a delegated copy, then delete the Project (the board's `deleteProjectTask` / `deleteProject`). Both succeed, both are gone, no error is logged. This exercises the conflict-resolved `deleteTask` / `deleteProject`; their search cleanup is covered by WDR-R14 |
+
+WDR-1 is inside WDR-2 and WDR-R14. WDR-R01..R10 (round 5, `ffeea43dac`) are superseded by WDR-R11..R15.

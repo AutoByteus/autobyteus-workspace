@@ -1,0 +1,5 @@
+# WDR-3 (round 6): sidebar before the PM's refused delegations
+# Commit: d95425d711 (product a130f4a86f); instance iso-53797-e01b (ENV-3b); sidebar text read over CDP (`ui.sh sidebar`)
+# Date: 2026-10-18
+
+workspace-wdr|AP|ADO Project Manager|(1)|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|now|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in one sentence.|now|L|lead|now|M|mate|now|Settings|

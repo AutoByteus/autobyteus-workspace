@@ -1,0 +1,16 @@
+# WDR-3 (round 6) nothing-written check after the PM's two refused delegate_task calls
+# Steps: GraphQL on the instance (srv 53798) and files in its owned data root
+# Commit: d95425d711 (product a130f4a86f), instance iso-53797-e01b
+# Date: 2026-10-18T20:26:21Z
+
+PM's delegate_task results:
+   ""
+   ""
+PM tree:
+  writer in tree: False | team in tree: False | closed: []
+Task run entries files: 0
+taskAgent in own files: 0 0
+history lists writer: True | team: True
+PM's delegate_task tool results (from its raw trace):
+   {"delegated":false,"message":"ado_writer_790e3f5954c642f9b237f74307c46999 is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address."}
+   {"delegated":false,"message":"ado_review_team_59069353b7644d25ba88ed0a7944095d is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address."}
