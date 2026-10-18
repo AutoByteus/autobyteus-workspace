@@ -8,18 +8,20 @@ import { resolveClaudeSessionToolingOptions } from "../../../../src/agent-execut
 import { resolveRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
-import { CreateOrUpdateProjectTool, CreateProjectTool, UpdateProjectTool, registerProjectTaskTools } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
+import { CreateProjectTool, UpdateProjectTool, registerProjectTaskTools } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { buildProjectTaskToolSchema } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
 import { MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
-// project-tool-split AC-003, AC-004, AC-005 (new build): the same configured tool names give the same Project tool
-// exposure and the same descriptions/schemas on the AutoByteus (native), Codex and Claude (Agent Tools MCP) runtimes.
+// project-tool-split AC-003 and remove-create-or-update-project AC-002: the same configured tool names give the same
+// Project tool exposure and the same descriptions/schemas on the AutoByteus (native), Codex and Claude (Agent Tools MCP)
+// runtimes, and a definition that still lists the removed create_or_update_project launches without it.
 const teamMember = testMemberExecutionContext({
   teamRunId: "team-run", rootTeamRunId: "team-run", teamDefinitionId: "team-def", memberAddress: "/worker", agentRunId: "run-worker",
 });
 const standaloneHost = new MemberExecutionContext({ ...teamMember, teamScoped: false, collaborationRole: "standalone_agent" });
-const PROJECT_MUTATION_TOOLS = ["create_project", "update_project", "create_or_update_project"];
+// Every *_project name, so a Project mutation tool that should not exist would still show up here.
+const projectMutation = (name: string) => /_project$/.test(name);
 
 describe("Project tool exposure and schemas across runtimes", () => {
   let snapshot: Map<string, ToolDefinition>;
@@ -30,14 +32,15 @@ describe("Project tool exposure and schemas across runtimes", () => {
     const agentDefinition = new AgentDefinition({ name: "Agent", description: "Parity.", toolNames });
     const runtimeToolExposure = resolveRuntimeAgentToolExposure(agentDefinition, context);
     const logger = { warn: vi.fn(), error: vi.fn() };
-    const autobyteus = resolveAutoByteusAgentTools({ agentDefinition, runtimeToolExposure, senderRunId: "run-worker", memberExecutionContext: context, logger })
-      .actualToolNames.filter((name) => PROJECT_MUTATION_TOOLS.includes(name));
+    const autobyteusAll = resolveAutoByteusAgentTools({ agentDefinition, runtimeToolExposure, senderRunId: "run-worker", memberExecutionContext: context, logger })
+      .actualToolNames;
     // Codex and Claude both read the exposure through the Agent Tools MCP catalog; Claude also derives its own list.
     const catalog = new AgentToolMcpCatalog({ providers: [new ProjectTaskToolsMcpAdapterProvider()] });
-    const codex = catalog.resolveConfiguredSupportedToolNames(runtimeToolExposure).filter((name) => PROJECT_MUTATION_TOOLS.includes(name));
-    const claude = resolveClaudeSessionToolingOptions({ runtimeToolExposure, memberExecutionContext: context, hasMaterializedSkills: false })
-      .agentToolsMcpEnabledToolNames.filter((name) => PROJECT_MUTATION_TOOLS.includes(name));
-    return { autobyteus, codex, claude, logger };
+    const codexAll = catalog.resolveConfiguredSupportedToolNames(runtimeToolExposure);
+    const claudeAll = resolveClaudeSessionToolingOptions({ runtimeToolExposure, memberExecutionContext: context, hasMaterializedSkills: false })
+      .agentToolsMcpEnabledToolNames;
+    return { autobyteus: autobyteusAll.filter(projectMutation), codex: codexAll.filter(projectMutation), claude: claudeAll.filter(projectMutation),
+      autobyteusAll, codexAll, claudeAll, logger };
   };
 
   it.each([["a Team member", teamMember], ["a standalone Agent host", standaloneHost]])("%s without a Project tool selection has none on any runtime", (_label, context) => {
@@ -48,10 +51,6 @@ describe("Project tool exposure and schemas across runtimes", () => {
     [["create_project"], ["create_project"]],
     [["update_project"], ["update_project"]],
     [["create_project", "update_project"], ["create_project", "update_project"]],
-    // AC-004: an existing configuration that lists only the old name keeps its tool.
-    [["create_or_update_project"], ["create_or_update_project"]],
-    // AC-005 (new build): a transition list with old and new names gets every listed Project tool, without an error.
-    [["create_or_update_project", "create_project", "update_project"], ["create_or_update_project", "create_project", "update_project"]],
   ])("selecting %j gives exactly %j on every runtime", (selected, expected) => {
     for (const context of [teamMember, standaloneHost]) {
       const result = exposures([...selected, "read_file"], context);
@@ -61,9 +60,29 @@ describe("Project tool exposure and schemas across runtimes", () => {
     }
   });
 
+  it.each([
+    [["create_or_update_project", "read_file"], []],
+    [["create_or_update_project", "create_project", "update_project", "list_projects", "read_file"], ["create_project", "update_project"]],
+  ])("a definition that still lists the removed create_or_update_project launches without it and with every other listed tool on every runtime: %j", (selected, expected) => {
+    for (const context of [teamMember, standaloneHost]) {
+      const result = exposures(selected, context);
+      expect([result.autobyteus, result.codex, result.claude]).toEqual([expected, expected, expected]);
+      expect(result.autobyteusAll).toContain("read_file");
+      for (const all of [result.autobyteusAll, result.codexAll, result.claudeAll]) {
+        expect(all).toEqual(expect.arrayContaining(selected.filter((name) => name !== "create_or_update_project" && name !== "read_file")));
+        expect(all).not.toContain("create_or_update_project");
+      }
+      expect(result.logger.warn).toHaveBeenCalledWith(expect.stringMatching(/'create_or_update_project'.*not found in registry\. Skipping\./));
+      expect(result.logger.error).not.toHaveBeenCalled();
+    }
+    const adapters = new ProjectTaskToolsMcpAdapterProvider().getAdapters().map((adapter) => adapter.definition.name);
+    expect(adapters).not.toContain("create_or_update_project");
+    expect(defaultToolRegistry.getToolDefinition("create_or_update_project")).toBeUndefined();
+  });
+
   it("native classes and the Agent Tools MCP adapters publish identical names, descriptions and schemas", () => {
     const adapters = new ProjectTaskToolsMcpAdapterProvider().getAdapters().map((adapter) => adapter.definition);
-    for (const [Tool, name] of [[CreateProjectTool, "create_project"], [UpdateProjectTool, "update_project"], [CreateOrUpdateProjectTool, "create_or_update_project"]] as const) {
+    for (const [Tool, name] of [[CreateProjectTool, "create_project"], [UpdateProjectTool, "update_project"]] as const) {
       const adapter = adapters.find((definition) => definition.name === name)!;
       expect(Tool.getName()).toBe(name);
       expect(adapter.description).toBe(Tool.getDescription());
