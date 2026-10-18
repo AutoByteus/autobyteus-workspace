@@ -55,6 +55,9 @@ CLAIM_ALLOWED_FILES = {
     "autobyteus-android/gradlew.bat",
     "scripts/check_licensing.py",
     "scripts/tests/test_check_licensing.py",
+    # The licences of the third-party embedding models the server downloads (never shipped), stated for operators.
+    "autobyteus-server-ts/src/embeddings/catalog/embedding-model-catalog.ts",
+    "autobyteus-server-ts/docs/modules/embeddings.md",
 }
 CLAIM_ALLOWED_PREFIXES = ["autobyteus-web/public/THIRD_PARTY_NOTICES/"] + [
     component + "/" for component in APACHE_COMPONENTS

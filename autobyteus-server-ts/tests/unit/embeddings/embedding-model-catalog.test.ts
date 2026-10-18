@@ -1,4 +1,5 @@
-import fs from "node:fs/promises";
+import fs from "node:fs";
+import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -11,12 +12,15 @@ import { fakeModel } from "../../helpers/fake-embedding-model.js";
 afterEach(() => vi.restoreAllMocks());
 
 describe("embedding model catalog and setting", () => {
-  it("offers the three approved models with LEAF-IR as the default, each pinned with checksums and a licence", () => {
+  it("offers the three approved models with LEAF-IR as the default, each pinned with checksums, and documents each licence and source", () => {
     expect(EMBEDDING_MODEL_CATALOG.map((model) => model.id)).toEqual(["mdbr-leaf-ir", "granite-embedding-small-english-r2", "embeddinggemma-2"]);
     expect(DEFAULT_EMBEDDING_MODEL_ID).toBe("mdbr-leaf-ir");
+    const docs = fs.readFileSync(path.resolve(import.meta.dirname, "../../../docs/modules/embeddings.md"), "utf8");
     for (const model of EMBEDDING_MODEL_CATALOG) {
       expect(model.source.revision).toMatch(/^[0-9a-f]{40}$/);
-      expect(model.licence).toBe("Apache-2.0");
+      const row = docs.split("\n").find((line) => line.startsWith(`| \`${model.id}\``));
+      expect(row).toContain(` ${model.licence} `);
+      expect(row).toContain(`${model.source.repo}\` @ \`${model.source.revision}`);
       for (const file of model.files) expect(file).toMatchObject({ sha256: expect.stringMatching(/^[0-9a-f]{64}$/), bytes: expect.any(Number) });
       const paths = model.files.map((file) => file.path);
       expect(paths).toEqual(expect.arrayContaining([model.onnxFile, model.tokenizerFiles.tokenizer, model.tokenizerFiles.config]));
@@ -55,14 +59,14 @@ describe("relevance rule", () => {
 
 describe("EmbeddingModelRunner", () => {
   it("starts the real worker entry and reports a model that cannot be loaded", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "embedding-runner-"));
+    const dir = await fsp.mkdtemp(path.join(os.tmpdir(), "embedding-runner-"));
     const runner = new EmbeddingModelRunner(fakeModel("missing", { onnxFile: "onnx/model.onnx" }), dir, { threads: 1 });
     try {
       await expect(runner.start()).rejects.toThrow("The embedding model could not be loaded");
       await expect(runner.embed("query", ["hello"])).rejects.toThrow("The embedding model could not be loaded");
     } finally {
       await runner.stop();
-      await fs.rm(dir, { recursive: true, force: true });
+      await fsp.rm(dir, { recursive: true, force: true });
     }
   });
 });

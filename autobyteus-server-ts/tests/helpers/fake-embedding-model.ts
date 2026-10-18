@@ -25,7 +25,7 @@ export const CONCEPTS: readonly string[][] = [
 ];
 
 export const fakeModel = (id = "fake-model-a", overrides: Partial<EmbeddingModelDefinition> = {}): EmbeddingModelDefinition => ({
-  id, displayName: `Fake ${id}`, description: "Test model.", licence: "Apache-2.0", languages: ["en"],
+  id, displayName: `Fake ${id}`, description: "Test model.", licence: "test-only", languages: ["en"],
   source: { repo: "test/fake", revision: "0" }, files: [], onnxFile: "model.onnx",
   tokenizerFiles: { tokenizer: "tokenizer.json", config: "tokenizer_config.json" }, maxTokens: 512,
   queryPrefix: "", documentPrefix: "", output: "sentence_embedding", dimensions: CONCEPTS.length,
