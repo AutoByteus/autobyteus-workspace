@@ -1,0 +1,2327 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mprotects the selected Project tool create_project from configured MCP collision and rejects unselected calls
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-ugsshg
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mprotects the selected Project tool update_project from configured MCP collision and rejects unselected calls
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-sVHcoQ
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mprotects the selected Project tool update_project from configured MCP collision and rejects unselected calls
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mdocuments create_project and update_project with one meaning each, identical on native and MCP, with no omission-erasing defaults (AC-001, AC-002, AC-007)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-HVxCBC
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mdocuments create_project and update_project with one meaning each, identical on native and MCP, with no omission-erasing defaults (AC-001, AC-002, AC-007)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mhas exactly the six Project/Task tools on the contract, the MCP adapters and the native registry; the removed create_or_update_project is unknown (REQ-001, REQ-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-XxB9EU
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mhas exactly the six Project/Task tools on the contract, the MCP adapters and the native registry; the removed create_or_update_project is unknown (REQ-001, REQ-002)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mdocuments one optional additive context_files string array on create_task and update_task, identical on native and MCP (AC-011)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-c318Yj
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mdocuments one optional additive context_files string array on create_task and update_task, identical on native and MCP (AC-011)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mcreate_project and update_project return today's compact saved Project results through native and MCP (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-sOIlxW
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mcreate_project and update_project return today's compact saved Project results through native and MCP (AC-001, AC-002)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves nested omission through public native preparation/coercion and MCP replacement/clear
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-BizoEU
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves nested omission through public native preparation/coercion and MCP replacement/clear
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-9pxgj6
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":""}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-MfbwIm
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":""}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":" "}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-Rt8tzU
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":" "}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":null}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-P6i6V4
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":null}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":123}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-loTqNX
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":123}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":true}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-G3NZoJ
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":true}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":null,"name":"x"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-F39yrq
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":null,"name":"x"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"","name":"x"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-F7QkRz
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"","name":"x"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":" ","name":"x"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-T0OUvq
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":" ","name":"x"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":123,"name":"x"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-VHheH4
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":123,"name":"x"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-y8YtWn
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":null,"name":""}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-WJJj0C
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":null,"name":""}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-fDKmdW
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p","name":5}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-bTQw8q
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p","name":5}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p","name":" "}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-ozAhFA
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p","name":" "}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p","workspaces":"[]"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-KXxxpr
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p","workspaces":"[]"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p","extra":true}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-mjEX5i
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":"p","extra":true}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":null,"extra":true}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-svCX0C
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"project_id":null,"extra":true}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"description":5}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-htS64l
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"description":5}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"workspaces":5}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-c5SnsL
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"workspaces":5}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","description":null}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-0fqb9d
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","description":null}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","description":false}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-rK7h19
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","description":false}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","description":123}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-0rsDPR
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","description":123}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-DjcaHW
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","extra":true}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-pk8knB
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","extra":true}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"extra":true}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-Sfya9m
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"extra":true}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":""}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-eKOPAd
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":""}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":"[]"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-1TJpzW
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":"[]"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":null}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-JZcX3I
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":null}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":{}}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-6jcyss
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":{}}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-qRHx3n
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[null]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-4G4m01
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[null]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":["ws"]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-NWnscc
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":["ws"]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[123]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-v2cR6Q
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[123]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":["2026-10-18T05:46:31.662Z"]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-jQhJUh
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":["2026-10-18T05:46:31.662Z"]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[[]]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-avMvYL
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[[]]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[null]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-4gC580
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[null]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_id":"old_id"}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-XIlVrg
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_id":"old_id"}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-BY1tS3
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":null}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-fN4T0M
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":null}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":""}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-wFPOvq
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":""}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":123}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-wx9cXD
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":123}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"ws","description":null}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-vbo5UD
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"ws","description":null}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"ws","description":false}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-fk8GYQ
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"ws","description":false}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"ws","description":123}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-7z72nx
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"ws","description":123}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"ws","extra":true}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-4yNEZo
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"ws","extra":true}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"/work/site"},{"workspace_path":"/work/site/../site/"}]}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-Etk9kV
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":[{"workspace_path":"/work/site"},{"workspace_path":"/work/site/../site/"}]}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mcreate_project accepts only its own arguments: {"project_id":"p","name":"x"} (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-25QNhl
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mcreate_project accepts only its own arguments: {"project_id":"p","name":"x"} (AC-001, AC-002)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mcreate_project accepts only its own arguments: {"project_id":"p"} (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-PxZzq0
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mcreate_project accepts only its own arguments: {"project_id":"p"} (AC-001, AC-002)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mcreate_project accepts only its own arguments: {"project_id":null,"name":""} (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-q6Apoq
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mcreate_project accepts only its own arguments: {"project_id":null,"name":""} (AC-001, AC-002)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mupdate_project accepts only its own arguments: {} (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-Z3wc8d
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mupdate_project accepts only its own arguments: {} (AC-001, AC-002)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mupdate_project accepts only its own arguments: {"name":"x"} (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-j1Hfhd
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mupdate_project accepts only its own arguments: {"name":"x"} (AC-001, AC-002)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mupdate_project accepts only its own arguments: {"name":"x","extra":true} (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-REav2c
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mupdate_project accepts only its own arguments: {"name":"x","extra":true} (AC-001, AC-002)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects nonplain top-level Project arguments on every Project mutation tool: null
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-grhjRh
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects nonplain top-level Project arguments on every Project mutation tool: null
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects nonplain top-level Project arguments on every Project mutation tool: undefined
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-tKyMBk
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects nonplain top-level Project arguments on every Project mutation tool: undefined
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects nonplain top-level Project arguments on every Project mutation tool: "2026-10-18T05:46:31.664Z"
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-83IdjY
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects nonplain top-level Project arguments on every Project mutation tool: "2026-10-18T05:46:31.664Z"
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects nonplain top-level Project arguments on every Project mutation tool: {"description":"x"}
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-XoMyAg
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mrejects nonplain top-level Project arguments on every Project mutation tool: {"description":"x"}
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mreturns service validation errors without partial metadata or implicit upsert
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-RCtP1u
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mreturns service validation errors without partial metadata or implicit upsert
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mreports unconfirmed Project writes truthfully through native without exposing private failure details
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-AQ7uNj
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mreports unconfirmed Project writes truthfully through native without exposing private failure details
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mreports unconfirmed Project writes truthfully through mcp without exposing private failure details
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-ZLG8tW
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mreports unconfirmed Project writes truthfully through mcp without exposing private failure details
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mshares business reads and compact TODO create/known-ID status acknowledgements
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-WNxsjJ
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mshares business reads and compact TODO create/known-ID status acknowledgements
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mdocuments and accepts CANCELLED (dropped as not needed) on patch and list, never on create (AC-004, AC-006, AC-007)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-t29VMS
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mdocuments and accepts CANCELLED (dropped as not needed) on patch and list, never on create (AC-004, AC-006, AC-007)
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_projects
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-2hqMn4
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_projects
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-FEzFIM
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-gtvGRh
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-CE8wvc
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-i9X11R
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-e95fZa
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-3NtnUY
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-vHebxB
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-VB92ij
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-50x9aL
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-VCeBTX
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-vN1Ald
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-fPqETo
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-bbVCo0
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-7Wtd8u
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-a9Xg1f
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-gY2jSd
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-ooIOCG
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-oWub4g
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-3jVaDp
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-D4PgX7
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-e0m9SK
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-ddYNUS
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for create_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-3ssACx
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for update_task
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-XDorZN
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mpreserves domain errors before BaseTool coercion for list_project_tasks
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2munknown Task IDs fail without creating and aborted native execution stays a transport error
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-flZKw9
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2munknown Task IDs fail without creating and aborted native execution stays a transport error
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mexposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-8hbZmV
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstderr[2m | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts[2m > [22m[2mProject data tools — actual native preparation/execute and selected MCP adapter[2m > [22m[2mexposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+ [32m✓[39m tests/unit/agent-tools/project-tasks/project-task-tools.test.ts [2m([22m[2m96 tests[22m[2m)[22m[33m 1745[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-tools/project-tasks/project-task-business-results.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 908[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-tools/project-tasks/project-task-keys-tools.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-tools/project-tasks/project-task-keys-tools.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 781[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2ma Team member without a Project tool selection has none on any runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2ma Team member without a Project tool selection has none on any runtime
+[22m[39mSuccessfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2ma standalone Agent host without a Project tool selection has none on any runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2ma standalone Agent host without a Project tool selection has none on any runtime
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2mselecting ["create_project"] gives exactly ["create_project"] on every runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2mselecting ["create_project"] gives exactly ["create_project"] on every runtime
+[22m[39mSuccessfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2mselecting ["update_project"] gives exactly ["update_project"] on every runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2mselecting ["update_project"] gives exactly ["update_project"] on every runtime
+[22m[39mSuccessfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2mselecting ["create_project","update_project"] gives exactly ["create_project","update_project"] on every runtime
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2mselecting ["create_project","update_project"] gives exactly ["create_project","update_project"] on every runtime
+[22m[39mSuccessfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2ma definition that still lists the removed create_or_update_project launches without it and with every other listed tool on every runtime: ["create_or_update_project","read_file"]
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2ma definition that still lists the removed create_or_update_project launches without it and with every other listed tool on every runtime: ["create_or_update_project","read_file"]
+[22m[39mSuccessfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2ma definition that still lists the removed create_or_update_project launches without it and with every other listed tool on every runtime: ["create_or_update_project","create_project","update_project","list_projects","read_file"]
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2ma definition that still lists the removed create_or_update_project launches without it and with every other listed tool on every runtime: ["create_or_update_project","create_project","update_project","list_projects","read_file"]
+[22m[39mSuccessfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2mnative classes and the Agent Tools MCP adapters publish identical names, descriptions and schemas
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts[2m > [22m[2mProject tool exposure and schemas across runtimes[2m > [22m[2mpublishes stable parameter schemas for the new tools
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+ [32m✓[39m tests/unit/agent-execution/shared/project-tool-runtime-parity.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mskips a stale removed name without changing the configured names or blocking a retained tool
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mmaterializes the native foundation baseline through the existing registry
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mgives a standalone Agent-root host that selected no task tool neither create_task nor update_task (AC-001)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mgives a standalone Agent-root host that selected no task tool neither create_task nor update_task (AC-001)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mgives a Team member that selected no task tool neither create_task nor update_task (AC-001)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mgives a Team member that selected no task tool neither create_task nor update_task (AC-001)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mgives a standalone Agent-root host that selected create_task and update_task both native tools (ARCH-F-001)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mgives a standalone Agent-root host that selected create_task and update_task both native tools (ARCH-F-001)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mgives a Team member that selected create_task and update_task both native tools (ARCH-F-001)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mgives a Team member that selected create_task and update_task both native tools (ARCH-F-001)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mlaunches an agent that still selects the removed create_or_update_task with no task tools and a warning (AC-007)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mlaunches an agent that still selects the removed create_or_update_task with no task tools and a warning (AC-007)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mlaunches an agent that still selects the removed create_or_update_project without it and with its other tools, with a warning (remove-create-or-update-project AC-002)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mlaunches an agent that still selects the removed create_or_update_project without it and with its other tools, with a warning (remove-create-or-update-project AC-002)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'delegate_task'
+
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m      Tests [22m [1m[32m135 passed[39m[22m[90m (135)[39m
+[2m   Start at [22m 07:46:26
+[2m   Duration [22m 14.28s[2m (transform 3.54s, setup 64ms, import 9.86s, tests 3.47s, environment 0ms)[22m
+
