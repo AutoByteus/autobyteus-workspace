@@ -55,6 +55,7 @@ export {
 export {
   ReleasedAgentOrgCommunicationMessagesReader,
   ReleasedAgentOrgRunExecutionTreeReader,
+  ReleasedStandaloneRootMessagesReader,
   ReleasedStandaloneRootTreeReader,
   ReleasedTeamCommunicationMessagesReader,
   ReleasedTeamRunExecutionTreeReader,

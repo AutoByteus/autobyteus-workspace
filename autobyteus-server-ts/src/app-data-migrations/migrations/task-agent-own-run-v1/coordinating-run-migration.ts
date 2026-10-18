@@ -9,12 +9,12 @@ import { taskAgentOwnMetadata, taskAgentTeamOwnTree, taskExecutionLinkOf } from 
 import { validateTaskAgentTeamTreePayload } from "../../../run-history/store/task-agent-team-tree-schema.js";
 import {
   ReleasedAgentOrgCommunicationMessagesReader,
+  ReleasedStandaloneRootMessagesReader,
   ReleasedTeamCommunicationMessagesReader,
   type TaskExecution,
 } from "../../legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
 import {
   ReleasedTaskAgentMessageLogs,
-  validateStandaloneRootMessages,
   type CollaborationCommunicationMessage,
 } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import type { ReleasedCoordinatingTree, ReleasedTaskEntry } from "./released-coordinating-trees.js";
@@ -255,11 +255,7 @@ export class CoordinatingRunMigration {
   private async readCoordinatingLog(): Promise<readonly CollaborationCommunicationMessage[]> {
     const tree = this.input.tree;
     switch (tree.family) {
-      case "agent": {
-        const file = path.join(tree.dir, "communication_messages.json");
-        try { return validateStandaloneRootMessages(JSON.parse(await fs.readFile(file, "utf8")), tree.runId).messages; }
-        catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
-      }
+      case "agent": return (await new ReleasedStandaloneRootMessagesReader().read(tree.dir, tree.runId))?.messages ?? [];
       case "agent_team": return (await new ReleasedTeamCommunicationMessagesReader().read(tree.dir, tree.runId))?.messages ?? [];
       case "agent_org": return (await new ReleasedAgentOrgCommunicationMessagesReader().read(tree.dir, tree.runId))?.messages ?? [];
     }

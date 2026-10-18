@@ -5,12 +5,16 @@
 // (`released-trees-before-task-agent-own-run.ts`) instead of through the current stores, which compose
 // task agents from their own files after `20261017_task_agent_own_run_v1`. Owned by the released
 // app-data migrations that run before it; current runtime must not import it.
+//
+// Same-ID repair R-B (append-only message logs): a package's message authority is present when its JSON
+// log or any file of its append-only log exists; its messages are read through the R-A readers.
 
 import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
 import { validateAgentOrgStatePackage } from "../../../agent-org-execution/services/agent-org-state-package-validator.js";
 import { AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME, TEAM_COMMUNICATION_MESSAGES_FILE_NAME } from "./released-message-logs-before-append-only.js";
+import { hasReleasedAppendOnlyMessageLogFile, type ReleasedAppendOnlyMessageLogBaseName } from "./released-message-log-files-from-append-only.js";
 import { AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
 import { TEAM_RUN_EXECUTION_TREE_FILE_NAME } from "../../../run-history/store/team-run-execution-tree-path.js";
 import { validateTeamRunStatePackage } from "../../../run-history/services/team-run-state-package-validator.js";
@@ -47,6 +51,16 @@ export const packageKey = (family: RootRunPackageFamily, id: string): string => 
 export const isAttemptError = (error: unknown): boolean => typeof (error as NodeJS.ErrnoException)?.code === "string";
 const exists = (filePath: string): Promise<boolean> =>
   fs.access(filePath).then(() => true).catch((error: NodeJS.ErrnoException) => { if (error.code === "ENOENT") return false; throw error; });
+/** The append-only log that stands in for each JSON message authority (R-B). */
+const APPEND_ONLY_MESSAGE_LOGS: Readonly<Record<string, ReleasedAppendOnlyMessageLogBaseName>> = Object.freeze({
+  [TEAM_COMMUNICATION_MESSAGES_FILE_NAME]: "team_communication_messages",
+  [AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME]: "agent_org_communication_messages",
+});
+const hasAuthority = async (packagePath: string, name: string): Promise<boolean> => {
+  if (await exists(path.join(packagePath, name))) return true;
+  const appendOnly = APPEND_ONLY_MESSAGE_LOGS[name];
+  return appendOnly !== undefined && await hasReleasedAppendOnlyMessageLogFile(packagePath, appendOnly);
+};
 
 // Released task-records files are neither required nor retired: an old package
 // keeps its untouched records file on disk and is still admitted.
@@ -251,7 +265,7 @@ export class ReleasedRootRunPackageValidator {
     retired: readonly string[],
   ): Promise<string | null> {
     const missing = (await Promise.all(required.map(async (name) =>
-      await exists(path.join(packagePath, name)) ? null : name))).filter((name): name is string => name !== null);
+      await hasAuthority(packagePath, name) ? null : name))).filter((name): name is string => name !== null);
     if (missing.length) return `Current package is missing required authorities: ${missing.join(", ")}.`;
     const residue = (await Promise.all(retired.map(async (name) =>
       await exists(path.join(packagePath, name)) ? name : null))).filter((name): name is string => name !== null);
