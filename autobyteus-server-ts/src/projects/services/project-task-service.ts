@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
 import type {
-  AdoptedRunAssignInput, CurrentTaskAssignment, ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionResourcePort,
-  TaskExecutionReleaseRequest, TaskExecutionReopenInput, TaskExecutionReopenResult, UnfinishedAdoptionRevertRequest,
+  ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionResourcePort, TaskExecutionReleaseRequest, TaskExecutionReopenInput,
+  TaskExecutionReopenResult,
 } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -14,7 +14,7 @@ import { AD_HOC_TASK_ID_PREFIX, type AdHocTask } from "../domain/ad-hoc-task.js"
 import type { ProjectTaskContextFile } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { isTerminalTaskStatus, validateTaskStatus } from "../domain/task-status.js";
-import { notCurrentTaskMessage } from "../domain/task-execution-resources.js";
+import { assertTaskExecutionAssignable, notCurrentTaskMessage } from "../domain/task-execution-resources.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { AdHocTaskStore } from "../stores/ad-hoc-task-store.js";
 import { getProjectTaskContextStore, type ProjectTaskContextStore, type PreparedTaskContext } from "../context/project-task-context-store.js";
@@ -27,7 +27,6 @@ import { rootWorkerStatus, type TaskWorkerStatusResolver } from "./task-root-vie
 import { ProjectTaskViews } from "./project-task-views.js";
 import { TaskDependencyWrites } from "./task-dependency-writes.js";
 import { TaskReferences } from "./task-references.js";
-import { ExistingRunAssignments, terminalAssignment } from "./existing-run-assignments.js";
 import { normalizeDependsOn, sameDependencies } from "../domain/task-dependencies.js";
 
 type TaskPersistence = Pick<ProjectStore, "layout" | "readProject" | "listTasks" | "readTask" | "findTask" | "createTask" | "updateTask" | "deleteTask" | "withTaskDependencies" | "findTaskByKey">;
@@ -43,8 +42,6 @@ type Dependencies = {
   taskExecutionResources?: TaskExecutionResourceService;
   /** Exact-root stop request; absent means no runtime is asked to stop anything. */
   requestRelease?: TaskExecutionReleaseRequest;
-  /** Undo of an unfinished adoption (composition-bound); absent means nothing is undone. */
-  revertUnfinishedAdoption?: UnfinishedAdoptionRevertRequest;
   /** Told after each committed Task write (the `/ws/projects` feed); defaults to the process publisher. */
   changes?: ProjectChangeMarks;
   /** A Task root's live status from its hosting root (composition-bound); absent means `offline`. */
@@ -54,6 +51,8 @@ const normalizeDescription = (description: unknown): string => {
   if (typeof description !== "string" || !description.trim()) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
   return description.trim();
 };
+const terminalAssignment = (status: ProjectTaskStatus): ProjectError => new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
+  `The Task is ${status}; set it to TODO or IN_PROGRESS before you delegate it.`);
 const compareTasks = (a: Pick<ProjectTask, "taskId" | "updatedAt">, b: Pick<ProjectTask, "taskId" | "updatedAt">): number => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId);
 const cleanup = async (operation: () => Promise<unknown>): Promise<void> => {
   try { await operation(); } catch (e) { console.warn("Task context cleanup failed.", e); }
@@ -77,7 +76,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     // Agent run resources live beside the Task metadata in the same layouts.
     this.resources = deps.taskExecutionResources
       ?? new TaskExecutionResourceService(new TaskExecutionResourceStore(deps.store?.layout, this.adHocTasks.layout));
-    this.release = new TaskExecutionResourceRelease(deps.requestRelease, deps.revertUnfinishedAdoption);
+    this.release = new TaskExecutionResourceRelease(deps.requestRelease);
     // Every committed run-resource write may change a Task's root (link, start, fail, DONE or CANCELLED, reopen).
     this.resources.setCommitListener((location) => this.changes.taskChanged(location));
   }
@@ -88,10 +87,6 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   private get references() { return new TaskReferences(() => this.store); }
   private get dependencies() { return new TaskDependencyWrites(() => this.store, () => this.changes, this.references); }
   private get views() { return new ProjectTaskViews(this.context, this.resources, this.workerStatus); }
-  private get existingRuns() {
-    return new ExistingRunAssignments({ resources: this.resources, references: () => this.references,
-      readTask: (projectId, taskId) => this.store.readTask(projectId, taskId), readTaskAt: (location) => this.readTaskAt(location) });
-  }
   private nowIso(): string { return (this.deps.now?.() ?? new Date()).toISOString(); }
 
   /** Loads the agent run resource view (composition, once, after app-data migrations). */
@@ -199,14 +194,8 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   async deleteTask(command: DeleteProjectTaskCommand): Promise<boolean> {
     if (!(await this.store.deleteTask(command.projectId, command.taskId))) return false;
     this.changes.taskRemoved({ projectId: command.projectId, taskId: command.taskId });
-    this.revertUnfinishedAdoptionsOfDeleted({ projectId: command.projectId, taskId: command.taskId });
     await this.dependencies.removeDeleted(command.projectId, command.taskId);
     return true;
-  }
-  /** A deleted Project took its Tasks' files: undo the unfinished adoptions its Tasks had (design SR-008). */
-  async afterProjectDeleted(projectId: string): Promise<void> {
-    await this.resources.load();
-    this.resources.taskLocationsOfProject(projectId).forEach((location) => this.revertUnfinishedAdoptionsOfDeleted(location));
   }
   /** Every Task with no Project ("Temp tasks"), latest change first, each with its root. */
   async listTasksWithoutProject(): Promise<TaskWithoutProjectView[]> {
@@ -328,12 +317,24 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       return { taskId: location.taskId, reopened: await this.resources.reopenAssignment(location, input.execution, input.requestedBy) };
     });
   }
-  assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void> {
-    return this.existingRuns.assertAssignable(input);
+  /** Advisory existing-copy eligibility (the design's complete list), before any runtime step. */
+  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void> {
+    await this.resources.load();
+    this.resources.assertAllReadable();
+    const { projectId } = await this.references.byId(input.taskId);
+    await this.assertCopyAssignable(input, await this.assertAssignableTask(projectId, input.taskId));
   }
-  assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> { return this.existingRuns.assignExisting(input); }
-  currentAssignmentOf(execution: TaskExecutionReference): CurrentTaskAssignment | null { return this.existingRuns.currentAssignmentOf(execution); }
-  assignAdoptedRun(input: AdoptedRunAssignInput): Promise<void> { return this.existingRuns.assignAdopted(input); }
+  /** The existing-copy commit: every condition re-checked under the copy's and then the Task's serialization. */
+  async assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> {
+    await this.resources.load();
+    const { projectId } = await this.references.byId(input.taskId);
+    await this.resources.serializeCopyInTask(input.execution, () => input.taskId, async () => {
+      this.resources.assertAllReadable();
+      const task = await this.assertAssignableTask(projectId, input.taskId);
+      await this.assertCopyAssignable({ execution: input.execution, requestedBy: input.assignedBy, taskId: input.taskId }, task);
+      await this.resources.assignExisting({ projectId, taskId: input.taskId }, input);
+    });
+  }
 
   /** Creates the Task with no Project (text only) and links the agent run as its assignment. */
   private async linkAdHocTask(link: AssignedLink, content: NonNullable<AssignedLink["adHocTask"]>): Promise<string> {
@@ -354,10 +355,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
         written = await write();
       });
     } finally {
-      if (closed) {
-        this.release.release(location.taskId, this.resources.releasableByHostRoot(location.taskId));
-        this.release.revertUnfinishedAdoptions(location.taskId, this.resources.neverStartedAssignments(location.taskId));
-      }
+      if (closed) this.release.release(location.taskId, this.resources.releasableByHostRoot(location.taskId));
     }
     return written!;
   }
@@ -396,10 +394,20 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       .catch((error: unknown) => { if ((error as { code?: unknown }).code === "PROJECT_NOT_FOUND") return null; throw error; });
     return task && { status: task.status, reference: task.taskKey };
   }
-  /** After a Task's files are deleted: its never-started assignments that were unfinished adoptions are undone and closed. */
-  private revertUnfinishedAdoptionsOfDeleted(location: TaskLocation): void {
-    this.release.revertUnfinishedAdoptions(location.taskId, this.resources.neverStartedAssignments(location.taskId),
-      (execution) => this.resources.closeEntry(location, execution));
+  /** Assignment target rules for a Project Task: it exists and is not DONE or CANCELLED. */
+  private async assertAssignableTask(projectId: string, taskId: string): Promise<ProjectTask> {
+    const task = await this.store.readTask(projectId, taskId);
+    if (!task) throw new ProjectError("TASK_NOT_FOUND", "The Task was deleted.");
+    if (isTerminalTaskStatus(task.status)) throw terminalAssignment(task.status);
+    return task;
+  }
+  /** The copy-side rules of an existing-copy assignment, on the copy's history across Tasks; texts name Tasks by key. */
+  private async assertCopyAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>, task: ProjectTask): Promise<void> {
+    const history = this.resources.historyOf(input.execution);
+    const currentLocation = history && history.current.closedAt === null ? this.resources.locationOfTask(history.currentTaskId) : null;
+    const currentTask = currentLocation ? await this.readTaskAt(currentLocation) : null;
+    assertTaskExecutionAssignable(history, { requestedBy: input.requestedBy, taskId: input.taskId, taskReference: task.taskKey,
+      currentTaskReference: currentTask?.reference ?? null, ...(currentTask ? { currentTaskStatus: currentTask.status } : {}) });
   }
   /** Shared create body: input and owner checks (dependencies included), then the context step, then the in-lock commit (with its new key) that publishes it. */
   private async create(projectId: string, rawDescription: string, prepareContext: (taskId: string) => Promise<PreparedTaskContext>,
@@ -487,7 +495,7 @@ let singleton: ProjectTaskService | null = null;
 /** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
 export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "revertUnfinishedAdoption" | "workerStatus">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "workerStatus">): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };

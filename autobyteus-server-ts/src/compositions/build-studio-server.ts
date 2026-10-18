@@ -259,7 +259,7 @@ export const buildStudioServer = async (input: {
       assertExecutionCapabilitiesReady: () => undefined,
     });
     taskExecutionResources = await composeProjectTaskExecutionResources({
-      activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir() });
+      activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: input.appConfig.getAppDataDir() });
     skillUpdateNotices = createSkillUpdateNotices({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
     });

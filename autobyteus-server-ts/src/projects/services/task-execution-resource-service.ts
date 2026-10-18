@@ -5,7 +5,7 @@ import type {
 import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { ProjectError } from "../domain/project-errors.js";
 import {
-  assertTaskExecutionReopenable, closedAssignments, closeTaskExecutionEntry, closeTaskExecutionResources, latestEntryOf, linkExistingTaskExecution, linkNewTaskExecution,
+  assertTaskExecutionReopenable, closedAssignments, closeTaskExecutionResources, latestEntryOf, linkExistingTaskExecution, linkNewTaskExecution,
   openAssignments, reopenTaskExecution, settleTaskExecutionStart, type TaskAssignmentView, type TaskExecutionHistory, type TaskExecutionResource,
   type TaskExecutionResourceFile,
 } from "../domain/task-execution-resources.js";
@@ -106,35 +106,6 @@ export class TaskExecutionResourceService {
       ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}),
       ...(recipientAddress ? { recipientAddress } : {}),
     }, this.now().toISOString()), next => this.commit(location, next));
-  }
-  /**
-   * Adoption commit (call under `serializeCopyInTask`): a run the user started takes its first assignment from
-   * `assignedBy`. Precondition on the view and the file read under the lock: the run has no open entry in any Task.
-   */
-  async assignAdopted(location: TaskLocation, input: ExistingTaskExecutionAssignInput & Readonly<{ recipientAddress: string }>): Promise<void> {
-    if (this.currentOf(input.execution)?.entry.closedAt === null) {
-      throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The run already belongs to a Task.");
-    }
-    await this.store.update(location, file => linkExistingTaskExecution(file, {
-      assignedBy: input.assignedBy, recipientAddress: input.recipientAddress, hostRoot: input.hostRoot, execution: input.execution,
-      ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}),
-    }, this.now().toISOString()), next => this.commit(location, next));
-  }
-  /** The Task's `assigned` entries that never started (every run's last entry; open or closed), from the view. */
-  neverStartedAssignments(taskId: string): TaskExecutionResource[] {
-    const file = this.files.get(taskId)?.file;
-    if (!file) return [];
-    return file.executionResources.filter(entry => entry.role === "assigned" && entry.start === "starting"
-      && latestEntryOf(file, entry.execution) === entry);
-  }
-  /** Closes the run's last entry in the Task (an unfinished adoption reverted after its Task was deleted). */
-  async closeEntry(location: TaskLocation, execution: TaskExecutionReference): Promise<void> {
-    await this.serialize(location.taskId, () => this.store.update(location,
-      file => closeTaskExecutionEntry(file, execution, this.now().toISOString()), next => this.commit(location, next)));
-  }
-  /** The Tasks of a Project that have agent run resources, from the view (the files outlive a deleted Project). */
-  taskLocationsOfProject(projectId: string): TaskLocation[] {
-    return [...this.files.values()].filter(({ location }) => location.projectId === projectId).map(({ location }) => location);
   }
   async markStarted(execution: TaskExecutionReference): Promise<void> {
     await this.settle(execution, { start: "started" });

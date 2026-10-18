@@ -61,8 +61,6 @@ import type { StandaloneRootPersistenceCoordinator } from "../services/standalon
 import { StandaloneRootRecipientResolver } from "../services/standalone-root-recipient-resolver.js";
 import { StandaloneRootTaskExecutionAdapter, type StandaloneRootPlacement } from "../services/standalone-root-task-execution-adapter.js";
 import { StandaloneRootMessageDelivery } from "../services/standalone-root-message-delivery.js";
-import { createStandaloneRootAdoption } from "../services/standalone-root-adoption.js";
-import type { HandStartedRuns } from "../../agent-collaboration/execution/task/hand-started-runs.js";
 import { adoptStandaloneRootPlatformBinding, replaceStandaloneRootPlatformBindingWithoutConversation } from "../services/standalone-root-tree-mutator.js";
 
 export type StandaloneRootPackageSnapshot = Readonly<{
@@ -113,8 +111,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
-    /** The memory root this run lives in; with it the host can adopt runs the user started (design SR-008). */
-    adoption?: Readonly<{ memoryDir: string; runs?: HandStartedRuns }>;
     onTerminated?(): void;
   }>) {
     this.tree = options.tree;
@@ -134,7 +130,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       rootLaunchConfiguration: options.rootLaunchConfiguration,
       getTree: () => this.tree,
     });
-    const adapter = new StandaloneRootTaskExecutionAdapter({
+    this.taskExecutions = new RootTaskExecutionLifecycle(new StandaloneRootTaskExecutionAdapter({
       root: options.root,
       taskExecutionIdentity: options.taskExecutionIdentity,
       rootAgents: options.rootAgents,
@@ -156,11 +152,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    });
-    const adoption = options.adoption && createStandaloneRootAdoption({ root: options.root, adapter, collaborators: this.collaborators,
-      rootLaunchConfiguration: options.rootLaunchConfiguration, ...options.adoption });
-    this.taskExecutions = new RootTaskExecutionLifecycle(adapter, { ...options.taskExecutionIdleShutdown,
-      taskExecutionResources: options.taskExecutionResources, ...(adoption ? { adoption } : {}) });
+    }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources });
     this.delegatedLaunches = createStandaloneDelegatedLaunchCommand({
       taskExecutions: this.taskExecutions,
       persistence: options.persistence,
@@ -209,10 +201,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
   releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.taskExecutions.releaseTaskExecutions(executions);
-  }
-  /** Undo of an unfinished adoption whose Task was closed or deleted (design SR-008), on this root's queue. */
-  revertUnfinishedAdoption(execution: TaskExecutionReference): Promise<boolean> {
-    return this.taskExecutions.revertUnfinishedAdoption(execution);
   }
   /** DS-002: the user's Stop of one delegated copy and the copies it started. */
   stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {

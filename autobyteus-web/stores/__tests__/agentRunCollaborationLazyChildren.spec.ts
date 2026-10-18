@@ -8,11 +8,11 @@ import {
 import { GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 import { memberId, multiTeamView } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture'
 
-const io = vi.hoisted(() => ({ query: vi.fn(), refreshTopology: vi.fn(), holds: [] as Array<{ match(input: any): boolean; remaining: number; promise: Promise<void> }> }))
+const io = vi.hoisted(() => ({ query: vi.fn(), holds: [] as Array<{ match(input: any): boolean; remaining: number; promise: Promise<void> }> }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   applyRunNavigationEffect: vi.fn(), ensureWorkspaceByRootPath: vi.fn(async () => null),
-  resolveWorkspaceMetadataByRootPath: vi.fn(async () => null), refreshRunNavigationTopology: io.refreshTopology,
+  resolveWorkspaceMetadataByRootPath: vi.fn(async () => null),
 }) }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
@@ -203,8 +203,6 @@ describe('Agent-root children load on demand', () => {
     expect(count(GetAgentRunCollaborationMemberFileChanges) - before.files).toBe(1)
     expect(count(GetAgentRunCollaborationMemberProjection, opened)).toBe(2)
     expect(count(GetAgentRunCollaboration)).toBe(0)
-    // The base's task_execution_started handling (SR-009) ran without error on the same frame.
-    expect(io.refreshTopology).toHaveBeenCalledWith('task-execution-started')
   })
 
   it('batched live output during an opened copy\'s load retries the load, which then commits (AC-006, autobyteus-139)', async () => {

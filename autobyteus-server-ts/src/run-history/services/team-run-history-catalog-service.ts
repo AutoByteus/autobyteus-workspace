@@ -50,7 +50,7 @@ export class TeamRunHistoryCatalogService {
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly removePackage: (teamDirPath: string) => Promise<void>;
 
-  constructor(memoryDir: string, dependencies: {
+  constructor(private readonly memoryDir: string, dependencies: {
     indexStore?: TeamRunHistoryIndexStore;
     executionTreeStore?: TeamRunExecutionTreeStore;
     teamRunManager?: TeamRunHistoryManager;
@@ -121,22 +121,6 @@ export class TeamRunHistoryCatalogService {
       rows.set(row.teamRunId, { ...row, terminatedAt: input.terminatedAt ?? new Date().toISOString() });
       return { value: undefined, shouldFlush: true };
     });
-  }
-
-  /** The team run's row in the history index, admitted or not; null when it has none. */
-  async indexedRowOf(teamRunId: string): Promise<TeamRunIndexRowRecord | null> {
-    return this.enqueueValue(async () => this.core.rowsInQueue().get(safeRunId(teamRunId)) ?? null);
-  }
-
-  /** Adoption (step 4): the team run is now a task agent team; it leaves the user's history and is no longer admitted. */
-  async removeAdoptedTeamRun(teamRunId: string): Promise<void> {
-    await this.mutate(async (rows) => ({ value: undefined, shouldFlush: rows.delete(safeRunId(teamRunId)) }));
-    this.packageCatalog.exclude(teamRunId, "Adopted as a task agent team.");
-  }
-
-  /** Revert of an unfinished adoption: the tree is a team run's again; its row (never removed) is admitted again. */
-  readmitHandStartedTeamRun(teamRunId: string): Promise<void> {
-    return this.packageCatalog.admit(teamRunId);
   }
 
   archiveTeamRun(teamRunId: string): Promise<TeamCatalogMutationResultMessage> {

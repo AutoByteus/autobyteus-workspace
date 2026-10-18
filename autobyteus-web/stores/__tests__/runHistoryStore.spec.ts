@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useRunHistoryStore } from '../runHistoryStore';
-import { useRunHistoryRetiredRunsStore } from '../runHistoryRetiredRuns';
 import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport';
 import linkedOrgHistory from '~/test-support/fixtures/linked-org-history-public.json';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
@@ -2589,7 +2588,7 @@ describe('runHistoryStore', () => {
     expect(agentOrgContextsStoreMock.releaseContext).not.toHaveBeenCalled();
   });
 
-  // link-existing-run-to-task SR-009 ("Sidebar After Adoption"): a run that became a task agent leaves its own group.
+  // A run that left the server's history (deleted or archived from another window or client) leaves its own group.
   describe('top-level rows of runs that left the history', () => {
     const WS = '/ws/a';
     const agentRow = (runId: string, createdAt: string) => ({ runId, summary: runId, createdAt, isActive: false, lastKnownStatus: 'IDLE' });
@@ -2628,7 +2627,7 @@ describe('runHistoryStore', () => {
       workspaceStoreMock.workspaces = { 'ws-a': workspaceStoreMock.allWorkspaces[0] };
     });
 
-    it('drops an open agent run and an open team run once a later read no longer lists them, and shows them again if listed (rule 2)', async () => {
+    it('drops an open agent run and an open team run once a later read no longer lists them, and shows them again if listed', async () => {
       holdAgentContext('run-open');
       holdTeamContext('team-open');
       const store = useRunHistoryStore();
@@ -2637,7 +2636,7 @@ describe('runHistoryStore', () => {
       expect(shownAgentRuns(store)).toEqual(['run-open', 'run-other']);
       expect(shownTeamRuns(store)).toEqual(['team-open', 'team-other']);
 
-      // Adopted by a Project Task Manager: the server removed both history rows.
+      // Removed from the history elsewhere (another window or client): the server no longer lists them.
       serveHistory([['run-other', '2026-01-02T00:00:00.000Z']], ['team-other']);
       await store.fetchTree();
       expect(shownAgentRuns(store)).toEqual(['run-other']);
@@ -2679,27 +2678,6 @@ describe('runHistoryStore', () => {
       await store.fetchTree();
       await store.fetchTree();
       expect(shownAgentRuns(store)).toEqual(['run-new', 'run-other']);
-    });
-
-    it('drops a run reported as a started task execution at once, before any read, and a stale read cannot bring it back (rule 1)', async () => {
-      holdAgentContext('run-open');
-      holdTeamContext('team-open');
-      const store = useRunHistoryStore();
-      serveHistory([['run-open', '2026-01-01T00:00:00.000Z']], ['team-open']);
-      await store.fetchTree();
-      expect(shownAgentRuns(store)).toEqual(['run-open']);
-
-      const retired = useRunHistoryRetiredRunsStore();
-      retired.retireTaskExecution({ agentRunId: 'run-open' });
-      retired.retireTaskExecution({ teamRunId: 'team-open' });
-      store.refreshRunNavigationTopology('task-execution-started');
-      expect(store.workspaceGroups[0]?.agentDefinitions[0]?.runs.map((run) => run.runId)).toEqual(['run-open']);
-      expect(shownAgentRuns(store)).toEqual([]);
-      expect(shownTeamRuns(store)).toEqual([]);
-
-      await store.fetchTree();
-      expect(shownAgentRuns(store)).toEqual([]);
-      expect(shownTeamRuns(store)).toEqual([]);
     });
 
     it('archiving an open team run takes it out of its group, and the next read keeps it out', async () => {

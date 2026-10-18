@@ -270,7 +270,7 @@ export const startStandaloneApplicationHost = async (
       assertExecutionCapabilitiesReady: () => undefined,
     });
     taskExecutionResources = await composeProjectTaskExecutionResources({
-      activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: processResources.appConfig.getAppDataDir(), memoryDir: processResources.appConfig.getMemoryDir() });
+      activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: processResources.appConfig.getAppDataDir() });
     skillUpdateNotices = createSkillUpdateNotices({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
     });
