@@ -41,9 +41,14 @@ The segment lifecycle is owned by exactly one non-persisted
 - the lifecycle transformer admits a valid start, derives the canonical type
   onto each content event, and emits a type-less canonical end;
 - a repeated identical active start or repeated end is an idempotent no-op;
-- a missing start, retired turn, mismatched type, surplus source field, missing
-  identity, or conflicting lifecycle emits `AGENT_SEGMENT_LIFECYCLE_INVALID`
-  diagnostic evidence and no segment mutation; and
+- a missing start, ended (retired) turn, mismatched type, surplus source field,
+  missing identity, or conflicting lifecycle is rejected with no segment
+  mutation. The run's current turn gets at most one
+  `AGENT_SEGMENT_LIFECYCLE_INVALID` diagnostic ("Some of the agent's output in
+  this turn could not be shown."); rejections for other turns or without a turn
+  id get none. Rejections are logged with a reason code, the first per turn in
+  detail and the rest as one count per turn at the next turn end or run
+  release (see [Agent Execution](agent_execution.md#runtime-segment-identity-and-ordering));
 - matching turn terminal events, runtime-global terminal errors, offline/error
   status, or accepted run termination clear the applicable live lifecycle.
 

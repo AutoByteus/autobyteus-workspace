@@ -148,9 +148,12 @@ not repeated on end.
 The type on content is derived by the run-owned lifecycle from the admitted
 start. It is not provider padding and cannot be inferred by the Team adapter,
 transport, application projection, memory, or browser. Missing IDs/turns,
-unknown type, content/end without a start, conflicting type, retired-turn input,
-and surplus source fields produce a non-terminal
-`AGENT_SEGMENT_LIFECYCLE_INVALID` diagnostic and no segment mutation.
+unknown type, content/end without a start, conflicting type, ended-turn input,
+and surplus source fields produce no segment mutation. At most one non-terminal
+`AGENT_SEGMENT_LIFECYCLE_INVALID` diagnostic is sent per turn, only while that
+turn is the run's current turn, with the message "Some of the agent's output in
+this turn could not be shown."; the payload shape (`code`, `message`,
+`error_scope: turn`, `error_effect: diagnostic`, `turn_id`) is unchanged.
 
 Browser mutation uses exact turn plus segment ID and retains canonical type.
 Existing-segment content requires type agreement. Canonical typed content may

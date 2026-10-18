@@ -508,13 +508,24 @@ Provider adapters normalize their base events, then
 `AgentRunEventDispatchQueue` serializes pipeline processing and final listener
 dispatch for each run. Different runs remain concurrent. Within one run,
 `LifecycleStatusEventTransformer` and `AgentTurnLifecycleState` own the
-identified/anonymous/retired turn state:
+identified/anonymous/ended (retired) turn state:
 
 - `TURN_STARTED` opens the supplied `turn_id` and establishes `running` when an
   accompanying explicit status is absent.
-- A matching `TURN_COMPLETED` or `TURN_INTERRUPTED` retires the current turn and
+- Only the run's ordered evidence ends a turn: its own terminal event or
+  turn-terminal error, a newer turn start in the event stream or from an
+  accepted command (which supersedes and ends a turn left without a terminal),
+  or the runtime going offline or failing globally (including an `offline` or
+  `phase: error` lifecycle snapshot). The turn a live runtime lifecycle snapshot
+  names as current is provisional, because the snapshot can be ahead of the
+  queued events: it names the active turn only while the stream holds none
+  (restore/attach mid-turn, runtimes that report their turn only by state), is
+  replaced without being ended when the stream reports a turn, and never ends a
+  turn. `AgentTurnLedger` owns this rule; the turn state and the segment
+  lifecycle state each hold their own ledger.
+- A matching `TURN_COMPLETED` or `TURN_INTERRUPTED` ends the current turn and
   establishes `idle` when an accompanying explicit status is absent.
-- Duplicate boundaries and boundaries for an already retired turn are
+- Duplicate boundaries and boundaries for an already ended turn are
   idempotent lifecycle no-ops. A terminal boundary for turn A cannot close a
   newer active turn B.
 - Ordinary segment, tool, inter-agent, and system-task activity remains
@@ -528,7 +539,7 @@ identified/anonymous/retired turn state:
 Turn correlation uses `payload.turn_id` as the canonical event field. The
 shared internal resolver tolerates `payload.turnId` while runtime/provider
 boundaries are normalized, but new publishers should emit `turn_id`. Runtime
-contexts retain retired identified turn ids for their lifetime so arbitrarily
+contexts retain ended identified turn ids for their lifetime so arbitrarily
 late content can still be delivered without reopening completed work.
 
 Canonical `ERROR` payloads add structured lifecycle evidence:
@@ -608,8 +619,19 @@ synthesize a missing start.
 Each `AgentRun` owns one non-persisted lifecycle map keyed by exact
 `{turnId,segmentId}`. The first pipeline transformer admits valid starts,
 derives their type onto canonical content, preserves a type-less canonical end,
-and rejects conflicting/replayed/retired lifecycle mutations as specified by
-the common state machine. Browser and transport coalescing also require exact
+and rejects conflicting/replayed/ended-turn lifecycle mutations as specified by
+the common state machine. A rejected event is never displayed. The run's current
+turn gets at most one `AGENT_SEGMENT_LIFECYCLE_INVALID` notice ("Some of the
+agent's output in this turn could not be shown."); rejections for any other
+turn, or without a turn id, produce no chat notice. The server log records the
+first rejection of each turn (or of events without a turn id) as
+`[AgentSegmentLifecycleRejected]` with run id, runtime kind, turn id, event
+type, segment id and a reason code (`TURN_ENDED`, `TURN_NOT_CURRENT`,
+`SEGMENT_NOT_STARTED`, `SEGMENT_ENDED`, `SEGMENT_TYPE_CONFLICT`,
+`PAYLOAD_INVALID`). Later rejections are counted and reported as one
+`[AgentSegmentLifecycleRejectedSummary]` line per turn at the run's next
+lifecycle boundary (a turn ending, or the run releasing its runtime, including
+termination), so log volume never grows with the number of rejected events. Browser and transport coalescing also require exact
 turn, segment, and type agreement; equal deltas remain distinct events unless
 the presentation egress joins adjacent messages with every other payload field
 equal.

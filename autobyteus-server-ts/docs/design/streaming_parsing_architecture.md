@@ -48,8 +48,10 @@ by `{turnId,segmentId}`. The finite segment type is established by
 `SEGMENT_START`. Provider content and end remain minimal; the first pipeline
 transformer validates their exact source shape, derives the start-owned type
 onto canonical content, and emits a type-less canonical end. Invalid lifecycle
-input becomes `AGENT_SEGMENT_LIFECYCLE_INVALID` turn/runtime diagnostic evidence
-and produces no segment mutation.
+input produces no segment mutation; the run's current turn gets at most one
+`AGENT_SEGMENT_LIFECYCLE_INVALID` turn diagnostic, and every rejection is
+accounted for in the server log with a reason code (first per turn in detail,
+later ones as a count at the next turn end or run release).
 
 All post-pipeline consumers therefore receive only:
 

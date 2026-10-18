@@ -7,6 +7,7 @@ import type { AgentRunErrorEvidence } from "../../../domain/agent-run-error-evid
 import { resolveAgentRunEventTurnId } from "../../../domain/agent-run-event-turn-id.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import type { AgentApiStatus } from "../../../domain/agent-status-payload.js";
+import { AgentTurnLedger } from "./agent-turn-ledger.js";
 
 export type AgentActiveTurn =
   | { kind: "NONE" }
@@ -37,8 +38,8 @@ const ACTIVITY_EVENT_TYPES = new Set<AgentRunEventType>([
 ]);
 
 export class AgentTurnLifecycleState {
-  activeTurn: AgentActiveTurn = { kind: "NONE" };
-  readonly retiredTurnIds = new Set<string>();
+  private readonly turns = new AgentTurnLedger();
+  private anonymousTurnActive = false;
   lastStatus: AgentApiStatus = "idle";
   recoverableBlock: CompactionRecoveryBlockDto | null = null;
   private pendingCommand: PendingCommand | null = null;
@@ -107,10 +108,10 @@ export class AgentTurnLifecycleState {
     this.recoverableBlock = snapshot.recoverableBlock ?? null;
     if (wasRecoverable && !this.recoverableBlock) this.lastStatus = snapshot.phase === "error" ? "error" : "idle";
     if (this.recoverableBlock) {
-      if (snapshot.currentTurn.kind === "IDENTIFIED" && !this.retiredTurnIds.has(snapshot.currentTurn.turnId)) {
-        this.pendingCommand = null; this.openIdentifiedTurn(snapshot.currentTurn.turnId);
+      if (snapshot.currentTurn.kind === "IDENTIFIED" && !this.turns.hasEnded(snapshot.currentTurn.turnId)) {
+        this.pendingCommand = null; this.openSnapshotTurn(snapshot.currentTurn.turnId);
       }
-      // A real terminal event retires consumed A; an Error projection never retires held A.
+      // A real terminal event ends consumed A; an Error projection never ends held A.
       this.lastStatus = this.recoverableBlock.state === "recovering" ? "running" : "error";
       return;
     }
@@ -122,9 +123,9 @@ export class AgentTurnLifecycleState {
     }
 
     if (snapshot.currentTurn.kind === "IDENTIFIED") {
-      if (!this.retiredTurnIds.has(snapshot.currentTurn.turnId)) {
+      if (!this.turns.hasEnded(snapshot.currentTurn.turnId)) {
         this.pendingCommand = null;
-        this.openIdentifiedTurn(snapshot.currentTurn.turnId);
+        this.openSnapshotTurn(snapshot.currentTurn.turnId);
       }
       return;
     }
@@ -136,7 +137,7 @@ export class AgentTurnLifecycleState {
 
     if (snapshot.currentTurn.kind === "ANONYMOUS") {
       this.pendingCommand = null;
-      this.activeTurn = { kind: "ANONYMOUS" };
+      this.anonymousTurnActive = true;
       this.lastStatus = "running";
       return;
     }
@@ -146,7 +147,7 @@ export class AgentTurnLifecycleState {
         this.lastStatus = "running";
         return;
       }
-      this.activeTurn = { kind: "NONE" };
+      this.anonymousTurnActive = false;
     }
 
     if (this.pendingCommand) {
@@ -174,7 +175,7 @@ export class AgentTurnLifecycleState {
       if (turnId) {
         this.openIdentifiedTurn(turnId);
       } else if (this.activeTurn.kind === "NONE") {
-        this.activeTurn = { kind: "ANONYMOUS" };
+        this.anonymousTurnActive = true;
         this.lastStatus = "running";
       }
       return;
@@ -207,10 +208,10 @@ export class AgentTurnLifecycleState {
       return;
     }
     this.pendingCommand = null;
-    if (turnId && !this.retiredTurnIds.has(turnId)) {
+    if (turnId && !this.turns.hasEnded(turnId)) {
       this.openIdentifiedTurn(turnId);
     } else if (!turnId) {
-      this.activeTurn = { kind: "ANONYMOUS" };
+      this.anonymousTurnActive = true;
       this.lastStatus = "running";
     }
   }
@@ -228,15 +229,12 @@ export class AgentTurnLifecycleState {
     }
 
     const turnId = evidence.turnId;
-    if (this.retiredTurnIds.has(turnId)) {
+    if (this.turns.hasEnded(turnId)) {
       return;
     }
-    this.retiredTurnIds.add(turnId);
-    if (
-      this.activeTurn.kind === "IDENTIFIED" &&
-      this.activeTurn.turnId === turnId
-    ) {
-      this.activeTurn = { kind: "NONE" };
+    const wasActive = this.turns.activeTurnId === turnId;
+    this.turns.end(turnId);
+    if (wasActive) {
       this.pendingCommand = null;
       this.lastStatus = "error";
     }
@@ -259,7 +257,7 @@ export class AgentTurnLifecycleState {
         this.lastStatus = "running";
       } else if (this.pendingCommand?.acceptedWithoutTurnId) {
         this.pendingCommand = null;
-        this.activeTurn = { kind: "ANONYMOUS" };
+        this.anonymousTurnActive = true;
         this.lastStatus = "running";
       }
       return;
@@ -286,48 +284,54 @@ export class AgentTurnLifecycleState {
     return this.lastStatus;
   }
 
+  /** The identified turn (stream- or snapshot-named), an anonymous turn, or none. */
+  get activeTurn(): AgentActiveTurn {
+    const turnId = this.turns.activeTurnId;
+    if (turnId) return { kind: "IDENTIFIED", turnId };
+    return this.anonymousTurnActive ? { kind: "ANONYMOUS" } : { kind: "NONE" };
+  }
+
   get hasPendingCommand(): boolean {
     return this.pendingCommand !== null;
   }
 
+  /** Stream evidence: a turn start event or an accepted command's turn id. */
   private openIdentifiedTurn(turnId: string): void {
-    if (this.retiredTurnIds.has(turnId)) {
+    if (this.turns.hasEnded(turnId)) {
       return;
     }
-    if (
-      this.activeTurn.kind === "IDENTIFIED" &&
-      this.activeTurn.turnId !== turnId
-    ) {
-      this.retiredTurnIds.add(this.activeTurn.turnId);
-    }
-    this.activeTurn = { kind: "IDENTIFIED", turnId };
+    this.turns.observeStreamStart(turnId);
+    this.anonymousTurnActive = false;
     this.lastStatus = "running";
+  }
+
+  /** Runtime-snapshot evidence: names the turn only while the stream holds none. */
+  private openSnapshotTurn(turnId: string): void {
+    if (this.turns.observeRuntimeSnapshotTurn(turnId)) {
+      this.anonymousTurnActive = false;
+      this.lastStatus = "running";
+    }
   }
 
   private observeTurnTerminal(turnId: string | null): void {
     if (!turnId) {
       if (this.activeTurn.kind === "ANONYMOUS") {
-        this.activeTurn = { kind: "NONE" };
+        this.anonymousTurnActive = false;
         this.pendingCommand = null;
         this.lastStatus = "idle";
       }
       return;
     }
-    this.retiredTurnIds.add(turnId);
-    if (
-      this.activeTurn.kind === "IDENTIFIED" &&
-      this.activeTurn.turnId === turnId
-    ) {
-      this.activeTurn = { kind: "NONE" };
+    const wasActive = this.turns.activeTurnId === turnId;
+    this.turns.end(turnId);
+    if (wasActive) {
       this.pendingCommand = null;
       this.lastStatus = "idle";
     }
   }
 
   private retireAndClearActiveTurn(): void {
-    if (this.activeTurn.kind === "IDENTIFIED") {
-      this.retiredTurnIds.add(this.activeTurn.turnId);
-    }
-    this.activeTurn = { kind: "NONE" };
+    this.turns.endActive();
+    this.anonymousTurnActive = false;
   }
 }

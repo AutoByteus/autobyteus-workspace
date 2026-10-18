@@ -1133,6 +1133,27 @@ describe("AgentRun termination delegation keeps coalescing (agent-run-terminatio
     await expect(Promise.all([first, second])).resolves.toEqual([{ accepted: true }, { accepted: true }]);
     expect(harness.backend.terminate).toHaveBeenCalledOnce();
   });
+
+  it("logs the current turn's pending segment rejection count once during termination (AC-005c)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const harness = createHarness();
+      const runId = harness.run.runId;
+      await harness.getSourceListener()?.([
+        event(runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-t" }),
+        ...[1, 2, 3].map(() => event(runId, AgentRunEventType.SEGMENT_CONTENT, { id: "never-started", turn_id: "turn-t", delta: "x" })),
+      ]);
+      const summaries = () => warn.mock.calls.filter(([tag]) => tag === "[AgentSegmentLifecycleRejectedSummary]").map(([, detail]) => detail);
+      expect(summaries()).toEqual([]);
+
+      await expect(harness.run.terminate()).resolves.toEqual({ accepted: true });
+
+      expect(summaries()).toEqual([{ runtimeKind: "codex_app_server", runId, turnId: "turn-t", count: 2 }]);
+      expect(warn.mock.calls.filter(([tag]) => tag === "[AgentSegmentLifecycleRejected]")).toHaveLength(1);
+    } finally {
+      warn.mockRestore();
+    }
+  });
 });
 
 describe("AgentRun input-state publication (agent-input-state-content-cadence)", () => {

@@ -295,3 +295,55 @@ describe("LifecycleStatusEventTransformer", () => {
     ]))).toEqual(["idle"]);
   });
 });
+
+describe("AgentTurnLifecycleState with a runtime snapshot ahead of the queued events", () => {
+  const runningSnapshot = (turnId: string): AgentRuntimeLifecycleSnapshot => ({
+    availability: "active",
+    phase: "running",
+    currentTurn: { kind: "IDENTIFIED", turnId },
+  });
+  const turnEvent = (eventType: AgentRunEventType, turnId: string): AgentRunEvent =>
+    ({ eventType, runId: "run-1", payload: { turn_id: turnId }, statusHint: null });
+
+  it("keeps the snapshot-named newer turn when the older turn's queued start and end arrive (BEH-001, BEH-002)", () => {
+    const state = new AgentTurnLifecycleState();
+    state.reconcileRuntimeSnapshot(runningSnapshot("turn-2"));
+    state.observeEvent(turnEvent(AgentRunEventType.TURN_STARTED, "turn-1"));
+    state.observeEvent(turnEvent(AgentRunEventType.TURN_COMPLETED, "turn-1"));
+    expect(state.status).toBe("idle");
+
+    state.reconcileRuntimeSnapshot(runningSnapshot("turn-2"));
+    expect(state.activeTurn).toEqual({ kind: "IDENTIFIED", turnId: "turn-2" });
+    expect(state.status).toBe("running");
+    state.observeEvent(turnEvent(AgentRunEventType.TURN_STARTED, "turn-2"));
+    state.observeEvent(turnEvent(AgentRunEventType.TURN_COMPLETED, "turn-2"));
+    expect(state.status).toBe("idle");
+  });
+
+  it("does not end a stream-observed turn because the snapshot names the next one (BEH-007)", () => {
+    const state = new AgentTurnLifecycleState();
+    state.observeEvent(turnEvent(AgentRunEventType.TURN_STARTED, "turn-1"));
+    state.reconcileRuntimeSnapshot(runningSnapshot("turn-2"));
+    expect(state.activeTurn).toEqual({ kind: "IDENTIFIED", turnId: "turn-1" });
+
+    state.observeEvent(turnEvent(AgentRunEventType.TURN_COMPLETED, "turn-1"));
+    state.reconcileRuntimeSnapshot(runningSnapshot("turn-2"));
+    expect(state.activeTurn).toEqual({ kind: "IDENTIFIED", turnId: "turn-2" });
+  });
+
+  it("still ends the active turn on an offline or error snapshot (AR-003)", () => {
+    const offline = new AgentTurnLifecycleState();
+    offline.observeEvent(turnEvent(AgentRunEventType.TURN_STARTED, "turn-1"));
+    offline.reconcileRuntimeSnapshot({ availability: "offline", phase: "idle", currentTurn: { kind: "NONE" } });
+    expect(offline.status).toBe("offline");
+    offline.reconcileRuntimeSnapshot(runningSnapshot("turn-1"));
+    expect(offline.activeTurn).toEqual({ kind: "NONE" });
+
+    const failed = new AgentTurnLifecycleState();
+    failed.observeEvent(turnEvent(AgentRunEventType.TURN_STARTED, "turn-1"));
+    failed.reconcileRuntimeSnapshot({ availability: "active", phase: "error", currentTurn: { kind: "NONE" } });
+    expect(failed.status).toBe("error");
+    failed.reconcileRuntimeSnapshot(runningSnapshot("turn-1"));
+    expect(failed.activeTurn).toEqual({ kind: "NONE" });
+  });
+});
