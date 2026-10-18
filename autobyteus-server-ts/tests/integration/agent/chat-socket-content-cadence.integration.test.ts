@@ -34,7 +34,7 @@ import type { TeamAgentEvent, TeamTokenUsageDetails } from "../../../src/agent-t
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { createTeamAgentStatusDetails } from "../../../src/agent-team-execution/domain/team-agent-status.js";
 import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
-import { validateTeamCommunicationMessagesPayload } from "../../../src/services/team-communication/team-communication-messages-schema.js";
+import { validateCollaborationCommunicationMessageArray } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import type { StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
 import { emptyStandaloneRootMessages, emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
@@ -105,7 +105,12 @@ const teamScenario: Scenario = {
     const fixtures = path.resolve(process.cwd(), "tests/fixtures");
     const json = (dir: string, name: string) => JSON.parse(fs.readFileSync(path.join(fixtures, dir, name), "utf8")) as unknown;
     const tree = validateTeamRunExecutionTreePayload(json("current-team-run-v2/case-001-delegated-task-team-forest", "team_run_execution_tree.json"), "team-run-root");
-    const messages = validateTeamCommunicationMessagesPayload(json("app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team", "team_communication_messages.json"), "team-run-root");
+    // The root's in-memory communication snapshot, built from the fixture's message list.
+    const messages = Object.freeze({
+      schemaVersion: 1 as const,
+      rootTeamRunId: "team-run-root",
+      messages: validateCollaborationCommunicationMessageArray((json("app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team", "team_communication_messages.json") as { messages: unknown }).messages),
+    });
     const publisher = new RootEventPublisher<TeamRunEvent>();
     const root = {
       teamRunId: "team-run-root",
