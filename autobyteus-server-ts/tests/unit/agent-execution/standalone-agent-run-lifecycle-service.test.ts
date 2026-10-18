@@ -742,7 +742,7 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
     return {
       runId: context.runId,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      inputCapabilities: { kind: "start_only" },
+      inputCapabilities: { activeTurnAppend: "unsupported" },
       compactionRecovery: { kind: "unsupported" },
       getContext: () => context,
       getPlatformAgentRunId: () => THREAD_ID,
