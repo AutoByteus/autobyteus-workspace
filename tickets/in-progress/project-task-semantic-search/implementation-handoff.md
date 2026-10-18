@@ -3,12 +3,12 @@
 ## Upstream Artifact Package
 
 - Upstream review applicability and handoff-rule result: independent architecture review selected (Large / High); ARCH-REV-002 **Pass**, handed to the implementation engineer by `/software_engineering_team/architecture_reviewer`.
-- Requirements doc: `tickets/in-progress/project-task-semantic-search/requirements-doc.md` (SR-004, approved by the user)
+- Requirements doc: `tickets/in-progress/project-task-semantic-search/requirements-doc.md` (SR-007, approved by the user 2026-10-18; earlier SR-004)
 - Investigation notes: `tickets/in-progress/project-task-semantic-search/investigation-notes.md`
 - Solution revision record: `tickets/in-progress/project-task-semantic-search/solution-revision-record.md`
-- Design spec (required on every route): `tickets/in-progress/project-task-semantic-search/design-spec.md` (SR-006)
+- Design spec (required on every route): `tickets/in-progress/project-task-semantic-search/design-spec.md` (SR-007; § Failure-Origin Resolution (FO-001 → SR-007))
 - Supplemental task artifacts: `model-evaluation-report.md`, `probes/` (evidence)
-- Design review report: `tickets/in-progress/project-task-semantic-search/design-review-report.md` (ARCH-REV-002)
+- Design review report: `tickets/in-progress/project-task-semantic-search/design-review-report.md` (ARCH-REV-003, Pass; earlier ARCH-REV-002)
 - Architecture review revision record: `tickets/in-progress/project-task-semantic-search/architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence: N/A (initial implementation)
 
@@ -16,15 +16,15 @@ All paths are relative to the worktree `/Users/normy/autobyteus_org/autobyteus-w
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002: local fix for CRR-001 findings CR-001, CR-002)
+- Implementation cycle: `Rework` (IR-003: default model change after failure origin FO-001 / SR-007; earlier IR-002: CRR-001 local fix)
 - Implementation revision record: `tickets/in-progress/project-task-semantic-search/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: SR-004, SR-006
-- Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: CRR-001
-- Related API/E2E revision IDs: N/A
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: SR-004, SR-006, SR-007
+- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003
+- Related code-review revision IDs: CRR-001, CRR-002 (Pass); FO-001 and C-08/O-1 in `code-review-report.md`
+- Related API/E2E revision IDs: API-REV-001 (Fail, F-001 / API-L04)
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: CR-001, CR-002 (IR-002); optional C-03 applied
+- Triggering finding IDs: FO-001 (API-REV-001 F-001; code review Design Impact), optional O-1 (IR-003); CR-001, CR-002, C-03 (IR-002)
 - Code: branch `codex/project-task-semantic-search`, commit recorded at the end of this file (base `origin/personal` @ `55bff1f5ee`).
 - Companion: `/Users/normy/autobyteus_org/autobyteus-agents-project-task-semantic-search`, branch `codex/project-task-semantic-search` @ `344da76` (from `origin/main` @ `887e79d`; a separate worktree because the main checkout holds someone else's uncommitted changes). Not pushed.
 
@@ -329,3 +329,63 @@ Implementation-scoped only; these are not API/E2E sign-off.
 - C-03: the worker type-imports `EmbeddingModelOutput`.
 - Checks: web `components/projects` 113/113; web guards; server embeddings, search and tool 38/38; typecheck; the real-model LEAF-IR check.
 - Classification: unchanged (Large / High).
+
+## Code Review Result
+
+- CRR-002: **Pass** (targeted delta review of IR-002; CR-001 and CR-002 resolved, C-03 applied). Report: `code-review-report.md`. The code reviewer hands off to `/software_engineering_team/api_e2e_engineer`.
+
+## IR-003 (FO-001 → SR-007: Granite becomes the default model)
+
+Commit `9f0df7eab3` on `codex/project-task-semantic-search`; details in `implementation-revision-record.md` § IR-003.
+
+What changed:
+
+- **Catalog and setting** (`src/embeddings/catalog/embedding-model-catalog.ts`):
+  - `DEFAULT_EMBEDDING_MODEL_ID` is `granite-embedding-small-english-r2`, and a blank setting means Granite;
+  - the catalog lists Granite first, so the setting description (built from the catalog), its "Blank uses the default" sentence and the error message list it first;
+  - Granite's description now opens with "Default" and keeps its values (floor 0.78, margin 0.02, `maxTokens` 1024);
+  - LEAF-IR gets floor 0.30 (margin 0.045 unchanged). Its description says it is for small Projects and that relevance degrades on large Projects, where unrelated searches start to show matches;
+  - the catalog comments record the FO-001 numbers per entry.
+- **O-1** (`models/embedding-model-files.ts`, `embedding-index.ts`):
+  - `EmbeddingModelFiles.hasAllFiles()` is a cheap synchronous size check;
+  - `ensure()` reports progress only while bytes are downloaded;
+  - the index starts preparation as `loading` when every file is present (checksums are then verified silently), and as `downloading 0 of N` otherwise;
+  - a download of a damaged file still switches to `downloading`.
+- **G2, reproducible scale check:**
+  - `tests/helpers/project-task-search-backlogs.ts` ports the two 1,000-Task backlogs of the FO-001 evidence. The generated one is byte-identical to `API-PROBE-generate-backlog.mjs` with seed 20261018 (checked: 940/940 Tasks identical). The repository one uses the same selection from `tickets/done` as `API-PROBE-score-analysis.mjs`.
+  - The fixture now has 24 unrelated queries: the 12 extra ones are those of the FO-001 evidence.
+  - The gated test measures AC-001 as "target shown among the first 5 matches".
+  - With `TEST_EMBEDDING_SCALE=1` it asserts AC-001 and AC-004 (≥ 90%) for the default model on both 1,000-Task backlogs; other models' scale results are recorded, not asserted.
+- **Tests that depended on the default:**
+  - the catalog/setting unit test;
+  - the search E2E (the order of ids in the error message);
+  - the API/E2E-owned `project-task-search-model-unavailable.e2e.test.ts`: the model folder now comes from `DEFAULT_EMBEDDING_MODEL_ID` instead of `mdbr-leaf-ir`;
+  - new unit tests for O-1 (index and files).
+- **Docs** (`docs/modules/embeddings.md`):
+  - the table lists Granite first as the default and LEAF-IR "for small Projects";
+  - "Choosing The Model" says which model fits which case;
+  - a measured-relevance table per model gives the fixture and 1,000-Task results;
+  - the readiness text covers O-1.
+  - The web `docs/projects.md` and the localization name no model, so they are unchanged.
+
+Classification: unchanged (Large / High). No escalation trigger was hit: the default passes AC-001 and AC-004 on all three backlogs. As the review noted (R-9), the margin is thin: 92.1% against the 90% target on the repository backlog.
+
+### Checks Run (IR-003)
+
+Evidence: `tickets/in-progress/project-task-semantic-search/evidence/implementation/`.
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-01 | `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` | 9f0df7eab3 | macOS 26, Node 22.23.1 | server `src` | — | Pass | `IMP-01-typecheck.log` | `tsc exit=0` |
+| IMP-02 | `pnpm -C autobyteus-server-ts test:unit` | 9f0df7eab3 | macOS 26, Node 22.23.1 | all server unit tests, incl. `tests/unit/embeddings/*`, `project-task-search`, `search-project-tasks-tool` | REQ-011, REQ-015, AC-013, AC-016 (fake model), O-1 | Pass | `IMP-02-server-unit.log` (excerpt) | `Test Files  726 passed \| 4 skipped (730)`; `embedding-index.test.ts (12 tests)`; `embedding-model-catalog.test.ts (6 tests)`; `embedding-model-files.test.ts (6 tests)` |
+| IMP-03 | Gated real-model check, default model, `TEST_EMBEDDING_SCALE=1` | 9f0df7eab3 (working tree identical in `src`/tests) | macOS 26, M1 Max, Node 22.23.1, ort-web WASM 4 threads | catalog (Granite), runner/worker, relevance rule; fixture + generated + repository backlogs | AC-001, AC-002, AC-004 at 60 and 1,000 Tasks (DEC-011, G2), QR-007 | Pass | `IMP-03-quality-granite-scale.log`, `.json` | `"fixture":{…"shownInFirst5":0.968,"unrelatedWithoutMatch":0.958}`, `"generated":{"tasks":1000,…"shownInFirst5":0.937,"unrelatedWithoutMatch":0.958}`, `"repository":{"tasks":1000,…"shownInFirst5":0.921,"unrelatedWithoutMatch":0.958}` (identical to FO-001) |
+| IMP-04 | Same, `TEST_EMBEDDING_MODELS=mdbr-leaf-ir`, scale | 9f0df7eab3 (same) | same | LEAF-IR with floor 0.30 | QR-007 on the fixture; scale results recorded only | Pass (fixture) | `IMP-04-quality-leaf-ir-scale.log`, `.json` | fixture `0.952` / `0.958`; generated `0.873` / `0.917`; repository `0.905` / `0.833` (identical to FO-001 for 0.30) |
+| IMP-05 | Same, `TEST_EMBEDDING_MODELS=embeddinggemma-2` (fixture) | 9f0df7eab3 (same) | same | EmbeddingGemma 2 with the 24 unrelated queries | QR-007, AC-001, AC-004 on the fixture | Pass | `IMP-05-quality-embeddinggemma-2-fixture.log`, `.json` | `"shownInFirst5":0.952,"unrelatedWithoutMatch":1` |
+| IMP-06 | `env -i … vitest run tests/e2e/projects/project-task-search.e2e.test.ts` | 9f0df7eab3 (same) | macOS 26, clean env | GraphQL/MCP search, setting validation (id order) | REQ-005, REQ-015 | Pass | `IMP-06-e2e-project-task-search.log` | `Tests  2 passed (2)` |
+| IMP-07 | `env -i … vitest run tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts` | 9f0df7eab3 (same) | macOS 26, clean env | real index with an unreachable model host; default model folder | AC-011, AC-012, REQ-010 | Pass | `IMP-07-e2e-model-unavailable.log` | `Tests  2 passed (2)` |
+
+- Not run, and why:
+  - EmbeddingGemma 2 at 1,000 Tasks: indexing 2,000 long Tasks takes hours on WASM; the design requires only fixture verification for alternatives.
+  - Web tests: no web code changed in IR-003; the IR-002 web results (113/113) still apply.
+  - Packaging: no packaging code changed.
+  - QR-003/QR-004 cost measurements with Granite as the default (API-L03b/c/d), API-L04 and API-R06: these belong to API/E2E, which reruns them.

@@ -1,0 +1,9 @@
+# IMP-07-e2e-model-unavailable
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts --no-watch
+# Commit: 9f0df7eab3. Ran on the working tree that became this commit (identical except the docs cell noted in IMP-03).
+# Environment: macOS 26, Node 22.23.1, clean environment (env -i)
+# Date: 2026-10-18
+
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 477ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)

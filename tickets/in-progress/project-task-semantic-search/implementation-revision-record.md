@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer pass, ARCH-REV-002 (`design-review-report.md`, round 2) | N/A | `Initial Baseline` | SR-004 (requirements), SR-006 (design), ARCH-REV-002 | Implemented; all three catalog entries verified on the production stack; local checks green; ready for code review |
 | IR-002 | Code reviewer, CRR-001 (`code-review-report.md`, round 1, Fail, Local Fix) | CR-001, CR-002 (+ optional C-03) | `Local Fix` | SR-006, ARCH-REV-002, CRR-001 | Locator works while meaning search prepares; dead export removed; back to code review |
+| IR-003 | Architecture reviewer pass ARCH-REV-003 on SR-007 (failure origin FO-001 from API-REV-001 F-001 / code review) | FO-001, O-1 | `Design Impact` (resolved upstream; implemented here) | SR-007, ARCH-REV-003, CRR-002, API-REV-001 | Granite is the default; LEAF-IR floor 0.30; O-1; reproducible 1,000-Task check passes for the default |
 
 ## Revision Entries
 
@@ -71,3 +72,36 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - the gated real-model check (LEAF-IR) through the changed worker passed.
 - Next recipient or routing: code reviewer (Large/High Local Fix → source review).
 - Remaining limitations or risks: unchanged from IR-001.
+
+### IR-003 — Granite Small English R2 becomes the default model (FO-001 → SR-007)
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `design-review-report.md` (ARCH-REV-003, Pass) on the SR-007 design revision. Origin: API/E2E API-REV-001 F-001 (API-L04), which code review classified as `Design Impact` FO-001.
+- Triggering finding IDs: FO-001; optional O-1 (code review).
+- Classification: `Design Impact`, resolved upstream (SR-007, user-approved) and implemented here.
+- Prior authoritative result: IR-002 (`722b9b3918`), code review Pass (CRR-002); API/E2E Fail (API-REV-001).
+- Current authoritative result: commit `9f0df7eab3`.
+- Related solution revision IDs: SR-007
+- Related architecture-review revision IDs: ARCH-REV-003
+- Related code-review revision IDs: CRR-002 (FO-001 and O-1 in `code-review-report.md`)
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: LEAF-IR, the previous default, failed AC-001 and AC-004 on 1,000-Task backlogs. The user approved Granite as the default (DEC-011).
+- Approved behavior or requirement IDs affected: REQ-001, REQ-003, REQ-015; AC-001, AC-002, AC-004 (up to 1,000 Tasks); QR-003, QR-004 (re-based on Granite, measured downstream); DEC-002, DEC-011.
+- Implementation delta:
+  - catalog: default id and order; LEAF-IR floor 0.30 and its description; Granite's description;
+  - O-1: `hasAllFiles` and progress only for downloads; the index's initial phase;
+  - G2: the backlog helper, 24 unrelated queries, the gated test's AC-001 metric and scale mode;
+  - default-dependent tests updated;
+  - `docs/modules/embeddings.md` updated.
+- Changed files or areas:
+  - `autobyteus-server-ts/src/embeddings/{catalog/embedding-model-catalog.ts, embedding-index.ts, models/embedding-model-files.ts}`;
+  - `docs/modules/embeddings.md`;
+  - tests: `helpers/{fake-embedding-model.ts, project-task-search-backlogs.ts (new)}`, `fixtures/project-task-search/queries.json`, `integration/embeddings/embedding-model-quality.integration.test.ts`, `unit/embeddings/{embedding-index,embedding-model-catalog,embedding-model-files}.test.ts`, `e2e/projects/{project-task-search,project-task-search-model-unavailable}.e2e.test.ts`.
+- Local validation and result: IMP-01…IMP-07 in `implementation-handoff.md` § Checks Run (IR-003); all Pass. The default passes AC-001 and AC-004 on the fixture (96.8% / 95.8%) and on both 1,000-Task backlogs (93.7% / 95.8%; 92.1% / 95.8%).
+- Next recipient or routing: per `get_handoff_rules` (Large / High → code review).
+- Remaining limitations or risks:
+  - R-9: thin margin, 92.1% against 90% on the repository backlog;
+  - R-10: QR-003 on real-length Tasks;
+  - R-11: QR-004 peak-memory margin;
+  - RSK-002, RSK-005, RSK-008 unchanged;
+  - EmbeddingGemma 2 is not measured at 1,000 Tasks.
