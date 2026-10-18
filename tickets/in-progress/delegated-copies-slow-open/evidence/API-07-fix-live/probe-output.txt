@@ -1,0 +1,17 @@
+[2026-10-18T13:21:49.367Z] L-001 start: Running large hub: hub row → copy rows and hub click → conversation (AC-003 running, QR-001/QR-002)
+[2026-10-18T13:21:56.209Z] L-001 Pass
+[2026-10-18T13:21:56.209Z] L-002 start: New delegation while one copy is open: new row, opened copy keeps its conversation, exactly one projection and one artifact request (AC-007, AC-006)
+[2026-10-18T13:22:01.573Z] L-002 Pass
+[2026-10-18T13:22:01.573Z] L-003 start: Composer send to the opened copy of the running hub: shown, delivered, answered and stored (AC-006)
+[2026-10-18T13:22:01.804Z] L-003 Pass
+[2026-10-18T13:22:01.804Z] L-004 start: Queued input of a busy copy (sent by a second client) survives a reload and shows when the copy is opened (AC-006, Assumption 2)
+[2026-10-18T13:22:08.279Z] L-004 Pass
+[2026-10-18T13:22:08.279Z] L-008 start: Status of a copy woken by a composer send into a held turn: row, header and server agree (REQ-005, REQ-006)
+[2026-10-18T13:22:25.967Z] L-008 Pass
+[2026-10-18T13:22:25.967Z] L-005 start: Copy row of a hub that is not the selected run: at most two loads, ends loaded (MP-001, R-004)
+[2026-10-18T13:22:29.709Z] L-005 Pass
+[2026-10-18T13:22:29.709Z] L-006 start: Project Task locate on the large hub selects the worker within the 5 s navigation wait (FU-4)
+[2026-10-18T13:22:31.136Z] L-006 Pass
+[2026-10-18T13:22:31.136Z] L-007 start: Composer send to an opened copy of a stopped hub wakes the copy, which answers; stored (AC-006, REQ-006)
+[2026-10-18T13:22:38.320Z] L-007 Pass
+{"result":"Pass","label":"fix-live","cases":{"S-API":"Not Run (filtered)","S-001":"Not Run (filtered)","S-002":"Not Run (filtered)","S-003":"Not Run (filtered)","S-ROWS":"Not Run (filtered)","L-001":"Pass","L-002":"Pass","L-003":"Pass","L-004":"Pass","L-008":"Pass","L-005":"Pass","L-006":"Pass","L-007":"Pass"},"errors":0,"cleanup":{"browserClosed":true,"frontend":{"pid":40512,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":40488,"status":"terminated","exit":0},"runRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/tmp/dcso-api-e2e/API-07-fix-live/evidence.json"}

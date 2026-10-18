@@ -1,0 +1,4837 @@
+{
+  "mode": "real-stack-browser",
+  "label": "base-large-copy",
+  "startedAt": "2026-10-18T13:38:58.860Z",
+  "stackRoot": "/private/tmp/dcso-api-e2e/base",
+  "stackHead": "5ceb43039a",
+  "probeHead": "f30b469079",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    40.2,
+    19.2,
+    27.2
+  ],
+  "cases": {
+    "S-API": {
+      "result": "Not Run (filtered)",
+      "description": "Server timings over HTTP: hub view, hub conversation, a copy projection, a copy artifact list (generic and scoped)"
+    },
+    "S-001": {
+      "result": "Not Run (filtered)",
+      "description": "Stopped hub cold sample 1: T-1, T-2, T-3 with request counts; reopen without refetch"
+    },
+    "S-002": {
+      "result": "Not Run (filtered)",
+      "description": "Stopped hub cold sample 2: T-1, T-2, T-3 with request counts; reopen without refetch"
+    },
+    "S-003": {
+      "result": "Not Run (filtered)",
+      "description": "Stopped hub cold sample 3: T-1, T-2, T-3 with request counts; reopen without refetch"
+    },
+    "S-ROWS": {
+      "result": "Not Run (filtered)",
+      "description": "Every Team row and every member row with statuses and Task summaries (AC-005)"
+    },
+    "L-001": {
+      "result": "Pass",
+      "description": "Running large hub: hub row → copy rows and hub click → conversation (AC-003 running, QR-001/QR-002)",
+      "ms": 6660,
+      "load": [
+        48.7,
+        23.1,
+        28.4
+      ],
+      "details": {
+        "t1": {
+          "hubRowToCopyRowsMs": 168.19999992847443,
+          "hubRowAt": 487.2000000476837,
+          "copyRowsAt": 655.3999999761581,
+          "requestStart": 5,
+          "opsUntilRows": {
+            "GetApplicationsCapability": 1,
+            "GetServerSettings": 1,
+            "GetAllWorkspaces": 1,
+            "ListWorkspaceRunHistory": 1,
+            "ListCollaborationRootHistory": 1,
+            "GetAgentDefinitions": 1,
+            "GetAgentTeamDefinitions": 1,
+            "GetAgentOrgDefinitions": 1,
+            "GetRunProjection": 1,
+            "GetAgentRunResumeConfig": 1,
+            "GetRunFileChanges": 73,
+            "GetWorkspaceRunHistory": 1,
+            "GetAgentRunCollaboration": 2,
+            "GetAgentRunCollaborationMemberProjection": 72,
+            "GetTaskWorkerTasks": 3
+          }
+        },
+        "hubClickToConversationMs": 205.10000002384186,
+        "ops": {
+          "GetRunProjection": 1,
+          "GetAgentRunResumeConfig": 1,
+          "GetRunFileChanges": 61,
+          "GetSkills": 1,
+          "GetSkillImprovementCapability": 1,
+          "GetAgentRunCollaborationMemberProjection": 60
+        },
+        "memberOps": {
+          "GetAgentRunCollaborationMemberProjection": 132,
+          "GetRunFileChanges": 132
+        },
+        "state": {
+          "selected": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+          "child": null,
+          "target": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+          "conversationId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+          "messageCount": 53,
+          "pending": [],
+          "error": null,
+          "phase": "live",
+          "rows": 10,
+          "teams": 10
+        }
+      }
+    },
+    "L-002": {
+      "result": "Not Run (filtered)",
+      "description": "New delegation while one copy is open: new row, opened copy keeps its conversation, exactly one projection and one artifact request (AC-007, AC-006)"
+    },
+    "L-003": {
+      "result": "Not Run (filtered)",
+      "description": "Composer send to the opened copy of the running hub: shown, delivered, answered and stored (AC-006)"
+    },
+    "L-004": {
+      "result": "Not Run (filtered)",
+      "description": "Queued input of a busy copy (sent by a second client) survives a reload and shows when the copy is opened (AC-006, Assumption 2)"
+    },
+    "L-008": {
+      "result": "Not Run (filtered)",
+      "description": "Status of a copy woken by a composer send into a held turn: row, header and server agree (REQ-005, REQ-006)"
+    },
+    "L-009": {
+      "result": "Not Run (filtered)",
+      "description": "Opening a copy while it works through a burst of turns: loads (or retries on reselect) and ends with its complete conversation (CAND-003 residual)"
+    },
+    "L-010": {
+      "result": "Fail",
+      "description": "Opening a copy whose stored conversation is several MB: shown within QR-002 with one projection and one artifact request",
+      "ms": 37261,
+      "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-run-task-tree\"][data-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\"]').locator('[data-test=\"workspace-team-transient-execution-row\"]:not([aria-hidden=\"true\"])[data-agent-run-id=\"code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3\"]')\n    - locator resolved to <div tabindex=\"0\" aria-level=\"2\" role=\"treeitem\" data-v-2746c134=\"\" data-v-1d89963f=\"\" data-tree-depth=\"1\" aria-selected=\"false\" data-node-kind=\"agent\" data-row-kind=\"transient_execution\" data-transient-kind=\"task_team_child\" data-test=\"workspace-team-transient-execution-row\" data-member-address=\"/large_hub_engineering_team/code_reviewer\" data-agent-run-id=\"code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3\" data-team-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\" title=\"Temporary ta…>…</div>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <button type=\"button\" data-v-2746c134=\"\" data-test=\"workspace-task-worker-task-summary\" title=\"Show Task in Projects: Engineering Task 4\" aria-label=\"Show Task in Projects: Engineering Task 4\" data-task-id=\"project_task_22a3766e-3ff7-46e2-9d64-83b5399ac19c\" class=\"-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo…>Engineering Task 4</button> from <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-1d89963f=\"\" data-tree-depth=\"0\" aria-selected=\"false\" aria-expanded=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-row-kind=\"transient_execution\" data-member-address=\"/large_hub_engineering_team\" data-test=\"workspace-team-transient-execution-row\" data-team-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\" title=\"Temporary task team · large hub engineering team · /large_hub_engineerin…>…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <button type=\"button\" data-v-2746c134=\"\" data-test=\"workspace-task-worker-task-summary\" title=\"Show Task in Projects: Engineering Task 3\" aria-label=\"Show Task in Projects: Engineering Task 3\" data-task-id=\"project_task_7d6e4a4f-7e8c-4eca-b4d3-f74cfa66ce3e\" class=\"-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo…>Engineering Task 3</button> from <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-1d89963f=\"\" data-tree-depth=\"0\" aria-selected=\"false\" aria-expanded=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-row-kind=\"transient_execution\" data-member-address=\"/large_hub_engineering_team\" data-test=\"workspace-team-transient-execution-row\" data-team-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\" title=\"Temporary task team · large hub engineering team · /large_hub_engineerin…>…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - performing click action\n"
+    }
+  },
+  "cleanup": {
+    "browserClosed": true,
+    "frontend": {
+      "pid": 69307,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 69283,
+      "status": "terminated",
+      "exit": 0
+    },
+    "runRootRemoved": true,
+    "backendPortClosed": true,
+    "frontendPortClosed": true
+  },
+  "failures": [
+    {
+      "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-run-task-tree\"][data-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\"]').locator('[data-test=\"workspace-team-transient-execution-row\"]:not([aria-hidden=\"true\"])[data-agent-run-id=\"code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3\"]')\n    - locator resolved to <div tabindex=\"0\" aria-level=\"2\" role=\"treeitem\" data-v-2746c134=\"\" data-v-1d89963f=\"\" data-tree-depth=\"1\" aria-selected=\"false\" data-node-kind=\"agent\" data-row-kind=\"transient_execution\" data-transient-kind=\"task_team_child\" data-test=\"workspace-team-transient-execution-row\" data-member-address=\"/large_hub_engineering_team/code_reviewer\" data-agent-run-id=\"code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3\" data-team-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\" title=\"Temporary ta…>…</div>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <button type=\"button\" data-v-2746c134=\"\" data-test=\"workspace-task-worker-task-summary\" title=\"Show Task in Projects: Engineering Task 4\" aria-label=\"Show Task in Projects: Engineering Task 4\" data-task-id=\"project_task_22a3766e-3ff7-46e2-9d64-83b5399ac19c\" class=\"-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo…>Engineering Task 4</button> from <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-1d89963f=\"\" data-tree-depth=\"0\" aria-selected=\"false\" aria-expanded=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-row-kind=\"transient_execution\" data-member-address=\"/large_hub_engineering_team\" data-test=\"workspace-team-transient-execution-row\" data-team-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\" title=\"Temporary task team · large hub engineering team · /large_hub_engineerin…>…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <button type=\"button\" data-v-2746c134=\"\" data-test=\"workspace-task-worker-task-summary\" title=\"Show Task in Projects: Engineering Task 3\" aria-label=\"Show Task in Projects: Engineering Task 3\" data-task-id=\"project_task_7d6e4a4f-7e8c-4eca-b4d3-f74cfa66ce3e\" class=\"-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo…>Engineering Task 3</button> from <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-1d89963f=\"\" data-tree-depth=\"0\" aria-selected=\"false\" aria-expanded=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-row-kind=\"transient_execution\" data-member-address=\"/large_hub_engineering_team\" data-test=\"workspace-team-transient-execution-row\" data-team-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\" title=\"Temporary task team · large hub engineering team · /large_hub_engineerin…>…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - performing click action\n",
+      "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-run-task-tree\"][data-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\"]').locator('[data-test=\"workspace-team-transient-execution-row\"]:not([aria-hidden=\"true\"])[data-agent-run-id=\"code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3\"]')\n    - locator resolved to <div tabindex=\"0\" aria-level=\"2\" role=\"treeitem\" data-v-2746c134=\"\" data-v-1d89963f=\"\" data-tree-depth=\"1\" aria-selected=\"false\" data-node-kind=\"agent\" data-row-kind=\"transient_execution\" data-transient-kind=\"task_team_child\" data-test=\"workspace-team-transient-execution-row\" data-member-address=\"/large_hub_engineering_team/code_reviewer\" data-agent-run-id=\"code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3\" data-team-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\" title=\"Temporary ta…>…</div>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <button type=\"button\" data-v-2746c134=\"\" data-test=\"workspace-task-worker-task-summary\" title=\"Show Task in Projects: Engineering Task 4\" aria-label=\"Show Task in Projects: Engineering Task 4\" data-task-id=\"project_task_22a3766e-3ff7-46e2-9d64-83b5399ac19c\" class=\"-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo…>Engineering Task 4</button> from <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-1d89963f=\"\" data-tree-depth=\"0\" aria-selected=\"false\" aria-expanded=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-row-kind=\"transient_execution\" data-member-address=\"/large_hub_engineering_team\" data-test=\"workspace-team-transient-execution-row\" data-team-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\" title=\"Temporary task team · large hub engineering team · /large_hub_engineerin…>…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <button type=\"button\" data-v-2746c134=\"\" data-test=\"workspace-task-worker-task-summary\" title=\"Show Task in Projects: Engineering Task 3\" aria-label=\"Show Task in Projects: Engineering Task 3\" data-task-id=\"project_task_7d6e4a4f-7e8c-4eca-b4d3-f74cfa66ce3e\" class=\"-mx-1 mt-0.5 block max-w-full truncate rounded px-1 text-left text-[0.6875rem] font-normal leading-4 underline-offset-2 transition-colors hover:text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo…>Engineering Task 3</button> from <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-1d89963f=\"\" data-tree-depth=\"0\" aria-selected=\"false\" aria-expanded=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-row-kind=\"transient_execution\" data-member-address=\"/large_hub_engineering_team\" data-test=\"workspace-team-transient-execution-row\" data-team-run-id=\"large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6\" title=\"Temporary task team · large hub engineering team · /large_hub_engineerin…>…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - performing click action\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs:630:40\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs:115:21)\n    at async liveJourneys (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs:607:3)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs:747:15"
+    }
+  ],
+  "setup": {
+    "hostId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+    "otherHostId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+    "shape": {
+      "teams": 10,
+      "childAgents": 60,
+      "unrelatedTeamRuns": 3,
+      "hubMessageLogBytes": 526925,
+      "hubViewBytes": 546826,
+      "memoryBytes": 2291015,
+      "memoryFolders": {
+        "agent_teams": 15,
+        "agents": 2,
+        "run_history_index.json": 0,
+        "team_run_history_index.json": 0
+      }
+    },
+    "markers": [
+      {
+        "index": 2,
+        "teamRunId": "large_hub_engineering_team_4060a69bd2c24eb482767263f475ed83",
+        "taskId": "project_task_7d6e4a4f-7e8c-4eca-b4d3-f74cfa66ce3e",
+        "address": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e",
+        "marker": "Persisted marker for copy 2"
+      },
+      {
+        "index": 3,
+        "teamRunId": "large_hub_engineering_team_c8980bbaacc44278a5dd293df97e5127",
+        "taskId": "project_task_22a3766e-3ff7-46e2-9d64-83b5399ac19c",
+        "address": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_e235d51da67f4baeb062285259589ecc",
+        "marker": "Persisted marker for copy 3"
+      }
+    ]
+  },
+  "browser": "155.0.8059.84",
+  "result": "Fail",
+  "failureState": {
+    "selected": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+    "child": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3",
+    "target": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3",
+    "conversationId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3",
+    "messageCount": 40,
+    "pending": [],
+    "error": null,
+    "phase": "live",
+    "rows": 16,
+    "teams": 10
+  },
+  "errors": [],
+  "warnings": [],
+  "requests": [
+    {
+      "at": 1792330757833,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1792330757834,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1792330757848,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330757848,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330757848,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330759824,
+      "op": "GetApplicationsCapability",
+      "v": {}
+    },
+    {
+      "at": 1792330759825,
+      "op": "GetServerSettings",
+      "v": {}
+    },
+    {
+      "at": 1792330759825,
+      "op": "GetAllWorkspaces",
+      "v": {}
+    },
+    {
+      "at": 1792330759826,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1792330759827,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1792330759827,
+      "op": "GetAgentDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1792330759828,
+      "op": "GetAgentTeamDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1792330759828,
+      "op": "GetAgentOrgDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1792330759840,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330759840,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330759840,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330759893,
+      "op": "GetWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6,
+        "workspaceId": "agent_ws_1ad1f7a90d0dec3e324eac9063f8efd8ccbd9d64abce359a62cf4720abe6a207"
+      }
+    },
+    {
+      "at": 1792330759975,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9"
+      }
+    },
+    {
+      "at": 1792330759975,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330760013,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba"
+      }
+    },
+    {
+      "at": 1792330760013,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba"
+      }
+    },
+    {
+      "at": 1792330760013,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_5f4391431544435f98d75639af428917"
+      }
+    },
+    {
+      "at": 1792330760013,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_5f4391431544435f98d75639af428917"
+      }
+    },
+    {
+      "at": 1792330760013,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3aa34be5c90448ba9c2e5a02f5bbda04"
+      }
+    },
+    {
+      "at": 1792330760013,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_3aa34be5c90448ba9c2e5a02f5bbda04"
+      }
+    },
+    {
+      "at": 1792330760013,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_2b94fb953b81413b894376132d6795d7"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_2b94fb953b81413b894376132d6795d7"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_61686b68c0984644839d01214b727097"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_61686b68c0984644839d01214b727097"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_1b65f01689464f2eb7f8b83bc46cbd4f"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_1b65f01689464f2eb7f8b83bc46cbd4f"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_23bd45f17dd8456cae61fc77385162f1"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_23bd45f17dd8456cae61fc77385162f1"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_6b231447e211400ba1402289110bf165"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_6b231447e211400ba1402289110bf165"
+      }
+    },
+    {
+      "at": 1792330760014,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_e20bacb501ff4ce6913c16fb57dac282"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_e20bacb501ff4ce6913c16fb57dac282"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_1242e8dabd8c4b06a93bc1a335b2eed1"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_1242e8dabd8c4b06a93bc1a335b2eed1"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_a31f4d2e7e1c442ebc3559d49012c33c"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_a31f4d2e7e1c442ebc3559d49012c33c"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e"
+      }
+    },
+    {
+      "at": 1792330760015,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_b08925ecea724b7c9776e96f9b834237"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_b08925ecea724b7c9776e96f9b834237"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_af0806efca0c4ac880f581cffa044c19"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_af0806efca0c4ac880f581cffa044c19"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_ee318d86f7c040d1915ab2a5b6d63ec0"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_ee318d86f7c040d1915ab2a5b6d63ec0"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_82cbedde52874d05af882f09e1e59341"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_82cbedde52874d05af882f09e1e59341"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_05937476a8a4435ba87c7520af0dd5e8"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_05937476a8a4435ba87c7520af0dd5e8"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_e235d51da67f4baeb062285259589ecc"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_e235d51da67f4baeb062285259589ecc"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_fefaaa3ef28c4de3b8609e19db6b6aa1"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_fefaaa3ef28c4de3b8609e19db6b6aa1"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_ae8c9e0f65744a4888534c0b7912fa8b"
+      }
+    },
+    {
+      "at": 1792330760016,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_ae8c9e0f65744a4888534c0b7912fa8b"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_3a87aac313ad439bb94747b8f44512e8"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_3a87aac313ad439bb94747b8f44512e8"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_20e185dfb0944c558a887ab35c4d4d5f"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_20e185dfb0944c558a887ab35c4d4d5f"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_fcb53946973d43b8890686804c3405c8"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_fcb53946973d43b8890686804c3405c8"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_133e64873d6b4148bcbfe358b3990fb6"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_133e64873d6b4148bcbfe358b3990fb6"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_5cba2f59ab094c8fa54bf1b3e311f935"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_5cba2f59ab094c8fa54bf1b3e311f935"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_e7d4a1a1d9f14311880ed24c6141ca24"
+      }
+    },
+    {
+      "at": 1792330760017,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_e7d4a1a1d9f14311880ed24c6141ca24"
+      }
+    },
+    {
+      "at": 1792330760018,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_5048bf644108421d958a45bdd7040028"
+      }
+    },
+    {
+      "at": 1792330760018,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_5048bf644108421d958a45bdd7040028"
+      }
+    },
+    {
+      "at": 1792330760018,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_c42172cc2c714747a758f2f16f4f1bdb"
+      }
+    },
+    {
+      "at": 1792330760018,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_c42172cc2c714747a758f2f16f4f1bdb"
+      }
+    },
+    {
+      "at": 1792330760018,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3865e75af6cd48edb6e5a0c30faef0f6"
+      }
+    },
+    {
+      "at": 1792330760018,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_3865e75af6cd48edb6e5a0c30faef0f6"
+      }
+    },
+    {
+      "at": 1792330760018,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9939f317e64448c8907a9ab80f36ebac"
+      }
+    },
+    {
+      "at": 1792330760018,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_9939f317e64448c8907a9ab80f36ebac"
+      }
+    },
+    {
+      "at": 1792330760019,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_4d57dc40aab644db892c1dc951bdcf55"
+      }
+    },
+    {
+      "at": 1792330760019,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_4d57dc40aab644db892c1dc951bdcf55"
+      }
+    },
+    {
+      "at": 1792330760019,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_232d524d8ec94fe9a396d151006decbe"
+      }
+    },
+    {
+      "at": 1792330760019,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_232d524d8ec94fe9a396d151006decbe"
+      }
+    },
+    {
+      "at": 1792330760019,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb"
+      }
+    },
+    {
+      "at": 1792330760020,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb"
+      }
+    },
+    {
+      "at": 1792330760020,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_72eb99264b0a4ec0afcb06b06fb964c9"
+      }
+    },
+    {
+      "at": 1792330760020,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_72eb99264b0a4ec0afcb06b06fb964c9"
+      }
+    },
+    {
+      "at": 1792330760020,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_62c946c2248b4b01aea7d070ef7bf82e"
+      }
+    },
+    {
+      "at": 1792330760020,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_62c946c2248b4b01aea7d070ef7bf82e"
+      }
+    },
+    {
+      "at": 1792330760020,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_c3156b9635224afaa0b92a7a43cfe91e"
+      }
+    },
+    {
+      "at": 1792330760020,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_c3156b9635224afaa0b92a7a43cfe91e"
+      }
+    },
+    {
+      "at": 1792330760022,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_5bd5cc665b3344fcb5828bcc3cda3351"
+      }
+    },
+    {
+      "at": 1792330760022,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_5bd5cc665b3344fcb5828bcc3cda3351"
+      }
+    },
+    {
+      "at": 1792330760022,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_4f2f286812bf439ba93110236b47c50d"
+      }
+    },
+    {
+      "at": 1792330760022,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_4f2f286812bf439ba93110236b47c50d"
+      }
+    },
+    {
+      "at": 1792330760022,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_daec13dfbf2246f9b05d23643f03663b"
+      }
+    },
+    {
+      "at": 1792330760022,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_daec13dfbf2246f9b05d23643f03663b"
+      }
+    },
+    {
+      "at": 1792330760022,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_ecd0085692d44d3ea509b75ed0ab0819"
+      }
+    },
+    {
+      "at": 1792330760023,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_ecd0085692d44d3ea509b75ed0ab0819"
+      }
+    },
+    {
+      "at": 1792330760023,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_20ba306b96554e5c8371ad303ec06c6d"
+      }
+    },
+    {
+      "at": 1792330760023,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_20ba306b96554e5c8371ad303ec06c6d"
+      }
+    },
+    {
+      "at": 1792330760023,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_d7ccada4932d4e0585c6922504856ede"
+      }
+    },
+    {
+      "at": 1792330760023,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_d7ccada4932d4e0585c6922504856ede"
+      }
+    },
+    {
+      "at": 1792330760023,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_45a72b31c9d0434cbe28e5d1fa34460a"
+      }
+    },
+    {
+      "at": 1792330760023,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_45a72b31c9d0434cbe28e5d1fa34460a"
+      }
+    },
+    {
+      "at": 1792330760023,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_e195a00bd9e746abadced2fd1f5283c1"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_e195a00bd9e746abadced2fd1f5283c1"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_aa357110388e45c48596faf77a9881ed"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_aa357110388e45c48596faf77a9881ed"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_10037d5d7dbe4423a6842b8b3369b1b5"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_10037d5d7dbe4423a6842b8b3369b1b5"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_6352dc6406b744a99b808d93dcd69a76"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_6352dc6406b744a99b808d93dcd69a76"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_5157bf77e9f14c8aa8699a34aa426fd4"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_5157bf77e9f14c8aa8699a34aa426fd4"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_0f0d88ce31674a3ca3699875523bcb7e"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_0f0d88ce31674a3ca3699875523bcb7e"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_41a39b7343a24c9dac5c5a1b8e7ebd45"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_41a39b7343a24c9dac5c5a1b8e7ebd45"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_cffcca5438bf48af8139a9164a86b01f"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_cffcca5438bf48af8139a9164a86b01f"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_833250b9bea041249c53714697513884"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_833250b9bea041249c53714697513884"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_7bc039017c6d4ad492b9f53bc2503626"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_7bc039017c6d4ad492b9f53bc2503626"
+      }
+    },
+    {
+      "at": 1792330760024,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9ebeca1ba20242f29401d6e6f9338127"
+      }
+    },
+    {
+      "at": 1792330760025,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_9ebeca1ba20242f29401d6e6f9338127"
+      }
+    },
+    {
+      "at": 1792330760025,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_f5aae83acb48425db332c7c8e9f807c2"
+      }
+    },
+    {
+      "at": 1792330760025,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_f5aae83acb48425db332c7c8e9f807c2"
+      }
+    },
+    {
+      "at": 1792330760025,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_20413271372a478eae1e0f275e3ab09e"
+      }
+    },
+    {
+      "at": 1792330760025,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_20413271372a478eae1e0f275e3ab09e"
+      }
+    },
+    {
+      "at": 1792330760025,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_eef52437d1c346d4a15bed1aa8fec207"
+      }
+    },
+    {
+      "at": 1792330760025,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_eef52437d1c346d4a15bed1aa8fec207"
+      }
+    },
+    {
+      "at": 1792330760026,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_500c8d9ef5154742abb665b7553eee05"
+      }
+    },
+    {
+      "at": 1792330760026,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_500c8d9ef5154742abb665b7553eee05"
+      }
+    },
+    {
+      "at": 1792330760026,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_ae530d0741874ce39bd2cb19443cb7ce"
+      }
+    },
+    {
+      "at": 1792330760026,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_ae530d0741874ce39bd2cb19443cb7ce"
+      }
+    },
+    {
+      "at": 1792330760026,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_b7b95a7127d2457a89966972cf5fe121"
+      }
+    },
+    {
+      "at": 1792330760026,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_b7b95a7127d2457a89966972cf5fe121"
+      }
+    },
+    {
+      "at": 1792330760026,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_7eef0bc921054ea6b72a4743314b6115"
+      }
+    },
+    {
+      "at": 1792330760026,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_7eef0bc921054ea6b72a4743314b6115"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_11be4cbd794e4bec8141a313edff40bc"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_11be4cbd794e4bec8141a313edff40bc"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_8f06fb1f618a47f7a6da4a597dd48450"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_8f06fb1f618a47f7a6da4a597dd48450"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_2e04797d210247aba21b57f15f865831"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_2e04797d210247aba21b57f15f865831"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_f42286f6294a4f129d3ed108aed280c0"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_f42286f6294a4f129d3ed108aed280c0"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_bfb5ba78a1e440b5a6026adf9ecaa6b8"
+      }
+    },
+    {
+      "at": 1792330760027,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_bfb5ba78a1e440b5a6026adf9ecaa6b8"
+      }
+    },
+    {
+      "at": 1792330760028,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_d8640707a9bc4f188967f917e2ca3828"
+      }
+    },
+    {
+      "at": 1792330760028,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_d8640707a9bc4f188967f917e2ca3828"
+      }
+    },
+    {
+      "at": 1792330760028,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_91ae83e9687c49b09c534e899c4b743e"
+      }
+    },
+    {
+      "at": 1792330760028,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_91ae83e9687c49b09c534e899c4b743e"
+      }
+    },
+    {
+      "at": 1792330760158,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_48cc97ae467344b5a5a23d465a5a71ee",
+          "large_hub_engineering_team_435a8d67457b4617b0fffb7f2a5cdf2f",
+          "large_hub_engineering_team_4060a69bd2c24eb482767263f475ed83",
+          "large_hub_engineering_team_c8980bbaacc44278a5dd293df97e5127",
+          "large_hub_engineering_team_cfd4d77c7dbe43a38f3c7acb1155058d",
+          "large_hub_engineering_team_7cc929174d96417a83fdd14d3a832d7f",
+          "large_hub_engineering_team_80efc143d53f4ea388afcc6d3f7482b6",
+          "large_hub_engineering_team_fce6b9c4226c4c8fa7bff020e22b74e9",
+          "large_hub_engineering_team_44f65b0015dd43cd9286a86b2903839a",
+          "large_hub_engineering_team_2b0067c0f36a4dfe8bcfa9a805a9164e"
+        ]
+      }
+    },
+    {
+      "at": 1792330760161,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_48cc97ae467344b5a5a23d465a5a71ee",
+          "large_hub_engineering_team_435a8d67457b4617b0fffb7f2a5cdf2f",
+          "large_hub_engineering_team_4060a69bd2c24eb482767263f475ed83",
+          "large_hub_engineering_team_c8980bbaacc44278a5dd293df97e5127",
+          "large_hub_engineering_team_cfd4d77c7dbe43a38f3c7acb1155058d",
+          "large_hub_engineering_team_7cc929174d96417a83fdd14d3a832d7f",
+          "large_hub_engineering_team_80efc143d53f4ea388afcc6d3f7482b6",
+          "large_hub_engineering_team_fce6b9c4226c4c8fa7bff020e22b74e9",
+          "large_hub_engineering_team_44f65b0015dd43cd9286a86b2903839a",
+          "large_hub_engineering_team_2b0067c0f36a4dfe8bcfa9a805a9164e"
+        ]
+      }
+    },
+    {
+      "at": 1792330760169,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_1cddda2f40134c49985e625b72bf53ef",
+          "large_hub_engineering_team_c3e8a7bbcc2543fdad373ab6b598bd91"
+        ]
+      }
+    },
+    {
+      "at": 1792330760307,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330760307,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330760307,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330760491,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1792330760511,
+      "op": "GetSkillImprovementCapability",
+      "v": {}
+    },
+    {
+      "at": 1792330760558,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba"
+      }
+    },
+    {
+      "at": 1792330760558,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba"
+      }
+    },
+    {
+      "at": 1792330760558,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_5f4391431544435f98d75639af428917"
+      }
+    },
+    {
+      "at": 1792330760558,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_5f4391431544435f98d75639af428917"
+      }
+    },
+    {
+      "at": 1792330760558,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3aa34be5c90448ba9c2e5a02f5bbda04"
+      }
+    },
+    {
+      "at": 1792330760558,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_3aa34be5c90448ba9c2e5a02f5bbda04"
+      }
+    },
+    {
+      "at": 1792330760558,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_2b94fb953b81413b894376132d6795d7"
+      }
+    },
+    {
+      "at": 1792330760560,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_2b94fb953b81413b894376132d6795d7"
+      }
+    },
+    {
+      "at": 1792330760560,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_61686b68c0984644839d01214b727097"
+      }
+    },
+    {
+      "at": 1792330760560,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_61686b68c0984644839d01214b727097"
+      }
+    },
+    {
+      "at": 1792330760560,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_1b65f01689464f2eb7f8b83bc46cbd4f"
+      }
+    },
+    {
+      "at": 1792330760560,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_1b65f01689464f2eb7f8b83bc46cbd4f"
+      }
+    },
+    {
+      "at": 1792330760560,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610"
+      }
+    },
+    {
+      "at": 1792330760560,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610"
+      }
+    },
+    {
+      "at": 1792330760561,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_23bd45f17dd8456cae61fc77385162f1"
+      }
+    },
+    {
+      "at": 1792330760562,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_23bd45f17dd8456cae61fc77385162f1"
+      }
+    },
+    {
+      "at": 1792330760562,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_6b231447e211400ba1402289110bf165"
+      }
+    },
+    {
+      "at": 1792330760562,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_6b231447e211400ba1402289110bf165"
+      }
+    },
+    {
+      "at": 1792330760562,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"
+      }
+    },
+    {
+      "at": 1792330760562,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"
+      }
+    },
+    {
+      "at": 1792330760562,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_e20bacb501ff4ce6913c16fb57dac282"
+      }
+    },
+    {
+      "at": 1792330760563,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_e20bacb501ff4ce6913c16fb57dac282"
+      }
+    },
+    {
+      "at": 1792330760563,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_1242e8dabd8c4b06a93bc1a335b2eed1"
+      }
+    },
+    {
+      "at": 1792330760563,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_1242e8dabd8c4b06a93bc1a335b2eed1"
+      }
+    },
+    {
+      "at": 1792330760563,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa"
+      }
+    },
+    {
+      "at": 1792330760563,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa"
+      }
+    },
+    {
+      "at": 1792330760563,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_a31f4d2e7e1c442ebc3559d49012c33c"
+      }
+    },
+    {
+      "at": 1792330760563,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_a31f4d2e7e1c442ebc3559d49012c33c"
+      }
+    },
+    {
+      "at": 1792330760564,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e"
+      }
+    },
+    {
+      "at": 1792330760564,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e"
+      }
+    },
+    {
+      "at": 1792330760564,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_b08925ecea724b7c9776e96f9b834237"
+      }
+    },
+    {
+      "at": 1792330760564,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_b08925ecea724b7c9776e96f9b834237"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_af0806efca0c4ac880f581cffa044c19"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_af0806efca0c4ac880f581cffa044c19"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_ee318d86f7c040d1915ab2a5b6d63ec0"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_ee318d86f7c040d1915ab2a5b6d63ec0"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_82cbedde52874d05af882f09e1e59341"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_82cbedde52874d05af882f09e1e59341"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_05937476a8a4435ba87c7520af0dd5e8"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_05937476a8a4435ba87c7520af0dd5e8"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_e235d51da67f4baeb062285259589ecc"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_e235d51da67f4baeb062285259589ecc"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_fefaaa3ef28c4de3b8609e19db6b6aa1"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_fefaaa3ef28c4de3b8609e19db6b6aa1"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_ae8c9e0f65744a4888534c0b7912fa8b"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_ae8c9e0f65744a4888534c0b7912fa8b"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_3a87aac313ad439bb94747b8f44512e8"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_3a87aac313ad439bb94747b8f44512e8"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_20e185dfb0944c558a887ab35c4d4d5f"
+      }
+    },
+    {
+      "at": 1792330760565,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_20e185dfb0944c558a887ab35c4d4d5f"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_fcb53946973d43b8890686804c3405c8"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_fcb53946973d43b8890686804c3405c8"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_133e64873d6b4148bcbfe358b3990fb6"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_133e64873d6b4148bcbfe358b3990fb6"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_5cba2f59ab094c8fa54bf1b3e311f935"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_5cba2f59ab094c8fa54bf1b3e311f935"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_e7d4a1a1d9f14311880ed24c6141ca24"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_e7d4a1a1d9f14311880ed24c6141ca24"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_5048bf644108421d958a45bdd7040028"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_5048bf644108421d958a45bdd7040028"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_c42172cc2c714747a758f2f16f4f1bdb"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_c42172cc2c714747a758f2f16f4f1bdb"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3865e75af6cd48edb6e5a0c30faef0f6"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_3865e75af6cd48edb6e5a0c30faef0f6"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9939f317e64448c8907a9ab80f36ebac"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_9939f317e64448c8907a9ab80f36ebac"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_4d57dc40aab644db892c1dc951bdcf55"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_4d57dc40aab644db892c1dc951bdcf55"
+      }
+    },
+    {
+      "at": 1792330760566,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_232d524d8ec94fe9a396d151006decbe"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_232d524d8ec94fe9a396d151006decbe"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_72eb99264b0a4ec0afcb06b06fb964c9"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_72eb99264b0a4ec0afcb06b06fb964c9"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_62c946c2248b4b01aea7d070ef7bf82e"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_62c946c2248b4b01aea7d070ef7bf82e"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_c3156b9635224afaa0b92a7a43cfe91e"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_c3156b9635224afaa0b92a7a43cfe91e"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_5bd5cc665b3344fcb5828bcc3cda3351"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_5bd5cc665b3344fcb5828bcc3cda3351"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_4f2f286812bf439ba93110236b47c50d"
+      }
+    },
+    {
+      "at": 1792330760569,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_4f2f286812bf439ba93110236b47c50d"
+      }
+    },
+    {
+      "at": 1792330760570,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_daec13dfbf2246f9b05d23643f03663b"
+      }
+    },
+    {
+      "at": 1792330760570,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_daec13dfbf2246f9b05d23643f03663b"
+      }
+    },
+    {
+      "at": 1792330760570,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_ecd0085692d44d3ea509b75ed0ab0819"
+      }
+    },
+    {
+      "at": 1792330760570,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_ecd0085692d44d3ea509b75ed0ab0819"
+      }
+    },
+    {
+      "at": 1792330760570,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_20ba306b96554e5c8371ad303ec06c6d"
+      }
+    },
+    {
+      "at": 1792330760570,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_20ba306b96554e5c8371ad303ec06c6d"
+      }
+    },
+    {
+      "at": 1792330760570,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_d7ccada4932d4e0585c6922504856ede"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_d7ccada4932d4e0585c6922504856ede"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_45a72b31c9d0434cbe28e5d1fa34460a"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_45a72b31c9d0434cbe28e5d1fa34460a"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_e195a00bd9e746abadced2fd1f5283c1"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_e195a00bd9e746abadced2fd1f5283c1"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_aa357110388e45c48596faf77a9881ed"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_aa357110388e45c48596faf77a9881ed"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_10037d5d7dbe4423a6842b8b3369b1b5"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_10037d5d7dbe4423a6842b8b3369b1b5"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_6352dc6406b744a99b808d93dcd69a76"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_6352dc6406b744a99b808d93dcd69a76"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_5157bf77e9f14c8aa8699a34aa426fd4"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_5157bf77e9f14c8aa8699a34aa426fd4"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_0f0d88ce31674a3ca3699875523bcb7e"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_0f0d88ce31674a3ca3699875523bcb7e"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_41a39b7343a24c9dac5c5a1b8e7ebd45"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_41a39b7343a24c9dac5c5a1b8e7ebd45"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_cffcca5438bf48af8139a9164a86b01f"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_cffcca5438bf48af8139a9164a86b01f"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_833250b9bea041249c53714697513884"
+      }
+    },
+    {
+      "at": 1792330760571,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_833250b9bea041249c53714697513884"
+      }
+    },
+    {
+      "at": 1792330760572,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_7bc039017c6d4ad492b9f53bc2503626"
+      }
+    },
+    {
+      "at": 1792330760572,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_7bc039017c6d4ad492b9f53bc2503626"
+      }
+    },
+    {
+      "at": 1792330760572,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9ebeca1ba20242f29401d6e6f9338127"
+      }
+    },
+    {
+      "at": 1792330760572,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_9ebeca1ba20242f29401d6e6f9338127"
+      }
+    },
+    {
+      "at": 1792330760572,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_f5aae83acb48425db332c7c8e9f807c2"
+      }
+    },
+    {
+      "at": 1792330760572,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_f5aae83acb48425db332c7c8e9f807c2"
+      }
+    },
+    {
+      "at": 1792330760572,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_20413271372a478eae1e0f275e3ab09e"
+      }
+    },
+    {
+      "at": 1792330760572,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_20413271372a478eae1e0f275e3ab09e"
+      }
+    },
+    {
+      "at": 1792330764860,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1792330764860,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1792330767070,
+      "op": "GetApplicationsCapability",
+      "v": {}
+    },
+    {
+      "at": 1792330767071,
+      "op": "GetServerSettings",
+      "v": {}
+    },
+    {
+      "at": 1792330767072,
+      "op": "GetAllWorkspaces",
+      "v": {}
+    },
+    {
+      "at": 1792330767073,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1792330767073,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1792330767074,
+      "op": "GetAgentDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1792330767075,
+      "op": "GetAgentTeamDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1792330767075,
+      "op": "GetAgentOrgDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1792330767090,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330767090,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330767090,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330767226,
+      "op": "GetWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6,
+        "workspaceId": "agent_ws_1ad1f7a90d0dec3e324eac9063f8efd8ccbd9d64abce359a62cf4720abe6a207"
+      }
+    },
+    {
+      "at": 1792330767291,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9"
+      }
+    },
+    {
+      "at": 1792330767291,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330767326,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba"
+      }
+    },
+    {
+      "at": 1792330767326,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba"
+      }
+    },
+    {
+      "at": 1792330767326,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_5f4391431544435f98d75639af428917"
+      }
+    },
+    {
+      "at": 1792330767326,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_5f4391431544435f98d75639af428917"
+      }
+    },
+    {
+      "at": 1792330767326,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3aa34be5c90448ba9c2e5a02f5bbda04"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_3aa34be5c90448ba9c2e5a02f5bbda04"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_2b94fb953b81413b894376132d6795d7"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_2b94fb953b81413b894376132d6795d7"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_61686b68c0984644839d01214b727097"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_61686b68c0984644839d01214b727097"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_1b65f01689464f2eb7f8b83bc46cbd4f"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_1b65f01689464f2eb7f8b83bc46cbd4f"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_23bd45f17dd8456cae61fc77385162f1"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_23bd45f17dd8456cae61fc77385162f1"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_6b231447e211400ba1402289110bf165"
+      }
+    },
+    {
+      "at": 1792330767327,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_6b231447e211400ba1402289110bf165"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_e20bacb501ff4ce6913c16fb57dac282"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_e20bacb501ff4ce6913c16fb57dac282"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_1242e8dabd8c4b06a93bc1a335b2eed1"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_1242e8dabd8c4b06a93bc1a335b2eed1"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_a31f4d2e7e1c442ebc3559d49012c33c"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_a31f4d2e7e1c442ebc3559d49012c33c"
+      }
+    },
+    {
+      "at": 1792330767328,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_b08925ecea724b7c9776e96f9b834237"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_b08925ecea724b7c9776e96f9b834237"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_af0806efca0c4ac880f581cffa044c19"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_af0806efca0c4ac880f581cffa044c19"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_ee318d86f7c040d1915ab2a5b6d63ec0"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_ee318d86f7c040d1915ab2a5b6d63ec0"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_82cbedde52874d05af882f09e1e59341"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_82cbedde52874d05af882f09e1e59341"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_05937476a8a4435ba87c7520af0dd5e8"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_05937476a8a4435ba87c7520af0dd5e8"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_e235d51da67f4baeb062285259589ecc"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_e235d51da67f4baeb062285259589ecc"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_fefaaa3ef28c4de3b8609e19db6b6aa1"
+      }
+    },
+    {
+      "at": 1792330767329,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_fefaaa3ef28c4de3b8609e19db6b6aa1"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_ae8c9e0f65744a4888534c0b7912fa8b"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_ae8c9e0f65744a4888534c0b7912fa8b"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_3a87aac313ad439bb94747b8f44512e8"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_3a87aac313ad439bb94747b8f44512e8"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_20e185dfb0944c558a887ab35c4d4d5f"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_20e185dfb0944c558a887ab35c4d4d5f"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_fcb53946973d43b8890686804c3405c8"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_fcb53946973d43b8890686804c3405c8"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_133e64873d6b4148bcbfe358b3990fb6"
+      }
+    },
+    {
+      "at": 1792330767330,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_133e64873d6b4148bcbfe358b3990fb6"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_5cba2f59ab094c8fa54bf1b3e311f935"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_5cba2f59ab094c8fa54bf1b3e311f935"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_e7d4a1a1d9f14311880ed24c6141ca24"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_e7d4a1a1d9f14311880ed24c6141ca24"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_5048bf644108421d958a45bdd7040028"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_5048bf644108421d958a45bdd7040028"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_c42172cc2c714747a758f2f16f4f1bdb"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_c42172cc2c714747a758f2f16f4f1bdb"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3865e75af6cd48edb6e5a0c30faef0f6"
+      }
+    },
+    {
+      "at": 1792330767332,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_3865e75af6cd48edb6e5a0c30faef0f6"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9939f317e64448c8907a9ab80f36ebac"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_9939f317e64448c8907a9ab80f36ebac"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_4d57dc40aab644db892c1dc951bdcf55"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_4d57dc40aab644db892c1dc951bdcf55"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_232d524d8ec94fe9a396d151006decbe"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_232d524d8ec94fe9a396d151006decbe"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_72eb99264b0a4ec0afcb06b06fb964c9"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_72eb99264b0a4ec0afcb06b06fb964c9"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_62c946c2248b4b01aea7d070ef7bf82e"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_62c946c2248b4b01aea7d070ef7bf82e"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_c3156b9635224afaa0b92a7a43cfe91e"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_c3156b9635224afaa0b92a7a43cfe91e"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_5bd5cc665b3344fcb5828bcc3cda3351"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_5bd5cc665b3344fcb5828bcc3cda3351"
+      }
+    },
+    {
+      "at": 1792330767333,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_4f2f286812bf439ba93110236b47c50d"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_4f2f286812bf439ba93110236b47c50d"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_daec13dfbf2246f9b05d23643f03663b"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_daec13dfbf2246f9b05d23643f03663b"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_ecd0085692d44d3ea509b75ed0ab0819"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_ecd0085692d44d3ea509b75ed0ab0819"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_20ba306b96554e5c8371ad303ec06c6d"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_20ba306b96554e5c8371ad303ec06c6d"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_d7ccada4932d4e0585c6922504856ede"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_d7ccada4932d4e0585c6922504856ede"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_45a72b31c9d0434cbe28e5d1fa34460a"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_45a72b31c9d0434cbe28e5d1fa34460a"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_e195a00bd9e746abadced2fd1f5283c1"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_e195a00bd9e746abadced2fd1f5283c1"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_aa357110388e45c48596faf77a9881ed"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_aa357110388e45c48596faf77a9881ed"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_10037d5d7dbe4423a6842b8b3369b1b5"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_10037d5d7dbe4423a6842b8b3369b1b5"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_6352dc6406b744a99b808d93dcd69a76"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_6352dc6406b744a99b808d93dcd69a76"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_5157bf77e9f14c8aa8699a34aa426fd4"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_5157bf77e9f14c8aa8699a34aa426fd4"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_0f0d88ce31674a3ca3699875523bcb7e"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_0f0d88ce31674a3ca3699875523bcb7e"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_41a39b7343a24c9dac5c5a1b8e7ebd45"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_41a39b7343a24c9dac5c5a1b8e7ebd45"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_cffcca5438bf48af8139a9164a86b01f"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_cffcca5438bf48af8139a9164a86b01f"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_833250b9bea041249c53714697513884"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_833250b9bea041249c53714697513884"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_7bc039017c6d4ad492b9f53bc2503626"
+      }
+    },
+    {
+      "at": 1792330767334,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_7bc039017c6d4ad492b9f53bc2503626"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9ebeca1ba20242f29401d6e6f9338127"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_9ebeca1ba20242f29401d6e6f9338127"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_f5aae83acb48425db332c7c8e9f807c2"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_f5aae83acb48425db332c7c8e9f807c2"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_20413271372a478eae1e0f275e3ab09e"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_20413271372a478eae1e0f275e3ab09e"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_eef52437d1c346d4a15bed1aa8fec207"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_eef52437d1c346d4a15bed1aa8fec207"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_500c8d9ef5154742abb665b7553eee05"
+      }
+    },
+    {
+      "at": 1792330767335,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_500c8d9ef5154742abb665b7553eee05"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_ae530d0741874ce39bd2cb19443cb7ce"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_ae530d0741874ce39bd2cb19443cb7ce"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_b7b95a7127d2457a89966972cf5fe121"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_b7b95a7127d2457a89966972cf5fe121"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_7eef0bc921054ea6b72a4743314b6115"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_7eef0bc921054ea6b72a4743314b6115"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_11be4cbd794e4bec8141a313edff40bc"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_11be4cbd794e4bec8141a313edff40bc"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_8f06fb1f618a47f7a6da4a597dd48450"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_8f06fb1f618a47f7a6da4a597dd48450"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_2e04797d210247aba21b57f15f865831"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_2e04797d210247aba21b57f15f865831"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_f42286f6294a4f129d3ed108aed280c0"
+      }
+    },
+    {
+      "at": 1792330767336,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_f42286f6294a4f129d3ed108aed280c0"
+      }
+    },
+    {
+      "at": 1792330767337,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_bfb5ba78a1e440b5a6026adf9ecaa6b8"
+      }
+    },
+    {
+      "at": 1792330767337,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_bfb5ba78a1e440b5a6026adf9ecaa6b8"
+      }
+    },
+    {
+      "at": 1792330767337,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_d8640707a9bc4f188967f917e2ca3828"
+      }
+    },
+    {
+      "at": 1792330767337,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_d8640707a9bc4f188967f917e2ca3828"
+      }
+    },
+    {
+      "at": 1792330767337,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_2c924dea3d6a491b95b554a76b8d70f9",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_91ae83e9687c49b09c534e899c4b743e"
+      }
+    },
+    {
+      "at": 1792330767337,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_91ae83e9687c49b09c534e899c4b743e"
+      }
+    },
+    {
+      "at": 1792330767463,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_48cc97ae467344b5a5a23d465a5a71ee",
+          "large_hub_engineering_team_435a8d67457b4617b0fffb7f2a5cdf2f",
+          "large_hub_engineering_team_4060a69bd2c24eb482767263f475ed83",
+          "large_hub_engineering_team_c8980bbaacc44278a5dd293df97e5127",
+          "large_hub_engineering_team_cfd4d77c7dbe43a38f3c7acb1155058d",
+          "large_hub_engineering_team_7cc929174d96417a83fdd14d3a832d7f",
+          "large_hub_engineering_team_80efc143d53f4ea388afcc6d3f7482b6",
+          "large_hub_engineering_team_fce6b9c4226c4c8fa7bff020e22b74e9",
+          "large_hub_engineering_team_44f65b0015dd43cd9286a86b2903839a",
+          "large_hub_engineering_team_2b0067c0f36a4dfe8bcfa9a805a9164e"
+        ]
+      }
+    },
+    {
+      "at": 1792330767466,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_48cc97ae467344b5a5a23d465a5a71ee",
+          "large_hub_engineering_team_435a8d67457b4617b0fffb7f2a5cdf2f",
+          "large_hub_engineering_team_4060a69bd2c24eb482767263f475ed83",
+          "large_hub_engineering_team_c8980bbaacc44278a5dd293df97e5127",
+          "large_hub_engineering_team_cfd4d77c7dbe43a38f3c7acb1155058d",
+          "large_hub_engineering_team_7cc929174d96417a83fdd14d3a832d7f",
+          "large_hub_engineering_team_80efc143d53f4ea388afcc6d3f7482b6",
+          "large_hub_engineering_team_fce6b9c4226c4c8fa7bff020e22b74e9",
+          "large_hub_engineering_team_44f65b0015dd43cd9286a86b2903839a",
+          "large_hub_engineering_team_2b0067c0f36a4dfe8bcfa9a805a9164e"
+        ]
+      }
+    },
+    {
+      "at": 1792330767472,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_1cddda2f40134c49985e625b72bf53ef",
+          "large_hub_engineering_team_c3e8a7bbcc2543fdad373ab6b598bd91"
+        ]
+      }
+    },
+    {
+      "at": 1792330767589,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330767589,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330767589,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330767747,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1792330767760,
+      "op": "GetSkillImprovementCapability",
+      "v": {}
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_a864be07abb04239bb640d7e1cfbf2ba"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_5f4391431544435f98d75639af428917"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_5f4391431544435f98d75639af428917"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3aa34be5c90448ba9c2e5a02f5bbda04"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_3aa34be5c90448ba9c2e5a02f5bbda04"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_2b94fb953b81413b894376132d6795d7"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_2b94fb953b81413b894376132d6795d7"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_61686b68c0984644839d01214b727097"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_61686b68c0984644839d01214b727097"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_1b65f01689464f2eb7f8b83bc46cbd4f"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_1b65f01689464f2eb7f8b83bc46cbd4f"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_881c7ba4d3954c6d8495054cf56cc610"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_23bd45f17dd8456cae61fc77385162f1"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_23bd45f17dd8456cae61fc77385162f1"
+      }
+    },
+    {
+      "at": 1792330767792,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_6b231447e211400ba1402289110bf165"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_6b231447e211400ba1402289110bf165"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_8c2641a3677d42f2ac6343d0c596e0d3"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_e20bacb501ff4ce6913c16fb57dac282"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_e20bacb501ff4ce6913c16fb57dac282"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_1242e8dabd8c4b06a93bc1a335b2eed1"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_1242e8dabd8c4b06a93bc1a335b2eed1"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_8d79ab8a07734846be0f6b27cd0f7daa"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_a31f4d2e7e1c442ebc3559d49012c33c"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_a31f4d2e7e1c442ebc3559d49012c33c"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_788c76b961ea44ad865dc56887726e6e"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_b08925ecea724b7c9776e96f9b834237"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_b08925ecea724b7c9776e96f9b834237"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_af0806efca0c4ac880f581cffa044c19"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_af0806efca0c4ac880f581cffa044c19"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_ee318d86f7c040d1915ab2a5b6d63ec0"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_ee318d86f7c040d1915ab2a5b6d63ec0"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_82cbedde52874d05af882f09e1e59341"
+      }
+    },
+    {
+      "at": 1792330767793,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_82cbedde52874d05af882f09e1e59341"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_05937476a8a4435ba87c7520af0dd5e8"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_05937476a8a4435ba87c7520af0dd5e8"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_e235d51da67f4baeb062285259589ecc"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_e235d51da67f4baeb062285259589ecc"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_fefaaa3ef28c4de3b8609e19db6b6aa1"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_fefaaa3ef28c4de3b8609e19db6b6aa1"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_ae8c9e0f65744a4888534c0b7912fa8b"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_ae8c9e0f65744a4888534c0b7912fa8b"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_3a87aac313ad439bb94747b8f44512e8"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_3a87aac313ad439bb94747b8f44512e8"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_f4b9d93f82d24972a4ed13f05b3551a8"
+      }
+    },
+    {
+      "at": 1792330767794,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_20e185dfb0944c558a887ab35c4d4d5f"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_20e185dfb0944c558a887ab35c4d4d5f"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_fcb53946973d43b8890686804c3405c8"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_fcb53946973d43b8890686804c3405c8"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_133e64873d6b4148bcbfe358b3990fb6"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_133e64873d6b4148bcbfe358b3990fb6"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_5cba2f59ab094c8fa54bf1b3e311f935"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_5cba2f59ab094c8fa54bf1b3e311f935"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_e7d4a1a1d9f14311880ed24c6141ca24"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_e7d4a1a1d9f14311880ed24c6141ca24"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_5048bf644108421d958a45bdd7040028"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_5048bf644108421d958a45bdd7040028"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_c42172cc2c714747a758f2f16f4f1bdb"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_c42172cc2c714747a758f2f16f4f1bdb"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_3865e75af6cd48edb6e5a0c30faef0f6"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_3865e75af6cd48edb6e5a0c30faef0f6"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9939f317e64448c8907a9ab80f36ebac"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_9939f317e64448c8907a9ab80f36ebac"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_4d57dc40aab644db892c1dc951bdcf55"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_4d57dc40aab644db892c1dc951bdcf55"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_232d524d8ec94fe9a396d151006decbe"
+      }
+    },
+    {
+      "at": 1792330767795,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_232d524d8ec94fe9a396d151006decbe"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_a41f78230a5c4676be824f74ad3ddbbb"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_72eb99264b0a4ec0afcb06b06fb964c9"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_72eb99264b0a4ec0afcb06b06fb964c9"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_62c946c2248b4b01aea7d070ef7bf82e"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_62c946c2248b4b01aea7d070ef7bf82e"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_c3156b9635224afaa0b92a7a43cfe91e"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_c3156b9635224afaa0b92a7a43cfe91e"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_5bd5cc665b3344fcb5828bcc3cda3351"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_5bd5cc665b3344fcb5828bcc3cda3351"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_4f2f286812bf439ba93110236b47c50d"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_4f2f286812bf439ba93110236b47c50d"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_daec13dfbf2246f9b05d23643f03663b"
+      }
+    },
+    {
+      "at": 1792330767796,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_daec13dfbf2246f9b05d23643f03663b"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_ecd0085692d44d3ea509b75ed0ab0819"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_ecd0085692d44d3ea509b75ed0ab0819"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_20ba306b96554e5c8371ad303ec06c6d"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_20ba306b96554e5c8371ad303ec06c6d"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_d7ccada4932d4e0585c6922504856ede"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_d7ccada4932d4e0585c6922504856ede"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_45a72b31c9d0434cbe28e5d1fa34460a"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_45a72b31c9d0434cbe28e5d1fa34460a"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_e195a00bd9e746abadced2fd1f5283c1"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_e195a00bd9e746abadced2fd1f5283c1"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_aa357110388e45c48596faf77a9881ed"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_aa357110388e45c48596faf77a9881ed"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_10037d5d7dbe4423a6842b8b3369b1b5"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_10037d5d7dbe4423a6842b8b3369b1b5"
+      }
+    },
+    {
+      "at": 1792330767797,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_6352dc6406b744a99b808d93dcd69a76"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_6352dc6406b744a99b808d93dcd69a76"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_5157bf77e9f14c8aa8699a34aa426fd4"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_5157bf77e9f14c8aa8699a34aa426fd4"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_0f0d88ce31674a3ca3699875523bcb7e"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_0f0d88ce31674a3ca3699875523bcb7e"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_41a39b7343a24c9dac5c5a1b8e7ebd45"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_41a39b7343a24c9dac5c5a1b8e7ebd45"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_cffcca5438bf48af8139a9164a86b01f"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "solution_designer_cffcca5438bf48af8139a9164a86b01f"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_833250b9bea041249c53714697513884"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "architecture_reviewer_833250b9bea041249c53714697513884"
+      }
+    },
+    {
+      "at": 1792330767798,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_7bc039017c6d4ad492b9f53bc2503626"
+      }
+    },
+    {
+      "at": 1792330767799,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "implementation_engineer_7bc039017c6d4ad492b9f53bc2503626"
+      }
+    },
+    {
+      "at": 1792330767799,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_9ebeca1ba20242f29401d6e6f9338127"
+      }
+    },
+    {
+      "at": 1792330767799,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "code_reviewer_9ebeca1ba20242f29401d6e6f9338127"
+      }
+    },
+    {
+      "at": 1792330767799,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_f5aae83acb48425db332c7c8e9f807c2"
+      }
+    },
+    {
+      "at": 1792330767799,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "api_e2e_engineer_f5aae83acb48425db332c7c8e9f807c2"
+      }
+    },
+    {
+      "at": 1792330767799,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6",
+        "memberAddress": "/large_hub_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_20413271372a478eae1e0f275e3ab09e"
+      }
+    },
+    {
+      "at": 1792330767799,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "delivery_engineer_20413271372a478eae1e0f275e3ab09e"
+      }
+    },
+    {
+      "at": 1792330878218,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330878219,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330878219,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_a06c262923b0474898478777dbb8d8a6"
+      }
+    },
+    {
+      "at": 1792330878242,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1792330878242,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    }
+  ],
+  "loadAtEnd": [
+    13,
+    17.8,
+    25.6
+  ]
+}

@@ -1,0 +1,12 @@
+# OBS-1 (out of scope, pre-existing): a running hub's live view lists only part of its stored message log
+# how: probe seed mode; each Team copy's coordinator sends the hub 5 messages in one parallel batch (scripted AGY CALL_TOOLS of send_message_to), then the probe compares agentRunCollaboration(runId).root_agent.communication_messages.messages (hub running) with the stored collaboration/communication_messages.json
+# date: 2026-10-18T13:27:03Z; macOS 26.5.2, node v22.23.1
+
+## fix build (worktree f30b469079 server dist), full seed 50 Teams:
+  message log: {"at":"2026-10-18T13:17:35.561Z","liveViewMessages":11,"liveViewReports":9,"storedMessages":252,"storedReports":250}
+## fix build, small seed 8 Teams:
+  message log: {"at":"2026-10-18T12:53:19.036Z","liveViewMessages":4,"liveViewReports":2,"storedMessages":42,"storedReports":40}
+## base build 5ceb43039a, 4 Teams (same probe, --stack-root base):
+  message log: {"at":"2026-10-18T13:26:51.791Z","liveViewMessages":3,"liveViewReports":1,"storedMessages":22,"storedReports":20}
+
+Look for: liveViewMessages far below storedMessages on both builds; after the hub stops, the stored view lists all reports (seed-manifest.json messageLogObservation.storedViewReportsAfterStop = 250).
