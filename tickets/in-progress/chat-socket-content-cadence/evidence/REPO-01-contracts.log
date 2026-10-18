@@ -1,0 +1,356 @@
+# Case: REPO-01
+# Command (from the worktree root): pnpm -C autobyteus-collaboration-stream-contracts test; pnpm -C autobyteus-team-stream-contracts test
+# Commit: e24ff6b333
+# Environment: ENV-1 (macOS 26.5.2 arm64, Node v22.23.1, worktree /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence)
+# Date: 2026-10-18 09:31 (local, file write time)
+# ----
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-collaboration-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-collaboration-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: a agent_org batch envelope covers a contiguous range
+ok 1 - a agent_org batch envelope covers a contiguous range
+  ---
+  duration_ms: 2.45025
+  type: 'test'
+  ...
+# Subtest: a agent_org batch requires a valid range and at least one SEGMENT_CONTENT item
+ok 2 - a agent_org batch requires a valid range and at least one SEGMENT_CONTENT item
+  ---
+  duration_ms: 1.097625
+  type: 'test'
+  ...
+# Subtest: a agent_org single event keeps its one sequence and rejects a range
+ok 3 - a agent_org single event keeps its one sequence and rejects a range
+  ---
+  duration_ms: 1.511209
+  type: 'test'
+  ...
+# Subtest: a agent batch envelope covers a contiguous range
+ok 4 - a agent batch envelope covers a contiguous range
+  ---
+  duration_ms: 0.306208
+  type: 'test'
+  ...
+# Subtest: a agent batch requires a valid range and at least one SEGMENT_CONTENT item
+ok 5 - a agent batch requires a valid range and at least one SEGMENT_CONTENT item
+  ---
+  duration_ms: 0.39525
+  type: 'test'
+  ...
+# Subtest: a agent single event keeps its one sequence and rejects a range
+ok 6 - a agent single event keeps its one sequence and rejects a range
+  ---
+  duration_ms: 0.346416
+  type: 'test'
+  ...
+# Subtest: an Agent root tree has no collaborators; delegated runs carry their run identities
+ok 7 - an Agent root tree has no collaborators; delegated runs carry their run identities
+  ---
+  duration_ms: 4.522833
+  type: 'test'
+  ...
+# Subtest: an Agent root view correlates host, children, messages and statuses
+ok 8 - an Agent root view correlates host, children, messages and statuses
+  ---
+  duration_ms: 0.992625
+  type: 'test'
+  ...
+# Subtest: Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions
+ok 9 - Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions
+  ---
+  duration_ms: 3.996292
+  type: 'test'
+  ...
+# Subtest: Org trees have no collaborators list
+ok 10 - Org trees have no collaborators list
+  ---
+  duration_ms: 0.537292
+  type: 'test'
+  ...
+# Subtest: Agent-root live input projection is required and carries held/queued recovery facts
+ok 11 - Agent-root live input projection is required and carries held/queued recovery facts
+  ---
+  duration_ms: 5.259291
+  type: 'test'
+  ...
+# Subtest: Agent root views require closed task executions and keep closed nodes and their messages in the tree
+ok 12 - Agent root views require closed task executions and keep closed nodes and their messages in the tree
+  ---
+  duration_ms: 3.94275
+  type: 'test'
+  ...
+# Subtest: a closed reference must identify a task execution node of the tree
+ok 13 - a closed reference must identify a task execution node of the tree
+  ---
+  duration_ms: 1.023542
+  type: 'test'
+  ...
+# Subtest: AgentOrg views correlate closed references with root and configured-Team task executions
+ok 14 - AgentOrg views correlate closed references with root and configured-Team task executions
+  ---
+  duration_ms: 8.713584
+  type: 'test'
+  ...
+# Subtest: task_executions_closed is a strict, non-empty sequenced event for Agent and Org roots
+ok 15 - task_executions_closed is a strict, non-empty sequenced event for Agent and Org roots
+  ---
+  duration_ms: 0.94
+  type: 'test'
+  ...
+# Subtest: task_executions_reopened mirrors the closed event for Agent and Org roots: strict, non-empty, same references
+ok 16 - task_executions_reopened mirrors the closed event for Agent and Org roots: strict, non-empty, same references
+  ---
+  duration_ms: 0.502375
+  type: 'test'
+  ...
+# Subtest: copy DTOs carry optional user choices; malformed ones are refused
+ok 17 - copy DTOs carry optional user choices; malformed ones are refused
+  ---
+  duration_ms: 3.170583
+  type: 'test'
+  ...
+# Subtest: the copy launch rule: own choice, else the followed Team's, else started
+ok 18 - the copy launch rule: own choice, else the followed Team's, else started
+  ---
+  duration_ms: 0.133166
+  type: 'test'
+  ...
+# Subtest: a live Save's event carries each saved choice by run ID, on Org and Agent streams
+ok 19 - a live Save's event carries each saved choice by run ID, on Org and Agent streams
+  ---
+  duration_ms: 1.047167
+  type: 'test'
+  ...
+# Subtest: catalog-copy DTOs carry optional per-member launch values and sources
+ok 20 - catalog-copy DTOs carry optional per-member launch values and sources
+  ---
+  duration_ms: 3.652042
+  type: 'test'
+  ...
+# Subtest: the effective member launch is the member's own, else the Team's; the source likewise, null when not recorded
+ok 21 - the effective member launch is the member's own, else the Team's; the source likewise, null when not recorded
+  ---
+  duration_ms: 0.111458
+  type: 'test'
+  ...
+# Subtest: current versionless Org snapshot carries exact live held/queued state
+ok 22 - current versionless Org snapshot carries exact live held/queued state
+  ---
+  duration_ms: 5.104125
+  type: 'test'
+  ...
+# Subtest: rejects duplicate/unowned input projections and missing live input field
+ok 23 - rejects duplicate/unowned input projections and missing live input field
+  ---
+  duration_ms: 1.392542
+  type: 'test'
+  ...
+# Subtest: live projection is strict and has no durable outbox or retired child fields
+ok 24 - live projection is strict and has no durable outbox or retired child fields
+  ---
+  duration_ms: 1.038459
+  type: 'test'
+  ...
+# Subtest: requires explicit family and exact matching branch
+ok 25 - requires explicit family and exact matching branch
+  ---
+  duration_ms: 8.149875
+  type: 'test'
+  ...
+# Subtest: parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes
+ok 26 - parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes
+  ---
+  duration_ms: 14.456416
+  type: 'test'
+  ...
+# Subtest: keeps all pre-existing Org snapshot runtime kinds valid
+ok 27 - keeps all pre-existing Org snapshot runtime kinds valid
+  ---
+  duration_ms: 0.540125
+  type: 'test'
+  ...
+# Subtest: requires sequenced events and an exact Org-root client command
+ok 28 - requires sequenced events and an exact Org-root client command
+  ---
+  duration_ms: 0.965375
+  type: 'test'
+  ...
+# Subtest: requires one correlated status for every live Agent execution
+ok 29 - requires one correlated status for every live Agent execution
+  ---
+  duration_ms: 2.79375
+  type: 'test'
+  ...
+# Subtest: rejects duplicate and sidecar AgentOrg member identities
+ok 30 - rejects duplicate and sidecar AgentOrg member identities
+  ---
+  duration_ms: 0.50225
+  type: 'test'
+  ...
+# Subtest: requires each configured Team coordinator to be one of that Team's direct Agents
+ok 31 - requires each configured Team coordinator to be one of that Team's direct Agents
+  ---
+  duration_ms: 0.411125
+  type: 'test'
+  ...
+# Subtest: correlates restored task executions by fresh run identity while reusing configured addresses
+ok 32 - correlates restored task executions by fresh run identity while reusing configured addresses
+  ---
+  duration_ms: 1.323334
+  type: 'test'
+  ...
+# Subtest: the shared team status fold ranks offline < idle < error < initializing < running
+ok 33 - the shared team status fold ranks offline < idle < error < initializing < running
+  ---
+  duration_ms: 0.480958
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 196.864792
+collab exit 0
+
+> @autobyteus/team-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-team-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: copy DTOs carry optional user choices; malformed ones are refused
+ok 1 - copy DTOs carry optional user choices; malformed ones are refused
+  ---
+  duration_ms: 3.170917
+  type: 'test'
+  ...
+# Subtest: the copy launch rule: own choice, else the followed Team's, else started; runtime and approval stay
+ok 2 - the copy launch rule: own choice, else the followed Team's, else started; runtime and approval stay
+  ---
+  duration_ms: 0.137208
+  type: 'test'
+  ...
+# Subtest: a live Save's DELEGATED_LAUNCH_SELECTIONS_CHANGED carries each saved choice by run ID
+ok 3 - a live Save's DELEGATED_LAUNCH_SELECTIONS_CHANGED carries each saved choice by run ID
+  ---
+  duration_ms: 1.151042
+  type: 'test'
+  ...
+# Subtest: catalog Team copy DTOs carry optional per-member launch values and sources
+ok 4 - catalog Team copy DTOs carry optional per-member launch values and sources
+  ---
+  duration_ms: 4.781167
+  type: 'test'
+  ...
+# Subtest: records written before sources existed still parse
+ok 5 - records written before sources existed still parse
+  ---
+  duration_ms: 0.310417
+  type: 'test'
+  ...
+# Subtest: the effective member launch is the member's own, else the Team's; the source likewise, null when not recorded
+ok 6 - the effective member launch is the member's own, else the Team's; the source likewise, null when not recorded
+  ---
+  duration_ms: 0.114125
+  type: 'test'
+  ...
+# Subtest: SEND_MESSAGE accepts optional mentions
+ok 7 - SEND_MESSAGE accepts optional mentions
+  ---
+  duration_ms: 2.073833
+  type: 'test'
+  ...
+# Subtest: the Team tree has no collaborators, and COLLABORATOR_ADDED is no longer a message
+ok 8 - the Team tree has no collaborators, and COLLABORATOR_ADDED is no longer a message
+  ---
+  duration_ms: 1.225041
+  type: 'test'
+  ...
+# Subtest: a content batch covers a contiguous sequence range with ordered per-segment items
+ok 9 - a content batch covers a contiguous sequence range with ordered per-segment items
+  ---
+  duration_ms: 2.287167
+  type: 'test'
+  ...
+# Subtest: a content batch rejects an inverted range, no items and unknown fields
+ok 10 - a content batch rejects an inverted range, no items and unknown fields
+  ---
+  duration_ms: 0.719625
+  type: 'test'
+  ...
+# Subtest: an ordinary Team message keeps its single sequence and does not accept a range
+ok 11 - an ordinary Team message keeps its single sequence and does not accept a range
+  ---
+  duration_ms: 0.405667
+  type: 'test'
+  ...
+# Subtest: the Team snapshot requires its closed task executions beside the unfiltered tree
+ok 12 - the Team snapshot requires its closed task executions beside the unfiltered tree
+  ---
+  duration_ms: 3.8595
+  type: 'test'
+  ...
+# Subtest: TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty
+ok 13 - TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty
+  ---
+  duration_ms: 0.611417
+  type: 'test'
+  ...
+# Subtest: TASK_EXECUTIONS_REOPENED mirrors the closed event: sequenced, strict and non-empty
+ok 14 - TASK_EXECUTIONS_REOPENED mirrors the closed event: sequenced, strict and non-empty
+  ---
+  duration_ms: 0.530125
+  type: 'test'
+  ...
+# Subtest: validates and preserves the exact cumulative summary on a team token event
+ok 15 - validates and preserves the exact cumulative summary on a team token event
+  ---
+  duration_ms: 3.546541
+  type: 'test'
+  ...
+# Subtest: carries the summary revision and compaction threshold and keeps unknown keys rejected
+ok 16 - carries the summary revision and compaction threshold and keeps unknown keys rejected
+  ---
+  duration_ms: 0.974083
+  type: 'test'
+  ...
+# Subtest: team token event carries whether it reports a model call
+ok 17 - team token event carries whether it reports a model call
+  ---
+  duration_ms: 0.54775
+  type: 'test'
+  ...
+# Subtest: requires a non-negative safe-integer report generation
+ok 18 - requires a non-negative safe-integer report generation
+  ---
+  duration_ms: 0.931959
+  type: 'test'
+  ...
+# Subtest: team stream carries background-task snapshots with execution identity and rejects to-do messages
+ok 19 - team stream carries background-task snapshots with execution identity and rejects to-do messages
+  ---
+  duration_ms: 0.629875
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 137.81075
+team exit 0

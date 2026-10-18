@@ -1,0 +1,4 @@
+# Case: DESK-01 Org — final answer text: persisted projection (getAgentOrgMemberRunProjection) vs the renderer DOM (dom-org-alpha.txt / dom-org-beta.txt, typographic quotes and markdown marks normalized)
+# Commit: e24ff6b333; Env: ENV-3 iso-53150-351f; Date: 2026-10-18T11:42:32.901Z
+/alpha assistant text 2518 chars; in DOM: true
+/beta assistant text 1739 chars; in DOM: true

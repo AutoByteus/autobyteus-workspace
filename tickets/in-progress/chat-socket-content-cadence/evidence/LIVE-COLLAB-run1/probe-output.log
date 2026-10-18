@@ -1,0 +1,165 @@
+{"at":10427.9,"what":"ready","origin":"http://127.0.0.1:51764","interval":"default(500)","model":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234"}
+{"at":34666.2,"what":"worker address","addr":"/abt139_essay_worker"}
+{"at":34667.1,"what":"delegation requested"}
+{"at":71799.7,"what":"two children streaming","children":["abt139_essay_worker_bc05e92e9b94466eb9d3f479d24010db","abt139_essay_worker_27d3d6f760074aae976a7a708426ac11"]}
+{"at":121008.6,"what":"children turn 1 done"}
+{"at":121056.3,"what":"phase2 sent to both children"}
+{"at":128184.7,"what":"phase2 both streaming"}
+{"at":136398.5,"what":"root terminated mid-answer"}
+{
+ "scenario": "collab",
+ "failure": null,
+ "S1": {
+  "frames": 356,
+  "gaps": 0,
+  "snapshots": [
+   {
+    "at": 10938.5,
+    "base": 0
+   }
+  ],
+  "startsAfterSnapshot": [
+   {
+    "expected": 1,
+    "first": 1
+   }
+  ],
+  "batches": 110,
+  "multiAgentBatches": 25,
+  "plainContent": 0,
+  "batchRange": {
+   "min": 2,
+   "median": 21,
+   "max": 49,
+   "total": 2215
+  },
+  "closedBy": {
+   "SEGMENT_START": 8,
+   "window": 85,
+   "AGENT_STATUS": 9,
+   "SEGMENT_END": 4,
+   "TOKEN_USAGE_UPDATED": 1,
+   "event:communication": 2,
+   "TURN_STARTED": 1
+  },
+  "spacing": {
+   "abt139_essay_worker_bc05e92e9b94466eb9d3f479d24010db": {
+    "batchesWithAgent": 108,
+    "windowClosed": 85,
+    "boundaryClosed": 23,
+    "windowGapMs": {
+     "n": 69,
+     "min": 507,
+     "median": 547,
+     "max": 3108,
+     "under350": 0
+    },
+    "activeSeconds": 65.1,
+    "windowFramesPerSecond": 1.31
+   },
+   "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11": {
+    "batchesWithAgent": 27,
+    "windowClosed": 17,
+    "boundaryClosed": 10,
+    "windowGapMs": {
+     "n": 8,
+     "min": 509,
+     "median": 544,
+     "max": 611,
+     "under350": 0
+    },
+    "activeSeconds": 64.6,
+    "windowFramesPerSecond": 0.26
+   }
+  },
+  "status": {
+   "abt139_essay_worker_bc05e92e9b94466eb9d3f479d24010db": {
+    "standaloneStatusFrames": 114,
+    "identicalToPreviousForwarded": 107,
+    "byValue": {
+     "initializing": 4,
+     "running": 108,
+     "idle": 2
+    }
+   },
+   "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11": {
+    "standaloneStatusFrames": 56,
+    "identicalToPreviousForwarded": 46,
+    "byValue": {
+     "initializing": 5,
+     "running": 48,
+     "idle": 3
+    }
+   }
+  },
+  "stopCheck": {
+   "lifecycleAt": 136246.6,
+   "framesAfterInactive": 0,
+   "previousSequencedFrame": {
+    "type": "ROOT_EXECUTION_EVENT",
+    "at": 136246.5,
+    "gapMs": 0,
+    "batch": true
+   }
+  }
+ },
+ "s2Check": null,
+ "textCheck": [
+  {
+   "segKey": "abt139_essay_worker_bc05e92e9b94466eb9d3f479d24010db|segment_e7520d2d30504a658bac0e3c1a06d87a:reasoning_d8a1c67bda6a41b1898a5f0913fa9c34",
+   "chars": 2349,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_bc05e92e9b94466eb9d3f479d24010db' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11|segment_8ff6da4839454e98b36e2519b07e4b25:reasoning_5b1d38b542cc41e693ad02091515214e",
+   "chars": 193,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_27d3d6f760074aae976a7a708426ac11' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11|turn_7074e7e9e7274cfba27cb56e336b1ba9:5549fc1234a540e3aeceded028237552",
+   "chars": 2,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_27d3d6f760074aae976a7a708426ac11' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11|956666385",
+   "chars": 1834,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_27d3d6f760074aae976a7a708426ac11' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11|segment_5ae5dcd93aae43d2a858d7d7285f64dc:reasoning_f86dc80fdf414f229d28fe388682292c",
+   "chars": 103,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_27d3d6f760074aae976a7a708426ac11' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_bc05e92e9b94466eb9d3f479d24010db|turn_a5f7928cbb744409b2ee252fb66d7e1c:45bee09cf5bf47cc92ec9bd05d7788e6",
+   "chars": 1874,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_bc05e92e9b94466eb9d3f479d24010db' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11|turn_d9f4df1a9a0946c6857259b23570b5a2:a694b5fbbf4b40b899273512b9610aff",
+   "chars": 79,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_27d3d6f760074aae976a7a708426ac11' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11|segment_d05d027fd4ef48f8933bfa04008e17d2:reasoning_2c0abed19771472991d0c76eda30f1ed",
+   "chars": 144,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_27d3d6f760074aae976a7a708426ac11' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_bc05e92e9b94466eb9d3f479d24010db|segment_6da4a7a0c90e4e73ac7e2210f37e3824:reasoning_ae268bb37b094094af7b375b9a1a0ae9",
+   "chars": 548,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_bc05e92e9b94466eb9d3f479d24010db' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11|turn_1845658fb9854e71b2cbfc3a5bd44a71:1a87215f4eb04e6eb8fa8024bd1a8747",
+   "chars": 142,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_27d3d6f760074aae976a7a708426ac11' is unavailable.\",\"l"
+  },
+  {
+   "segKey": "abt139_essay_worker_27d3d6f760074aae976a7a708426ac11|segment_aa5cf0b535844ce1a82af5c817c39653:reasoning_4d71257679fb4cbe99d62793986ee56c",
+   "chars": 122,
+   "projection": "ERROR GraphQL: [{\"message\":\"Run package 'agent:abt139_essay_worker_27d3d6f760074aae976a7a708426ac11' is unavailable.\",\"l"
+  }
+ ],
+ "rootRemoved": true
+}

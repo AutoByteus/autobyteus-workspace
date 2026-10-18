@@ -1,0 +1,257 @@
+{"at":4345.7,"what":"ready","origin":"http://127.0.0.1:49767","interval":"default(500)","model":"qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234"}
+{"at":4617,"what":"sent both"}
+{"at":77910.5,"what":"both streaming"}
+{"at":80942.7,"what":"S2 opened mid-stream"}
+{
+ "scenario": "team",
+ "failure": "Error: Timed out: both turns done\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/evidence/live-sequenced-probe.mjs:35:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/evidence/live-sequenced-probe.mjs:235:5",
+ "S1": {
+  "frames": 2361,
+  "gaps": 0,
+  "snapshots": [
+   {
+    "at": 4517.7,
+    "base": 0
+   }
+  ],
+  "startsAfterSnapshot": [
+   {
+    "expected": 1,
+    "first": 1
+   }
+  ],
+  "batches": 1138,
+  "multiAgentBatches": 51,
+  "plainContent": 0,
+  "batchRange": {
+   "min": 2,
+   "median": 33,
+   "max": 49,
+   "total": 37697
+  },
+  "closedBy": {
+   "SEGMENT_START": 5,
+   "window": 998,
+   "AGENT_STATUS": 130,
+   "SEGMENT_END": 3,
+   "TOKEN_USAGE_UPDATED": 2
+  },
+  "spacing": {
+   "abt139_alpha_76997e3694b94431a4e600868a2282a4": {
+    "batchesWithAgent": 1138,
+    "windowClosed": 998,
+    "boundaryClosed": 140,
+    "windowGapMs": {
+     "n": 877,
+     "min": 505,
+     "median": 527,
+     "max": 1033,
+     "under350": 0
+    },
+    "activeSeconds": 603.8,
+    "windowFramesPerSecond": 1.65
+   },
+   "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1": {
+    "batchesWithAgent": 51,
+    "windowClosed": 38,
+    "boundaryClosed": 13,
+    "windowGapMs": {
+     "n": 27,
+     "min": 509,
+     "median": 526,
+     "max": 573,
+     "under350": 0
+    },
+    "activeSeconds": 30.1,
+    "windowFramesPerSecond": 1.26
+   }
+  },
+  "status": {
+   "abt139_alpha_76997e3694b94431a4e600868a2282a4": {
+    "standaloneStatusFrames": 1119,
+    "identicalToPreviousForwarded": 1114,
+    "byValue": {
+     "initializing": 3,
+     "running": 1109,
+     "idle": 6,
+     "offline": 1
+    }
+   },
+   "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1": {
+    "standaloneStatusFrames": 62,
+    "identicalToPreviousForwarded": 55,
+    "byValue": {
+     "initializing": 4,
+     "running": 52,
+     "idle": 5,
+     "offline": 1
+    }
+   }
+  },
+  "stopCheck": null
+ },
+ "S2": {
+  "frames": 2316,
+  "gaps": 0,
+  "snapshots": [
+   {
+    "at": 80952.4,
+    "base": 304
+   }
+  ],
+  "startsAfterSnapshot": [
+   {
+    "expected": 305,
+    "first": 305
+   }
+  ],
+  "batches": 1131,
+  "multiAgentBatches": 43,
+  "plainContent": 0,
+  "batchRange": {
+   "min": 2,
+   "median": 33,
+   "max": 49,
+   "total": 37431
+  },
+  "closedBy": {
+   "AGENT_STATUS": 131,
+   "SEGMENT_START": 4,
+   "window": 991,
+   "SEGMENT_END": 3,
+   "TOKEN_USAGE_UPDATED": 2
+  },
+  "spacing": {
+   "abt139_alpha_76997e3694b94431a4e600868a2282a4": {
+    "batchesWithAgent": 1130,
+    "windowClosed": 991,
+    "boundaryClosed": 139,
+    "windowGapMs": {
+     "n": 872,
+     "min": 504,
+     "median": 527,
+     "max": 1033,
+     "under350": 0
+    },
+    "activeSeconds": 600.1,
+    "windowFramesPerSecond": 1.65
+   },
+   "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1": {
+    "batchesWithAgent": 44,
+    "windowClosed": 33,
+    "boundaryClosed": 11,
+    "windowGapMs": {
+     "n": 24,
+     "min": 509,
+     "median": 530,
+     "max": 573,
+     "under350": 0
+    },
+    "activeSeconds": 26.8,
+    "windowFramesPerSecond": 1.23
+   }
+  },
+  "status": {
+   "abt139_alpha_76997e3694b94431a4e600868a2282a4": {
+    "standaloneStatusFrames": 1108,
+    "identicalToPreviousForwarded": 1105,
+    "byValue": {
+     "running": 1101,
+     "idle": 6,
+     "offline": 1
+    }
+   },
+   "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1": {
+    "standaloneStatusFrames": 51,
+    "identicalToPreviousForwarded": 46,
+    "byValue": {
+     "running": 44,
+     "idle": 5,
+     "initializing": 1,
+     "offline": 1
+    }
+   }
+  },
+  "stopCheck": null
+ },
+ "s2Check": {
+  "startsAfterSnapshot": [
+   {
+    "expected": 305,
+    "first": 305
+   }
+  ],
+  "gaps": 0,
+  "sharedSegmentsSuffix": [
+   {
+    "k": "abt139_alpha_76997e3694b94431a4e600868a2282a4|segment_407c996383e24a5498dc54cab7e14719:reasoning_e24bfee480e942df85c82660d26bfcb7",
+    "s1Len": 88285,
+    "s2Len": 88000,
+    "s2IsSuffixOfS1": true
+   },
+   {
+    "k": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|segment_226eef46093f481497414dbce27266e0:reasoning_43db237862d240fda735d448172ca0ca",
+    "s1Len": 330,
+    "s2Len": 16,
+    "s2IsSuffixOfS1": true
+   },
+   {
+    "k": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|turn_f7e44bc8b7cb4faaa7a4dc571b9415c2:e1844e3b086a4f6faeb89093b8ed3dbc",
+    "s1Len": 2,
+    "s2Len": 2,
+    "s2IsSuffixOfS1": true
+   },
+   {
+    "k": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|650133089",
+    "s1Len": 2,
+    "s2Len": 2,
+    "s2IsSuffixOfS1": true
+   },
+   {
+    "k": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|segment_76bff0da94034e1d840ddc82a888538e:reasoning_907ecb8d3d9349f29c6579c4780c76d2",
+    "s1Len": 146,
+    "s2Len": 146,
+    "s2IsSuffixOfS1": true
+   },
+   {
+    "k": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|turn_878c14e3ee7049dda503fd68fbbeab6d:3f2470e207554d388ecfad2f44b526ef",
+    "s1Len": 1765,
+    "s2Len": 1765,
+    "s2IsSuffixOfS1": true
+   }
+  ]
+ },
+ "textCheck": [
+  {
+   "segKey": "abt139_alpha_76997e3694b94431a4e600868a2282a4|segment_407c996383e24a5498dc54cab7e14719:reasoning_e24bfee480e942df85c82660d26bfcb7",
+   "chars": 88285,
+   "projection": "none"
+  },
+  {
+   "segKey": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|segment_226eef46093f481497414dbce27266e0:reasoning_43db237862d240fda735d448172ca0ca",
+   "chars": 330,
+   "projection": "none"
+  },
+  {
+   "segKey": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|turn_f7e44bc8b7cb4faaa7a4dc571b9415c2:e1844e3b086a4f6faeb89093b8ed3dbc",
+   "chars": 2,
+   "projection": "none"
+  },
+  {
+   "segKey": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|650133089",
+   "chars": 2,
+   "projection": "none"
+  },
+  {
+   "segKey": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|segment_76bff0da94034e1d840ddc82a888538e:reasoning_907ecb8d3d9349f29c6579c4780c76d2",
+   "chars": 146,
+   "projection": "none"
+  },
+  {
+   "segKey": "abt139_beta_fa3f6140ab0f4bf0873ab977141edea1|turn_878c14e3ee7049dda503fd68fbbeab6d:3f2470e207554d388ecfad2f44b526ef",
+   "chars": 1765,
+   "projection": "none"
+  }
+ ],
+ "rootRemoved": true
+}

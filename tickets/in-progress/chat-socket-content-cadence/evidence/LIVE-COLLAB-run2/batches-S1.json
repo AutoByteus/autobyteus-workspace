@@ -1,0 +1,957 @@
+[
+ {
+  "at": 45769.4,
+  "first": 32,
+  "through": 35,
+  "range": 4,
+  "items": 1,
+  "agents": 1,
+  "chars": 3,
+  "closedBy": "SEGMENT_START",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 46274.5,
+  "first": 38,
+  "through": 74,
+  "range": 37,
+  "items": 2,
+  "agents": 2,
+  "chars": 65,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 46793.9,
+  "first": 76,
+  "through": 112,
+  "range": 37,
+  "items": 2,
+  "agents": 2,
+  "chars": 74,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 47338.8,
+  "first": 114,
+  "through": 148,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 71,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 47866.2,
+  "first": 150,
+  "through": 184,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 79,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 48421.5,
+  "first": 186,
+  "through": 224,
+  "range": 39,
+  "items": 2,
+  "agents": 2,
+  "chars": 71,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 48990.5,
+  "first": 226,
+  "through": 254,
+  "range": 29,
+  "items": 2,
+  "agents": 2,
+  "chars": 60,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 49528.8,
+  "first": 256,
+  "through": 290,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 50,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 50041.2,
+  "first": 292,
+  "through": 338,
+  "range": 47,
+  "items": 2,
+  "agents": 2,
+  "chars": 51,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 50588.5,
+  "first": 340,
+  "through": 375,
+  "range": 36,
+  "items": 2,
+  "agents": 2,
+  "chars": 44,
+  "closedBy": "SEGMENT_START",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 51085.3,
+  "first": 378,
+  "through": 424,
+  "range": 47,
+  "items": 2,
+  "agents": 2,
+  "chars": 136,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 51619.8,
+  "first": 426,
+  "through": 452,
+  "range": 27,
+  "items": 2,
+  "agents": 2,
+  "chars": 63,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 52152.8,
+  "first": 454,
+  "through": 488,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 78,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 52887.4,
+  "first": 490,
+  "through": 534,
+  "range": 45,
+  "items": 2,
+  "agents": 2,
+  "chars": 97,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 53397.9,
+  "first": 536,
+  "through": 570,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 84,
+  "closedBy": "AGENT_STATUS",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 53907.9,
+  "first": 572,
+  "through": 606,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 88,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 54429.4,
+  "first": 608,
+  "through": 646,
+  "range": 39,
+  "items": 2,
+  "agents": 2,
+  "chars": 88,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 54967.6,
+  "first": 648,
+  "through": 686,
+  "range": 39,
+  "items": 2,
+  "agents": 2,
+  "chars": 88,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 55489.6,
+  "first": 688,
+  "through": 720,
+  "range": 33,
+  "items": 2,
+  "agents": 2,
+  "chars": 78,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 55620.1,
+  "first": 722,
+  "through": 731,
+  "range": 10,
+  "items": 1,
+  "agents": 1,
+  "chars": 18,
+  "closedBy": "SEGMENT_START",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 56125.6,
+  "first": 734,
+  "through": 770,
+  "range": 37,
+  "items": 2,
+  "agents": 2,
+  "chars": 103,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 56660.8,
+  "first": 772,
+  "through": 812,
+  "range": 41,
+  "items": 2,
+  "agents": 2,
+  "chars": 98,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 57198.3,
+  "first": 814,
+  "through": 852,
+  "range": 39,
+  "items": 2,
+  "agents": 2,
+  "chars": 97,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 57763.7,
+  "first": 854,
+  "through": 886,
+  "range": 33,
+  "items": 2,
+  "agents": 2,
+  "chars": 90,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 58288.2,
+  "first": 888,
+  "through": 924,
+  "range": 37,
+  "items": 2,
+  "agents": 2,
+  "chars": 92,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 58827.5,
+  "first": 926,
+  "through": 968,
+  "range": 43,
+  "items": 2,
+  "agents": 2,
+  "chars": 101,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 59370.4,
+  "first": 970,
+  "through": 1010,
+  "range": 41,
+  "items": 2,
+  "agents": 2,
+  "chars": 104,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 59933.3,
+  "first": 1012,
+  "through": 1050,
+  "range": 39,
+  "items": 2,
+  "agents": 2,
+  "chars": 113,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 60533.7,
+  "first": 1052,
+  "through": 1086,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 100,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 61050,
+  "first": 1088,
+  "through": 1130,
+  "range": 43,
+  "items": 2,
+  "agents": 2,
+  "chars": 106,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 61601.5,
+  "first": 1132,
+  "through": 1164,
+  "range": 33,
+  "items": 2,
+  "agents": 2,
+  "chars": 87,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 62144.3,
+  "first": 1166,
+  "through": 1210,
+  "range": 45,
+  "items": 2,
+  "agents": 2,
+  "chars": 101,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 62687.3,
+  "first": 1212,
+  "through": 1244,
+  "range": 33,
+  "items": 2,
+  "agents": 2,
+  "chars": 85,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 63230.8,
+  "first": 1246,
+  "through": 1288,
+  "range": 43,
+  "items": 2,
+  "agents": 2,
+  "chars": 112,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 63777.9,
+  "first": 1290,
+  "through": 1328,
+  "range": 39,
+  "items": 2,
+  "agents": 2,
+  "chars": 103,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 64311.5,
+  "first": 1330,
+  "through": 1372,
+  "range": 43,
+  "items": 2,
+  "agents": 2,
+  "chars": 122,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 65000.4,
+  "first": 1374,
+  "through": 1414,
+  "range": 41,
+  "items": 2,
+  "agents": 2,
+  "chars": 114,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 65524.4,
+  "first": 1416,
+  "through": 1456,
+  "range": 41,
+  "items": 2,
+  "agents": 2,
+  "chars": 94,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 66070.8,
+  "first": 1458,
+  "through": 1468,
+  "range": 11,
+  "items": 2,
+  "agents": 2,
+  "chars": 31,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 66631.8,
+  "first": 1470,
+  "through": 1504,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 99,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 67149,
+  "first": 1506,
+  "through": 1564,
+  "range": 59,
+  "items": 2,
+  "agents": 2,
+  "chars": 147,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 67684,
+  "first": 1566,
+  "through": 1622,
+  "range": 57,
+  "items": 2,
+  "agents": 2,
+  "chars": 134,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 68211.3,
+  "first": 1624,
+  "through": 1664,
+  "range": 41,
+  "items": 2,
+  "agents": 2,
+  "chars": 123,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 68359.9,
+  "first": 1666,
+  "through": 1681,
+  "range": 16,
+  "items": 2,
+  "agents": 2,
+  "chars": 33,
+  "closedBy": "SEGMENT_END",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 68450.3,
+  "first": 1686,
+  "through": 1687,
+  "range": 2,
+  "items": 1,
+  "agents": 1,
+  "chars": 8,
+  "closedBy": "TOKEN_USAGE_UPDATED",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 68967.4,
+  "first": 1698,
+  "through": 1744,
+  "range": 47,
+  "items": 1,
+  "agents": 1,
+  "chars": 116,
+  "closedBy": "AGENT_STATUS",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 69471,
+  "first": 1746,
+  "through": 1770,
+  "range": 25,
+  "items": 1,
+  "agents": 1,
+  "chars": 76,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 69982.2,
+  "first": 1772,
+  "through": 1798,
+  "range": 27,
+  "items": 1,
+  "agents": 1,
+  "chars": 57,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 70510.2,
+  "first": 1800,
+  "through": 1820,
+  "range": 21,
+  "items": 1,
+  "agents": 1,
+  "chars": 57,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 71018.5,
+  "first": 1822,
+  "through": 1868,
+  "range": 47,
+  "items": 1,
+  "agents": 1,
+  "chars": 104,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 71568.1,
+  "first": 1870,
+  "through": 1900,
+  "range": 31,
+  "items": 1,
+  "agents": 1,
+  "chars": 90,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 71797.4,
+  "first": 1902,
+  "through": 1917,
+  "range": 16,
+  "items": 1,
+  "agents": 1,
+  "chars": 55,
+  "closedBy": "SEGMENT_END",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 76257.1,
+  "first": 1954,
+  "through": 1957,
+  "range": 4,
+  "items": 1,
+  "agents": 1,
+  "chars": 8,
+  "closedBy": "SEGMENT_START",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 76764.8,
+  "first": 1960,
+  "through": 2004,
+  "range": 45,
+  "items": 2,
+  "agents": 2,
+  "chars": 102,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 77336.2,
+  "first": 2006,
+  "through": 2040,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 68,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 77900.8,
+  "first": 2042,
+  "through": 2084,
+  "range": 43,
+  "items": 2,
+  "agents": 2,
+  "chars": 78,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 78429.6,
+  "first": 2086,
+  "through": 2114,
+  "range": 29,
+  "items": 2,
+  "agents": 2,
+  "chars": 66,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 78975,
+  "first": 2116,
+  "through": 2148,
+  "range": 33,
+  "items": 2,
+  "agents": 2,
+  "chars": 82,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 79486.5,
+  "first": 2150,
+  "through": 2188,
+  "range": 39,
+  "items": 2,
+  "agents": 2,
+  "chars": 90,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 80032.4,
+  "first": 2190,
+  "through": 2232,
+  "range": 43,
+  "items": 2,
+  "agents": 2,
+  "chars": 91,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 80538.7,
+  "first": 2234,
+  "through": 2274,
+  "range": 41,
+  "items": 2,
+  "agents": 2,
+  "chars": 86,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 81077.8,
+  "first": 2276,
+  "through": 2328,
+  "range": 53,
+  "items": 2,
+  "agents": 2,
+  "chars": 135,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 81599.9,
+  "first": 2330,
+  "through": 2364,
+  "range": 35,
+  "items": 2,
+  "agents": 2,
+  "chars": 98,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 82141.7,
+  "first": 2366,
+  "through": 2408,
+  "range": 43,
+  "items": 2,
+  "agents": 2,
+  "chars": 89,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 82719.7,
+  "first": 2410,
+  "through": 2454,
+  "range": 45,
+  "items": 2,
+  "agents": 2,
+  "chars": 88,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 83267.3,
+  "first": 2456,
+  "through": 2494,
+  "range": 39,
+  "items": 2,
+  "agents": 2,
+  "chars": 69,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 83785.5,
+  "first": 2496,
+  "through": 2526,
+  "range": 31,
+  "items": 2,
+  "agents": 2,
+  "chars": 62,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ },
+ {
+  "at": 84309,
+  "first": 2528,
+  "through": 2564,
+  "range": 37,
+  "items": 2,
+  "agents": 2,
+  "chars": 50,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246",
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883"
+  ]
+ },
+ {
+  "at": 84840.4,
+  "first": 2566,
+  "through": 2614,
+  "range": 49,
+  "items": 2,
+  "agents": 2,
+  "chars": 67,
+  "closedBy": "window",
+  "agentIds": [
+   "abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883",
+   "abt139_essay_worker_af4503bce865400294a6a6af3e3e2246"
+  ]
+ }
+]

@@ -1,0 +1,14 @@
+# Case: LIVE-COLLAB run 2 — final text: socket S1 vs persisted member projection (equality)
+# Command: node evidence/check-final-text.mjs evidence/LIVE-COLLAB-run2; Commit: e24ff6b333; Env: ENV-2; Date: 2026-10-18 13:26
+# frames: LIVE-COLLAB-run2/frames-S1.jsonl; projections: LIVE-COLLAB-run2/projections.json
+abt139_essay_worker_a69da29553954eb6bfe54cc6b9b94883: 4 projection entries, 3 streamed segments
+  #1 projection reasoning (612 chars) vs streamed reasoning (612 chars): EQUAL
+  #2 projection message/assistant (1731 chars) vs streamed text (1731 chars): EQUAL
+  #3 projection reasoning (586 chars) vs streamed reasoning (586 chars): EQUAL
+  #4 projection message/assistant (0 chars) vs streamed - (0 chars): EQUAL
+abt139_essay_worker_af4503bce865400294a6a6af3e3e2246: 4 projection entries, 3 streamed segments
+  #1 projection reasoning (332 chars) vs streamed reasoning (332 chars): EQUAL
+  #2 projection message/assistant (1657 chars) vs streamed text (1657 chars): EQUAL
+  #3 projection reasoning (743 chars) vs streamed reasoning (743 chars): EQUAL
+  #4 projection message/assistant (0 chars) vs streamed - (0 chars): EQUAL
+RESULT: ALL EQUAL

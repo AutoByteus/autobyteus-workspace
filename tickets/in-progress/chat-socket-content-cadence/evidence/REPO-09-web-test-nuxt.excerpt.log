@@ -1,0 +1,10 @@
+# Case: REPO-09
+# Command (from the worktree root): pnpm -C autobyteus-web test:nuxt run
+# Commit: e24ff6b333
+# Environment: ENV-1 (macOS 26.5.2 arm64, Node v22.23.1, worktree /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence)
+# Date: 2026-10-18 09:55 (local, file write time)
+# ----
+# Excerpt: summary lines of the full log REPO-09-web-test-nuxt.log
+ Test Files  634 passed | 2 skipped (636)
+      Tests  4483 passed | 5 skipped (4488)
+   Duration  417.26s (transform 39.28s, setup 2786.94s, collect 208.34s, tests 109.33s, environment 297.14s, prepare 171.38s)

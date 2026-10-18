@@ -1,0 +1,235 @@
+# Implementation Handoff — autobyteus-139 `chat-socket-content-cadence`
+
+- Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence`
+- Branch: `codex/chat-socket-content-cadence` (local, not pushed); HEAD `e24ff6b333`
+- Base: `origin/personal` @ `f3124db10f`
+- Ticket artifacts are uncommitted, as upstream left them.
+
+| Commit | Slice |
+| --- | --- |
+| `be00680819` | contracts (`src` + tracked `dist` + node tests) |
+| `3e3b437274` | web contexts, range helper + specs |
+| `43b685b906` | server egress, shapes, scheduler, handlers + unit tests |
+| `b8eed1387f` | per-socket integration cases + handler close tests |
+| `e24ff6b333` | docs |
+
+## Upstream Artifact Package
+
+- Upstream review applicability and handoff-rule result: Large/High. Independent architecture review was selected and passed (ARCH-REV-002, round 2).
+- Requirements doc: `.../requirements-doc.md` (SR-002, Approved)
+- Investigation notes: `.../investigation-notes.md`
+- Solution revision record: `.../solution-revision-record.md`
+- Design spec: `.../design-spec.md` (SR-002, Ready). Per AR-005, I implemented from Intended Change, DS-002 rules 1-5, the Interface Boundary Mapping contract rows and the Examples.
+- Supplemental task artifacts: `.../evidence/validity-probe.*`; this round's local logs are `evidence/impl-*.log`.
+- Design review report: `.../design-review-report.md` (ARCH-REV-002 Pass)
+- Architecture review revision record: `.../architecture-review-revision-record.md`
+- Triggering rework report: N/A (initial)
+
+## Current Implementation Summary
+
+Every chat socket now sends through its own `AgentStreamWebSocketEgress`. The Team, Org and delegated-agent sockets use a new sequenced composition:
+- While a window is open, all content goes into one pending batch, with one ordered aggregate per content identity.
+- An identical status repeat is absorbed into the batch's range. The baseline is the last status this connection forwarded or absorbed for that agent run. The baseline is cleared when a snapshot passes.
+- The batch leaves as one frame covering `[change_sequence, change_sequence_through]` when the window ends or any other sequenced message arrives.
+- Nothing sequenced overtakes the pending batch. Only `CONNECTED` and `AGENT_COMMAND_ACK` may pass it.
+
+Clients apply a frame when its first sequence is the next expected one, then advance to `through + 1`. `RootEventPublisher`, the snapshot barrier, inspection bases, the `/ws/agent` scheduler and `AgentRun` are unchanged.
+
+- Implementation cycle: `Initial`
+- Implementation revision record: `.../implementation-revision-record.md`
+- Current implementation revision ID: `IR-001`
+- Related solution revision IDs: `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-002`
+- Related code-review revision IDs: `CRR-001` — Pass (9.4/10, no findings; D-1..D-3 accepted), `code-review-report.md`. Recorded as informational; the reviewer routed to API/E2E.
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Triggering finding IDs: `N/A` (AR-004 and AR-005 applied as notes)
+
+## Routing Classification (Mandatory)
+
+- Task size: `Large`
+- Architecture risk: `High`
+- Design classification section / evidence reference: `design-spec.md` › Task Size And Architectural Risk
+- Classification confirmed or changed: `Confirmed`
+- Evidence and rationale: the change touches three subsystems (server egress and handlers, two contract packages, three web contexts). It changes the wire contract on three streams and adds new per-connection timers on two sockets. This matches the design.
+- Selected route: `Code Review`
+- Lightweight implementation self-review completed for the direct route: `Not Applicable` (independent review route). A self-review was still done; see below.
+- New design impact or escalation trigger: `None`. Root sequencing, the barrier and inspection bases are untouched. Every client accepts the range. UNK-001 still needs live evidence.
+
+## Reviewed Behavior Implementation Trace
+
+| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| --- | --- | --- | --- |
+| BEH-001 | `/ws/agent` unchanged | Default composition untouched; `createControls` defaults to it | `agent-status-websocket` and egress unit tests green |
+| BEH-002 | Team coalesced per window | `agent-team-stream-handler.ts` → `createSequencedStreamEgressControlComposition(teamStreamSequencedShape)` → `SEGMENT_CONTENT_BATCH` | Integration: 30 deltas → 0 frames at 350 ms, 1 batch after the window |
+| BEH-003 | Org coalesced per window | `agent-org-stream-handler.ts` → `createRootExecutionStreamEgress` → `agent_presentation_batch` | Same |
+| BEH-004 | Delegated agents coalesced per window | `agent-collaboration-stream-handler.ts` → same egress factory | Same |
+| BEH-005 | No gap or reorder; a batch declares its range | Contracts (`change_sequence_through` only on batches); scheduler rule 2 plus no-overtaking; web `advanceSequencedStream` in 3 contexts | Integration `expectContiguousCoverage` on every case; web specs reject gaps and accept ranges |
+| BEH-006 | Root subscribers unthrottled | The egress is per socket, after the barrier; the publisher is untouched | AC-005 case: a direct root subscriber gets 61/61 events while the socket holds them |
+| BEH-007 | Boundaries flush first | Scheduler rule 5 | AC-004 case: tool, error, token usage, task event, terminal status and segment end each follow their pending text immediately |
+
+- Changes stayed within the requirements doc's Scope Guardrail: `Yes`
+
+## Key Files Or Areas
+
+Server (`autobyteus-server-ts/src/services/agent-streaming/`):
+- Added in `websocket-egress/`:
+  - `sequenced-stream-shape.ts`
+  - `sequenced-content-cadence-scheduler.ts`
+  - `team-stream-sequenced-shape.ts`
+  - `root-execution-event-sequenced-shape.ts`
+  - `root-execution-stream-egress.ts`
+- Modified in `websocket-egress/`:
+  - `agent-stream-egress-control-composition.ts` (sequenced composition)
+  - `agent-stream-websocket-egress.ts` (`createControls`)
+- Modified handlers:
+  - `agent-org-stream-handler.ts`
+  - `agent-collaboration-stream-handler.ts`
+  - `agent-team-stream-handler.ts`
+
+Contracts:
+- `autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts`
+- `autobyteus-team-stream-contracts/src/team-stream-server-message.ts`
+- `autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts`
+- `autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts`
+- `autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts`
+- Plus the tracked `dist/` and one new node test per package.
+
+Web (`autobyteus-web/services/`):
+- Added: `agentStreaming/sequencedStreamRange.ts`
+- Modified contexts:
+  - `agentOrgExecution/agentOrgExecutionContext.ts`
+  - `agentCollaboration/agentRunCollaborationContext.ts`
+  - `teamExecution/teamExecutionViewState.ts`
+  - `teamExecution/teamExecutionViewModels.ts` (AR-004: `TeamAgentStreamMessage` excludes the batch)
+- Modified callers that pass the range:
+  - `agentOrgExecution/agentOrgStreamingService.ts`
+  - `agentCollaboration/agentRunCollaborationStreamingService.ts`
+
+Tests:
+- Server unit:
+  - `tests/unit/services/agent-streaming/sequenced-content-cadence-scheduler.test.ts` (new; DS-002 rules and design examples 11..15 and 21..26)
+  - `tests/unit/services/agent-streaming/sequenced-stream-shapes.test.ts` (new)
+  - the Org and collaboration handler tests (close and disconnect cases added)
+- Server integration: `tests/integration/agent/chat-socket-content-cadence.integration.test.ts` (new; 6 cases × 3 sockets)
+- Web specs:
+  - `agentOrgExecutionContextBatch.spec.ts` (new)
+  - `agentRunCollaborationContextBatch.spec.ts` (new)
+  - cases added to `teamExecutionViewState.spec.ts`, `TeamStreamingService.spec.ts`, `agentOrgStreamingService.spec.ts` and `agentRunCollaborationStreamingService.spec.ts`
+
+Docs:
+- `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
+- `autobyteus-server-ts/docs/modules/agent_streaming.md`
+
+## Deviations From The Design Text (Small, Recorded For Review)
+
+- D-1: `SequencedStreamShape` has a fifth method, `isSnapshot(message)`. The scheduler clears its status baselines when a snapshot passes. Reason: the Team handler rebinds a session to a restored root (`bindSessionToTeamRun`) and sends a new snapshot through the same egress. A baseline from before that snapshot could otherwise absorb a status that differs from the snapshot's state. The client would then keep the snapshot's status, for example `idle` while the agent runs. This adds no seeding, consistent with AR-003. On Org and collaboration the snapshot is the first sequenced-stream frame, so clearing there is a no-op.
+- D-2: I added the shared `createRootExecutionStreamEgress` (`websocket-egress/root-execution-stream-egress.ts`), so the Org and collaboration handlers do not each build the same egress (serialize, composition, error logging). It is not in the Final File Mapping table. It is a small factory, not a new owner.
+- D-3: the sequenced composition throws if extension filters are passed, instead of ignoring them. A suppressing filter would leave a sequence gap (the design's forbidden "per-socket suppression of a sequenced message"). No production caller passes filters.
+- Status absorption follows the design literally: any identical repeat is absorbed while a batch is pending, not only `running`. An identical repeat carries no change, and REQ-002 / DEC-002 call for it. A changed status (for example `running` → `idle`) is always a boundary (AC-004 case `terminal_status`).
+
+## AR-004 Producers Of Plain `SEGMENT_CONTENT` (Type Kept)
+
+- Server Team: `team-agent-event-websocket-projector.ts` (`SEGMENT_CONTENT` case) is the egress input. It never goes on the wire.
+- Server Org/collaboration: `agent-org-execution-view-projector.ts` and `agent-collaboration-view-projector.ts` build `agent_presentation` + `SEGMENT_CONTENT` via `RootExecutionEventDtoSchema`. This is the egress input.
+- Web: `teamExecutionViewModels.ts` `TeamAgentStreamMessage` is the per-item dispatch shape. `teamExecutionViewState.ts` dispatches each batch item as `SEGMENT_CONTENT`. That synthetic message carries the batch's first sequence; `toAgentProjectionMessage` drops it. The Org and collaboration contexts dispatch batch items as `agent_presentation` messages.
+- The client branches for plain content stay live: the shared dispatch path. No server types were split.
+
+## Important Assumptions
+
+- UNK-001: canonical "running" statuses before deltas are byte-identical (no timestamp in `{status, trigger, tool_name, error_message, error_details, recoverableBlock}`). Read from code; not measured live.
+- Desktop web and server ship together (ASM-001). Strict DTOs reject skew (RSK-003).
+
+## Known Risks
+
+- UNK-001: if live statuses differ between deltas, every status becomes a boundary and batches shrink. Escalate per the design.
+- RSK-003: a remote node on a newer version paired with an older desktop. An older client rejects the batch frames under the strict schema. Mention this in the beta release notes.
+- Per window, an agent can still send one standalone status before its batch opens, because absorption needs a pending batch. QR-001 counts content frames only.
+- A root `lifecycle` event takes a sequence but leaves as an unsequenced `ROOT_LIFECYCLE` (unchanged behavior, now documented). The inactive lifecycle ends the stream after the pending text.
+
+## Task Design Health Assessment Implementation Check
+
+- Reviewed change posture: Bug fix with a contract extension
+- Reviewed root-cause classification: Duplicated Policy Or Coordination
+- Reviewed refactor decision: `Refactor Needed Now`
+- Implementation matched the reviewed assessment: `Yes`. No handler calls `connection.send` for session messages any more. Exception: the Team handler's pre-session errors (`SESSION_ERROR`, `TEAM_NOT_FOUND` before an egress exists), which the design did not ask to change.
+- If challenged, routed as `Design Impact`: `N/A`
+- Evidence / notes: `grep connection.send` in the Org and collaboration handlers finds nothing.
+
+## Legacy / Compatibility Removal Check
+
+- Backward-compatibility mechanisms introduced: `None`. Single frames keep their one-sequence meaning; `change_sequence_through` exists only on batches.
+- Legacy old-behavior retained in scope: `No`
+- Dead code in the touched files and modules removed: `Yes`. `convertTeamEvent`, private `getTeamRun` and their now-unused imports (`SequencedRootEvent`, `TeamRunEvent`) in `agent-team-stream-handler.ts`. Grep confirmed no callers.
+- Dead code found elsewhere, listed as follow-up: `tests/integration/agent/agent-team-websocket.integration.test.js` targets a long-removed Team API (`target_member_route_key`, `AgentTeamStreamEvent`). Vitest excludes it (`include: tests/**/*.test.ts`). FU-A.
+- Shared structures remain tight: `Yes`. The batch frame has one representation per stream.
+- Canonical shared design guidance reapplied: `Yes`
+- Changed source files within size guardrails: `Yes`. The largest changed file is `teamExecutionViewState.ts` (479 non-empty lines, +15). No file delta is near 220.
+- Notes: none.
+
+## Persisted Data Transition Check
+
+- Approved decision: `Not Affected`. Streams and sequences are in memory.
+- Implementation follows it: `Yes`
+
+## Environment Or Dependency Notes
+
+- Contract packages were rebuilt with `pnpm -C <package> build`; the tracked `dist/` is committed with the source.
+- `pnpm -C autobyteus-web exec nuxt prepare` was run for the web specs and tsc.
+- Web `tsc --noEmit` has about 800 lines of errors on the base too (none of them from this change). Compared against base built with the new contracts: this change adds no errors and removes 7 that the new contract types would otherwise cause.
+
+## Local Implementation Checks Run
+
+All logs are in `evidence/`. Code under test: HEAD `e24ff6b333`. These are local implementation checks, not API/E2E sign-off.
+
+| Check | Command | Result |
+| --- | --- | --- |
+| Contract tests | `pnpm -C autobyteus-collaboration-stream-contracts test`, `pnpm -C autobyteus-team-stream-contracts test` (and `node --test` against the committed dist) | 33/33 and 19/19 (`impl-contracts-tests.log`) |
+| Server typecheck | `pnpm -C autobyteus-server-ts typecheck` | exit 0 (`impl-typecheck.log`) |
+| Scheduler and shape units | `vitest run tests/unit/services/agent-streaming/sequenced-*.test.ts` | 11/11 and 5/5 |
+| Streaming unit folder | `vitest run tests/unit/services/agent-streaming` | all green, including the Org/collaboration close and disconnect cases (20/20 in those 2 files) |
+| Per-socket cadence integration | `vitest run tests/integration/agent/chat-socket-content-cadence.integration.test.ts`, 3 runs | 18/18 on each run. Against the pre-change handlers, all 15 behavior cases fail |
+| Server unit (full) | `pnpm -C autobyteus-server-ts test:unit` | run 1: 5855 passed, 1 failed (see below); run 2: 5856 passed / 7 skipped (`impl-test-unit.log`, `impl-test-unit-rerun.log`) |
+| Server integration (full) | `test:integration:prepare` then `test:integration` | 77 files / 414 tests passed, 65 skipped (`impl-test-integration.log`) |
+| Web specs (full) | `pnpm -C autobyteus-web test:nuxt run` | 634 files / 4483 tests passed, 5 skipped (`impl-web-test-nuxt.log`) |
+| Web type check | `pnpm -C autobyteus-web exec tsc --noEmit -p tsconfig.json` | no new errors; the remaining about 800 lines also exist on base |
+
+**Unit run 1 failure, investigated (TESTING.md Rule 9):** `tests/unit/services/run-file-changes/run-file-change-service.test.ts` › "projects FILE_CHANGE events…" failed with `Timed out waiting for live projection status 'streaming'`. That is the test's own 2,000 ms wall-clock `waitForCondition` over temp-dir file projection.
+- Run 1 had very heavy load: 478 s of aggregate import time across workers.
+- Not caused by this change. The test's transitive import graph (`tsc --listFilesOnly`) contains none of the changed server modules, only the contract `.d.ts` types. File-change projection does not use the batch schemas.
+- The file passed 3/3 alone, 2/2 inside `tests/unit/services` + `tests/unit/agent-execution` (1,796 tests in parallel), and in the full rerun.
+- Cause: a fixed 2 s deadline on file-system polling under full-suite CPU contention. I made no test change, because I could not reproduce it to prove a fix. It is recorded as follow-up FU-C.
+
+## Frontend Rendered-Result Check
+
+`Not Applicable` for visual design: the change adds no UI and does not change any components. The client logic change (range acceptance, batch dispatch) is covered by context and streaming-service specs that assert the resulting conversation segment text. The rendered result on a real stream (smooth updates, correct final text, no reopen) is AC-007, which belongs to downstream validation on an isolated instance.
+
+## Downstream Coverage Hints / Suggested Scenarios
+
+- AC-007: an isolated instance per TESTING.md with a test data package. Run a Team, an Org and a standalone run that delegates (several tasks at once, for interleaving). Capture socket traces. Expect:
+  - window-spaced `SEGMENT_CONTENT_BATCH` / `agent_presentation_batch` frames;
+  - no client reopen or `*_CHANGE_SEQUENCE_GAP` warnings;
+  - correct final text;
+  - smooth screens.
+- UNK-001: in those traces, check that a running status between deltas is absorbed. Batches should cover many sequences, and only one standalone status per agent per window should appear.
+- Interval setting change mid-stream (AC-003), and a reconnect mid-stream (the snapshot base plus the next batch should start at base + 1).
+- Server-initiated close: stopping an Org or delegated root mid-answer should deliver the tail text before `ROOT_LIFECYCLE` inactive.
+
+## API / E2E / Executable Coverage Investigation And Execution Still Required
+
+- AC-007 real-app check and the live UNK-001 confirmation.
+- Independent API/E2E confirmation of AC-001..AC-006 and AC-009 as the API/E2E engineer sees fit.
+
+## Self-Review Notes
+
+- Rule order in `accept` matches DS-002. Content without a sequence is not batched; it falls to rule 5. No current producer sends it.
+- The timer is reset to null before its flush. A flush with no batch is a no-op. Dispose clears the pending batch, the timer and the baselines.
+- Batch items keep first-appearance order (`Map` insertion order). Each aggregate appends deltas in arrival order.
+- The web contexts check every item identity before dispatching any item. A rejected batch leaves the state unchanged and requires a reopen, as a gap does.
+
+## Follow-Ups (Out Of Scope)
+
+- FU-A: delete or rewrite the stale, excluded `tests/integration/agent/agent-team-websocket.integration.test.js`.
+- FU-C: `run-file-change-service.test.ts` uses a 2,000 ms wall-clock wait that timed out once under full-suite load (see Local Implementation Checks). Consider a load-tolerant wait or an event-driven assertion.
+- FU-B: the Team identity sections of both streaming docs ("Team Execution Identity", "Team Stream Contract", Team commands) still describe the removed `agent_execution` / `execution_address` shapes. Current Team messages use `agent_run_id` and `change_sequence`. Only the segment shapes next to the new batch frame were corrected here.

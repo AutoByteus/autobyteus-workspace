@@ -1,0 +1,23 @@
+# Case: DESK-01 setup — demo data through the instance's public GraphQL API
+# Command: node evidence/desk-setup.mjs --backend http://127.0.0.1:53151 --workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace
+# Commit: e24ff6b333; Env: ENV-3 (isolated instance iso-53150-351f); Date: 2026-10-18 13:35
+{
+ "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+ "agents": {
+  "alpha": "desk-alpha",
+  "beta": "desk-beta",
+  "pm": "desk-pm"
+ },
+ "team": "desk-team",
+ "org": "desk-org",
+ "teamRun": {
+  "success": true,
+  "message": "Agent team run created successfully.",
+  "teamRunId": "desk_team_eb3525844255472bb1698c8c7d3ddd9d"
+ },
+ "orgRun": {
+  "success": true,
+  "message": "Agent organization run created successfully.",
+  "agentOrgRunId": "desk_org_8233cbd221a447389df370233098e3af"
+ }
+}
