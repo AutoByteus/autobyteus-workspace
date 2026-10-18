@@ -132,4 +132,30 @@ Current delivery revision: `DR-002`. DR-001 was blocked at the integration refre
 
 ## Finalization Record
 
-(Filled in after finalization.)
+| Step | Result |
+| --- | --- |
+| Ticket archive | `git mv tickets/in-progress/delegated-copies-slow-open tickets/done/delegated-copies-slow-open`: 147 tracked files. Longest path 106 characters; no Windows-hostile names; no build output |
+| Pre-commit checks (ticket branch) | `check_repository_artifact_hygiene.py`: `Repository artifact hygiene check passed.` `check_licensing.py`: `Licensing is consistent.` |
+| Ticket branch commit | `8df0fef818` "docs(delivery): verify on the merged state and archive delegated-copies-slow-open (DR-002)", ticket paths only |
+| Ticket branch push | `origin/codex/delegated-copies-slow-open` → `8df0fef818` (new remote branch) |
+| Target refresh after verification | `origin/personal` re-fetched: still `2763e7c678`, the verified base. No re-integration needed |
+| Finalize branch | `finalize/delegated-copies-slow-open` from `origin/personal` |
+| Merge | `git merge --no-ff codex/delegated-copies-slow-open` → `616b3968d0`. The tree is identical to the verified ticket branch (`git diff --quiet` passes) |
+| Checks on the merged state | hygiene check passed; licensing consistent |
+| Push target | Fetched before the push: `origin/personal` = `616b3968d0^1` (`2763e7c678`), unchanged. `git push origin HEAD:personal`: `2763e7c678..616b3968d0` |
+| Repository finalization status | `Completed` |
+| Release / publication / deployment | `Not required` (No release, the `RELEASE.md` default). No tag; no pipelines triggered |
+| Worktree cleanup | `Completed`. No processes were using the worktree and only untracked build outputs remained (`*/dist/`, `.nuxt/`, build icons). Ran `git worktree remove --force` and `git worktree prune` |
+| Local branch cleanup | `Completed`. Both branches were contained in `origin/personal`. Deleted `codex/delegated-copies-slow-open` (`8df0fef818`) and `finalize/delegated-copies-slow-open` (`616b3968d0`) |
+| Remote branch cleanup | `Not required`. By repository practice, merged `codex/*` ticket branches stay on `origin` |
+| Delivery record commit | This report and `delivery-revision-record.md` were committed from a temporary sparse, detached worktree at `origin/personal` (`616b3968d0`), which was removed afterwards. The main checkout was not touched |
+
+## Final Status
+
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`origin/personal` @ `616b3968d0`, followed by this record commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, sent after this record commit (DR-002)

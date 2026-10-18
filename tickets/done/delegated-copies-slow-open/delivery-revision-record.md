@@ -58,7 +58,8 @@ The latest docs sync report, handoff summary and release/deployment report are a
   - checkpoint `d16d8a8103`;
   - delivery reruns: web collaboration specs 173/173; server ticket E2E plus standalone-root unit tests 45/45.
 - Verification and finalization state: `Sufficient` evidence. The per-AC table is in the report. Finalization details are in the report's Finalization Record.
-- Terminal return to `/solution_designer`: sent after the Finalization Record was complete (see the report)
+- Finalization: `origin/personal` `2763e7c678..616b3968d0` (`--no-ff` merge of `codex/delegated-copies-slow-open` @ `8df0fef818`; the tree is identical to the verified branch). No release. Worktree and local branches removed.
+- Terminal return to `/solution_designer`: `Sent`, after this record commit
 - Why this delivery revision was recorded: DR-001's blocker was resolved upstream, and delivery completed on the integrated state.
 - Next recipient/action: `/software_engineering_team/solution_designer` (terminal receipt)
 - Remaining blockers, rollback concerns, or untested scope:
