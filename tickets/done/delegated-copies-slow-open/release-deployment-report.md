@@ -197,3 +197,8 @@ Current delivery revision: `DR-003`, the beta release `v1.5.6-beta.6` the user r
 | Rollout | Desktop installs with **Settings > Updates > Receive beta updates** on are offered 1.5.6-beta.6. Launcher users on `--tag beta` get it with `autobyteus-docker upgrade --all --tag beta` |
 | Rollback | Never move or delete the tag. Revert the faulty merge on `personal` and cut `v1.5.6-beta.7`. Desktop updates never downgrade. Docker users pin `1.5.6-beta.5` |
 | Cleanup | The release worktree and the local `finalize/delegated-copies-slow-open` branch are removed after this record commit |
+
+## Field Observation (after DR-003)
+
+- 2026-10-18: the user ran the released `v1.5.6-beta.6` on their own install and data and reported: "its way faster now".
+- This is the real-data check that the synthesized fixture could not provide (API/E2E did not measure the user's own data, per TESTING.md Rule 2). It was not a required gate; verification from the evidence was already complete. It is recorded as supporting field evidence.

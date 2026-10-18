@@ -92,3 +92,5 @@ The latest docs sync report, handoff summary and release/deployment report are a
 - Remaining blockers, rollback concerns, or untested scope:
   - none blocking;
   - rollback is described in the report (never move the tag; fix forward with beta.7).
+
+- Field note (after DR-003, not a new round): the user ran `v1.5.6-beta.6` on their own data and reported "its way faster now". See the report's Field Observation.
