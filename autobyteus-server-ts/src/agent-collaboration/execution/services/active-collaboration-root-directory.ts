@@ -3,7 +3,6 @@ import type { TaskExecutionStopResult } from "../task/task-execution-resource-po
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import {
-  cloneCollaborationMemberExecutionIdentity,
   cloneRootExecutionIdentity,
   rootExecutionIdentityKey,
   sameRootExecutionIdentity,

@@ -26,8 +26,12 @@ export type HandStartedRun = Readonly<{
   ingressAgentRunId: string;
 }>;
 
-/** A run named by its own ID: the hand-started run, or the refusal for anything else. */
-export type HandStartedRunLookup = Readonly<{ found: true; run: HandStartedRun }> | Readonly<{ found: false; message: string }>;
+/**
+ * A run named by its own ID: the hand-started run; else a refusal about a run the user started (named with the
+ * wrong field, never started, an organization run), or `null` when it is no run the user started at all (the
+ * caller keeps today's "not one of your task agents" refusal).
+ */
+export type HandStartedRunLookup = Readonly<{ found: true; run: HandStartedRun }> | Readonly<{ found: false; refusal: string | null }>;
 
 /** The hand-off of a run from its own session (DEC-104): `busy` while a turn runs. */
 export type HandStartedRunRelease = "released" | "busy";
@@ -49,8 +53,6 @@ export interface HandStartedRuns {
 const BUSY: readonly string[] = ["running", "initializing"];
 const exists = (filePath: string): Promise<boolean> => fs.stat(filePath).then(() => true, () => false);
 
-const notStarted = (runId: string): string => `${runId} is not a run the user started on this node. `
-  + "Use the run id of an agent run or a team run from the user's history, or delegate to a new task agent with recipient_address.";
 
 type AgentRuns = Pick<import("../../../agent-execution/services/agent-run-manager.js").AgentRunManager, "getActiveRun" | "tryPrepareAgentRunTerminationIfQuiescent">;
 type TeamRuns = Pick<import("../../../agent-team-execution/services/agent-team-run-manager.js").AgentTeamRunManager,
@@ -139,8 +141,8 @@ export class ProcessHandStartedRuns implements HandStartedRuns {
   private async findAgent(agentRunId: string): Promise<HandStartedRunLookup> {
     const metadata = await new AgentRunMetadataStore(this.memoryDir).readMetadata(agentRunId);
     const row = metadata && await this.agentHistory.indexedRowOf(agentRunId);
-    if (!metadata || !row) return { found: false, message: await this.notAnAgentRun(agentRunId) };
-    if (!metadata.startedAt) return { found: false, message: `${agentRunId} was prepared but never started, so it has no conversation to continue. Delegate the Task to a new task agent with recipient_address.` };
+    if (!metadata || !row) return { found: false, refusal: await this.otherUserStartedRunOf(agentRunId) };
+    if (!metadata.startedAt) return { found: false, refusal: `${agentRunId} was prepared but never started, so it has no conversation to continue. Delegate the Task to a new task agent with recipient_address.` };
     const tree = await readRawTreeFile(getStandaloneRootTreePath(this.layout.getAgentRunCollaborationDirPath(agentRunId)));
     return { found: true, run: Object.freeze({
       execution: Object.freeze({ agentRunId }), kind: "agent", definitionId: metadata.agentDefinitionId,
@@ -158,16 +160,17 @@ export class ProcessHandStartedRuns implements HandStartedRuns {
     const tree = packages.isAdmitted(teamRunId) ? await new TeamRunExecutionTreeStore().read(dir, teamRunId) : null;
     const row = tree && await (await this.teamHistory()).indexedRowOf(teamRunId);
     if (!tree || !row) {
-      if (await exists(this.layout.getOrgDirPath(teamRunId))) return { found: false, message: `${teamRunId} is an organization run; organization runs can't be given a Task.` };
-      if (await exists(path.join(this.layout.getStandaloneRunDirPath(teamRunId), "run_metadata.json"))) {
-        return { found: false, message: `${teamRunId} is an agent run's id; use target_agent_run_id "${teamRunId}".` };
+      if (await exists(this.layout.getOrgDirPath(teamRunId))) return { found: false, refusal: `${teamRunId} is an organization run; organization runs can't be given a Task.` };
+      const agentRun = await new AgentRunMetadataStore(this.memoryDir).readMetadata(teamRunId);
+      if (agentRun && await this.agentHistory.indexedRowOf(teamRunId)) {
+        return { found: false, refusal: `${teamRunId} is an agent run's id; use target_agent_run_id "${teamRunId}".` };
       }
-      return { found: false, message: notStarted(teamRunId) };
+      return { found: false, refusal: null };
     }
     const raw = await readRawTreeFile(getTeamRunExecutionTreePath(dir));
     const rootTeam = raw?.rootTeam as Record<string, unknown> | undefined;
     const coordinator = tree.rootTeam.members.find((member) => member.address === tree.rootTeam.coordinatorAddress);
-    if (!coordinator || !("agentRunId" in coordinator)) return { found: false, message: `Team run '${teamRunId}' has no coordinator agent run.` };
+    if (!coordinator || !("agentRunId" in coordinator)) return { found: false, refusal: `Team run '${teamRunId}' has no coordinator agent run.` };
     return { found: true, run: Object.freeze({
       execution: Object.freeze({ teamRunId }), kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId,
       workspaces: tree.rootTeam.members.map((member) => ("launchConfiguration" in member ? member.launchConfiguration?.workspaceRootPath : null)
@@ -178,17 +181,21 @@ export class ProcessHandStartedRuns implements HandStartedRuns {
     }) };
   }
 
-  /** The refusal for an agent run id that is not a standalone run the user started: a team's member, or none. */
-  private async notAnAgentRun(agentRunId: string): Promise<string> {
+  /**
+   * An agent run id that is not a standalone run the user started, but names part of a team run the user started (an
+   * admitted team run: never a task agent team) or an organization run: the field to use. `null` otherwise.
+   */
+  private async otherUserStartedRunOf(agentRunId: string): Promise<string | null> {
+    const packages = new TeamRunPackageCatalog(this.memoryDir);
+    await packages.awaitReady();
+    if (packages.isAdmitted(agentRunId)) return `${agentRunId} is a team run's id; use target_team_run_id "${agentRunId}".`;
     const teams = await fs.readdir(path.join(this.memoryDir, "agent_teams"), { withFileTypes: true }).catch(() => []);
     for (const team of teams) {
-      if (team.isDirectory() && await exists(path.join(this.memoryDir, "agent_teams", team.name, agentRunId))) {
+      if (team.isDirectory() && packages.isAdmitted(team.name) && await exists(path.join(this.memoryDir, "agent_teams", team.name, agentRunId))) {
         return `${agentRunId} is a member of team run ${team.name}; to give that team a Task, use target_team_run_id "${team.name}".`;
       }
     }
-    if (await exists(this.layout.getTeamDirPath({ rootTeamRunId: agentRunId, ancestorTeamRunIds: [] }))) {
-      return `${agentRunId} is a team run's id; use target_team_run_id "${agentRunId}".`;
-    }
-    return notStarted(agentRunId);
+    if (await exists(this.layout.getOrgDirPath(agentRunId))) return `${agentRunId} is an organization run; organization runs can't be given a Task.`;
+    return null;
   }
 }

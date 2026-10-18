@@ -857,8 +857,8 @@ member's), without delegated runs of its own, not bound to an application, not
 archived, belonging to no Task, idle, and its definition must still be in the
 catalog: it is placed at the address the catalog offers that definition.
 
-**Path** (`HandStartedRunAdoption`, only in an Agent root; steps 1–4 on the
-root's queue):
+**Path** (`HandStartedRunAdoption`, only in an Agent root; step 1 with the
+eligibility checks, steps 2–4 on the root's queue):
 1. The Task side records the delegator's `assigned` entry, `starting`.
 2. The run is handed over from its own session (stopped while idle).
 3. Its own file gains the `taskAgent` section (a team's tree also moves from

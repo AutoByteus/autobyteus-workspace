@@ -27,13 +27,14 @@ leaves, and the Task is delivered as the next message of its own conversation. E
 so a stopped adoption is finished by the same delegator's retry; an unfinished adoption is undone when its Task is
 closed or deleted, or its Project deleted. Nothing is moved, copied or deleted.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: Local Fix for CRR-001 CR-001..CR-003; IR-001 initial baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-008`
 - Related architecture-review revision IDs: `ARCH-REV-004`
-- Related code-review / API-E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (DI-001 was raised before implementation and resolved in SR-008)
+- Related code-review revision IDs: `CRR-001` (Fail, Local Fix)
+- Related API/E2E / delivery revision IDs: `N/A`
+- Triggering finding IDs: `CR-001`, `CR-002`, `CR-003` (IR-002); DI-001 was raised before implementation and resolved in SR-008
 
 ## Routing Classification (Mandatory)
 
@@ -136,6 +137,26 @@ revert, service hooks), `ProjectService.deleteProject`, catalogs, own files, com
 - The worktree needed `pnpm install` and `pnpm prebuild` (autobyteus-ts build, Prisma client) before typecheck/tests.
 
 ## Local Implementation Checks Run
+
+IR-002 (after CRR-001):
+- CR-002: a run id that is no run the user started (unknown, another root's copy or task agent team member) keeps
+  today's `notACopyOfThisRun` refusal unchanged, also for a non-host delegator. The adoption refusals stay only for runs
+  the user started: never started; an agent run's id as `target_team_run_id`; a team run's id or a member of an admitted
+  (user-started) team run as `target_agent_run_id`; an organization run. `HandStartedRunLookup` not-found carries
+  `refusal: string | null` (`null` = today's refusal). Tests: root-level "keeps today's refusal …" (unknown agent id,
+  unknown team id, another root's task-team member: exact text) and "names the field to use for a member of a team run
+  the user started"; owner unit "a run unknown to this node" now expects today's text.
+- CR-002(c) e2e (clean env, `RUN_AGY_FAILURE_E2E=1`, scripted AGY CLI `tests/fixtures/agy-failure-cli.mjs`):
+  `collaboration-prompt-wording` 11/11, `task-existing-copy-assignment` 7 passed / 2 skipped, `task-reactivation-root-visibility`
+  6 passed / 1 skipped — 3 files passed, 24 passed / 3 skipped. Skips: two live-Claude cases (`RUN_CLAUDE_E2E` not set)
+  and EXC-E2E-006 (a permanent `it.skip`, unit-covered). Log: `evidence/implementation/IR-002-delegate-task-refusal-e2e.log`.
+- CR-001: removed the unused `cloneCollaborationMemberExecutionIdentity` import; `memoryDir` is now a plain constructor
+  argument in both history catalogs. `tsc --noUnusedLocals --noUnusedParameters` reports nothing in any touched file.
+- CR-003: `projects.md` says step 1 runs with the eligibility checks and steps 2–4 on the root's queue.
+- Build typecheck 0 errors; unit folders agent-collaboration, standalone-agent-run-root, run-history, projects,
+  agent-team-execution, agent-tools: 185 files / 1541 tests passed.
+
+IR-001:
 
 - `tsc -p tsconfig.build.json --noEmit`: 0 errors.
 - Test typecheck: no error in a changed or new test file; the remaining errors exist at base (e.g. the supervisor test's

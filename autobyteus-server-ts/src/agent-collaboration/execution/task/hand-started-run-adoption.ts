@@ -10,6 +10,7 @@ import { canonicalizeWorkspaceRootPath } from "../../../run-history/utils/worksp
 import { sameRootExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { TaskExecutionActivationCommitResult, TaskExecutionTarget } from "./root-task-execution-adapter.js";
 import { TaskDelegationError } from "./task-delegation-command.js";
+import { notACopyOfThisRun } from "./existing-copy-target.js";
 import { ProcessHandStartedRuns, type HandStartedRuns } from "./hand-started-runs.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
 import type { TaskExecutionResourcePort } from "./task-execution-resource-port.js";
@@ -59,12 +60,15 @@ export class HandStartedRunAdoption {
   async admit(request: AdoptionRequest, resources: TaskExecutionResourcePort): Promise<void> {
     const { delegator } = this.deps;
     if (request.delegatorAgentRunId !== delegator.root.rootRunId) {
-      throw refuse("Only a standalone agent run can give a Task to a run the user started.");
+      const named = await this.deps.runs.find(request.execution);
+      throw !named.found && !named.refusal ? notACopyOfThisRun(request.execution)
+        : refuse("Only a standalone agent run can give a Task to a run the user started.");
     }
     if (await this.isInProgress(request, resources)) return;
     const current = resources.currentAssignmentOf(request.execution);
     const found = await this.deps.runs.find(request.execution);
-    if (!found.found) throw refuse(found.message);
+    // A run that is no run the user started keeps today's refusal (unknown, or another root's copy).
+    if (!found.found) throw found.refusal ? refuse(found.refusal) : notACopyOfThisRun(request.execution);
     const run = found.run;
     const own = delegator.workspaceRootPath === null ? null : canonicalizeWorkspaceRootPath(delegator.workspaceRootPath);
     if (!own || run.workspaces.some((workspace) => workspace === null || canonicalizeWorkspaceRootPath(workspace) !== own)) {
@@ -97,7 +101,7 @@ export class HandStartedRunAdoption {
     }
     if (!named) {
       const found = await runs.find(request.execution);
-      if (!found.found) throw unfinished(found.message);
+      if (!found.found) throw unfinished(found.refusal ?? "it is no longer a run the user started");
       if (await runs.release(request.execution) === "busy") throw unfinished("it is in the middle of a turn; retry when it is idle");
       const address = await delegator.catalogAddressOf(found.run.kind, found.run.definitionId);
       if (!address) throw unfinished("its definition is no longer in the catalog");

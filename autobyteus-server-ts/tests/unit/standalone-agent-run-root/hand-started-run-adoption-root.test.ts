@@ -178,6 +178,28 @@ describe("delegate_task gives a saved Task to a run the user started (adoption)"
     expect(await fs.readFile(path.join(f.layout.getStandaloneRunDirPath("elsewhere-run"), "run_metadata.json"), "utf8")).toBe(before);
   });
 
+  it("keeps today's refusal for a run that is no run the user started: an unknown id, another root's task agent team member (CR-002)", async () => {
+    const f = await buildRoot();
+    const notMine = (id: string) => `${id} is not one of your task agents. Use a run id that delegate_task returned to you, `
+      + "or delegate to a new task agent with recipient_address.";
+    expect(await delegate(f, { agentRunId: "unknown-run" })).toEqual({ delegated: false, message: notMine("unknown-run") });
+    expect(await delegate(f, { teamRunId: "unknown-team" })).toEqual({ delegated: false, message: notMine("unknown-team") });
+    // A task agent team of another root: its folder exists, it is no team run the user started.
+    await fs.mkdir(path.join(f.memoryDir, "agent_teams", "other-root-team", "other-member"), { recursive: true });
+    expect(await delegate(f, { agentRunId: "other-member" })).toEqual({ delegated: false, message: notMine("other-member") });
+    expect(f.resources.adoptions).toEqual([]);
+  });
+
+  it("names the field to use for a member of a team run the user started", async () => {
+    const f = await buildRoot();
+    await writeHandStartedTeamRun(f, "team-run");
+    // A member that worked has its memory folder in the team's folder.
+    await fs.mkdir(path.join(f.layout.getTeamDirPath({ rootTeamRunId: "team-run", ancestorTeamRunIds: [] }), "team-run-designer"), { recursive: true });
+    expect(await delegate(f, { agentRunId: "team-run-designer" })).toEqual({ delegated: false,
+      message: 'team-run-designer is a member of team run team-run; to give that team a Task, use target_team_run_id "team-run".' });
+    expect(await delegate(f, { agentRunId: "team-run" })).toEqual({ delegated: false, message: 'team-run is a team run\'s id; use target_team_run_id "team-run".' });
+  });
+
   it("refuses a run that was prepared but never started (it has no conversation to continue)", async () => {
     const f = await buildRoot();
     await writeHandStartedAgentRun(f, "prepared-run");

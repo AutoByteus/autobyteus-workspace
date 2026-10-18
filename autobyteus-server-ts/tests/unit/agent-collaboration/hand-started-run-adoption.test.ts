@@ -45,7 +45,7 @@ class FakeRuns implements HandStartedRuns {
   async find(target: TaskExecutionReference) {
     const run = this.facts.get(this.key(target));
     // Like the process one: a run whose own file names a coordinating run is not one the user started (G1 / G2).
-    if (!run || await new TaskAgentOwnFiles(this.memory).coordinatingRunOf(target)) return { found: false as const, message: `${this.key(target)} is not a run the user started on this node.` };
+    if (!run || await new TaskAgentOwnFiles(this.memory).coordinatingRunOf(target)) return { found: false as const, refusal: null };
     return { found: true as const, run };
   }
   async isBusy() { return this.busy; }
@@ -122,7 +122,8 @@ describe("eligibility: each refusal is clear and changes nothing", () => {
     ["an archived run", (f) => f.runs.facts.set(AGENT.agentRunId, agentFacts({ archived: true })), "unarchive it first"],
     ["a definition no longer in the catalog", (f) => f.runs.facts.set(AGENT.agentRunId, agentFacts({ definitionId: "retired" })), "no longer in the catalog"],
     ["a run in the middle of a turn", (f) => { f.runs.busy = true; }, "try again when it is idle"],
-    ["a run unknown to this node", (f) => f.runs.facts.delete(AGENT.agentRunId), "is not a run the user started"],
+    // Not a run the user started (unknown, another root's copy): today's refusal, unchanged.
+    ["a run unknown to this node", (f) => f.runs.facts.delete(AGENT.agentRunId), "designer-run is not one of your task agents. Use a run id that delegate_task returned to you"],
   ];
   it.each(refusals)("refuses %s", async (label, arrange, message) => {
     const f = await fixture();

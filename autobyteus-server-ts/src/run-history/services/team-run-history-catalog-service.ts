@@ -50,7 +50,7 @@ export class TeamRunHistoryCatalogService {
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly removePackage: (teamDirPath: string) => Promise<void>;
 
-  constructor(private readonly memoryDir: string, dependencies: {
+  constructor(memoryDir: string, dependencies: {
     indexStore?: TeamRunHistoryIndexStore;
     executionTreeStore?: TeamRunExecutionTreeStore;
     teamRunManager?: TeamRunHistoryManager;

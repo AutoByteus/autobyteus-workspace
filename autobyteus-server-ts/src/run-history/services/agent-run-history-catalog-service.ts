@@ -60,7 +60,7 @@ export class AgentRunHistoryCatalogService {
   private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
 
   constructor(
-    private readonly memoryDir: string,
+    memoryDir: string,
     dependencies: {
       indexStore?: AgentRunHistoryIndexStore;
       metadataStore?: AgentRunMetadataStore;
