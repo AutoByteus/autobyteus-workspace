@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 4, after the SR-007 rework of FO-001). Round 3 was the failure-origin review (`CRR-003`, Design Impact). The round-2 implementation sections below are carried forward except where the Round 4 section notes a change.
+- Review Entry Point: `Implementation Review` (round 5: merge resolutions of the DR-001 latest-base integration, IR-004). Round 4 reviewed the SR-007 rework of FO-001. Round 3 was the failure-origin review (`CRR-003`, Design Impact). The round-2 implementation sections below are carried forward except where the Round 4 section notes a change.
 - Requirements Doc Reviewed As Context: `tickets/in-progress/project-task-semantic-search/requirements-doc.md` (SR-007: SR-004 + the Delta SR-007, approved by the user 2026-10-18: DEC-002 Granite default, DEC-011, QR-003/QR-004 re-based)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (consulted for catalog pins and runtime facts)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-006)
@@ -12,32 +12,38 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-003, Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-003
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-003)
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-004)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003, IR-004
 - Code Review Revision Record: `tickets/in-progress/project-task-semantic-search/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: 4
-- Review Scope: `Targeted Delta Review`. The delta `68441864d1..9f0df7eab3` (13 files) has three parts, all within the embedding layer FO-001 and O-1 implicated:
+- Current Code Review Revision ID: `CRR-006` (CRR-005 was the separate test review in `api-e2e-test-review-report.md`)
+- Current Review Round: 5
+- Review Scope (round 5): `Targeted Delta Review` of the merge `600d079b9c` (`origin/personal` @ `2b04a9971d` into the branch at `9f0df7eab3`).
+  - Comparing the ticket's delta against its base before (`55bff1f5ee..9f0df7eab3`) and after (`2b04a9971d..600d079b9c`): the same file set plus the base test `project-task-tools.test.ts`.
+  - Patch content is identical except in the five declared resolution files (tool contract, manifest, `project-service.ts`, `project-task-service.ts`, that test). The MCP docs merged to the base list plus `search_project_tasks`.
+  - No embedding-layer, web or packaging file changed in the merge.
+- Review Scope (round 4): `Targeted Delta Review`. The delta `68441864d1..9f0df7eab3` (13 files) has three parts, all within the embedding layer FO-001 and O-1 implicated:
   - catalog data: the default id, the order of the entries and LEAF-IR's calibration;
   - O-1: `prepareModel`'s initial phase and `EmbeddingModelFiles.hasAllFiles` plus the progress timing of `ensure`;
   - tests, fixture and docs.
 
   No data-flow spine, public boundary or shared data shape changed: `hasAllFiles` is internal to the layer, and `EmbeddingIndex`'s API and the readiness union are unchanged. Unaffected round-2 evidence is carried forward. Round 2 scope (also `Targeted Delta Review`):
 - Review Scope Evidence (round >1): the delta `b27dd7b284..722b9b3918` touches 4 files: `useProjectTaskSearch.ts` (CR-001), `ProjectsPanelTaskLocate.spec.ts` (CR-001 spec), `embedding-readiness.ts` (CR-002) and `embedding-worker.ts` (C-03, type-only). It stays within the prior findings' files and behavior; no spine, shared interface or data shape changed. Round-1 evidence for unaffected checks is carried forward.
-- Trigger: implementation engineer handoff for IR-003 (SR-007 rework of FO-001, plus the optional O-1). Round 3's trigger was API-REV-001 F-001; round 2's was the IR-002 local fix.
-- Prior Review Round Reviewed: round 3 (`CRR-003`, Fail — Design Impact)
-- Latest Authoritative Round: 4
+- Trigger (round 5): delivery Local Fix DR-001 → implementation engineer IR-004 (latest-base merge).
+- Trigger (round 4): implementation engineer handoff for IR-003 (SR-007 rework of FO-001, plus the optional O-1). Round 3's trigger was API-REV-001 F-001; round 2's was the IR-002 local fix.
+- Prior Review Round Reviewed: round 4 (`CRR-004`, Pass) and the test review `CRR-005` (Pass)
+- Latest Authoritative Round: 5
 - Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md` (testing guideline: the worktree `TESTING.md`)
 - Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md` (API-L04, F-001)
 - API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
 - Relevant API/E2E Revision IDs: API-REV-001
-- Delivery Revision Record / IDs: N/A
+- Delivery Revision Record / IDs: `delivery-revision-record.md` (DR-001, Blocked — Local Fix: integration conflicts); `release-deployment-report.md`
 - Failing Scenario IDs: API-L04 / F-001 (AC-004; AC-001 at 1,000-Task scale)
 - Exact Failing Commands / Execution Mode: the execution report's API-L04 row. `evidence/probes/API-PROBE-search-driver.mjs quality` on Backlog 1000 over the instance's GraphQL (ENV-2, packaged macOS arm64 app at `722b9b3918`), and `evidence/probes/API-PROBE-score-analysis.mjs` with the production `dist` runner, catalog and `selectRelevant` (ENV-4; generator seed 20261018)
 - Failure Evidence Paths: `evidence/quality/API-L04-01-backlog1000-leaf-ir.json.txt`, `API-L04-03-score-analysis-mdbr-leaf-ir.json.txt`, `API-L04-05-score-analysis-{granite-embedding-small-english-r2,embeddinggemma-2}.json.txt`, `API-L04-07-board-unrelated-b1000.png`
 - Source commit under validation (round 3): `722b9b3918`; evidence commits `8981a99256`, `68441864d1`
 - Code reviewed (round 4): `68441864d1..9f0df7eab3`; IR-003 handoff and evidence `2e9e358b5b`
+- Code reviewed (round 5): `9f0df7eab3..600d079b9c` (resolutions) and `2b04a9971d..600d079b9c` (ticket delta on the new base); IR-004 handoff and evidence `c823cf27a8`
 - Code reviewed (round 2 delta: `b27dd7b284..722b9b3918`; ticket docs `358b7f0123`): worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search`, branch `codex/project-task-semantic-search`, `55bff1f5ee..b27dd7b284` (feature `54e26d76ee`, licensing `d83ec5235a`); companion `/Users/normy/autobyteus_org/autobyteus-agents-project-task-semantic-search` `887e79d..344da76`.
 
 ## Routing Classification Review
@@ -47,6 +53,41 @@
 - Selected route: `Implementation Review` (rounds 1, 2 and 4); `API/E2E Failure-Origin Review` (round 3)
 - Independent source review required by the classification: `Yes`. The classification still holds; the failure does not change it
 - Classification evidence or correction required: None. The implementation matches the design's listed surfaces: a new subsystem, a persisted store, a download, a worker lifecycle, new contracts and packaging. None of the design's escalation triggers was hit. The new `TASK_SEARCH_QUERY_REQUIRED` error code is additive.
+
+## Implementation Review Round 5 (CRR-006): latest-base merge resolutions (DR-001, IR-004)
+
+### Behavior basis
+
+Unchanged: SR-007 / ARCH-REV-003. The base brought in two changes that touch this ticket's surfaces:
+
+- `create_or_update_project` and `effectiveProjectTaskToolName` were removed (`6ba0389741`, `4807095aed`);
+- Task-adoption reverts now run after Task and Project delete (`ef807beb6d`, autobyteus-11).
+
+Both are base-owned behavior. The ticket must keep REQ-005/006 (the tool) and REQ-007 (delete cleanup) on top of them, and it does.
+
+### Resolution checks
+
+| Area | Result | Evidence |
+| --- | --- | --- |
+| Tool contract | Pass | Seven tools: the base's six plus `search_project_tasks`. The parser dispatches on `name`; `parseSearchProjectTasksInput` is unchanged. No reference to `create_or_update_project` or `effectiveProjectTaskToolName` remains in `src`, `docs` or the companion `agents/` |
+| Manifest | Pass | The search branch now uses `name` (the base removed `tool`); its body is identical to the reviewed one |
+| Native tools | Pass | `SearchProjectTasksTool` is registered; `CreateOrUpdateProjectTool` is gone with the base |
+| `ProjectService.deleteProject` | Pass | Order: `projectRemoved`, then the synchronous best-effort `forgetProject` (never throws or waits; REQ-010/QR-006), then the base's awaited best-effort `afterDelete` adoption revert. Neither hook can block or fail the other. Imports: `project-service` → `projects/search` (value), `project-task-service` (base); `projects/search` imports no service, so there is no cycle |
+| `ProjectTaskService.deleteTask` and initializer | Pass | `forgetTask` and then the base's `revertUnfinishedAdoptionsOfDeleted`. The initializer `Pick` includes both `revertUnfinishedAdoption` and `searchCleanup`; the composition passes both. 492 effective lines (base 490) |
+| Base test `project-task-tools.test.ts` | Pass | It now expects seven tools on the contract, the MCP adapters and the native registry, and still proves `create_or_update_project` is unknown. The assertion is extended, not weakened |
+| MCP docs | Pass | The base's tool list plus `search_project_tasks`, with its contract line |
+| Checks | Pass (recorded) | IMP-08…IMP-12 on `600d079b9c`: typecheck, the server unit suite (737 files), the Projects E2E folder in a clean environment (6 files, including both search E2E tests and `project-task-boundaries`), web Projects tests (111 files), and the gated adoption-revert and change-feed E2E tests (11). These cover the merged code, so I did not rerun them |
+
+### Candidates (round 5)
+
+| Candidate ID | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| C-14 | `native-compaction-terminal-drain.test.ts` failed once in a batch run, then passed 10 reruns and the full suite | Not reviewed / note | Base compaction code untouched by this ticket and the merge. One unexplained intermittent failure is not enough evidence for a follow-up here; it is recorded in the IR-004 handoff |
+| C-04 (carried) | `project-task-service.ts` L52 still joins the `searchCleanup` JSDoc and field on one line; the file is now 492 lines, so normal formatting would fit | Note (non-blocking) | Readability only. Tracked with follow-up autobyteus-147 (the `ProjectTaskService` split); restoring normal formatting is optional |
+
+### Score update
+
+Round-4 scorecard stands: 9.4/10, every category ≥ 9.0. The resolutions are mechanical, preserve ownership and add no new mechanism.
 
 ## Implementation Review Round 4 (CRR-004): SR-007 rework
 
@@ -335,11 +376,13 @@ Non-blocking notes (no action required):
 
 ## Classification
 
+- Round 5: N/A — `Pass` (merge resolutions).
 - Round 4: N/A — `Pass`. FO-001 is resolved by SR-007 and IR-003.
 - Round 3: `Design Impact` (FO-001): the default model's relevance calibration (design G2) does not hold at the supported 1,000-Task scale, with a related requirement question on the scale AC-001/AC-004 must hold at. Earlier rounds: round 2 `Pass`; round 1 `Local Fix` for CR-001/CR-002, both resolved.
 
 ## Recommended Recipient
 
+- Round 5: `/software_engineering_team/api_e2e_engineer` (primary pass handoff: rerun on the merged state, as delivery expects); `/software_engineering_team/implementation_engineer` (informational)
 - Round 4: `/software_engineering_team/api_e2e_engineer` (primary pass handoff); `/software_engineering_team/implementation_engineer` (informational)
 - Round 3: `/software_engineering_team/solution_designer` (`Design Impact`, FO-001)
 - Routing note: after the design revision (and any user decision on DEC-002 or the AC scale), the work returns through implementation (catalog/rule change), source review and API/E2E (rerun API-L04 and API-R06).
@@ -355,14 +398,12 @@ Non-blocking notes (no action required):
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 4, targeted delta of the SR-007 rework)
+- Review Entry Point: `Implementation Review` (round 5, targeted delta of the DR-001 merge resolutions, IR-004)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10; every category ≥ 9.0 (unchanged from round 2)
-- Failure Origin: N/A (FO-001 resolved by SR-007 / IR-003)
+- Score Summary: 9.4/10; every category ≥ 9.0 (unchanged)
+- Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
 - Notes for API/E2E:
-  - rerun API-L04 (AC-001/AC-004 at 60 and 1,000 Tasks on the built app, Granite default; C-12) and API-R06;
-  - rerun the cost measurements API-L03b/c/d against the re-based QR-003/QR-004 (C-13);
-  - check the O-1 readiness after a restart.
-- Note for the next proportional test review: the implementation touched API-D01 (C-11).
+  - rerun on the merged state `600d079b9c`, with priority on the Project tool surface (seven tools; native and MCP) and the Task and Project delete paths, where the search cleanup and the base's adoption revert now run together;
+  - embedding, web and packaging code is unchanged since API-REV-002, so earlier quality and cost evidence carries over except where the base changes affect it.

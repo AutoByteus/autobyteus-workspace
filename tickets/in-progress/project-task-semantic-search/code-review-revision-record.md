@@ -11,6 +11,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 (API-REV-001, F-001) | Pass | Fail — Design Impact | FO-001 (from C-08) |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4, targeted delta (IR-003, SR-007 rework) | Fail — Design Impact | Pass | FO-001 (resolved) |
 | CRR-005 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 (API-REV-002 pass) | Pass (CRR-004) | Pass | none |
+| CRR-006 | `code-review-report.md` | Implementation Review, round 5, targeted delta (IR-004, DR-001 latest-base merge) | Pass (CRR-004/CRR-005) | Pass | none |
+| CRR-007 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 2 (API-REV-003 pass) | Pass (CRR-005 test review; CRR-006 source) | Not Applicable | none |
 
 ## Revision Entries
 
@@ -172,3 +174,57 @@ None (no prior test-review findings; C-11 from CRR-004 is closed by this review)
   - untested platforms (Windows, Linux and macOS x64; Docker amd64);
   - RSK-002;
   - O-2, O-3/FU-5.
+
+### CRR-006 — Targeted review of the DR-001 latest-base merge resolutions (IR-004)
+
+- Canonical review report updated: `code-review-report.md` (§ Implementation Review Round 5, meta, classification, latest result)
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` of merge `600d079b9c` (`origin/personal` @ `2b04a9971d`). Outside the five declared resolution files, the ticket's patch against the new base is identical to its patch against the old base.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (IR-004); delivery DR-001 (`delivery-revision-record.md`, `release-deployment-report.md`)
+- Relevant solution revision IDs: SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-004; test review CRR-005)
+- Current authoritative result: `Pass`, sent to API/E2E for the merged-state rerun
+- What changed in the review result and why:
+  - The tool contract, manifest and native registry are correctly rebased onto the base's six tools plus `search_project_tasks`.
+  - The delete hooks coexist with the base's adoption reverts. The search cleanup stays synchronous and never throws, and the base's revert keeps its own awaited best-effort handling.
+  - The base test was extended, not weakened.
+  - The implementer's recorded checks IMP-08…IMP-12 cover the merged code, so they were not rerun.
+- Supported product scenario / material-premise basis changes: none. C-14 (an intermittent failure in base compaction code) is noted; C-04 is carried as a note.
+
+#### Prior Finding Resolution
+
+None open. CR-001, CR-002 and FO-001 remain resolved; the merge touched none of their code.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none (9.4/10)
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: unchanged from CRR-005, plus C-14 (base flake, not this ticket's).
+
+### CRR-007 — Proportional test-code review after API-REV-003 (merged state)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (round 2)
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-003, Pass, 95%)
+- Relevant solution revision IDs: SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-005 test review); `Pass` (CRR-006 source review)
+- Current authoritative result: `Not Applicable`, sent to delivery
+- What changed in the review result and why: API/E2E round 3 changed no durable test (`600d079b9c..HEAD` outside `tickets/` is empty), and API-D01 is unchanged since its round-1 `Pass`. The merge's base-test change was reviewed in CRR-006.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: C-12, C-10, untested platforms, RSK-002, O-2, FU-5
