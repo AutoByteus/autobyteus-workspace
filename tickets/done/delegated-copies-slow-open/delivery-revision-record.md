@@ -8,6 +8,7 @@ The latest docs sync report, handoff summary and release/deployment report are a
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery package from code_reviewer (CRR-001 Pass, API-REV-001 Pass 95.0%, CRR-002 Pass) | N/A | Blocked: merge conflicts at the integration refresh (`Local Fix` → implementation_engineer) | `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-002 | Integrated package from code_reviewer (IR-002 merge `6507c08527`; CRR-003 Pass, API-REV-002 Pass 95.0%, CRR-004 Pass) | DR-001 Blocked | Verified from evidence; finalized into `origin/personal`, no release (see the report's Finalization Record) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
+| DR-003 | User request after finalization: "now release a new beta please" | DR-002 Delivery Completed (No release) | Beta `v1.5.6-beta.6` published: 4/4 workflows succeeded, 17/17 assets, Docker `:beta` moved | `release-deployment-report.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -67,3 +68,27 @@ The latest docs sync report, handoff summary and release/deployment report are a
   - accepted residuals CAND-003, R-004 and R-E;
   - the desktop shell was not rerun on the merged state (no shell code changed);
   - rollback is a revert of the merge on `personal`.
+
+### DR-003 — Beta release v1.5.6-beta.6
+
+- Delivery round and trigger: after DR-002's terminal return, the user asked for a new beta. The release decision changed from `No release` to `Beta`.
+- Triggering upstream report, verification, or evidence: the user's request. The verification is unchanged from DR-002 (evidence judged `Sufficient`); the product state released is `personal` @ `4de2956999`.
+- Prior authoritative result: DR-002 `Delivery Completed`, No release
+- Current authoritative result: `v1.5.6-beta.6` published as `Completed`.
+  - Release commit `538a2e58d7` on `personal`.
+  - Desktop, Android, iOS and Server Docker workflows all succeeded.
+  - The GitHub pre-release has 17/17 assets.
+  - Docker `:1.5.6-beta.6` = `:beta`; `:latest` is unchanged.
+- Docs sync report: unchanged (`docs-sync-report.md`)
+- Handoff summary: unchanged. The beta is recorded in the report.
+- Release/publication/deployment report: `release-deployment-report.md` (Release / Publication / Deployment, Beta Release Record)
+- Integration and post-integration verification:
+  - `personal` gained `agent-run-input-state-cleanup` (autobyteus-140, verified by its own delivery) after DR-002.
+  - The pre-tag licensing and hygiene checks passed on `4de2956999`.
+- Verification and finalization state: verification is unchanged; repository finalization is `Completed` (DR-002); the release is `Completed`.
+- Terminal return to `/solution_designer`: `Sent`, after this record commit
+- Why this delivery revision was recorded: the user's release decision added a publication step after finalization.
+- Next recipient/action: `/software_engineering_team/solution_designer` (updated terminal receipt)
+- Remaining blockers, rollback concerns, or untested scope:
+  - none blocking;
+  - rollback is described in the report (never move the tag; fix forward with beta.7).

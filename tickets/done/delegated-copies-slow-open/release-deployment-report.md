@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report — delegated-copies-slow-open
 
-Current delivery revision: `DR-002`. DR-001 was blocked at the integration refresh; that history is in `delivery-revision-record.md`.
+Current delivery revision: `DR-003`, the beta release `v1.5.6-beta.6` the user requested after finalization. DR-002 finalized with no release. DR-001 was blocked at the integration refresh. The history is in `delivery-revision-record.md`.
 
 ## Release / Publication / Deployment Scope
 
@@ -77,8 +77,9 @@ Current delivery revision: `DR-002`. DR-001 was blocked at the integration refre
 
 ## Release Decision
 
-- Decision: `No release`
-- Decided by: the `RELEASE.md` default ("No release … the default when the user does not ask for one"). No release was requested in the request or the handoffs. A beta or stable release remains available.
+- Decision: `Beta` (`v1.5.6-beta.6`). DR-002 was `No release`, the `RELEASE.md` default.
+- Decided by: the user, after finalization and the evidence summary: "now release a new beta please".
+- Scope note: the beta is cut from `personal` and contains every merge since `v1.5.6-beta.5`: `append-only-message-logs`, `chat-socket-content-cadence` (autobyteus-139), this ticket and `agent-run-input-state-cleanup` (autobyteus-140). Each of them was verified by its own delivery.
 
 ## Docs Sync Result
 
@@ -107,13 +108,35 @@ Current delivery revision: `DR-002`. DR-001 was blocked at the integration refre
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Release/publication/deployment result: `Not required` (release decision: No release)
-- Release notes handoff result: `Not required`
+- Applicable: `Yes` (DR-003)
+- Method: `Project Release Guide` (`RELEASE.md`, Cutting The Release, Beta)
+- Method reference / command:
+  - a fresh worktree `release-v1.5.6-beta.6` on `finalize/delegated-copies-slow-open` from `origin/personal` @ `4de2956999`;
+  - `python3 scripts/release_versions.py next-beta` → `1.5.6-beta.6`;
+  - pre-tag checks on that state: `check_licensing.py` → `Licensing is consistent.`; `check_repository_artifact_hygiene.py` → passed;
+  - `bash scripts/desktop-release.sh beta --branch finalize/delegated-copies-slow-open --no-push` → release commit `538a2e58d7` ("chore(release): bump workspace release version to 1.5.6-beta.6", `autobyteus-web/package.json` 1.5.6-beta.5 → 1.5.6-beta.6) and the annotated tag `v1.5.6-beta.6`;
+  - fetched again: `origin/personal` = `4de2956999`, unchanged, and the tag was not on the remote yet;
+  - `git push origin HEAD:personal` (`4de2956999..538a2e58d7`), then `git push origin v1.5.6-beta.6` (16:36:24Z).
+- Pipelines triggered and their results, each watched with `gh run watch --exit-status`:
+  - Desktop Release `39145768773`: success
+  - Android APK Release `39145768799`: success
+  - iOS App Store Connect Release `39145768807`: success
+  - Server Docker Release `39145768808`: success
+- Published artifacts checked against what the release should produce:
+  - `gh release view v1.5.6-beta.6` → `isPrerelease: true`, `isDraft: false`, **17 assets**, matching the guide's table:
+    - macOS arm64 and x64 `.dmg` + `.zip` with blockmaps (8);
+    - Linux x64 and arm64 AppImages (2);
+    - the Windows `.exe` (1);
+    - `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml` (4);
+    - the Android APK + `.sha256` (2).
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.6-beta.6` (updated 17:04:39Z) and `:beta` (17:11:58Z) have the same amd64/arm64 digests (`sha256:35ca06096c4b…`, `sha256:7b917e16d718…`). `:latest` is unchanged (2026-10-17), as a pre-release requires.
+  - TestFlight: the iOS workflow succeeded. App Store review and public release remain outside the repository.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` (pre-release tags use GitHub generated notes)
 
 ## Release Notes Summary
 
-- Release notes status: `Not required`. There is no release. The next stable release curates notes at that time; the user-facing summary is in `handoff-summary.md` (What Changed For Users).
+- Release notes status: `Not required`. Beta tags always use GitHub generated notes (`RELEASE.md`, Workflow Reference). The next stable release curates notes at that time; the user-facing summary is in `handoff-summary.md` (What Changed For Users).
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -154,8 +177,23 @@ Current delivery revision: `DR-002`. DR-001 was blocked at the integration refre
 
 - Verification complete (from the evidence): `Yes`
 - Repository finalization complete: `Yes` (`origin/personal` @ `616b3968d0`, followed by this record commit)
-- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (DR-003: `v1.5.6-beta.6` Completed, all 4 workflows succeeded, 17/17 assets)
 - Applicable safe cleanup complete or not required: `Yes`
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, sent after this record commit (DR-002)
+
+## Beta Release Record (DR-003)
+
+| Step | Result |
+| --- | --- |
+| Release decision | User: "now release a new beta please" |
+| Release state | `origin/personal` @ `4de2956999`. It contains this ticket's merge `616b3968d0` and record `b775e5380b` |
+| Release commit / tag | `538a2e58d7` / annotated `v1.5.6-beta.6` (tagger matches beta.4 and beta.5) |
+| Push | `personal` `4de2956999..538a2e58d7`; tag `v1.5.6-beta.6` |
+| Workflows | Desktop, Android, iOS, Server Docker: all `success` |
+| GitHub release | pre-release, 17/17 assets |
+| Docker | `:1.5.6-beta.6` = `:beta`; `:latest` unchanged |
+| Rollout | Desktop installs with **Settings > Updates > Receive beta updates** on are offered 1.5.6-beta.6. Launcher users on `--tag beta` get it with `autobyteus-docker upgrade --all --tag beta` |
+| Rollback | Never move or delete the tag. Revert the faulty merge on `personal` and cut `v1.5.6-beta.7`. Desktop updates never downgrade. Docker users pin `1.5.6-beta.5` |
+| Cleanup | The release worktree and the local `finalize/delegated-copies-slow-open` branch are removed after this record commit |
