@@ -26,7 +26,10 @@ export type StandaloneRootTreeFile = Readonly<{
 
 export type StandaloneRootTreeSnapshot = StandaloneRootTreeFile;
 
-/** `memory/agents/<hostRunId>/collaboration/communication_messages.json`. */
+/**
+ * The host's messages in memory. On disk they are the host's `MessageLog` in
+ * `memory/agents/<hostRunId>/collaboration/` (`communication_messages_*.jsonl`).
+ */
 export type StandaloneRootMessagesFile = Readonly<{
   schemaVersion: 1;
   subjectKind: "agent";
