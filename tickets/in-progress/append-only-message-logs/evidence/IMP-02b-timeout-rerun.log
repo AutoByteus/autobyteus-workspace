@@ -1,0 +1,8 @@
+# IMP-02b rerun alone of the unit test that timed out (5 s) in IMP-02 under machine load (load average ~147)
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts --no-watch
+# commit: 265ad100ce; date: 2026-10-18T11:40:48Z
+ ✓ tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts (1 test) 1580ms
+     ✓ keeps removed run-specific layout symbols out of source and tests  1578ms
+      Tests  1 passed (1)
+   Duration  3.32s (transform 51ms, setup 65ms, import 13ms, tests 1.58s, environment 0ms)
+13:40  up 10 days, 15:32, 8 users, load averages: 147.20 152.06 172.52

@@ -1,0 +1,6 @@
+# IMP-03b rerun of the integration test changed after IMP-03 (hook timeout raised: the server boot in beforeAll exceeded 10 s under machine load ~147)
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/integration/api/team-communication-api.integration.test.ts --no-watch --hookTimeout=120000
+# commit: 265ad100ce + this test change (committed after); env: Darwin 25.5.0, node v22.23.1; date: 2026-10-18T11:41:23Z
+ ✓ tests/integration/api/team-communication-api.integration.test.ts (3 tests) 12007ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
