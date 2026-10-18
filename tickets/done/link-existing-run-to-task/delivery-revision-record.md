@@ -56,3 +56,7 @@
 - RM-004: this folder returns to `tickets/done/` with `WITHDRAWN.md`; release-notes.md states the withdrawal.
 - Release decision: Beta, by the user (RM-005: "After the adoption logic are completely being removed, then we should publish a new beta").
 - Finalization and beta: recorded below.
+- **Blocked before finalization (Local Fix):**
+  - Verification passed on base `2b04a9971d` and the ticket branch was pushed (archive commit on `codex/withdraw-adoption`). While I was finalizing, `origin/personal` advanced to `528deff924` (project-task-semantic-search: 60 code files, including the server `package.json`). The push of my finalize merge was rejected (non-fast-forward); nothing reached `personal`, and the local finalize merge was discarded.
+  - Merging `528deff924` into the ticket branch conflicts in `autobyteus-server-ts/src/projects/services/project-service.ts` (2 hunks) and `project-task-service.ts` (2 hunks). Semantic search was built on the adoption code: its `deleteProject` / `deleteTask` call `afterProjectDeleted` / `revertUnfinishedAdoptionsOfDeleted`, and its process initializer passes `revertUnfinishedAdoptions`. Those are adoption hooks this withdrawal removes.
+  - The merge was aborted. Routed to `/software_engineering_team/implementation_engineer`: resolve by keeping the search cleanup (`searchCleanup.forgetProject` / `forgetTask`) and removing every adoption call semantic search added, then re-validate (rule 4: `package.json` changed, so a full rerun). Delivery resumes from integration; the beta (RM-005) follows.
