@@ -5,7 +5,7 @@
 - Verified by the user on 2026-10-18: "now finalize and release a new beta".
 - Decisions:
   1. **Accepted as done.**
-  2. **Release: beta.** It becomes `v1.5.6-beta.2`, because another ticket released `v1.5.6-beta.1` after the verification request.
+  2. **Release: beta.** It becomes `v1.5.6-beta.3`: other tickets released `v1.5.6-beta.1` and `v1.5.6-beta.2` while this one was being finalized.
   3. **OBS-001:** not answered, so no follow-up Task was created. It stays an open recommendation (see Residual Risks).
 
 ## State For User Verification
