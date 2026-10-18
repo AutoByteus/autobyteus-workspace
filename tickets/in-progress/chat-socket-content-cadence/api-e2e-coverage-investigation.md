@@ -17,9 +17,9 @@ Paths are relative to the ticket folder `/Users/normy/autobyteus_org/autobyteus-
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002`
 - API/E2E Test Progress Log: `api-e2e-test-progress.md`
-- Current Investigation Round: 1
+- Current Investigation Round: 2 (see Planned Cases › Round 2)
 - Trigger: Code Reviewer implementation-review Pass (CRR-001), Large/High
 - Prior Investigation Reviewed: None
 - Latest Authoritative Investigation: this file
@@ -165,9 +165,30 @@ None.
 | LIVE-TEAM | AC-007, AC-009, AC-002, REQ-002 (UNK-001), SCN-A3 | Built server + LM Studio, `/ws/agent-team` | Temporary Probe | `node evidence/live-sequenced-probe.mjs --server-dir autobyteus-server-ts --out evidence/live-team --scenario team` | Needs a local model; real timing is nondeterministic; the deterministic contract is in REPO-03 |
 | LIVE-ORG | AC-007, AC-003, AC-004, REQ-002, SCN-A4/A5 | `/ws/agent-org` | Temporary Probe | `… --scenario org --out evidence/live-org` | Same |
 | LIVE-COLLAB | AC-007, AC-009, REQ-002, SCN-A2/A5 | `/ws/agent-collaboration` | Temporary Probe | `… --scenario collab --out evidence/live-collab` | Same |
+| LIVE-ADOPT | AC-002, AC-009, AC-007 (server side) next to the base's adoption | `/ws/agent-collaboration` with an adopted run + a fresh copy | Temporary Probe | `… --scenario adopt --out evidence/LIVE-ADOPT` | Same as LIVE-* |
+| DESK-02 | AC-007 (renderer, round 2) | Fresh packaged build at `335f065cd1` | Journey | delegation (+ adoption when reachable) in the UI with the CDP recorder | Manual by design |
+| REPO-10 | AC-001..005, AC-009, AC-002 (clients) | spot-check at HEAD | Existing Test | cadence integration + web collaboration/Team specs | — |
 | DESK-01 | AC-007 (renderer: no reopen, final text, smooth screens) | Isolated instance of the worktree build | Journey | `pnpm --silent isolated-app start --build`; definitions via GraphQL; Team, Org and delegation driven in the UI; `evidence/cdp-sequenced-recorder.mjs` | The isolated-instance layer is manual by design |
 
 Progress while running: `api-e2e-test-progress.md`.
+
+### Round 2 (CRR-003 after IR-002, DR-001 merge) — rerun by impact
+
+- Validated commit (round 1): `e24ff6b333`. Code under test now: `335f065cd1`, on the merge `b3666d458f` of `origin/personal` `cf14704473` and the test-only `335f065cd1`.
+- `git diff --name-only e24ff6b333 335f065cd1`: 149 files outside `tickets/`. 132 are in `autobyteus-server-ts` (the base's hand-started run adoption, task-execution resources, runtime skill profiles, standalone root, project tasks), 16 in `autobyteus-web`, plus `TESTING.md` (temp HOME guidance).
+- Not touched: `websocket-egress/`, the 3 socket handlers, `RootEventPublisher`, both contract packages, `autobyteus-ts`, the lockfile, schema/migrations and build config (web `package.json` changed only its version). So no shared foundation changed (TESTING.md rerun rule 4). The changed `tests/fixtures/*` files belong to the base's own features and are not used by this ticket's cases.
+- Ticket areas changed: the web `agentRunCollaborationStreamingService.ts` and its spec (merge: base `onTaskExecutionStarted` next to this ticket's `change_sequence_through`); `TeamStreamingService.spec.ts` (test-only).
+
+| Case ID | Decision | Reason |
+| --- | --- | --- |
+| REPO-01..09 | Reused (IMP-01, IMP-02, IMP-03, IMP-04, IMP-05, IMP-06/07, IMP-08..10, IMP-12, IMP-13) | Ran at `b3666d458f`; between that and HEAD only the Team spec changed, which IMP-12 reran at `335f065cd1`. Evidence has headers and look-for lines (implementation handoff › Checks Run) |
+| REPO-10 (new) | Run | Own spot-check at HEAD: cadence integration + the merged web collaboration and Team specs |
+| LIVE-TEAM, LIVE-ORG | Still valid | They exercise egress, handlers, contracts, publisher and Team/Org roots, none changed by the base (Team/Org event production untouched) |
+| LIVE-COLLAB | Rerun | The standalone root (`standalone-agent-run-root.ts`, root task adapter) and the task-execution lifecycle that produce this socket's events changed |
+| LIVE-ADOPT (new) | Run | The base's adoption makes a hand-started run join the PM's root next to the batch path (`task_execution_started`, then its content as batches); the Code Reviewer asked for a focused check |
+| DESK-01 Team/Org parts | Still valid | Team/Org web contexts and services are unchanged (only a Team spec changed) |
+| DESK-02 (new) | Run | The merged web collaboration service on a fresh packaged build at HEAD: delegation (and adoption if reachable from the UI), with renderer recording |
+
 
 ## Post-Repository Confidence Scorecard (Mandatory)
 

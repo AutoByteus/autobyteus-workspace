@@ -54,8 +54,9 @@ const child = spawn(process.execPath, [path.join(serverDir, "dist", "app.js"), "
 child.stdout.on("data", (d) => { serverLog += d.toString(); });
 child.stderr.on("data", (d) => { serverLog += d.toString(); });
 let origin = null;
-const gql = async (query, variables = {}) => {
-  const res = await fetch(`${origin}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+const gql = async (query, variables = {}, timeoutMs = null) => {
+  const res = await fetch(`${origin}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }),
+    ...(timeoutMs ? { signal: AbortSignal.timeout(timeoutMs) } : {}) });
   const body = await res.json();
   if (body.errors?.length) throw new Error(`GraphQL: ${JSON.stringify(body.errors).slice(0, 800)}`);
   return body.data;
@@ -333,6 +334,92 @@ try {
         { h: pmId, m: addressOf(id), a: id })).agentRunCollaborationMemberProjection.conversation); }
       catch (e) { result.projections[id] = `ERROR ${e.message}`; }
     }
+  } else if (scenario === "adopt") {
+    // Round 2 (base feature next to the batch path): a run the user started by hand is adopted by the PM with a
+    // Project Task (delegate_task {target_agent_run_id, task_id}); in the same PM response a fresh copy is delegated
+    // (delegate_task {recipient_address}). Both then stream under the PM's root on /ws/agent-collaboration.
+    const workerName = "abt139 essay worker";
+    const worker = await agentDef(workerName, WRITER);
+    const pm = await agentDef("abt139 pm", "You coordinate work. When asked to call tools, call exactly the requested tools with the given arguments and nothing else.", ["list_available_agents"]);
+    const hand = (await gql(`mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}`, { i: { agentDefinitionId: worker, ...config } })).createAgentRun;
+    if (!hand.success) throw new Error(hand.message);
+    const handId = hand.runId;
+    await openSocket("HAND", `/ws/agent/${handId}`);
+    await waitFor(() => frames.HAND.some((f) => f.type === "AGENT_INPUT_STATE"), "hand snapshot", 20_000);
+    sockets.HAND.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { message_id: `p-${randomUUID()}`, dedupe_key: `agent_run_input:p:${randomUUID()}`,
+      context_file_paths: [], image_urls: [], content: PREFIX + "Hello, this is the start of my own work. Reply with one short sentence." } }));
+    await soft(() => waitFor(() => frames.HAND.some((f) => f.type === "TURN_COMPLETED"), "hand-started run answered", 300_000, 250));
+    mark("hand-started run answered", { handId });
+    try { sockets.HAND.close(); } catch { /* closing */ }
+    const projectId = (await gql(`mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}`, { i: { name: "abt139 adoption project" } })).createProject.projectId;
+    const taskDescription = topicA.replace(PREFIX, "");
+    const taskId = (await gql(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}`, { i: { projectId, description: taskDescription } })).createProjectTask.taskId;
+    const run = (await gql(`mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}`, { i: { agentDefinitionId: pm, ...config } })).createAgentRun;
+    if (!run.success) throw new Error(run.message);
+    const pmId = run.runId; Object.assign(result, { rootId: pmId, handId, projectId, taskId });
+    rootTerminate = () => gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}`, { id: pmId });
+    await openSocket("PM", `/ws/agent/${pmId}`);
+    const NO_COLLAB = process.argv.includes("--no-collab-socket");
+    if (!NO_COLLAB) { await openSocket("S1", `/ws/agent-collaboration/${pmId}`); await waitFor(() => frames.S1.some(isSnapshot), "S1 snapshot", 30_000); }
+    else { frames.S1 = []; }
+    const addr = "/abt139_essay_worker";
+    sockets.PM.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { message_id: `p-${randomUUID()}`, dedupe_key: `agent_run_input:p:${randomUUID()}`,
+      context_file_paths: [], image_urls: [], content: `Call delegate_task two times now, in this same response, with these exact arguments: ` +
+        `1) ${JSON.stringify({ target_agent_run_id: handId, task_id: taskId })} ` +
+        `2) ${JSON.stringify({ recipient_address: addr, description: topicB })}. Then reply with one short sentence.` } }));
+    mark("adoption + delegation requested");
+    if (NO_COLLAB) {
+      // Without the collaboration socket: wait until the PM's own turn is done and the two runs had time to work.
+      await soft(() => waitFor(() => frames.PM.some((f) => f.type === "TURN_COMPLETED"), "PM turn done", 300_000, 250));
+      await wait(Number(arg("--work-ms") ?? 60_000));
+    } else {
+    const started = () => frames.S1.filter((f) => f.type === "ROOT_EXECUTION_EVENT" && f.payload.event?.kind === "task_execution_started").map((f) => f.payload.event.execution);
+    await waitFor(() => started().length >= 2, "two task_execution_started", 400_000, 250);
+    mark("task executions started", { executions: started() });
+    const childIds = () => [...new Set(contentDeltas("S1").map((d) => d.agent).filter((a) => a !== pmId))];
+    await waitFor(() => childIds().includes(handId) && childIds().length >= 2, "adopted run and copy streaming", 400_000, 250);
+    const copyId = childIds().find((a) => a !== handId);
+    result.members = { adopted: handId, copy: copyId };
+    mark("adopted run and copy streaming", result.members);
+    await soft(() => waitFor(() => turnsCompleted("S1", handId) >= 1 && turnsCompleted("S1", copyId) >= 1, "both turns done", 400_000, 250));
+    mark("both turns done");
+    await wait(1_500);
+    const addressOf = (id) => { for (const f of frames.S1) { const e = f.payload?.event; if (e?.kind === "agent_presentation_batch") { const it = e.items.find((i) => i.agent_run_id === id); if (it) return it.member_address; } if (e?.agent_run_id === id && e.member_address) return e.member_address; } return null; };
+    result.projections = {};
+    for (const id of [handId, copyId]) {
+      try { result.projections[id] = JSON.stringify((await gql(`query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$m,agentRunId:$a){conversation}}`,
+        { h: pmId, m: addressOf(id), a: id })).agentRunCollaborationMemberProjection.conversation); }
+      catch (e) { result.projections[id] = `ERROR ${e.message}`; }
+    }
+    }
+    // Timed Stop of the PM root (the adoption round showed a terminate response that never returned).
+    const tStart = Date.now();
+    try { const r = await gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: pmId }, 60_000); mark("terminate returned", { ms: Date.now() - tStart, result: r.terminateAgentRun }); }
+    catch (e) { mark("terminate did not return", { ms: Date.now() - tStart, error: String(e?.message ?? e) }); }
+    rootTerminate = null;
+  } else if (scenario === "host-stop") {
+    // Round 2 diagnosis: Stop (terminateAgentRun) a standalone run while its own LLM turn streams, with or without a
+    // /ws/agent-collaboration subscriber, and time the GraphQL response.
+    const pm = await agentDef("abt139 pm", WRITER);
+    const run = (await gql(`mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}`, { i: { agentDefinitionId: pm, ...config } })).createAgentRun;
+    if (!run.success) throw new Error(run.message);
+    const pmId = run.runId; Object.assign(result, { rootId: pmId });
+    rootTerminate = () => gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}`, { id: pmId }, 60_000);
+    await openSocket("PM", `/ws/agent/${pmId}`);
+    await waitFor(() => frames.PM.some((f) => f.type === "AGENT_INPUT_STATE"), "pm snapshot", 20_000);
+    if (!process.argv.includes("--no-collab-socket")) { await openSocket("S1", `/ws/agent-collaboration/${pmId}`); await waitFor(() => frames.S1.some(isSnapshot), "S1 snapshot", 30_000); }
+    else frames.S1 = [];
+    sockets.PM.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { message_id: `p-${randomUUID()}`, dedupe_key: `agent_run_input:p:${randomUUID()}`,
+      context_file_paths: [], image_urls: [], content: topicA.replace("250", "600") } }));
+    await waitFor(() => frames.PM.some((f) => f.type === "SEGMENT_CONTENT"), "pm streaming", 300_000);
+    mark("pm streaming");
+    await wait(3_000);
+    const tStart = Date.now();
+    try { const r = await gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: pmId }, 60_000); mark("terminate returned", { ms: Date.now() - tStart, result: r.terminateAgentRun }); }
+    catch (e) { mark("terminate did not return", { ms: Date.now() - tStart, error: String(e?.message ?? e) }); }
+    await wait(2_000);
+    mark("pm socket after stop", { lastFrames: frames.PM.slice(-4).map((f) => f.type + (f.payload?.status ? ":" + f.payload.status : "")) });
+    rootTerminate = null;
   } else throw new Error(`unknown scenario ${scenario}`);
 } catch (e) {
   failure = String(e?.stack ?? e);

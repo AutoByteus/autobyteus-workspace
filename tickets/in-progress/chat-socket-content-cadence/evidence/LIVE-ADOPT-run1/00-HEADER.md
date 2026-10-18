@@ -1,0 +1,8 @@
+# LIVE-ADOPT — evidence header (runs 1 and 2)
+
+- Case: LIVE-ADOPT (round 2, new): the base's hand-started run adoption next to the batch path on `/ws/agent-collaboration`
+- Command (from the worktree root): `node tickets/…/evidence/live-sequenced-probe.mjs --server-dir autobyteus-server-ts --out tickets/…/evidence/LIVE-ADOPT[-run2] --scenario adopt --prompt-prefix "/no_think "` (run 1's folder renamed to LIVE-ADOPT-run1; run 2 adds a timed Stop)
+- Commit: `335f065cd1` (dist from IMP-06 at `b3666d458f`, same server code); Env: ENV-2; Date: 2026-10-18 ~14:35–14:49
+- Steps: the user hand-starts a worker run (`createAgentRun`, one turn on `/ws/agent/<worker>`). A Project and Task are created via GraphQL (`createProject`, `createProjectTask`). A PM run is created; S1 = `/ws/agent-collaboration/<pm>`. The PM is asked, in one response, to call `delegate_task {target_agent_run_id: <worker>, task_id}` (adoption) and `delegate_task {recipient_address: "/abt139_essay_worker", description}` (fresh copy). Both runs stream the Task / description under the PM's root. Then `agentRunCollaborationMemberProjection` per run, then the PM is stopped.
+- Files: `frames-S1.jsonl`, `frames-PM.jsonl`, `frames-HAND.jsonl`, `summary.json`, `batches-S1.json`, `projections.json`, `final-text-check.txt`, `unk001-status-windows-S1.txt`, `server.log`, `probe-output.log`
+- Run 1's Stop: the PM had just started a new turn (child reports) and the GraphQL `terminateAgentRun` response never returned (`"failure": "terminate: TypeError: fetch failed"` after the ~300 s client headers timeout). Children and the root stopped at once (ROOT_LIFECYCLE inactive at 124.8 s). Diagnosed in DIAG-STOP.

@@ -4,11 +4,11 @@
 // per segment in arrival order) with the server's persisted projection (projections.json, written by
 // live-sequenced-probe.mjs): every reasoning/text entry of the projection, in order, must equal the
 // corresponding streamed segment exactly (whitespace-trimmed). A lost tail, an extra delta or a reorder fails.
-// Usage: node check-final-text.mjs <probe output folder> [socket name, default S1]
+// Usage: node check-final-text.mjs <probe output folder> [socket name, default S1] [--align-tail]
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-const dir = process.argv[2]; const socket = process.argv[3] ?? "S1";
+const dir = process.argv[2]; const socket = process.argv[3] && !process.argv[3].startsWith("--") ? process.argv[3] : "S1";
 const frames = readFileSync(path.join(dir, `frames-${socket}.jsonl`), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 const projections = JSON.parse(readFileSync(path.join(dir, "projections.json"), "utf8"));
 const segments = new Map(); // agent -> [{segment, type, text}]
@@ -34,9 +34,14 @@ for (const [agent, raw] of Object.entries(projections)) {
   const entries = JSON.parse(raw).filter((e) => e.kind === "reasoning" || (e.kind === "message" && e.role === "assistant") || e.kind === "text");
   const streamed = (segments.get(agent) ?? []).filter((s) => s.type === "reasoning" || s.type === "text");
   const rows = [];
-  const n = Math.max(entries.length, streamed.length);
+  // An adopted run's projection also holds its conversation from before it joined this root (never on this
+  // socket): compare the streamed segments with the projection's last entries and report the earlier ones.
+  const tailAlign = process.argv.includes("--align-tail");
+  const offset = tailAlign ? Math.max(0, entries.length - streamed.length) : 0;
+  if (offset) rows.push(`  (skipped ${offset} earlier projection entries from before this socket: ${entries.slice(0, offset).map((e) => e.kind + (e.role ? "/" + e.role : "")).join(", ")})`);
+  const n = Math.max(entries.length - offset, streamed.length);
   for (let k = 0; k < n; k++) {
-    const p = entries[k]; const s = streamed[k];
+    const p = entries[k + offset]; const s = streamed[k];
     const pt = (p?.content ?? "").trim(); const st = (s?.text ?? "").trim();
     const equal = pt === st; // both empty: an assistant entry with no text yet (e.g. stopped during reasoning)
     if (!equal) allEqual = false;
