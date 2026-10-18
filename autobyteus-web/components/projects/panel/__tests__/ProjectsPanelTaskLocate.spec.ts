@@ -14,6 +14,7 @@ import { TASK_LOCATE_EXPIRY_MS, useTaskLocatorStore } from '~/stores/taskLocator
 import { useProjectsPanelStore } from '~/stores/projectsPanelStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { Project, ProjectTask, ProjectTaskStatus, TaskWithoutProject, TaskWorkerTask } from '~/types/project'
+import { afterSearchDebounce, createProjectTaskSearchServer } from '~/test-support/projectTaskSearchServer'
 
 const project = (projectId: string, updatedAt: string): Project => ({ projectId, name: projectId, description: '', createdAt: updatedAt, updatedAt,
   workspaces: [], openTaskCount: 1, taskCount: 1 })
@@ -58,7 +59,10 @@ describe('Projects tab: locating a Task (delegated-copy-task-locator DS-002)', (
   beforeEach(() => {
     setActivePinia(createPinia()); window.localStorage.clear(); vi.clearAllMocks(); deferred.clear()
     server = {}
-    io.query.mockImplementation(({ variables }: { variables: { projectId?: string } }) => {
+    const searchServer = createProjectTaskSearchServer((projectId) => (server[projectId] ?? []) as ProjectTask[])
+    io.query.mockImplementation((options: { variables: { projectId?: string; query?: string } }) => {
+      if (searchServer.isSearch(options)) return searchServer.respond(options as { variables: { projectId: string; query: string } })
+      const { variables } = options
       const id = variables.projectId ?? TEMP_TASKS_LIST_ID
       if (!deferred.has(id)) return Promise.resolve(answer(id))
       return new Promise((resolve) => deferred.set(id, () => resolve(answer(id))))
@@ -118,6 +122,7 @@ describe('Projects tab: locating a Task (delegated-copy-task-locator DS-002)', (
     const search = wrapper.get('[data-testid="project-tasks-search-input"]')
 
     await search.setValue('release')
+    await afterSearchDebounce()
     locate(target(server.p1![0] as ProjectTask))
     await settle()
     expect((search.element as HTMLInputElement).value).toBe('release')

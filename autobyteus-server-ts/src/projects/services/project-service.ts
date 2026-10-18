@@ -20,6 +20,7 @@ import { isTerminalTaskStatus } from "../domain/task-status.js";
 import { taskKeyPrefixOf, uniqueTaskKeyPrefix } from "../domain/task-keys.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
+import { processProjectTaskSearchCleanup, type ProjectTaskSearchCleanup } from "../search/project-task-search-service.js";
 
 type WorkspaceRegistrationLookup = Pick<WorkspaceManager, "listRegisteredWorkspaceRootPaths">;
 type ProjectPersistence = Pick<ProjectStore, "listProjects" | "readProject" | "listTasks" | "createProject" | "updateProject" | "deleteProject">;
@@ -28,6 +29,8 @@ type ProjectServiceDependencies = {
   store?: ProjectPersistence;
   /** Told after each committed Project write (the `/ws/projects` feed); defaults to the process publisher. */
   changes?: Pick<ProjectChangeMarks, "projectChanged" | "projectRemoved">;
+  /** Search index cleanup after a committed delete (never throws or waits); defaults to the process search service. */
+  searchCleanup?: Pick<ProjectTaskSearchCleanup, "forgetProject">;
   workspaceLookup?: WorkspaceRegistrationLookup;
   now?: () => Date;
   createId?: () => string;
@@ -184,7 +187,10 @@ export class ProjectService {
    */
   async deleteProject(projectId: string): Promise<boolean> {
     const deleted = await this.store.deleteProject(projectId);
-    if (deleted) this.changes.projectRemoved(projectId);
+    if (deleted) {
+      this.changes.projectRemoved(projectId);
+      (this.deps.searchCleanup ?? processProjectTaskSearchCleanup).forgetProject(projectId);
+    }
     return deleted;
   }
 

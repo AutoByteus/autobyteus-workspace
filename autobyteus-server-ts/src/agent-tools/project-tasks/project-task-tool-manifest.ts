@@ -1,5 +1,7 @@
 import { getProjectService } from "../../projects/services/project-service.js";
 import { getProjectTaskService } from "../../projects/services/project-task-service.js";
+import { getProjectTaskSearchService } from "../../projects/search/project-task-search-service.js";
+import type { EmbeddingReadiness } from "../../embeddings/embedding-index.js";
 import type { Project, ProjectTaskStatus, ProjectTaskView, ProjectWorkspaceInput, TaskAcknowledgementView } from "../../projects/domain/models.js";
 import type { TaskAssignmentView } from "../../projects/domain/task-execution-resources.js";
 import type { TaskAssignmentViews } from "../../projects/services/task-execution-resource-service.js";
@@ -40,6 +42,25 @@ const taskBusinessRead = ({ projectId, taskKey, description, status, dependsOnTa
   ...(assignments === "unavailable" ? { assignmentsUnavailable: true as const }
     : { assignments: assignments?.open ?? [], closedAssignments: assignments?.closed ?? [] }),
 });
+
+/** An agent waits up to this long for meaning search on first use, so "no such Task" is not concluded too early. */
+const SEARCH_READY_WAIT_MS = 30_000;
+const SUMMARY_MAX_CHARS = 160;
+/** The description's first line, at most 160 characters. */
+const summaryOf = (description: string): string => {
+  const line = description.trim().split("\n", 1)[0]!.trim();
+  return line.length > SUMMARY_MAX_CHARS ? `${line.slice(0, SUMMARY_MAX_CHARS - 1)}…` : line;
+};
+/** Whether meaning search was used; when not (fully), why, and what the results are. */
+const meaningSearchNote = (readiness: EmbeddingReadiness) => {
+  if (readiness.state === "ready") return { state: "ready" as const };
+  if (readiness.state === "unavailable") {
+    return { state: "unavailable" as const, note: `Meaning search is unavailable (${readiness.reason}); results are exact text matches only.` };
+  }
+  return { state: "preparing" as const, note: readiness.phase === "indexing"
+    ? `Meaning search is still preparing (${readiness.done} of ${readiness.total} Tasks indexed); Tasks not indexed yet are found by exact text only.`
+    : `Meaning search is still preparing (${readiness.phase === "downloading" ? "downloading" : "loading"} the search model); results are exact text matches only.` };
+};
 
 class ProjectMutationUnconfirmed extends Error {
   constructor(subject: "Project" | "Task", cause: unknown) {
@@ -86,6 +107,13 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
     const tasks = Object.hasOwn(input, "status") ? all.filter(task => task.status === input.status as ProjectTaskStatus) : all;
     const assignments = await getProjectTaskService().assignments(tasks.map(task => task.taskId));
     return { projectId, tasks: tasks.map(task => taskBusinessRead(task, all, assignments.get(task.taskId))) };
+  }
+  if (tool === "search_project_tasks") {
+    const projectId = input.project_id as string;
+    const result = await getProjectTaskSearchService().search(projectId, input.query as string,
+      { limit: (input.limit as number | undefined) ?? 10, waitForReadyMs: SEARCH_READY_WAIT_MS });
+    return { projectId, tasks: result.matches.map(({ task, match }) => ({ taskId: task.taskKey, status: task.status, summary: summaryOf(task.description), match })),
+      meaningSearch: meaningSearchNote(result.meaningSearch) };
   }
   // The service may fail while producing its view AFTER the write. Neither a
   // fabricated acknowledgement nor a rollback claim is safe without its result.

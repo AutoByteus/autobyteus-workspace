@@ -109,7 +109,8 @@ context; workspace registrations/roots and unrelated run data remain untouched.
 The Tasks tab has search, **Refresh** and New task, then fixed To Do / In Progress /
 Done containers. Each has a continuous semantic list of anchor rows, a description
 summary and matching count; there are no floating cards. Ordering is server
-updatedAt descending then taskId. Empty lanes and whole-board no-match states
+updatedAt descending then taskId; while searching, each lane lists its matches
+best-first instead. Empty lanes and whole-board no-match states
 have explicit text/Clear search; status labels are not mutation controls.
 
 Cancelled Tasks stay out of those three lanes and are hidden by default. When the
@@ -188,12 +189,37 @@ Temp tasks have no key and no dependencies.
   dependency ID that names no current Task is never shown or counted; deleting
   a Task also removes it from its dependents on the server.
 - Dependencies only inform: nothing in the app stops starting, delegating or
-  finishing a blocked Task. Board search still matches descriptions only.
+  finishing a blocked Task. Board search matches descriptions only.
 
-Search is a case-insensitive description substring across all statuses, transient
-per Project. Cancel/back/detail preserves it; successful creation clears it before
-returning to the full board. Refresh never clears search or navigates. Lane counts
-are filtered; Project all/open totals derive from the complete unfiltered snapshot.
+Search finds a Project's Tasks by meaning as well as by the words the user
+remembers (project-task-semantic-search). The placeholder invites a sentence
+("Describe the task you're looking for"). `useProjectTaskSearch` sends the query
+to the server (`searchProjectTasks`) about 250 ms after typing stops; the server
+decides the matches, and the board no longer filters on its own. Matches are
+every Task whose description contains the text (case-insensitive, the earlier
+rule), ranked first, then the Tasks closest in meaning (none when nothing is
+clearly relevant). Each lane lists its matches best-first; clearing the search
+restores the normal order. The latest request wins: an answer for an earlier
+query or Project is dropped, and the previous answer stays shown until the new
+one arrives. A Task added, edited or removed (live feed or Refresh) searches
+again. The server ranks over all of the Project's Tasks, Cancelled ones
+included; the board shows the matches in the lanes on show, so toggling
+Cancelled never searches again.
+
+One quiet status line under the toolbar appears only while meaning search is
+not ready: "Preparing meaning search… N of M Tasks" (or the model download in
+MB) while the server prepares it, during which exact matches show and the board
+asks again every 2 s until it is ready; or "Meaning search is unavailable:
+<reason>. Exact matches still work." with **Retry**, which asks the server to
+try the model again (`retryEmbeddingModel`) and searches again. After a Task
+edit the line may show for one 2 s interval while that Task is indexed again. A
+failed search request shows "Search failed: <reason>" with Retry. Temp tasks
+keep their own description-substring search.
+
+Search text is transient per Project. Cancel/back/detail preserves it; successful
+creation clears it before returning to the full board. Refresh never clears search
+or navigates. Lane counts are filtered; Project all/open totals derive from the
+complete unfiltered snapshot.
 
 Refresh always starts a new physical `projectTasks` query on the captured node
 client (`network-only`, queryDeduplication:false), not a cache read or reuse of an
@@ -343,9 +369,9 @@ the Projects tab does (`isFeatureAvailableInRuntime('projects')`).
   mounted and reveals the Projects tab like the strip does (docked, reopening a
   hidden panel, or the drawer; a start surface opens its tools first).
   `ProjectsPanel` leaves an open Task for the board. The compact board for that
-  scope waits until no read of its list is in flight, then makes the Task
-  visible: shows the Cancelled lane for a Cancelled Task, clears a search that
-  hides it, and on Temp tasks shows all Done when needed. The `select` card
+  scope waits until no read of its list and no search is in flight, then makes the Task
+  visible: shows the Cancelled lane for a Cancelled Task, clears a search whose
+  settled results do not include it, and on Temp tasks shows all Done when needed. The `select` card
   then scrolls to the centre (instant under reduced motion), takes focus (Enter
   opens the Task) and completes the request, which highlights only that card
   for 2.4 s with the `task-live` styling. A newer request replaces the previous

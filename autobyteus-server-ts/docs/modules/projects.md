@@ -40,7 +40,7 @@ the Project tools can manage Projects through the existing Chat or `@`, for
 example the agent repository's **Project Task Manager** (`project-task-manager`,
 with its `project-task-management` skill) when that repository is configured as
 an agent package root. A managing Agent typically selects the Project/Task
-tools (`list_projects`, `list_project_tasks`, `create_project`,
+tools (`list_projects`, `list_project_tasks`, `search_project_tasks`, `create_project`,
 `update_project`, `create_task`, `update_task`) plus `list_available_agents`, `delegate_task` and `send_message_to`. It
 is not a Project-page panel or a scheduler. This feature does not guarantee
 worker completion reports, automatic DONE, scheduling, or a worker self-update
@@ -70,6 +70,8 @@ it (see [Project And Task Agent Tools](#project-and-task-agent-tools)).
   (the live change feed; see [Live Change Feed](#live-change-feed-and-task-roots))
 - `src/projects/runtime/task-execution-resource-release.ts` (DONE's stop request)
 - `src/projects/context/project-task-context-store.ts`
+- `src/projects/search/project-task-search-service.ts`: Project Task search (see
+  [Project Task Search](#project-task-search)) over the [embedding layer](./embeddings.md)
 - `src/compositions/project-task-execution-resource-composition.ts`: the **single**
   place where Projects and the collaboration runtime are bound
 - `src/agent-collaboration/execution/task/`: the root-neutral dispatch, fence
@@ -77,7 +79,7 @@ it (see [Project And Task Agent Tools](#project-and-task-agent-tools)).
 - `src/app-data-migrations/migrations/projects-per-folder-v1/`
 - `src/agent-tools/project-tasks/` (shared contract, manifest, native tools)
 - `src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.ts`
-- `src/api/graphql/types/{projects,project-tasks}.ts`
+- `src/api/graphql/types/{projects,project-tasks,project-task-search}.ts`
 - `src/api/rest/project-task-context-files.ts`
 - `src/api/websocket/projects.ts` (`/ws/projects`)
 
@@ -244,7 +246,9 @@ locking owner is introduced.
   Task's `task.json` and `context/`, and keeps every `agent_run_resources.json`.
 
 Keeping these files preserves closure and history (a deleted Task's work cannot be reactivated). Delete adds no stop
-and no guard: still-open work continues under the normal runtime lifecycle. New
+and no guard: still-open work continues under the normal runtime lifecycle. After the commit, both deletes tell
+Project Task search to forget the Task's (or the whole Project's) search-index entries. That call never fails the
+delete and never waits for indexing. New
 Tasks get fresh UUIDs, so they never reuse a deleted Task's ID.
 
 ## One-Time Migration And The Projects Gate
@@ -449,6 +453,7 @@ is selected per agent definition; none is added automatically.
 | --- | --- | --- |
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}` |
+| `search_project_tasks` | Required `project_id` and `query` (a sentence or a few words); optional `limit` 1–30 (default 10). Searches by meaning and by exact text (see [Project Task Search](#project-task-search)) | `{projectId, tasks: [{taskId, status, summary, match}], meaningSearch: {state, note?}}` |
 | `create_project` | `{name, description?, workspaces?}` (no `project_id`); creates a Project | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
 | `update_project` | `{project_id, name?, description?, workspaces?}`; patches a known Project, at least one change | `{project: {...}}` (same shape) |
 | `create_or_update_project` (**deprecated**) | Kept unchanged for the transition: without `project_id` it runs as `create_project`, with `project_id` as `update_project` (same parsers, results and errors). Select `create_project` and/or `update_project` instead; it will be removed in a later release | `{project: {...}}` (same shape) |
@@ -590,6 +595,28 @@ Errors:
   proof of rollback.
 
 See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and access.
+
+### Project Task Search
+
+`search_project_tasks` and the board search (GraphQL `searchProjectTasks`) share `ProjectTaskSearchService`. It reads
+the Project's current Tasks from `ProjectTaskService` on every search, so deleted Tasks never appear and statuses are
+current, and returns matches best-first in two tiers:
+
+1. **Exact:** every Task whose description contains the trimmed query, case-insensitively (the board's earlier rule).
+   They are ordered by meaning score when meaning search is ready, then latest update first.
+2. **Meaning:** the Tasks the [embedding layer](./embeddings.md) finds nearly as relevant as the best one (at most 20,
+   and none when even the best one is not clearly relevant), over all of the Project's Tasks, Cancelled ones included.
+
+Only the description is indexed (open Tasks first, then the most recently updated). The first search of a Project, or
+the first after a model change, indexes its Tasks in the background; meanwhile, and whenever meaning search is
+unavailable, the exact tier still answers. An edited Task is found by its new text at once by exact match and by
+meaning when it is indexed again (a second or two for the default model); it is never matched by its old text.
+
+The tool returns at most `limit` Tasks: `taskId` is the Task's key, `status` its current status, `summary` the
+description's first line (at most 160 characters) and `match` `exact` or `meaning`. On first use it waits up to 30 s for
+meaning search to be ready. `meaningSearch` is `{state: "ready"}`, or `preparing`/`unavailable` with a `note` saying
+why and which results are exact text matches only. A blank `query`, unknown arguments and a `limit` outside 1–30 fail
+with `PROJECT_TOOL_ARGUMENT_INVALID`; an unknown Project fails with `PROJECT_NOT_FOUND`.
 
 ## Saved-ID Delegation And Agent Run Resources
 
@@ -1046,6 +1073,12 @@ Project queries and mutations keep their names; there is no Projects capability 
   Invalid dependencies fail with `TASK_DEPENDENCY_INVALID`. **There is no GraphQL or manual UI
   status mutation.**
 - `deleteProjectTask({projectId, taskId})` returns a Boolean.
+- `searchProjectTasks(projectId, query)` returns `{matches: [{taskId, match: EXACT | MEANING}],
+  meaningSearch: {state: READY | PREPARING | UNAVAILABLE, phase: DOWNLOADING | LOADING | INDEXING, done, total,
+  reason}}` (see [Project Task Search](#project-task-search)); it never waits for meaning search. A blank query fails
+  with `TASK_SEARCH_QUERY_REQUIRED`.
+- `retryEmbeddingModel` (mutation) clears an unavailable embedding model so the next search tries again; it returns
+  whether there was one to retry.
 - GraphQL context metadata includes the locator, not the native tool's
   `localPath`.
 - `ProjectError` maps to `GraphQLError extensions.code` (see
@@ -1086,7 +1119,9 @@ Coverage:
 - `tests/unit/agent-collaboration/task-execution-status.test.ts`: the live
   status of task executions in actual Agent, Team and Org roots.
 - `tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts`
-- `tests/unit/agent-tools/project-tasks`
+- `tests/unit/agent-tools/project-tasks` (including `search_project_tasks`)
+- `tests/unit/projects/project-task-search.test.ts` and `tests/e2e/projects/project-task-search.e2e.test.ts`: Task search,
+  its delete cleanup and its GraphQL/MCP transports, with a deterministic stand-in model.
 - `tests/unit/context-files` (preserved)
 - `tests/architecture/projects-boundaries.test.ts`
 - `tests/e2e/projects/{projects-graphql,project-task-boundaries,project-mutation-node-locality,projects-startup-migration}.e2e.test.ts`.

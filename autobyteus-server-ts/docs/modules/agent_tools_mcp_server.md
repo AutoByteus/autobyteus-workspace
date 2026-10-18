@@ -249,7 +249,7 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - media tools from `src/agent-tools/media`
 - `delegate_task` from `src/agent-tools/task-delegation`
 - `publish_artifacts`
-- `list_projects`, `list_project_tasks`, `create_project`, `update_project`,
+- `list_projects`, `list_project_tasks`, `search_project_tasks`, `create_project`, `update_project`,
   `create_or_update_project` (deprecated), `create_task`, `update_task` from
   `src/agent-tools/project-tasks`
 
@@ -302,7 +302,7 @@ manifests:
 ### Project Task Data Tools
 
 `ProjectTaskToolsMcpAdapterProvider` calls the same manifest/parser and
-ProjectService/ProjectTaskService as the native tools; business behavior is not
+ProjectService/ProjectTaskService/ProjectTaskSearchService as the native tools; business behavior is not
 implemented in MCP dispatch. Each canonical name must be explicitly selected;
 these adapters require no MemberTeamContext and do not depend on the Projects UI,
 which is always available on desktop (there is no visibility flag). An active run-session and normal
@@ -314,6 +314,9 @@ category-wide native task exposure are not restored.
   current-node Projects, sorted by name/ID. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
   Project is required; status must be exact TODO, IN_PROGRESS, DONE or CANCELLED (CANCELLED = dropped as not needed).
+- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, summary, match}],
+  meaningSearch: {state, note?}}`: the Project's best-matching Tasks first, by exact text and by meaning (at most
+  `limit`, 1–30, default 10). `taskId` is the Task's key. See [Project Task Search](./projects.md#project-task-search).
 - `create_project({name, description?, workspaces?})` → `{project}`: creates with a
   required nonblank name; `project_id` is rejected as an unsupported argument.
 - `update_project({project_id, name?, description?, workspaces?})` → `{project}`:

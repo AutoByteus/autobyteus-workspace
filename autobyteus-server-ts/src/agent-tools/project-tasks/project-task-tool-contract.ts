@@ -1,8 +1,8 @@
 import { ParameterSchema, ParameterDefinition, ParameterType } from "autobyteus-ts/utils/parameter-schema.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
 import { PROJECT_TASK_STATUSES, validateTaskStatus } from "../../projects/domain/task-status.js";
-export const PROJECT_TASK_TOOL_NAMES = new Set(["list_projects", "list_project_tasks", "create_project", "update_project", "create_or_update_project", "create_task", "update_task"] as const);
-export type ProjectTaskToolName = "list_projects" | "list_project_tasks" | "create_project" | "update_project" | "create_or_update_project" | "create_task" | "update_task";
+export const PROJECT_TASK_TOOL_NAMES = new Set(["list_projects", "list_project_tasks", "search_project_tasks", "create_project", "update_project", "create_or_update_project", "create_task", "update_task"] as const);
+export type ProjectTaskToolName = "list_projects" | "list_project_tasks" | "search_project_tasks" | "create_project" | "update_project" | "create_or_update_project" | "create_task" | "update_task";
 /** What a call runs as: the deprecated `create_or_update_project` always runs as `create_project` or `update_project`. */
 export type EffectiveProjectTaskToolName = Exclude<ProjectTaskToolName, "create_or_update_project">;
 export const isProjectTaskToolName = (name: string): name is ProjectTaskToolName =>
@@ -15,6 +15,7 @@ export const PROJECT_TASK_TOOL_DESCRIPTIONS: Record<ProjectTaskToolName, string>
   create_or_update_project: "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference absolute node-local folder paths: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
   list_projects: "List every Project on the current node with its stable projectId, name and description. Does not select or change a Project.",
   list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed). Each Task's taskId is its key (e.g. autobyteus-42): use it as the Task's ID in every tool. Returns descriptions, the Tasks each one depends on (dependsOn, by taskId), saved context-file references, each Task's open assignments (assignments) and its closed ones (closedAssignments, one per earlier assignment period, so you can find the task agent that did a DONE Task). Each assignment names the task agent: {kind: agent, agentRunId} for a task agent, or {kind: team, teamRunId, teamCoordinatorAgentRunId} for a task agent team; plus who assigned it (assignedBy) and whether the work was accepted (outcome); accepted work is not necessarily finished. Give a follow-up Task to a task agent with delegate_task and its target_agent_run_id (agentRunId) or target_team_run_id (teamRunId); talk with it using send_message_to and its run id (agentRunId, or teamCoordinatorAgentRunId for a task agent team). A Task whose assignments can't be read is marked assignments unavailable.",
+  search_project_tasks: "Search the Tasks of the explicit project_id with a sentence or a few words (query) describing the work: by meaning (related wording, paraphrases) and by exact text. Returns the best-matching Tasks first, at most limit (default 10, 1 to 30), each with its taskId (its key, e.g. autobyteus-42), status, a one-line summary (the description's first line) and match (exact: the description contains the query; meaning: related by meaning). meaningSearch says whether meaning search was used; when it is preparing or unavailable, note says why and which results are exact text matches only. Use it to check whether a Task already exists before creating one, and to find the Task the user refers to by description; use list_project_tasks when you need every Task or a Task's full details.",
   create_task: "Create a Project Task: supply project_id and a required description (omit status and task_id); the new Task is TODO and gets the Project's next key as its taskId (e.g. autobyteus-42). Optional context_files: absolute local file paths copied into the new Task as context files. Same file types and 25 MiB limit as the app. Any invalid file fails the whole call with no change. Optional depends_on: the taskIds of Tasks of the same Project that come first (or that this Task follows up); it only informs and never stops work. Returns the recorded Task identity (projectId, taskId, status, dependsOn) plus attachedContextFiles [{storedFilename, displayName}] when files were attached. Does not delegate work; to give the Task to an agent, use delegate_task.",
   update_task: "Update a Task by its task_id: a Project Task (its key, e.g. autobyteus-42), or the Task a description-only delegate_task created (it has no Project; delegate_task returned its task_id). Supply description and/or status (TODO, IN_PROGRESS, DONE, CANCELLED) and/or context_files and/or depends_on; never project_id.\nDONE means the work is finished; CANCELLED means the Task was dropped as not needed (not finished). Both stop the task agents whose current Task this is (never a task agent that has since been given another Task); their history is kept. Close a Task you delegated when its work is done.\nTo continue a closed Task with the same task agent, first set the Task to TODO or IN_PROGRESS; then, if you assigned the Task, message the task agent's run id (for a task agent team, its coordinator's run id): it continues with its conversation. A status change alone starts nothing. To give a task agent whose Task is DONE or CANCELLED a different Task, use delegate_task with its target_agent_run_id or target_team_run_id.\nOptional depends_on (Project Tasks only): the complete list of taskIds of Tasks of the same Project this Task depends on; it replaces the saved list, [] clears it. It only informs and never stops work.\nOptional context_files: absolute local file paths copied into a Project Task as context files; appended, never removed. Same file types and 25 MiB limit as the app; not for a Task with no Project. Any invalid file fails the whole call with no change. Unknown IDs fail; omitted fields, saved context and dependencies are kept. Returns the recorded Task identity (projectId is null for a Task with no Project) and status, plus dependsOn for a Project Task and attachedContextFiles when the call attached files.",
 };
@@ -68,6 +69,11 @@ export function buildProjectTaskToolSchema(name: ProjectTaskToolName): Parameter
     p("status", "Explicit business status patch; omit to preserve.", false, statuses),
     contextFilesDefinition("Absolute local file paths on this node to copy into the Project Task's saved context (appended; never removes). Same file types and 25 MiB limit as the app."),
     dependsOnDefinition("Project Tasks only: the complete list of taskIds of Tasks in the same Project this Task depends on; replaces the saved list, [] clears it, omit to keep."),
+  ]);
+  if (name === "search_project_tasks") return new ParameterSchema([
+    p("project_id", "Explicit Project identity on the current node.", true),
+    p("query", "A sentence or a few words describing the Task you are looking for.", true),
+    new ParameterDefinition({ name: "limit", type: ParameterType.INTEGER, description: "Most Tasks returned, 1 to 30 (default 10).", required: false, minValue: 1, maxValue: 30 }),
   ]);
   return new ParameterSchema(name === "list_projects" ? [] : [
     p("project_id", "Explicit Project identity on the current node.", true),
@@ -219,6 +225,20 @@ export function parseUpdateTaskInput(raw: unknown): Record<string, unknown> {
   return result;
 }
 
+/** `search_project_tasks`: `{project_id, query, limit?}`; a blank query and a limit outside 1–30 are argument errors. */
+export function parseSearchProjectTasksInput(raw: unknown): Record<string, unknown> {
+  const input = plainInput(raw);
+  rejectUnsupported(input, ["project_id", "query", "limit"]);
+  const result: Record<string, unknown> = {project_id: id(input, "project_id")};
+  if (typeof input.query !== "string" || !input.query.trim()) invalid("query must be a non-empty string.");
+  result.query = (input.query as string).trim();
+  if (Object.hasOwn(input, "limit")) {
+    if (!Number.isInteger(input.limit) || (input.limit as number) < 1 || (input.limit as number) > 30) invalid("limit must be a whole number from 1 to 30.");
+    result.limit = input.limit;
+  }
+  return result;
+}
+
 /** Presence matters: no coercion or hidden keys. Project and Task mutation tools have one parser each. */
 export function parseProjectTaskToolInput(name: ProjectTaskToolName, raw: unknown): Record<string, unknown> {
   const tool = effectiveProjectTaskToolName(name, raw);
@@ -226,6 +246,7 @@ export function parseProjectTaskToolInput(name: ProjectTaskToolName, raw: unknow
   if (tool === "update_project") return parseUpdateProjectInput(raw);
   if (tool === "create_task") return parseCreateTaskInput(raw);
   if (tool === "update_task") return parseUpdateTaskInput(raw);
+  if (tool === "search_project_tasks") return parseSearchProjectTasksInput(raw);
   const input = plainInput(raw);
   rejectUnsupported(input, tool === "list_projects" ? [] : ["project_id", "status"]);
   if (tool === "list_projects") return {};

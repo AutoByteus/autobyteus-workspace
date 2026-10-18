@@ -27,6 +27,11 @@ export class ListProjectTasksTool extends ProjectTaskNativeTool {
   static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.list_project_tasks; }
   static getArgumentSchema() { return buildProjectTaskToolSchema("list_project_tasks"); }
 }
+export class SearchProjectTasksTool extends ProjectTaskNativeTool {
+  static getName() { return "search_project_tasks"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.search_project_tasks; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("search_project_tasks"); }
+}
 export class CreateProjectTool extends ProjectTaskNativeTool {
   static getName() { return "create_project"; }
   static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_project; }
@@ -54,7 +59,7 @@ export class UpdateTaskTool extends ProjectTaskNativeTool {
   static getArgumentSchema() { return buildProjectTaskToolSchema("update_task"); }
 }
 export function registerProjectTaskTools(): void {
-  registerToolClass(ListProjectsTool); registerToolClass(ListProjectTasksTool);
+  registerToolClass(ListProjectsTool); registerToolClass(ListProjectTasksTool); registerToolClass(SearchProjectTasksTool);
   registerToolClass(CreateProjectTool); registerToolClass(UpdateProjectTool); registerToolClass(CreateOrUpdateProjectTool);
   registerToolClass(CreateTaskTool); registerToolClass(UpdateTaskTool);
 }
