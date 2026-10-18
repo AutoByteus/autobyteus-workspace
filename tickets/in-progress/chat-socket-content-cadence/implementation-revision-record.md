@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` (ARCH-REV-002 Pass) / initial | N/A (AR-004, AR-005 non-blocking notes applied) | `Initial Baseline` | `SR-002`, `ARCH-REV-002`; CRR `N/A`; API-REV `N/A`; DR `N/A` | Implemented; local checks green; ready for independent code review |
 | IR-002 | Delivery Engineer / `release-deployment-report.md` (DR-001 Blocked) / integration | DR-001 Local Fix (merge conflict with base `fbc0f805bf`) | `Local Fix` | `SR-002`, `ARCH-REV-002`, `CRR-001`, `CRR-002`, `API-REV-001`, `DR-001` | Latest base merged (mechanical resolution); affected checks rerun green; back to delivery |
+| IR-003 | Delivery Engineer / `release-deployment-report.md` (DR-002 Blocked) / re-integration | DR-002 Local Fix (test import removed by base `f6bf477c3f`) | `Local Fix` | `SR-002`, `ARCH-REV-002`, `CRR-001`..`CRR-004`, `API-REV-002`, `DR-002` | Test-only fix; cadence file 18/18 ×3 and integration 415 passed |
 
 ## Revision Entries
 
@@ -60,5 +61,25 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - So the base's callback, which reads the top-level `event.kind`, needs no look inside batches.
 - Changed files or areas: the two web files above; `TeamStreamingService.spec.ts`.
 - Local validation and result: IMP-01..IMP-13 in `implementation-handoff.md` › Checks Run, all Pass.
+- Next recipient or routing: Code Reviewer, per the `get_handoff_rules` rule for a delivery-requested Local Fix on a Large/High package (classification rechecked: unchanged).
+- Remaining limitations or risks: unchanged from IR-001.
+
+### IR-003 — Cadence test imports the removed message-file validator (DR-002 Local Fix)
+
+- Triggering role, report path, and round: Delivery Engineer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/release-deployment-report.md` (Escalation, round 2), DR-002. Evidence: `evidence/DLV-08-reintegration.log`, `evidence/DLV-10-server-test-integration.log`.
+- Triggering finding IDs: DR-002 Local Fix.
+- Classification: `Local Fix` (test code only)
+- Prior authoritative result: IR-002 on `335f065cd1`, passed CRR-003 and API-REV-002. After delivery merged `origin/personal` @ `8945d0c8a2` (`8f91efb2cd`), `chat-socket-content-cadence.integration.test.ts` failed to load with `Cannot find module '../../../src/services/team-communication/team-communication-messages-schema.js'`.
+- Current authoritative result: fixed in `4b3c8a08ef`. The cadence file passes 18/18 on 3 of 3 runs, and server integration passes 415 with 69 skipped.
+- Related solution revision IDs: `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-002`
+- Related code-review revision IDs: `CRR-001`..`CRR-004`
+- Related API/E2E revision IDs: `API-REV-002`
+- Related delivery revision IDs: `DR-002`
+- Why this implementation revision is recorded: base commit `f6bf477c3f` removed `team-communication-messages-schema.ts`, so the cadence integration test no longer loaded.
+- Approved behavior or requirement IDs affected: none. The test setup changed; its AC-001..AC-005 and AC-009 assertions are unchanged.
+- Implementation delta: the Team scenario builds the root's in-memory `TeamCommunicationMessagesSnapshot` (`{ schemaVersion: 1, rootTeamRunId, messages }`) from the fixture's message list with `validateCollaborationCommunicationMessageArray`, the same way the base updated `agent-team-stream-handler.test.ts`. It does not use the frozen legacy validator, because the test models a current live root and writes no file.
+- Changed files or areas: `autobyteus-server-ts/tests/integration/agent/chat-socket-content-cadence.integration.test.ts`
+- Local validation and result: IMP-14..IMP-16 in `implementation-handoff.md` › Checks Run, all Pass.
 - Next recipient or routing: Code Reviewer, per the `get_handoff_rules` rule for a delivery-requested Local Fix on a Large/High package (classification rechecked: unchanged).
 - Remaining limitations or risks: unchanged from IR-001.

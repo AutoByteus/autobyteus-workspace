@@ -2,8 +2,8 @@
 
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence`
-- Branch: `codex/chat-socket-content-cadence` (local, not pushed). Code HEAD `335f065cd1`; the ticket documents and evidence are committed after it (see the handoff message).
-- Base: `origin/personal` @ `cf14704473`, merged in IR-002 (merge commit `b3666d458f`). IR-001 was built on `f3124db10f`.
+- Branch: `codex/chat-socket-content-cadence` (local, not pushed). Code HEAD `4b3c8a08ef` (IR-003); the ticket documents and evidence are committed after it (see the handoff message).
+- Base: `origin/personal` @ `8945d0c8a2`, merged by delivery in `8f91efb2cd` (DR-002). IR-002 merged `cf14704473`; IR-001 was built on `f3124db10f`.
 
 | Commit | Slice |
 | --- | --- |
@@ -14,6 +14,7 @@
 | `e24ff6b333` | docs |
 | `b3666d458f` | IR-002: merge of `origin/personal` @ `cf14704473` (DR-001 Local Fix; 2 conflicts resolved) |
 | `335f065cd1` | IR-002: type-clean assertion in the Team content-batch spec (test only) |
+| `4b3c8a08ef` | IR-003: cadence integration test builds its Team message snapshot with the current validator (test only; DR-002) |
 
 ## Upstream Artifact Package
 
@@ -25,7 +26,7 @@
 - Supplemental task artifacts: `.../evidence/validity-probe.*`; this round's local logs are `evidence/impl-*.log`.
 - Design review report: `.../design-review-report.md` (ARCH-REV-002 Pass)
 - Architecture review revision record: `.../architecture-review-revision-record.md`
-- Triggering rework report: DR-001, `release-deployment-report.md` and `delivery-revision-record.md` (Local Fix: integration merge conflict)
+- Triggering rework report: DR-002, `release-deployment-report.md` (Escalation, round 2) and `delivery-revision-record.md` (Local Fix: test import broken by base `f6bf477c3f`). Earlier: DR-001 (merge conflict, IR-002).
 
 ## Current Implementation Summary
 
@@ -37,15 +38,15 @@ Every chat socket now sends through its own `AgentStreamWebSocketEgress`. The Te
 
 Clients apply a frame when its first sequence is the next expected one, then advance to `through + 1`. `RootEventPublisher`, the snapshot barrier, inspection bases, the `/ws/agent` scheduler and `AgentRun` are unchanged.
 
-- Implementation cycle: `Rework` (IR-002: base integration; IR-001 is the implementation)
+- Implementation cycle: `Rework` (IR-003: test fix after re-integration; IR-002: base integration; IR-001 is the implementation)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-002`
 - Related code-review revision IDs: `CRR-001` — Pass (9.4/10, no findings; D-1..D-3 accepted), `code-review-report.md`; `CRR-002` (test code), per `delivery-revision-record.md`. `CRR-003` — round 2 Targeted Delta Review of IR-002: Pass, no findings (merge resolution and test-only fix accepted), `code-review-report.md`. Recorded as informational; the reviewer routed to API/E2E.
 - Related API/E2E revision IDs: `API-REV-001`
-- Related delivery revision IDs: `DR-001`
-- Triggering finding IDs: DR-001 Local Fix (merge conflict). IR-001: none (AR-004 and AR-005 applied as notes).
+- Related delivery revision IDs: `DR-001`, `DR-002`
+- Triggering finding IDs: DR-002 Local Fix (test import). Earlier: DR-001 Local Fix (merge conflict). IR-001: none (AR-004 and AR-005 applied as notes).
 
 ## Routing Classification (Mandatory)
 
@@ -198,7 +199,26 @@ Docs:
 - Conclusion: the merge is mechanical; it changes no behavior of this ticket.
 - One test-only follow-on, `335f065cd1`: the post-merge web tsc (IMP-11) showed 2 errors in my Team content-batch spec case, which was added after the IR-001 tsc baseline. The assertion now goes through `toMatchObject`, and the text checked is the same.
 
+## IR-003 Test Fix (DR-002)
+
+- Cause: base commit `f6bf477c3f` (append-only message logs) deleted `src/services/team-communication/team-communication-messages-schema.ts`. `tests/integration/agent/chat-socket-content-cadence.integration.test.ts` imported its `validateTeamCommunicationMessagesPayload` to build the Team root's snapshot messages, so the file failed to load. Server typecheck does not cover tests (`tsconfig.build.json`).
+- Fix (`4b3c8a08ef`, test only): the test needs the root's current in-memory communication snapshot (`TeamCommunicationMessagesSnapshot`: `{ schemaVersion, rootTeamRunId, messages }`), not an on-disk file. It now builds that from the fixture's message list with the current `validateCollaborationCommunicationMessageArray`, which is what the base did in `agent-team-stream-handler.test.ts`. It does not use the frozen legacy validator. The test writes no message log, so the append-only `MessageLog` fixtures are not needed. The cadence assertions are unchanged.
+- No other source or test imports the removed module (`grep -rln team-communication-messages-schema tests src`).
+
 ## Checks Run
+
+IR-003 rows (IMP-14..IMP-16) are current for the changed test. The IR-002 rows below still hold for all other code (unchanged since). Delivery reran the full suites on the re-integrated state (DLV-08/DLV-10).
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-14 | `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent/chat-socket-content-cadence.integration.test.ts --no-watch`, 3 runs | `4b3c8a08ef` | macOS 26.5.2, node v22.23.1, pnpm 10.28.2 | the fixed test file; egress, sequenced scheduler, shapes, Team/Org/collaboration handlers over real sockets | AC-001..AC-005, AC-009 | Pass | `IMP-14-cadence-integration-run{1,2,3}.log` | `Tests  18 passed (18)` in each run |
+| IMP-15 | `pnpm -C autobyteus-server-ts test:integration:prepare` | `4b3c8a08ef` | as above | integration build prerequisites | — | Pass | `IMP-15-server-integration-prepare.log` | `Integration test prerequisites are present.` |
+| IMP-16 | `pnpm -C autobyteus-server-ts test:integration` | `4b3c8a08ef` | as above | all server integration on the re-integrated base | AC-005, AC-006 | Pass | `IMP-16-server-integration.log`, `IMP-16-server-integration-excerpt.txt` | `Test Files  77 passed \| 18 skipped (95)`, `Tests  415 passed \| 69 skipped (484)` |
+
+- Not run in IR-003: server `test:unit`, typecheck and web suites. Only an integration test file changed, which none of them load; delivery's DLV runs on `8f91efb2cd` already cover the re-integrated base (typecheck OK, unit 5950 passed).
+
+### IR-002 rows (commit `b3666d458f` / `335f065cd1`, base `cf14704473`)
+
 
 IR-002 rows are current. Evidence is in `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/evidence/`. Each `IMP-*` file starts with a header (command, commit, environment, date). Environment for all rows: macOS 26.5.2, node v22.23.1, pnpm 10.28.2. These are local implementation checks, not API/E2E sign-off.
 
