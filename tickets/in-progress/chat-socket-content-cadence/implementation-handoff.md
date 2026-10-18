@@ -42,7 +42,7 @@ Clients apply a frame when its first sequence is the next expected one, then adv
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `CRR-001` — Pass (9.4/10, no findings; D-1..D-3 accepted), `code-review-report.md`; `CRR-002` (test code), per `delivery-revision-record.md`.
+- Related code-review revision IDs: `CRR-001` — Pass (9.4/10, no findings; D-1..D-3 accepted), `code-review-report.md`; `CRR-002` (test code), per `delivery-revision-record.md`. `CRR-003` — round 2 Targeted Delta Review of IR-002: Pass, no findings (merge resolution and test-only fix accepted), `code-review-report.md`. Recorded as informational; the reviewer routed to API/E2E.
 - Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `DR-001`
 - Triggering finding IDs: DR-001 Local Fix (merge conflict). IR-001: none (AR-004 and AR-005 applied as notes).
