@@ -2,8 +2,7 @@ import type { RuntimeSkillProfile } from "../../shared/runtime-skill-profile.js"
 import { createBackendPreparation } from "../../agent-run-backend-preparation.js";
 import type { AgentRunBackendPreparationRequest } from "../../agent-run-backend-factory.js";
 import type { CodexRunContext } from "./codex-agent-run-context.js";
-import { AgentRunConfig } from "../../../domain/agent-run-config.js";
-import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
+import { AgentRunContext } from "../../../domain/agent-run-context.js";
 import type { CodexThreadManager } from "../thread/codex-thread-manager.js";
 import type { CodexThreadBootstrapper } from "./codex-thread-bootstrapper.js";
 import { CodexAgentRunBackend } from "./codex-agent-run-backend.js";
