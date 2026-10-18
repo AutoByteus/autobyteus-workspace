@@ -1,0 +1,39 @@
+{
+  "startedAt": "2026-10-18T05:26:45.236Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-012": {
+      "result": "Fail",
+      "description": "Agent root follow-up Task to an existing copy: Team and Agent copy rows return live, board roots, repeated close of the earlier Task keeps them",
+      "message": "Timed out: continued coordinator conversation"
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 97330,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 96971,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "BR-012",
+      "message": "Timed out: continued coordinator conversation"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:63018",
+    "frontendUrl": "http://127.0.0.1:63019",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-XIBexF"
+  },
+  "browserVersion": "155.0.8059.84",
+  "result": "Fail",
+  "finishedAt": "2026-10-18T05:28:19.426Z"
+}

@@ -1,0 +1,58 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "launch": {
+    "success": true,
+    "message": "Agent run created successfully.",
+    "runId": "pts_new_tools_2c8bc3425fd04bf1b9584db47bf6156a"
+  },
+  "outcome": {
+    "projectId": "project_6fff11e3-6a81-4789-b3e8-0e12bfc4f5f7",
+    "name": "PTS Real New 8793",
+    "description": "real update",
+    "workspaces": []
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "content": "Create a Project named \"PTS Real New 8793\" with description \"real create\". Then change its description to \"real update\". Report both tool results.",
+      "media": null,
+      "ts": 1792302039.636
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_019ykEGHHVJpq5QErDd2v6Ez",
+      "role": null,
+      "content": "",
+      "toolName": "create_project",
+      "toolArgs": {
+        "name": "PTS Real New 8793",
+        "description": "real create"
+      },
+      "toolResult": "{\"project\":{\"projectId\":\"project_6fff11e3-6a81-4789-b3e8-0e12bfc4f5f7\",\"name\":\"PTS Real New 8793\",\"description\":\"real create\",\"workspaces\":[]}}",
+      "toolError": null,
+      "media": null,
+      "ts": 1792302043.237
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_01QRWtkWczXVyKxYVGc822W9",
+      "role": null,
+      "content": "",
+      "toolName": "update_project",
+      "toolArgs": {
+        "project_id": "project_6fff11e3-6a81-4789-b3e8-0e12bfc4f5f7",
+        "description": "real update"
+      },
+      "toolResult": "{\"project\":{\"projectId\":\"project_6fff11e3-6a81-4789-b3e8-0e12bfc4f5f7\",\"name\":\"PTS Real New 8793\",\"description\":\"real update\",\"workspaces\":[]}}",
+      "toolError": null,
+      "media": null,
+      "ts": 1792302044.726
+    }
+  ],
+  "toolNamesInConversation": [
+    "create_project",
+    "update_project"
+  ]
+}
