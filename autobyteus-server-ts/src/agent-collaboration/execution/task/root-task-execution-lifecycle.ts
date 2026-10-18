@@ -22,6 +22,7 @@ import {
   type TaskDelegationOutcome,
 } from "./task-delegation-command.js";
 import {
+  buildAdoptedRunTaskMessage,
   buildExistingCopyTaskMessage,
   buildTaskAssigneeWorkPacket,
   requireTaskString,
@@ -197,16 +198,16 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     }
     // An adopted run joined the tree as started (published by its commit); a returning copy is reopened.
     if (!adopted) this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
-    return this.deliverAssignedTask(sender, target, { taskReference, description, referenceFiles }, deliverWork);
+    return this.deliverAssignedTask(sender, target, { taskReference, description, referenceFiles, adopted }, deliverWork);
   }
   /**
    * The Task's work to an existing run (DS-002, adoption step 5), as the next message of its conversation; then
    * `started` (step 6). A delivery that fails marks the assignment `failed` with guidance.
    */
   private async deliverAssignedTask(sender: string, target: TaskExecutionTarget,
-    task: Readonly<{ taskReference: string; description: string; referenceFiles: readonly string[] }>, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
+    task: Readonly<{ taskReference: string; description: string; referenceFiles: readonly string[]; adopted: boolean }>, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     const { taskReference, referenceFiles } = task;
-    const content = buildExistingCopyTaskMessage({ taskReference, description: task.description });
+    const content = (task.adopted ? buildAdoptedRunTaskMessage : buildExistingCopyTaskMessage)({ taskReference, description: task.description });
     let delivered: AgentOperationResult;
     try { delivered = await this.withLiveLease(sender, () => deliverWork(target.ingressAgentRunId, content, referenceFiles)); }
     catch (error) { delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: errorMessage(error) }; }

@@ -58,8 +58,11 @@ export class TokenUsageRunAccumulator {
       });
       return {
         ...folded.authoritativePayload,
+        // The summary claims the root this observation was made under (its current execution context), not the
+        // record's: a run adopted into another root keeps its earlier records' root (link-existing-run-to-task, F-001).
         run_summary_after_event: folded.persisted
-          ? buildTokenUsageRunSummaryFromRecords({ runId: payload.run_id, records: [folded.persisted] })
+          ? { ...buildTokenUsageRunSummaryFromRecords({ runId: payload.run_id, records: [folded.persisted] }),
+              root_team_run_id: folded.authoritativePayload.root_team_run_id ?? null }
           : null,
       };
     });

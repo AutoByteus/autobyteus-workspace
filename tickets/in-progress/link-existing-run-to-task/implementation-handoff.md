@@ -15,7 +15,7 @@ base `origin/personal` `2f211340ee`.
 - Supplemental task artifacts: `implementation-design-impact.md` (DI-001, resolved in SR-008) in the same folder
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial implementation)
+- Triggering rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/code-review-report.md` (CRR-003, failure-origin review of API-REV-001: `api-e2e-execution-report.md` in the same folder)
 
 ## Current Implementation Summary
 
@@ -27,14 +27,14 @@ leaves, and the Task is delivered as the next message of its own conversation. E
 so a stopped adoption is finished by the same delegator's retry; an unfinished adoption is undone when its Task is
 closed or deleted, or its Project deleted. Nothing is moved, copied or deleted.
 
-- Implementation cycle: `Rework` (IR-002: Local Fix for CRR-001 CR-001..CR-003; IR-001 initial baseline)
+- Implementation cycle: `Rework` (IR-003: Local Fix for CRR-003 F-001, F-003; IR-002: Local Fix for CRR-001 CR-001..CR-003; IR-001 initial baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-008`
 - Related architecture-review revision IDs: `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001` (Fail, Local Fix)
-- Related API/E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`, `CR-002`, `CR-003` (IR-002); DI-001 was raised before implementation and resolved in SR-008
+- Related code-review revision IDs: `CRR-001` (Fail, Local Fix), `CRR-002` (Pass), `CRR-003` (Fail, Local Fix: F-001, F-003; F-002 held)
+- Related API/E2E / delivery revision IDs: `API-REV-001` / `N/A`
+- Triggering finding IDs: `F-001`, `F-003` (IR-003); `CR-001`, `CR-002`, `CR-003` (IR-002); DI-001 was raised before implementation and resolved in SR-008
 
 ## Routing Classification (Mandatory)
 
@@ -61,6 +61,8 @@ closed or deleted, or its Project deleted. Nothing is moved, copied or deleted.
 | Undo (SR-008 "owner and timing"; ARCH-REV-004 Project delete) | Unfinished adoption undone on DONE / CANCELLED / Task delete / Project delete | `TaskExecutionResourceRelease.revertUnfinishedAdoptions` (from `closeAndWrite`, `deleteTask`, `afterProjectDeleted`); `ProjectService.deleteProject` → `afterDelete`; composition: active root's `revertUnfinishedAdoption` (on its queue) else `revertUnfinishedAdoptionOffline` (tree from disk) | Implemented; failures logged `TASK_ADOPTION_REVERT_FAILED`, retried by repeating DONE |
 | BEH-002, BEH-003 / REQ-003, REQ-004; AC-003 | Shown, coordinated and closed like any task agent; nothing deleted | existing delegated-run paths (the run is in the delegator's tree; started event published at commit) | Unchanged code; DONE stop tested at root level; the agent run's empty collaboration package is kept |
 | Agent-facing texts | `delegate_task` description and run-id parameters | `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` | Implemented |
+| REQ-002, adoption step 5 (F-003) | The Task as the adopted run's next work, without claiming an earlier Task | `task-execution-input.ts` `buildAdoptedRunTaskMessage`, chosen by `deliverAssignedTask` for an adoption (also a resumed one); a returning copy keeps `buildExistingCopyTaskMessage` | Implemented (IR-003). First line: `New Task assigned to you: <Task key>. This is the work to do now.` (then the unchanged body). The returning-copy text is unchanged: `New Task assigned to you: <Task key>. Your previous Task is closed; this is the work to do now.` |
+| REQ-004 with BEH-002 (F-001) | An adopted run's usage is attributed under its current root; its earlier records are left as they are | `token-usage/services/token-usage-run-accumulator.ts`: `run_summary_after_event.root_team_run_id` is the observation's root (current execution context), not the stored record's | Implemented (IR-003). The PM's Agent root no longer rejects an adopted team member's `TOKEN_USAGE_UPDATED` (ADO-4). The stored record keeps the earlier team root |
 | Docs | `projects.md` §Ownership, new §A Task for a run the user started; `collaboration_model.md` CM-6 row | docs | Implemented |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -111,6 +113,14 @@ revert, service hooks), `ProjectService.deleteProject`, catalogs, own files, com
 - R-2 (a partial adoption shows `not_confirmed` until retried) and R-3 (an adopted team's members remember `/`
   addresses) as accepted in the design.
 - Memory page Teams list: an adopted team run leaves it (8641c0ac FU-1), as the design notes.
+- **Token meter observation (F-001; reported, not decided).** Usage is stored as one cumulative record per run, and
+  the fix leaves it unchanged. So the PM's Agent-root meter (`getStandaloneRunSummary`: the records of the host and its
+  delegated runs) includes the adopted run's usage from before adoption. The run's record also keeps the earlier
+  team root, so a summary by that team root still finds the whole record, including later usage. This is today's
+  per-run accounting, applied to a run that changes root, and the fix does not force a choice about it. Whether
+  pre-adoption usage should count in the PM's meter is a product question for the Solution Designer, if one is wanted.
+- F-002 (an adopted run stays in its sidebar group) is held by the Code Reviewer; there is no code change here, and
+  API/E2E will recheck it after this fix.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -124,7 +134,7 @@ revert, service hooks), `ProjectService.deleteProject`, catalogs, own files, com
 - Dead code in touched files removed: `Yes` (none found new).
 - Shared structures remain tight: `Yes` (no new persisted field; the adopted run's records are a catalog task agent's).
 - Size guardrails: `Yes`. `project-task-service.ts` 498 → 490 non-empty lines and `agent-run-history-catalog-service.ts`
-  499 → 465 (both were over the guardrail's spirit before; code moved to new owned files). Lifecycle 446 → 485.
+  499 → 465 (both were over the guardrail's spirit before; code moved to new owned files). Lifecycle 446 → 487.
   Standalone root 442.
 
 ## Persisted Data Transition Check
@@ -137,6 +147,18 @@ revert, service hooks), `ProjectService.deleteProject`, catalogs, own files, com
 - The worktree needed `pnpm install` and `pnpm prebuild` (autobyteus-ts build, Prisma client) before typecheck/tests.
 
 ## Local Implementation Checks Run
+
+IR-003 (after CRR-003):
+- F-001: new case in `tests/unit/token-usage/services/token-usage-run-accumulator.test.ts`, "claims the observation's
+  current root after a team run is adopted, keeping the record's earlier root". A run records usage with root
+  `hand-started-team`, then with no root (the PM's Agent root). The second summary claims `null` and totals both events;
+  the stored record keeps `hand-started-team`. It fails without the fix (`expected 'hand-started-team' to be null`).
+- F-003: `hand-started-run-adoption-root.test.ts` (agent adoption) asserts the delivered first line and that
+  "previous Task" is absent. The returning-copy text stays pinned by `root-task-existing-copy-assignment.test.ts`.
+- API/E2E's `tests/e2e/projects/hand-started-run-adoption.e2e.test.ts` (uncommitted, theirs), run in a clean env
+  (`env -i`, temporary `HOME`/`TMPDIR`, `RUN_AGY_FAILURE_E2E=1`, scripted AGY CLI): 4/4 passed, **including ADO-4**.
+  Log: `evidence/implementation/IR-003-ADO-e2e.log`.
+- Build typecheck 0 errors; `vitest run tests/unit`: 724 files / 5883 tests passed (4 files / 7 tests skipped).
 
 IR-002 (after CRR-001):
 - CR-002: a run id that is no run the user started (unknown, another root's copy or task agent team member) keeps

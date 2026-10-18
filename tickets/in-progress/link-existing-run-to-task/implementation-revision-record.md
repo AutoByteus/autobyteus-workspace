@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / ARCH-REV-004 Pass on design-spec SR-008 / round 1 | N/A (DI-001 resolved before code) | `Initial Baseline` | SR-008, ARCH-REV-004 | Adoption implemented; ready for Code Review |
 | IR-002 | Code Reviewer / code-review-report.md / CRR-001 round 1 | CR-001, CR-002, CR-003 | `Local Fix` | SR-008, ARCH-REV-004, CRR-001 | Today's refusal kept for runs that are no run the user started; refusal e2e run; unused declarations removed; doc step wording |
+| IR-003 | Code Reviewer / code-review-report.md / CRR-003 failure-origin review of API-REV-001 | F-001, F-003 (F-002 held) | `Local Fix` | SR-008, ARCH-REV-004, CRR-003, API-REV-001 | Live token summary claims the observation's current root; adoption-specific Task message |
 
 ## Revision Entries
 
@@ -53,3 +54,25 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: build typecheck clean; unused-declaration check clean for touched files; affected unit folders 185 files green; the three refusal-pinning e2e files pass (24 / 3 skipped by gate).
 - Next recipient or routing: Code Reviewer (Targeted Delta Review of CR-001..CR-003).
 - Remaining limitations or risks: unchanged from IR-001.
+
+### IR-003 — CRR-003 local fixes (adopted run's token usage under its current root; adoption Task message)
+
+- Triggering role, report path, and round: Code Reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/code-review-report.md`, CRR-003 (failure-origin review of API-REV-001, `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task/tickets/in-progress/link-existing-run-to-task/api-e2e-execution-report.md`).
+- Triggering finding IDs: F-001 (High), F-003 (Low). F-002 held by the reviewer; no action.
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 (CRR-002 Pass).
+- Current authoritative result: IR-002 plus: an adopted run's live token usage is published under its current root, so the PM's Agent root keeps running (ADO-4); the Task message to an adopted run no longer says an earlier Task closed. Classification unchanged (Large / High).
+- Related solution revision IDs: SR-008
+- Related architecture-review revision IDs: ARCH-REV-004
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: the reviewer's Local Fix findings.
+- Approved behavior or requirement IDs affected: none changed; REQ-002 (the Task as the run's next work) and REQ-004 (earlier records left as they are) now hold for an adopted team's usage.
+- Implementation delta:
+  - F-001: `TokenUsageRunAccumulator.recordObservation` sets `run_summary_after_event.root_team_run_id` from the observation (the current execution context) instead of the run's stored record. The record is unchanged: its `rootTeamRunId` stays the run's earlier team (REQ-004). For a run that never changes root the two are equal, so nothing else changes.
+  - F-003: `buildAdoptedRunTaskMessage` (first line `New Task assigned to you: <key>. This is the work to do now.`) next to `buildExistingCopyTaskMessage` (shared body); `deliverAssignedTask` picks it when the assignment is an adoption (also a resumed one).
+- Changed files or areas: `src/token-usage/services/token-usage-run-accumulator.ts`, `src/agent-collaboration/execution/task/task-execution-input.ts`, `src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts` (485 → 487 non-empty lines); tests `tests/unit/token-usage/services/token-usage-run-accumulator.test.ts` (new regression case), `tests/unit/standalone-agent-run-root/hand-started-run-adoption-root.test.ts` (message text asserted); handoff; evidence log.
+- Local validation and result: build typecheck clean; the new accumulator case fails without the fix (`expected 'hand-started-team' to be null`) and passes with it; `vitest run tests/unit` 724 files / 5883 tests passed (4 files / 7 tests skipped); API/E2E's ADO file (uncommitted, theirs) in a clean env: 4/4 passed including ADO-4 (`evidence/implementation/IR-003-ADO-e2e.log`).
+- Next recipient or routing: Code Reviewer (source-review delta of F-001 and F-003), then API/E2E reruns.
+- Remaining limitations or risks: the token-meter observation in the handoff (Known Risks), reported, not decided; F-002 held.

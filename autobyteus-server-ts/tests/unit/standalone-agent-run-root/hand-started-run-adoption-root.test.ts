@@ -151,7 +151,11 @@ describe("delegate_task gives a saved Task to a run the user started (adoption)"
     await flushMicrotasks();
     const handle = f.handles.get("reviewer-run")!.handle;
     expect(handle.reserveInput).toHaveBeenCalledTimes(1);
-    expect(JSON.stringify(handle.reserveInput.mock.calls[0])).toContain("Write the Work Journal.");
+    const delivered = JSON.stringify(handle.reserveInput.mock.calls[0]);
+    expect(delivered).toContain("Write the Work Journal.");
+    // It never had a Task, so the message does not tell it an earlier one closed (F-003).
+    expect(delivered).toContain("New Task assigned to you: autobyteus-10. This is the work to do now.");
+    expect(delivered).not.toContain("previous Task");
   });
 
   it("adopts an idle team run: its addresses move under the PM's catalog address and its coordinator receives the Task (AC-001)", async () => {
