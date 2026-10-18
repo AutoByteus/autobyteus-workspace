@@ -122,4 +122,28 @@ Revert the merge on `personal` if input-state revisions repeat or are missed (qu
 
 ## Finalization Record
 
-Filled in after finalization by the follow-up `docs(delivery)` commit.
+| Step | Result |
+| --- | --- |
+| Ticket branch commit | `8a5df2f0a7` "docs(ticket): archive agent-run-input-state-cleanup delivery artifacts (autobyteus-140, DR-001)". Ticket paths only, no build output |
+| Ticket branch push | `origin/codex/agent-run-input-state-cleanup` → `8a5df2f0a7` (new remote branch) |
+| Target update | `git fetch origin personal` → `b775e5380b` (unchanged since re-integration `b1f417bcc4`) |
+| Finalize branch | `finalize/agent-run-input-state-cleanup` from `origin/personal` |
+| Merge | `git merge --no-ff codex/agent-run-input-state-cleanup` → `d337f6c137`. Tree identical to the verified ticket branch |
+| Checks before push | `python3 scripts/check_licensing.py` → "Licensing is consistent." (exit 0); `python3 scripts/check_repository_artifact_hygiene.py` → passed (exit 0) |
+| Fetch-check, then push | `origin/personal` still `b775e5380b`; `git push origin HEAD:personal` → `b775e5380b..d337f6c137` |
+| Repository finalization status | `Completed` |
+| Release / tag | `Not required` (No release) |
+| Worktree cleanup | `Completed`: no processes using the worktree; `git worktree remove --force` (only untracked build outputs remained); `git worktree prune` |
+| Local branch cleanup | `Completed`: deleted `codex/agent-run-input-state-cleanup` (`8a5df2f0a7`) and `finalize/agent-run-input-state-cleanup` (`d337f6c137`) |
+| Remote branch cleanup | `Not required`: merged `codex/*` ticket branches are retained on `origin` by repository practice |
+| Delivery record commit | This report and `delivery-revision-record.md` were committed from a temporary sparse, detached worktree at `origin/personal` (`d337f6c137`). The main checkout was not touched |
+
+## Final Status
+
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `d337f6c137`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes`, via `get_handoff_rules` → `send_message_to`, right after this record commit
