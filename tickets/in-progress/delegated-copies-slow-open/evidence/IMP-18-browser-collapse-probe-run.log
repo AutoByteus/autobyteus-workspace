@@ -1,0 +1,20 @@
+# Check: IMP-18-browser-collapse-probe-run
+# Command: (cd autobyteus-web && pnpm test:e2e:delegated-team-default-collapse --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/tickets/in-progress/delegated-copies-slow-open/evidence/IMP-18-browser-collapse-probe)
+# Commit: 2cb21ab41e (test(web): copies load correctly under batched live content (DR-001))
+# Working tree: 1 tracked changes
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.1
+# Date: 2026-10-18T14:27:19Z
+# ----
+
+> autobyteus@1.5.6-beta.5 test:e2e:delegated-team-default-collapse /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/autobyteus-web
+> node tests/e2e/delegated-team-default-collapse-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/tickets/in-progress/delegated-copies-slow-open/evidence/IMP-18-browser-collapse-probe
+
+Seeding representative Task 1/7
+Seeding representative Task 2/7
+Seeding representative Task 3/7
+Seeding representative Task 4/7
+Seeding representative Task 5/7
+Seeding representative Task 6/7
+Seeding representative Task 7/7
+{"result":"Pass","cases":["B-001","P-001","B-002","B-003","B-004","B-006","B-005"],"errors":[],"cleanup":{"browserClosed":true,"frontend":{"pid":45396,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":45368,"status":"terminated","exit":0},"dataRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/tickets/in-progress/delegated-copies-slow-open/evidence/IMP-18-browser-collapse-probe/evidence.json"}
+# ---- exit code: 0

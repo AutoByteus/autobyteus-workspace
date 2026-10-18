@@ -1,11 +1,10 @@
 # Implementation Handoff — delegated-copies-slow-open
 
-Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open`, branch `codex/delegated-copies-slow-open`, base `origin/personal` @ `5ceb43039a`.
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open`, branch `codex/delegated-copies-slow-open`. Originally based on `origin/personal` @ `5ceb43039a`; `origin/personal` @ `2763e7c678` is now merged in (IR-002).
 
 Implementation commits:
-- `c21d468d9e` (server)
-- `291545c66f` (web)
-- `54e5356ae6` (docs)
+- IR-001: `c21d468d9e` (server), `291545c66f` (web), `54e5356ae6` (docs)
+- IR-002: `6507c08527` (merge of `origin/personal`, conflicts resolved), `2cb21ab41e` (batched-content tests and doc line)
 
 Ticket artifacts and evidence are committed after these; see the handoff message for that commit.
 
@@ -19,21 +18,53 @@ Ticket artifacts and evidence are committed after these; see the handoff message
 - Supplemental task artifacts: `probes/open-cost-probe.test.ts`, `probes/probe-run1.txt` (baseline evidence)
 - Design review report: `tickets/in-progress/delegated-copies-slow-open/design-review-report.md` (round 2, Pass)
 - Architecture review revision record: `tickets/in-progress/delegated-copies-slow-open/architecture-review-revision-record.md` (ARCH-REV-002)
-- Triggering rework report, revision record, or evidence: N/A (initial implementation)
+- Triggering rework report, revision record, or evidence: `release-deployment-report.md` and `delivery-revision-record.md` (DR-001: integration refresh blocked by merge conflicts; `Local Fix`)
 
 ## Current Implementation Summary
 
 The copy rows of a standalone run (the hub) now come from its collaboration view alone, with no request per copy. A copy's stored conversation, activities and artifact list load when the copy is selected, through a hub-scoped server read. After every publication the selected copy loads again; other opened copies load again when selected again.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, integration merge; IR-001 was the initial implementation)
 - Implementation revision record: `tickets/in-progress/delegated-copies-slow-open/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-004 (design), SR-002 (requirements)
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: CRR-001 (Pass, no findings; Important Assumptions 1–2 accepted; `code-review-report.md`). Informational, no implementation change.
-- Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Related code-review revision IDs: CRR-001 (Pass, no findings; Important Assumptions 1–2 accepted; `code-review-report.md`), CRR-002 (Pass, API/E2E test code)
+- Related API/E2E revision IDs: API-REV-001 (Pass, 95.0%, on the pre-merge state)
+- Related delivery revision IDs: DR-001 (Blocked: merge conflicts)
+- Triggering finding IDs: DR-001 (integration refresh conflicts)
+
+## Integration Merge (IR-002)
+
+`git merge --no-ff origin/personal` (`2763e7c678`, 56 commits, including the finalized `chat-socket-content-cadence` / autobyteus-139 and `append-only-message-logs` tickets) conflicted in two files. Both are resolved by keeping both sides; no product behavior of either side changed.
+
+- `autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts`: this ticket's `isChildHydrated` / `markChildHydrated` sit beside the base's range-aware `applyEvent(changeSequence, event, changeSequenceThrough)`. That `applyEvent` brings `advanceSequencedStream`, `agent_presentation_batch` and `dispatchPresentation`. This ticket never changed presentation dispatch, so the base's refactor applies as is.
+- `autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts`: the base's `change_sequence_through` and local `event` (plus its new `onTaskExecutionStarted` call), with this ticket's reconnect comment.
+- Auto-merged files, checked:
+  - `agentRunCollaborationStore.ts`: the base adds `retireTopLevelRow` and `onTaskExecutionStarted` beside this ticket's `ensureChildHydrated`; they are independent.
+  - The three web specs.
+  - `autobyteus-web/package.json`: the base's script lines and this ticket's `test:e2e:delegated-copies-large-hub`.
+  - The docs `agent_artifacts.md`, `standalone_agent_run_root.md` and `agent_execution_architecture.md`: the sections don't overlap.
+
+Interactions the delivery engineer named:
+
+- **(a) Content batches reach opened and unopened copies.**
+  - `dispatchPresentation` sends every batch item into the child's retained `AgentContext`, loaded or not, as single events already did.
+  - A content delta changes the presentation witness, which bumps `eventMonitorPresentationRevision`. So a batch for a copy whose load is in flight makes that load retry within the same context, just as a single event does.
+  - New cases in `stores/__tests__/agentRunCollaborationLazyChildren.spec.ts` (commit `2cb21ab41e`; real store, context, stream and child hydration):
+    - Batched output during an opened copy's load: two projection requests and two artifact requests, then it ends loaded, with the stream still live at sequence 7.
+    - Batched output of an unopened copy: zero member requests. Opening it loads its stored conversation (AC-006, AC-007).
+  - The spec's run-history mock gained `refreshRunNavigationTopology`. Without it, the base's new `task_execution_started` callback threw after the reconnect, and the stream handler swallowed the error for the replaced socket. The checkpoint case now asserts the call.
+  - The base's own `agentRunCollaborationContextBatch.spec.ts` passes (IMP-13).
+  - The docs note that a batch retries an in-flight load.
+- **(b) Append-only message logs.**
+  - This ticket's server code never reads message logs. A copy's projection reads the copy's own run memory (`AgentRunViewProjectionService`); its artifacts read `file_changes.json` or the live projection.
+  - The hub view, which carries the message log, is base code and unchanged here. The server `standalone-agent-run-root` and `run-history` unit tests (318) and the full unit suite pass on the merged state.
+  - Known fallout in API/E2E-owned test code: `autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs` still reads `memory/agents/<host>/collaboration/communication_messages.json`, in seeding (`storedReports`, `until('hub message log complete (stored)')`) and in `messageLogObservation` / `hubMessageLogBytes`. On the merged state the log is `communication_messages_active.jsonl` plus sealed `communication_messages_NNNNNN.jsonl` (`src/run-history/store/message-log.ts`). The setup wait would then time out on a fresh seed.
+  - An existing seed in the old shape is converted when the server starts.
+  - I left the probe to its owner, for the integrated-state rerun.
+
+IR-002 changes no product source beyond the conflict resolutions.
 
 ## Routing Classification (Mandatory)
 
@@ -188,7 +219,11 @@ These are implementation-level decisions inside the reviewed design. They are fl
 
 ## Checks Run
 
-All checks ran on macOS 26.5.2, node v22.23.1, pnpm 10.28.2, at commit `54e5356ae6` with a clean tracked tree; code is unchanged since `291545c66f`. Evidence files are in `tickets/in-progress/delegated-copies-slow-open/evidence/`, each starting with a header.
+All checks ran on macOS 26.5.2, node v22.23.1, pnpm 10.28.2 with a clean tracked tree.
+- IMP-01..IMP-09 ran on `54e5356ae6` (IR-001, pre-merge).
+- IMP-10..IMP-18 ran on `2cb21ab41e` (IR-002, merged `origin/personal` @ `2763e7c678`), after `pnpm install --frozen-lockfile`, `pnpm -C autobyteus-server-ts prebuild` and `nuxt prepare`, one check at a time.
+
+ Evidence files are in `tickets/in-progress/delegated-copies-slow-open/evidence/`, each starting with a header.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result (`Pass`/`Fail`) | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -204,7 +239,17 @@ All checks ran on macOS 26.5.2, node v22.23.1, pnpm 10.28.2, at commit `54e5356a
 | IMP-08 | `bash tickets/in-progress/delegated-copies-slow-open/evidence/IMP-08-mutations.sh`: each mutation removes one mechanism, runs the guarding specs and restores the file from git | `54e5356ae6` | macOS, node 22 | supersession check (M1), pending overlay (M2), carry-over pending reset (M3), post-publication load (M4), context-keyed dedupe (M5) | AR-001, D-2, D-4, D-5, REQ-006 | Pass (every mutation caught, every file restored) | `IMP-08-mutation-checks.log` | Each `=== M*` block lists `×` failures, then `restored: yes` |
 | IMP-09 | `pnpm -C autobyteus-server-ts build`, then `cd autobyteus-web && pnpm test:e2e:delegated-team-default-collapse --output-dir <ticket>/evidence/IMP-09-browser-collapse-probe`. The probe owns its backend (`dist/app.js`), data root, ports, Nuxt dev server, headless Chrome and scripted AGY delegations. | `54e5356ae6` | macOS, node 22, headless Chrome 155 | rendered rows → copy open → center view; real GraphQL incl. the new query; Task locate; live closure | BEH-001, BEH-003, BEH-004; AC-001, AC-004, AC-005, AC-007 (rendered) | Pass | `IMP-09-browser-collapse-probe-run.log`, `IMP-09-request-summary.txt`, `IMP-09-browser-collapse-probe/{evidence.json,initial.png,member.png,task-root.png,live-closure.png}` | `"result":"Pass"` with 7 cases and `dataRootRemoved: true`. Summary: 42 children, and member requests only for the 2 opened copies (`GetAgentRunCollaborationMemberProjection` 5 + 3, `GetAgentRunCollaborationMemberFileChanges` 5 + 3). `GetRunFileChanges` was issued only for the host. |
 
-- Not run, and why:
+| IMP-10 | `pnpm -C autobyteus-server-ts typecheck` | `2cb21ab41e` | macOS, node 22 | server `src`, merged | IR-002 | Pass | `IMP-10-server-typecheck.log` | `# ---- exit code: 0` |
+| IMP-11 | `cd autobyteus-server-ts && pnpm exec vitest run tests/unit/standalone-agent-run-root tests/unit/run-history tests/unit/api/rest/run-file-changes.test.ts --no-watch` | `2cb21ab41e` | macOS, node 22 | the scoped query's owners, next to the base's message-log store and readers | BEH-003, AC-009; interaction (b) | Pass | `IMP-11-server-focused-unit.log` | `Test Files  58 passed (58)`, `Tests  318 passed (318)` |
+| IMP-12 | `pnpm -C autobyteus-server-ts test:unit` | `2cb21ab41e` | macOS, node 22, idle | whole server unit suite, merged | regression | Pass | `IMP-12-server-unit-suite.log` (+ `.excerpt.txt`) | `Test Files  728 passed \| 4 skipped (732)` |
+| IMP-13 | same file list as IMP-04, from `autobyteus-web` | `2cb21ab41e` | macOS, node 22 | as IMP-04, plus the base's `agentRunCollaborationContextBatch.spec.ts` and the two new batched-content cases | BEH-001..005; AC-006, AC-007 under batches; interaction (a) | Pass | `IMP-13-web-focused-specs.log` (+ `.excerpt.txt`) | `Test Files  50 passed (50)`, `Tests  403 passed (403)` |
+| IMP-14 | `pnpm -C autobyteus-web test:nuxt --run` (full suite, nothing else running) | `2cb21ab41e` | macOS, node 22, idle | whole web suite, merged | regression | Pass | `IMP-14-web-nuxt-suite.log` (+ `.excerpt.txt`) | `Test Files  636 passed \| 2 skipped (638)`, `Tests  4513 passed \| 3 skipped (4516)` |
+| IMP-15 | as IMP-06 | `2cb21ab41e` | macOS, node 22 | web boundary and localization rules | — | Pass | `IMP-15-web-guards.log` | `[guard:web-boundary] Passed.` |
+| IMP-16 | `pnpm test:native-input-history` | `2cb21ab41e` | macOS, node 22 | as IMP-07, merged | REQ-006, AC-006 | Pass | `IMP-16-native-input-history.log` | `Tests  2 passed (2)` |
+| IMP-17 | `bash tickets/in-progress/delegated-copies-slow-open/evidence/IMP-08-mutations.sh` | `2cb21ab41e` | macOS, node 22 | M1..M5 as IMP-08, on the merged context and store | AR-001, D-2, D-4, D-5, REQ-006 | Pass (every mutation caught, every file restored) | `IMP-17-mutation-checks.log` | Each `=== M*` block shows failures, then `restored: yes` |
+| IMP-18 | `pnpm -C autobyteus-server-ts build`, then the collapse probe as IMP-09 | `2cb21ab41e` | macOS, node 22, headless Chrome 155 | rendered rows → copy open → center view on the merged build (batched content stream) | BEH-001, BEH-003, BEH-004 (rendered) | Pass | `IMP-18-browser-collapse-probe-run.log`, `IMP-18-request-summary.txt`, `IMP-18-browser-collapse-probe/` | `"result":"Pass"`, 7 cases, 0 failed requests. Member requests only for the 2 opened copies (5 + 3 each); `GetRunFileChanges` only for the host |
+- Not run, and why (IR-002 additions first):
+  - On the merged state: the large-hub probe `S` cases (AC-001, AC-003, AC-004, AC-008, AC-009), the live cases `L-001`, `L-002` and `L-004` (AC-006, AC-007) and the ticket's server GraphQL E2E. These are API/E2E's integrated-state rerun, which delivery asked for. The large-hub probe first needs the message-log adaptation described in Integration Merge (IR-002) → (b).
   - Server integration and E2E suites, `test:integration` and `pnpm test:e2e`: API/E2E's layer. The new query's GraphQL transport is covered at the unit level only.
   - AC-008 timings on a synthesized large hub (design step 6), and rerunning `probes/open-cost-probe.test.ts` with the new `getFileChanges`: API/E2E.
   - Isolated desktop instance: API/E2E.
@@ -233,6 +278,11 @@ All checks ran on macOS 26.5.2, node v22.23.1, pnpm 10.28.2, at commit `54e5356a
   - The Electron desktop shell (isolated instance).
 
 ## Downstream Coverage Hints / Suggested Scenarios
+
+- **IR-002 integrated-state rerun (delivery DR-001).**
+  - Large-hub probe `S` cases and live `L-001`, `L-002` and `L-004` under batched content.
+  - Before seeding a fresh large hub, adapt `delegated-copies-large-hub-probe.mjs` to the rotated JSON Lines hub log: count lines in `communication_messages_*.jsonl`, or read the stored view through GraphQL.
+  - The AC-008 timings now include the base's append-only hub-log reader in the view read.
 
 - **Large hub regression (AC-008, QR-001, QR-002), per the design's Guidance.**
   - Shape: ≥50 task Teams × 5–6 members, a few-MB hub log and ≥300 unrelated stored team runs.
