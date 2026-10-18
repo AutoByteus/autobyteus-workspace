@@ -52,6 +52,7 @@ const V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
 // Converts an Org-like released Team (a Team member inside the root) into an AgentOrg V1 package.
 const FLAT_FAMILIES_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
 const TASK_AGENT_OWN_RUN_MIGRATION_ID = "20261017_task_agent_own_run_v1";
+const APPEND_ONLY_MESSAGE_LOGS_MIGRATION_ID = "20261018_append_only_message_logs_v1";
 const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
 const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
 const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
@@ -595,6 +596,13 @@ const taskAgentOwnRunStatus = async (serverUrl: string): Promise<MigrationStatus
   return status;
 };
 
+const appendOnlyMessageLogsStatus = async (serverUrl: string): Promise<MigrationStatus> => {
+  const statuses = await migrationStatuses(serverUrl);
+  const status = statuses.find(({ migrationId }) => migrationId === APPEND_ONLY_MESSAGE_LOGS_MIGRATION_ID);
+  if (!status) throw new Error("APPEND_ONLY_MESSAGE_LOGS_STATUS_MISSING");
+  return status;
+};
+
 const readAttemptLog = (logPath: string): {
   counts: ExecutionCounts;
   details: AttemptLogDetail[];
@@ -771,7 +779,6 @@ const countTokenRows = (databasePath: string): { legacy: number; current: number
   }
 };
 
-/** The end of the startup chain: the Org-like released root is an AgentOrg V1 package with all content. */
 /** A run's message log in the append-only layout: sealed files in index order, then the active file. */
 const readMessageLog = (dir: string, baseName: string): unknown[] => {
   const names = fs.readdirSync(dir).filter((name) => new RegExp(`^${baseName}_(\\d{6}|active)\\.jsonl$`).test(name));
@@ -779,6 +786,7 @@ const readMessageLog = (dir: string, baseName: string): unknown[] => {
   return ordered.flatMap((name) => fs.readFileSync(path.join(dir, name), "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line) as unknown));
 };
 
+/** The end of the startup chain: the Org-like released root is an AgentOrg V1 package with all content. */
 const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>): void => {
   const { rootTeamRunId, supported } = scenario;
   expect(fs.existsSync(supported.metadataPath)).toBe(false);
@@ -948,10 +956,14 @@ const assertV2TeamPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>)
       ]),
     },
   });
-  // Startup ends with the append-only message log conversion: the team's log is JSON Lines.
-  const messages = { messages: readMessageLog(scenario.supported.rootDir, "team_communication_messages") };
-  expect(fs.existsSync(path.join(scenario.supported.rootDir, "team_communication_messages.json"))).toBe(false);
+  // This root waits for the Org conversion (its tree is not in the current shape), so the append-only
+  // message log conversion keeps its released JSON log unchanged and writes no append-only file (design gate:
+  // WAITING_FOR_PREDECESSOR while a log-writing predecessor is pending).
+  const messages = JSON.parse(fs.readFileSync(path.join(scenario.supported.rootDir, "team_communication_messages.json"), "utf8"));
+  expect(readMessageLog(scenario.supported.rootDir, "team_communication_messages")).toEqual([]);
   expect(messages).toMatchObject({
+    schemaVersion: 1,
+    rootTeamRunId: scenario.rootTeamRunId,
     messages: [
       expect.objectContaining({
         senderAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
@@ -1453,6 +1465,15 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
       status: "FAILED",
       message: expect.stringContaining("WAITING_FOR_PREDECESSOR"),
     })]);
+    // The append-only message log conversion (registered after it) keeps this root's JSON log while its
+    // log-writing predecessors are pending, and stays non-terminal so a later start converts it.
+    const logsWaiting = await appendOnlyMessageLogsStatus(first.serverUrl);
+    expect(logsWaiting).toMatchObject({ status: "FAILED", attempts: 1 });
+    expect(readAttemptLog(logsWaiting.logPath!).details).toEqual(expect.arrayContaining([expect.objectContaining({
+      itemId: `agent_team:${scenario.rootTeamRunId}`,
+      status: "FAILED",
+      message: expect.stringContaining("WAITING_FOR_PREDECESSOR"),
+    })]));
     // The preserved V1 warning package is intentionally excluded by the V1
     // promotion, so the follow-on V2 migration itself remains clean.
     expect(first.output()).not.toContain("startup continues with strict current-package admission");
@@ -1502,9 +1523,11 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
     });
     // The waiting task-agent migration retries with its predecessor and still changes nothing.
     expect(await taskAgentOwnRunStatus(second.serverUrl)).toMatchObject({ status: "FAILED", attempts: 2 });
+    expect(await appendOnlyMessageLogsStatus(second.serverUrl)).toMatchObject({ status: "FAILED", attempts: 2 });
     const ledgerAfterSecond = readMigrationLedger(target.database.databasePath);
+    const retried = new Set([FLAT_FAMILIES_MIGRATION_ID, TASK_AGENT_OWN_RUN_MIGRATION_ID, APPEND_ONLY_MESSAGE_LOGS_MIGRATION_ID]);
     const withoutRetriedRow = (rows: Array<Record<string, unknown>>) =>
-      rows.filter(({ migration_id }) => migration_id !== FLAT_FAMILIES_MIGRATION_ID && migration_id !== TASK_AGENT_OWN_RUN_MIGRATION_ID);
+      rows.filter(({ migration_id }) => !retried.has(migration_id as string));
     expect(withoutRetriedRow(ledgerAfterSecond)).toEqual(withoutRetriedRow(ledgerAfterFirst));
     expect(fs.readFileSync(treePath)).toEqual(treeBytes);
     assertV2TeamPackage(scenario);
