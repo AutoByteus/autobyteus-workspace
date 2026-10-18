@@ -31,8 +31,8 @@ Memory files live under the configured memory root:
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
 - Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (an organization's own agents and its mounted teams' members)
-- Task agents (delegated agents of any coordinating run): `memory/agents/<taskAgentRunId>/...` — a normal run folder with its own `run_metadata.json` (with a `taskAgent` section) and its own `communication_messages.json`
-- Task agent teams: `memory/agent_teams/<taskTeamRunId>/` with their own `team_run_execution_tree.json` (with a `taskAgent` section) and `team_communication_messages.json`; their members at `memory/agent_teams/<taskTeamRunId>/<memberRunId>/...` (teams are flat)
+- Task agents (delegated agents of any coordinating run): `memory/agents/<taskAgentRunId>/...` — a normal run folder with its own `run_metadata.json` (with a `taskAgent` section) and its own message log (`communication_messages_active.jsonl` plus sealed `communication_messages_<6 digits>.jsonl` files; see [Run History](./run_history.md), Message logs)
+- Task agent teams: `memory/agent_teams/<taskTeamRunId>/` with their own `team_run_execution_tree.json` (with a `taskAgent` section) and its own message log (`team_communication_messages_*.jsonl`); their members at `memory/agent_teams/<taskTeamRunId>/<memberRunId>/...` (teams are flat)
 - Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and
   `memory/imports/<sourceNodeId>/agent_teams/...`, with source metadata in
   `source-node.json` and sync state in `sync-manifest.json`.
