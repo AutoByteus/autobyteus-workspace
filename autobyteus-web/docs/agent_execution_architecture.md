@@ -528,17 +528,12 @@ aliases, member/source path or route-key fallbacks, represented-Team compatibili
 or generated-run-id inference. Complete snapshots and live events reconcile
 through the same execution model and exact serialized address.
 
-A run that became a task agent is never a top-level row, even when this session
-still holds its context (a run the user started and a Project Task Manager
-adopted, server `projects.md` §A Task for a run the user started).
-`runHistoryRetiredRuns` holds the retired run ids, and the navigation projection
-builds top-level rows without them (`withoutRetiredRuns`): a run reported by an
-Agent root's collaboration stream as `task_execution_started` is retired at once,
-and a run a history read listed is retired when a later read no longer lists it
-although it would have (agent history lists only the newest runs per agent, so a
-run that merely fell out of that window stays). A run listed again is shown
-again; runs no read has listed yet (drafts, runs created this session) keep their
-local rows.
+A run that left the server's history is not a top-level row, even when this session still holds its context (it
+was deleted or archived from another window or client). `runHistoryRetiredRuns` holds the retired run ids, and the
+navigation projection builds top-level rows without them (`withoutRetiredRuns`): a run a history read listed is
+retired when a later read no longer lists it although it would have (agent history lists only the newest runs per
+agent, so a run that merely fell out of that window stays). A run listed again is shown again; runs no read has listed
+yet (drafts, runs created this session) keep their local rows.
 
 Delegated children are shown only in the global Workspaces/run-history tree,
 as ordinary rows. That tree composes stable history rows with pure

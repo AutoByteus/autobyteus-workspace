@@ -1,0 +1,22 @@
+# IMP-13 adoption identifiers after the merge, compared with the pre-adoption tree
+# Command: git grep -hE '<pattern>' at 4e738acc66^1 and at a130f4a86f, diffed
+# Commit: a130f4a86f (merge of origin/personal 04ec416617 into codex/withdraw-adoption)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T20:12Z
+
+# Pattern: HandStartedRun|hand-started|handStarted|adoptOwnFile|restoreHandStartedFile|assignAdoptedRun|assignAdopted|revertUnfinished|TASK_ADOPTION|retireTaskExecution|onTaskExecutionStarted|buildAdoptedRunTaskMessage|neverStartedAssignments|currentAssignmentOf|commitAdoptedExecution|catalogAddressOf|removeAdoptedRun|removeAdoptedTeamRun|readmitHandStarted|indexedRowOf|run the user started|runs the user started|createStandaloneRootAdoption|standalone-root-adoption|existing-run-assignments|ExistingRunAssignments|agent-run-history-catalog-state|afterProjectDeleted
+
+## Lines present now and not before adoption:
+3a4
+>   it("WDR-1 delegate_task on an agent run and a team run the user started is refused with the pre-adoption text, and nothing is written", async () => {
+6a8,10
+> //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/hand-started-run-refusal.e2e.test.ts --no-watch
+> // link-existing-run-to-task, withdrawn (SR-018, RM-001): a Task can't be given to a run the user started. The Project
+> // on an idle agent run and an idle team run the user started in the PM's workspace: each is refused with the
+8a13
+> suite("A Task can't be given to a run the user started (adoption withdrawn; real HTTP/WS/GraphQL/scoped MCP, scripted AGY)", () => {
+
+## Files with new hits:
+autobyteus-server-ts/tests/e2e/projects/hand-started-run-refusal.e2e.test.ts
+
+RESULT: the only new hits are API/E2E's withdrawal test (hand-started-run-refusal.e2e.test.ts, WDR-1), which pins the refusal; no adoption code (afterProjectDeleted, revertUnfinished, TASK_ADOPTION: none)

@@ -1,0 +1,9 @@
+# IMP-05 web unit suite (excerpt)
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Commit: ffeea43dac (worktree content identical when run)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T19:04Z
+
+ Test Files  636 passed | 2 skipped (638)
+      Tests  4508 passed | 5 skipped (4513)
+   Duration  370.87s (transform 38.00s, setup 2484.15s, collect 218.71s, tests 79.94s, environment 236.48s, prepare 142.39s)

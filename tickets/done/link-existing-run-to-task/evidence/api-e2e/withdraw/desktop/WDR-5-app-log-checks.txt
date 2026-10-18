@@ -1,0 +1,5 @@
+# WDR-3..5 session log checks (instance iso-65199-3241 app log)
+# Commit: 1005f9eaaf (code ffeea43dac); Date: 2026-10-18T19:26:08Z
+usage rejections / listener failures / fail-stop: 0
+runtime interrupts: 0
+token usage events observed (TOKEN_USAGE / token_usage lines): 19

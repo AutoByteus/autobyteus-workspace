@@ -60,10 +60,7 @@ describe("task delegation runtime descriptions", () => {
     const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
     expect(delegateEntry.description).toBe(DELEGATE_TASK_LLM_DESCRIPTION);
     expect(delegateEntry.description).toContain("creates a new task agent (or task agent team)");
-    expect(delegateEntry.description).toContain("gives the saved Task to a run that already exists");
-    expect(delegateEntry.description).toContain("It may be one of your task agents");
-    // Adoption (link-existing-run-to-task, design SR-008): a run the user started, for a standalone agent run.
-    expect(delegateEntry.description).toContain("an idle agent run or team run the user started in your own workspace");
+    expect(delegateEntry.description).toContain("gives the saved Task to one of your task agents");
     expect(delegateEntry.description).toContain("recipient_address");
     expect(delegateEntry.description).toContain("target_agent_run_id or target_team_run_id");
     expect(delegateEntry.description).toContain("If delegated is false, nothing was created");

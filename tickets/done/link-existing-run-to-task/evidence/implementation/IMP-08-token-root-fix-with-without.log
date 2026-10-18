@@ -1,0 +1,15 @@
+# IMP-08 kept token-usage fix: regression test with and without it
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/token-usage/services/token-usage-run-accumulator.test.ts (once as committed, once with the accumulator from 4e738acc66^1)
+# Commit: ffeea43dac
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-18T19:04Z
+
+## With the kept fix (commit ffeea43dac)
+ ✓ tests/unit/token-usage/services/token-usage-run-accumulator.test.ts (4 tests) 321ms
+      Tests  4 passed (4)
+
+## Without it (accumulator from 4e738acc66^1)
+     × claims the observation's current root, not the stored record's, when the record has seen more than one root 35ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected null to be 'team-b' // Object.is equality
+      Tests  1 failed | 3 passed (4)

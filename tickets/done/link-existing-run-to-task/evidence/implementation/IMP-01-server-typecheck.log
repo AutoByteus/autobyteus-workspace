@@ -1,0 +1,7 @@
+# IMP-01 server build typecheck
+# Command: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+# Commit: ffeea43dac (worktree content identical when run)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T19:04Z
+
+error TS count: 0

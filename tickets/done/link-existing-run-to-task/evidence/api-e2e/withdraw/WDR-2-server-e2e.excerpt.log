@@ -1,0 +1,31 @@
+# WDR-2 whole server e2e (excerpt)
+# Command: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e --no-watch
+# Commit: 1005f9eaaf (code ffeea43dac) + uncommitted WDR-1 test
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-18T19:20:59Z
+# Full log: WDR-2-server-e2e.full.log (same folder)
+
+## Failed files and the summary
+ ❯ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests | 1 failed) 173ms
+ ❯ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests | 1 failed) 22331ms
+ ❯ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests | 1 failed) 28362ms
+ FAIL  tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > preserves the exact packaged tool-update reasoning sequence through GraphQL reload
+ ❯ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts:942:5
+ FAIL  tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+ ❯ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts:320:17
+ FAIL  tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+ ❯ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts:246:7
+ Test Files  3 failed | 114 passed | 49 skipped (166)
+      Tests  3 failed | 489 passed | 245 skipped (737)
+   Duration  1328.03s (transform 12.27s, setup 1.48s, import 272.69s, tests 1036.80s, environment 12ms)
+
+## The three failures, classified (rule 9): all fail on base 2b04a9971d, stale tests from earlier tickets; baseline fix 43aa0bcb36
+- run-projection: WDR-2-classify-run-projection-on-base.log ('TypeError: Cannot read properties of undefined (reading 'runtimeKind')')
+- AGY team context files / interrupt-resend: WDR-2-classify-agy-team-on-base.log (tests read only SEGMENT_CONTENT; Team sockets send SEGMENT_CONTENT_BATCH)
+- rerun with the fixes: WDR-2-baseline-fixes-rerun.log ('Test Files  3 passed (3)', 'Tests  13 passed (13)')
+
+## The withdrawal's own e2e in this run
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 154131ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 24434ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 13930ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1421ms

@@ -83,3 +83,17 @@ no sub-work ownership), and be possible from the app and from a tool.
   collaboration tree (`AgentRunTaskRows.vue`), stop root = that run.
 - Tools: `agent-tools/project-tasks/project-task-tool-{contract,native-tools,manifest}.ts`; `update_task` takes `task_id`
   (key or long id).
+
+## SR-014 Investigation — board-Task chain runs handed to the delegator (2026-10-18)
+
+- Follow-up assignment and reactivation require the sender to be the current entry's `assignedBy`
+  (`projects/domain/task-execution-resources.ts:136, 175`) → rewriting `assignedBy` on the current entry to the
+  delegator gives the delegator those rights; earlier entries keep their assigner (true history, DEC-111).
+- The DONE stop set (`releasableByHostRoot`) and fencing (`closedTaskExecutionsIn`) group by the current entry's
+  `hostRoot` (`projects/services/task-execution-resource-service.ts:208-222`) → every entry re-hosted to the delegator.
+- Message scope (`agent-collaboration/execution/task/root-task-execution-resource-scope.ts:63-68`): two Task-owned runs
+  of different Tasks cannot message each other → after adoption the adopted run (X) and the board-Task run (K) are cut
+  from each other; the delegator (unowned) reaches both. Same as a natural chain.
+- Board view: K's root stays its latest `assigned` entry (the same run); its assigner shows as the delegator.
+- Data: hand-started teams never assigned board Tasks (read-only, earlier SR-010/011 checks); hand-started PM runs do
+  (e.g. 2 open + 19 closed) → those become adoptable, their board Tasks pass to the adopting PM.

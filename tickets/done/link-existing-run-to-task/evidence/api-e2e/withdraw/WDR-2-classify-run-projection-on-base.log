@@ -1,0 +1,149 @@
+# WDR-2 classification: run-projection-toolcalls-graphql on the base commit (no revert)
+# Command: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<base fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts --no-watch
+# Commit: 2b04a9971d (origin/personal base), temporary worktree _tmp-wdr-base-check
+# Date: 2026-10-18T19:30:23Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:10731) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-5kyR2M
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-5kyR2M/.env
+AgentRunManager initialized.
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > returns empty standalone Codex projection instead of native recovery when local replay is absent
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-5kyR2M/memory/agents/run-codex-local-replay-absent/raw_traces_active.jsonl
+
+ ❯ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests | 1 failed) 201ms
+     ✓ serves local replay dynamic and MCP Codex tool rows through getRunProjection 39ms
+     ✓ reopens a newly recorded provider-shaped Codex command failure with its enriched diagnostic 22ms
+     ✓ projects an active name-bearing result without recovering archived call arguments 16ms
+     ✓ preserves Codex reasoning across runtime writes and reloads through getRunProjection 17ms
+     × preserves the exact packaged tool-update reasoning sequence through GraphQL reload 29ms
+     ✓ returns empty standalone Codex projection instead of native recovery when local replay is absent 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > preserves the exact packaged tool-update reasoning sequence through GraphQL reload
+TypeError: Cannot read properties of undefined (reading 'runtimeKind')
+ ❯ logContext src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.ts:72:73
+     70| const logContext = (
+     71|   runContext: AgentRunContext<RuntimeAgentRunContext>,
+     72| ): AgentSegmentRejectionLogContext => ({ runtimeKind: runContext.confi…
+       |                                                                         ^
+     73| 
+     74| const logSummaries = (
+ ❯ AgentSegmentLifecycleEventTransformer.rejection src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.ts:255:12
+ ❯ reject src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.ts:94:27
+ ❯ AgentSegmentLifecycleEventTransformer.transform src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.ts:196:46
+ ❯ recordConverted tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts:845:59
+ ❯ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts:942:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  21:30:26
+   Duration  7.91s (transform 4.56s, setup 28ms, import 6.53s, tests 201ms, environment 0ms)
+

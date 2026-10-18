@@ -1,0 +1,10 @@
+# IMP-09 adoption identifiers and texts: hit set equals the pre-merge tree
+# Command: git grep -hE '<pattern>' <tree> -- . ':!tickets', sorted, at 4e738acc66^1 and at ffeea43dac
+# Commit: ffeea43dac
+# Date: 2026-10-18T19:04Z
+
+# Pattern: HandStartedRun|hand-started|handStarted|adoptOwnFile|restoreHandStartedFile|assignAdoptedRun|assignAdopted|revertUnfinished|TASK_ADOPTION|retireTaskExecution|onTaskExecutionStarted|buildAdoptedRunTaskMessage|neverStartedAssignments|currentAssignmentOf|commitAdoptedExecution|catalogAddressOf|removeAdoptedRun|removeAdoptedTeamRun|readmitHandStarted|indexedRowOf|run the user started|runs the user started|createStandaloneRootAdoption|standalone-root-adoption|existing-run-assignments|ExistingRunAssignments|agent-run-history-catalog-state
+
+hits at 4e738acc66^1:        9
+hits at ffeea43dac:        9
+RESULT: identical hit set (every remaining hit is pre-adoption wording, e.g. 'a run the user started' in the 8641c0ac memory contract)

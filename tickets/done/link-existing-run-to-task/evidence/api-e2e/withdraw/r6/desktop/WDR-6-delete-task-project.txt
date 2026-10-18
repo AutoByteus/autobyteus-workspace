@@ -1,0 +1,16 @@
+# WDR-6 (round 6): delete a finished Task that had a delegated copy, a never-assigned Task, then the Project (the board's GraphQL mutations), via wdr6.py
+# Commit: d95425d711 (product a130f4a86f), instance iso-53797-e01b
+# Date: 2026-10-18T20:30:00Z
+
+tasks before: [('wdr6-project-1', 'DONE'), ('wdr6-project-2', 'TODO')]
+delete wdr6-project-1 (DONE): {"data": {"deleteProjectTask": true}}
+delete wdr6-project-2 (TODO): {"data": {"deleteProjectTask": true}}
+tasks after: {"projectTasks": []}
+delete Project: {"data": {"deleteProject": true}}
+projects after: []
+app log since the DONE (0 lines): errors/warnings mentioning project, task, search or adoption: 0
+
+## Session server log check (owned data root server-data/logs/server.log, whole round-6 session)
+lines: 372; error/warn lines excluding known benign ones (Memory file missing, ExperimentalWarning): 0
+adoption / search-cleanup failures (TASK_ADOPTION, afterProjectDeleted, revertUnfinished, forget…failed): 0
+usage rejections / fail-stop / interrupts: 0

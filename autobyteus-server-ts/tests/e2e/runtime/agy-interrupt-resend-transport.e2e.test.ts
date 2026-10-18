@@ -13,6 +13,12 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 
+/** Reply text from SEGMENT_CONTENT frames and SEGMENT_CONTENT_BATCH items (Team sockets batch content since autobyteus-139). */
+const contentDeltas = (frames: ReadonlyArray<{ type: string; payload: Record<string, unknown> }>, agentRunId?: string): string =>
+  frames.flatMap((f) => f.type === "SEGMENT_CONTENT" ? [f.payload]
+    : f.type === "SEGMENT_CONTENT_BATCH" ? ((f.payload["items"] ?? []) as Array<Record<string, unknown>>) : [])
+    .filter((item) => !agentRunId || item["agent_run_id"] === agentRunId).map((item) => String(item["delta"] ?? "")).join("");
+
 // A standalone Antigravity run interrupted mid-turn, then sent a new message, through the real server and
 // WebSocket (fake AGY transport: tests/fixtures/agy-failure-cli.mjs, case interrupt_resend). AGY's interrupt
 // stops its process, so the next send must release that process and restore the same conversation.
@@ -119,8 +125,7 @@ suite("AGY interrupt followed by a new message through the app WebSocket", () =>
     };
     const ack = (commandId: string) => messages.find((m) => m.type === "AGENT_COMMAND_ACK"
       && (m.payload["command_id"] === commandId || m.payload["message_id"] === commandId));
-    const replyText = (from = 0) => messages.slice(from).filter((m) => m.type === "SEGMENT_CONTENT")
-      .map((m) => String(m.payload["delta"] ?? "")).join("");
+    const replyText = (from = 0) => contentDeltas(messages.slice(from));
     /** Starts a turn that keeps running, then presses Stop and waits until the interrupt takes effect. */
     const interruptRunningTurn = async () => {
       send("HOLD the long task");
@@ -228,7 +233,7 @@ suite("AGY interrupt followed by a new message through the app WebSocket", () =>
           payload: { ...ids, context_file_paths: [], image_urls: [], agent_run_id: alpha, content } }));
         return ids.message_id;
       };
-      const replyText = () => ofAlpha("SEGMENT_CONTENT").map((f) => String(f.payload["delta"] ?? "")).join("");
+      const replyText = () => contentDeltas(frames, alpha);
       const processes = (): ProcessEvent[] => {
         try {
           return readFileSync(processLog, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line) as ProcessEvent);

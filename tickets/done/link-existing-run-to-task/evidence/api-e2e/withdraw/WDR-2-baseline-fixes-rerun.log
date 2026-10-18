@@ -1,0 +1,640 @@
+# WDR-2 baseline fixes: the three stale-test files rerun with their fixes
+# Command: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=… pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts tests/e2e/runtime/agy-context-files-transport.e2e.test.ts tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts --no-watch
+# Commit: 1005f9eaaf (code ffeea43dac) + WDR-1 test + baseline fixes
+# Date: 2026-10-18T19:46:51Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:63707) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Agent Definition created successfully with ID: agy-interrupt-resend-ee521d58-d50b-4e06-82b4-7ad1e3f79fe1
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Created and registered workspace ID: agent_ws_18c74863674187a740d16bf034bbe0de08504aebe5e6bbf5b1735ac696549eba
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Reusing registered workspace ID: agent_ws_18c74863674187a740d16bf034bbe0de08504aebe5e6bbf5b1735ac696549eba
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+AGY compaction detection off for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_cfe587a8151247e787ee31c3b11dce49: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Agent websocket attached for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_cfe587a8151247e787ee31c3b11dce49
+Created agent session 1f04b273-81cb-4b75-95e3-3f71f47bb0b5 for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_cfe587a8151247e787ee31c3b11dce49
+Agent WebSocket connected: session=1f04b273-81cb-4b75-95e3-3f71f47bb0b5, run=agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_cfe587a8151247e787ee31c3b11dce49
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Reusing registered workspace ID: agent_ws_18c74863674187a740d16bf034bbe0de08504aebe5e6bbf5b1735ac696549eba
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+AGY compaction detection off for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_cfe587a8151247e787ee31c3b11dce49: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Agent Team Definition created successfully with ID: agy-interrupt-resend-team-0dcc4787-791f-4c8e-9f34-74c4e7ff04db
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Reusing registered workspace ID: agent_ws_18c74863674187a740d16bf034bbe0de08504aebe5e6bbf5b1735ac696549eba
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Agent team websocket attached for team run agy_interrupt_resend_team_0dcc4787_791f_4c8e_9f3_2e21d07f4296434b80416684d37abdec
+Created agent session 531238b0-31ee-44fa-bed2-034605145978 for run agy_interrupt_resend_team_0dcc4787_791f_4c8e_9f3_2e21d07f4296434b80416684d37abdec
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Agent Team WebSocket connected: session=531238b0-31ee-44fa-bed2-034605145978, run=agy_interrupt_resend_team_0dcc4787_791f_4c8e_9f3_2e21d07f4296434b80416684d37abdec
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Reusing registered workspace ID: agent_ws_18c74863674187a740d16bf034bbe0de08504aebe5e6bbf5b1735ac696549eba
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+AGY compaction detection off for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_ec83a0f1261d464fa57612910a1fe59b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Reusing registered workspace ID: agent_ws_18c74863674187a740d16bf034bbe0de08504aebe5e6bbf5b1735ac696549eba
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+AGY compaction detection off for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_ec83a0f1261d464fa57612910a1fe59b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Agent Team Definition with ID agy-interrupt-resend-team-0dcc4787-791f-4c8e-9f34-74c4e7ff04db deleted successfully.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Reusing registered workspace ID: agent_ws_18c74863674187a740d16bf034bbe0de08504aebe5e6bbf5b1735ac696549eba
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Reusing registered workspace ID: agent_ws_18c74863674187a740d16bf034bbe0de08504aebe5e6bbf5b1735ac696549eba
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+AGY compaction detection off for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_a895aec0aa014f568cbf309a0c23bce5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Agent websocket attached for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_a895aec0aa014f568cbf309a0c23bce5
+Created agent session 1e8e719f-c9b3-4ed2-91bf-39182c2809c5 for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_a895aec0aa014f568cbf309a0c23bce5
+Agent WebSocket connected: session=1e8e719f-c9b3-4ed2-91bf-39182c2809c5, run=agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_a895aec0aa014f568cbf309a0c23bce5
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-uQpBhg/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Reusing registered workspace ID: agent_ws_18c74863674187a740d16bf034bbe0de08504aebe5e6bbf5b1735ac696549eba
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+AGY compaction detection off for run agy_interrupt_resend_ee521d58_d50b_4e06_82b4_7ad_a895aec0aa014f568cbf309a0c23bce5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Closed agent session 1f04b273-81cb-4b75-95e3-3f71f47bb0b5
+Agent WebSocket disconnected: 1f04b273-81cb-4b75-95e3-3f71f47bb0b5
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Closed agent session 1e8e719f-c9b3-4ed2-91bf-39182c2809c5
+Agent WebSocket disconnected: 1e8e719f-c9b3-4ed2-91bf-39182c2809c5
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Closed agent session 531238b0-31ee-44fa-bed2-034605145978
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Agent Definition with ID agy-interrupt-resend-ee521d58-d50b-4e06-82b4-7ad1e3f79fe1 deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests) 8892ms
+     ✓ answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)  1675ms
+     ✓ restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)  2686ms
+     ✓ answers a message sent after the interrupted process has fully stopped (AC-002)  2145ms
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:64888) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Agent Definition created successfully with ID: agy-context-files-bb80c66e-b3c2-4cad-a7dd-7a6ceedf1ffb
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Created and registered workspace ID: agent_ws_260d74d9e8b8b4f129fc77cfeb7cc177452efdf779aefde4972945390e6568dd
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Reusing registered workspace ID: agent_ws_260d74d9e8b8b4f129fc77cfeb7cc177452efdf779aefde4972945390e6568dd
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+AGY compaction detection off for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_959ef2e2659640c7970ea470eb6aad85: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Agent websocket attached for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_959ef2e2659640c7970ea470eb6aad85
+Created agent session dd795f7f-a3ae-461d-ba5f-a05891f2857a for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_959ef2e2659640c7970ea470eb6aad85
+Agent WebSocket connected: session=dd795f7f-a3ae-461d-ba5f-a05891f2857a, run=agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_959ef2e2659640c7970ea470eb6aad85
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Reusing registered workspace ID: agent_ws_260d74d9e8b8b4f129fc77cfeb7cc177452efdf779aefde4972945390e6568dd
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Reusing registered workspace ID: agent_ws_260d74d9e8b8b4f129fc77cfeb7cc177452efdf779aefde4972945390e6568dd
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+AGY compaction detection off for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_6ecd066d7c5c46e7a362b26efeb3bdc4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Agent websocket attached for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_6ecd066d7c5c46e7a362b26efeb3bdc4
+Created agent session a5724a28-af8f-4ff0-ac9c-6cfc5485fad2 for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_6ecd066d7c5c46e7a362b26efeb3bdc4
+Agent WebSocket connected: session=a5724a28-af8f-4ff0-ac9c-6cfc5485fad2, run=agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_6ecd066d7c5c46e7a362b26efeb3bdc4
+
+stderr | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+SEND_MESSAGE command not accepted for agent run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_6ecd066d7c5c46e7a362b26efeb3bdc4: [RUNTIME_REJECTED] AgentRun input content must be a non-empty string.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Reusing registered workspace ID: agent_ws_260d74d9e8b8b4f129fc77cfeb7cc177452efdf779aefde4972945390e6568dd
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Reusing registered workspace ID: agent_ws_260d74d9e8b8b4f129fc77cfeb7cc177452efdf779aefde4972945390e6568dd
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+AGY compaction detection off for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_19a3aa55407d49ae85dbe932b629b929: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Agent websocket attached for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_19a3aa55407d49ae85dbe932b629b929
+Created agent session 7c3f8f44-64b7-4d24-9a3c-576e0eaf900c for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_19a3aa55407d49ae85dbe932b629b929
+Agent WebSocket connected: session=7c3f8f44-64b7-4d24-9a3c-576e0eaf900c, run=agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_19a3aa55407d49ae85dbe932b629b929
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Agent Team Definition created successfully with ID: agy-context-files-team-41113b18-6bed-4894-9255-364b53ce630b
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Reusing registered workspace ID: agent_ws_260d74d9e8b8b4f129fc77cfeb7cc177452efdf779aefde4972945390e6568dd
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Agent team websocket attached for team run agy_context_files_team_41113b18_6bed_4894_9255_3_a5a1c389389644b882e014caa014a0b9
+Created agent session 550b9df6-31ab-4114-914a-f1d97fb99ddd for run agy_context_files_team_41113b18_6bed_4894_9255_3_a5a1c389389644b882e014caa014a0b9
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Agent Team WebSocket connected: session=550b9df6-31ab-4114-914a-f1d97fb99ddd, run=agy_context_files_team_41113b18_6bed_4894_9255_3_a5a1c389389644b882e014caa014a0b9
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-tggrtm/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Reusing registered workspace ID: agent_ws_260d74d9e8b8b4f129fc77cfeb7cc177452efdf779aefde4972945390e6568dd
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+AGY compaction detection off for run agy_context_files_bb80c66e_b3c2_4cad_a7dd_7a6cee_d03cf1f52822436fa38011a0a98aeca2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Closed agent session dd795f7f-a3ae-461d-ba5f-a05891f2857a
+Agent WebSocket disconnected: dd795f7f-a3ae-461d-ba5f-a05891f2857a
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Closed agent session 550b9df6-31ab-4114-914a-f1d97fb99ddd
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Closed agent session 7c3f8f44-64b7-4d24-9a3c-576e0eaf900c
+Agent WebSocket disconnected: 7c3f8f44-64b7-4d24-9a3c-576e0eaf900c
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Closed agent session a5724a28-af8f-4ff0-ac9c-6cfc5485fad2
+Agent WebSocket disconnected: a5724a28-af8f-4ff0-ac9c-6cfc5485fad2
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Agent Team Definition with ID agy-context-files-team-41113b18-6bed-4894-9255-364b53ce630b deleted successfully.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Agent Definition with ID agy-context-files-bb80c66e-b3c2-4cad-a7dd-7a6ceedf1ffb deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 2100ms
+     ✓ E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged  640ms
+     ✓ E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text  530ms
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:65328) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-qmH2Ac
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-qmH2Ac/.env
+AgentRunManager initialized.
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > preserves the exact packaged tool-update reasoning sequence through GraphQL reload
+[AgentSegmentLifecycleRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-codex-ordered-tool-reasoning-graphql',
+  turnId: 'turn-result-first',
+  eventType: 'SEGMENT_END',
+  segmentId: 'tool-result-first',
+  reason: 'SEGMENT_NOT_STARTED'
+}
+[AgentSegmentLifecycleRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-codex-ordered-tool-reasoning-graphql',
+  turnId: 'turn-unseen-insufficient-terminal',
+  eventType: 'SEGMENT_END',
+  segmentId: 'web-search-insufficient',
+  reason: 'SEGMENT_NOT_STARTED'
+}
+[RuntimeToolTraceSequencer] deferred terminal tool event 'web-search-insufficient' in turn 'turn-unseen-insufficient-terminal' because authoritative call arguments were unavailable.
+[AgentSegmentLifecycleRejectedSummary] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-codex-ordered-tool-reasoning-graphql',
+  turnId: 'turn-unseen-insufficient-terminal',
+  count: 1
+}
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > returns empty standalone Codex projection instead of native recovery when local replay is absent
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-qmH2Ac/memory/agents/run-codex-local-replay-absent/raw_traces_active.jsonl
+
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 163ms
+
+ Test Files  3 passed (3)
+      Tests  13 passed (13)
+   Start at  21:46:53
+   Duration  22.94s (transform 5.22s, setup 39ms, import 11.03s, tests 11.15s, environment 0ms)
+

@@ -64,18 +64,15 @@ export const buildTaskAssigneeWorkPacket = (input: Parameters<typeof buildTaskWo
  * header already names the sender and gives the ID). The reference files travel as the message's
  * reference files (listed by the delivery, not repeated here).
  */
-type AssignedTaskMessageInput = {
+export const buildExistingCopyTaskMessage = (input: {
   /** The Task's agent-facing ID (a Project Task's key). */
   taskReference: string;
   description: string;
-};
-const assignedTaskMessage = (firstLine: string, input: AssignedTaskMessageInput): string =>
-  [firstLine, "", ...taskBodyLines(input.description, [])].join("\n");
-export const buildExistingCopyTaskMessage = (input: AssignedTaskMessageInput): string => assignedTaskMessage(
-  `New Task assigned to you: ${input.taskReference}. Your previous Task is closed; this is the work to do now.`, input);
-/** The same delivery to a run the user started and the delegator adopted: it never had a Task before (design SR-008). */
-export const buildAdoptedRunTaskMessage = (input: AssignedTaskMessageInput): string => assignedTaskMessage(
-  `New Task assigned to you: ${input.taskReference}. This is the work to do now.`, input);
+}): string => [
+  `New Task assigned to you: ${input.taskReference}. Your previous Task is closed; this is the work to do now.`,
+  "",
+  ...taskBodyLines(input.description, []),
+].join("\n");
 
 export const TASK_ASSIGNMENT_MESSAGE_TYPE = "task_assignment";
 /** The exact message input (the shape every root's exact delivery takes) that carries a new Task from its delegator. */

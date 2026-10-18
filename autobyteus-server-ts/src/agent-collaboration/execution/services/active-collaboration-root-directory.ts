@@ -3,6 +3,7 @@ import type { TaskExecutionStopResult } from "../task/task-execution-resource-po
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import {
+  cloneCollaborationMemberExecutionIdentity,
   cloneRootExecutionIdentity,
   rootExecutionIdentityKey,
   sameRootExecutionIdentity,
@@ -31,8 +32,6 @@ export interface ActiveRootMessageBoundary {
   taskExecutionStatus?(reference: TaskExecutionReference): AgentExecutionStatus;
   /** Stops exactly these closed Task agent runs hosted in this root. */
   releaseTaskExecutions?(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]>;
-  /** Undoes the unfinished adoption of a run the user started (design SR-008); `true` when it was undone. */
-  revertUnfinishedAdoption?(execution: TaskExecutionReference): Promise<boolean>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
   /** The coordinator agent run of this root's Team copy with that team run ID; `null` when it hosts none. Reads only. */
   teamCoordinatorOf?(teamRunId: string): string | null;

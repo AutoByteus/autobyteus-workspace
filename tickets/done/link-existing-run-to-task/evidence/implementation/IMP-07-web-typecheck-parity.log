@@ -1,0 +1,9 @@
+# IMP-07 web typecheck parity with HEAD (base 2b04a9971d)
+# Command: NODE_OPTIONS=--max-old-space-size=12288 pnpm -C autobyteus-web exec tsc --noEmit -p .nuxt/tsconfig.json
+# Commit: ffeea43dac (worktree content identical when run)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T19:04Z
+
+error TS count with the change: 668
+error TS count at base:        668
+(environmental at base; no new error)

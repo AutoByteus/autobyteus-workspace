@@ -4,7 +4,6 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
 import type { RunHistoryWorkspaceGroup } from '~/stores/runHistoryTypes';
 
-type TaskExecutionIdentity = Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>;
 /** Where a run was listed. Agent history lists only the newest runs per agent (`limitPerAgent`); team history lists all. */
 type ListedRun = Readonly<{ kind: 'agent'; groupKey: string; createdAt: string }> | Readonly<{ kind: 'team' }>;
 type AgentGroupWindow = Readonly<{ count: number; oldestCreatedAt: string }>;
@@ -44,29 +43,21 @@ const leftHistory = (run: ListedRun, windows: ReadonlyMap<string, AgentGroupWind
 };
 
 /**
- * Top-level run rows the sidebar no longer shows although this session still holds their contexts (design SR-009,
- * "Sidebar After Adoption"): a run that became a task agent is shown only under its coordinator.
- * 1. A run reported by a collaboration stream as a started task execution is retired at once.
- * 2. A run a history read listed is retired when a later read no longer lists it (and would have), and shown again if
- *    a read lists it again. Runs no read has listed yet (drafts, runs created this session) are never retired by this.
+ * Top-level run rows the sidebar no longer shows although this session still holds their contexts: a run a history
+ * read listed is retired when a later read no longer lists it (and would have), e.g. deleted or archived from another
+ * window or client, and shown again if a read lists it again. Runs no read has listed yet (drafts, runs created this
+ * session) are never retired by this.
  */
 export const useRunHistoryRetiredRunsStore = defineStore('runHistoryRetiredRuns', {
   state: () => ({
-    taskExecutionRunIds: {} as Record<string, true>,
     departedRunIds: {} as Record<string, true>,
     /** Every run a read has listed and that has not left the history since. */
     listedRuns: {} as Record<string, ListedRun>,
   }),
   getters: {
-    retiredRunIds: (state): ReadonlySet<string> =>
-      new Set([...Object.keys(state.taskExecutionRunIds), ...Object.keys(state.departedRunIds)]),
+    retiredRunIds: (state): ReadonlySet<string> => new Set(Object.keys(state.departedRunIds)),
   },
   actions: {
-    retireTaskExecution(execution: TaskExecutionIdentity): void {
-      const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId;
-      this.taskExecutionRunIds = { ...this.taskExecutionRunIds, [runId]: true };
-    },
-
     reconcileHistoryRead(groups: readonly RunHistoryWorkspaceGroup[], limitPerAgent: number): void {
       const { runs, windows } = readListing(groups);
       const departed = { ...this.departedRunIds };

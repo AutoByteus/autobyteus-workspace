@@ -53,8 +53,6 @@ export class AgentRunCollaborationStreamingService {
     reportError(message: string): void
     /** Task executions were closed in place (Task DONE); a selected one leaves with its rows. */
     onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
-    /** A task execution started (a new copy, or a run the user started and the host adopted). */
-    onTaskExecutionStarted?(execution: Readonly<{ agentRunId: string } | { teamRunId: string }>): void
   }>) {}
 
   connect(): void {
@@ -201,17 +199,15 @@ export class AgentRunCollaborationStreamingService {
     }
     if (message.type === 'ROOT_EXECUTION_EVENT') {
       if (message.payload.root_subject_kind !== 'agent') throw new Error('Agent collaboration stream supplied a foreign event.')
-      const event = message.payload.event
       if (this.context.applyEvent(
-        message.payload.change_sequence, event, message.payload.change_sequence_through,
+        message.payload.change_sequence, message.payload.event, message.payload.change_sequence_through,
       ) === 'checkpoint_required') {
         // A new child or a settings Save: reconnect for a fresh snapshot (the view only).
         this.closeSocket('Agent collaboration reload')
         this.connect()
-      } else if (event.kind === 'task_executions_closed') {
+      } else if (message.payload.event.kind === 'task_executions_closed') {
         this.options.onTaskExecutionsClosed?.(this.context)
       }
-      if (event.kind === 'task_execution_started') this.options.onTaskExecutionStarted?.(event.execution)
       return
     }
     this.context.setActive(message.payload.is_active)

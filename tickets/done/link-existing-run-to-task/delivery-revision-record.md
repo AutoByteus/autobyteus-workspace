@@ -42,3 +42,27 @@
   - AC-007 as written cannot pass: the user's own target run is in the refused class. DEC-107's data had already shown that 10 of 411 team runs and 3 of 25 agent runs fall in this class.
   - Classification: **Requirement Gap**, for the Solution Designer. Options: accept this ticket with AC-007 restated and take up the follow-up (the design already lists "adopting a run that has delegated runs of its own", CM-7); or narrow that follow-up to runs whose delegated runs are all closed, which needs no re-parenting of live runs, as in this case.
 - Repository finalization and the beta stay as completed (DR-001, DR-002). Terminal return: not sent; routed to `/software_engineering_team/solution_designer`.
+
+### DR-004 — Withdrawal delivered (SR-018), beta to follow (RM-005)
+
+- Trigger: `/software_engineering_team/api_e2e_engineer` API-REV-005 Pass (95%) on worktree `withdraw-adoption`, branch `codex/withdraw-adoption`. Medium / Low, direct route; test-code review Not Required. An independent code review CRR-009 (Pass, no findings) was made at the user's request.
+- Integration: the branch is current with `origin/personal` `2b04a9971d` (0 behind), so no merge or rerun was needed beyond API/E2E's run on this exact base.
+- Verification from evidence (files opened):
+  - RM-001: `WDR-1-hand-started-run-refusal.log` (WDR-1 ✓); `desktop/WDR-3-pm-refused.png` (both refused with the pre-adoption text; the runs stay in their own groups); `desktop/WDR-3-nothing-written.txt` (not in the PM's tree, 0 Task run entries, 0 `taskAgent` sections, still in history). The refusal text equals `4e738acc66^1` (`existing-copy-target.ts:9`). No `HandStartedRunAdoption` is left in `src` or the web app.
+  - RM-002 / AC-006: `WDR-2-server-e2e.excerpt.log` (114 passed, 3 failed). The 3 also fail on the base (`WDR-2-classify-*-on-base.log`) and pass after the labelled baseline fix `43aa0bcb36` (`WDR-2-baseline-fixes-rerun.log` 13/13).
+  - RM-006: `desktop/WDR-4-sidebar-samples.txt`, `WDR-4-retired-state.json` (archived and deleted runs left the sidebar; `departedRunIds` holds both); `desktop/WDR-5-done-reopen-samples.txt` (DONE closes, reopen plus message reactivates); `WDR-5-app-log-checks.txt` (19 usage events, 0 rejections, fail-stops or interrupts).
+  - RM-003: no migration (nothing was written).
+- Docs: no product doc describes adoption any more. The CM-6 adoption row and the `projects.md` adoption section are removed; the remaining "adopt" words are unrelated (binding or catalog adoption).
+- RM-004: this folder returns to `tickets/done/` with `WITHDRAWN.md`; release-notes.md states the withdrawal.
+- Release decision: Beta, by the user (RM-005: "After the adoption logic are completely being removed, then we should publish a new beta").
+- Finalization and beta: recorded below.
+- **Blocked before finalization (Local Fix):**
+  - Verification passed on base `2b04a9971d` and the ticket branch was pushed (archive commit on `codex/withdraw-adoption`). While I was finalizing, `origin/personal` advanced to `528deff924` (project-task-semantic-search: 60 code files, including the server `package.json`). The push of my finalize merge was rejected (non-fast-forward); nothing reached `personal`, and the local finalize merge was discarded.
+  - Merging `528deff924` into the ticket branch conflicts in `autobyteus-server-ts/src/projects/services/project-service.ts` (2 hunks) and `project-task-service.ts` (2 hunks). Semantic search was built on the adoption code: its `deleteProject` / `deleteTask` call `afterProjectDeleted` / `revertUnfinishedAdoptionsOfDeleted`, and its process initializer passes `revertUnfinishedAdoptions`. Those are adoption hooks this withdrawal removes.
+  - The merge was aborted. Routed to `/software_engineering_team/implementation_engineer`: resolve by keeping the search cleanup (`searchCleanup.forgetProject` / `forgetTask`) and removing every adoption call semantic search added, then re-validate (rule 4: `package.json` changed, so a full rerun). Delivery resumes from integration; the beta (RM-005) follows.
+- **Blocker resolved (DR-004, continued):**
+  - IR-006: merge `a130f4a86f` brings in `origin/personal` `04ec416617` with semantic search's adoption hooks removed (`d95425d711`, same product content).
+  - API-REV-006 Pass 95%. Rule 4 full rerun: server e2e `119 passed | 49 skipped (168)`, 0 failed, including `project-task-search`, `project-task-search-model-unavailable` and WDR-1.
+  - Files opened: `r6/WDR-2-server-e2e.excerpt.log`; `r6/desktop/WDR-3-nothing-written.txt` (both refused with the pre-adoption text; 0 Task run entries; 0 `taskAgent`); `WDR-4-retired-state.json`; `WDR-5-samples.txt`; `WDR-6-delete-task-project.txt` (Task and Project deletes leave nothing; 0 errors and 0 adoption or search-cleanup failures in the session log).
+  - Checked on HEAD: 0 adoption identifiers in `src` and the web app; `forgetProject` / `forgetTask` kept in both delete paths.
+  - The branch is current with `origin/personal` `04ec416617` (0 behind). Credential scan of the branch commits: 0 matches. Licensing and hygiene pass.

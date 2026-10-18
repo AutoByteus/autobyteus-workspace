@@ -1,8 +1,35 @@
+# Design Spec — Withdraw Adoption (SR-018)
+
+> The adoption design below is **withdrawn**; this section is the current design (the removal). The rest is kept as
+> the record.
+
+## Removal Plan (current)
+
+- Base: `origin/personal` `2b04a9971d`; worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption`,
+  branch `codex/withdraw-adoption`.
+- Method: `git revert -m 1 4e738acc66` restricted to product paths (the ticket folder is kept). A local probe
+  (2026-10-18) shows 40 product files (+1348 / −145) and three content conflicts where later tickets changed the same
+  files: `autobyteus-server-ts/src/run-history/store/task-agent-own-files.ts`,
+  `autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts` and its spec. Resolve each by
+  removing only the adoption additions (`adoptOwnFile` / `restoreHandStartedFile`, the SR-009 sidebar retirement of an
+  adopted run's own row) and keeping every later ticket's change.
+- Remove also: adoption e2e (ADO-1..ADO-4), fixtures, docs lines (`projects.md` §Follow-up "or a run the user started",
+  "Borrowed, not adopted", collaboration_model note), `delegate_task` text changes, `HandStartedRunAdoption`, the Task
+  close / Task delete / Project delete calls to `revertUnfinished`, `TeamRunPackageCatalog.exclude` call for adoption,
+  the history-row removal for adoption.
+- Verify: server unit / integration / e2e and web suites green; a search finds no adoption symbol; `delegate_task` on a
+  hand-started run is refused with the pre-adoption message (test restored from before the merge if one existed).
+- Classification: `task_size=Medium` (one merge's 40 product files, 3 conflicts), `architectural_risk=Low` (returns to a
+  shipped, tested baseline; no persisted data was ever written by adoption on any install known; no new contract).
+- Data: none written (RM-003); no migration.
+
+---
+
 # Design Spec — Give A Task To A Run The User Started (Adoption)
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-009` (SR-009: renderer retires an adopted run's own-group row, after CRR-005 / F-002)
+- Current solution revision ID: `SR-017` (adoption contract `adoption-contract.md` is the behavior-defining supplement; SR-017 adds its validation fixes V-2..V-5)
 - Approved requirements: SR-003, approved by the user 2026-10-18 (requirements-doc Document Status). SR-004 decisions
   DEC-108 (delegator kind) and DEC-109 (retry finishes a partial adoption) by the Solution Designer within the direction,
   the user informed ("you can reason about what is the most reasonable … decision").
@@ -43,7 +70,7 @@ Data (read-only, 2026-10-18): the PM's workspace (superrepo) holds 411 hand-star
 - Architectural risk: `High`
 - Rationale: changes a run's identity class (user-started → task agent) and its runtime owner; persistence across
   several files with crash recovery; tool contract change.
-- Escalation trigger: anything requiring files to move, or adoption of a run that has delegated runs of its own.
+- Escalation trigger: anything requiring files to move, or a chain run hosted outside the adopted run.
 
 ## Architecture Investigation Evidence
 
@@ -86,7 +113,7 @@ like one the delegator started — and receives the Task as its next work. The d
 - Deliberately left alone: new-copy delegation; copies' lifecycle, closure, reactivation, messaging scope; sidebar
   grouping rules (adopted runs appear under the delegator through the existing link rendering); the server (no new
   event); workspaces.
-- Follow-ups: adopting a run that has delegated runs of its own (re-parenting its chain to the delegator, CM-7);
+- Follow-ups: adopting across workspaces (with Task 6fb6e21b); delegators that are team members or organization agents (DEC-108). (Adopting a run with delegated runs of its own is now in scope, SR-010.)
   adopting across workspaces (with Task 6fb6e21b); delegators that are team members or organization agents (DEC-108).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
@@ -120,6 +147,122 @@ None.
 ## Legacy Removal Policy (Mandatory)
 
 - Obsolete paths: None. Compatibility mechanisms: `None`.
+
+## Adoption Contract (SR-017)
+
+`adoption-contract.md` states every case and outcome and governs this section where they differ. Its validation (§9)
+added: V-2 an adopted hub agent's hub log merged into its own log after the commit point; V-3 T's own session refuses to
+start while an adoption of T is in progress; V-4 classification from each run's own entry state (not the temp Task's
+status), recognizing this adoption's own writes; V-5 D's root load resumes any in-progress adoption, before or after the
+commit point (revert only on X's close / delete before the commit point).
+
+## Full Adoption Of The Chain (SR-010)
+
+Target state = the natural state (DEC-110; evidence: a member-delegated run under a PM-delegated team, read-only data
+2026-10-18): the delegated run's link is in the delegator's tree with `delegatorAgentRunId` = the member; its own file's
+`taskAgent.coordinatingRun` = the delegator's run; its Task entry is `delegated` sub-work of the team's Task with
+`hostRoot` = the delegator's run.
+
+The adopted run T is topmost in its own run, so (CM-7) every run it or its members delegated, at any depth, is linked in
+T's own tree. Adopting T with chain C:
+- **Eligibility:** T and every run in C idle; every run in C in T's own run (no foreign host); the existing checks (no refusal for board Tasks: REQ-008 / DEC-114 hand them to the delegator).
+- **Classification, once, from the state before adoption** (ARCH-F-005, ARCH-F-007): X is *unowned* if it has no Task
+  entry anywhere (a collaborator converted by 259ddae7, CM-6 exception; 11 of 93 chain links in the user's data); else
+  *board* if its current entry is in a Project Task (REQ-008, DEC-114); else *ongoing* if its tracking temp Task is
+  TODO / IN_PROGRESS, *finished* if DONE / CANCELLED. The classification never reads X's entry after a partial write;
+  the tracking Task's status is changed only at the very end, so a retry classifies the same way.
+- **Chain step (before T's own-file step), per X in C:**
+  1. X's own file: `coordinatingRun` → the delegator's run (rewrite of that one field).
+  2. Task side, under X's and then each Task's serialization:
+     - *ongoing*: append the open `delegated` entry for X in the adopted Task (host = the delegator) **first**, then close X's
+       entry in its temp Task; X's current Task is now the adopted Task, so a later close of the temp Task never releases X;
+       a stop between the append and the close leaves two open entries for X in two files — the existing loader rule
+       (projects.md §Current Task of a copy: the latest is used, `TASK_AGENT_RESOURCE_CONFLICT` logged) picks the adopted
+       Task, and the retry closes the old entry;
+     - *finished*: re-host its entries (`hostRoot` → the delegator); nothing else;
+     - *board*: `rehostEntries(X, delegatorRoot)`; on X's current entry, if `assigned`, `reassignToDelegator(X, boardTask,
+       delegatorAgentRunId)` sets `assignedBy` to the delegator, and X's own file `taskAgent.delegatorAgentRunId` and its
+       link's `delegatorAgentRunId` become the delegator (sub-step 1 / 3) — **only when X's current entry is `assigned`**
+       (X is the board Task's worker). A *board* run whose current entry is `delegated` sub-work of the board Task keeps
+       its delegator (the run that made it) and is only re-hosted. So the delegator is linked as the delegator of the
+       board Task's worker, and the worker as the delegator of its sub-work — the state of the delegator having assigned
+       that board Task to the worker directly (clarified with the implementer, SR-014). For a closed current entry, `reassignToDelegator`
+       rewrites that entry's `assignedBy`: intended, and the one history field adoption changes (docs: `projects.md`, one line). All are activated in the same
+       commit as the other chain links.
+       Its current Task stays the board Task: closing the adopted Task never stops it; the delegator can give it a
+       follow-up or reactivate it after reopening the board Task — the state of the delegator having delegated that
+       board Task directly. Evidence (SR-014 investigation): follow-up and reactivation check the current entry's
+       `assignedBy` (`projects/domain/task-execution-resources.ts:136, 175`); the closure stop set and fencing group by the
+       current entry's `hostRoot` (`task-execution-resource-service.ts:208-222`); the message scope refuses two Task-owned
+       runs of different Tasks (`root-task-execution-resource-scope.ts:63-68`), so after adoption the adopted run (Task X)
+       and the board-Task run (Task K) no longer message each other by run id — the cut, as in a natural chain — while the
+       unowned delegator messages both;
+     - *unowned*: append an open `delegated` entry for X in the adopted Task (host = the delegator); close nothing — its
+       current entry is then sub-work of the adopted Task, as in a natural chain (DEC-111), so it closes with that Task.
+     The Task-side operations are dedicated to adoption (the ordinary appends refuse a run with an open entry,
+     `task-execution-resource-service.ts:116, 287`): `TaskExecutionResourceService.appendAdoptedSubWork(adoptedTask, X,
+     delegatorRoot)` (appends `delegated`, open, regardless of an open entry elsewhere), `closeAdoptedPriorEntry(X,
+     priorTask)`, `rehostEntries(X, delegatorRoot)` and `reassignToDelegator(X, task, delegatorAgentRunId)`; `ProjectTaskService` exposes them to the adoption owner only.
+     Recognition on retry: an open `delegated` entry for X in the adopted Task hosted by the delegator means the Task-side
+     step is done for any class; for *ongoing*, an open prior entry still present means only the close is left.
+  3. Append X's link to the delegator's tree **file** (same `delegatorAgentRunId`, `startedAt`) under the delegator root's
+     persistence lock, without loading it into the root's in-memory tree (DI-002: the Agent-root validator requires the
+     delegator — T or a member of T — in the same tree, `standalone-root-tree-schema.ts:24-27`; the load leaves such a link
+     out until its delegator is loaded, `task-execution-tree-split.ts:137-155`). Saves keep links they did not load
+     (8641c0ac L6). L4 holds (the own file names this root).
+  4. Remove X from T's tree.
+  After every X of a temp Task has moved, mark that temp Task CANCELLED (no note: temp Tasks have no note field; the
+  entries already record where the work went, DI-002 option a); its release set is empty (no run's current Task is it).
+- **Commit point and placement (SR-015, the implementer's proposal, extended to every class):** T's link in the
+  delegator's tree is the commit point. **Before it**, the chain steps touch only trees and own files, all reversible:
+  for every X, sub-step 1 (`coordinatingRun` → the delegator), sub-step 3 (append X's link to the delegator's tree file
+  with its **original** delegator), sub-step 4 (remove X from T's tree). **After it** (forward only, resumed by retry): all
+  Task-side writes for every class — *ongoing* (append `delegated` in the adopted Task, then close the old entry),
+  *finished* (`rehostEntries`), *unowned* (append `delegated`), *board* (`rehostEntries` for every board run;
+  `reassignToDelegator` for the board worker) — then the activation commit, which loads the chain links and, for the
+  board worker, writes its record with `delegatorAgentRunId` = the delegator (the split write updates its link and its
+  own file's `taskAgent.delegatorAgentRunId` in that commit); **last**, the temp-Task cancels. A revert (only possible
+  before the commit point) therefore never meets a Task-side write: it returns every chain run to T (own file, link back,
+  link out of the delegator's file) with nothing else to undo, and leaves no CANCELLED temp Task. After the commit point
+  a retry classifies from the Task side, which is still untouched for every pending run, so the class is the same; temp
+  Tasks to cancel are found as TODO / IN_PROGRESS temp Tasks hosted by T's root whose runs' current Task is now elsewhere.
+  End states are unchanged.
+- **Activation after T is linked:** once T's own steps commit T's link, the delegator root loads the chain links written
+  in sub-step 3 into its in-memory tree in one commit and publishes them as task executions started (the same events a
+  natural delegation publishes), so they appear under the delegator together with T.
+- **Intermediate states (corrected, DI-002):** from X's sub-step 1 until T's link commits, X is shown in neither run (its
+  own file names the delegator; its link in the delegator's file waits for its delegator) — not shown, files intact,
+  resumed by the retry. Before sub-step 1 X is fully in T's run; after T's link and the activation it is fully under the
+  delegator. A retry continues with the first missing sub-step of the first unfinished X, then the remaining runs, then
+  T's own steps and the activation.
+- **Revert of an unfinished adoption** (the adopted Task closed or deleted **before the commit point**, T's link):
+  returns every chain run to T — own file `coordinatingRun` → T, link back into T's tree, link out of the delegator's
+  tree file (restoring T's own file first, then re-adding the chain links, ARCH-REV-009 note) — then T's own revert. Under
+  SR-015 no Task-side write exists before the commit point, so there is nothing else to undo and no temp Task was
+  cancelled. Nothing is left hidden.
+- **Completion of a committed adoption (ARCH-F-008, SR-016):** once T's link exists, the adoption is always finished,
+  never reverted. `HandStartedRunAdoption.completeCommitted(delegatorRoot)` runs the pending forward steps (Task-side
+  writes per class, the activation, the temp-Task cancels), each recognized from the files as already done or not, and
+  is idempotent. It is called (1) by the delegator's `delegate_task` retry; (2) when the delegator root loads or becomes
+  active (every load finds and finishes committed-but-pending adoptions before it serves the tree); (3) from the
+  adopted Task's DONE / CANCELLED path, Task delete and Project delete — the same call sites as `revertUnfinished` — on
+  the delegator root's queue when active, otherwise directly (Task-side writes and cancels directly; the activation then
+  happens at the root's next load), **before** the close or delete proceeds. So a close or delete always acts on the
+  finished state: the chain's ongoing and unowned runs close with the Task, the board worker is the delegator's
+  assignment on its board Task. Recognition of "committed but pending": T's link present in the delegator's tree and a
+  chain run (link in the delegator's tree file, own file naming the delegator) whose Task side is not yet in its target
+  class state, or a temp Task to cancel.
+- **Comparison with a natural chain (AC-008, DEC-111):** links (place, delegator, `startedAt`), coordinators, hosts and
+  each run's current entry are equal; earlier records keep the true history.
+- **Tests (SR-016 additions):** stop right after T's link, then (a) DONE, (b) CANCELLED, (c) Task delete, (d) Project
+  delete, (e) a delegator restart without any retry — each ends in the natural-chain state, including a board worker
+  (assigner and host = the delegator, still on its board Task).
+- **Tests:** stop after each sub-step 1, 2 (each Task-side write), 3, 4 and before the temp-Task cancel; each retry
+  finishes; board-Task chain runs (open and closed) handed to the delegator, still on their board Tasks, unaffected by the adopted Task's close, follow-up and reactivation by the delegator; comparison with a natural chain; a fixture with an
+  unowned chain run (converted collaborator) — adopted as open sub-work, closed with the adopted Task, equal to a natural
+  chain's current entry.
+- **Messages** stay where they are (per-run logs, CM-9; messages are keyed by run id).
+- **Proof:** build a natural chain and an adopted chain from the same hand-built data and compare the stored files (AC-008).
 
 ## Persisted Data / State Transition Decision
 
@@ -215,7 +358,7 @@ API/E2E rerun of the desktop check "adopt a run opened this session, then DONE a
 
 | Spine | Narrative | Owner |
 | --- | --- | --- |
-| DS-001 | When the named run is not a copy in the delegator's tree, the adoption owner checks, in order: the delegator is a standalone agent run (DEC-108) and not Task-owned; the Task is an open Project Task; the target is a hand-started run (standalone reader / admitted team tree without `taskAgent`; a team member or coordinator passed as `target_agent_run_id` gets the team-run guidance; organization runs refused); it is in the delegator's workspace (agent: `workspaceRootPath`; team: every member's workspace); it has no delegated runs of its own; it is not bound to an application (no `launchPurpose`, no `applicationExecutionContext`, no team `applicationBinding` — such runs are refused); it is not archived; its definition is in the catalog; it has no open Task entry (an adoption in progress by this delegator is recognized first and resumed, see Persisted Data); it is idle (not active, or active with no turn running). Refusals change nothing. Then the steps of the Persisted Data order run; the delivery is the existing `buildExistingCopyTaskMessage` path, so the run continues its own conversation with the Task as its next work. | `HandStartedRunAdoption` |
+| DS-001 | When the named run is not a copy in the delegator's tree, the adoption owner checks, in order: the delegator is a standalone agent run (DEC-108) and not Task-owned; the Task is an open Project Task; the target is a hand-started run (standalone reader / admitted team tree without `taskAgent`; a team member or coordinator passed as `target_agent_run_id` gets the team-run guidance; organization runs refused); its whole chain (every run it or its members delegated) is idle and hosted in its own run (SR-010); it is in the delegator's workspace (agent: `workspaceRootPath`; team: every member's workspace); its chain is idle (full adoption, SR-010); it is not bound to an application (no `launchPurpose`, no `applicationExecutionContext`, no team `applicationBinding` — such runs are refused); it is not archived; its definition is in the catalog; it has no open Task entry (an adoption in progress by this delegator is recognized first and resumed, see Persisted Data); it is idle (not active, or active with no turn running). Refusals change nothing. Then the steps of the Persisted Data order run; the delivery is the existing `buildExistingCopyTaskMessage` path, so the run continues its own conversation with the Task as its next work. | `HandStartedRunAdoption` |
 | DS-002 | Nothing new: the run is in the delegator's tree, so the sidebar shows it under the delegator with its Task line, the board shows it as the worker with live status, DONE / CANCELLED stops it and its row leaves, reactivation is the delegator's, messaging scope and sub-work rules apply. | existing |
 
 ## Spine Actors / Main-Line Nodes

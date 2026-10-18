@@ -21,7 +21,6 @@ import { taskKeyPrefixOf, uniqueTaskKeyPrefix } from "../domain/task-keys.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
 import { processProjectTaskSearchCleanup, type ProjectTaskSearchCleanup } from "../search/project-task-search-service.js";
-import { getProjectTaskService } from "./project-task-service.js";
 
 type WorkspaceRegistrationLookup = Pick<WorkspaceManager, "listRegisteredWorkspaceRootPaths">;
 type ProjectPersistence = Pick<ProjectStore, "listProjects" | "readProject" | "listTasks" | "createProject" | "updateProject" | "deleteProject">;
@@ -33,8 +32,6 @@ type ProjectServiceDependencies = {
   /** Search index cleanup after a committed delete (never throws or waits); defaults to the process search service. */
   searchCleanup?: Pick<ProjectTaskSearchCleanup, "forgetProject">;
   workspaceLookup?: WorkspaceRegistrationLookup;
-  /** After a Project's files are removed (its Tasks' unfinished adoptions are undone); defaults to the process Task service. */
-  afterDelete?: (projectId: string) => Promise<void>;
   now?: () => Date;
   createId?: () => string;
 };
@@ -193,9 +190,6 @@ export class ProjectService {
     if (!deleted) return false;
     this.changes.projectRemoved(projectId);
     (this.deps.searchCleanup ?? processProjectTaskSearchCleanup).forgetProject(projectId);
-    // Best effort: the delete is done; an undo that fails is logged (design SR-008).
-    await (this.deps.afterDelete ?? ((id) => getProjectTaskService().afterProjectDeleted(id)))(projectId)
-      .catch((error: unknown) => console.error("TASK_ADOPTION_REVERT_FAILED", { projectId, error: error instanceof Error ? error.message : String(error) }));
     return true;
   }
 

@@ -14,6 +14,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-006 | `code-review-report.md` | Implementation Review, round 6, Targeted Delta Review (SR-009 / IR-004) | Fail (Design Impact) | Pass (9.3/10) | F-002 resolved in source |
 | CRR-007 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 1 (API-REV-003) | N/A (first test review) | Fail (Local Fix) | TR-001, TR-002 |
 | CRR-008 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 2, delta (API-REV-004) | Fail (Local Fix) | Pass | TR-001, TR-002 resolved |
+| CRR-009 | `code-review-report.md` | Implementation Review, round 7, independent review of the withdrawal (SR-018 / IR-005, user request) | Pass (CRR-006) | Pass | none |
 
 ## Revision Entries
 
@@ -268,3 +269,32 @@ None (first test review).
 - Material score or classification changes: N/A
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: AC-007 (the user's check)
+
+### CRR-009 — Independent review of the withdrawal of adoption (SR-018)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/tickets/in-progress/link-existing-run-to-task/code-review-report.md`
+- Review entry point and round: Implementation Review, round 7 (user-requested, alongside the direct API/E2E route)
+- Review scope: `Full Review` of `ffeea43dac` (the revert of merge `4e738acc66` on product paths); the recorded checks IMP-01..IMP-10 were reused, not rerun
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer (at the user's request), `implementation-handoff.md` IR-005; RM-001..RM-006
+- Relevant solution revision IDs: `SR-018`
+- Relevant architecture-review revision IDs: `N/A` (no independent architecture review for SR-018)
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: `N/A` (in progress)
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: Pass (CRR-006, adoption code, since withdrawn)
+- Current authoritative result: Pass, no findings
+- What changed in the review result and why:
+  - 37 of the merge's 52 product files are restored byte-identically.
+  - 6 of the 8 files later tickets also changed equal pre-merge plus exactly the later changes. The other two differ only by an equivalent naming choice, or by kept fix 1's doc text.
+  - The LazyChildren assertion removed was an adoption-era addition at integration.
+  - The kept fixes (rule 2, the accumulator root claim, the TESTING.md note) carry no adoption residue, and fix 2's mixed-root premise exists in the domain.
+- Supported product scenario / material-premise basis changes: None (the kept fixes are the Solution Designer's RM-006 decisions)
+
+#### Prior Finding Resolution
+
+Not applicable (the adoption findings concerned code now removed).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: Medium / Low confirmed for the removal
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (informational: `/software_engineering_team/implementation_engineer`)
+- Remaining risks or uncertainty: API/E2E sign-off; RM-004/RM-005 at delivery
