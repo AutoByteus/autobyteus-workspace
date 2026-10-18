@@ -66,3 +66,18 @@
   - Files opened: `r6/WDR-2-server-e2e.excerpt.log`; `r6/desktop/WDR-3-nothing-written.txt` (both refused with the pre-adoption text; 0 Task run entries; 0 `taskAgent`); `WDR-4-retired-state.json`; `WDR-5-samples.txt`; `WDR-6-delete-task-project.txt` (Task and Project deletes leave nothing; 0 errors and 0 adoption or search-cleanup failures in the session log).
   - Checked on HEAD: 0 adoption identifiers in `src` and the web app; `forgetProject` / `forgetTask` kept in both delete paths.
   - The branch is current with `origin/personal` `04ec416617` (0 behind). Credential scan of the branch commits: 0 matches. Licensing and hygiene pass.
+- **Finalized:** the ticket branch `codex/withdraw-adoption` was pushed. `origin/personal` stayed at `04ec416617` through the merge and the push. The `--no-ff` merge commit `a9ec1b37e4` was pushed.
+
+### DR-005 — Beta v1.5.6-beta.7 (RM-005)
+
+- Decision: Beta, by the user (RM-005).
+- Checks before tagging (clean release worktree at `a9ec1b37e4`): licensing pass, hygiene pass; `next-beta` → `1.5.6-beta.7`, Android `10050607`.
+- Cut: `desktop-release.sh beta --branch finalize/release-v1.5.6-beta.7 --no-push` → `6958df1345`, tag `v1.5.6-beta.7`. `personal` was unchanged right before the push. Pushed `a9ec1b37e4..6958df1345`, then the tag (2026-10-18T20:46Z).
+- Rollout: Desktop 39164859071 success (7/7), Android 39164859086 success, iOS 39164859098 success including "Archive And Upload To App Store Connect", Server Docker 39164859104 success.
+  - The pre-release has 17 assets (published 2026-10-18T20:51:11Z); the four `latest*.yml` say `1.5.6-beta.7`.
+  - Docker `:1.5.6-beta.7` = `:beta` = `sha256:e128ae59ff40…` (amd64, arm64); `:latest` unchanged (v1.5.5).
+  - Result: **Completed**.
+- Contents since v1.5.6-beta.6: project-task-semantic-search, this withdrawal and segment-lifecycle-error-flood.
+- Notes: `beta-v1.5.6-beta.7-release-notes.md`, curated, covering all three; it states the beta.5 adoption feature was withdrawn (RM-004). Applied after all workflows finished; the tag, assets and pre-release flag are unchanged. Deviation: curated notes on a beta (as before).
+- Cleanup: the release worktree, the `withdraw-adoption` worktree, the local `finalize/` and `codex/` branches and the remote `codex/withdraw-adoption` are removed after this record is pushed.
+- Result: **Delivery Completed** for SR-018. Terminal return sent to `/software_engineering_team/solution_designer` after this record is pushed.
