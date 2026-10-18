@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / round 1 (Pass) | N/A | `Initial Baseline` | `SR-002`, `ARCH-REV-001` | Implementation complete; local checks pass; routed to Code Review |
+| IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 round 1 | CR-001 | `Local Fix` | `SR-002`, `ARCH-REV-001`, `CRR-001` | Unimported parser exports removed; typecheck and changed unit files pass; back to Code Review |
 
 ## Revision Entries
 
@@ -35,3 +36,24 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: see the handoff's Local Implementation Checks Run.
 - Next recipient or routing: Code Reviewer (per `get_handoff_rules`).
 - Remaining limitations or risks: AC-006 (isolated real-app instance with a test data package) not run by implementation.
+
+### IR-002 — Drop the unimported exports of the two Project parsers (CR-001)
+
+- Triggering role, report path, and round: Code Reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/code-review-report.md`, CRR-001 round 1 (Fail, one Local Fix).
+- Triggering finding IDs: CR-001
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001, Code Review failed on CR-001.
+- Current authoritative result: CR-001 fixed; returned for Targeted Delta Review.
+- Related solution revision IDs: `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this revision is recorded: `parseCreateProjectInput` and `parseUpdateProjectInput` stayed exported after IR-001 deleted their only importer (the old-tool parity test); unimported exports are dead code in a touched file (Core Principle 7).
+- Approved behavior or requirement IDs affected: none (no behavior change); REQ-004 cleanliness.
+- Implementation delta: `export` removed from both functions in `autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts` (l.114, l.124); the functions stay as private helpers of `parseProjectTaskToolInput`.
+- Changed files or areas: `project-task-tool-contract.ts` (2 lines).
+- Local validation and result: `git grep parseCreateProjectInput\|parseUpdateProjectInput -- ':!tickets'` → only the definitions and the two calls in `parseProjectTaskToolInput`; `pnpm -C autobyteus-server-ts typecheck` clean; `vitest run` on `project-task-tools.test.ts`, `project-tool-runtime-parity.test.ts`, `autobyteus-agent-tool-resolver.test.ts` → 113 passed.
+- Classification recheck: Small/High unchanged.
+- Next recipient or routing: Code Reviewer (Targeted Delta Review), per `get_handoff_rules`.
+- Remaining limitations or risks: unchanged from IR-001 (AC-006 left to API/E2E).

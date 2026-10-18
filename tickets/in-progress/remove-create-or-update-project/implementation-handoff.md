@@ -12,21 +12,21 @@ Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-cre
 - Supplemental task artifacts: `tickets/done/project-tool-split/` (read-only)
 - Design review report: `design-review-report.md`
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: N/A (initial)
+- Triggering rework report, revision record, or evidence, when applicable: `code-review-report.md`, `code-review-revision-record.md` (CRR-001, CR-001)
 
 ## Current Implementation Summary
 
 `create_or_update_project` no longer exists: it is gone from the contract's name set and type, descriptions and schemas, from the native registration and therefore from the MCP manifest and first-party protection (both derive from `PROJECT_TASK_TOOL_NAMES`). The transition dispatcher `effectiveProjectTaskToolName` and its type became dead and are removed; `parseProjectTaskToolInput` and `executeProjectTaskTool` dispatch on `name` again. `create_project`, `update_project` and the other four tools are byte-identical to base. A definition that still lists the old name is handled by the existing unknown-name skip (no code for it).
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-001 baseline + CR-001 Local Fix)
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: N/A
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: CR-001 (unimported exports of `parseCreateProjectInput` / `parseUpdateProjectInput`; fixed in IR-002)
 
 ## Routing Classification (Mandatory)
 
@@ -83,7 +83,7 @@ Docs: server `docs/modules/projects.md`, `docs/modules/agent_tools_mcp_server.md
 
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
-- Dead code in the touched files and modules removed (Core Principle 7): `Yes` (`effectiveProjectTaskToolName`, `EffectiveProjectTaskToolName`)
+- Dead code in the touched files and modules removed (Core Principle 7): `Yes` (`effectiveProjectTaskToolName`, `EffectiveProjectTaskToolName`; IR-002: the now-unimported exports of `parseCreateProjectInput` and `parseUpdateProjectInput` dropped, functions kept as private helpers)
 - Dead code found elsewhere, listed as follow-up: None
 - Shared structures remain tight: `Yes`
 - Canonical shared design guidance was reapplied during implementation: `Yes`
@@ -118,6 +118,8 @@ Commands from the repository root, per `TESTING.md` and `autobyteus-server-ts/AG
 | Tool resolution of the new build (read-only, throwaway HOME) | `node tickets/done/project-tool-split/evidence/ac-005-tool-resolution-probe.mjs <worktree>/autobyteus-server-ts` → `evidence/new-build-probe.txt` | Native and MCP serve only `create_project`, `update_project`; a list with the old name skips it with the "not found in registry. Skipping." warning, 0 errors, and keeps the new tools |
 | Web probe syntax | `node --check autobyteus-web/tests/e2e/team-status-live-probe.mjs` | Pass |
 | REQ-004 reference check | `git grep create_or_update_project -- ':!tickets'` | Only the skip/exact-set tests, the migration fixture (DEC-002) and `.github/release-notes/release-notes.md` (DEC-004) |
+
+IR-002 recheck after CR-001: `git grep` shows no importer of the two parsers; typecheck clean; the three changed unit files 113 passed.
 
 Not run (owned downstream): the web probe run, gated runtime suites, the AC-006 isolated real-app check.
 

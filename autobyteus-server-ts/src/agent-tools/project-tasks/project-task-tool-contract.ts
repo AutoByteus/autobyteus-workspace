@@ -111,7 +111,7 @@ function addProjectFields(input: Record<string, unknown>, result: Record<string,
 }
 
 /** `create_project`: `{name, description?, workspaces?}`; `project_id` is rejected as unsupported. */
-export function parseCreateProjectInput(raw: unknown): Record<string, unknown> {
+function parseCreateProjectInput(raw: unknown): Record<string, unknown> {
   const input = projectInput(raw);
   rejectUnsupported(input, ["name", "description", "workspaces"]);
   const result: Record<string, unknown> = {};
@@ -121,7 +121,7 @@ export function parseCreateProjectInput(raw: unknown): Record<string, unknown> {
 }
 
 /** `update_project`: `{project_id, name?, description?, workspaces?}`. At least one change is required. */
-export function parseUpdateProjectInput(raw: unknown): Record<string, unknown> {
+function parseUpdateProjectInput(raw: unknown): Record<string, unknown> {
   const input = projectInput(raw);
   rejectUnsupported(input, ["project_id", "name", "description", "workspaces"]);
   const result: Record<string, unknown> = {project_id: id(input, "project_id")};
