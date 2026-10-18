@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-59932-7c13",
+    "pid": 38359,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:59933",
+    "graphqlUrl": "http://127.0.0.1:59933/graphql",
+    "controlEndpoint": "http://127.0.0.1:59932",
+    "controlPort": 59932,
+    "serverPort": 59933,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EjDh6k",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EjDh6k/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-59932-7c13.log"
+  }
+}
+exit 0

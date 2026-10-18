@@ -1,0 +1,4 @@
+# API-05 typecheck of the new e2e file | temporary tsconfig extending tsconfig.build.json, include only tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts | pnpm exec tsc -p <tmp> --noEmit | exit 2 | all 3 errors are in tests/e2e/helpers/claude-live-agent-harness.ts (pre-existing), none in the new file
+tests/e2e/helpers/claude-live-agent-harness.ts(78,9): error TS2740: Type '{ name: string; description: string; instructions: string; }' is missing the following properties from type 'AgentDefinition': toolNames, inputProcessorNames, llmResponseProcessorNames, toolExecutionResultProcessorNames, and 6 more.
+tests/e2e/helpers/claude-live-agent-harness.ts(129,9): error TS2353: Object literal may only specify known properties, and 'canInterrupt' does not exist in type 'AgentRunStatusProjection'.
+tests/e2e/helpers/claude-live-agent-harness.ts(129,32): error TS2339: Property 'can_interrupt' does not exist on type 'AgentStatusPayload'.

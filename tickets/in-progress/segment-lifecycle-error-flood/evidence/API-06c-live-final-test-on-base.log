@@ -1,0 +1,370 @@
+# API-06c BASE | final durable test file (idle + loaded per CLI) | 4 modified src files from 1c718202b2 | 2026-10-18T17:25:24Z
+# env -i PATH HOME USER LOGNAME TMPDIR RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, idle)
+Agent websocket attached for run claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d
+Created agent session 6d33359c-c617-4236-bdd7-41986c9342c3 for run claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d
+Agent WebSocket connected: session=6d33359c-c617-4236-bdd7-41986c9342c3, run=claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, idle)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/segment-lifecycle-error-flood/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, idle)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, idle)
+[claude-self-started-turn-shape] {"label":"path-claude, idle","selfStartedTurnId":"claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:0d9fc8b9-e868-4c0d-b42f-3bcef5da689b","turnsAfterNotice":["TURN_STARTED:claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:318da270-cb2a-48ba-88eb-ceb3a7360866","SYSTEM_TASK_NOTIFICATION:claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:318da270-cb2a-48ba-88eb-ceb3a7360866 \"Background task completed: Write marker A after 10 second delay (completed)\nBackground task completed: Write marker B after 10 second delay (completed)\"","TURN_COMPLETED:claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:318da270-cb2a-48ba-88eb-ceb3a7360866","TURN_STARTED:claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:0d9fc8b9-e868-4c0d-b42f-3bcef5da689b","SYSTEM_TASK_NOTIFICATION:claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:0d9fc8b9-e868-4c0d-b42f-3bcef5da689b \"Claude started a turn on its own.\"","TURN_COMPLETED:claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:0d9fc8b9-e868-4c0d-b42f-3bcef5da689b"],"turnBoundaryMs":["TURN_STARTED@5.8ms","TURN_COMPLETED@4422.0ms","TURN_STARTED@13214.2ms","TURN_COMPLETED@13220.6ms","TURN_STARTED@13220.8ms","TURN_COMPLETED@16405.0ms"],"lifecycleNotices":0,"statusAtText":[{"turnId":"claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:6c3aeb36-928e-428c-ac5d-c2b8ca79a1bd","status":"running"},{"turnId":"claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:0d9fc8b9-e868-4c0d-b42f-3bcef5da689b","status":"running"},{"turnId":"claude-self-started-0ea1ef5b-86a8-4228-9a71-2e4ad860c62d:turn:0d9fc8b9-e868-4c0d-b42f-3bcef5da689b","status":"running"}],"rejectionLogLines":0}
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, idle)
+Closed agent session 6d33359c-c617-4236-bdd7-41986c9342c3
+Agent WebSocket disconnected: 6d33359c-c617-4236-bdd7-41986c9342c3
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, loaded)
+Agent websocket attached for run claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9
+Created agent session 6a97ad2d-c697-4aae-a7db-a0f9a77db6ac for run claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9
+Agent WebSocket connected: session=6a97ad2d-c697-4aae-a7db-a0f9a77db6ac, run=claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, loaded)
+[claude-self-started-turn-shape] {"label":"path-claude, loaded","selfStartedTurnId":"claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2","turnsAfterNotice":["TURN_STARTED:claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:5504feee-50ac-4880-b78a-4eb30b77b95d","SYSTEM_TASK_NOTIFICATION:claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:5504feee-50ac-4880-b78a-4eb30b77b95d \"Background task completed: sleep 10; echo READY_9ffbdf58-A > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-qKdXdp/workspace/marker-a.txt (completed)\nBackground task completed: sleep 10; echo READY_9ffbdf58-B > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-qKdXdp/workspace/marker-b.txt (completed)\"","TURN_COMPLETED:claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:5504feee-50ac-4880-b78a-4eb30b77b95d","TURN_STARTED:claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2","SYSTEM_TASK_NOTIFICATION:claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2 \"Claude started a turn on its own.\"","TURN_COMPLETED:claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2"],"turnBoundaryMs":["TURN_STARTED@27.4ms","TURN_COMPLETED@4055.6ms","TURN_STARTED@12822.5ms","TURN_COMPLETED@12904.4ms","TURN_STARTED@12931.0ms","TURN_COMPLETED@16391.9ms"],"lifecycleNotices":8,"statusAtText":[{"turnId":"claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:0493a9d4-3128-497b-9a16-1d5b29654290","status":"running"}],"rejectionLogLines":0}
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, loaded)
+Closed agent session 6a97ad2d-c697-4aae-a7db-a0f9a77db6ac
+Agent WebSocket disconnected: 6a97ad2d-c697-4aae-a7db-a0f9a77db6ac
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude, idle)
+Agent websocket attached for run claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d
+Created agent session a56a09c8-edd8-4491-aa54-ac2ea4535b05 for run claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d
+Agent WebSocket connected: session=a56a09c8-edd8-4491-aa54-ac2ea4535b05, run=claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude, idle)
+[claude-self-started-turn-shape] {"label":"sdk-bundled-claude, idle","selfStartedTurnId":"claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:b42ecca0-f944-42ea-9133-a7eebcda4dfc","turnsAfterNotice":["TURN_STARTED:claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:d77dd601-6a05-4dcd-abda-b3bb884c3cf1","SYSTEM_TASK_NOTIFICATION:claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:d77dd601-6a05-4dcd-abda-b3bb884c3cf1 \"Background task completed: sleep 10; echo READY_7b7ef814-A > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-ov3MFG/workspace/marker-a.txt (completed)\nBackground task completed: sleep 10; echo READY_7b7ef814-B > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-ov3MFG/workspace/marker-b.txt (completed)\"","TURN_COMPLETED:claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:d77dd601-6a05-4dcd-abda-b3bb884c3cf1","TURN_STARTED:claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:b42ecca0-f944-42ea-9133-a7eebcda4dfc","SYSTEM_TASK_NOTIFICATION:claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:b42ecca0-f944-42ea-9133-a7eebcda4dfc \"Claude started a turn on its own.\"","TURN_COMPLETED:claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:b42ecca0-f944-42ea-9133-a7eebcda4dfc"],"turnBoundaryMs":["TURN_STARTED@0.8ms","TURN_COMPLETED@4828.5ms","TURN_STARTED@13720.4ms","TURN_COMPLETED@13725.4ms","TURN_STARTED@13725.5ms","TURN_COMPLETED@17872.3ms"],"lifecycleNotices":0,"statusAtText":[{"turnId":"claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:24aec80d-82a6-42ed-8fc2-9bd9b98eef0b","status":"running"},{"turnId":"claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:b42ecca0-f944-42ea-9133-a7eebcda4dfc","status":"running"},{"turnId":"claude-self-started-3f4d7a5d-2e60-46e1-befd-39418529402d:turn:b42ecca0-f944-42ea-9133-a7eebcda4dfc","status":"running"}],"rejectionLogLines":0}
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude, idle)
+Closed agent session a56a09c8-edd8-4491-aa54-ac2ea4535b05
+Agent WebSocket disconnected: a56a09c8-edd8-4491-aa54-ac2ea4535b05
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude, loaded)
+Agent websocket attached for run claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d
+Created agent session 386f3c79-f9c4-497c-8be2-b5c4777f95ec for run claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d
+Agent WebSocket connected: session=386f3c79-f9c4-497c-8be2-b5c4777f95ec, run=claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude, loaded)
+[claude-self-started-turn-shape] {"label":"sdk-bundled-claude, loaded","selfStartedTurnId":"claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f","turnsAfterNotice":["TURN_STARTED:claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:57212976-6381-4ee2-a79c-b6c877fc3139","SYSTEM_TASK_NOTIFICATION:claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:57212976-6381-4ee2-a79c-b6c877fc3139 \"Background task completed: sleep 10; echo READY_927aed10-A > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-2HStKo/workspace/marker-a.txt (completed)\nBackground task completed: sleep 10; echo READY_927aed10-B > /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-self-started-2HStKo/workspace/marker-b.txt (completed)\"","TURN_COMPLETED:claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:57212976-6381-4ee2-a79c-b6c877fc3139","TURN_STARTED:claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f","SYSTEM_TASK_NOTIFICATION:claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f \"Claude started a turn on its own.\"","TURN_COMPLETED:claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f"],"turnBoundaryMs":["TURN_STARTED@27.4ms","TURN_COMPLETED@5189.2ms","TURN_STARTED@13885.6ms","TURN_COMPLETED@13967.9ms","TURN_STARTED@13994.4ms","TURN_COMPLETED@19892.1ms"],"lifecycleNotices":8,"statusAtText":[{"turnId":"claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:be64b2d9-921f-463e-b407-d68c6edf93f9","status":"running"}],"rejectionLogLines":0}
+
+stdout | tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude, loaded)
+Closed agent session 386f3c79-f9c4-497c-8be2-b5c4777f95ec
+Agent WebSocket disconnected: 386f3c79-f9c4-497c-8be2-b5c4777f95ec
+
+ ❯ tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts (4 tests | 2 failed) 71971ms
+     ✓ shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, idle)  16823ms
+     × shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, loaded) 16799ms
+     ✓ shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude, idle)  18179ms
+     × shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude, loaded) 20169ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (path-claude, loaded)
+AssertionError: expected [ { type: 'ERROR', …(1) }, …(7) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-c01a221e-544a-4d2f-bcee-f9d82d5228b9:turn:9c4f6c05-a2d8-40fb-86df-b100df05dfd2",
++     },
++     "type": "ERROR",
++   },
++ ]
+
+ ❯ tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts:184:32
+    182| 
+    183|       // AC-001: no lifecycle notice anywhere in the run; the self-sta…
+    184|       expect(lifecycleNotices).toEqual([]);
+       |                                ^
+    185|       const selfStartedText = textOfTurn(selfStartedTurnId);
+    186|       expect(selfStartedText).toContain(nonce);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts > Claude self-started turn after a background task (live E2E) > shows and records the text of the turn Claude starts on its own, with status running and no lifecycle notice (sdk-bundled-claude, loaded)
+AssertionError: expected [ { type: 'ERROR', …(1) }, …(7) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f",
++     },
++     "type": "ERROR",
++   },
++   {
++     "payload": {
++       "code": "AGENT_SEGMENT_LIFECYCLE_INVALID",
++       "error_effect": "diagnostic",
++       "error_scope": "turn",
++       "message": "A runtime segment event violated the canonical lifecycle contract.",
++       "turn_id": "claude-self-started-49c802d7-82ce-4579-9fc8-9d1eecd7bb4d:turn:e7a0e842-d367-4e8b-a67a-e5e32648c66f",
++     },
++     "type": "ERROR",
++   },
++ ]
+
+ ❯ tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts:184:32
+    182| 
+    183|       // AC-001: no lifecycle notice anywhere in the run; the self-sta…
+    184|       expect(lifecycleNotices).toEqual([]);
+       |                                ^
+    185|       const selfStartedText = textOfTurn(selfStartedTurnId);
+    186|       expect(selfStartedText).toContain(nonce);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  19:25:25
+   Duration  76.74s (transform 2.92s, setup 23ms, import 4.25s, tests 71.97s, environment 0ms)
+
+exit 1
