@@ -7,7 +7,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery package from `/software_engineering_team/code_reviewer` (CRR-002, API-REV-001 Pass) | N/A | `Blocked`: integration merge conflict, routed as `Local Fix` to implementation | `release-deployment-report.md` |
-| DR-002 | Package back after the Local Fix (IR-002; CRR-003 Pass, CRR-004 N/A; API-REV-002 Pass) | `Blocked` (DR-001) | `Delivery Completed`: integrated, verified from evidence, docs synced, finalized to `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
+| DR-002 | Package back after the Local Fix (IR-002; CRR-003 Pass, CRR-004 N/A; API-REV-002 Pass) | `Blocked` (DR-001) | `Blocked`: verified from evidence and docs synced on `1840d55268`; `origin/personal` then advanced (`8945d0c8a2`, append-only-message-logs); re-integration `8f91efb2cd` breaks the ticket's cadence integration test (removed module), routed as `Local Fix` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -38,7 +38,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
   - `code-review-report.md` CRR-003 Pass; `api-e2e-test-review-report.md` CRR-004 Not Applicable.
   - `api-e2e-execution-coverage-report.md` API-REV-002 (95.9%; LIVE-COLLAB-r2, LIVE-ADOPT, DESK-02).
 - Prior authoritative result: `Blocked` (DR-001, merge conflict)
-- Current authoritative result: `Delivery Completed`
+- Current authoritative result: `Blocked` (re-integration before the final merge; see below)
 - Docs sync report: `docs-sync-report.md` (`Pass`; web architecture doc and its `settings.md` copy updated by delivery)
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
@@ -46,11 +46,19 @@ The latest docs sync report, handoff summary, and release/publication/deployment
   - Checkpoint `4231e492b7`.
   - Merged `origin/personal` @ `8367f6cae3` as `1840d55268`, with no conflicts.
   - DLV-01..07 all pass: contracts 33/0 and 19/0; typecheck OK; cadence socket 18/18 ×3; PB-001 8/8; unit 5894; integration 415/69 skipped; web 4493/3 skipped.
-- Verification and finalization state: verified from evidence (per-AC table in the release report; sufficient; no user check needed). Finalization results are in the release report's Finalization Record.
-- Terminal return to `/solution_designer`: `Sent` after finalization and cleanup (see the release report's Final Status).
-- Why this revision was recorded: the DR-001 blocker was resolved and delivery completed.
-- Next recipient/action: Solution Designer verifies the receipt and returns `Terminal`.
+- Verification and finalization state: verified from evidence on `1840d55268` (per-AC table in the release report; sufficient; no user check needed).
+- Re-integration before the final merge:
+  - The post-verification fetch found `origin/personal` @ `8945d0c8a2` (append-only-message-logs, about 17 commits; no file overlap with this ticket).
+  - Delivery edits were protected in `9dc45292ce`, then merged as `8f91efb2cd` with no conflicts.
+  - Reruns (`evidence/DLV-08-reintegration.log`, `DLV-09-server-test-unit.log`, `DLV-10-server-test-integration.log`): typecheck OK; streaming units 166/166; `test:unit` 5950 passed.
+  - `chat-socket-content-cadence.integration.test.ts` fails to load on all 3 runs: `Cannot find module '../../../src/services/team-communication/team-communication-messages-schema.js'` (test L37, used at L108 to validate the `case-003-nested-task-team` `team_communication_messages.json` fixture). The base commit `f6bf477c3f` removed that module; its validator now lives only in `src/app-data-migrations/legacy/released-run-package-shapes/released-message-logs-before-append-only.ts`.
+  - `test:integration`: 1 failed suite (this file), 397 passed. This is the only failure.
+  - Not caught by typecheck because `tsconfig.build.json` excludes tests.
+- Finalization: not started; nothing pushed to `personal`.
+- Terminal return to `/solution_designer`: `Not yet eligible`.
+- Why this revision was recorded: the DR-001 blocker was resolved, verification passed, and then a new blocker appeared at re-integration before the final merge.
+- Next recipient/action: `/software_engineering_team/implementation_engineer` fixes the test's import on `8f91efb2cd` and reruns the cadence file and `test:integration`, then the package returns to delivery. Delivery then reruns and finalizes; re-verification is limited to the test fix.
 - Remaining blockers, rollback concerns, or untested scope:
-  - Blockers: none.
+  - Blockers: the broken test import above.
   - No release (DEC-003); the beta, with RSK-003 stated, follows when the user asks, then the user's check.
   - Untested scope: live non-native runtimes; the D-1 path (unit-only).
