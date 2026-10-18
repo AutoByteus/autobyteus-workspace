@@ -345,5 +345,5 @@ N/A
 - Use `experiments/E4-shared-turn-identity.patch` as a reference only; apply the names from this design (`AgentTurnLedger`, `hasEnded`, `end`, `endActive`, `forgetActive`).
 - Segment-start opening (`start()` today calls `openTurn`) is stream evidence: use `observeStreamStart` only when the ledger's active turn differs, as in the prototype.
 - Notice payload: keep `code: "AGENT_SEGMENT_LIFECYCLE_INVALID"`, `error_scope: "turn"`, `error_effect: "diagnostic"`, `turn_id`; message exactly "Some of the agent's output in this turn could not be shown."
-- Log tags: `[AgentSegmentLifecycleRejected]` `{ runtimeKind, runId, turnId, eventType, segmentId, reason }` and `[AgentSegmentLifecycleRejectedSummary]` `{ runtimeKind, runId, turnId, rejectedAfterFirst }`.
+- Log tags: `[AgentSegmentLifecycleRejected]` `{ runtimeKind, runId, turnId, eventType, segmentId, reason }` and `[AgentSegmentLifecycleRejectedSummary]` `{ runtimeKind, runId, turnId, count }` (field name aligned with the interface table and REQ-004 at delivery, DR-001; the implementation uses `count`).
 - Keep the test-environment isolation rules; the regression test uses the existing fake Claude SDK helper (`tests/helpers/fake-claude-streaming-sdk.ts`).
