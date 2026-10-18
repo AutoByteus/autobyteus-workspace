@@ -217,8 +217,8 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     ] });
     emit(callbacks, 'SEGMENT_CONTENT_BATCH', { change_sequence: 9, change_sequence_through: 9, items: [{ ...segment(teacherRunId), delta: 'z' }] });
 
-    expect(teacher.state.conversation.messages[0]?.segments[0]).toMatchObject({ content: 'xyz' });
-    expect(taskStudent.state.conversation.messages[0]?.segments[0]).toMatchObject({ content: '12' });
+    expect(teacher.state.conversation.messages[0]).toMatchObject({ segments: [{ content: 'xyz' }] });
+    expect(taskStudent.state.conversation.messages[0]).toMatchObject({ segments: [{ content: '12' }] });
     expect(team.view.getChangeSequence()).toBe(9);
     expect(team.view.needsStreamRecovery()).toBe(false);
   });
