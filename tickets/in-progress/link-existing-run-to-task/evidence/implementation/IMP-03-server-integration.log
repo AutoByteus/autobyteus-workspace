@@ -1,0 +1,9 @@
+# IMP-03 server integration suite (excerpt)
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# Commit: ffeea43dac (worktree content identical when run)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T19:04Z
+
+ Test Files  77 passed | 18 skipped (95)
+      Tests  415 passed | 69 skipped (484)
+   Duration  211.85s (transform 7.97s, setup 805ms, import 77.39s, tests 124.64s, environment 7ms)

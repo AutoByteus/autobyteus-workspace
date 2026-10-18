@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-002 | Code Reviewer / code-review-report.md / CRR-001 round 1 | CR-001, CR-002, CR-003 | `Local Fix` | SR-008, ARCH-REV-004, CRR-001 | Today's refusal kept for runs that are no run the user started; refusal e2e run; unused declarations removed; doc step wording |
 | IR-003 | Code Reviewer / code-review-report.md / CRR-003 failure-origin review of API-REV-001 | F-001, F-003 (F-002 held) | `Local Fix` | SR-008, ARCH-REV-004, CRR-003, API-REV-001 | Live token summary claims the observation's current root; adoption-specific Task message |
 | IR-004 | Architecture Reviewer / ARCH-REV-005 Pass of SR-009 (after CRR-005, API-REV-002 F-002) | F-002 | `Design Revision Implementation` | SR-009, ARCH-REV-005, CRR-005, API-REV-002 | Renderer retires an adopted run's own-group row: at once on `task_execution_started`, else at the next history read |
+| IR-005 | Solution Designer / handoff-implementation-withdraw.md (SR-018) | N/A | `Removal` | SR-018 (the cancelled full-adoption round SR-010..SR-017 produced no IR) | Adoption withdrawn: merge `4e738acc66` reverted on product paths; three general fixes kept |
 
 ## Revision Entries
 
@@ -119,3 +120,38 @@ The current code and `implementation-handoff.md` remain authoritative.
   - Rendered check on a real stack (Nuxt dev, built backend, headless Chrome, scripted AGY), `evidence/implementation/IR-004-adoption-sidebar-check/`: Pass.
 - Next recipient or routing: Code Reviewer (source-review delta of SR-009), then API/E2E reruns the web tests, the guards and D-1.
 - Remaining limitations or risks: rule 1 is wired for the Agent root only (see the handoff's Important Assumptions). The reviewer's archive premise did not hold: archive already drops the local context, so nothing changed there.
+
+### IR-005 — SR-018: withdraw adoption
+
+- Triggering role, report path, and round: Solution Designer, `/Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/tickets/in-progress/link-existing-run-to-task/handoff-implementation-withdraw.md` (SR-018), plus the user's rule passed on during the round: remove all adoption logic, keep any fix in the merge that is useful on its own, and ask only when unclear.
+- Triggering finding IDs: N/A
+- Classification: `Removal`
+- Prior authoritative result: IR-004 (merged as `4e738acc66`, released in the beta). The full-adoption round (SR-010..SR-017, worktree `link-existing-run-to-task-full-adoption`) was cancelled before any handoff; it has no IR entry, and its worktree was left untouched.
+- Current authoritative result: commit `ffeea43dac` on `codex/withdraw-adoption` (base `2b04a9971d`). Adoption is gone: `delegate_task` on a run that is not one of the delegator's delegated runs is refused as before ("`<id>` is not one of your task agents. …"). Later tickets' changes are intact, and three fixes from the merge that are useful without adoption are kept.
+- Related solution revision IDs: SR-018
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: N/A
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: the removal requested by SR-018 (RM-001..RM-004).
+- Approved behavior or requirement IDs affected: RM-001 (adoption removed), RM-002 (later tickets kept), RM-003 (no migration).
+- Implementation delta:
+  - Applied the merge's reverse diff on product paths (`git diff 4e738acc66 4e738acc66^1 -- . ':!tickets' ':!TESTING.md' | git apply -3`): 50 product files, +178 / −2240.
+  - Resolved three conflicts by removing only adoption lines:
+    - `task-agent-own-files.ts` now equals the append-only-message-logs ticket's own version (`f6bf477c3f`);
+    - `agentRunCollaborationStreamingService.ts` keeps autobyteus-139's `change_sequence_through` and the delegated-copies "settings Save" comment;
+    - its spec keeps the autobyteus-139 content-batch test.
+  - Removed one adoption assertion that a later ticket's test had picked up at merge time: `agentRunCollaborationLazyChildren.spec.ts` asserted the SR-009 rule-1 refresh. The ticket's own version (`291545c66f`) had no such assertion.
+  - Kept, as useful without adoption, with their adoption-specific wording rewritten:
+    - SR-009 sidebar rule 2 (`runHistoryRetiredRuns.ts` and its two calls); rule 1 removed;
+    - the token-usage live root claim (`token-usage-run-accumulator.ts`), with its regression test rewritten to the mixed-root case;
+    - the `TESTING.md` note.
+  - The size-driven extractions (`agent-run-history-catalog-state.ts`, `existing-run-assignments.ts`) are reverted to the shipped structure, as the Solution Designer decided.
+- Changed files or areas: see the commit (server: the adoption owner, run facts and wiring, Task-side assignment and revert, catalogs, own-file shape, texts, docs, tests, fixtures; web: rule 1 of the sidebar rule, docs, tests).
+- Local validation and result:
+  - Server: build typecheck 0 errors; unit 727 files / 5933 tests; integration 77 files / 415 tests; the refusal, existing-copy and reactivation e2e files 24 passed / 3 skipped.
+  - Web: 636 files / 4508 tests; the guards pass; typecheck parity with base.
+  - Adoption-identifier search: the hit set equals the pre-merge tree.
+  - Evidence: `evidence/implementation/IMP-01`..`IMP-10`.
+- Next recipient or routing: API/E2E (Medium / Low, direct route).
+- Remaining limitations or risks: none known. The beta's release notes must say the adoption feature was withdrawn (RM-004, delivery).

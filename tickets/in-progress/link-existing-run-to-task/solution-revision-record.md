@@ -121,3 +121,121 @@
 - Review: ARCH-REV-005 Pass of SR-009 (2026-10-18, targeted); handed to the implementation engineer. Side note recorded:
   rule 2 also removes an open, inactive team run the user archives (team archive keeps the local context; the history
   read omits archived inactive team runs) — consistent with archive; the implementer confirms and tests it.
+
+### SR-010 — Full adoption of a run's chain
+
+- Trigger: AC-007 on the user's install (delivery engineer, Requirement Gap, `7e215cdf49`): the user's real target, Work
+  Journal's team run `software_engineering_team_ffde3bd0…`, was refused by REQ-007 (its one delegated run is a finished
+  PM helper of 2026-10-08). The user, 2026-10-18: after adoption the state must equal that of a natural chain ("then it's
+  not a full adoption").
+- Evidence: natural chain state read from the user's data (member-delegated run: link in the PM's tree, own file names
+  the PM's run, `delegated` entry in the team's Task, hosted by the PM's run).
+- Requirements: REQ-007 rewritten (full adoption), AC-008 added, DEC-107 superseded, DEC-110 (ongoing → sub-work of the
+  adopted Task, tracking Task CANCELLED with a note; finished → history kept, re-hosted). Approved by the user.
+- Design: §Full Adoption Of The Chain — forward-only chain steps before T's own steps; every intermediate state valid;
+  re-host writes on Task entries; proof by comparison with a natural chain.
+- Ticket folder moved back from `tickets/done/` to `tickets/in-progress/` for this revision (worktree
+  `link-existing-run-to-task-full-adoption`, branch `codex/link-existing-run-to-task-full-adoption`, base `7e215cdf49`).
+- Next: architecture review of the revision.
+
+### SR-011 — ARCH-REV-006 recovery
+
+- ARCH-F-004 (Requirement Gap): chains with board-Task entries — the user decided to refuse them, open or closed
+  (REQ-008, AC-009, DEC-112), after discussing why closing such a chain would cancel or stop real board Tasks.
+- ARCH-F-006 (Requirement Gap): "equal to a natural chain" = behavior-driving state equal, history kept true (DEC-111,
+  AC-008 reworded) — the user agreed.
+- ARCH-F-005 (Design Impact): classification once from the pre-adoption temp-Task status; ongoing: append `delegated`
+  first, then close the old entry; cancel each temp Task only after all its runs moved; intermediate-state statement
+  corrected; close-revert returns a run caught between own-file and link to T; sub-step tests.
+- Editorial: handoff header and sections refreshed.
+- Next: re-review.
+
+### SR-012 — ARCH-REV-007 recovery
+
+- ARCH-F-007 (Design Impact): unowned chain runs (collaborators converted by 259ddae7; 11 of 93 chain links in the
+  user's data) were not classified. Now: class *unowned* → open `delegated` sub-work of the adopted Task, nothing closed
+  (DEC-113, within the user's DEC-111); retry recognition stated; fixture and natural-chain comparison added.
+- Note answered: dedicated Task-side operations `appendAdoptedSubWork`, `closeAdoptedPriorEntry`, `rehostEntries`.
+- Editorial: requirements Document Status updated.
+- Next: re-review.
+- Review: ARCH-REV-008 Pass of SR-012 (2026-10-18); handed to the implementation engineer. Notes passed on: *unowned*
+  (no Task entry) also covers pre-Task copies; `rehostEntries` idempotent for retries; the Project-delete revert
+  (ARCH-REV-004) still applies.
+
+### SR-013 — Implementer DI-002
+
+- Trigger: DI-002 (`implementation-design-impact.md`), before any code. Confirmed in code: delegator validation
+  (`standalone-root-tree-schema.ts:24-27`), load filter (`task-execution-tree-split.ts:137-155`), ad-hoc Task fields
+  (`projects/domain/ad-hoc-task.ts`, no note).
+- Decisions (Solution Designer, within the approved direction): (1) chain links written to the delegator's tree file
+  under its persistence lock, activated in one commit after T's link; intermediate-state statement corrected; (2) the
+  revert returns every chain run to T and reverses finished runs' re-host; (3) temp Task CANCELLED without a note
+  (DEC-110 text adjusted).
+- Next: targeted architecture re-review, then implementation.
+- Review: ARCH-REV-009 Pass of SR-013 (2026-10-18, targeted); notes: revert order for a team T (restore T's file before
+  re-adding chain links); accepted residual (a returned ongoing / unowned run stays a closed-Task copy for messaging,
+  only after an interrupted adoption's Task is closed before the retry).
+
+### SR-014 — Board-Task chain runs become the delegator's own assignments (the user)
+
+- Trigger: the user, 2026-10-18: instead of refusing a chain that works on a board Task, cut the relationship — the run
+  working on the board Task becomes the PM's own assignment for it ("then it becomes directly the board task").
+- Requirements: REQ-008 rewritten (no refusal; board-Task chain runs are handed to the delegator as its own
+  assignments); AC-009 rewritten; DEC-112 superseded by DEC-114 (the user).
+- Design: class *board* (any entry in a Project Task): every entry re-hosted to the delegator; on its current entry, if
+  `assigned`, `assignedBy` → the delegator; own file `delegatorAgentRunId` and the link's delegator → the delegator; its
+  current Task stays the board Task (closing the adopted Task never stops it). Sub-work of a board Task stays that Task's
+  sub-work (re-hosted). Operation `reassignToDelegator` beside the other dedicated Task-side operations.
+- Next: targeted architecture re-review; implementer informed.
+- SR-014 investigation (same round): assigner, host and message-scope rules checked in code (investigation notes
+  §SR-014 Investigation); design evidence added; the cut of messaging between X's and K's runs stated. The user
+  confirmed SR-014 ("This is much cleaner … update the relevant design and requirement").
+- SR-014 clarification (implementer's question, 2026-10-18): only a *board* run whose current entry is `assigned` gets the delegator as its delegator / assigner; `delegated` sub-work of a board Task keeps its own delegator and is only re-hosted.
+- Review: ARCH-REV-010 Pass of SR-014 (2026-10-18, targeted, clarification included); handed to the implementation engineer. Note recorded in the design: for a closed current entry `reassignToDelegator` rewrites its `assignedBy` (intended; the one history field adoption changes; one docs line).
+
+### SR-015 — Every irreversible step after the commit point
+
+- Trigger: the implementer's proposal (2026-10-18): defer a board worker's Task-side writes and delegator change, and the
+  temp-Task cancels, until after T's link, because the revert could not undo them.
+- Decision (Solution Designer, within the direction): accepted and extended to every class — before T's link only
+  reversible tree / own-file steps (links keep their original delegator); after it all Task-side writes, then the
+  activation (board worker's delegator → the delegator), then the temp-Task cancels. The revert never meets a Task-side
+  write; the ARCH-REV-009 residual disappears. End states unchanged.
+- Next: targeted architecture re-review in parallel with the implementer building it.
+
+### SR-016 — ARCH-REV-011 recovery
+
+- ARCH-F-008 (Design Impact): after the commit point only a retry could finish, and a closed / deleted Task refuses it.
+  Now `completeCommitted(delegatorRoot)` always finishes a committed adoption: on retry, on the delegator root's load,
+  and from the close / Task-delete / Project-delete paths before they act. Tests for each.
+- ARCH-F-009 (Design Impact): the revert bullet rewritten to the SR-015 contract (nothing Task-side to undo).
+- Next: targeted re-review; implementer informed.
+- Review: ARCH-REV-012 Pass of SR-016 (2026-10-18, targeted); handed to the implementation engineer. Notes: keep the load-time completion check cheap (8641c0ac H2); add a test for a direct close overlapping a load.
+
+### SR-017 — Adoption contract and its validation
+
+- Trigger: the user, 2026-10-18: write one contract with every adoption case and validate all of them, as for the memory
+  refactor; implementation paused meanwhile.
+- Supplement: `adoption-contract.md` (behavior-defining; consolidates SR-003..SR-016). Validation V-1..V-18 found
+  V-2 (hub log of an adopted agent run), V-3 (T's own session during the handover), V-4 (classification from entry state,
+  not temp-Task status), V-5 (no limbo: D's load resumes any in-progress adoption). Design updated.
+- Next: the user reads the contract; targeted architecture review; then the implementer resumes.
+
+### SR-018 — Adoption withdrawn (the user)
+
+- Trigger: the user, 2026-10-18, after ARCH-REV-013 (ARCH-F-010): adoption tries to fix a one-time transition (runs from
+  before Tasks) with a lot of permanent special logic; new work starts through the PM with `delegate_task`, so new runs
+  never need adoption. "The whole ticket is not worth it … those logic should be reverted as well."
+- Decision (the user): withdraw adoption entirely — cancel the full-adoption revision (SR-010..SR-017, unmerged;
+  implementer and reviewer stopped) and remove the merged first version (`4e738acc66`). History of SR-010..SR-017 kept
+  in this folder (`withdrawn-adoption-contract.md`, design / review records copied from the cancelled worktree).
+- Removal: RM-001..RM-004; plan in design-spec "Removal Plan"; Medium / Low → direct implementation.
+- My own lesson recorded: I kept making the feature complete through 13 review rounds instead of asking early whether
+  completeness was worth its cost.
+- SR-018 addendum (2026-10-18): the user asked for a new beta after the removal (RM-005).
+- SR-018 addendum: RM-006 refined by the user — generally useful fixes made in the adoption merge are kept (listed in the implementation handoff); only adoption logic is removed.
+- SR-018 RM-006 decisions (2026-10-18, Solution Designer under the user's rule, user informed): keep SR-009 rule 2 (a run
+  deleted / archived outside this window leaves the sidebar at the next history read) and the token-usage root change
+  (`token-usage-run-accumulator.ts`: avoids a Team-root fail-stop on legacy / migrated mixed-root records; identical
+  otherwise) and the `TESTING.md` macOS note; remove rule 1 (`onTaskExecutionStarted` hook); revert the two shared
+  refactors (`agent-run-history-catalog-state.ts`, `existing-run-assignments.ts`) to the shipped structure.
