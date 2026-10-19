@@ -1,5 +1,7 @@
 # Implementation Handoff — mcp-sdk-1-32-upgrade
 
+> **Current round: IR-002 (SR-002/SR-003 validation-only parity round).** It is at the end of this file: "IR-002 — SR-002/SR-003 parity round". The sections above it are the IR-001 baseline, delivered as DR-001, and still describe the code, which IR-002 does not change.
+
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade/tickets/in-progress/mcp-sdk-1-32-upgrade/`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade`, branch `codex/mcp-sdk-1-32-upgrade`, base `origin/personal` @ `436b85ce93`
 - Implementation commit: `4923d179c1`. The ticket artifacts and evidence are in the next commit on the branch; its hash is in the handoff message.
@@ -127,7 +129,8 @@ The optional-`close` guard goes too, since `close` is always present. There is n
   1. O-002 (from the design): `ClaudeSdkClient.createMcpServer`.
   2. `autobyteus-ts/tests/fixtures/certificates/cert.pem` is referenced by nothing, including the deleted WebSocket test, which used the toy repo's certs (`grep -rn certificates autobyteus-ts` finds nothing).
   3. The external-toy integration tests (`autobyteus-ts/tests/integration/tools/mcp/{stdio-managed-mcp-server,http-managed-mcp-server,tool-registrar}.test.ts`):
-     - they resolve `path.resolve(repoRoot, '..', 'autobyteus_mcps')`, which in a worktree points to the missing `autobyteus-worktrees/autobyteus_mcps`, so they fail with `spawn … ENOENT` (the spawn `cwd`) instead of skipping (IMP-03);
+     - they resolve `path.resolve(repoRoot, '..', 'autobyteus_mcps')`, where `repoRoot` is `autobyteus-ts`, so they look for `<repository root>/autobyteus_mcps`. That folder is missing in every current layout, not only in worktrees, so they fail with `spawn … ENOENT` (the spawn `cwd`) instead of skipping (IMP-03). (Corrected in IR-002: this line first said only a worktree's parent folder was wrong.)
+     - In addition, two of the toys they need (`streamable_http_mcp_toy`, `wss_mcp_toy`) exist nowhere, and `pdf_mcp` was removed from `autobyteus_mcps` in `e259f54` (IR-002);
      - this extends the design's test-hygiene follow-up: replace them with the self-contained fixtures, or make them skip when the toy repo is absent.
 - Shared structures remain tight: `Yes`. `McpTransportType` and the config union have exactly the two real transports.
 - Canonical shared design guidance reapplied: `Yes`
@@ -194,3 +197,89 @@ Evidence is in `tickets/in-progress/mcp-sdk-1-32-upgrade/evidence/`. Each log ha
 - AC-002 and AC-006 at the API layer.
 - Packaged-build check.
 - AC-009 scan of the API/E2E evidence.
+
+---
+
+## IR-002 — SR-002/SR-003 parity round (validation only)
+
+- Round: IR-002. Solution revisions SR-002 (regression parity) and SR-003 (runtime × MCP matrix). Triggered by the user: "we have to make sure that the mcp upgrade doesn't break. Upgrading a library should make things better instead of breaking things." and "the testing should at least make sure the different runtime for different MCP still works."
+- Workspace:
+  - after: `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity`, branch `codex/mcp-sdk-1-32-upgrade-parity`, `f59055f13f` (SDK 1.32.1);
+  - before: the test-owned worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity-before`, detached at `bf3c550c18` (SDK 1.30.0), `pnpm install --frozen-lockfile` done. I left it for API/E2E's checks 2–3; remove it with `git worktree remove` when done.
+- Upstream: `handoff-sr-002.md` (incl. "SR-003 addition"), `requirements-doc.md` (SR-003), `design-spec.md` ("SR-002 Addendum", "SR-003"), `investigation-notes.md` ("SR-002 Investigation"), `solution-revision-record.md`.
+- Code change: **none.** No product source or test file changed in this round.
+
+### Classification
+
+- `task_size=Small`, `architectural_risk=Low`: confirmed (validation only).
+- No upgrade-caused difference was found in check 1, so there is no failure to route.
+- Self-review: not applicable to code (no code delta). The evidence and records were reviewed.
+- Route: direct API/E2E.
+
+### Check 1 (AC-010): toy integration tests, before and after
+
+Setup (test-owned; REQ-010):
+
+- `pdf_mcp` is no longer in `autobyteus_mcps` (removed in its commit `e259f54 Remove PDF MCP project`; only an empty `.venv` and `egg-info` remain).
+  - I restored it read-only from that repo's history, `git archive e259f54^ pdf_mcp`, into two test-owned copies under `$TMPDIR/mcp-parity-check1.*/{before,after}/autobyteus_mcps/`.
+  - Each copy got a fresh environment from the toy's own `uv.lock` (`uv sync --frozen`: mcp 1.15.0, pymupdf 1.26.4 on both).
+  - `--offline` failed because `pymupdf` was not in the local uv cache, so the pinned wheels came from PyPI. These are package installs, not tool calls.
+- `streamable_http_mcp_toy` and `wss_mcp_toy` exist nowhere: not in `autobyteus_mcps` or its git history, not in `autobyteus_private_mcps`, and nowhere under `/Users/normy/autobyteus_org` (depth 3).
+- Each worktree got `<worktree>/autobyteus_mcps` → its copy (the tests resolve `<repository root>/autobyteus_mcps`). The link is not git-ignored, so I removed both links and both copies after the run.
+- The user's `autobyteus_mcps` repo was only read; its `git status` is unchanged.
+- Run: `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp`, in each worktree.
+- The shared test files are byte-identical between the commits (`git diff --stat bf3c550c18 f59055f13f -- autobyteus-ts/tests/integration/tools/mcp/` shows only the deleted WebSocket test).
+
+| Case | Before (`bf3c550c18`, 1.30.0) | After (`f59055f13f`, 1.32.1) | Same? |
+| --- | --- | --- | --- |
+| `pdf_mcp` stdio: list tools + `image_to_pdf_page` (`stdio-managed-mcp-server.test.ts`) | Pass (1096 ms) | Pass (1017 ms) | Same |
+| `pdf_mcp` via registrar: register, execute via registry, preview (`tool-registrar.test.ts`, 3 cases) | Pass (3/3) | Pass (3/3) | Same |
+| HTTP toy `streamable_http_mcp_toy` (`http-managed-mcp-server.test.ts`) | Cannot run: toy missing (`spawn /opt/homebrew/bin/uv ENOENT`, cwd absent; `did not become ready`) | Cannot run: same error | Same (cannot run on either) |
+| WebSocket toy `wss_mcp_toy` (`websocket-managed-mcp-server.test.ts`) | Cannot run: toy missing (`spawn … ENOENT`; hook timeout) | Test removed with the transport (IR-001) | Expected difference (designed removal) |
+| Leftover `pdf_mcp`/`uv` processes after the run | None | None | Same |
+
+Evidence:
+
+- `evidence/IMP-SR2-01-toy-integration-before.log`. Look for `Tests  4 passed | 2 skipped (6)`, `✓ lists tools and executes image_to_pdf_page`, and the two `FAIL … (streamable_http_mcp_toy)` / `(wss_mcp_toy)` lines.
+- `evidence/IMP-SR2-01-toy-integration-after.log`. Look for `Tests  4 passed | 1 skipped (5)` and the one `FAIL … (streamable_http_mcp_toy)` line.
+- The file-level `exit=1` on both sides comes only from the toy-less files.
+
+What this proves and doesn't:
+
+- The real Python MCP SDK server (mcp 1.15.0) over stdio via `uv` behaves the same with our client on SDK 1.30.0 and 1.32.1.
+- No HTTP toy exists, so the external-HTTP comparison is left to the test-owned HTTP server in check 2.
+
+### Correction to IR-001
+
+The IR-001 follow-up 3 said that the toy tests fail because a worktree's parent folder lacks `autobyteus_mcps`. That was wrong. `repoRoot` is `autobyteus-ts`, so they need `<repository root>/autobyteus_mcps`, which is missing in every layout. The text above is corrected; the conclusion (out of scope, follow-up `autobyteus-189`) stands. New facts for `autobyteus-189`:
+
+- `pdf_mcp` was removed from the toy repo;
+- the HTTP and WebSocket toys exist nowhere.
+
+### Checks I did not run (for API/E2E)
+
+- **Check 2 (AC-011, AC-012):** isolated apps of both commits.
+  - `VideoAudioServer` and `media-downloader` from env-stripped, test-owned copies (read-only call, list only);
+  - a test-owned HTTP MCP server;
+  - exit-at-start and hang-at-start servers;
+  - then stop the instance and look for orphan processes.
+- **Check 3 (AC-013…AC-015):** own endpoints.
+  - Agent Tools MCP `create_task`/`update_task`;
+  - a `/mcp/gateway` call reaching an external MCP-origin tool.
+- **SR-003 (REQ-011, AC-017):** the runtime × MCP matrix.
+  - Runtimes: native, Claude, Codex, AGY (scripted CLI where no model is wanted), Grok if installed.
+  - Tools: {project tools, external stdio tool, external HTTP tool}.
+  - Before and after, cell by cell. An unavailable runtime is "not run" with its reason.
+- **Check 4 (AC-016):** the plain-words report.
+
+Notes for those:
+
+- The `pdf_mcp` restore recipe above also works for any other toy the matrix needs.
+- `media-downloader` lives in `autobyteus_private_mcps/yt-dlp-mcp`: copy it, and only list its tools.
+- Leave the user's `~/.autobyteus` and running app alone.
+
+### Checks Run (IR-002)
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-SR2-01 | `env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp`, test-owned `autobyteus_mcps` link | `bf3c550c18` and `f59055f13f` | macOS, node v22, uv 0.10.2; clean env | `StdioManagedMcpServer`, `McpToolRegistrar` against the real `pdf_mcp` (Python mcp 1.15.0) | AC-010, BEH-001, REQ-010 | Same before/after: 4/4 pdf_mcp pass on both; HTTP toy cannot run on either; WS toy cannot run on before, removed in after | `evidence/IMP-SR2-01-toy-integration-{before,after}.log` | `Tests  4 passed \| 2 skipped (6)` / `Tests  4 passed \| 1 skipped (5)` |

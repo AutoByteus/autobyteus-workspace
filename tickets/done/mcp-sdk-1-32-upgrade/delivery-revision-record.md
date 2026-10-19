@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E Pass `API-REV-001` (direct low-risk route) | N/A | Delivery Completed; finalized to `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
+| DR-002 | API/E2E Pass `API-REV-002` (SR-002/SR-003 parity, validation only) | Delivery Completed, no release (DR-001) | Delivery Completed; parity suite and docs finalized to `personal`; beta `v1.5.7-beta.1` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -23,3 +24,15 @@
 - Why this baseline was recorded: first completed delivery result
 - Next recipient/action: Solution Designer verifies the receipt
 - Remaining blockers, rollback concerns, or untested scope: none blocking; rollback possible; follow-ups O-002, unused `cert.pem`, external-toy integration tests (IMP-03), import per-entry reasons, `https`-upgrade redirect untested locally
+
+### DR-002 — Parity validation round delivered; beta published
+
+- Delivery round and trigger: round 2. API/E2E Pass from `/software_engineering_team/api_e2e_engineer`, `API-REV-002`, commit `1250a74840`, on worktree `mcp-sdk-1-32-upgrade-parity`. The trigger was the user's regression request (SR-002) and the runtime × MCP request (SR-003).
+- Prior authoritative result: DR-001, Delivery Completed with no release (`origin/personal` @ `f59055f13f`)
+- Current authoritative result: `Delivery Completed`
+- Changed canonical artifacts: `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-report.md` (round-2 sections on top; round 1 kept as history), this record
+- Integration and post-integration verification: merged `origin/personal` @ `f33dacc994` (`cec8ccdf89`); DR-06..08 Pass
+- Verification: from the evidence, sufficient; no user check needed (live Codex turn optional after the usage limit resets)
+- Release: `Beta` at the user's instruction; details and outcome in `release-deployment-report.md` round 2
+- Terminal return to `/solution_designer`: `Sent` after finalization, the beta and cleanup, via `send_message_to` `/software_engineering_team/solution_designer` (rule "Delivery Completed …" from `get_handoff_rules`)
+- Remaining blockers, rollback concerns, or untested scope: none blocking. Four pre-existing findings and the round-1 follow-ups go to the Project Task Manager.

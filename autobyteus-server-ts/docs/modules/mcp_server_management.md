@@ -80,6 +80,30 @@ entries in its failed count, and the per-entry reason is in the server log. At
 startup, a stored entry that does not parse as one of these transports is
 skipped, and the other entries still register.
 
+## Verifying An MCP SDK Upgrade
+
+In AutoByteus code, only `autobyteus-ts/src/tools/mcp/server/` imports
+`@modelcontextprotocol/sdk`. `autobyteus-server-ts/src` does not: the Agent
+Tools MCP server and `/mcp/gateway` are hand-written JSON-RPC, and they reach
+the SDK only when the called tool is an external MCP-origin tool. The Claude
+Agent SDK and Google GenAI packages also resolve the same SDK copy as a peer
+dependency; keep a single copy in `pnpm-lock.yaml`. An SDK upgrade therefore
+changes the external-server client path for every runtime. Rerun these with
+the new SDK:
+
+- `tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts` and
+  `mcp-http-redirect-and-transport.e2e.test.ts` (ungated; need a current
+  server build): credentials on every request, the redirect rule and the
+  transport set.
+- `tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts` (gated per runtime;
+  every case skips without its gate, and a skip is not a pass): each runtime
+  calls the project tools `create_task`/`update_task`, an external stdio tool
+  (env and cwd checked) and an external HTTP tool (credential checked). Gates:
+  `RUN_AGY_FAILURE_E2E` with `ANTIGRAVITY_CLI_COMMAND` (scripted, no model),
+  `RUN_LMSTUDIO_E2E` (native), `RUN_CLAUDE_E2E`, `RUN_CODEX_E2E` (live turn),
+  `RUN_CODEX_MCP_E2E` (Codex's own MCP client, no model turn) and
+  `RUN_GROK_E2E`. The file header lists the options.
+
 ## Codex Example
 
 - See `docs/modules/codex_integration.md`

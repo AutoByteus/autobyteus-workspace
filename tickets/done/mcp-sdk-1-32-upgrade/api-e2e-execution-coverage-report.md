@@ -1,5 +1,165 @@
 # API/E2E Execution Coverage Report — mcp-sdk-1-32-upgrade
 
+# Round 2 (IR-002; SR-002 + SR-003 parity) — latest authoritative result
+
+## Plain-Words Summary For The User (AC-016)
+
+**Result: the MCP SDK upgrade (1.30.0 → 1.32.1) changed nothing that we could observe.**
+
+What was checked:
+- Two packaged desktop apps were built: one from the commit just before the upgrade (`bf3c550c18`, SDK 1.30.0) and one from current `personal` (`f59055f13f`, SDK 1.32.1).
+- Both apps ran side by side, each with its own data.
+- The exact same checks ran against both, through the app's own interfaces.
+
+| What we checked | Before (1.30.0) | After (1.32.1) | Same? |
+| --- | --- | --- | --- |
+| Your kind of MCP server (`uv` + Python): VideoAudioServer lists its tools | 32 tools | 32 tools (same names) | Same |
+| media-downloader lists its tools (listing only, nothing downloaded) | 2 tools | 2 tools | Same |
+| A local HTTP MCP server with a dummy token | 1 tool, token received | 1 tool, token received | Same |
+| A server that crashes at start | "Connection closed" in about 40 ms | same | Same |
+| A server that hangs at start | gives up after 60 s ("Request timed out"); app stays responsive | same | Same |
+| Calling tools through `/mcp/gateway` (our MCP endpoint for outside clients) | media duration 62.314667 s; HTTP tool answered | same | Same |
+| Agent runtimes using our project tools (`create_task` + `update_task`), an external stdio tool and an external HTTP tool | see matrix | see matrix | Same in every cell |
+| Old pdf toy server integration tests (implementation check 1) | 4 of 4 pass | 4 of 4 pass | Same |
+| A new automatic test that checks every runtime against every MCP tool kind (kept for future upgrades) | — | passes for AGY, native, Claude, Grok and Codex's MCP client | new |
+| No leftover processes after closing the app | none | none | Same |
+
+Runtime × MCP matrix (each cell: before / after):
+
+| Runtime | Project tools (`create_task`, `update_task`) | External stdio tool (VideoAudioServer) | External HTTP tool |
+| --- | --- | --- | --- |
+| Native AutoByteus (local LM Studio model) | pass / pass | pass / pass | pass / pass |
+| Claude (haiku) | pass / pass | pass / pass | pass / pass |
+| Codex | pass / pass — via Codex's own MCP client, without a model turn (see note) | pass / pass (same) | pass / pass (same) |
+| AGY / Antigravity (gemini-3.8-flash-low, real CLI) | pass / pass | pass / pass | pass / pass |
+| Grok (grok-4.7) | pass / pass | pass / pass | pass / pass |
+
+Codex note: the Codex account on this machine has hit its usage limit until 25 October, so a Codex agent could not take a model turn on either commit ("You've hit your usage limit"). Instead, a real Codex session was started on each commit and the same four tools were called through Codex's own MCP client. Results were identical on both commits.
+If you want, a normal Codex agent turn can be repeated after the limit resets.
+
+What could not be run, and why:
+- The HTTP and WebSocket toy servers the old integration tests expect do not exist anywhere.
+- No SSH, TTS, image or download tool was called, for safety.
+
+Things we noticed that are **not** caused by the upgrade (identical on both commits):
+1. **Your VideoAudioServer setting no longer starts, on either version.** Your settings point at `autobyteus_mcps/video-audio-mcp/server.py`, but that file was removed when the folder was turned into a CLI (`a947f1a`). For this check we used a copy of the last version that had the server.
+2. **Bulk import doesn't accept the format of your own `mcps.json`.** Entries without `transport_type`, which is how the app saves them, are rejected ("Imported: 0, Failed: 1") on both versions.
+3. **A stdio MCP server started for an agent run keeps running after that run ends, until the app closes.** Closing the app cleans everything up.
+4. **A server that hangs at start makes preview wait 60 s before the error.** The app stays responsive during the wait.
+
+## Round
+
+- Coverage investigation: `api-e2e-coverage-investigation.md` ("Round 2 Plan")
+- API/E2E revision ID: `API-REV-002`
+- Test progress log: `api-e2e-test-progress.md` (round-2 rows)
+- Round and trigger: round 2. Implementation handoff IR-002 (validation only; no code change) for SR-002 + SR-003, from the user's regression request.
+- Prior round reviewed: round 1 (API-REV-001, Pass) and DR-001 (delivered).
+- Deviations from the plan, and why:
+  - API-17 (new): Codex's live model turn was blocked by the account usage limit on both commits. To prove the Codex path without a model, a temporary in-process test called the four tools through Codex's own MCP client (`mcpServer/tool/call`) on a real Codex session.
+  - AGY ran as the real CLI inside the isolated instances. The scripted CLI fallback was not needed.
+  - The first two API-17 attempts on before failed on the probe's own result parsing (`create_task` returns `{task: {...}}`). The probe was fixed before its passing runs on both commits.
+- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/tickets/in-progress/mcp-sdk-1-32-upgrade/evidence/` (API-10…API-17)
+
+## Routing Classification
+
+- Task size: `Small` (this round); Architectural risk: `Low`; Input route: `Direct Low-Risk`; Successful-output route: `Delivery`
+- Proportional test-code review decision: `Not Required — direct low-risk route` (no durable test code changed this round)
+
+## Tested Builds And Environments
+
+| Env ID | Commit Tested | Platform | Build | Settings That Matter |
+| --- | --- | --- | --- | --- |
+| ENV-B | `bf3c550c18` (SDK 1.30.0) | macOS 26 arm64 | Packaged worktree build `mcp-sdk-1-32-upgrade-parity-before/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`; bundle holds SDK 1.30.0 only; isolated instance `iso-59202-159b` (backend :59203) | Own data root; throwaway `CODEX_HOME`; host sign-ins for Claude, AGY, Grok (real HOME); LM Studio local |
+| ENV-A | `f59055f13f` (SDK 1.32.1) | same | Same for the parity worktree; bundle holds SDK 1.32.1 only; instance `iso-59206-2e45` (backend :59207) | Same |
+| ENV-C | both commits | same | In-process studio server per worktree (API-17) | throwaway `CODEX_HOME`, real HOME |
+| Shared test instruments | — | — | Test-owned copies of VideoAudioServer (`autobyteus_mcps` `a947f1a^`) and yt-dlp-mcp (`autobyteus_private_mcps` `HEAD`), one per side, each with `uv sync --frozen` (Python `mcp` 1.28.1 / 1.26.0, identical per side); a test HTTP MCP server and gateway client on the same SDK 1.32.1 for both sides (constant instrument); sample `parity-sample.mp4` | — |
+
+## Cases (round 2)
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-R10 | AC-010 | core integration tests vs real `pdf_mcp` | Reused IMP-SR2-01 | — | Pass (same) | `IMP-SR2-01-toy-integration-{before,after}.log` | `Tests  4 passed` on both | HTTP and WS toys exist nowhere ("cannot run on either"; WS test removed in after) |
+| API-10 | AC-011, AC-012, REQ-010 | isolated app: GraphQL preview → bulk import → discover for VideoAudioServer, media-downloader, test HTTP server, exit-at-start, hang-at-start; responsiveness during the hang | `pnpm --silent isolated-app start --build` per worktree with throwaway `CODEX_HOME`; `node parity-harness.mjs <side> …` | ENV-B, ENV-A | Pass (same) | `API-10-12-parity-harness-{before,after}.txt`, `API-10-12-parity-comparison.txt` | `SAME` on every server row; `preview tool names identical … True`; `hang_at_start responsiveness … 'value': 200` | timings within a few ms; hang 60.0 s on both |
+| API-11 | AC-015 | `/mcp/gateway` → external HTTP and stdio tools | same harness run | ENV-B, ENV-A | Pass (same) | same files | `SAME toolCount 35 35 \| stdio {'isError': False, 'text': '62.314667'}` on both | — |
+| API-12 | AC-014, AC-017, AC-011 (agent call) | runtime × {project tools, external stdio, external HTTP} | same harness run; one agent per runtime, all four tools selected; tasks checked through GraphQL; the HTTP server records auth on `tools/call` | ENV-B, ENV-A | Pass (same); Codex live turn not run (account usage limit, both sides) | same files | each runtime row `SAME`; `saved task status DONE DONE`; `HTTP server saw on tools/call ['expected'] ['expected']` | Grok also calls its own `search_tool` (both sides) |
+| API-17 | AC-014 (Codex), AC-017 (Codex row) | Codex App Server thread's own MCP client → `autobyteus_agent_tools` → project tools and external stdio/HTTP servers; no model turn | temporary `zz-parity-codex-direct-mcp.e2e.test.ts` copied into each worktree, run, removed | ENV-C | Pass (same) | `API-17-codex-direct-mcp-{before,after}.txt` | `"updateTask": {"isError": false, "status": "DONE"}`, `"text": "62.314667"`, `"remoteToolCalls": ["expected"]`; result JSON identical before/after | — |
+| API-13 | AC-011, AC-012 | stop both instances; orphan check | `isolated-app stop <id>`; `ps` before and after | ENV-B, ENV-A | Pass (same) | `API-13-processes-and-stop.txt` | `"forced": false`, `"dataRootRemoved": true`; after stop `(no process left)` | 4 VideoAudioServer sessions per side alive until stop (observation 3) |
+| API-14 | REQ-010 | user repos and data untouched | `git status` diff of both user MCP repos; mcps.json mtime | local | Pass | `API-14-user-data-untouched.txt` | `diff: identical` for both repos; mcps.json `Sep 16 09:24` | — |
+| API-15 | AC-013 | SDK imports per commit | grep | local | Pass | `API-15-sdk-imports.txt` | server `src`: `0` on both | — |
+| API-16 | AC-009 | round-2 evidence and raw logs | grep scan | local | Pass | `API-16-ac009-scan.txt` | every raw log `test-dummy=0`; `(no token field in any evidence file)` | — |
+| API-18 | AC-017 (going forward), AC-014 | new durable gated suite `autobyteus-server-ts/tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts` on the after branch: per runtime, project tools + external stdio (real SDK fixture; env and cwd checked) + external HTTP (credential on `tools/call`) | run 1: `RUN_AGY_FAILURE_E2E=1 … RUN_CODEX_MCP_E2E=1`; run 2: `RUN_LMSTUDIO_E2E=1 RUN_CLAUDE_E2E=1 RUN_GROK_E2E=1`; run 3: no gate | ENV-C (after) | Pass | `API-18-runtime-mcp-matrix-suite.txt` | `✓ agy (scripted CLI)…`, `✓ codex MCP client (no model turn)…`, `✓ native…`, `✓ claude…`, `✓ grok…`; each summary `"taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"]`; no gate: `Tests  6 skipped (6)` | API-18M: with the stdio `env` dropped in `autobyteus-ts/src`, the AGY cell goes red (`"stdioEnvDelivered": false`); restored with `git checkout`. A first mutation attempt on `dist` stayed green because in-process tests run the `autobyteus-ts` source; it is recorded in the evidence. |
+| — | setup | test-owned copies, uv sync, probe sources | — | — | — | `API-10-17-setup-and-probe-sources.txt` | harness and Codex test sources | — |
+
+## Acceptance-Criteria Proof (round 2)
+
+| Acceptance-Criteria ID | Critical | Proven By | Result | Note |
+| --- | --- | --- | --- | --- |
+| AC-010 toy integration parity | Yes | API-R10 | Proven | HTTP/WS toy cases: cannot run on either (toys do not exist) |
+| AC-011 real servers in isolated apps, agent call, no child left | Yes | API-10, API-12, API-13 | Proven | — |
+| AC-012 exit/hang at start same visible outcome | Yes | API-10, API-13 | Proven | the 60 s hang wait is pre-existing (observation 4) |
+| AC-013 code statement | No | API-15, API-R11 | Proven | — |
+| AC-014 Claude and Codex `create_task`/`update_task` via Agent Tools MCP | Yes | API-12 (Claude, plus native, AGY, Grok), API-17 (Codex) | Proven | Codex through its own MCP client without a model turn; its live model turn was blocked by the account usage limit on both commits |
+| AC-015 gateway call of an external MCP-origin tool | Yes | API-11 | Proven | — |
+| AC-016 plain-words report | Yes | summary above | Proven | — |
+| AC-017 runtime × MCP matrix | Yes | API-12, API-17 | Proven | every cell same before/after; Codex cells via API-17 |
+| AC-009 dummy values only | Yes | API-16 | Proven | — |
+
+## Validation Confidence Scorecard (round 2)
+
+| Category | Final Score | Support | Residual |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 96% | all round-2 ACs proven | the Codex model turn itself was not repeated |
+| Changed-boundary execution directness | 97% | real packaged apps of both commits; real `uv` Python servers; real runtimes | — |
+| Cross-boundary integration realism and mock gap | 96% | no mocks; four live models plus Codex's real MCP client | Codex without a model turn |
+| Environment, configuration, identity, and fixture fidelity | 95% | packaged builds, user's server definitions (env removed), host sign-ins | VideoAudioServer restored from history (the user's current folder no longer has the server) |
+| Failure, edge-case, lifecycle, and recovery evidence | 96% | exit/hang at start, responsiveness, stop and orphan check | — |
+| User-surface, browser, and desktop-shell confidence | 93% | packaged desktop apps driven through their public endpoints | renderer not driven (unchanged) |
+| Durable regression coverage quality and relevance | 95% | new gated runtime × MCP matrix suite (API-18), mutation-proven; round-1 suites remain | before/after parity itself is a one-time cross-commit check (harness kept in evidence) |
+
+- Overall final confidence: 95.4% (simple average of 96, 97, 96, 95, 96, 93, 95). No category below 90%.
+- Every critical acceptance criterion directly proven: `Yes`. Default 95% target met. The durable-coverage gap found at the first scoring (94.7%) was closed by adding the API-18 suite, rather than recording it as a follow-up.
+- Broader validation decision: `Required`, executed (Project Desktop Validation on both commits, live runtimes, Codex MCP client probe). Browser: not needed (no renderer change).
+
+## Persisted Data / Compatibility (round 2)
+
+- No code change this round; round-1 decisions stand. No compatibility mechanism observed.
+
+## Durable Coverage Changed In The Codebase (round 2)
+
+| Path / Test | Change | Case IDs |
+| --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts` | Added (gated per runtime; skips without gates) | API-18 |
+
+- The two parity probes (harness, Codex direct test) are temporary because the before commit cannot carry tests. Their sources are in `API-10-17-setup-and-probe-sources.txt`. The Codex test file was copied into each worktree only for its run and then removed; `git status` shows no trace.
+- Test-code review: `Not Required — direct low-risk route`.
+
+## Temporary Methods And Cleanup (round 2)
+
+| Item | Cleanup | Result |
+| --- | --- | --- |
+| Isolated instances `iso-59202-159b`, `iso-59206-2e45` | `isolated-app stop` | stopped (not forced); ports released; data roots removed; no process left |
+| Test-owned folder `$TMPDIR/mcp-parity-api` (copies, `.venv`s, sample, throwaway `CODEX_HOME`, harness, logs) | removed after the evidence was written | done |
+| Before worktree `mcp-sdk-1-32-upgrade-parity-before` | `git worktree remove --force` (it held only build outputs) | done |
+| LM Studio model | `lms unload` | unloaded |
+| Agent sessions in the user's CLI histories (Claude, AGY, Grok; Codex sessions under the throwaway home) | left in place (signed-in CLIs need the real HOME) | one short session per runtime per commit |
+| Packaged build and server `dist` in the after worktree | left as untracked build outputs | — |
+
+## Latest Authoritative Result (round 2)
+
+- Result: `Pass`. No difference between SDK 1.30.0 and 1.32.1 in any check.
+- Criteria not proven / user-only parts: `None`. The optional repeat of a Codex model turn after the usage limit resets is offered to the user in the summary.
+- Next recipient: Delivery Engineer.
+- Follow-up candidates (pre-existing, outside this ticket; same on both commits):
+  1. The user's VideoAudioServer setting points at a removed `server.py`.
+  2. Bulk import rejects the app's own `mcps.json` shape (no `transport_type`).
+  3. Per-run stdio MCP server sessions outlive their terminated runs until the app closes.
+  4. A hang-at-start server costs a 60 s preview wait.
+  (The durable runtime × MCP matrix suite, first listed here, was added this round as API-18.)
+
+---
+
+# Round 1 (API-REV-001) — superseded as the latest result; kept as history
+
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `tickets/in-progress/mcp-sdk-1-32-upgrade/api-e2e-coverage-investigation.md`

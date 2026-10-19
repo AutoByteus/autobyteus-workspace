@@ -1,0 +1,10 @@
+# Case: API-14 safety (REQ-010): the user's repositories and data untouched
+# Commands: git -C <autobyteus_org>/{autobyteus_mcps,autobyteus_private_mcps} status --short before the round and after it, diffed; ls -la ~/.autobyteus/server-data/mcps.json (mtime only)
+# Date: 2026-10-19
+
+autobyteus_mcps: 8 status lines before, 8 after; diff: identical
+autobyteus_private_mcps: 1 status lines before, 1 after; diff: identical
+Both repositories were only read with git archive (VideoAudioServer from autobyteus_mcps a947f1a^; yt-dlp-mcp from autobyteus_private_mcps HEAD) into <B>/{before,after}/.
+~/.autobyteus/server-data/mcps.json last modified: Sep 16 09:24 (read once for command shape and env key names only)
+The user's running AutoByteus app and its data were not used; both instances ran with their own ports and auto-created data roots, removed on stop.
+Tools called: only get_media_duration (read-only, on a test-owned sample), the test HTTP server's auth_probe, and create_task/update_task on test-owned projects. media-downloader was listed only. No SSH, TTS or image server was configured.

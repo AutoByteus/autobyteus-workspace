@@ -1,0 +1,13 @@
+# Case: DR-08 built-server MCP e2e (credentials, redirect/transport)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts --no-watch
+# Commit: cec8ccdf89 (codex/mcp-sdk-1-32-upgrade-parity merged with origin/personal f33dacc994)
+# Environment: macOS 26 (Darwin 25.5.0), node 22, pnpm 10.28.2; tests under env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-19 (delivery round 2, integrated state)
+
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts (2 tests) 4638ms
+     ✓ re-registers saved credentials at startup after a restart and keeps sending them  1883ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts (2 tests) 4190ms
+     ✓ refuses a cross-origin redirect, follows a same-origin one, and rejects a websocket import  2099ms
+     ✓ starts with WebSocket-era entries in mcps.json and registers the valid entry next to them  2075ms
+ Test Files  2 passed (2)
+      Tests  4 passed (4)

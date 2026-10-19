@@ -1,0 +1,64 @@
+# Case: API-13 MCP child processes before and after stopping both isolated instances; orphan check
+# Commands: ps -axo pid,ppid,etime,command filtered for the test-owned folder, the exit/hang commands, ytdlp_mcp and server.py; pnpm --silent isolated-app stop iso-59202-159b (before) and iso-59206-2e45 (after); ps again 3 s later
+# Commit: before bf3c550c18, after f59055f13f
+# Date: 2026-10-19
+
+== Before stop (12:14:47). Parents: 9889 = before app (electron-dist of the before worktree, pid tree root 8589), 10940 = after app (root 8593) ==
+18136  9889       06:45 uv --directory <B>/before/video-audio-mcp run server.py
+18138 18136       06:44 <B>/before/video-audio-mcp/.venv/bin/python3 server.py
+21261  9889       05:30 uv --directory <B>/before/video-audio-mcp run server.py
+21263 21261       05:30 <B>/before/video-audio-mcp/.venv/bin/python3 server.py
+22847  9889       04:56 uv --directory <B>/before/video-audio-mcp run server.py
+22848 22847       04:56 <B>/before/video-audio-mcp/.venv/bin/python3 server.py
+25233  9889       04:21 uv --directory <B>/before/video-audio-mcp run server.py
+25234 25233       04:21 <B>/before/video-audio-mcp/.venv/bin/python3 server.py
+31994 10940       01:50 uv --directory <B>/after/video-audio-mcp run server.py
+31995 31994       01:50 <B>/after/video-audio-mcp/.venv/bin/python3 server.py
+33704 10940       01:15 uv --directory <B>/after/video-audio-mcp run server.py
+33705 33704       01:15 <B>/after/video-audio-mcp/.venv/bin/python3 server.py
+34958 10940       00:55 uv --directory <B>/after/video-audio-mcp run server.py
+34959 34958       00:55 <B>/after/video-audio-mcp/.venv/bin/python3 server.py
+37394 10940       00:28 uv --directory <B>/after/video-audio-mcp run server.py
+37395 37394       00:28 <B>/after/video-audio-mcp/.venv/bin/python3 server.py
+
+Reading: on each side the hang-at-start and exit-at-start children and the preview/discover sessions are gone. Four VideoAudioServer sessions stay alive, one per agent run that called its tool (native, claude, agy, grok), although each run was terminated. Same on both commits (pre-existing; see report observation).
+
+== Stop results ==
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-59202-159b",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-YKqn5K",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-59206-2e45",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Gd3MfU",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+
+== After stop (12:15:04; same filter plus worktree AutoByteus.app processes) ==
+(no process left)
+
+== Runtime CLI leftovers (processes referencing the test-owned folder, the throwaway CODEX_HOME or the test workspaces) ==
+(none)
+
+LM Studio: qwen/qwen3.6-35b-a3b (loaded just in time by the native cells) unloaded with lms unload.

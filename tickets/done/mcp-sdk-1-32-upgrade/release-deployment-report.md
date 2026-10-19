@@ -1,5 +1,80 @@
 # Delivery / Release / Deployment Report — mcp-sdk-1-32-upgrade
 
+# Round 2 (DR-002) — latest authoritative result
+
+## Scope
+
+Round 2 delivers the parity validation the user asked for after DR-001 (SR-002, SR-003, IR-002, API-REV-002). There is no product source change. It adds one gated e2e suite, evidence and a docs section, finalizes them into `origin/personal`, then publishes beta `v1.5.7-beta.1`. Classification of this round: `task_size=Small`, `architectural_risk=Low`, direct low-risk route; review artifacts `Not Applicable`.
+
+## Project Release Guide
+
+- `RELEASE.md` at `origin/personal` @ `f33dacc994` (last changed in `c64a45b871`); deviations: `None`; proposed fixes: `None`
+
+## Integration Refresh
+
+- Ticket branch `codex/mcp-sdk-1-32-upgrade-parity`, created from `origin/personal` @ `f59055f13f` (the DR-001 finalization)
+- Latest base checked: `origin/personal` @ `f33dacc994`, one commit ahead (`docs(delivery): record stable v1.5.6 publication (DR-002)`; ticket files only)
+- Checkpoint commit: `Not needed` (validated state committed at `1250a74840`)
+- Integration method: `Merge` → `cec8ccdf89`; no conflicts
+- Post-integration checks rerun: `Yes`, all Pass
+
+| Check | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| DR-06 | `pnpm -C autobyteus-ts build`; `pnpm -C autobyteus-server-ts build` | Pass (exit 0) | `evidence/DR-06-integrated-core-server-build.log` |
+| DR-07 | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs fixture> … vitest run tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts`; then no gate | Pass: `1 passed / 5 skipped`; summary `taskStatus DONE`, `stdioEnvDelivered true`, `stdioCwdDelivered true`, `httpToolCalls ["expected"]`, `dummyOnWire false`. No gate: `6 skipped` | `evidence/DR-07-integrated-runtime-mcp-matrix.log` |
+| DR-08 | `vitest run tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts` | Pass, 4/4 | `evidence/DR-08-integrated-built-server-mcp-e2e.log` |
+
+- Live runtimes and the before/after isolated apps were not repeated: the base commit touched ticket files only.
+- Delivery edits started only after the integrated state was current: `Yes`
+
+## Verification
+
+- Evidence judged: `Sufficient`. Sources: the round-2 Acceptance-Criteria Proof and Cases (95.4%, lowest category 93%, target met), the files below, and DR-06..08.
+
+| Acceptance-Criteria ID | Cases And Files Checked | What You Saw | Judgement |
+| --- | --- | --- | --- |
+| AC-010 toy integration parity | `IMP-SR2-01-toy-integration-{before,after}.log` | `Tests 4 passed` on both (before also skips the WebSocket case; the HTTP/WS toys do not exist: "cannot run on either") | Proven |
+| AC-011 real servers in isolated apps | `API-10-12-parity-comparison.txt`; harness files (bundle `1.30.0 (only copy)` / `1.32.1 (only copy)`) | `SAME` VideoAudioServer 32/32, media-downloader 2/2, parity_http 1/1; tool names identical | Proven |
+| AC-012 exit/hang at start | same comparison; `API-13-processes-and-stop.txt` | exit: `Connection closed` in about 40 ms on both; hang: `Request timed out` at 60.0 s on both, health 200 during the hang; after stop `forced: false`, `dataRootRemoved: true`, `(no process left)` | Proven |
+| AC-013 code statement | `API-15-sdk-imports.txt` | server `src` imports 0 on both; only `autobyteus-ts/src/tools/mcp/server/*` | Proven |
+| AC-014 project tools from Claude and Codex | comparison matrix; `API-17-codex-direct-mcp-{before,after}.txt` | Claude, native, AGY, Grok: `create_task`/`update_task` succeeded, task `DONE DONE`. Codex live turn: `You've hit your usage limit` on both commits. Codex's own MCP client: `updateTask … DONE`, stdio `62.314667`, HTTP `expected`; outputs differ only in paths, IDs and timings | Proven. The SDK can only affect the tool path, which is proven through Codex's real MCP client; round 1 (API-04) had a live Codex turn on 1.32.1 |
+| AC-015 gateway call | comparison "Gateway" | `SAME toolCount 35 35`, stdio `62.314667` on both, HTTP answered | Proven |
+| AC-016 plain-words report | report top section | present: what ran, same/different, what could not run, findings | Proven |
+| AC-017 runtime × MCP matrix | comparison matrix; API-17; `API-18-runtime-mcp-matrix-suite.txt` | every cell same before/after; HTTP server `authValues ['expected']`, 28 requests each side; durable suite passes for AGY, Codex MCP client, native, Claude, Grok; API-18M red with stdio env dropped | Proven |
+| AC-009 dummy values | `API-16-ac009-scan.txt`; DR rerun logs | every raw log `test-dummy=0`; DR logs 0 | Proven |
+| REQ-010 safety | `API-14-user-data-untouched.txt` | both user MCP repos `diff: identical`; `mcps.json` mtime unchanged | Proven |
+
+- More evidence requested: `None`
+- User check needed: `No`. Optional: a live Codex model turn after the account's usage limit resets (25 Oct).
+- Report inconsistency noted, not material: the round-2 routing line says "no durable test code changed this round", while the report also lists the added matrix suite. The suite is in the diff and in API-18.
+
+## Release Decision
+
+- Decision: `Beta` (`v1.5.7-beta.1`)
+- Decided by: the user, in the Delivery Engineer conversation after DR-001: "for the next version, pplase release a meta. there will be another ticket comming. i just say this". This was in reply to my question whether to cut `v1.5.7-beta.1` then. Delivery reads "meta" as "beta", and treats this round, the next delivery to arrive, as the trigger. The beta contains everything on `personal` since stable `v1.5.6`.
+
+## Docs Sync Result
+
+- `docs-sync-report.md` (round 2): `Updated`, `autobyteus-server-ts/docs/modules/mcp_server_management.md` "Verifying An MCP SDK Upgrade"
+
+## Ticket State Transition
+
+- Moved back from `tickets/in-progress/` (by the Solution Designer for SR-002) to `tickets/done/mcp-sdk-1-32-upgrade/`: `Yes`
+
+## Finalization Record (round 2)
+
+| Step | Result |
+| --- | --- |
+| Ticket archive | pending |
+
+## Final Status (round 2)
+
+- pending
+
+---
+
+# Round 1 (DR-001) — history
+
 ## Release / Publication / Deployment Scope
 
 Repository finalization of `codex/mcp-sdk-1-32-upgrade` into `origin/personal`. No release, tag or deployment (Release Decision below). `task_size=Medium`, `architectural_risk=Low`, direct low-risk route; architecture, source and test-code review artifacts `Not Applicable`.

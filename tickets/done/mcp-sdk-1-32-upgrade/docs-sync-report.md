@@ -1,5 +1,43 @@
 # Docs Sync Report — mcp-sdk-1-32-upgrade
 
+# Round 2 (DR-002; SR-002 + SR-003 parity validation) — latest
+
+## Scope
+
+- Trigger: API/E2E Pass `API-REV-002` (round 2, validation only; no product source change), API/E2E commit `1250a74840`
+- Base: ticket branch `codex/mcp-sdk-1-32-upgrade-parity` from `origin/personal` @ `f59055f13f`; integrated with `origin/personal` @ `f33dacc994` as `cec8ccdf89`
+- Post-integration verification: `evidence/DR-06` … `DR-08`
+
+## Docs Updated
+
+| Doc Path | Type Of Update | What Changed | Why |
+| --- | --- | --- | --- |
+| `autobyteus-server-ts/docs/modules/mcp_server_management.md` | New section "Verifying An MCP SDK Upgrade" | Which code imports the SDK (only `autobyteus-ts/src/tools/mcp/server/`; server `src` none; Agent Tools MCP server and `/mcp/gateway` hand-written; Claude Agent SDK and GenAI peers share the one copy), and which suites to rerun on an upgrade: the two ungated built-server MCP files and the new gated `mcp-runtime-tool-matrix.e2e.test.ts` with its gates | The user asked that future upgrades prove every runtime still works with every kind of MCP tool; the suite exists for that, and nothing pointed to it |
+
+## Reviewed, No Change
+
+| Doc Path | Why |
+| --- | --- |
+| `TESTING.md` | General gate rules already cover gated suites ("a skip is not a pass"); the module doc carries the MCP-specific list |
+| Round-1 sections of `mcp_server_management.md` (Redirects, Supported Transports) | Round 2 changed no behavior; the parity checks confirmed them |
+
+## Not Documented (follow-up candidates, pre-existing on both SDK versions)
+
+- The user's VideoAudioServer setting points at a removed `server.py`.
+- Bulk import rejects the app's own `mcps.json` shape (entries without `transport_type`).
+- Per-run stdio MCP sessions outlive their terminated runs until the app closes.
+- A server that hangs at start costs a 60 s preview wait.
+
+These are existing behaviors outside this ticket's scope; documenting them as intended would be wrong, so they go to the Project Task Manager.
+
+## Delivery Continuation
+
+- Result: `Pass`
+
+---
+
+# Round 1 (DR-001) — history
+
 ## Scope
 
 - Ticket: `mcp-sdk-1-32-upgrade` (Project Task `autobyteus-181`, FU-8 of `autobyteus-175`); `task_size=Medium`, `architectural_risk=Low`, direct low-risk route
