@@ -58,7 +58,7 @@ Ticket `codex-segment-turn-admission-drops` (Project Task autobyteus-165). This 
 - More evidence requested: `None`
 - User check needed: `No`. The change writes server log lines only, and every criterion can be reached in isolation; the user did not ask to check.
 - User check reference, when needed: N/A
-- Re-verification after later re-integration: see Repository Finalization
+- Re-verification after later re-integration: `Not needed` (the target did not advance; the merged tree is identical to the verified tree)
 
 ## Release Decision
 
@@ -85,17 +85,17 @@ Ticket `codex-segment-turn-admission-drops` (Project Task autobyteus-165). This 
 
 - Bootstrap context source: `investigation-notes.md` (Finalization target `origin` / `personal`) and `RELEASE.md` § Finalization Target
 - Ticket branch: `codex/codex-segment-turn-admission-drops`
-- Ticket branch commit result: see Final Status (recorded after finalization)
-- Ticket branch push result: see Final Status
+- Ticket branch commit result: `Completed` — `4290569195 docs(ticket): deliver codex-segment-turn-admission-drops (DR-001)` (ticket archived to `tickets/done/`)
+- Ticket branch push result: `Completed` — `origin/codex/codex-segment-turn-admission-drops` @ `4290569195`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: see Final Status
-- Delivery-owned edits protected before re-integration: see Final Status
-- Re-integration before final merge result: see Final Status
-- Target branch update result: see Final Status
-- Merge into target result: see Final Status
-- Push target branch result: see Final Status
-- Repository finalization status: see Final Status
+- Target advanced after verification / acceptance: `No` (`origin/personal` still `20c91afd4d` at the post-verification fetch)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed` — `git fetch origin personal`; `finalize/codex-segment-turn-admission-drops` created from `origin/personal` @ `20c91afd4d`
+- Merge into target result: `Completed` — `git merge --no-ff codex/codex-segment-turn-admission-drops` → `a3824154b0`; merged tree identical to the verified ticket tree `4290569195` (`git diff` empty)
+- Push target branch result: `Completed` — `git push origin HEAD:personal` after a fresh fetch confirmed `origin/personal` had not moved; it carries the merge plus this record commit
+- Repository finalization status: `Completed`
 - Blocker: None
 
 ## Release / Publication / Deployment
@@ -112,9 +112,9 @@ Ticket `codex-segment-turn-admission-drops` (Project Task autobyteus-165). This 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-segment-turn-admission-drops`
-- Worktree cleanup result: see Final Status
-- Worktree prune result: see Final Status
-- Local ticket branch cleanup result: see Final Status
+- Worktree cleanup result: `Completed` after this record is pushed (`git worktree remove --force`; only the untracked install `*/dist/` output is discarded)
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed` (`codex/codex-segment-turn-admission-drops` and `finalize/codex-segment-turn-admission-drops` deleted locally)
 - Remote branch cleanup result: `Not required` (the pushed ticket branch stays as a reference, as in earlier tickets)
 - Blocker: None
 
@@ -136,7 +136,7 @@ None. This repository deploys no hosted service (RELEASE.md § Deployment); the 
 
 ## Verification Checks
 
-- Before the final commit: `python3 scripts/check_repository_artifact_hygiene.py` and `python3 scripts/check_licensing.py` on the final tree (result in Final Status). Ticket evidence names use `-` only, with no `:`.
+- Before the final commit: `python3 scripts/check_repository_artifact_hygiene.py` → `Repository artifact hygiene check passed.` (exit 0); `python3 scripts/check_licensing.py` → `Licensing is consistent.` (exit 0), both run with the archived ticket staged. Ticket evidence names use `-` only, with no `:`.
 - No `*/dist/` build output staged.
 
 ## Rollback Criteria
@@ -145,4 +145,11 @@ None. This repository deploys no hosted service (RELEASE.md § Deployment); the 
 
 ## Final Status
 
-To be recorded after finalization (see the DR-001 finalization update below).
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`personal` = merge `a3824154b0` + this record commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` — `Not required` (no release decided; RELEASE.md default)
+- Applicable safe cleanup complete or not required: `Yes` (worktree and local branches removed after this record is pushed)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, after cleanup
+- Terminal message/reference: `send_message_to` → `/software_engineering_team/solution_designer` (`Delivery Completed`, DR-001)
