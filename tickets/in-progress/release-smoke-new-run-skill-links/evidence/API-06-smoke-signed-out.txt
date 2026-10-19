@@ -1,0 +1,50 @@
+# API-06-smoke-signed-out
+# case: API-06 (AC-004, REQ-005; SCN-004b / RSK-001: the CLIs are not signed in on the release machine)
+# command: TH=$(cd "$(mktemp -d /tmp/api-e2e-149/home-XXXXXX)" && pwd -P)
+#          env -i PATH="$PATH" HOME="$TH" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" python3 scripts/release_smoke.py
+#          (a throwaway, empty HOME: no ~/.codex/auth.json, no ~/.grok/auth.json, no Claude login)
+# commit: 27e197bd724bbcce9db74d021efe851fcccde4d7
+# environment: macOS (Darwin 25.5.0), Python 3.9.6; claude 2.1.302, codex-cli 0.163.0, grok 1.0.62 (all on PATH)
+# date: 2026-10-19T03:55:18Z
+# shows: fail-closed in about 40 s, exit 1. Codex is named "not signed in" by the preflight. Signed-out Grok offers a
+#        different catalog (grok-4.5, grok-4.6), so the live suite's beforeAll stops with "grok model grok-4.7 is not
+#        offered" and every live case shows that reason: true, but it names the model, not the missing sign-in.
+#        No provider call was made (the suite stopped in beforeAll).
+
+## runner output
+preflight: codex not available: ~/.codex/auth.json missing (codex not signed in)
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+claude      brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+claude      different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       new run + restore, linked workspace      FAIL    skipped: not available: ~/.codex/auth.json missing (codex not signed in)
+codex       brand-new team member                    FAIL    skipped: not available: ~/.codex/auth.json missing (codex not signed in)
+codex       different same-named skill               FAIL    skipped: not available: ~/.codex/auth.json missing (codex not signed in)
+grok        new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+other       workspace-skill-links-live.e2e.test.ts   FAIL    Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+
+commit    27e197bd724bbcce9db74d021efe851fcccde4d7
+models    not reported
+duration  live 14s, antigravity 16s, autobyteus 10s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-yct2gukt
+exit=1
+2026-10-19T03:56:05Z
+
+## live step log excerpt (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-yct2gukt/live.log)
+ ❯ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts (9 tests | 9 skipped) 4375ms
+ FAIL  tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+    141|       if (!available.includes(model)) throw new Error(`${name} model $…
+      Tests  9 skipped (9)
