@@ -61,15 +61,61 @@ Round 2 delivers the parity validation the user asked for after DR-001 (SR-002, 
 
 - Moved back from `tickets/in-progress/` (by the Solution Designer for SR-002) to `tickets/done/mcp-sdk-1-32-upgrade/`: `Yes`
 
+## Version / Tag / Release Commit (round 2)
+
+- Version `1.5.7-beta.1` (`python3 scripts/release_versions.py next-beta`; first beta after stable `v1.5.6`)
+- Release commit `f0a191455b` "chore(release): bump workspace release version to 1.5.7-beta.1" (`autobyteus-web/package.json`), on `finalize/mcp-sdk-1-32-upgrade-parity` on top of the merge `d95ba31d59`
+- Annotated tag `v1.5.7-beta.1` → `f0a191455b`
+- Command: `bash scripts/desktop-release.sh beta --branch finalize/mcp-sdk-1-32-upgrade-parity --no-push`. Before it, the untracked `*/dist/` folders were deleted, and `check_licensing.py` and `check_repository_artifact_hygiene.py` passed on the merged state.
+
+## Release / Publication (round 2)
+
+- Applicable: `Yes` (beta); method: `Project Release Guide` (`RELEASE.md` "Cutting The Release")
+- Push: fetched `origin/personal` (still `d95ba31d59`), then `git push origin HEAD:personal` (`d95ba31d59..f0a191455b`) and `git push origin v1.5.7-beta.1`
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Server Docker Release | `39237803941` | success |
+| Android APK Release | `39237803670` | success |
+| iOS App Store Connect Release | `39237803753` | success |
+| Desktop Release | `39237803796` | success |
+
+- Published artifacts checked: GitHub release `v1.5.7-beta.1` is a pre-release with 17 assets matching `RELEASE.md`:
+  - macOS ARM64 and x64 `.dmg`/`.zip` with blockmaps (8);
+  - Linux x64 and ARM64 AppImages (2);
+  - Windows `.exe` (1);
+  - `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml` (4);
+  - Android APK + `.sha256` (2).
+- Docker Hub: `autobyteus/autobyteus-server:1.5.7-beta.1` and `:beta` share `sha256:287c131a9b60…409b`; `:latest` is unchanged at `sha256:375f2ac4b656…` (stable `v1.5.6`). TestFlight: the iOS workflow succeeded.
+- Release/publication result: `Completed`
+- Release notes: `Not required` (betas use GitHub generated notes); `release-notes.md` stays archived for the next stable release.
+
 ## Finalization Record (round 2)
 
 | Step | Result |
 | --- | --- |
-| Ticket archive | pending |
+| Ticket archive | `git mv tickets/in-progress/mcp-sdk-1-32-upgrade tickets/done/mcp-sdk-1-32-upgrade`. 68 tracked files; longest ticket path 100 characters; no Windows-hostile names; no build output |
+| Pre-commit checks (ticket branch) | Hygiene check passed; licensing consistent |
+| Ticket branch commit | `ada916dfac` "docs(delivery): sync docs and archive mcp-sdk-1-32-upgrade parity round (DR-002)" |
+| Ticket branch push | `origin/codex/mcp-sdk-1-32-upgrade-parity` → `ada916dfac` (new remote branch) |
+| Target refresh after verification | `origin/personal` still `f33dacc994`, the integrated and verified base |
+| Merge | `finalize/mcp-sdk-1-32-upgrade-parity` from `origin/personal`; `git merge --no-ff` → `d95ba31d59`; tree identical to the ticket branch; checks passed on the merged state |
+| Push target | `origin/personal` unchanged before the push; `f33dacc994..d95ba31d59` |
+| Beta | Release commit `f0a191455b` and tag `v1.5.7-beta.1` pushed; 4/4 workflows succeeded; 17/17 assets; Docker tags checked |
+| Delivery record commit | Committed on top of `f0a191455b` and pushed to `personal` after a fresh fetch (rebased onto any newer `personal`, touching only this ticket's folder) |
+| Worktree cleanup | After the record push: `git worktree remove --force` of `mcp-sdk-1-32-upgrade-parity` (only untracked build output), `git worktree prune`. The round-2 before worktree was already removed by API/E2E |
+| Local branch cleanup | `codex/mcp-sdk-1-32-upgrade-parity` and `finalize/mcp-sdk-1-32-upgrade-parity` deleted once `origin/personal` contains them |
+| Remote branch cleanup | `Not required` (merged `codex/*` branches stay on `origin`) |
 
 ## Final Status (round 2)
 
-- pending
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`d95ba31d59`, then release commit `f0a191455b` and this record)
+- Applicable release/deployment/rollout complete: `Yes` (beta `v1.5.7-beta.1` `Completed`)
+- Applicable safe cleanup complete: `Yes` (after the record push)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, after this record commit and cleanup (DR-002)
 
 ---
 

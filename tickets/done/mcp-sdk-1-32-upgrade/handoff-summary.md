@@ -46,7 +46,7 @@ Round 2 (the user's regression request, DR-002):
 ## Release
 
 - Round 1: `No release`.
-- Round 2: `Beta` `v1.5.7-beta.1`. The user asked for a beta for the next version after the next ticket, and this round is that delivery. Outcome in `release-deployment-report.md`.
+- Round 2: `Beta` `v1.5.7-beta.1`. The user asked for a beta for the next version after the next ticket, and this round is that delivery. Release commit `f0a191455b`; 4/4 workflows succeeded; GitHub pre-release with 17 assets; Docker `:1.5.7-beta.1` and `:beta` published, `:latest` unchanged. Beta desktop users get it with **Settings > Updates > Receive beta updates**; Docker users with `autobyteus-docker upgrade --all --tag beta`.
 
 ## Residual Risks And Follow-ups
 
