@@ -109,7 +109,7 @@ What now happens:
 - Dead code in touched files removed: `Yes`. `cleanupAllMcpServerInstances` (grep: no caller in `src` of either package).
 - Dead code found elsewhere: none
 - Shared structures remain tight: `Yes`. The two MCP flags have distinct names and meanings.
-- Size guardrails: `Yes`. `agent-run-resource-manager.ts` is 175 lines, `server-instance-manager.ts` is 120.
+- Size guardrails: `Yes`. `agent-run-resource-manager.ts` is 176 lines, `server-instance-manager.ts` is 130.
 
 ## Persisted Data Transition Check
 
