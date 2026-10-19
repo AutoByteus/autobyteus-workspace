@@ -1,0 +1,28 @@
+# API-04b — stability record of the new gated E2E owner-scoped-member-file-changes (development rounds, same env -i command as API-04)
+# working tree on 581fecdf8e + the uncommitted test (same test as committed in 2486c8b7c4 for the disk-wait rounds); date 2026-10-19T05:59:20Z
+# full logs: /tmp/rfcosr-api/api04-*.log (temporary, not committed; removed at cleanup); the lines below are copied from them
+
+## Round A: first version (first live read races the recording) — 1 dev run + 8 loop runs
+api04-dev.log:  Tests 1 failed | 1 passed (2) Error: Timed out waiting for direct agent /manager file recorded
+api04-loop-1.log:  Tests 2 passed (2) 
+api04-loop-2.log:  Tests 2 passed (2) 
+api04-loop-3.log:  Tests 2 passed (2) 
+api04-loop-4.log:  Tests 2 passed (2) 
+api04-loop-5.log:  Tests 2 passed (2) 
+api04-loop-6.log:  Tests 1 failed | 1 passed (2) Error: Timed out waiting for Team running: configured member /mate (pending): listed
+api04-loop-7.log:  Tests 2 passed (2) 
+api04-loop-8.log:  Tests 2 passed (2) 
+
+Cause of the two failures (dev run 1: org /manager; loop run 6: team /mate pending): RunFileChangeService.load live-cache race, reproduced deterministically by API-08 (file unchanged by this ticket; identical on base cba6b85122). Follow-up FU-C.
+
+## Round B: test waits for the stored file_changes.json before the first live read — 10 loop runs
+api04-stable-1.log:  Tests 2 passed (2)
+api04-stable-10.log:  Tests 2 passed (2)
+api04-stable-2.log:  Tests 2 passed (2)
+api04-stable-3.log:  Tests 2 passed (2)
+api04-stable-4.log:  Tests 2 passed (2)
+api04-stable-5.log:  Tests 2 passed (2)
+api04-stable-6.log:  Tests 2 passed (2)
+api04-stable-7.log:  Tests 2 passed (2)
+api04-stable-8.log:  Tests 2 passed (2)
+api04-stable-9.log:  Tests 2 passed (2)
