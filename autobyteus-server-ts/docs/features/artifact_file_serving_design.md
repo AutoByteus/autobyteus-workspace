@@ -33,9 +33,47 @@ metadata and do not create Team Communication reference rows.
    team-member runs use the canonical memory location resolved from the root
    TeamRun id, physical ancestor TeamRun ids, rooted member address, and AgentRun
    id. Physical directory lineage is not a logical address encoding.
-6. The frontend hydrates rows through `getRunFileChanges(runId)` and applies live
-   `FILE_CHANGE` updates through `runFileChangesStore`.
-7. The viewer fetches `/runs/:runId/file-change-content?path=...`.
+6. The frontend hydrates rows through the list read of the row's owner and
+   applies live `FILE_CHANGE` updates through `runFileChangesStore`.
+7. The viewer fetches the content route of the same owner.
+
+Every list and content read names its owner, so the server reads only that
+owner's tree and never searches all saved runs:
+
+| Owner | List (GraphQL) | Content (REST) |
+| --- | --- | --- |
+| Standalone run | `getRunFileChanges(runId)` | `/runs/:runId/file-change-content?path=...` |
+| Team member (configured member or team task agent) | `getTeamMemberFileChanges(teamRunId, agentRunId)` | `/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content?path=...` |
+| Org member (direct agent, member-team member or task agent) | `getAgentOrgMemberFileChanges(orgRunId, memberAddress, agentRunId)` | `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...` |
+| Delegated copy under a standalone run (hub) | `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)` | `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...` |
+
+- The run-id reads serve standalone runs only. A run is standalone exactly when
+  it has standalone run metadata, whether it is running or saved; being active
+  does not decide it, because collaboration members share the same activation
+  registry. For any other run id the list is empty and content answers 404
+  `File change not found`. There is no fallback search.
+- A member read is located by its family's member-view service
+  (`TeamMemberRunViewProjectionService`,
+  `AgentOrgMemberRunViewProjectionService`,
+  `StandaloneRootMemberViewProjectionService`) inside the named root only, then
+  served by `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection`
+  / `resolveLocatedCollaborationMemberEntry`. The file-change service never
+  locates members itself.
+- While the root runs, a member's list and content come from the live
+  projection (pending and streaming entries included); otherwise from the
+  member's stored `file_changes.json`.
+- A workspace-relative entry resolves against the member's own launch
+  workspace, taken from `locatedExecutionSource(location)`: the configured
+  placement for configured members, the catalog source for task agents and
+  copies of every family.
+- A member the named owner does not hold: the list query errors and the content
+  route answers 404 `File change not found`. A missing `memberAddress` on the
+  org or copy route answers 400.
+- One content response rule for every owner: the file bytes with their MIME
+  type and `cache-control: no-store`; 409 `File change content is not ready yet`
+  for a pending or streaming entry while its owner runs; 404 `File change
+  content is not available` when the file is gone; 404 `File change not found`
+  when the path is not a recorded file change of that agent.
 
 List hydration and content serving read active runs from the process
 authority, resolved on every request. A `RunFileChangeService` keeps an

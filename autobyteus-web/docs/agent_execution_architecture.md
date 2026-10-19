@@ -1817,7 +1817,7 @@ for that evidence-free case.
 A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
 
 1.  **Run File Changes (`RunFileChangesStore`)**:
-    - Listens to `FILE_CHANGE` plus reopen hydration from `getRunFileChanges(runId)`.
+    - Listens to `FILE_CHANGE` plus reopen hydration from the run owner's list query (`fetchRunFileChanges(subject)`: `getRunFileChanges(runId)` for a standalone run, the team-, org- or copy-scoped query for a member).
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
