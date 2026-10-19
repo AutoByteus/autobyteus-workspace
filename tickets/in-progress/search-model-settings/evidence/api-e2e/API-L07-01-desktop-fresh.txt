@@ -1,0 +1,84 @@
+# API-L07: packaged desktop (iso-63817-8353, fresh data root, build of d2bcb95d3a); open Settings → Server Settings → Embedding; snapshot at open and 20 s later; data root listing; Mon Oct 19 13:00:49 CEST 2026
+{"url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings?section=server-settings&mode=embedding","msToCards":45}
+{
+ "panel": true,
+ "loading": false,
+ "loadError": null,
+ "actionError": null,
+ "actionErrorRole": null,
+ "disk": "On disk: 0 MB",
+ "subtitle": "Using IBM Granite Embedding Small English R2.",
+ "indexAll": {
+  "disabled": false,
+  "title": null
+ },
+ "filters": "All 1Needs indexing 1Indexing 0Ready 0",
+ "empty": false,
+ "dialog": null,
+ "announce": "",
+ "models": [
+  {
+   "id": "granite-embedding-small-english-r2",
+   "status": "Active·Not downloaded",
+   "facts": "Languages: English·Download size: 55 MB",
+   "progress": null,
+   "preparing": null,
+   "failed": null,
+   "unavailable": null,
+   "actions": [
+    "download"
+   ]
+  },
+  {
+   "id": "mdbr-leaf-ir",
+   "status": "Not downloaded",
+   "facts": "Languages: English·Download size: 24 MB",
+   "progress": null,
+   "preparing": null,
+   "failed": null,
+   "unavailable": null,
+   "actions": [
+    "download",
+    "use"
+   ]
+  },
+  {
+   "id": "embeddinggemma-2",
+   "status": "Not downloaded",
+   "facts": "Languages: 100+ languages·Download size: 346 MB",
+   "progress": null,
+   "preparing": null,
+   "failed": null,
+   "unavailable": null,
+   "actions": [
+    "download",
+    "use"
+   ]
+  }
+ ],
+ "projects": [
+  {
+   "id": "project_bb4a18a1-463b-4344-8064-5a142228cacb",
+   "text": "Desktop demoNot indexedIndex now",
+   "status": "Not indexed",
+   "actions": [
+    "index"
+   ]
+  }
+ ]
+}
+== 20 s later
+[('granite-embedding-small-english-r2', 'Active·Not downloaded', ['download']), ('mdbr-leaf-ir', 'Not downloaded', ['download', 'use']), ('embeddinggemma-2', 'Not downloaded', ['download', 'use'])] On disk: 0 MB
+== server-data listing (embeddings?)
+agent-orgs
+agent-teams
+agents
+application-packages
+db
+download
+llm
+logs
+memory
+projects
+skills
+temp_workspace

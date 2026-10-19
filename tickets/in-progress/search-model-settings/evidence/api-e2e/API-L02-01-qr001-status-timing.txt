@@ -1,0 +1,13 @@
+# API-L02 (QR-001, C-07): Docker node ab-sms-validation:d2bcb95d3a (linux/arm64 VM on the M1 Max host) with 24 Projects (20 x 1,000 Tasks + 4 small); the panel status document 20 times (API-PROBE-status-timing.mjs), then 5 browser opens of the Embedding page (ms until the cards render); commit d2bcb95d3a; host load averages: 9.69 17.61 44.04; Mon Oct 19 12:45:07 CEST 2026
+== GraphQL status document, 20 rounds
+{"rounds":20,"ms":{"first":2255,"median":2017,"p90":3550,"max":3946},"projects":24,"tasks":20039,"states":{"READY":4,"NOT_INDEXED":20}}
+== container restart, then first read (cold)
+{"rounds":5,"ms":{"first":1742,"median":1742,"p90":3488,"max":3488},"projects":24,"tasks":20039,"states":{"READY":4,"NOT_INDEXED":20}}
+== browser: open the page 5 times (ms to rendered cards incl. page load)
+{"url":"http://127.0.0.1:61598/settings?section=server-settings&mode=embedding","msToCards":2301}
+{"url":"http://127.0.0.1:61598/settings?section=server-settings&mode=embedding","msToCards":2393}
+{"url":"http://127.0.0.1:61598/settings?section=server-settings&mode=embedding","msToCards":2248}
+{"url":"http://127.0.0.1:61598/settings?section=server-settings&mode=embedding","msToCards":2514}
+{"url":"http://127.0.0.1:61598/settings?section=server-settings&mode=embedding","msToCards":2265}
+== container CPU/mem
+0.09% 1.58GiB / 15.35GiB

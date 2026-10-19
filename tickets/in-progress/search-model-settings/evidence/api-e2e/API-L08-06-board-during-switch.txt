@@ -1,0 +1,13 @@
+# API-L08 step 4 (AC-004, AC-003): desktop; right after the switch to EmbeddingGemma 2 (Desktop demo Not indexed for it): board search "docker" (exact) while meaning search prepares, then a paraphrase once ready; vectors per model in embeddings.sqlite before/after; build d2bcb95d3a; Mon Oct 19 13:04:22 CEST 2026
+vectors before the board search:
+[{"model_id":"granite-embedding-small-english-r2","n":8}]
+{"t":1792407863768,"atOnce":{"status":"Preparing meaning search…","rows":[]}}
+{"t":1792407863835,"s":{"status":"Preparing meaning search…","rows":[]}}
+{"t":1792407865845,"s":{"status":"Preparing meaning search… 0 of 8 Tasks","rows":[]}}
+{"t":1792407867858,"s":{"status":null,"rows":[]}}
+{"t":1792407870365,"paraphraseAfterReady":{"status":null,"rows":[]}}
+vectors after:
+[{"model_id":"embeddinggemma-2","n":8}]
+model folders:
+embeddinggemma-2
+granite-embedding-small-english-r2
