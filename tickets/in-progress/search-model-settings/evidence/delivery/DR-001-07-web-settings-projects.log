@@ -1,0 +1,61 @@
+# DR-001 post-integration check on merge f9de3d57d7 (origin/personal fc93276e6f into codex/search-model-settings); Mon Oct 19 16:19:39 CEST 2026
+serverStore: Not in Electron environment. Skipping server initialization.
+ ✓ components/settings/__tests__/PhoneSetupGuideCard.spec.ts (2 tests) 19ms
+stdout | composables/projects/__tests__/useTaskWorkerTasks.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+ ✓ composables/projects/__tests__/useTaskWorkerTasks.spec.ts (4 tests) 14ms
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts (1 test) 17ms
+stdout | composables/projects/__tests__/useProjectTaskPage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+ ✓ composables/projects/__tests__/useProjectTaskPage.spec.ts (5 tests) 24ms
+stderr | components/settings/__tests__/LanguageSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | composables/projects/__tests__/useProjectNotice.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | pages/__tests__/mobile-root.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | pages/__tests__/nodes.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stdout | components/settings/__tests__/LanguageSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stderr | components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+ ✓ components/settings/__tests__/LanguageSettingsManager.spec.ts (2 tests) 14ms
+ ✓ composables/projects/__tests__/useProjectTaskDraft.spec.ts (8 tests) 17ms
+stdout | composables/projects/__tests__/useProjectNotice.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stderr | services/eventMonitor/__tests__/eventMonitorActiveTracePageService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+ ✓ composables/projects/__tests__/useProjectNotice.spec.ts (2 tests) 13ms
+stdout | pages/__tests__/mobile-root.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | pages/__tests__/nodes.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+ ✓ pages/__tests__/mobile-root.spec.ts (2 tests) 11ms
+stdout | components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+ ✓ components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts (1 test) 9ms
+ ✓ pages/__tests__/nodes.spec.ts (1 test) 9ms
+stdout | services/eventMonitor/__tests__/eventMonitorActiveTracePageService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+ ✓ services/eventMonitor/__tests__/eventMonitorActiveTracePageService.spec.ts (3 tests) 4ms
+ Test Files  74 passed (74)
+      Tests  450 passed (450)
+   Start at  16:18:52
+   Duration  36.51s (transform 12.16s, setup 234.45s, collect 28.70s, tests 14.49s, environment 18.70s, prepare 11.03s)
