@@ -46,3 +46,15 @@ Current runtime code must never import this module.
   sources in `src/context-files/services/context-file-record-locators.ts` (R-C).
 
 Current runtime code must never import these modules.
+
+## Task agents' own files with `origin` (as of `origin/personal@f171032e88`)
+
+- `released-task-agent-own-files-with-origin.ts`: the own files of delegated copies as
+  `20261017_task_agent_own_run_v1` writes them: the `taskAgent` section with `origin`
+  (`catalog` | `configured_place`), an agent own file whose launch is all `null` when never recorded, a
+  task team member whose launch is present only when it runs on its own agent default; their readers, the
+  two released writers and the own-file reads and writes under one memory root. Used by
+  `20261017_task_agent_own_run_v1` (every own-file read and write) and by
+  `20261019_delegated_copy_own_file_complete_v1` (its classifier of the released shape).
+
+Current runtime code must never import this module.
