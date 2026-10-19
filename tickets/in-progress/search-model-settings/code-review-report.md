@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 4: IR-003, the SR-007 rework of FO-001). Round 3 was the failure-origin review (`CRR-003`). Round-1/2 sections below are carried forward except where the Round 4 section notes a change.
+- Review Entry Point: `Implementation Review` (round 5: IR-004, the CR-003 local fix). Round 4 reviewed IR-003, the SR-007 rework of FO-001. Round 3 was the failure-origin review (`CRR-003`). Round-1/2 sections below are carried forward except where the Round 4 section notes a change.
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-005; DEC-001…DEC-011; REQ-010, AC-014 added for CR-002)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (as indexed by the design)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md`
@@ -16,8 +16,9 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: 4
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: 5
+- Review Scope (round 5): `Targeted Delta Review`. The delta `997cffe1ae..8c283c6acc` touches 3 files, all within CR-003: `project-task-search-service.ts` (`readProject`, `indexAfterWrite`), its unit test, and one docs sentence. No spine, interface or data shape changed.
 - Review Scope (round 4): `Full Re-Audit`. The delta `671a1e596b..70bb03632c` adds a new spine (index after Task writes, REQ-011), changes a boundary interface (`collectionStatus(collection, fingerprints)`, plus `fingerprintItems`, `fingerprintsAreCurrent` and `activeModelOnDisk`), and rewires the Task service's change marks, so the structural checks and the full scorecard were rerun. Also reviewed: the web O-2/O-4 changes and probe case `1b24f59009`.
 - Review Scope: `Targeted Delta Review` (round 1: `Full Review`)
 - Review Scope Evidence: the delta `e48806b035..d2bcb95d3a` touches 8 files, all within the prior findings:
@@ -27,8 +28,8 @@
 
   No spine, interface used by a caller, or data shape changed, so round-1 evidence for unaffected checks is carried forward.
 - Trigger: implementation engineer handoff for IR-002 (after the Solution Designer's SR-005 / DEC-011 and ARCH-REV-003 Pass)
-- Prior Review Round Reviewed: round 3 (`CRR-003`, Fail — Design Impact)
-- Latest Authoritative Round: 4
+- Prior Review Round Reviewed: round 4 (`CRR-004`, Fail — Local Fix)
+- Latest Authoritative Round: 5
 - Basis (round 4): requirements SR-007 (REQ-011, AC-015, QR-001 as DEC-012, DEC-013, DEC-014); design SR-007 (AR-005 inputs-not-results rule, MP-005…MP-007, R-12…R-15); ARCH-REV-005 Pass; handoff § IR-003
 - Failure-origin context (round 3):
   - trigger: API-REV-001 (`/software_engineering_team/api_e2e_engineer`), F-001 / case API-L02, QR-001 on a Docker node (the round-1 hold C-07);
@@ -54,6 +55,15 @@
 - Tests reviewed proportionately: the new unit tests (downloads, model management with the G3 spies, files), the changed index and search tests, the GraphQL E2E test, the gated QR-001 load test, the web panel spec and the browser probe script.
 - Checks: the implementer's Checks Run (IMP-01…IMP-08) were recorded on the code under review. None was rerun (skill rule: no rerun to confirm).
 - Explicit exclusions: the Docker node run (AC-008) and the desktop run, which are downstream; the probe's screenshots, which were compared by the implementer and are owned by API/E2E for the visual sign-off.
+
+## Implementation Review Round 5 (CRR-005): IR-004, the CR-003 fix
+
+| Prior finding | Resolution | Verification |
+| --- | --- | --- |
+| CR-003 (write-triggered run loads the model with nothing to index) | **Resolved** | `indexAfterWrite` now reads the Project through `readProject` (`listTasks` + `fingerprintItems`, kept as the Project's inputs; dirty cleared before the read), computes `collectionStatus` from those fingerprints, and syncs only for `notIndexed`, `needsUpdate`, `waiting` or `indexing`. So status, dependency and assignment marks create no job and load no idle model. A description change shows as `needsUpdate` (against the job's vectors or the stored fingerprints) and still syncs. A write committed during the read re-marks the Project and schedules a new run. Index now, Index all and Rebuild are unchanged (REQ-006). The new test covers a status-only mark after a restart (no `sync`, no preparation, no runner; Active · Ready and the Project Ready) and a description edit (one sync, model loaded, new text indexed); the control run fails on `70bb03632c`, as it should (IMP-22) |
+
+- Checks: the implementer's typecheck, test file 8/8 plus the control, unit suite (6,072) and GraphQL E2E (52, AC-015 included) were recorded on `8c283c6acc`, so none was rerun. Web and the QR-001 read path are unchanged since round 4.
+- Score update (round 5): Runtime Correctness 8.6 → 9.3; API/E2E Readiness 8.8 → 9.3; others unchanged. Overall 9.3/10; every category ≥ 9.0.
 
 ## Implementation Review Round 4 (CRR-004): IR-003, the SR-007 rework
 
@@ -349,6 +359,7 @@ Non-blocking note: C-06, the abort-listener window in `EmbeddingModelFiles.downl
 
 ## Classification
 
+- Round 5: N/A — `Pass` (CR-003 resolved).
 - Round 4: `Local Fix` (CR-003). FO-001 is resolved by SR-007 / IR-003.
 - Round 3: `Design Impact` (FO-001), with a possible prerequisite (Project store read cost) and a requirement question (the QR-001 scope on Docker nodes).
 - Round 2: N/A — `Pass` (CR-001 resolved; CR-002 resolved upstream as DEC-011).
@@ -356,6 +367,7 @@ Non-blocking note: C-06, the abort-listener window in `EmbeddingModelFiles.downl
 
 ## Recommended Recipient
 
+- Round 5: `/software_engineering_team/api_e2e_engineer` (primary pass handoff); `/software_engineering_team/implementation_engineer` (informational).
 - Round 4: `/software_engineering_team/implementation_engineer` (`Local Fix` CR-003); then a targeted code review, then API/E2E.
 - Round 3: `/software_engineering_team/solution_designer` (`Design Impact` FO-001).
 - Round 2: `/software_engineering_team/api_e2e_engineer` (primary pass handoff); `/software_engineering_team/implementation_engineer` (informational).
@@ -370,14 +382,16 @@ Non-blocking note: C-06, the abort-listener window in `EmbeddingModelFiles.downl
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review` (round 4, Full Re-Audit of IR-003)
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 5, targeted delta of IR-004)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.2/10. Below 9.0: Runtime Correctness 8.6, API/E2E Readiness 8.8.
+- Score Summary: 9.3/10; every category ≥ 9.0
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/implementation_engineer` (`Local Fix` CR-003)
-- Notes:
-  - FO-001 is resolved as designed: QR-001 cold 773 ms and warm 25 ms on the host; AC-015 proven.
-  - Decisions 1, 3, 4 and 6 are sound, apart from CR-003's cost on non-description marks.
-  - O-1, O-2 and O-4 are applied correctly.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes for API/E2E:
+  - rerun API-L02 for QR-001 under SR-007's DEC-012 (warm refresh ≤ 300 ms; cold load ≤ 1 s on the desktop host; on Docker no slower than the Projects list), recording the host load (R-13);
+  - AC-015 on Docker and desktop;
+  - a status-only Task write after a restart starts no model load (CR-003, on the real stack);
+  - O-1, O-2 and O-4 on the real stack.
+- The durable test change API-D01 (`projects-graphql.e2e.test.ts`, `c02a54bc3e`) waits for the proportional test review after API/E2E passes.

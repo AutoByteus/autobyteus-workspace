@@ -10,6 +10,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2, targeted delta (IR-002) | Fail — Requirement Gap (+ Local Fix) | Pass | CR-001, CR-002 (resolved) |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 (API-REV-001, F-001) | Pass | Fail — Design Impact | FO-001 (from C-07) |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4, Full Re-Audit (IR-003, SR-007) | Fail — Design Impact | Fail — Local Fix | FO-001 (resolved), CR-003 (new) |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 5, targeted delta (IR-004) | Fail — Local Fix | Pass | CR-003 (resolved) |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 (API-REV-002 pass) | Pass (CRR-005) | Pass | none |
 
 ## Revision Entries
 
@@ -145,3 +147,55 @@ None.
 - Material score or classification changes: full scorecard 9.2/10; Runtime Correctness 8.6, API/E2E Readiness 8.8
 - Recommended recipient: `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: QR-001 on Docker (API/E2E re-measures with host load recorded, R-13); `project-task-service.ts` stays at 500 lines (autobyteus-147).
+
+### CRR-005 — Targeted delta review of IR-004 (CR-003 fix)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 5, meta, classification, latest result)
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` (`997cffe1ae..8c283c6acc`, 3 files within CR-003)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (§ IR-004); CR-003
+- Relevant solution revision IDs: SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail`, `Local Fix` (CRR-004)
+- Current authoritative result: `Pass`, sent to API/E2E
+- What changed in the review result and why: the write path now syncs only when the fresh fingerprints show work (`notIndexed` / `needsUpdate`) or a run is pending, so non-description marks load no model. This is proven by a unit test with a control that fails on the unfixed code. The recorded checks cover the fix, so none was rerun.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-003 | Open (Local Fix) | Resolved | IR-004, `8c283c6acc` | `indexAfterWrite` gates `sync` on `collectionStatus`; test "loads no model for a write that changes no description (CR-003), and indexes a description edit"; control fails on `70bb03632c` (IMP-22) |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: Runtime Correctness 8.6 → 9.3; API/E2E Readiness 8.8 → 9.3; overall 9.3/10
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: QR-001 on Docker under DEC-012 (re-measure with host load); `project-task-service.ts` at 500 lines (autobyteus-147); the API-D01 test change awaits test review.
+
+### CRR-006 — Proportional test-code review after API-REV-002
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-002, Pass, 95%); durable test API-D01
+- Relevant solution revision IDs: SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-005)
+- Current authoritative result: `Pass` (test review), sent to delivery
+- What changed in the review result and why: API-D01 (`projects-graphql.e2e.test.ts`, API-007) exempts exactly the three approved index mutations and asserts they exist. The no-status-mutation guard is otherwise as strict as before. Round 2 changed no durable test. O-5 (an open panel shows write-triggered indexing at its 10 s idle poll; REQ-007 wording) is recorded as a residual for the Solution Designer via delivery, outside this entry point.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: QR-001 desktop first-load margin; O-5; untested platforms; the Project store read follow-up (DEC-012).
