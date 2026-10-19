@@ -1,0 +1,11 @@
+# Check: DEL-02 server test:unit on integrated state
+# Commit: afb2b814c2
+# Date: 2026-10-19T06:51:25Z
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Excerpt (summary); full log: DEL-02-server-test-unit.full.log.gz
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  741 passed | 4 skipped (745)
+      Tests  6076 passed | 7 skipped (6083)
+exit=0
+# Note: the two APP_DATA_STARTUP_GATE_FAILED lines are stdout printed by negative-path startup-gate unit tests (fixture paths /tmp/failed.log), not failures: 0 failed, exit=0.

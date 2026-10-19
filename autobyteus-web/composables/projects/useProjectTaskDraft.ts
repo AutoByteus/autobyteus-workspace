@@ -1,18 +1,27 @@
-import { ref, computed, onBeforeUnmount } from 'vue'
+import { ref, computed, onBeforeUnmount, watch } from 'vue'
 import { createProjectTaskContextClient } from '~/services/projects/projectTaskContextClient'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { useVoiceInputStore } from '~/stores/voiceInputStore'
 import { mergeTranscriptWithDraft } from '~/utils/voiceInputCapture'
 import { dependenciesOf } from '~/utils/projects/taskDependencies'
+import { parentOf } from '~/utils/projects/taskParts'
 import type { ProjectTask, ProjectTaskContextFile } from '~/types/project'
 import type { VoiceTranscriptTarget } from '~/types/voiceInput'
-export function useProjectTaskDraft(projectId: string, saved?: ProjectTask) {
+export function useProjectTaskDraft(projectId: string, saved?: ProjectTask, initialPartOf?: string | null) {
   let alive = true
   const client = createProjectTaskContextClient(projectId, saved?.taskId, () => alive)
   const text = ref(saved?.description ?? '')
   const files = ref<ProjectTaskContextFile[]>([...(saved?.contextFiles ?? [])])
   // "Depends on" (same Project), starting from the dependencies that still exist, so a deleted one is never resubmitted.
   const dependsOn = ref<string[]>(saved ? dependenciesOf(saved, useProjectTaskStore().getList(projectId)?.tasks ?? []).map((t) => t.taskId) : [])
+  // "Part of" (same Project): the parent that still exists (a deleted one is never resubmitted); a new Task may start with the
+  // parent the "New part" shortcut gave it, while that names a current Task of this Project (checked once the list is known).
+  const partOf = ref<string | null>(saved ? parentOf(saved, useProjectTaskStore().getList(projectId)?.tasks ?? [])?.taskId ?? null : initialPartOf ?? null)
+  if (!saved && initialPartOf) {
+    watch(() => useProjectTaskStore().getList(projectId)?.tasks, (tasks) => {
+      if (tasks && partOf.value === initialPartOf && !tasks.some((task) => task.taskId === initialPartOf)) partOf.value = null
+    }, {immediate: true})
+  }
   const added = new Set<string>(), removed = new Set<string>()
   const draftId = ref<string>()
   let beginPromise: Promise<string> | null = null
@@ -65,8 +74,8 @@ export function useProjectTaskDraft(projectId: string, saved?: ProjectTask) {
       const changes = added.size || removed.size ? {
         ...(draftId.value ? {draftId: draftId.value} : {}), addStoredFilenames: additions, removeStoredFilenames: [...removed],
       } : undefined
-      const result = saved ? await store.updateTask(projectId, saved.taskId, text.value.trim(), changes, current, [...dependsOn.value])
-        : await store.createTask(projectId, text.value.trim(), draftId.value ? {draftId: draftId.value, storedFilenames: additions} : undefined, current, [...dependsOn.value])
+      const result = saved ? await store.updateTask(projectId, saved.taskId, text.value.trim(), changes, current, [...dependsOn.value], partOf.value)
+        : await store.createTask(projectId, text.value.trim(), draftId.value ? {draftId: draftId.value, storedFilenames: additions} : undefined, current, [...dependsOn.value], partOf.value)
       // Save may already be committed on a captured endpoint; only the live draft may navigate.
       return current() ? result : null
     } catch (e) { if (current()) error.value = e instanceof Error ? e.message : 'Task save failed.'; return null }
@@ -78,5 +87,5 @@ export function useProjectTaskDraft(projectId: string, saved?: ProjectTask) {
     if (draftId.value) void client.discard(draftId.value).catch(() => undefined)
   }
   onBeforeUnmount(dispose)
-  return {text, files, dependsOn, draftId, pending, saving, error, blocked, target, current, addFiles, removeFile, save, dispose, client}
+  return {text, files, dependsOn, partOf, draftId, pending, saving, error, blocked, target, current, addFiles, removeFile, save, dispose, client}
 }

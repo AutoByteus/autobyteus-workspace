@@ -830,9 +830,9 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
 
     // B and D depend on A (set by the Manager's tools, by key in upper case): both are blocked while A is TODO.
     const depB = await root.managerCalls(callTool("update_task", { task_id: k(taskB).toUpperCase(), depends_on: [k(taskA).toUpperCase()] }));
-    expect(depB).toEqual({ task: { projectId, taskId: k(taskB), status: "TODO", dependsOn: [k(taskA)] } });
+    expect(depB).toEqual({ task: { projectId, taskId: k(taskB), status: "TODO", dependsOn: [k(taskA)], partOf: null } });
     const depD = await root.managerCalls(callTool("update_task", { task_id: taskD, depends_on: [taskA] }));
-    expect(depD).toEqual({ task: { projectId, taskId: k(taskD), status: "TODO", dependsOn: [k(taskA)] } });
+    expect(depD).toEqual({ task: { projectId, taskId: k(taskD), status: "TODO", dependsOn: [k(taskA)], partOf: null } });
     expect(await dependsOf(taskB)).toEqual([taskA]);
 
     // AC-022 / AC-027: the blocked Task B is delegated with recipient_address and its key in upper case.
@@ -878,7 +878,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     // AC-022 (target_agent_run_id mode) / AC-027: C DONE by key in mixed case, then the blocked Task D goes to the same copy by
     // its key in upper case; the assignment message names D's key.
     const doneC = await root.managerCalls(callTool("update_task", { task_id: k(taskC).replace(/^e/, "E"), status: "DONE" }));
-    expect(doneC).toEqual({ task: { projectId, taskId: k(taskC), status: "DONE", dependsOn: [] } });
+    expect(doneC).toEqual({ task: { projectId, taskId: k(taskC), status: "DONE", dependsOn: [], partOf: null } });
     const assignedD = await root.managerCalls(callTool("delegate_task", { target_agent_run_id: helper, task_id: k(taskD).toUpperCase() }));
     expect(assignedD).toEqual({ delegated: true, target_kind: "agent", target_agent_run_id: helper });
     let helperConversation = "";

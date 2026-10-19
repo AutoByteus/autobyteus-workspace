@@ -1,0 +1,67 @@
+# Case: DR-07 runtime x MCP matrix: scripted AGY cell, then no gate
+# Command: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs MCP_MATRIX_E2E_EVIDENCE_DIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts --no-watch; then the same file with no gate
+# Commit: cec8ccdf89 (codex/mcp-sdk-1-32-upgrade-parity merged with origin/personal f33dacc994)
+# Environment: macOS 26 (Darwin 25.5.0), node 22, pnpm 10.28.2; tests under env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-19 (delivery round 2, integrated state)
+
+## AGY cell (exit 0): result lines
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stderr | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stderr | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stderr | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 5 skipped) 1168ms
+     ✓ agy (scripted CLI): all three tool kinds through autobyteus_agent_tools  661ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 5 skipped (6)
+
+## AGY summary
+{
+  "runtime": "agy",
+  "taskStatus": "DONE",
+  "stdioEnvDelivered": true,
+  "stdioCwdDelivered": true,
+  "httpMarker": true,
+  "httpToolCalls": [
+    "expected"
+  ],
+  "dummyOnWire": false
+}
+## no gate (exit 0)
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 6 skipped)
+ Test Files  1 skipped (1)
+      Tests  6 skipped (6)

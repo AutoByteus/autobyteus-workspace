@@ -314,9 +314,10 @@ category-wide native task exposure are not restored.
   current-node Projects, sorted by name/ID. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
   Project is required; status must be exact TODO, IN_PROGRESS, DONE or CANCELLED (CANCELLED = dropped as not needed).
-- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, summary, match}],
+- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, partOf, parts, summary, match}],
   meaningSearch: {state, note?}}`: the Project's best-matching Tasks first, by exact text and by meaning (at most
-  `limit`, 1–30, default 10). `taskId` is the Task's key. See [Project Task Search](./projects.md#project-task-search).
+  `limit`, 1–30, default 10). `taskId` is the Task's key; `partOf` is the parent's key or `null`, `parts` the
+  parts' keys in key number order. See [Project Task Search](./projects.md#project-task-search).
 - `create_project({name, description?, workspaces?})` → `{project}`: creates with a
   required nonblank name; `project_id` is rejected as an unsupported argument.
 - `update_project({project_id, name?, description?, workspaces?})` → `{project}`:
@@ -327,16 +328,24 @@ category-wide native task exposure are not restored.
   entire change. Registration/existence are not required; Save never registers or
   creates folders. Old workspace_id rows are rejected, not translated.
   Result is saved projectId/name/description and workspaceRootPath/description only.
-- `create_task` → `{task}`. `{project_id, description, context_files?, depends_on?}`:
+- `create_task` → `{task}`. `{project_id, description, context_files?, depends_on?, part_of?}`:
   required nonempty description, **omit status** and `task_id` (new TODO with
   the Project's next key).
 - `update_task` → `{task}`. `{task_id, description?, status?,
-  context_files?, depends_on?}` with **no project_id**: the Task ID (a Project
+  context_files?, depends_on?, part_of?}` with **no project_id**: the Task ID (a Project
   Task's key in any letter case or its long ID, or a Task with no Project's ID)
-  patches text, status and/or dependencies of a Project Task or a Task with no
-  Project (`projectId: null` in the result). Unknown IDs fail, never upsert.
+  patches text, status, dependencies and/or parent of a Project Task, or text
+  and status of a Task with no Project (`projectId: null` in the result).
+  Unknown IDs fail, never upsert.
   `depends_on` lists same-Project Task references (`[]` clears, omitted keeps);
   an invalid list fails with `TASK_DEPENDENCY_INVALID` and writes nothing.
+  `part_of` is one same-Project Task reference, the Task's parent (`""` clears on
+  update and is an argument error on create, omitted keeps); one level only, and
+  an invalid parent, or `part_of` on a Task with no Project, fails with
+  `TASK_PARENT_INVALID` and writes nothing. An `update_task` that sets a parent
+  to DONE or CANCELLED sets its TODO and IN_PROGRESS parts the same way, closing
+  their task agents too, and lists them in the result's `closedParts`. See
+  [Task keys, "depends on" and "part of"](projects.md#task-keys-depends-on-and-part-of).
   Null/blank IDs are invalid, not omitted; hidden input keys (including
   `project_id` with `task_id`) fail. Omitted fields/context are preserved
   through a locked current-record patch. Neither task tool is added
@@ -349,8 +358,9 @@ category-wide native task exposure are not restored.
   displayName}]`. See [Projects](projects.md#project-and-task-agent-tools).
 
 Task projections include projectId/taskId (a Project Task's key, see
-[Task keys](projects.md#task-keys-and-depends-on)), description/status,
-`dependsOn` keys for Project Tasks and saved contextFiles (metadata/HTTP locator plus validated server-local localPath when
+[Task keys](projects.md#task-keys-depends-on-and-part-of)), description/status,
+`dependsOn` keys, `partOf` (the parent's key or `null`) and, in lists, `parts` keys
+for Project Tasks, and saved contextFiles (metadata/HTTP locator plus validated server-local localPath when
 bytes are available), not timestamps. Missing bytes do not fabricate paths.
 No workspace discovery/registration, Task attachment removal, batch, delegation, automatic
 status/linkage/quality assessment or resource-stopping operation is provided.

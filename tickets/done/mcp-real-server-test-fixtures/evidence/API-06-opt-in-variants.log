@@ -1,0 +1,42 @@
+# Case: API-06 opt-in check variants (real-user-kind-mcp-server.test.ts) and user-repo safety
+# Command: env -i PATH HOME=<temp> TMPDIR <variant env> pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts --reporter=verbose
+#   a: RUN_REAL_MCP_SERVER_E2E=1 (no AUTOBYTEUS_MCPS_DIR)
+#   b: + AUTOBYTEUS_MCPS_DIR=/Users/normy/autobyteus_org/autobyteus_mcps REAL_MCP_SERVER_FOLDER=no-such-server
+#   c: RUN_REAL_MCP_SERVER_E2E=1 AUTOBYTEUS_MCPS_DIR=/Users/normy/autobyteus_org/autobyteus_mcps (default pptx-mcp, default command)
+#   d: RUN_REAL_MCP_SERVER_E2E=1 AUTOBYTEUS_MCPS_DIR=/Users/normy/autobyteus_org/autobyteus_private_mcps REAL_MCP_SERVER_FOLDER=yt-dlp-mcp REAL_MCP_SERVER_COMMAND="uv run --frozen python -m ytdlp_mcp.server"
+#   e: as c with REAL_MCP_SERVER_COMMAND="uv run --frozen start-pptx-mcp" (the requirement wording; deliberate check of the handoff deviation)
+# Commit: 8d7edc2827 (test code baaee3a150; later commits: TESTING.md row and ticket files only)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2, uv 0.10.2; <L> = test-owned scratch $TMPDIR/mcp189-api (removed after the round)
+# Date: 2026-10-19
+
+== variant a ==
+ ↓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: pptx-mcp — skipped: AUTOBYTEUS_MCPS_DIR is not set > lists the server tools from a temp copy, leaving the source folder unchanged
+      Tests  1 skipped (1)
+
+== variant b ==
+ ↓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: no-such-server — skipped: server folder not found: /Users/normy/autobyteus_org/autobyteus_mcps/no-such-server > lists the server tools from a temp copy, leaving the source folder unchanged
+      Tests  1 skipped (1)
+
+== variant c ==
+[real-mcp-server] pptx-mcp: 4 tools: create_ppt_from_images, replace_slide_with_image, append_images_as_slides, combine_images
+ ✓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: pptx-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+      Tests  1 passed (1)
+
+== variant d ==
+[real-mcp-server] yt-dlp-mcp: 2 tools: download_audio, download_video
+ ✓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: yt-dlp-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+      Tests  1 passed (1)
+
+== variant e ==
+error: Failed to spawn: `start-pptx-mcp`
+  Caused by: No such file or directory (os error 2)
+ × tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: pptx-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+McpError: MCP error -32000: Connection closed
+      Tests  1 failed (1)
+
+== user repositories: HEAD and git status before and after all variants ==
+identical
+== autobyteus_mcps HEAD aa09165
+== autobyteus_private_mcps HEAD 02df7a2
+temp copies left in $TMPDIR (real-mcp-server-*): 0; opt-in server processes left: none

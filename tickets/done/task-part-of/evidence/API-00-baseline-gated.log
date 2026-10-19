@@ -1,0 +1,66 @@
+# Case: API-00 (gated baseline)
+# Command: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run <context-files-delegation, change-feed, reactivation, closure, ad-hoc, existing-copy> --no-watch
+# Commit: 399303d039; NOTE: project-task-context-files-delegation loaded after my edit of it during this run (see API-06-head-context-files.log)
+# Environment: macOS darwin arm64, Node via corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR
+# Date: 2026-10-19
+
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 1 failed | 2 skipped) 154161ms
+     ✓ EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views  17789ms
+     ✓ EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner  17566ms
+     ✓ EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner  17532ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  97658ms
+     ✓ EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable  1547ms
+     ✓ EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change  1167ms
+     × TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020) 436ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 25698ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4578ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4437ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  5006ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4458ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4137ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2710ms
+ ❯ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests | 4 failed) 127560ms
+     ✓ feed contract: `connected` first on every connection, no replay, remote-access rejection like the sibling sockets  943ms
+     × Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot 30461ms
+     × Team root: a delegated catalog Agent copy is hosted by the Team root; a task Team root folds its members 30736ms
+     × Org root: an Org-hosted root reports its worker's status and goes Offline at DONE 30694ms
+     ✓ Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks  1630ms
+     × QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded 32415ms
+     ✓ every frame received in this run is a valid message of the strict server schema 2ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 11083ms
+     ✓ standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete  3882ms
+     ✓ Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)  3359ms
+     ✓ Agent Org root: same journey through the Org stream  3467ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 9597ms
+     ✓ standalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen + repeated DONE, Task delete  3213ms
+     ✓ Agent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen + repeated DONE, Task delete  3202ms
+     ✓ Agent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen + repeated DONE, Task delete  2839ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 1854ms
+     ✓ CTX-E2E-003: the Manager attaches files by tool, delegate_task({task_id}) hands the saved copies to a live worker that reads them; DONE with a bad file keeps the run open; ad-hoc Tasks refuse files  1630ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Error: Timed out waiting for new Task: feed equals snapshot; feed={"contextFiles":[],"taskId":"project_task_8fb6ead4-909f-47e1-ac21-f5a540a5514e","projectId":"project_a09c7014-de95-48e8-b59f-c8cef2fd736b","taskKey":"pcf-launch-bef8cf-1","description":"CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/pcf_helper_097ba6\",\"description\":\"Reply OK.\"}}","status":"TODO","dependsOnTaskIds":[],"partOfTaskId":null,"createdAt":"2026-10-19T05:57:45.714Z","updatedAt":"2026-10-19T05:57:45.714Z","root":null}; snapshot={"taskId":"project_task_8fb6ead4-909f-47e1-ac21-f5a540a5514e","projectId":"project_a09c7014-de95-48e8-b59f-c8cef2fd736b","taskKey":"pcf-launch-bef8cf-1","description":"CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/pcf_helper_097ba6\",\"description\":\"Reply OK.\"}}","status":"TODO","dependsOnTaskIds":[],"createdAt":"2026-10-19T05:57:45.714Z","updatedAt":"2026-10-19T05:57:45.714Z","contextFiles":[],"root":null}
+ ❯ tests/e2e/projects/project-change-feed.e2e.test.ts:172:13
+ ❯ settledTask tests/e2e/projects/project-change-feed.e2e.test.ts:167:5
+ ❯ tests/e2e/projects/project-change-feed.e2e.test.ts:368:16
+ FAIL  tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a delegated catalog Agent copy is hosted by the Team root; a task Team root folds its members
+Error: Timed out waiting for catalog copy root: feed equals snapshot; feed={"contextFiles":[],"taskId":"project_task_c1166531-83ce-4566-a32d-754d3235694d","projectId":"project_c2462732-478b-49e6-9f89-43eb6a907fcb","taskKey":"pcf-team-595b9b-1","description":"Review the docs.","status":"TODO","dependsOnTaskIds":[],"partOfTaskId":null,"createdAt":"2026-10-19T05:58:15.865Z","updatedAt":"2026-10-19T05:58:15.865Z","root":{"kind":"agent","recipientAddress":"/pcf_worker_097ba6","ingressAgentRunId":"pcf_worker_097ba6_9451af767bfc4a1c9437393121500b54","teamRunId":null,"hostRoot":{"kind":"agent_team","runId":"pcf_team_097ba6_9bd9d21fff704a1f87b38a985b9efcc4"},"start":"started","startError":null,"closed":false,"status":"idle"}}; snapshot={"taskId":"project_task_c1166531-83ce-4566-a32d-754d3235694d","projectId":"project_c2462732-478b-49e6-9f89-43eb6a907fcb","taskKey":"pcf-team-595b9b-1","description":"Review the docs.","status":"TODO","dependsOnTaskIds":[],"createdAt":"2026-10-19T05:58:15.865Z","updatedAt":"2026-10-19T05:58:15.865Z","contextFiles":[],"root":{"kind":"agent","recipientAddress":"/pcf_worker_097ba6","ingressAgentRunId":"pcf_worker_097ba6_9451af767bfc4a1c9437393121500b54","teamRunId":null,"hostRoot":{"kind":"agent_team","runId":"pcf_team_097ba6_9bd9d21fff704a1f87b38a985b9efcc4"},"start":"started","startError":null,"closed":false,"status":"idle"}}
+ ❯ tests/e2e/projects/project-change-feed.e2e.test.ts:172:13
+ ❯ settledTask tests/e2e/projects/project-change-feed.e2e.test.ts:167:5
+ ❯ tests/e2e/projects/project-change-feed.e2e.test.ts:437:18
+ FAIL  tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Error: Timed out waiting for org root: feed equals snapshot; feed={"contextFiles":[],"taskId":"project_task_bc1bed23-766c-4ee5-b240-2e045c308ed3","projectId":"project_bc05338b-2ce8-482e-9457-6334f66658b1","taskKey":"pcf-org-29650c-1","description":"Draft notes.","status":"TODO","dependsOnTaskIds":[],"partOfTaskId":null,"createdAt":"2026-10-19T05:58:46.682Z","updatedAt":"2026-10-19T05:58:46.682Z","root":{"kind":"agent","recipientAddress":"/worker","ingressAgentRunId":"pcf_worker_097ba6_9c4598c2d6bc4696860b56e3128418ce","teamRunId":null,"hostRoot":{"kind":"agent_org","runId":"pcf_org_097ba6_b122f19d59a744fa8bd87b1de8d83922"},"start":"started","startError":null,"closed":false,"status":"idle"}}; snapshot={"taskId":"project_task_bc1bed23-766c-4ee5-b240-2e045c308ed3","projectId":"project_bc05338b-2ce8-482e-9457-6334f66658b1","taskKey":"pcf-org-29650c-1","description":"Draft notes.","status":"TODO","dependsOnTaskIds":[],"createdAt":"2026-10-19T05:58:46.682Z","updatedAt":"2026-10-19T05:58:46.682Z","contextFiles":[],"root":{"kind":"agent","recipientAddress":"/worker","ingressAgentRunId":"pcf_worker_097ba6_9c4598c2d6bc4696860b56e3128418ce","teamRunId":null,"hostRoot":{"kind":"agent_org","runId":"pcf_org_097ba6_b122f19d59a744fa8bd87b1de8d83922"},"start":"started","startError":null,"closed":false,"status":"idle"}}
+ ❯ tests/e2e/projects/project-change-feed.e2e.test.ts:172:13
+ ❯ settledTask tests/e2e/projects/project-change-feed.e2e.test.ts:167:5
+ ❯ tests/e2e/projects/project-change-feed.e2e.test.ts:465:18
+ FAIL  tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Error: Timed out waiting for volume DONE: feed equals snapshot; feed={"contextFiles":[],"taskId":"project_task_22043b91-463d-4103-9ac8-7d4e7ff7e559","projectId":"project_3e294684-5f9f-45cf-b23d-6cf5b249f06e","taskKey":"pcf-volume-8c6b44-1","description":"Volume Task 0.","status":"DONE","dependsOnTaskIds":[],"partOfTaskId":null,"createdAt":"2026-10-19T05:59:18.886Z","updatedAt":"2026-10-19T05:59:21.143Z","root":{"kind":"agent","recipientAddress":"/pcf_worker_097ba6","ingressAgentRunId":"pcf_worker_097ba6_f1d32dacecc64150ac9a87ecd1d386bf","teamRunId":null,"hostRoot":{"kind":"agent","runId":"pcf_manager_097ba6_5599cd2e18c84da5a43486ffed00a394"},"start":"started","startError":null,"closed":true,"status":"offline"}}; snapshot={"taskId":"project_task_22043b91-463d-4103-9ac8-7d4e7ff7e559","projectId":"project_3e294684-5f9f-45cf-b23d-6cf5b249f06e","taskKey":"pcf-volume-8c6b44-1","description":"Volume Task 0.","status":"DONE","dependsOnTaskIds":[],"createdAt":"2026-10-19T05:59:18.886Z","updatedAt":"2026-10-19T05:59:21.143Z","contextFiles":[],"root":{"kind":"agent","recipientAddress":"/pcf_worker_097ba6","ingressAgentRunId":"pcf_worker_097ba6_f1d32dacecc64150ac9a87ecd1d386bf","teamRunId":null,"hostRoot":{"kind":"agent","runId":"pcf_manager_097ba6_5599cd2e18c84da5a43486ffed00a394"},"start":"started","startError":null,"closed":true,"status":"offline"}}
+ ❯ tests/e2e/projects/project-change-feed.e2e.test.ts:172:13
+ ❯ settledTask tests/e2e/projects/project-change-feed.e2e.test.ts:167:5
+ ❯ tests/e2e/projects/project-change-feed.e2e.test.ts:522:5
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+AssertionError: expected { task: { …(5) } } to deeply equal { task: { …(4) } }
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:833:18
+ Test Files  2 failed | 4 passed (6)
+      Tests  5 failed | 22 passed | 3 skipped (30)
+exit=1

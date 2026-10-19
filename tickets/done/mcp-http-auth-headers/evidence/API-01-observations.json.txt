@@ -1,0 +1,485 @@
+# Case: API-01 + API-02 value-free remote-server observations (per request: HTTP method, JSON-RPC method, tool, auth=expected/other/none) and the built-server output scan
+# Command: as API-01 (written by MCP_AUTH_E2E_EVIDENCE_DIR)
+# Commit: e129930bcf + the final new test files (committed on this branch in the API/E2E commit; see the execution report)
+# Environment: macOS 26 (Darwin 25.5.0), node from worktree shell, pnpm 10.28.2
+# Date: 2026-10-19 (final run, after the type-only cleanup of the test files)
+
+{
+  "observations": {
+    "hdr": [
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ],
+    "tok": [
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "other"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ],
+    "imp": [
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ],
+    "open": [
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "GET",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "none"
+      },
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "none"
+      }
+    ]
+  },
+  "serverOutputScan": {
+    "outputBytes": 29247,
+    "containsDummy": false,
+    "containsWrong": false
+  }
+}

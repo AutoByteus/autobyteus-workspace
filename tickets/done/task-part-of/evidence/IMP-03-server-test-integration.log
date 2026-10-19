@@ -1,0 +1,6 @@
+# IMP-03-server-test-integration (excerpt; full log: IMP-03-server-test-integration.full.log.gz)
+# Command: pnpm -C autobyteus-server-ts test:integration
+# Commit: 179ddb9f77 (server source 6cc6c22d2e); macOS darwin, Node via corepack pnpm 10.28.2; worktree install; 2026-10-19
+ Test Files  77 passed | 19 skipped (96)
+      Tests  415 passed | 70 skipped (485)
+exit=0

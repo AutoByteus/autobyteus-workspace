@@ -107,7 +107,8 @@
           </div>
           <div>
             <label for="http_token" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.token_optional') }}</label>
-            <input type="password" v-model="form.streamableHttpConfig.token" id="http_token" class="mt-1 block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
+            <input type="password" v-model="form.streamableHttpConfig.token" id="http_token" aria-describedby="http_token_hint" class="mt-1 block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
+            <p id="http_token_hint" class="mt-1 text-sm text-gray-500">{{ $t('tools.components.tools.McpServerFormModal.token_hint') }}</p>
           </div>
         </div>
       </div>
@@ -259,10 +260,9 @@ const updateJsonFromForm = () => {
          Object.assign(config, {
             url: form.streamableHttpConfig.url,
             token: form.streamableHttpConfig.token || undefined,
+            headers: Object.keys(form.streamableHttpConfig.headers).length > 0 ? form.streamableHttpConfig.headers : undefined,
          });
     }
-
-    Object.keys(config).forEach(key => config[key] === undefined && delete config[key]);
 
     const output = {
         mcpServers: {

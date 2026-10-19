@@ -34,7 +34,7 @@
     "@fastify/multipart": "^8.3.1",
     "@fastify/websocket": "^10.0.1",
     "@huggingface/tokenizers": "0.2.0",
-    "@modelcontextprotocol/sdk": "1.30.0",
+    "@modelcontextprotocol/sdk": "1.32.1",
     "@prisma/client": "^5.22.0",
     "autobyteus-ts": "workspace:*",
     "chokidar": "^4.0.3",

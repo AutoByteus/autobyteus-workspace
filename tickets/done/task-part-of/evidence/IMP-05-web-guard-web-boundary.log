@@ -1,0 +1,9 @@
+# IMP-05-web-guard-web-boundary
+# Command: pnpm -C autobyteus-web guard:web-boundary
+# Commit: 179ddb9f77 (server source 6cc6c22d2e); macOS darwin, Node via corepack pnpm 10.28.2; worktree install; 2026-10-19
+
+> autobyteus@1.5.6-beta.8 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+exit=0

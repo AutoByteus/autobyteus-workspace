@@ -42,13 +42,14 @@ export const readProjectFile = (raw: unknown, projectId: string): Project | null
       workspaceRootPath: l.workspaceRootPath, description: l.description })),
     taskKeys: { prefix: c.taskKeys.prefix, lastNumber: c.taskKeys.lastNumber } };
 };
-/** Current tolerant reader of `task.json`; its ids must match its folders. */
+/** Current tolerant reader of `task.json`; its ids must match its folders. An absent `partOfTaskId` means no parent. */
 export const readTaskFile = (raw: unknown, projectId: string, taskId: string): ProjectTask | null => {
   const c = raw as (Partial<ProjectTask> & { projectId?: unknown }) | null;
   if (!c || c.taskId !== taskId || c.projectId !== projectId || !isNonEmptyString(c.taskKey) || !isNonEmptyString(c.description)
     || !isProjectTaskStatus(c.status) || !isNonEmptyString(c.createdAt) || !isNonEmptyString(c.updatedAt)) return null;
   return { taskId, taskKey: c.taskKey, description: c.description, status: c.status, createdAt: c.createdAt, updatedAt: c.updatedAt,
-    contextFiles: normalizeContextFiles(c.contextFiles), dependsOnTaskIds: normalizeDependsOn(c.dependsOnTaskIds) };
+    contextFiles: normalizeContextFiles(c.contextFiles), dependsOnTaskIds: normalizeDependsOn(c.dependsOnTaskIds),
+    partOfTaskId: isNonEmptyString(c.partOfTaskId) ? c.partOfTaskId : null };
 };
 /** Exact writer shapes. */
 export const projectFileContent = (p: Project) => ({ projectId: p.projectId, name: p.name, description: p.description,
@@ -56,7 +57,7 @@ export const projectFileContent = (p: Project) => ({ projectId: p.projectId, nam
     workspaceRootPath: l.workspaceRootPath, description: l.description })),
   taskKeys: { prefix: p.taskKeys.prefix, lastNumber: p.taskKeys.lastNumber } });
 export const taskFileContent = (projectId: string, t: ProjectTask) => ({ taskId: t.taskId, projectId, taskKey: t.taskKey, description: t.description,
-  status: t.status, dependsOnTaskIds: [...t.dependsOnTaskIds], createdAt: t.createdAt, updatedAt: t.updatedAt,
+  status: t.status, dependsOnTaskIds: [...t.dependsOnTaskIds], partOfTaskId: t.partOfTaskId, createdAt: t.createdAt, updatedAt: t.updatedAt,
   contextFiles: normalizeContextFiles(t.contextFiles ?? []) });
 
 const notFound = (projectId: string) => new ProjectError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);
@@ -204,10 +205,10 @@ export class ProjectStore {
     }
     return updated;
   }
-  /** Serializes dependency-changing Task updates of one Project, so validation and write see no concurrent change. */
-  async withTaskDependencies<T>(projectId: string, operation: () => Promise<T>): Promise<T> {
+  /** Serializes relation-changing Task writes (dependencies, parent) of one Project, so validation and write see no concurrent change. */
+  async withTaskRelations<T>(projectId: string, operation: () => Promise<T>): Promise<T> {
     await this.requireProject(projectId);
-    return withFilePathLock(path.join(this.layout.projectDir(projectId), ".task-dependencies"), operation);
+    return withFilePathLock(path.join(this.layout.projectDir(projectId), ".task-relations"), operation);
   }
   /** Removes `task.json` and `context/`; keeps `agent_run_resources.json`. */
   async deleteTask(projectId: string, taskId: string): Promise<ProjectTask | undefined> {

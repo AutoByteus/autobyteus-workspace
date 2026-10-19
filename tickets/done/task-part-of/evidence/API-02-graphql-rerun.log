@@ -1,0 +1,11 @@
+# Case: API-02 (rerun after fixing my test step)
+# Command: pnpm exec vitest run tests/e2e/projects/projects-graphql.e2e.test.ts --no-watch -t API-011
+# Commit: code 179ddb9f77 (HEAD 399303d039) + the API/E2E test edits of this round (uncommitted at run time; committed with this evidence)
+# Environment: macOS darwin arm64, Node via corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR
+# Date: 2026-10-19
+
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (12 tests | 11 skipped) 521ms
+     ✓ API-011: part of: set at create, omitted keeps, null clears, an ID replaces; refusals write nothing; one level under concurrency; a deleted parent's parts stay; a step-1 task.json reads with no parent (task-part-of AC-001..005, 007, 016)  474ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 11 skipped (12)
+exit=0

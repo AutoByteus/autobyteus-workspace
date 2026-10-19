@@ -1,0 +1,226 @@
+# Case: DR-05 server unit: MCP management + run-file-changes (base change)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/mcp-server-management tests/unit/services/run-file-changes --no-watch
+# Commit: 7d02301c3a (codex/mcp-sdk-1-32-upgrade merged with origin/personal bf3c550c18)
+# Environment: macOS 26 (Darwin 25.5.0), node 22, pnpm 10.28.2; tests under env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-19 (delivery, integrated state)
+
+
+ RUN  v4.0.18 ~/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:~/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/services/run-file-changes/run-file-change-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts (11 tests) 213ms
+stdout | tests/unit/mcp-server-management/file-provider.http-auth.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/mcp-server-management/file-provider.http-auth.test.ts (3 tests) 63ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts (3 tests) 20ms
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > imports valid JSON configs
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > imports valid JSON configs
+Bulk import complete. Imported: 2, Failed: 0
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > handles partial failure during import
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > handles partial failure during import
+Bulk import complete. Imported: 1, Failed: 1
+
+stderr | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > handles partial failure during import
+Failed to import configuration for server 'invalid-server-no-command': Error: Failed to create config for server 'invalid-server-no-command' due to incompatible parameters for STDIO config: StdioMcpServerConfig 'invalid-server-no-command' 'command' must be a non-empty string.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > throws for malformed JSON
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > throws for invalid structure
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > returns zero counts for empty configs
+Starting bulk import of MCP server configurations from JSON.
+Bulk import complete. Imported: 0, Failed: 0
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > accepts camelCase transportType/toolNamePrefix
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > accepts camelCase transportType/toolNamePrefix
+Bulk import complete. Imported: 1, Failed: 0
+
+ ✓ tests/unit/mcp-server-management/services/mcp-config-service.test.ts (6 tests) 6ms
+ ✓ tests/unit/mcp-server-management/file-provider.import.test.ts (1 test) 5ms
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getAll
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getAll
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getAll
+Cache HIT for MCP config test_server_1
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getByServerId
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getByServerId
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getByServerId
+Cache HIT for MCP config test_server_1
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getByServerId
+Cache HIT for MCP config test_server_2
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > returns null for unknown server IDs
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > returns null for unknown server IDs
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > returns null for unknown server IDs
+Cache MISS for MCP config nonexistent.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on create
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on create
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on create
+In-memory cache: Added new MCP config new_server_3.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on update
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on update
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on update
+In-memory cache: Updated MCP config test_server_1.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on update
+Cache HIT for MCP config test_server_1
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > removes from cache on delete
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > removes from cache on delete
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > removes from cache on delete
+In-memory cache: Removed MCP config test_server_1.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > removes from cache on delete
+Cache MISS for MCP config test_server_1.
+
+ ✓ tests/unit/mcp-server-management/cached-provider.test.ts (6 tests) 5ms
+stdout | tests/unit/mcp-server-management/persistence-provider.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/mcp-server-management/persistence-provider.test.ts (2 tests) 3ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-path-identity.test.ts (3 tests) 2ms
+
+ Test Files  8 passed (8)
+      Tests  35 passed (35)
+   Start at  11:35:41
+   Duration  11.83s (transform 6.66s, setup 126ms, import 9.87s, tests 317ms, environment 1ms)
+

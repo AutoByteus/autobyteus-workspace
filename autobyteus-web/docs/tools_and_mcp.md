@@ -268,7 +268,8 @@ Full-featured MCP server configuration:
 - JSON tab: Raw standard `mcpServers` JSON input for advanced users
 - Transport type toggle (STDIO / HTTP)
 - STDIO config: command, args, env vars, working directory
-- HTTP config: URL, token, headers
+- HTTP config: URL and token (with a hint that it is sent as a Bearer token);
+  headers through the JSON tab
 - Server preview before saving
 - Tool discovery after save
 
@@ -494,11 +495,19 @@ For MCP servers that run as local processes:
 
 For MCP servers accessed over HTTP:
 
-| Field     | Description                   |
-| --------- | ----------------------------- |
-| `url`     | Server endpoint URL           |
-| `token`   | Optional authentication token |
-| `headers` | Optional custom headers       |
+| Field     | Description                                                              |
+| --------- | ------------------------------------------------------------------------ |
+| `url`     | Server endpoint URL                                                      |
+| `token`   | Optional token, sent as `Authorization: Bearer <token>`; blank means none |
+| `headers` | Optional headers, sent unchanged on every request (e.g. `Authorization: Basic …`) |
+
+The backend sends these credentials on every request to the server
+(initialize, tool listing, preview and tool calls). A server with both a
+`token` and an `Authorization` header (any letter case) is rejected on save,
+preview and import; use one of the two. The Form View has no headers editor:
+the Token field's hint points users to the JSON View for other schemes, and
+switching from Form View to JSON View shows and keeps the saved headers. See
+[MCP Server Management](../../autobyteus-server-ts/docs/modules/mcp_server_management.md#remote-streamable-http-server-credentials).
 
 ## Related Documentation
 

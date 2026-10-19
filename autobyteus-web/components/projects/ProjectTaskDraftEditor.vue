@@ -9,7 +9,8 @@
       <TaskDescriptionComposer v-model="text" :files="files" :client="client" :draft-id="draftId" :saved-filenames="savedFilenames" :target="target" :disabled="saving" :adding="pending" :error="fieldError" :placeholder="t('projects.components.projects.ProjectTaskEditor.descriptionPlaceholder')" @add="addFiles" @remove="removeFile" @clear="clearFiles" @save="save" />
       <p v-if="fieldError" id="task-page-error" class="mt-2 text-sm text-red-600" role="alert" data-testid="task-page-description-error">{{ fieldError }}</p>
       <p v-if="error" role="alert" class="mt-3 text-sm text-red-700" data-testid="task-page-save-error">{{ error }}</p>
-      <!-- "Depends on" (stored on this, the later Task). -->
+      <!-- "Part of" (stored on this Task, the part), then "Depends on" (stored on this, the later Task). -->
+      <TaskPartOfPicker v-model="partOf" :project-id="projectId" :project-name="projectName" :task-id="task?.taskId" :disabled="saving" />
       <TaskDependencyPicker v-model="dependsOn" :project-id="projectId" :project-name="projectName" :task-id="task?.taskId" :disabled="saving" />
     </div>
     <div class="mt-6 flex justify-end gap-3 border-t border-slate-200 pb-2 pt-5">
@@ -20,18 +21,20 @@
 </template>
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectTaskDraft } from '~/composables/projects/useProjectTaskDraft'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import type { ProjectTask } from '~/types/project'
 import TaskDescriptionComposer from './TaskDescriptionComposer.vue'
 import TaskDependencyPicker from './TaskDependencyPicker.vue'
+import TaskPartOfPicker from './TaskPartOfPicker.vue'
 import { taskPagePath } from '~/utils/projects/taskPagePath'
 const props = defineProps<{projectId: string; projectName: string; task?: ProjectTask}>()
-const {t} = useLocalization(), router = useRouter()
-const draft = useProjectTaskDraft(props.projectId, props.task)
-const {text, files, dependsOn, client, draftId, pending, saving, error, blocked, target, addFiles, removeFile} = draft
+const {t} = useLocalization(), router = useRouter(), route = useRoute()
+// "New part" on a parent's Task page opens New task with that parent chosen (`?partOf=<task ID>`).
+const draft = useProjectTaskDraft(props.projectId, props.task, props.task ? null : typeof route.query.partOf === 'string' ? route.query.partOf : null)
+const {text, files, dependsOn, partOf, client, draftId, pending, saving, error, blocked, target, addFiles, removeFile} = draft
 const fieldError = ref(''), heading = ref<HTMLElement | null>(null)
 const boardTarget = `/projects/${props.projectId}`, detailTarget = props.task ? taskPagePath(props.projectId, props.task) : boardTarget
 const savedFilenames = props.task?.contextFiles?.map((f) => f.storedFilename) ?? []

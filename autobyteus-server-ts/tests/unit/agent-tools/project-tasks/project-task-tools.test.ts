@@ -114,8 +114,8 @@ describe("Project data tools — actual native preparation/execute and selected 
 
   it("documents one optional additive context_files string array on create_task and update_task, identical on native and MCP (AC-011)", async () => {
     for (const [Tool, name, keys, required] of [
-      [CreateTaskTool, "create_task", ["project_id", "description", "context_files", "depends_on"], ["project_id", "description"]],
-      [UpdateTaskTool, "update_task", ["task_id", "description", "status", "context_files", "depends_on"], ["task_id"]],
+      [CreateTaskTool, "create_task", ["project_id", "description", "context_files", "depends_on", "part_of"], ["project_id", "description"]],
+      [UpdateTaskTool, "update_task", ["task_id", "description", "status", "context_files", "depends_on", "part_of"], ["task_id"]],
     ] as const) {
       const native = Tool.getArgumentSchema().toJsonSchema() as {properties: Record<string, any>, required?: string[]};
       expect(native).toEqual(buildProjectTaskToolSchema(name).toJsonSchema());
@@ -312,12 +312,12 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(catalog.projects).toEqual([{projectId, name: "Tools fixture", description: ""}]);
     const created = JSON.parse(await new CreateTaskTool().execute(null, {project_id: projectId, description: " hello "}));
     // A Project Task's agent-facing taskId is its key (REQ-018).
-    expect(created.task).toEqual({projectId, taskId: "tools-fixture-1", status: "TODO", dependsOn: []});
+    expect(created.task).toEqual({projectId, taskId: "tools-fixture-1", status: "TODO", dependsOn: [], partOf: null});
     const patched = await mcp("update_task", {task_id: created.task.taskId, status: "DONE"});
     expect(patched.structuredContent).toMatchObject({task: {...created.task, status: "DONE"}});
     const listed = JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId, status: "DONE"}));
     expect((await mcp("list_project_tasks", {project_id: projectId, status: "DONE"})).structuredContent).toEqual(listed);
-    expect(listed.tasks).toEqual([{...created.task, status: "DONE", description: "hello", contextFiles: [], assignments: [], closedAssignments: []}]);
+    expect(listed.tasks).toEqual([{...created.task, status: "DONE", description: "hello", parts: [], contextFiles: [], assignments: [], closedAssignments: []}]);
     expect((await mcp("list_project_tasks", {project_id: projectId, status: "TODO"})).structuredContent).toEqual({projectId, tasks: []});
   });
   it("documents and accepts CANCELLED (dropped as not needed) on patch and list, never on create (AC-004, AC-006, AC-007)", async () => {

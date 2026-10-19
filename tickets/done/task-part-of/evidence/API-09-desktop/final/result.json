@@ -1,0 +1,252 @@
+{
+  "evidence": {
+    "renderer": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+    "newPart": {
+      "taskId": "project_task_fbec8b57-f861-4fa7-beab-43efa0bfe6e2",
+      "taskKey": "autobyteus-14",
+      "status": "TODO",
+      "partOfTaskId": "project_task_2f646535-bcd0-49f2-80d4-020c5f8c96f8",
+      "dependsOnTaskIds": [],
+      "updatedAt": "2026-10-19T06:23:22.881Z",
+      "description": "Ship the relay to the beta channel"
+    },
+    "results": [
+      [
+        "J1-board",
+        "Pass",
+        null
+      ],
+      [
+        "J2-parent-page",
+        "Pass",
+        null
+      ],
+      [
+        "J3-part-page",
+        "Pass",
+        null
+      ],
+      [
+        "J4-new-part",
+        "Pass",
+        null
+      ],
+      [
+        "J5-editor",
+        "Pass",
+        null
+      ],
+      [
+        "J6-delete-note",
+        "Pass",
+        null
+      ],
+      [
+        "J7-tab",
+        "Pass",
+        null
+      ],
+      [
+        "J8-zh-CN",
+        "Pass",
+        null
+      ],
+      [
+        "J9-long-keys",
+        "Pass",
+        null
+      ],
+      [
+        "J10-narrow-board",
+        "Pass",
+        null
+      ],
+      [
+        "J11-step1-task",
+        "Pass",
+        null
+      ]
+    ]
+  },
+  "results": [
+    {
+      "name": "J1-board",
+      "result": "Pass",
+      "obs": {
+        "p": "2 of 4 done",
+        "pTitle": "2 of 4 done · 1 cancelled",
+        "onboarding": "2 of 2 done",
+        "cleanup": "",
+        "notes": "",
+        "docs": "Blocked by autobyteus-3 Part of autobyteus-1",
+        "docsTitle": "Part of autobyteus-1: Cross-node collaboration (In Progress)",
+        "lanes": {
+          "p": "project-task-column-IN_PROGRESS",
+          "handshake": "project-task-column-DONE",
+          "relay": "project-task-column-IN_PROGRESS",
+          "docs": "project-task-column-TODO",
+          "notes": "project-task-column-TODO",
+          "bridge": null
+        },
+        "cancelledLane": {
+          "bridge": "Part of autobyteus-1",
+          "tables": "Part of autobyteus-11"
+        }
+      }
+    },
+    {
+      "name": "J2-parent-page",
+      "result": "Pass",
+      "obs": {
+        "summary": "2 of 4 done · 1 cancelled",
+        "rows": [
+          "autobyteus-2 Done Design the node handshake",
+          "autobyteus-3 In Progress Build the relay service",
+          "autobyteus-4 To Do Write the protocol docs",
+          "autobyteus-5 Cancelled Retire the old bridge",
+          "autobyteus-6 Done Test cross-node delegation end to end with two nodes and a scripted runtime"
+        ],
+        "hint": true,
+        "newPart": true,
+        "order": [
+          "task-parts",
+          "task-dependencies",
+          "task-page-assigned"
+        ]
+      }
+    },
+    {
+      "name": "J3-part-page",
+      "result": "Pass",
+      "obs": {
+        "row": "autobyteus-1 In Progress Cross-node collaboration",
+        "newPart": 0,
+        "deps": 1,
+        "openedParent": "Task details"
+      }
+    },
+    {
+      "name": "J4-new-part",
+      "result": "Pass",
+      "obs": {
+        "selected": "autobyteus-1 Cross-node collaboration In Progress",
+        "created": "autobyteus-14",
+        "pill": "2 of 5 done"
+      }
+    },
+    {
+      "name": "J5-editor",
+      "result": "Pass",
+      "obs": {
+        "options": [
+          {
+            "text": "autobyteus-14 Ship the relay to the beta channel Already part of a Task",
+            "disabled": "true"
+          },
+          {
+            "text": "autobyteus-13 A Task saved before this release (no parent field) To Do",
+            "disabled": null
+          },
+          {
+            "text": "autobyteus-12 Drop legacy tables Already part of a Task",
+            "disabled": "true"
+          },
+          {
+            "text": "autobyteus-11 Old migration cleanup To Do",
+            "disabled": null
+          },
+          {
+            "text": "autobyteus-10 Sign-in illustration Already part of a Task",
+            "disabled": "true"
+          },
+          {
+            "text": "autobyteus-9 Welcome screen copy Already part of a Task",
+            "disabled": "true"
+          },
+          {
+            "text": "autobyteus-8 Onboarding redesign To Do",
+            "disabled": null
+          },
+          {
+            "text": "autobyteus-6 Test cross-node delegation end to end with two nodes and a scripted runtime Already part of a Task",
+            "disabled": "true"
+          }
+        ],
+        "searched": [
+          "autobyteus-8 Onboarding redesign To Do"
+        ],
+        "chosen": "autobyteus-8 Onboarding redesign To Do",
+        "partOfRow": "autobyteus-8 To Do Onboarding redesign",
+        "hasParts": "This Task has parts, so it can't be part of another Task."
+      }
+    },
+    {
+      "name": "J6-delete-note",
+      "result": "Pass",
+      "obs": {
+        "note": "Its part stays as a separate Task.",
+        "many": "Its 6 parts stay as separate Tasks.",
+        "tablesAfter": {
+          "taskId": "project_task_e88b9645-fa55-4d19-ae1f-3bba219fdbb5",
+          "taskKey": "autobyteus-12",
+          "status": "CANCELLED",
+          "partOfTaskId": null,
+          "dependsOnTaskIds": [],
+          "updatedAt": "2026-10-19T06:23:11.658Z",
+          "description": "Drop legacy tables"
+        }
+      }
+    },
+    {
+      "name": "J7-tab",
+      "result": "Pass",
+      "obs": {
+        "reachable": false,
+        "note": "The right panel tabs need a selected agent run; the instance has no runtime to start one (no provider, no scripted CLI in its baseline-only server environment). The tab views are covered by API-08 in the browser."
+      }
+    },
+    {
+      "name": "J8-zh-CN",
+      "result": "Pass",
+      "obs": {
+        "pill": "5 个中已完成 2 个",
+        "pillTitle": "5 个中已完成 2 个 · 1 个已取消",
+        "lineTitle": "所属任务 autobyteus-1：Cross-node collaboration（进行中）",
+        "heading": "子任务",
+        "summary": "5 个中已完成 2 个 · 1 个已取消",
+        "hint": "将此任务设为已完成或已取消时，其未完成的子任务也会同样设置。",
+        "newPart": "新建子任务",
+        "deleteNote": "它的 6 个子任务将保留为独立任务。",
+        "hasParts": "此任务有子任务，因此不能成为其他任务的子任务。",
+        "partOfHeading": "所属任务",
+        "editorText": "所属任务 （选填） 此任务所属的 AutoByteus 中更大的任务。仅限一层：子任务不能再有自己的子任务。 autobyteus-1 Cross-node collaboration 进行中"
+      }
+    },
+    {
+      "name": "J9-long-keys",
+      "result": "Pass",
+      "obs": {
+        "line": "Part of enterprise-customer-onboarding-experience-redesign-program -1",
+        "fits": true,
+        "row": "enterprise-customer-onboarding-experience-redesign-program -1 To Do Redesign the enterprise onboarding journey",
+        "key": "enterprise-customer-onboarding-experience-redesign-program-1"
+      }
+    },
+    {
+      "name": "J10-narrow-board",
+      "result": "Pass",
+      "obs": {
+        "lines": 9
+      }
+    },
+    {
+      "name": "J11-step1-task",
+      "result": "Pass",
+      "obs": {
+        "rel": "",
+        "partOfTaskId": null
+      }
+    }
+  ],
+  "errors": []
+}

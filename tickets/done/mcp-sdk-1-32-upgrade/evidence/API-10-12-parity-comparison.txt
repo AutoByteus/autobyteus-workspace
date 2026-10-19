@@ -1,0 +1,42 @@
+# Case: API-10..12 before/after comparison (computed from the two harness result files)
+# Command: python3 comparison over <B>/results/before.json and <B>/results/after.json
+# Commit: before bf3c550c18 (SDK 1.30.0) vs after f59055f13f (SDK 1.32.1)
+# Date: 2026-10-19
+
+== Servers (preview tool count | preview error tail | discover success | discover tool count | discover message tail) ==
+SAME VideoAudioServer | before (32, '', True, 32, 'Successfully discovered and registered 32 tools.') | after (32, '', True, 32, 'Successfully discovered and registered 32 tools.')
+     timing ms: preview 1780 -> 1795 ; discover 895 -> 565
+SAME media-downloader | before (2, '', True, 2, 'Successfully discovered and registered 2 tools.') | after (2, '', True, 2, 'Successfully discovered and registered 2 tools.')
+     timing ms: preview 1787 -> 1781 ; discover 608 -> 565
+SAME parity_http | before (1, '', True, 1, 'Successfully discovered and registered 1 tools.') | after (1, '', True, 1, 'Successfully discovered and registered 1 tools.')
+     timing ms: preview 44 -> 47 ; discover 12 -> 12
+SAME exit_at_start | before (None, 'or MCP server: McpError: MCP error -32000: Connection closed', False, 0, 'McpError: MCP error -32000: Connection closed') | after (None, 'or MCP server: McpError: MCP error -32000: Connection closed', False, 0, 'McpError: MCP error -32000: Connection closed')
+     timing ms: preview 36 -> 38 ; discover 33 -> 45
+SAME hang_at_start | before (None, 'or MCP server: McpError: MCP error -32001: Request timed out', False, 0, 'McpError: MCP error -32001: Request timed out') | after (None, 'or MCP server: McpError: MCP error -32001: Request timed out', False, 0, 'McpError: MCP error -32001: Request timed out')
+     timing ms: preview 60009 -> 60008 ; discover 60005 -> 60005
+hang_at_start responsiveness during the hang: before {'healthDuringHang': {'ok': True, 'value': 200, 'ms': 3}, 'graphqlDuringHang': {'ok': True, 'value': 'ok', 'ms': 3}} | after {'healthDuringHang': {'ok': True, 'value': 200, 'ms': 3}, 'graphqlDuringHang': {'ok': True, 'value': 'ok', 'ms': 2}}
+preview tool names identical (VideoAudioServer, media-downloader): True
+SAME import {'success': True, 'message': 'Import complete. Imported: 5, Failed: 0', 'importedCount': 5, 'failedCount': 0} | {'success': True, 'message': 'Import complete. Imported: 5, Failed: 0', 'importedCount': 5, 'failedCount': 0}
+SAME importUserShape {'success': False, 'message': 'Import complete. Imported: 0, Failed: 1', 'importedCount': 0, 'failedCount': 1} | {'success': False, 'message': 'Import complete. Imported: 0, Failed: 1', 'importedCount': 0, 'failedCount': 1}
+
+== Gateway (AC-015) ==
+SAME toolCount 35 35 | stdio {'isError': False, 'text': '62.314667'} {'isError': False, 'text': '62.314667'} | http text MARKER-PARITY-HTTP-BEFORE MARKER-PARITY-HTTP-AFTER
+
+== Runtime x MCP matrix (AC-014, AC-017) ==
+SAME native model qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234 | before {'projectTools': 'pass', 'externalStdio': 'pass', 'externalHttp': 'pass'} | after {'projectTools': 'pass', 'externalStdio': 'pass', 'externalHttp': 'pass'}
+     tools succeeded before ['create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe'] | after ['create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe']
+     saved task status DONE DONE | HTTP server saw on tools/call ['expected'] ['expected'] | errors [] []
+SAME claude model haiku | before {'projectTools': 'pass', 'externalStdio': 'pass', 'externalHttp': 'pass'} | after {'projectTools': 'pass', 'externalStdio': 'pass', 'externalHttp': 'pass'}
+     tools succeeded before ['create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe'] | after ['create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe']
+     saved task status DONE DONE | HTTP server saw on tools/call ['expected'] ['expected'] | errors [] []
+SAME codex model gpt-5.6-luna | before {'projectTools': 'fail', 'externalStdio': 'fail', 'externalHttp': 'fail'} | after {'projectTools': 'fail', 'externalStdio': 'fail', 'externalHttp': 'fail'}
+     tools succeeded before [] | after []
+     saved task status None None | HTTP server saw on tools/call [] [] | errors ['You’ve hit your usage limit. Visit https://chatgpt.com/setti', 'You’ve hit your usage limit. Visit https://chatgpt.com/setti'] ['You’ve hit your usage limit. Visit https://chatgpt.com/setti', 'You’ve hit your usage limit. Visit https://chatgpt.com/setti']
+SAME agy model gemini-3.8-flash-low | before {'projectTools': 'pass', 'externalStdio': 'pass', 'externalHttp': 'pass'} | after {'projectTools': 'pass', 'externalStdio': 'pass', 'externalHttp': 'pass'}
+     tools succeeded before ['create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe'] | after ['create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe']
+     saved task status DONE DONE | HTTP server saw on tools/call ['expected'] ['expected'] | errors [] []
+SAME grok model grok-4.7 | before {'projectTools': 'pass', 'externalStdio': 'pass', 'externalHttp': 'pass'} | after {'projectTools': 'pass', 'externalStdio': 'pass', 'externalHttp': 'pass'}
+     tools succeeded before ['search_tool', 'create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe'] | after ['search_tool', 'create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe']
+     saved task status DONE DONE | HTTP server saw on tools/call ['expected'] ['expected'] | errors [] []
+
+HTTP test server, all requests: before {'total': 28, 'authValues': ['expected']} | after {'total': 28, 'authValues': ['expected']}

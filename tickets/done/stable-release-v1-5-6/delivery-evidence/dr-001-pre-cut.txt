@@ -1,0 +1,11 @@
+# DR-001 pre-cut evidence (2026-10-19T09:22:52Z)
+origin/personal: 69d7d4f3e643f770b172e565c2d88572f42ded65
+v1.5.6-beta.11 commit: 87732d55048ef90f15539fa05a94128ac3fed2ff
+git diff --stat v1.5.6-beta.11 HEAD -- . ':!tickets' => (empty below)
+android-version-code 1.5.6 => 10050699
+beta.11 runs:
+  39222279587 Server Docker Release v1.5.6-beta.11 success
+  39222279519 iOS App Store Connect Release v1.5.6-beta.11 success
+  39222279504 Desktop Release v1.5.6-beta.11 success
+  39222279484 Android APK Release v1.5.6-beta.11 success
+beta.11 release: {"assets":17,"pre":true}

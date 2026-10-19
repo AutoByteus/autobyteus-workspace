@@ -1,0 +1,10 @@
+# Check: DEL-08 web guards on re-integrated state 2fe032750f, 2026-10-19T07:29:59Z
+## pnpm -C autobyteus-web guard:web-boundary
+[guard:web-boundary] Passed.
+exit=0
+## pnpm -C autobyteus-web guard:localization-boundary
+[guard:localization-boundary] Passed.
+exit=0
+## pnpm -C autobyteus-web audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.
+exit=0

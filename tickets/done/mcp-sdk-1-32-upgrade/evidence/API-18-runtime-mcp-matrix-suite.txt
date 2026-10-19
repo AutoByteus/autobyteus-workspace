@@ -1,0 +1,37 @@
+# Case: API-18 durable gated suite autobyteus-server-ts/tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (after branch)
+# Commit: f59055f13f source (SDK 1.32.1) + the new suite file (committed in the API/E2E commit)
+# Environment: macOS 26, in-process studio server per run; scripted AGY CLI; throwaway CODEX_HOME for the Codex MCP-client cell; host sign-ins (real HOME) for Claude and Grok; LM Studio local (unloaded after)
+# Date: 2026-10-19
+
+== Run 1 (model-free cells): env -i PATH HOME=$HOME USER LOGNAME TMPDIR CODEX_HOME=<B>/codex-home RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs RUN_CODEX_MCP_E2E=1 MCP_MATRIX_E2E_EVIDENCE_DIR=<B>/results/matrix-1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts --no-watch ==
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 4 skipped) 2337ms
+     ✓ agy (scripted CLI): all three tool kinds through autobyteus_agent_tools  635ms
+     ✓ codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools  1036ms
+      Tests  2 passed | 4 skipped (6)
+agy.json: {"runtime":"agy","taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"],"dummyOnWire":false}
+codex-mcp-client.json: {"runtime":"codex-mcp-client","taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"],"dummyOnWire":false}
+
+== Run 2 (live cells): env -i PATH HOME=$HOME USER LOGNAME TMPDIR RUN_LMSTUDIO_E2E=1 RUN_CLAUDE_E2E=1 RUN_GROK_E2E=1 MCP_MATRIX_E2E_EVIDENCE_DIR=<B>/results/matrix-2 … same command ==
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 3 skipped) 88494ms
+     ✓ native: an agent calls all three tool kinds  49516ms
+     ✓ claude: an agent calls all three tool kinds  12808ms
+     ✓ grok: an agent calls all three tool kinds  23302ms
+      Tests  3 passed | 3 skipped (6)
+claude.json: {"runtime":"claude","taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"],"dummyOnWire":false,"model":"haiku"}
+grok.json: {"runtime":"grok","taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"],"dummyOnWire":false,"model":"grok-4.7"}
+native.json: {"runtime":"native","taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"],"dummyOnWire":false,"model":"qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234"}
+(Codex live turn not run: the account usage limit; the Codex MCP-client cell covers the Codex path without a model turn.)
+
+== Run 3 (no gate): every cell skips ==
+ Test Files  1 skipped (1)
+      Tests  6 skipped (6)
+
+== API-18M mutation check: autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts env: config.env -> env: undefined, AGY scripted cell rerun, file restored with git checkout (git status clean) ==
+     × agy (scripted CLI): all three tool kinds through autobyteus_agent_tools 659ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { runtime: 'agy', …(6) } to match object { taskStatus: 'DONE', …(4) }
+-   "stdioEnvDelivered": true,
++   "stdioEnvDelivered": false,
+      Tests  1 failed | 5 skipped (6)
+
+Note: an earlier attempt patched autobyteus-ts/dist instead and stayed green. In-process server tests resolve autobyteus-ts to its source (autobyteus-server-ts/tsconfig.json paths), so that attempt did not exercise the change; the src mutation above is the valid check.

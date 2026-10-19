@@ -27,3 +27,7 @@ export const uniqueTaskKeyPrefix = (base: string, taken: Iterable<string>): stri
 };
 
 export const formatTaskKey = (prefix: string, taskNumber: number): string => `${prefix}-${taskNumber}`;
+
+/** Key order within one Project: by the number after the key's last "-" (`autobyteus-25` before `autobyteus-172`). */
+export const compareTaskKeys = (a: string, b: string): number =>
+  (Number(a.slice(a.lastIndexOf("-") + 1)) || 0) - (Number(b.slice(b.lastIndexOf("-") + 1)) || 0);

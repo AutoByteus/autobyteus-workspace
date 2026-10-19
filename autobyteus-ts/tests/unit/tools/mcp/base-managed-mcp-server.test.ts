@@ -31,7 +31,7 @@ describe('BaseManagedMcpServer', () => {
     const listTools = vi.fn().mockResolvedValue({ tools: [] });
     const callTool = vi.fn().mockResolvedValue({ ok: true });
 
-    server.createSessionMock.mockResolvedValue({ listTools, callTool });
+    server.createSessionMock.mockResolvedValue({ listTools, callTool, close: vi.fn() });
 
     await server.connect();
     expect(server.connectionState).toBe(ServerState.CONNECTED);
@@ -44,7 +44,7 @@ describe('BaseManagedMcpServer', () => {
   it('lists remote tools via the client session', async () => {
     const listTools = vi.fn().mockResolvedValue({ tools: [{ name: 'tool-a' }] });
     const callTool = vi.fn().mockResolvedValue({ ok: true });
-    server.createSessionMock.mockResolvedValue({ listTools, callTool });
+    server.createSessionMock.mockResolvedValue({ listTools, callTool, close: vi.fn() });
 
     const tools = await server.listRemoteTools();
     expect(tools).toEqual([{ name: 'tool-a' }]);
@@ -54,7 +54,7 @@ describe('BaseManagedMcpServer', () => {
   it('calls a tool using the client session', async () => {
     const listTools = vi.fn().mockResolvedValue({ tools: [] });
     const callTool = vi.fn().mockResolvedValue({ result: 'done' });
-    server.createSessionMock.mockResolvedValue({ listTools, callTool });
+    server.createSessionMock.mockResolvedValue({ listTools, callTool, close: vi.fn() });
 
     const result = await server.callTool('tool-x', { value: 1 });
     expect(callTool).toHaveBeenCalledWith(
@@ -63,23 +63,6 @@ describe('BaseManagedMcpServer', () => {
       { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS }
     );
     expect(result).toEqual({ result: 'done' });
-  });
-
-  it('passes the extended timeout to legacy callTool signatures', async () => {
-    const listTools = vi.fn().mockResolvedValue({ tools: [] });
-    const calls: unknown[][] = [];
-    async function callTool(toolName: string, args: Record<string, unknown>, options?: Record<string, unknown>) {
-      calls.push([toolName, args, options]);
-      return { result: 'legacy-done' };
-    }
-
-    server.createSessionMock.mockResolvedValue({ listTools, callTool });
-
-    const result = await server.callTool('tool-legacy', { value: 2 });
-    expect(calls).toEqual([
-      ['tool-legacy', { value: 2 }, { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS }]
-    ]);
-    expect(result).toEqual({ result: 'legacy-done' });
   });
 
   it('runs cleanup on close', async () => {
