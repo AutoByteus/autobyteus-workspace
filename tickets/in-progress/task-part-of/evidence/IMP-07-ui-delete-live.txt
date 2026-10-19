@@ -1,0 +1,5 @@
+# IMP-07 live delete cleanup (rendered)
+# Step: IMP-07-ui-scripts/ui-delete-live.mjs against the test-owned stack (backend dist/app.js + Nuxt dev), headless Chrome 1440x900
+# Source: working tree equal in source to 179ddb9f77; macOS; 2026-10-19
+# Board open in one page; parent autobyteus-8 (2 parts) deleted from its Task page in another; part cards checked for the "Part of" line without Refresh.
+{"note":"Its 2 parts stay as separate Tasks.","before":[true,true],"after":[false,false],"errors":[]}

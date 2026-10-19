@@ -1,0 +1,8 @@
+# IMP-06 generated/graphql.ts part-of hunks vs real codegen
+# Steps: pnpm -C autobyteus-server-ts build; node print-schema.mjs dist/api/graphql/schema.js -> schema.graphql (buildGraphqlSchema + printSchema);
+#        BACKEND_GRAPHQL_BASE_URL=<schema.graphql> pnpm -C autobyteus-web codegen -> regenerated file (kept outside the repo);
+#        diff <(grep partOfTaskId generated/graphql.ts) <(grep partOfTaskId regenerated) && echo "partOf lines identical to codegen"
+# Source: 179ddb9f77 (server source = 6cc6c22d2e); macOS; 2026-10-19
+partOf lines identical to codegen
+# Committed diff: 8 insertions, 4 deletions (3 type fields, 4 operation result types, 1 fragment document line).
+# The full regeneration also produced unrelated drift (checked-in file is stale: Delegated*, MeaningSearch* types, ...); not committed (follow-up).

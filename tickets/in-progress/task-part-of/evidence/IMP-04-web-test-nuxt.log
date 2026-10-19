@@ -1,0 +1,11 @@
+# IMP-04-web-test-nuxt (excerpt; full log: IMP-04-web-test-nuxt.full.log.gz)
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Commit: 179ddb9f77 (server source 6cc6c22d2e); macOS darwin, Node via corepack pnpm 10.28.2; worktree install; 2026-10-19
+ ✓ components/projects/__tests__/TaskParts.spec.ts (15 tests) 305ms
+ ✓ components/projects/__tests__/ProjectTaskDraftEditor.spec.ts (9 tests) 185ms
+ ✓ components/projects/__tests__/ProjectTaskDetail.parts.spec.ts (2 tests) 155ms
+ ✓ composables/projects/__tests__/useProjectTaskDraft.spec.ts (8 tests) 18ms
+ ✓ utils/projects/__tests__/taskParts.spec.ts (4 tests) 3ms
+ Test Files  639 passed | 2 skipped (641)
+      Tests  4538 passed | 5 skipped (4543)
+exit=0

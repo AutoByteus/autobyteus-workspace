@@ -1,0 +1,153 @@
+{
+  "results": [
+    {
+      "name": "board-1440",
+      "result": "Pass",
+      "obs": {
+        "cards": [
+          {
+            "text": "Old migration cleanup",
+            "relations": null,
+            "pillTitle": null,
+            "lineTitle": null
+          },
+          {
+            "text": "Onboarding redesign",
+            "relations": [
+              "task-parts-progress:2 of 2 done"
+            ],
+            "pillTitle": "2 of 2 done",
+            "lineTitle": null
+          },
+          {
+            "text": "Release notes for 1.5.6",
+            "relations": null,
+            "pillTitle": null,
+            "lineTitle": null
+          },
+          {
+            "text": "Write the protocol docs",
+            "relations": [
+              "project-task-row-dependency:Blocked byautobyteus-3",
+              "task-part-of-marker:Part ofautobyteus-1"
+            ],
+            "pillTitle": null,
+            "lineTitle": "Part of autobyteus-1: Cross-node collaboration (In Progress)"
+          },
+          {
+            "text": "Build the relay service",
+            "relations": [
+              "task-part-of-marker:Part ofautobyteus-1"
+            ],
+            "pillTitle": null,
+            "lineTitle": "Part of autobyteus-1: Cross-node collaboration (In Progress)"
+          },
+          {
+            "text": "Cross-node collaboration",
+            "relations": [
+              "task-parts-progress:2 of 4 done"
+            ],
+            "pillTitle": "2 of 4 done · 1 cancelled",
+            "lineTitle": null
+          },
+          {
+            "text": "Sign-in illustration",
+            "relations": [
+              "task-part-of-marker:Part ofautobyteus-8"
+            ],
+            "pillTitle": null,
+            "lineTitle": "Part of autobyteus-8: Onboarding redesign (To Do)"
+          },
+          {
+            "text": "Welcome screen copy",
+            "relations": [
+              "task-part-of-marker:Part ofautobyteus-8"
+            ],
+            "pillTitle": null,
+            "lineTitle": "Part of autobyteus-8: Onboarding redesign (To Do)"
+          },
+          {
+            "text": "Test cross-node delegation end to end with two nodes and a scripted runtime",
+            "relations": [
+              "task-part-of-marker:Part ofautobyteus-1"
+            ],
+            "pillTitle": null,
+            "lineTitle": "Part of autobyteus-1: Cross-node collaboration (In Progress)"
+          },
+          {
+            "text": "Design the node handshake",
+            "relations": [
+              "task-part-of-marker:Part ofautobyteus-1"
+            ],
+            "pillTitle": null,
+            "lineTitle": "Part of autobyteus-1: Cross-node collaboration (In Progress)"
+          }
+        ],
+        "lanes": 10
+      }
+    },
+    {
+      "name": "parent-page",
+      "result": "Pass",
+      "obs": {
+        "summary": "2 of 4 done · 1 cancelled",
+        "rows": [
+          "autobyteus-2 Done Design the node handshake",
+          "autobyteus-3 In Progress Build the relay service",
+          "autobyteus-4 To Do Write the protocol docs",
+          "autobyteus-5 Cancelled Retire the old bridge",
+          "autobyteus-6 Done Test cross-node delegation end to end with two nodes and a scripted runtime"
+        ],
+        "gapAbove": 16,
+        "gapBelow": 16,
+        "rowHeight": 32,
+        "newPartHeight": 32
+      }
+    },
+    {
+      "name": "delete-note",
+      "result": "Pass",
+      "obs": {
+        "note": "Its 5 parts stay as separate Tasks."
+      }
+    },
+    {
+      "name": "part-page",
+      "result": "Pass",
+      "obs": {
+        "row": "autobyteus-1 In Progress Cross-node collaboration"
+      }
+    },
+    {
+      "name": "editor-new-part",
+      "result": "Pass",
+      "obs": {
+        "selected": "autobyteus-1 Cross-node collaboration In Progress",
+        "fields": [
+          "task-part-of-picker",
+          "task-dependency-picker"
+        ]
+      }
+    },
+    {
+      "name": "editor-search-blocked",
+      "result": "Fail",
+      "error": "locator.innerText: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTestId('task-part-of-selected')\n\n    at /private/tmp/task-part-of-scripts/ui-check.mjs:83:103\n    at async check (/private/tmp/task-part-of-scripts/ui-check.mjs:14:55)\n    at async file:///private/tmp/task-part-of-scripts/ui-check.mjs:78:1"
+    },
+    {
+      "name": "editor-has-parts",
+      "result": "Pass",
+      "obs": {
+        "text": "This Task has parts, so it can't be part of another Task."
+      }
+    },
+    {
+      "name": "board-narrow-760",
+      "result": "Pass",
+      "obs": {
+        "lines": 9
+      }
+    }
+  ],
+  "errors": []
+}

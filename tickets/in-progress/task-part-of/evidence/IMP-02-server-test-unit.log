@@ -1,0 +1,11 @@
+# IMP-02-server-test-unit (excerpt; full log: IMP-02-server-test-unit.full.log.gz)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 179ddb9f77 (server source 6cc6c22d2e); macOS darwin, Node via corepack pnpm 10.28.2; worktree install; 2026-10-19
+ ✓ tests/unit/projects/project-task-parts.test.ts (18 tests) 2636ms
+ ✓ tests/unit/agent-tools/project-tasks/project-task-parts-tools.test.ts (7 tests) 769ms
+ ✓ tests/unit/projects/project-store-task-keys.test.ts (9 tests) 609ms
+ ✓ tests/unit/api/graphql/project-tasks-schema.test.ts (12 tests) 71ms
+ ✓ tests/unit/projects/task-part-rules.test.ts (6 tests) 4ms
+ Test Files  736 passed | 4 skipped (740)
+      Tests  6007 passed | 7 skipped (6014)
+exit=0
