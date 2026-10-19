@@ -10,6 +10,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | DR-002 | Solution Designer's SR-008 / DEC-015 clarification (option a) | Blocked (DR-001) | Delivery Completed — verified on SR-008, finalized to `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-003 | The user asked for a new beta | Delivery Completed, no release (DR-002) | Delivery Completed — beta `v1.5.7-beta.2` published completely | `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-004 | The user's field note | Delivery Completed (DR-003) | Delivery Completed — the user runs `v1.5.7-beta.2` | `delivery-revision-record.md` |
+| DR-005 | The user's own check of the Embedding section | Delivery Completed (DR-004) | Delivery Completed — the user confirms it works on `v1.5.7-beta.2` | `delivery-revision-record.md`, `evidence/delivery/DR-005-*` |
 
 ## Revision Entries
 
@@ -91,5 +92,21 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Trigger: after DR-003 the user wrote: "now i am runnign the latest version now".
 - Checked: `v1.5.7-beta.2` was still the newest tag (`origin/personal` @ `c638a6205d`), so the user's build contains this ticket.
 - Current authoritative result: `Delivery Completed`; the release is installed by the user. The user did not report on the Embedding section specifically, and no issue was reported.
+- Delivery action: record only. No code, release or deployment change.
+- Remaining follow-ups: unchanged (`handoff-summary.md`).
+
+### DR-005 — The user confirms the Embedding section works
+
+- Trigger: the user wrote: "now i am running teh latest version now. it works perfect as you can see". They attached a screenshot of their own install (`evidence/delivery/DR-005-user-embedding-settings-v1.5.7-beta.2.png`).
+- What the screenshot shows, under Settings → Server Settings → Embedding:
+  - **Models:**
+    - IBM Granite Embedding Small English R2 (Default): `Active · Ready`, English, 55 MB.
+    - MongoDB LEAF-IR (24 MB) and Google EmbeddingGemma 2 (346 MB): `Not downloaded`, each with Download and Use this model.
+    - `On disk: 55 MB`.
+  - **Project indexes:**
+    - "Using IBM Granite Embedding Small English R2"; Index all Projects.
+    - Filters `All 7 · Needs indexing 4 · Indexing 0 · Ready 3`.
+    - AutoByteus `Ready · 203 Tasks` and AutoByteus Agents `Ready · 32 Tasks`, each with Rebuild; AutoByteus Investor Applications `Ready · 0 Tasks`.
+- This supersedes DR-004's note that the user had not reported on the Embedding section. The user's real data on the released build matches AC-001, AC-005, AC-006 and AC-011.
 - Delivery action: record only. No code, release or deployment change.
 - Remaining follow-ups: unchanged (`handoff-summary.md`).
