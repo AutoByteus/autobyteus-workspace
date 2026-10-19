@@ -90,17 +90,35 @@
 - Bootstrap context source: `investigation-notes.md` (finalization target `origin` / `personal`) and RELEASE.md
 - Ticket branch: `codex/task-part-of`
 - Ticket branch commit result: `dc84794859` (docs sync, archive, delivery artifacts), then the re-integration merge `2fe032750f` and the re-integration record commit
-- Ticket branch push result: pending
+- Ticket branch push result: `Completed`. `origin/codex/task-part-of` → `97c97e0961` (new remote branch; `dc84794859`, merge `2fe032750f`, re-integration record `97c97e0961`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after verification / acceptance: `Yes`, from `8d40ba3b6c` to `b35259e5b5` (9 commits: the MCP credentials fix and the `1.5.6-beta.10` bump; no file overlaps with this ticket)
 - Delivery-owned edits protected before re-integration: `Completed` (committed as `dc84794859` and pushed to `origin/codex/task-part-of`)
 - Re-integration before final merge result: `Completed`. Merge `2fe032750f` had no conflicts. DEL-07 typecheck, DEL-08 web guards, DEL-09 server unit (6079 passed), DEL-10 web (4549 passed) and DEL-11 part-of E2E (39/39, including the live cascade) all pass.
-- Target branch update result: pending
-- Merge into target result: pending
-- Push target branch result: pending
-- Repository finalization status: pending
+- Target branch update result: `Completed`. Re-fetched after the re-integration record: `origin/personal` was still `b35259e5b5`, an ancestor of the ticket branch. `finalize/task-part-of` was created from it in the ticket worktree (RELEASE.md).
+- Merge into target result: `Completed`. `git merge --no-ff codex/task-part-of` → `84d0c47e24`, whose tree is identical to the verified ticket branch (`git diff --quiet` passes). On the merged state, `check_licensing.py` reported "Licensing is consistent." and `check_repository_artifact_hygiene.py` passed.
+- Push target branch result: `Completed`. Fetched just before the push: `origin/personal` = `84d0c47e24^1` (`b35259e5b5`), unchanged. `git push origin HEAD:personal`: `b35259e5b5..84d0c47e24`.
+- Repository finalization status: `Completed`
 - Blocker: none
+
+### Finalization Record
+
+| Step | Result |
+| --- | --- |
+| Ticket archive | `tickets/in-progress/task-part-of` → `tickets/done/task-part-of`. The longest path is 100 characters, with no Windows-hostile names and no build output |
+| Pre-commit checks (ticket branch) | Hygiene passed; licensing consistent |
+| Ticket branch commits | `dc84794859` (docs sync + archive), `2fe032750f` (re-integration merge), `97c97e0961` (re-integration record) |
+| Target refresh after verification | It had moved (`8d40ba3b6c` → `b35259e5b5`), so it was re-integrated and rechecked (DEL-07 to DEL-11), then confirmed unchanged before the merge |
+| Merge | `84d0c47e24` on `finalize/task-part-of`; tree = verified ticket branch |
+| Checks on the merged state | Hygiene passed; licensing consistent |
+| Push target | `b35259e5b5..84d0c47e24` → `origin/personal` |
+| Release / publication / deployment | `Not required` (no release, the RELEASE.md default). No tag; no pipelines triggered |
+| Delivery record commit | This record is committed on `finalize/task-part-of` on top of `84d0c47e24` and pushed to `personal` after a fresh fetch shows the target unchanged |
+| Durable export | After the record push, `tickets/done/task-part-of/` is exported from the pushed `origin/personal` commit (`git archive`) to `/Users/normy/autobyteus_org/autobyteus-delivery-records/task-part-of-20261019/`. This keeps the terminal message's absolute paths valid after the worktree is removed (repository practice) |
+| Worktree cleanup | After the export: `git worktree remove --force` (only untracked build output remains: SDK `dist/`, server `dist/`, `electron-dist/`) and `git worktree prune`, run from the main repository's git dir. The main checkout's working tree is not touched |
+| Local branch cleanup | After the record push: `codex/task-part-of` and `finalize/task-part-of` are deleted once `origin/personal` contains them |
+| Remote branch cleanup | `Not required`. By repository practice, merged `codex/*` ticket branches stay on `origin` |
 
 ## Release / Publication / Deployment
 
@@ -116,10 +134,8 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Results: see the Finalization Record. Cleanup runs after this record's push, and its outcome is confirmed in the terminal message.
+- Remote branch cleanup result: `Not required` (repository practice)
 - Blocker: none
 
 ## Escalation / Reroute
@@ -155,10 +171,10 @@
 ## Final Status
 
 - Verification complete (from the evidence): `Yes`
-- Repository finalization complete: pending
-- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: pending
+- Repository finalization complete: `Yes` (`origin/personal` @ `84d0c47e24`, followed by this record commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`: no release)
+- Applicable safe cleanup complete or not required: `Yes` (durable export, then the worktree and local branches are removed after the record push; see the Finalization Record; the outcome is confirmed in the terminal message)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: pending
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: —
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, sent after this record commit, the export and the cleanup (DR-001)
+- Terminal message/reference: the `send_message_to` "Delivery Completed" message for task-part-of (Project Task autobyteus-171)
