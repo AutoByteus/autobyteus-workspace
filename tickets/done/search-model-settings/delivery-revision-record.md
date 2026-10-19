@@ -8,6 +8,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery package from code review (CRR-005 Pass, API-REV-002 Pass, CRR-006 Pass) | N/A | Blocked at verification — `Unclear` (O-5 against REQ-007 / AC-015) | `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-002 | Solution Designer's SR-008 / DEC-015 clarification (option a) | Blocked (DR-001) | Delivery Completed — verified on SR-008, finalized to `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
+| DR-003 | The user asked for a new beta | Delivery Completed, no release (DR-002) | Delivery Completed — beta `v1.5.7-beta.2` published completely | `release-deployment-report.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -54,3 +55,32 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Terminal return to `/solution_designer`: `Sent` (Delivery Completed).
 - Next recipient/action: `/software_engineering_team/solution_designer` (terminal receipt).
 - Remaining blockers: none. Residual risks are listed in `handoff-summary.md`.
+
+### DR-003 — Beta `v1.5.7-beta.2` at the user's request
+
+- Trigger: the user wrote "lets release a new beta thanks" after DR-002.
+- Prior authoritative result: DR-002 `Delivery Completed`, `No release`.
+- Current authoritative result: `Delivery Completed`. Beta `v1.5.7-beta.2` was published completely: 4/4 workflows succeeded and the release has 17/17 assets.
+- Re-verification on the release state:
+  - After DR-002, `personal` gained `mcp-run-session-cleanup` (`a66eee725f`, its own delivery DR-001). It changes only MCP and agent-run code, none of this ticket's embeddings, settings or projects files.
+  - Its delivery merged a `personal` that already contained this ticket's merge `d20d9b9d92` (`98365d815d`). On that state it ran the full server unit suite (`745 passed`, 6,116 tests) and server E2E (`89 passed`, 0 failed).
+  - Product code at the release equals `d2607bd215` plus the version bump.
+  - Judgement: `Sufficient`; no user check needed.
+- Release, per `RELEASE.md`, with no deviations:
+  - Fresh worktree `finalize/search-model-settings-beta` from `origin/personal` `d2607bd215`.
+  - `check_licensing.py` → `Licensing is consistent.`; `check_repository_artifact_hygiene.py` → passed.
+  - `bash scripts/desktop-release.sh beta --branch finalize/search-model-settings-beta --no-push` → `8b15c5a274 chore(release): bump workspace release version to 1.5.7-beta.2` and annotated tag `v1.5.7-beta.2`.
+  - Refetched `personal` (unchanged), then pushed `d2607bd215..8b15c5a274` (fast-forward) and the tag.
+- Rollout watched to completion:
+  - Desktop Release `39278873827` success.
+  - Android APK Release `39278873717` success.
+  - iOS App Store Connect Release `39278873716` success, with Archive And Upload To App Store Connect.
+  - Server Docker Release `39278873847` success.
+  - GitHub pre-release `v1.5.7-beta.2` has 17 assets: macOS arm64/x64 dmg+zip with blockmaps, Linux x64/arm64 AppImages, the Windows exe, four `latest*.yml`, and the APK with its `.sha256`.
+  - Docker Hub `autobyteus/autobyteus-server:1.5.7-beta.2` (amd64, arm64); `:beta` has the same digest `sha256:e8eab0c4…`.
+- Release notes: GitHub generated notes (pre-release tag).
+- After the release, `personal` moved on with another ticket (`unclean-shutdown-delegated-run-restore`). That ticket is not in this beta. This record is committed on top of it.
+- Rollback: revert on `personal` and cut the next beta. Desktop never downgrades; Docker users pin `1.5.7-beta.1`. Never move the published tag.
+- Cleanup: release worktree and local branch removed after this record was pushed.
+- Terminal return to `/solution_designer`: `Sent` (Delivery Completed, DR-003).
+- Remaining blockers: none.

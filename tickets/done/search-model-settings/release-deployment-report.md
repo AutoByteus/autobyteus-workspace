@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report — search-model-settings (autobyteus-146)
 
-Current delivery revision: `DR-002`. DR-001 (verification blocked on O-5, `Unclear`) is kept in `delivery-revision-record.md`.
+Current delivery revision: `DR-003` — beta `v1.5.7-beta.2` published at the user's request (see the addendum and DR-003). DR-002's sections stay authoritative for verification and finalization. DR-001 (verification blocked on O-5, `Unclear`) is kept in `delivery-revision-record.md`.
 
 ## Release / Publication / Deployment Scope
 
@@ -128,3 +128,12 @@ Current delivery revision: `DR-002`. DR-001 (verification blocked on O-5, `Uncle
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, after this record was pushed (Delivery Completed, DR-002).
+
+## DR-003 Release Addendum — `v1.5.7-beta.2`
+
+- Release decision: `Beta`, decided by the user ("lets release a new beta thanks").
+- Method: `Project Release Guide`. `desktop-release.sh beta --no-push` on `finalize/search-model-settings-beta`, then pushed `personal` `d2607bd215..8b15c5a274` and the tag. Deviations: `None`.
+- Pipelines: Desktop `39278873827`, Android `39278873717`, iOS `39278873716`, Docker `39278873847`, all `success`.
+- Published artifacts: 17/17 GitHub assets; Docker `1.5.7-beta.2` amd64+arm64, and `:beta` on the same digest; TestFlight upload done.
+- Also contains `mcp-run-session-cleanup`, verified by its own delivery on a state that included this ticket.
+- Result: `Completed`. Unresolved blocker: `None`. Terminal package sent to `/software_engineering_team/solution_designer`.
