@@ -1,0 +1,72 @@
+# DR-002 publication evidence (2026-10-19T10:04:31Z)
+## Runs
+39229794456 Desktop Release push v1.5.6 fee828e9cf success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/39229794456
+39229794352 Android APK Release push v1.5.6 fee828e9cf success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/39229794352
+39229794344 Server Docker Release push v1.5.6 fee828e9cf success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/39229794344
+39229794343 iOS App Store Connect Release push v1.5.6 fee828e9cf success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/39229794343
+## Release
+{"isDraft":false,"isPrerelease":false,"publishedAt":"2026-10-19T09:28:48Z","tagName":"v1.5.6","targetCommitish":"fee828e9cfa4d14731e53ac99f6722c337e280d4","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.6"}
+releases/latest: v1.5.6
+## Assets (name size state)
+AutoByteus_personal_android-1.5.6-release.apk 1846691 uploaded
+AutoByteus_personal_android-1.5.6-release.apk.sha256 112 uploaded
+AutoByteus_personal_linux-arm64-1.5.6.AppImage 455117397 uploaded
+AutoByteus_personal_linux-x64-1.5.6.AppImage 467070556 uploaded
+AutoByteus_personal_macos-arm64-1.5.6.dmg 522703431 uploaded
+AutoByteus_personal_macos-arm64-1.5.6.dmg.blockmap 545991 uploaded
+AutoByteus_personal_macos-arm64-1.5.6.zip 519317564 uploaded
+AutoByteus_personal_macos-arm64-1.5.6.zip.blockmap 533189 uploaded
+AutoByteus_personal_macos-x64-1.5.6.dmg 545219468 uploaded
+AutoByteus_personal_macos-x64-1.5.6.dmg.blockmap 567451 uploaded
+AutoByteus_personal_macos-x64-1.5.6.zip 540957056 uploaded
+AutoByteus_personal_macos-x64-1.5.6.zip.blockmap 554335 uploaded
+AutoByteus_personal_windows-1.5.6.exe 348257927 uploaded
+latest-linux-arm64.yml 414 uploaded
+latest-linux.yml 410 uploaded
+latest-mac.yml 891 uploaded
+latest.yml 351 uploaded
+asset count: 17
+names vs expected pattern diff (empty = match):
+## Body
+body differs:
+34d33
+< 
+contains: Back up your data first
+contains: can't go back afterwards
+contains: older version after this update is not supported
+contains: https://github.com/AutoByteus/autobyteus-workspace/issues
+contains: Update the desktop app and every remote or Docker node it connects to together
+contains: autobyteus/autobyteus-server:1.5.6
+contains: upgrade --all --tag latest
+## Updater metadata
+latest-linux-arm64.yml: version: 1.5.6 | files: AutoByteus_personal_linux-arm64-1.5.6.AppImage 
+latest-linux.yml: version: 1.5.6 | files: AutoByteus_personal_linux-x64-1.5.6.AppImage 
+latest-mac.yml: version: 1.5.6 | files: AutoByteus_personal_macos-arm64-1.5.6.zip AutoByteus_personal_macos-arm64-1.5.6.dmg AutoByteus_personal_macos-x64-1.5.6.zip AutoByteus_personal_macos-x64-1.5.6.dmg 
+latest.yml: version: 1.5.6 | files: AutoByteus_personal_windows-1.5.6.exe 
+## APK checksum
+4103e1087b39c0222aac834b099dc167d8e87885fcab15ab35df0f13456995f4  AutoByteus_personal_android-1.5.6-release.apk
+GitHub asset digest: sha256:4103e1087b39c0222aac834b099dc167d8e87885fcab15ab35df0f13456995f4
+## Docker
+1.5.6 sha256:375f2ac4b6562ac8a0854c83b3012a2784bce048c67bf4a53eb13fe0b3c4bcf8 linux/amd64,linux/arm64
+latest sha256:375f2ac4b6562ac8a0854c83b3012a2784bce048c67bf4a53eb13fe0b3c4bcf8 linux/amd64,linux/arm64
+beta sha256:375f2ac4b6562ac8a0854c83b3012a2784bce048c67bf4a53eb13fe0b3c4bcf8 linux/amd64,linux/arm64
+body bytes 7941 file bytes 7941 EXACT-EQUAL
+(the 'body differs' line above came from gh --jq appending a newline to the body; the raw API body is byte-equal)
+v1.5.6 ancestor of origin/personal
+diff beta.11..v1.5.6 outside tickets: .github/release-notes/release-notes.md autobyteus-web/package.json 
+Resolve iOS Release Metadata: success
+Build And Test iOS App: success
+Validate iOS Publish Secrets: success
+Archive And Upload To App Store Connect: success
+
+Resolve Release Metadata: success
+Build Linux ARM64: success
+Build macOS Intel x64: success
+Build macOS ARM64: success
+Build Windows x64: success
+Build Linux x64: success
+Publish GitHub Release: success
+
+Resolve Release Metadata: success
+Build And Push Server Image: success
+
