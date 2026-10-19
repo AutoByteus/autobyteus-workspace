@@ -4,7 +4,7 @@
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) for the user. The user decides directly in the Solution Designer conversation.
 - Classification: `Architecture Design Complete`, `task_size = Large`, `architectural_risk = High`
 - Approval: requirements @ SR-006 approved by the **user** on 2026-10-19 in the Solution Designer conversation: "I think we should go into this direction because the industry has set up a very good standard" and "if you don't set this, it by default uses the production itself". DEC-011 was decided within that direction.
-- Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience`, branch `codex/test-vault-developer-experience`, base `origin/personal` @ `d28c56d5d`, finalization target `origin/personal`. The ticket documents are committed on the branch (see the commit below).
+- Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience`, branch `codex/test-vault-developer-experience`, base `origin/personal` @ `d28c56d5d`, finalization target `origin/personal`. The ticket documents are committed on the branch: design documents at `4bda51cb6d` (this handoff file is updated in the commit after it).
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/tickets/in-progress/test-vault-developer-experience/`
 
 ## Original request and goals
