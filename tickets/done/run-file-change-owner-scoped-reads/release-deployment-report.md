@@ -89,7 +89,7 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `Yes` (see Finalization Record)
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes` (commit `20b5fc6c68`)
 - Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-owner-scoped-reads/tickets/done/run-file-change-owner-scoped-reads/`. After cleanup it is at `tickets/done/run-file-change-owner-scoped-reads/` on `origin/personal`.
 
 ## Version / Tag / Release Commit
@@ -147,14 +147,28 @@
 
 | Step | Result |
 | --- | --- |
-| Ticket archive | _recorded below after the step_ |
+| Ticket archive | `git mv tickets/in-progress/run-file-change-owner-scoped-reads tickets/done/run-file-change-owner-scoped-reads`. 133 tracked files; the longest path is 130 characters; no Windows-hostile names; no build output |
+| Pre-commit checks (ticket branch) | `check_repository_artifact_hygiene.py`: `Repository artifact hygiene check passed.` `check_licensing.py`: `Licensing is consistent.` |
+| Ticket branch commit | `20b5fc6c68` "docs(delivery): sync docs and archive run-file-change-owner-scoped-reads (DR-001)": ten docs plus ticket paths |
+| Ticket branch push | `origin/codex/run-file-change-owner-scoped-reads` → `20b5fc6c68` (new remote branch) |
+| Target refresh after verification | Re-fetched `origin/personal`: still `e677fe98da`, the verified base. No re-integration needed |
+| Finalize branch | `finalize/run-file-change-owner-scoped-reads` from `origin/personal`, in the ticket worktree (`RELEASE.md`) |
+| Merge | `git merge --no-ff codex/run-file-change-owner-scoped-reads` → `f7b65486ae`. The tree is identical to the verified ticket branch (`git diff --quiet` passes) |
+| Checks on the merged state | Hygiene check passed; licensing consistent |
+| Push target | Fetched before the push: `origin/personal` = `f7b65486ae^1` (`e677fe98da`), unchanged. `git push origin HEAD:personal`: `e677fe98da..f7b65486ae` |
+| Repository finalization status | `Completed` |
+| Release / publication / deployment | `Not required` (No release, the `RELEASE.md` default). No tag; no pipelines triggered |
+| Delivery record commit | This record is committed on `finalize/run-file-change-owner-scoped-reads` on top of `f7b65486ae` and pushed to `personal` after a fresh fetch shows the target unchanged |
+| Worktree cleanup | Done after the record push: `git worktree remove --force` (only untracked build output remains) and `git worktree prune`, run from the main repository's git dir. The main checkout's working tree is not touched |
+| Local branch cleanup | Done after the record push: `codex/run-file-change-owner-scoped-reads` and `finalize/run-file-change-owner-scoped-reads` are deleted once `origin/personal` contains them |
+| Remote branch cleanup | `Not required`. By repository practice, merged `codex/*` ticket branches stay on `origin` |
 
 ## Final Status
 
 - Verification complete (from the evidence): `Yes`
-- Repository finalization complete: _recorded after the step_
+- Repository finalization complete: `Yes` (`origin/personal` @ `f7b65486ae`, followed by this record commit)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
-- Applicable safe cleanup complete or not required: _recorded after the step_
+- Applicable safe cleanup complete or not required: `Yes` (worktree and local branches removed after the record push; see the Finalization Record)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: _recorded after the step_
-- Terminal package sent to `/solution_designer`: _recorded after the step_
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, sent after this record commit and cleanup (DR-001)
