@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E Pass `API-REV-001` (direct low-risk route) | N/A | Delivery Completed; finalized to `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 | DR-002 | API/E2E Pass `API-REV-002` (SR-002/SR-003 parity, validation only) | Delivery Completed, no release (DR-001) | Delivery Completed; parity suite and docs finalized to `personal`; beta `v1.5.7-beta.1` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
+| DR-003 | The user reports running the beta | Delivery Completed; beta `v1.5.7-beta.1` published (DR-002) | Unchanged; user confirmation recorded | this record |
 
 ## Revision Entries
 
@@ -36,3 +37,12 @@
 - Release: `Beta` at the user's instruction; details and outcome in `release-deployment-report.md` round 2
 - Terminal return to `/solution_designer`: `Sent` after finalization, the beta and cleanup, via `send_message_to` `/software_engineering_team/solution_designer` (rule "Delivery Completed …" from `get_handoff_rules`)
 - Remaining blockers, rollback concerns, or untested scope: none blocking. Four pre-existing findings and the round-1 follow-ups go to the Project Task Manager.
+
+### DR-003 — The user is running the beta
+
+- Trigger: the user, in the Delivery Engineer conversation on 2026-10-19 after DR-002: "i just upgraded. i am running the latest now"
+- Checked read-only:
+  - `/Applications/AutoByteus.app` `CFBundleShortVersionString` = `1.5.7-beta.1`, and the app is running;
+  - its bundled server holds one MCP SDK copy, `@modelcontextprotocol+sdk@1.32.1_zod@4.3.6`.
+- Prior and current result: `Delivery Completed` (unchanged). No new delivery work and no new handoff; the DR-002 terminal package stands.
+- Why recorded: the user's confirmation that the released change is in use.
