@@ -264,8 +264,6 @@ const updateJsonFromForm = () => {
          });
     }
 
-    Object.keys(config).forEach(key => config[key] === undefined && delete config[key]);
-
     const output = {
         mcpServers: {
             [serverId]: config
