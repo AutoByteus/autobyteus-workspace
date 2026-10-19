@@ -247,4 +247,20 @@ describe('McpConfigService', () => {
     expect(parsed).toBeInstanceOf(BaseMcpConfig);
     expect(parsed.server_id).toBe('server_one');
   });
+
+  it('rejects an imported HTTP server that sets both a token and an Authorization header', () => {
+    expect(() =>
+      McpConfigService.parseMcpConfigDict({
+        both: {
+          transport_type: 'streamable_http',
+          url: 'http://localhost:9000/mcp',
+          token: 'test-dummy',
+          headers: { authorization: 'Basic test-other' }
+        }
+      })
+    ).toThrowError(
+      "Failed to create config for server 'both' due to incompatible parameters for STREAMABLE_HTTP config: " +
+        "Streamable HTTP MCP server 'both' sets both 'token' and an 'Authorization' header; use one of them."
+    );
+  });
 });

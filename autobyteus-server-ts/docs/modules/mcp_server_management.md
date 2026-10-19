@@ -37,6 +37,23 @@ access.
 
 - `src/mcp-server-management/services/mcp-config-service.ts`
 
+## Remote (Streamable HTTP) Server Credentials
+
+A streamable HTTP server entry in `<appDataDir>/mcps.json` may carry two
+credential fields, stored as the user entered them:
+
+- `headers`: sent unchanged on every request (initialize, tool listing, tool
+  calls). Use it for any fixed header, such as `Authorization: Basic …`.
+- `token`: sent as `Authorization: Bearer <token>` on every request. Surrounding
+  whitespace is trimmed and a blank token means no token.
+
+Setting both `token` and an `Authorization` header (any letter case) is rejected
+on save, preview and import, so neither silently overrides the other. The
+effective request headers are derived in one place,
+`StreamableHttpMcpServerConfig.requestHeaders()` in `autobyteus-ts`, and the
+client passes them to the MCP SDK as `requestInit.headers`. Both values are
+currently stored in plain text, like stdio `env` values.
+
 ## Codex Example
 
 - See `docs/modules/codex_integration.md`

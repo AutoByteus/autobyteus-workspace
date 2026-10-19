@@ -146,6 +146,74 @@ describe('StreamableHttpMcpServerConfig', () => {
       })
     ).toThrowError("StreamableHttpMcpServerConfig 'http-4' 'headers' must be a Dict[str, str].");
   });
+
+  it('trims the token and treats a blank token as no token', () => {
+    const trimmed = new StreamableHttpMcpServerConfig({
+      server_id: 'http-5',
+      url: 'http://localhost',
+      token: '  test-dummy  '
+    });
+    expect(trimmed.token).toBe('test-dummy');
+
+    for (const blank of ['', '   ', null, undefined]) {
+      const config = new StreamableHttpMcpServerConfig({ server_id: 'http-6', url: 'http://localhost', token: blank });
+      expect(config.token).toBeNull();
+      expect(config.requestHeaders()).toEqual({});
+    }
+  });
+
+  it('derives the request headers from the headers and the token', () => {
+    const headersOnly = new StreamableHttpMcpServerConfig({
+      server_id: 'http-7',
+      url: 'http://localhost',
+      headers: { Authorization: 'Basic test-dummy', 'X-Test': 'value' }
+    });
+    expect(headersOnly.requestHeaders()).toEqual({ Authorization: 'Basic test-dummy', 'X-Test': 'value' });
+
+    const withToken = new StreamableHttpMcpServerConfig({
+      server_id: 'http-8',
+      url: 'http://localhost',
+      token: 'test-dummy',
+      headers: { 'X-Test': 'value' }
+    });
+    expect(withToken.requestHeaders()).toEqual({ 'X-Test': 'value', Authorization: 'Bearer test-dummy' });
+    expect(withToken.headers).toEqual({ 'X-Test': 'value' });
+
+    withToken.requestHeaders().Extra = 'mutated';
+    expect(withToken.requestHeaders()).not.toHaveProperty('Extra');
+  });
+
+  it.each(['Authorization', 'authorization', 'AUTHORIZATION'])(
+    'rejects a token together with an %s header without echoing values',
+    (headerName) => {
+      let message = '';
+      try {
+        new StreamableHttpMcpServerConfig({
+          server_id: 'http-9',
+          url: 'http://localhost',
+          token: 'test-dummy',
+          headers: { [headerName]: 'Basic test-other' }
+        });
+      } catch (error) {
+        message = (error as Error).message;
+      }
+      expect(message).toBe(
+        "Streamable HTTP MCP server 'http-9' sets both 'token' and an 'Authorization' header; use one of them."
+      );
+      expect(message).not.toContain('test-dummy');
+      expect(message).not.toContain('test-other');
+    }
+  );
+
+  it('accepts an Authorization header when the token is blank', () => {
+    const config = new StreamableHttpMcpServerConfig({
+      server_id: 'http-10',
+      url: 'http://localhost',
+      token: ' ',
+      headers: { authorization: 'Basic test-dummy' }
+    });
+    expect(config.requestHeaders()).toEqual({ authorization: 'Basic test-dummy' });
+  });
 });
 
 describe('WebsocketMcpServerConfig', () => {
