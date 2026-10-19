@@ -114,13 +114,28 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
     }
   }, 180_000);
 
-  const expectContained = async (label: string, logLines?: () => string[]) => {
+  /** Server log lines of the separately started process (UC-2): its output length now, and its lines after a mark. */
+  type ProcessLog = { size: () => number; linesFrom: (mark: number) => string[] };
+  const skipsBad = (line: string) => line.includes(`Skipping standalone run '${bad.host}'`) && line.includes("cannot be read");
+  const expectContained = async (label: string, log?: ProcessLog) => {
     const before = await fingerprint(path.join(h.dataDir, "memory", "agents"));
     warnings.length = 0;
+    const logStart = log?.size() ?? 0;
+    // The warnings the scanning context-file read itself produced (not the other reads of this check), so the moved
+    // trigger is proven to still reach the bad run (R-003 of run-file-change-owner-scoped-reads).
+    const scanWarnings: string[] = [];
     for (const run of [runs[1]!, runs[2]!]) {
       const changes = await fileChanges(run);
       expect(changes.error, `${label}: file changes of ${run.child}: ${changes.error}`).toBeNull();
+      const warningMark = warnings.length;
+      const logMark = log?.size() ?? 0;
       expect(await hubScanningRead(run), `${label}: scanning context-file read for ${run.child}`).toBe(404);
+      if (log) {
+        // The process writes its log asynchronously; wait briefly for the read's warning to arrive.
+        const deadline = Date.now() + 3_000;
+        while (!log.linesFrom(logMark).some(skipsBad) && Date.now() < deadline) await new Promise((resolve) => setTimeout(resolve, 100));
+        scanWarnings.push(...log.linesFrom(logMark).filter((line) => line.includes("Skipping standalone run")));
+      } else scanWarnings.push(...warnings.slice(warningMark));
       const projection = await member(run);
       expect(projection.error, `${label}: member projection of ${run.child}: ${projection.error}`).toBeNull();
       expect((projection.data as Rec).agentRunCollaborationMemberProjection.agentRunId, label).toBe(run.child);
@@ -128,9 +143,10 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
       expect(summary.error, `${label}: Token Meter summary of ${run.host}`).toBeNull();
       expect(((await collaboration(run.host)).data as Rec).agentRunCollaboration, `${label}: ${run.host} opens`).toBeTruthy();
     }
-    if (logLines) warnings.push(...logLines().filter((line) => line.includes("Skipping standalone run")));
-    expect(warnings.some((w) => w.includes(`Skipping standalone run '${bad.host}'`) && w.includes("cannot be read")),
-      `${label}: a warning names the skipped run; got ${JSON.stringify(warnings).slice(0, 600)}`).toBe(true);
+    if (log) warnings.push(...log.linesFrom(logStart).filter((line) => line.includes("Skipping standalone run")));
+    expect(warnings.some(skipsBad), `${label}: a warning names the skipped run; got ${JSON.stringify(warnings).slice(0, 600)}`).toBe(true);
+    expect(scanWarnings.some(skipsBad),
+      `${label}: the scanning context-file read itself warns naming the bad run; got ${JSON.stringify(scanWarnings).slice(0, 600)}`).toBe(true);
     expect(warnings.every((w) => !w.includes(runs[1]!.host) && !w.includes(runs[2]!.host)), `${label}: no warning about readable runs`).toBe(true);
     // Opening the unreadable run reports its error.
     expect((await collaboration(bad.host)).error, `${label}: opening the bad run`).toBeTruthy();
@@ -166,8 +182,7 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
       }
       if (!processUrl) throw new Error(`no listener serves GraphQL: ${output.slice(-1500)}`);
       // The new process logs to its own output; collect its warnings there.
-      const mark = output.length;
-      await expectContained("new server process", () => output.slice(mark).split("\n"));
+      await expectContained("new server process", { size: () => output.length, linesFrom: (mark) => output.slice(mark).split("\n") });
     } finally {
       child.kill("SIGTERM");
       await new Promise((resolve) => { if (child.exitCode !== null) resolve(null); else child.once("exit", resolve); });

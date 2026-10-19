@@ -91,7 +91,8 @@
     "test:e2e:delegated-team-default-collapse": "node tests/e2e/delegated-team-default-collapse-probe.mjs",
     "test:e2e:workspaces-sidebar-dock": "node tests/e2e/workspaces-sidebar-dock-probe.mjs",
     "test:e2e:token-meter-tps": "node tests/e2e/token-meter-tps-probe.mjs",
-    "test:e2e:file-explorer-pending-save-draft": "node tests/e2e/file-explorer-pending-save-draft-probe.mjs"
+    "test:e2e:file-explorer-pending-save-draft": "node tests/e2e/file-explorer-pending-save-draft-probe.mjs",
+    "test:e2e:owner-scoped-file-reads": "node tests/e2e/owner-scoped-file-reads-probe.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

@@ -16,6 +16,10 @@ import { callTool, segment, startCollaborationHarness, type CollaborationHarness
 //   copy's members answer with their (empty) lists;
 // - a child of another hub, a wrong address, an unknown hub and a blank hub id are rejected with the hub-scoped error;
 // - stopped hub: the same artifact is listed from the child's stored `file_changes.json`.
+// - content (run-file-change-owner-scoped-reads AC-001, AC-006, AC-007, AC-009, REQ-008): the copy's file is read through
+//   the hub route `/rest/agent-collaborations/<hub>/agent-runs/<copy>/file-change-content?memberAddress=…&path=…`,
+//   running and stopped; another hub, an unrecorded path and the run-id route answer 404, a missing memberAddress 400,
+//   and a deleted file "not available". The hub's own artifact is served by its own run id, running and stopped.
 // Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts --no-watch
@@ -36,6 +40,8 @@ const enabled = process.env.RUN_AGY_FAILURE_E2E === "1" && spawnSync(cli, ["--ve
 const suite = enabled ? describe : describe.skip;
 
 const ARTIFACT = "copy-artifact.png";
+const HUB_ARTIFACT = "hub-artifact.png";
+const BYTES = "fake image bytes";
 const NOT_FOUND = /was not found among the delegated copies of Agent run/;
 type Child = { host: string; address: string; agentRunId: string };
 
@@ -55,6 +61,31 @@ suite("agentRunCollaborationMemberFileChanges over real GraphQL (hubs made by re
   };
   const generic = async (runId: string) => (await h.graphql(`query($r:String!){getRunFileChanges(runId:$r){id runId path type status sourceTool}}`, { r: runId })).getRunFileChanges as Rec[];
   const artifactOf = (child: Child) => ({ id: `${child.agentRunId}:${ARTIFACT}`, runId: child.agentRunId, path: ARTIFACT, type: "image", status: "available", sourceTool: "generated_output" });
+  const hubArtifact = () => ({ id: `${hubA.rootId}:${HUB_ARTIFACT}`, runId: hubA.rootId, path: HUB_ARTIFACT, type: "image", status: "available", sourceTool: "generated_output" });
+  /** A file-change content read over real HTTP: status, body text, content type and cache header. */
+  const content = async (route: string) => {
+    const response = await fetch(new URL(`/rest${route}`, h.url));
+    return { status: response.status, body: await response.text(), type: response.headers.get("content-type"), cache: response.headers.get("cache-control") };
+  };
+  const copyContent = (host: string, address: string | null, agentRunId: string, filePath: string) =>
+    content(`/agent-collaborations/${encodeURIComponent(host)}/agent-runs/${encodeURIComponent(agentRunId)}/file-change-content?`
+      + `${address === null ? "" : `memberAddress=${encodeURIComponent(address)}&`}path=${encodeURIComponent(filePath)}`);
+  const runContent = (runId: string, filePath: string) =>
+    content(`/runs/${encodeURIComponent(runId)}/file-change-content?path=${encodeURIComponent(filePath)}`);
+  const served = { status: 200, body: BYTES, type: "image/png", cache: "no-store" };
+  const notFound = JSON.stringify({ detail: "File change not found" });
+  /** The copy's content answers (shared by the running and the stopped hub). */
+  const expectCopyContent = async () => {
+    expect(await copyContent(worker.host, worker.address, worker.agentRunId, ARTIFACT)).toEqual(served);
+    expect(await copyContent(foreignWorker.host, worker.address, worker.agentRunId, ARTIFACT)).toMatchObject({ status: 404, body: notFound });
+    expect(await copyContent(worker.host, "/not_a_member", worker.agentRunId, ARTIFACT)).toMatchObject({ status: 404, body: notFound });
+    expect(await copyContent(worker.host, worker.address, worker.agentRunId, "not-recorded.png")).toMatchObject({ status: 404, body: notFound });
+    expect(await copyContent(worker.host, null, worker.agentRunId, ARTIFACT)).toMatchObject({ status: 400, body: JSON.stringify({ detail: "Missing required query parameter: memberAddress" }) });
+    // The run-id route serves standalone runs only: the copy gets "not found"; the hub's own file is served.
+    expect(await runContent(worker.agentRunId, ARTIFACT)).toMatchObject({ status: 404, body: notFound });
+    expect(await runContent(hubA.rootId, HUB_ARTIFACT)).toEqual(served);
+    expect(await generic(hubA.rootId)).toEqual([hubArtifact()]);
+  };
 
   beforeAll(async () => {
     h = await startCollaborationHarness("member-file-changes-e2e");
@@ -68,6 +99,9 @@ suite("agentRunCollaborationMemberFileChanges over real GraphQL (hubs made by re
     await h.teamDefinition(teamName, [["lead", lead], ["mate", mate]], "lead");
 
     hubA = await h.startRoot("agent", { manager });
+    // The hub's own artifact (served by the hub's own run id).
+    hubA.sendTo(hubA.managerRunId, `GENERATE_IMAGE:${path.join(h.workspace, HUB_ARTIFACT)} \nProduce the image.`);
+    await until(async () => (await generic(hubA.rootId)).length === 1, "hub's own artifact recorded", 60_000);
     const delegated = await hubA.calls(hubA.managerRunId, "/", callTool("delegate_task", {
       recipient_address: `/${segment(workerName)}`, description: `GENERATE_IMAGE:${path.join(h.workspace, ARTIFACT)} \nProduce the image.` }));
     expect(delegated, JSON.stringify(delegated)).toMatchObject({ delegated: true });
@@ -105,6 +139,7 @@ suite("agentRunCollaborationMemberFileChanges over real GraphQL (hubs made by re
     // The Team copy's members (coordinator and a never-started member) answer with their own (empty) lists.
     expect(teamMembers).toHaveLength(2);
     for (const member of teamMembers) expect(await scoped(member.host, member.address, member.agentRunId)).toEqual({ entries: [], error: null });
+    await expectCopyContent();
   });
 
   it("rejects a child of another hub, a wrong address, an unknown hub and a blank hub id", async () => {
@@ -133,6 +168,11 @@ suite("agentRunCollaborationMemberFileChanges over real GraphQL (hubs made by re
     const stored = await findFile(path.join(h.dataDir, "memory"), worker.agentRunId, "file_changes.json");
     expect(stored, "stored file_changes.json of the copy").toBeTruthy();
     expect(JSON.parse(await fsp.readFile(stored!, "utf8")).entries.map((entry: Rec) => entry.path)).toEqual([ARTIFACT]);
+    await expectCopyContent();
+    // The copy's file is deleted: its recorded change stays listed and its content is "not available".
+    await fsp.rm(path.join(h.workspace, ARTIFACT));
+    expect(await copyContent(worker.host, worker.address, worker.agentRunId, ARTIFACT))
+      .toMatchObject({ status: 404, body: JSON.stringify({ detail: "File change content is not available" }) });
   });
 });
 
