@@ -1,0 +1,195 @@
+# Implementation Handoff
+
+Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/tickets/in-progress/test-vault-developer-experience/`
+Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience` / `codex/test-vault-developer-experience`
+
+## Upstream Artifact Package
+
+- Upstream review applicability and handoff-rule result: independent architecture review selected (Large/High) and passed at `ARCH-REV-002`; next route from `get_handoff_rules`: Code Review.
+- Requirements doc: `requirements-doc.md` @ SR-008 (approved; SR-006/SR-007 by the user)
+- Investigation notes: `investigation-notes.md` (A-01..A-26)
+- Solution revision record: `solution-revision-record.md` (SR-001..SR-008)
+- Design spec (required on every route): `design-spec.md` @ SR-008 (commit `67d1aaaacc`)
+- Supplemental task artifacts: `test-vault-evaluation-report.md` @ SR-008 (§5.0/§5.1, behavior-defining)
+- Design review report: `design-review-report.md` (ARCH-REV-002, Pass; AR-007/AR-008 non-blocking)
+- Architecture review revision record: `architecture-review-revision-record.md`
+- Triggering rework report, revision record, or evidence: `N/A` (initial implementation)
+
+## Current Implementation Summary
+
+- Implementation cycle: `Initial`
+- Implementation revision record: `implementation-revision-record.md`
+- Current implementation revision ID: `IR-001`
+- Related solution revision IDs: `SR-008` (on `SR-006`/`SR-007`)
+- Related architecture-review revision IDs: `ARCH-REV-002`
+- Related code-review revision IDs: `N/A`
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Triggering finding IDs: `N/A` (AR-007 guidance applied)
+
+Commits on the branch (above the design commit `67d1aaaacc`):
+
+| Commit | Content |
+| --- | --- |
+| `303a04e945` | Merge of `origin/personal` @ `ad784b0a8f` (1,147 commits ahead of the design base `d28c56d5d`; clean merge, no conflicts). Done before coding because upstream had added 5 more live suites on the env helper and rewritten TESTING.md. |
+| `6f38cd51e6` | `test(autobyteus-ts)`: baseline fix for 5 stale default-suite tests (TESTING Rule 9; causes in the commit message). |
+| `855842b8f1` | `feat(secret-management)`: the implementation (code and tests). **All checks below ran on this tree.** |
+| `3f01a6013a` | `docs(testing)`: TESTING.md Test vault section and Rule 4 (its own commit, as TESTING.md requires). |
+| `198c9066dc` | `docs`: AGENTS.md entry and the other docs/skill. |
+| (next) | `docs(ticket)`: this handoff, the revision record and `evidence/`. |
+
+What exists now:
+
+- **Selection (DS-002).** `secret-vault-source.ts` `selectSecretVaultSource({testVaultSetting, appDataDir, databaseLocation})` → `{kind:'application', location, notice?}` | `{kind:'test', directory}`; both startup sites pass `config.get('AUTOBYTEUS_TEST_VAULT')` (env, then data-dir `.env`) and call `SecretVaultRuntime.initialize(source)`. The runtime logs `Secret vault: test vault <dir> (read-only)` / `Secret vault: application database` (and a warning with `TEST_VAULT_IGNORED_ON_REAL_APP_DATA`).
+- **Failure rule.** For `test`, `initialize` throws `SecretVaultError` (`TEST_VAULT_LOCATION_INVALID`, `…_FORBIDDEN`, `TEST_VAULT_NOT_FOUND` naming `pnpm test-vault setup`, `TEST_VAULT_UNAVAILABLE` with the health code) and opens nothing; startup takes its existing `SECRET_VAULT_INITIALIZATION_FAILED` fatal path. `application` is unchanged.
+- **Read-only path (Prisma-free).** `test-vault/read-only-test-vault.ts` `openReadOnlyTestVault` → `ReadOnlySecretVaultStore` (`node:sqlite`, `readOnly` + `query_only`, column checks shared with the inspection service via `persistence/secret-vault-sqlite-schema.ts`) behind the new `SecretVaultStore` interface → `SecretVaultBootstrap.verifyEstablished` (no lock, no write) → the unchanged `SecretManagementService`. Writes throw `SECRET_VAULT_READ_ONLY`.
+- **Location policy.** `test-vault/test-vault-location.ts`: selector parsing (absolute, `~` = home, no symlinked directory), default `~/.autobyteus-test/vault`, file names, and the two separate predicates `isForbiddenTestVaultLocation` (REQ-004 set per platform, realpath of the existing ancestor, case-insensitive on macOS/Windows) and `isRealAppServerDataDir`.
+- **Commands (DS-001).** `test-vault/test-vault-commands.ts` + `cli/test-vault-cli.ts` + root `pnpm test-vault setup --source <abs> [--replace] | status | remove`. Setup runs the existing importer service with a decision port that confirms only the validated test-vault target, through the extracted `provisioning/writable-vault-target.ts`; it sets `0700`/`0600` and prints `SETTING AUTOBYTEUS_TEST_VAULT=<dir>`. `secrets:import` keeps its terminal challenge (now `createTerminalImportDecision`).
+- **Resolver split (AR-005).** `resolution/secret-management-provider-api-key-resolver.ts` holds only the class (provider required); `resolution/runtime-provider-api-key-resolvers.ts` holds the 3 runtime-bound factories (3 src call sites + 2 test references updated).
+- **autobyteus-ts (DS-003).** `setDefaultProviderApiKeyResolver` / `resolveProviderApiKeyResolver` in `src/secrets/provider-api-key-resolver.ts`; resolver parameters optional in all 28 client/factory/model files; `LLMFactory.createLLM(id)` and the media factories take config and resolver optionally. Lookup of the default happens when a key is needed; none → `MissingApiKeyError(provider)`.
+- **Test policy (`test-support/test-vault/`).** Server-free (AR-007): `test-vault.ts` facade, `live-provider-test.ts` (`liveProviderTest(provider)` → gate, reasoned skip, `AUTOBYTEUS_LIVE_STRICT=1`), `credential-environment.ts`, `test-vault-selection.ts` (capture), `provider-access-classification.ts` (moved). Runtime-touching, loaded only by live opt-ins: `live-server-vault.ts` (`initializeLiveServerVault`, `closeLiveServerVault`, `requireLiveCapability`), `test-vault-default-resolver.ts` (`installTestVaultDefaultResolver`, Prisma-free). Tests only: `synthetic-test-vault.ts`.
+- **Harness opt-in owners (DS-005).** Server setup (`tests/setup/test-environment-isolation.ts`) captures the selector and strips `*_API_KEY` for every test folder; `startBuiltTestServer({testVaultSetting})` forwards only that explicit value; autobyteus-ts `tests/setup.ts` strips credentials and installs the default only with the selector and `RUN_LIVE_PROVIDER_TESTS=1` via dynamic import; the key-saving web probe deletes the selector.
+- **Live suites.** The env→vault helper is deleted. 15 server live suites and the native-runtime harness use `initializeLiveServerVault()`; env-key gates are replaced by `requireLiveCapability` (in-test or `beforeEach`); APC-E2E-008 resolves its key through the product resolver. The 18 autobyteus-ts live files use `liveProviderTest` and current constructors; `provider-access.ts` is deleted.
+- **Runner.** `run-live-e2e.mjs` prints `Vault: test vault <dir>` / `Vault: run database …` and passes the selector to its server and to the vitest child (where the real-E2E harness uses `initializeLiveServerVault`); `real-e2e-compaction-quality` describes only with a selected compaction scenario (F-08).
+- **Electron.** `buildServerProcessEnv` forwards a non-blank `AUTOBYTEUS_TEST_VAULT` under `isolated-baseline`.
+- **Docs.** TESTING.md Test vault section, Rule 4, examples; AGENTS.md entry; secret_management.md Test Vault section; isolated-app guide and skill, READMEs, packaging doc and autobyteus-ts docs point to it.
+
+## Routing Classification (Mandatory)
+
+- Task size (`Small`/`Medium`/`Large`): `Large`
+- Architecture risk (`Low`/`High`): `High`
+- Design classification section / evidence reference: `design-spec.md` § Task Size And Architectural Risk
+- Classification confirmed or changed: `Confirmed`
+- Evidence and rationale for confirmation or change: 130 files in the feature commit across server secret-management and startup, autobyteus-ts `src` (public signatures + default slot), test-support, server tests, Electron env policy, one web probe; production credential-source input and shared contracts (store interface, `initialize(source)`, autobyteus-ts signatures). Nothing reduced the risk surface.
+- Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Code Review`
+- Lightweight implementation self-review completed for the direct route: `Not Applicable` (Large/High route)
+- New design impact or escalation trigger: `None`. Checked each trigger: no vault write outside setup/remove (read-only store + IMP-05 bytes unchanged); no key in env/argv/logs/evidence (IMP-13); AC-017 regression passes (IMP-05); REQ-004 set and guard cover the Electron production roots (`~/.autobyteus` canonical, A-20; `userData`/`logs` default to the `autobyteus` app folders); Prisma is not reached from the autobyteus-ts path (module-graph check, IMP-04); no startup app-data migration needs a vault write on a fresh DB (the custom-provider removal only runs for legacy data and reports a warning on failure, A-22; IMP-05 servers start READY on fresh DBs with the test source).
+
+## Reviewed Behavior Implementation Trace
+
+| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| --- | --- | --- | --- |
+| BEH-001, 007 | Non-interactive setup; status; remove; forbidden refused | `cli/test-vault-cli.ts` → `test-vault/test-vault-commands.ts` → `LocalEnvironmentSecretImportService.execute` (decision port) → `openWritableVaultTarget`; status via `openReadOnlyTestVault` | IMP-09: create/skip/replace/status/forbidden/untrusted source/remove; general `secrets:import` unchanged (its unit + E2E tests pass, IMP-04/IMP-06) |
+| BEH-002, 008 | Selected server reads the test vault read-only; unset or real data → own vault; unusable → startup fails | `server-runtime.ts`, `start-standalone-application-host.ts` → `selectSecretVaultSource` → `SecretVaultRuntime.initialize` → `openReadOnlyTestVault`; Electron `serverRuntimeEnv.ts` | IMP-05 (built server: configured, save refused, bytes unchanged; missing vault → fatal `TEST_VAULT_NOT_FOUND`); IMP-04 (each failure code; guard); isolated-instance smoke not run (API/E2E) |
+| BEH-004 | Gated in-process / built live servers select the test source | `test-support/test-vault/live-server-vault.ts`; `startBuiltTestServer({testVaultSetting})`; `run-live-e2e.mjs`; `live-e2e-harness.ts` | IMP-05 in-process case; IMP-12 suites load; real live runs not done (no standing vault) |
+| BEH-003, 009 | autobyteus-ts live run uses the default resolver; clients fall back to it | `autobyteus-ts/tests/setup.ts` → `test-vault-default-resolver.ts` → `setDefaultProviderApiKeyResolver`; `resolveProviderApiKeyResolver` in clients | IMP-08 (synthetic vault: key resolved; missing → `missing capability …`; fake key → classified refusal); unit tests for the slot and the self alias |
+| BEH-005 | Credential vars stripped; deterministic harnesses never apply the selector | server `test-environment-isolation.ts`; autobyteus-ts `tests/setup.ts`; `createSanitizedTestEnvironment`; key-saving web probe | IMP-05 (AC-017 nested run of the secret-lifecycle suites with the selector exported; built server without opt-in uses its own vault); IMP-07 (default autobyteus-ts with 13 inherited keys and the selector exported) |
+| BEH-006 | Reasoned skip; strict fails | `live-provider-test.ts`, `live-server-vault.ts` `requireLiveCapability`, `provider-access-classification.ts` | IMP-08; strict mode checked manually (5 × `LIVE_PROVIDER_UNAVAILABLE`); policy unit tests |
+
+- Changes stayed within the requirements doc's Scope Guardrail: `Yes`. See the deviations listed under Important Assumptions; none adds product behavior.
+
+## Key Files Or Areas
+
+- Server: `autobyteus-server-ts/src/secret-management/{secret-vault-source.ts, secret-vault-runtime.ts, domain/secret-vault-types.ts, persistence/{secret-vault-store.ts, read-only-secret-vault-store.ts, secret-vault-sqlite-schema.ts, secret-vault-repository.ts}, bootstrap/secret-vault-bootstrap.ts, services/{secret-management-service.ts, secret-vault-inspection-service.ts}, catalog/provider-credential-catalog.ts, test-vault/*, cli/{test-vault-cli.ts, import-local-environment-secrets.ts}, provisioning/{writable-vault-target.ts, local-environment-secret-import-service.ts}, resolution/*}`, `src/server-runtime.ts`, `src/standalone-application-host/start-standalone-application-host.ts`.
+- autobyteus-ts: `src/secrets/provider-api-key-resolver.ts`; the client/factory files; `tests/setup.ts`, `vitest.config.ts`, `package.json`.
+- Test support: `test-support/test-vault/*`, `test-support/live-e2e/{test-runtime-bootstrap.mjs,.d.mts, run-live-e2e.mjs, live-e2e-harness.ts}`.
+- New tests: server `tests/unit/secret-management/test-vault-{read-path,module-graph,policy}.test.ts`, `tests/e2e/secret-management/test-vault-selection.e2e.test.ts`; autobyteus-ts `tests/unit/secrets/{provider-api-key-resolver,package-self-alias}.test.ts`, `tests/unit/test-setup-credential-isolation.test.ts`; Electron `serverRuntimeEnv.spec.ts` (+2 cases).
+
+## Important Assumptions
+
+Implementation decisions and deviations from the design text, for review:
+
+1. **More live suites than the design counted.** After the merge, 15 server live suites (design: 8 env-helper + 2 env-gated) use keys: upstream added `skill-update-notice-live`, `work-journal-live-runtimes`, `work-journal-skill-improvement` on the helper and `native-runtime-live-harness` with its suites `autobyteus-claude-5-5-live`, `autobyteus-compaction-token-reading-live`, `autobyteus-native-output-limit-live`, `…-recovery-live`, `autobyteus-compaction-cache-reuse-live`. Same design decision applied; removing the helper requires migrating every caller.
+2. **Dead code removed (Principle 7).** `SecretManagementService.createMissingBatchForCustomProviderMigration`/`compensateUnpublishedCustomProviderBatch`, the repository methods and `CustomProviderMigrationBatchReceipt`, `SecretEntryRepository.deleteEntry` and their 4 unit tests: nothing in `src`, scripts or fixtures calls them (`git grep`), only those tests. `SecretVaultStore` therefore has exactly the 7 methods the service and bootstrap use; the read-only store needs no batch-migration stubs.
+3. **Agent file tools are denied the selected test-vault directory** (`selectedTestVaultPaths`), as they are denied the server's own DB/key files today. Not stated in the design; it keeps the existing guarantee for the selected vault.
+4. **`~` in the selector** expands to the home directory, so the documented setting also works from an `.env` file or a quoted value.
+5. **Status lists** the 15 fixed catalog secret IDs (`ProviderCredentialCatalog.listFixedSecretIds`) via a new value-free `SecretManagementService.getStatusForSecretId`.
+6. **`SecretVaultError` options take a value-free `detail`** appended to the message (instruction code first) for the startup-stopping test-vault errors; GraphQL messages of other errors are unchanged.
+7. **The vault-choice log line is emitted by the process-global runtime only.** Runtimes created by provisioning commands are silent, so `secrets:import`/`test-vault setup` output stays the value-free summary.
+8. **Live test helpers' shape.** autobyteus-ts: `const live = liveProviderTest('DeepSeek'); live.describe(…); live.it(…)`; detection of a missing key is by `kind === 'missing_api_key'` (works across module copies). Server suites: `requireLiveCapability(context, secretId)`; `skill-update-notice-live` checks the OpenAI key only with its default native model.
+9. **Gemini live tests** pass `{ kind: 'aiStudio' }` as the explicit mode (AR-006); the Vertex project/ADC branches of their old env gates are gone.
+10. **Silent passes removed in two touched tests:** OpenAI audio "unsupported" now skips with a reason; the Gemini handler's `model`/`not_found` catch now goes to the classifier.
+11. **TESTING.md** was rewritten upstream: suite-specific command rows (e.g. Anthropic caching) now live in the test file headers, which include the variable; TESTING.md carries the section, the rule and five examples (autobyteus-ts live, real E2E preflight/run, DeepSeek collaborators, isolated instance). The core-library row now runs `pnpm -C autobyteus-ts test`.
+
+## Known Risks
+
+- R-A resolved: the Vitest self alias unifies class identity (`package-self-alias.test.ts`).
+- R-B: `node:sqlite` prints an ExperimentalWarning on stderr for the CLI and servers (already true for the inspection service).
+- R-D (accepted): the 21 other web probes inherit an exported selector (FU-05).
+- An installed (pre-change) desktop app does not forward the selector; docs say to use `--build`/`--from-worktree`.
+- `pnpm test-vault setup` prints Prisma migration log lines before its summary (value-free; same as `secrets:import`).
+- P-002 observed (IMP-10): an older worktree's setup against a newer vault succeeds ("No pending migrations"), keeps the newer schema and stays READY. A future change to the shape of the two secret tables would still need care.
+- Windows paths and ACLs were exercised only through injected platform policy, not on Windows.
+
+## Task Design Health Assessment Implementation Check
+
+- Reviewed change posture: Larger Requirement
+- Reviewed root-cause classification: Duplicated Policy Or Coordination; Boundary Or Ownership Issue
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
+- Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
+- Evidence / notes: one source decision (`selectSecretVaultSource`) and one default slot replace the four credential paths; the harness opt-in owners are the four named in DS-005; the extra suites follow the same owner.
+
+## Legacy / Compatibility Removal Check
+
+- Backward-compatibility mechanisms introduced: `None` (no env-key path; no fallback from a selected vault; default slot empty unless live setup fills it)
+- Legacy old-behavior retained in scope: `No`
+- Dead code in the touched files and modules removed (Core Principle 7): `Yes` (custom-provider batch methods, receipt, `deleteEntry`, env→vault helper, `provider-access.ts`, the dead `getUsageJson` test, the resolver's default runtime parameter)
+- Dead code found elsewhere, listed as follow-up: None found
+- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
+- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes` (largest changed `src` file 418 effective lines; `test-support/live-e2e/live-e2e-harness.ts` is test support, already 1,360 lines, net +2)
+- Notes: —
+
+## Persisted Data Transition Check (When Applicable)
+
+- Approved decision: production `Not Affected`; worktree test DBs `Discard or Rebuild` (FU-04, untouched); test vault: new data.
+- Design-spec decision reference: `design-spec.md` § Persisted Data / State Transition Decision
+- Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
+- Direct-use evidence or discard/rebuild result, when applicable: consumers open the vault read-only and read only the two secret tables (IMP-05 bytes unchanged); P-002 observation in IMP-10.
+- Migration implementation and focused checks, only when `Migration Required`: N/A
+- Deviation from the reviewed transition decision: `None`
+
+## Environment Or Dependency Notes
+
+- macOS 26.5.2 arm64, Node v22.23.1, pnpm 10.28.2. After the merge: `pnpm install --frozen-lockfile`, `pnpm -C autobyteus-server-ts prebuild` (stale Prisma client), `pnpm -C autobyteus-ts build` (the server consumes its `dist`), `pnpm -C autobyteus-server-ts build`, `test:integration:prepare`, `pnpm -C autobyteus-web exec nuxt prepare` (Electron tests need it).
+- No standing test vault exists on this machine and no agent may choose the key source (DEC-003), so every vault in these checks holds synthetic values only.
+
+## Checks Run
+
+Evidence: `tickets/in-progress/test-vault-developer-experience/evidence/`.
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result (`Pass`/`Fail`) | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-01 | `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` | `855842b8f1` | as above | server and autobyteus-ts `src` | all | Pass | `IMP-01-server-typecheck.log` | `exit=0` |
+| IMP-02 | `pnpm -C autobyteus-server-ts test:unit` | `855842b8f1` | as above | whole server unit suite (incl. new tests) | regression | Pass | `IMP-02-server-unit-excerpt.log` | `Test Files 749 passed \| 4 skipped (753)`, `Tests 6167 passed \| 7 skipped` |
+| IMP-03 | `test:integration:prepare` then `test:integration` | `855842b8f1` | as above | server integration suite | regression | Pass | `IMP-03-server-integration-excerpt.log` | `Test Files 78 passed \| 20 skipped (98)` |
+| IMP-04 | vitest `tests/unit/secret-management`, startup gate, standalone host | `855842b8f1` | as above | source decision, predicates per OS, read-only store, failure rule (6 codes), log line, default resolver, module graph (+control), policy, importer port | AC-003, 004, 009 (graph), 015, 016 (unit) | Pass | `IMP-04-server-focused-unit.log` | `Test Files 17 passed (17)`, `Tests 177 passed` |
+| IMP-05 | vitest `tests/e2e/secret-management/test-vault-selection.e2e.test.ts` | `855842b8f1` | built server dist | real CLI setup; built server with/without opt-in; missing vault; nested secret-lifecycle run with the selector exported; in-process live initializer | AC-001, 016, 017, 007 (mechanics), 011 | Pass | `IMP-05-e2e-test-vault-selection.log` | 5 ✓ incl. `the secret-lifecycle suites give the same results with the selector exported (AC-017)` |
+| IMP-06 | vitest `tests/e2e/secret-management tests/e2e/llm-management tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts` | `855842b8f1` | built server dist | importer E2E, resolver split call sites, application-source init sites | preserved | Pass | `IMP-06-e2e-affected-folders.log` | `Test Files 12 passed \| 2 skipped (14)` |
+| IMP-07 | `AUTOBYTEUS_TEST_VAULT=<vault> pnpm -C autobyteus-ts test` in a shell with 13 inherited `*_API_KEY` | `855842b8f1` | as above | default autobyteus-ts suite, setup stripping, no default slot | AC-009, REQ-011 | Pass | `IMP-07-autobyteus-ts-default.log` | `Test Files 391 passed \| 21 skipped (412)` |
+| IMP-08 | `AUTOBYTEUS_TEST_VAULT=<synthetic vault> RUN_LIVE_PROVIDER_TESTS=1` vitest on 3 live files | `855842b8f1` | network: one 401 from DeepSeek for a fake key | lazy install, default resolver, alias, `liveProviderTest` | AC-008, AC-013 (mechanics), BEH-003 | Pass | `IMP-08-autobyteus-ts-live-synthetic.log` | `missing capability provider.grok.api-key for GROK (test vault <tmp>/vault); add it with pnpm test-vault setup`; `provider refused DeepSeek: invalid_or_missing_credentials` |
+| IMP-09 | built CLI: setup/again/--replace/status/forbidden/untrusted source/remove | `855842b8f1` | no TTY | `TestVaultCommands`, CLI | AC-001..004 | Pass | `IMP-09-test-vault-cli-smoke.log` | `SETTING AUTOBYTEUS_TEST_VAULT=<tmp>/vault`; `-rw-------`; `TEST_VAULT_LOCATION_FORBIDDEN`; `exists after refusal: no`; `REMOVED NONE` |
+| IMP-10 | P-002 simulation (future migration row + table, then setup --replace, status) | `855842b8f1` | as above | setup against a newer-schema vault | P-002 | Observed (works) | `IMP-10-p002-older-worktree-setup.log` | `No pending migrations to apply.`, `STATE READY`, `future_only_table kept: true` |
+| IMP-11 | `nuxt prepare`; vitest `--config ./electron/vitest.config.ts` | `855842b8f1` | as above | Electron main incl. `serverRuntimeEnv` forwarding | REQ-012 (unit) | Pass | `IMP-11-electron-main.log` | `Test Files 36 passed \| 1 skipped (37)` |
+| IMP-12 | vitest on the 15 migrated live suites, gates off | `855842b8f1` | as above | live-suite modules load; gates | REQ-005 (gate) | Pass | `IMP-12-live-suites-gates-off.log` | `Test Files 15 skipped (15)` |
+| IMP-13 | canary scan (`python3 -I`): 3 synthetic canaries + 12 inherited real key values vs all logs, setup logs, branch diff, evidence | `855842b8f1` | as above | output/log/evidence/commit hygiene | AC-011, QR-001 | Pass | `IMP-13-canary-scan.log` | `real key value matches: 0`; evidence `synthetic canary occurrences: 0` |
+
+- Not run, and why:
+  - Real-key live runs (AC-005 DeepSeek autobyteus-ts, AC-006 `test:e2e:real -- --scenarios=deepseek.llm` and preflight, AC-007 a gated server suite, AC-013 one live call): no standing test vault on this machine, and agents must not choose the key source (DEC-003). Needs the user's `pnpm test-vault setup`; API/E2E.
+  - AC-010 isolated-instance smoke (`AUTOBYTEUS_TEST_VAULT=… pnpm --silent isolated-app start --build`, Settings configured, save refused, missing vault → start error): needs a desktop build; API/E2E.
+  - Full deterministic `pnpm test:e2e` with and without the selector exported (AC-017 at full scale): the secret-lifecycle suites ran nested in IMP-05; the full suite is left to API/E2E.
+  - `test:e2e:real` runner output (`Vault: …` line, F-08 exit code) was not executed; it needs a server build plus a vault and is part of AC-006.
+  - Web Nuxt tests and the key-saving browser probe (only its backend env changed).
+  - Linux/Windows.
+
+## Frontend Rendered-Result Check (When Applicable)
+
+`Not Applicable`: no rendered frontend changed (Electron main-process env policy and one probe script's backend env only).
+
+## Downstream Coverage Hints / Suggested Scenarios
+
+- With the user's vault: `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/deepseek-llm.test.ts` (AC-005), a probe calling `LLMFactory.createLLM('deepseek-v4-flash')` with no resolver (AC-013), and the shell's inherited `*_API_KEY` present.
+- `pnpm test:e2e:real:preflight` and `pnpm test:e2e:real -- --scenarios=deepseek.llm` with the variable: the `Vault: test vault …` line, exit 0, vault hash unchanged (AC-006, F-08).
+- `RUN_DEEPSEEK_E2E=1` collaborators suite with `ANTHROPIC_API_KEY`/`OPENAI_API_KEY` set in the shell (AC-007: aliases ignored).
+- Isolated instance from a worktree build: providers configured, Settings save → `SECRET_VAULT_READ_ONLY`, `restart` with the variable, and a missing-vault start (AC-010).
+- `pnpm test:e2e` with the selector exported vs without (AC-017 full).
+- Strict mode (`AUTOBYTEUS_LIVE_STRICT=1`) for one missing provider; the Gemini AI Studio mode with only a Vertex Express key (reasoned skip).
+
+## API / E2E / Executable Coverage Investigation And Execution Still Required
+
+All acceptance criteria that need a real vault, real providers, a desktop build or the full deterministic E2E suite (AC-005, 006, 007 live, 010, 013 live, 017 full) remain for API/E2E. The new durable tests (IMP-04, IMP-05, autobyteus-ts unit tests) cover the mechanics without credentials.
+
+## Follow-ups (not in this ticket)
+
+- FU-01..FU-05 from the design spec stand; FU-03 now also covers `pnpm test-vault`, which builds the server on every call like `secrets:import`.

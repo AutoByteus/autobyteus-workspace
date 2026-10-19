@@ -1,0 +1,27 @@
+# IMP-04-server-focused-unit secret-management, test-vault and startup unit tests
+# commit 855842b8f1 (baseline fix 6f38cd51e6 below it) | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-19
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/secret-management tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/standalone-application-host --no-watch
+
+ ✓ tests/unit/secret-management/secret-vault-lifecycle.test.ts (9 tests) 306ms
+ ✓ tests/unit/secret-management/live-e2e-harness.test.ts (17 tests) 213ms
+ ✓ tests/unit/secret-management/secret-vault-inspection-service.test.ts (4 tests) 114ms
+ ✓ tests/unit/secret-management/test-vault-read-path.test.ts (21 tests) 54ms
+ ✓ tests/unit/secret-management/local-environment-source-reader.test.ts (18 tests) 35ms
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts (13 tests) 24ms
+ ✓ tests/unit/secret-management/local-environment-secret-import-service.test.ts (6 tests) 25ms
+ ✓ tests/unit/secret-management/live-e2e-compaction-boundary.test.ts (10 tests) 22ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (17 tests) 15ms
+ ✓ tests/unit/secret-management/live-e2e-compaction-observation.test.ts (2 tests) 12ms
+ ✓ tests/unit/secret-management/legacy-source-non-authority.test.ts (2 tests) 13ms
+ ✓ tests/unit/secret-management/test-vault-module-graph.test.ts (5 tests) 7ms
+ ✓ tests/unit/secret-management/import-local-environment-secrets-cli.test.ts (25 tests) 6ms
+ ✓ tests/unit/secret-management/secret-management-provider-api-key-resolver.test.ts (6 tests) 5ms
+ ✓ tests/unit/secret-management/provider-credential-catalog.test.ts (14 tests) 3ms
+ ✓ tests/unit/secret-management/test-vault-policy.test.ts (5 tests) 3ms
+ ✓ tests/unit/secret-management/live-e2e-audio-assertions.test.ts (3 tests) 2ms
+ Test Files  17 passed (17)
+      Tests  177 passed (177)

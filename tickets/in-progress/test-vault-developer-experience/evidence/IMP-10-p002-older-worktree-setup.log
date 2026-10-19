@@ -1,0 +1,24 @@
+# IMP-10 P-002 observation: setup re-run from an older worktree against a newer-schema vault
+# commit 855842b8f1 | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-19
+# steps: copy a provisioned vault; record a future migration 29991231000000_future_worktree_migration in _prisma_migrations and create future_only_table (simulating a newer worktree's schema); run this worktree's 'test-vault setup --replace' against it; then status
+
+Running Prisma migrations...
+27 migrations found in prisma/migrations
+No pending migrations to apply.
+Database migrations completed successfully.
+TEST_VAULT <tmp>/p002
+SECRET provider.deepseek.api-key
+SECRET provider.openai.api-key
+CONFIGURED 0
+SKIPPED 0
+REPLACED 2
+SETTING AUTOBYTEUS_TEST_VAULT=<tmp>/p002
+
+$ status
+TEST_VAULT <tmp>/p002
+STATE READY
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.openai.api-key
+
+future_only_table kept: true
+future migration row kept: true

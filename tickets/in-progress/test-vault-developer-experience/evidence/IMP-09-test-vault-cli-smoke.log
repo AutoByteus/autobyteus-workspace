@@ -1,0 +1,65 @@
+# IMP-09 test-vault CLI smoke (synthetic secrets file; agent shell, no TTY)
+# commit 855842b8f1 | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-19
+# AUTOBYTEUS_TEST_VAULT=<tmp>/vault node autobyteus-server-ts/dist/secret-management/cli/test-vault-cli.js <command> < /dev/null
+
+$ setup --source <tmp>/source.env
+TEST_VAULT <tmp>/vault
+SECRET provider.deepseek.api-key
+SECRET provider.openai.api-key
+CONFIGURED 2
+SKIPPED 0
+REPLACED 0
+SETTING AUTOBYTEUS_TEST_VAULT=<tmp>/vault
+exit=0
+
+$ ls -l (modes)
+-rw-------@ test-vault.db
+-rw-------@ test-vault.db.secret.key
+drwx------ <tmp>/vault
+
+$ setup again
+CONFIGURED 0
+SKIPPED 2
+REPLACED 0
+
+$ setup --replace
+CONFIGURED 0
+SKIPPED 0
+REPLACED 2
+
+$ status
+TEST_VAULT <tmp>/vault
+STATE READY
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.openai.api-key
+MISSING provider.anthropic.api-key
+MISSING provider.glm.api-key
+MISSING provider.google.ai-studio.api-key
+MISSING provider.google.vertex-express.api-key
+MISSING provider.grok.api-key
+MISSING provider.kimi.api-key
+MISSING provider.lmstudio.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.qwen.api-key
+MISSING search.serpapi.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+
+$ status with AUTOBYTEUS_TEST_VAULT=$HOME/.autobyteus/tv-never
+TEST_VAULT_FAILED TEST_VAULT_LOCATION_FORBIDDEN: /Users/normy/.autobyteus/tv-never is inside the user's AutoByteus app data
+exists after refusal: no
+
+$ setup with a group-readable source
+TEST_VAULT_FAILED IMPORT_SOURCE_UNTRUSTED
+
+$ remove
+TEST_VAULT <tmp>/vault
+REMOVED <tmp>/vault/test-vault.db
+REMOVED <tmp>/vault/test-vault.db.secret.key
+$ remove again
+TEST_VAULT <tmp>/vault
+REMOVED NONE
+
+canary values in this log: see IMP-13
