@@ -1,0 +1,55 @@
+{
+  "_about": "Work Journal category 1: each runtime's built-in tools that map to a journal action. Keys are runtime kinds; tool names are as recorded in raw traces (after AutoByteus's adapters). Every name NOT listed for the run's runtime (other built-ins, MCP tools, AutoByteus shared tools) uses the generic Tool rule (work-journal-contract.md section 5). Source of truth: work-journal-contract.md section 4.",
+  "claude_agent_sdk": {
+    "Bash": "Command",
+    "Monitor": "Command",
+    "Read": "Command",
+    "Grep": "Command",
+    "Glob": "Command",
+    "WebFetch": "Command",
+    "Write": "Write file",
+    "Edit": "Edit file",
+    "MultiEdit": "Edit file",
+    "NotebookEdit": "Edit file",
+    "WebSearch": "Search web"
+  },
+  "codex_app_server": {
+    "run_bash": "Command",
+    "edit_file": "Edit file",
+    "search_web": "Search web"
+  },
+  "antigravity_cli": {
+    "run_command": "Command",
+    "view_file": "Command",
+    "grep_search": "Command",
+    "find_by_name": "Command",
+    "list_dir": "Command",
+    "write_to_file": "Write file",
+    "replace_file_content": "Edit file"
+  },
+  "grok_build": {
+    "run_bash": "Command",
+    "read_file": "Command",
+    "grep": "Command",
+    "list_dir": "Command",
+    "web_fetch": "Command",
+    "write_file": "Write file",
+    "edit_file": "Edit file",
+    "web_search": "Search web"
+  },
+  "autobyteus": {
+    "run_bash": "Command",
+    "start_background_process": "Command",
+    "read_file": "Command",
+    "read_url": "Command",
+    "write_file": "Write file",
+    "edit_file": "Edit file",
+    "search_web": "Search web",
+    "read_media_file": "Command"
+  },
+  "_wrappers": {
+    "antigravity_cli": {
+      "call_mcp_tool": "unwrap {ServerName, ToolName, Arguments}, then apply the generic rule (older records; newer records are already unwrapped by the AGY adapter)"
+    }
+  }
+}

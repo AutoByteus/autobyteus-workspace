@@ -3,6 +3,7 @@ import type {
   AgentToolMcpRunSessionDeactivator,
 } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import type { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
 import type { ApplicationPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import type { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
 import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
@@ -15,6 +16,7 @@ export type AgentRunResourceReleaseResult = Readonly<{
     fileChanges: boolean;
     artifactRelay: boolean;
     memoryRecorder: boolean;
+    workJournal: boolean;
   }>;
   errors: readonly Error[];
 }>;
@@ -24,6 +26,7 @@ type ResourceRecord = {
   fileChanges: (() => void) | null;
   artifactRelay: (() => void) | null;
   memoryRecorder: (() => void) | null;
+  workJournal: (() => void) | null;
   mcpReleased: boolean;
 };
 
@@ -49,6 +52,7 @@ export class AgentRunResourceManager {
     runFileChangeService: Pick<RunFileChangeService, "attachToRun">;
     publishedArtifactRelayService: Pick<ApplicationPublishedArtifactRelayService, "attachToRun">;
     memoryRecorder: Pick<AgentRunMemoryRecorder, "attachToRun">;
+    workJournalUpdater: Pick<WorkJournalRunUpdater, "attachToRun">;
     /** Told after a run's attachments are released, which every removal of a run goes through. */
     lifecycleObserver?: Pick<AgentRunLifecycleObserver, "runReleased"> | null;
   }) {}
@@ -62,6 +66,7 @@ export class AgentRunResourceManager {
       fileChanges: null,
       artifactRelay: null,
       memoryRecorder: null,
+      workJournal: null,
       mcpReleased: false,
     };
     this.resourcesByRunId.set(run.runId, record);
@@ -70,6 +75,10 @@ export class AgentRunResourceManager {
       record.artifactRelay =
         this.dependencies.publishedArtifactRelayService.attachToRun(run);
       record.memoryRecorder = this.dependencies.memoryRecorder.attachToRun(run);
+      // After the memory recorder: run listeners are called in subscription order, so the recorder
+      // has enqueued a turn's last records (e.g. a segment flushed on TURN_COMPLETED) before the
+      // journal updater waits for its queue.
+      record.workJournal = this.dependencies.workJournalUpdater.attachToRun(run);
     } catch (error) {
       const release = this.release(run.runId, run);
       throw new AgentRunResourceAttachmentError(
@@ -92,6 +101,7 @@ export class AgentRunResourceManager {
       fileChanges: false,
       artifactRelay: false,
       memoryRecorder: false,
+      workJournal: false,
     };
 
     if (!record.mcpReleased) {
@@ -100,7 +110,7 @@ export class AgentRunResourceManager {
         record.mcpReleased = true;
       } catch (error) { errors.push(toError(error)); }
     }
-    for (const key of ["fileChanges", "artifactRelay", "memoryRecorder"] as const) {
+    for (const key of ["fileChanges", "artifactRelay", "memoryRecorder", "workJournal"] as const) {
       if (!record[key]) continue;
       try {
         record[key]!();
@@ -136,6 +146,7 @@ export class AgentRunResourceManager {
         fileChanges: false,
         artifactRelay: false,
         memoryRecorder: false,
+        workJournal: false,
       }),
       errors: Object.freeze([]),
     });

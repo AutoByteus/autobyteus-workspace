@@ -1,0 +1,290 @@
+# API-03e Grok run 2 (helper now stops at ERROR and prints its payload): env -i PATH HOME=$HOME TMPDIR USER LOGNAME RUN_GROK_E2E=1 WORK_JOURNAL_E2E_EVIDENCE_DIR=<evidence>/API-03-live pnpm exec vitest run tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts --no-watch
+# Run 1 (log replaced): ERROR event after TURN_STARTED, no TURN_COMPLETED within 240 s; payload not captured
+# commit c13882fa41 + uncommitted test files; grok grok 1.0.62 (1474f9cbdd91) [stable]; 2026-10-19T04:47:03Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Grok Build: journal current after the turn (temporary GROK_HOME)
+Agent Definition created successfully with ID: work-journal-grok-1a1ec833-12ad-443b-a4c2-7fc8aec35dac
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Grok Build: journal current after the turn (temporary GROK_HOME)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/workspace-grok
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/workspace-grok.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Grok Build: journal current after the turn (temporary GROK_HOME)
+Created and registered workspace ID: agent_ws_4beb89bdf01fd0d3bfa9b30468186e6688f42c7d84669e034b6aa1ed94eed86f
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Grok Build: journal current after the turn (temporary GROK_HOME)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/workspace-grok
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-kV1CZj/workspace-grok.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Grok Build: journal current after the turn (temporary GROK_HOME)
+Reusing registered workspace ID: agent_ws_4beb89bdf01fd0d3bfa9b30468186e6688f42c7d84669e034b6aa1ed94eed86f
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Grok Build: journal current after the turn (temporary GROK_HOME)
+Agent websocket attached for run work_journal_grok_1a1ec833_12ad_443b_a4c2_7fc8ae_ae38e49913cc468092dae7d547deadfd
+Created agent session 011859bf-2f33-48c9-9729-ac81f3ebf9d7 for run work_journal_grok_1a1ec833_12ad_443b_a4c2_7fc8ae_ae38e49913cc468092dae7d547deadfd
+Agent WebSocket connected: session=011859bf-2f33-48c9-9729-ac81f3ebf9d7, run=work_journal_grok_1a1ec833_12ad_443b_a4c2_7fc8ae_ae38e49913cc468092dae7d547deadfd
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Closed agent session 011859bf-2f33-48c9-9729-ac81f3ebf9d7
+Agent WebSocket disconnected: 011859bf-2f33-48c9-9729-ac81f3ebf9d7
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Agent Definition with ID work-journal-grok-1a1ec833-12ad-443b-a4c2-7fc8aec35dac deleted successfully.
+
+ ❯ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts (5 tests | 1 failed | 4 skipped) 7526ms
+     ↓ AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+     ↓ Claude: journal current; /compact closes a journal file written once
+     ↓ Codex: journal current after the turn
+     ↓ Antigravity: journal current after the turn
+     × Grok Build: journal current after the turn (temporary GROK_HOME) 5234ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Grok Build: journal current after the turn (temporary GROK_HOME)
+AssertionError: grok runtime errors: expected [ { code: 'ACP_PROMPT_FAILED', …(4) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "code": "ACP_PROMPT_FAILED",
++     "error_effect": "terminal",
++     "error_scope": "turn",
++     "message": "Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 612809/600000. Upgrade to a Grok subscription for higher limits: https://grok.com/supergrok",
++     "turn_id": "bd41ac45-1eb7-4887-8704-7d4ca6825616",
++   },
++ ]
+
+ ❯ send tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts:183:79
+    181|       // Stop at a runtime ERROR instead of waiting out the step timeo…
+    182|       await until(() => turnsEnded() > before || errors().length > 0, …
+    183|       expect(errors().map((m) => m.payload), `${input.label} runtime e…
+       |                                                                               ^
+    184|       // AC-W6: after the turn ends, the open journal file includes it.
+    185|       await until(async () => (await journal(journalFile)).includes(jo…
+ ❯ runTask tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts:188:5
+ ❯ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts:291:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  06:47:04
+   Duration  18.49s (transform 7.26s, setup 34ms, import 10.26s, tests 7.53s, environment 0ms)
+
+# Exit status: 1

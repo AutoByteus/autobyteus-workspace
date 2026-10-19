@@ -145,7 +145,10 @@ describe('teamMemberProjectionHydrationService', () => {
       await expect(ensureAuthoritativeTeamMemberProjection({ team, agentRunId: TASK_RUN }))
         .resolves.toEqual({ disposition: 'hydrated', agentRunId: TASK_RUN });
 
-      expect(fetchFileChanges).toHaveBeenCalledWith(TASK_RUN);
+      expect(fetchFileChanges).toHaveBeenCalledWith({
+        kind: 'teamMember', teamRunId: ROOT,
+        memberAddress: team.view.getAgentExecutionLocation(TASK_RUN)!.memberAddress, agentRunId: TASK_RUN,
+      });
       expect(paths()).toEqual(['/outputs/1.png', '/outputs/2.png']);
     });
 

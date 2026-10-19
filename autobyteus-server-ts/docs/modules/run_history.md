@@ -879,14 +879,24 @@ memory without rewriting durable team catalog activity/status fields or
 changing a stable non-empty title.
 
 Produced-file Artifacts are not part of the replay bundle, but their historical
-read path must resolve the same run identity. `RunFileChangeProjectionService`
-uses `AgentRunMetadataService` for standalone runs and the shared
-`AgentMemoryLocationService` for team-member run ids. This lets
-`getRunFileChanges(runId)` and `/runs/:runId/file-change-content` read
-team-member `agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<agentRunId>/file_changes.json`,
-including nested child-team members and task-agent memory directories, without
-adding a separate team-file route or treating produced files as message-reference
-rows.
+read path must resolve the same run identity. Every read names its owner.
+`getRunFileChanges(runId)` and `/runs/:runId/file-change-content` serve
+standalone runs only, decided by `AgentRunMetadataService` (standalone run
+metadata, running or saved). A team member is read through
+`getTeamMemberFileChanges(teamRunId, agentRunId)` and
+`/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content`:
+`TeamMemberRunViewProjectionService` locates the member inside that team run
+only and the file-change service reads its
+`agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<agentRunId>/file_changes.json`
+(live while the team runs), including nested child-team members and task-agent
+memory directories. Org members use the org-scoped equivalents (see
+[Agent Artifacts](./agent_artifacts.md)). No file-change read searches all saved
+team, org or standalone trees, and produced files are not message-reference rows.
+
+`TeamMemberRunViewProjectionService.requireLocation` locates a team member by
+`{ rootTeamRunId, agentRunId }`, so `getTeamMemberRunProjection` and the
+team-member event-monitor pages also read only the named team run's tree. A run
+id that is not in that team gives the same not-found error as before.
 
 Team Communication messages are also outside the member replay bundle. Accepted
 team communication events are processor input; derived

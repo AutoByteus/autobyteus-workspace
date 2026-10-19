@@ -1,10 +1,9 @@
 import type { SkillImprovementNotificationSummary, SkillImprovementSkillTarget, SkillImprovementTargetRef } from "./models.js";
-import type { AgentWorkTracePackage } from "../../agent-work-traces/domain/work-traces.js";
+import type { WorkJournalPackage } from "../../agent-work-journal/domain/work-journal-models.js";
 
 export type SkillImprovementImproverSessionStateStatus = "active" | "replaced" | "unavailable";
 
 export type SkillImprovementImproverSessionState = {
-  schemaVersion: 1;
   target: SkillImprovementTargetRef;
   status: SkillImprovementImproverSessionStateStatus;
   currentImproverRunId: string | null;
@@ -14,16 +13,16 @@ export type SkillImprovementImproverSessionState = {
   llmModelIdentifier: string | null;
   workspaceRootPath: string | null;
   memoryRootPath: string | null;
-  workTraces: {
+  workJournal: {
     rootPath: string | null;
     manifestPath: string | null;
-    lastSummaryHash: string | null;
+    lastEvidenceHash: string | null;
   };
   lastRequest: {
     improvementRunId: string;
     requestedAt: string;
     postedAt?: string | null;
-    workTraceSummaryHash?: string | null;
+    workJournalEvidenceHash?: string | null;
   } | null;
   updatedAt: string;
 };
@@ -41,7 +40,7 @@ export type SkillImprovementImproverTriggerRequest = {
   improvementRunId: string;
   requestedAt: string;
   targetAgentRunId: string;
-  workTracePackage: AgentWorkTracePackage;
+  workJournalPackage: WorkJournalPackage;
   editableSkillTargets: SkillImprovementSkillTarget[];
 };
 

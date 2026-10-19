@@ -1328,7 +1328,7 @@ manual start calls. Run-history rows do not expose Skill Improvement controls.
 Starting Skill Improvement from the composer CTA calls `startAgentRunSkillImprovement`
 or `startTeamMemberSkillImprovement` without run-time overrides. The backend uses
 current global Skill Improvement settings, current target state, and current
-configured writable skill roots; it first ensures work trace files are current
+configured writable skill roots; it first ensures the target's Work Journal files are current
 for the selected target, then activates or reuses a visible target-scoped
 improver `AgentRun`. The returned record summary is stored only internally and
 the UI may show at most a short transient toast/status after start. It must not
@@ -1614,7 +1614,7 @@ for that evidence-free case.
 A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
 
 1.  **Run File Changes (`RunFileChangesStore`)**:
-    - Listens to `FILE_CHANGE` plus reopen hydration from `getRunFileChanges(runId)`.
+    - Listens to `FILE_CHANGE` plus reopen hydration from the run owner's list query (`fetchRunFileChanges(subject)`: `getRunFileChanges(runId)` for a standalone run, the team-, org- or copy-scoped query for a member).
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
@@ -1715,7 +1715,7 @@ turn.
 
 ## Related Documentation
 
-- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, shared work-trace package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
+- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, Work Journal evidence package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

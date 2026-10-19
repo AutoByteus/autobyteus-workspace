@@ -71,6 +71,7 @@ Common files/directories:
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
 - `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it.
 - `seen_skill_versions.json` — the skill file versions this run was last given, used by [Skill Update Notices](./skill_update_notices.md) on every runtime. It is additive and disposable: missing or invalid means "nothing seen", and the root-package validators tolerate it.
+- `work_journal/` — the [Work Journal](./agent_work_journal.md): readable Markdown rendered from the raw traces (one file per raw-trace file plus `work_journal_manifest.json`). Derived and disposable: it is rebuilt from the raw traces when missing.
 
 There is no current compacted-memory manifest or pointer. The destructive
 `20260730_reset_pre_lineage_memory` path is removed. Normal restore accepts
@@ -517,8 +518,9 @@ run-scoped system-instruction trace projects only to Activity; it is excluded
 from Event Monitor conversation/count/cursor policy and normal display never
 opens a rotated segment to recover it.
 
-Run-history and work-trace projection build one logical interaction from the
-physical call/result pair. New minimal results carry the verified canonical name
+Run-history projection builds one logical interaction from the
+physical call/result pair (the Work Journal pairs them within one raw file; see
+[agent_work_journal.md](./agent_work_journal.md)). New minimal results carry the verified canonical name
 locally and obtain arguments from their call. Full interaction reconstruction
 still correlates the call for arguments, anchoring, ordering, and lifecycle
 integrity. Existing historical name-less results and result rows containing

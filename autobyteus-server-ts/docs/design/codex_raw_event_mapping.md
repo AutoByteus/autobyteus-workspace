@@ -84,6 +84,48 @@ boundary cannot settle or corrupt the newer turn. Runtime-scoped failures still
 close all live turn state. A missing or non-boolean `willRetry` value never
 opts into diagnostic behavior.
 
+## Exact-Turn Admission Rejections
+
+`CodexThread.handleAppServerNotification` passes the governed item events
+(`item/started`, `item/agentMessage/delta`, `item/completed`,
+`item/reasoning/completed`) through the exact-turn gate
+(`codex-segment-turn-admission.ts`) before any conversion. An event is admitted
+only for the thread's active turn: an explicit turn id must equal it, and an
+event without a turn id inherits it. Otherwise the event is rejected and
+dropped; it is never attached to another turn:
+
+- `CODEX_SEGMENT_TURN_INACTIVE` — no turn is active.
+- `CODEX_SEGMENT_TURN_CONFLICT` — the event names a turn other than the active
+  one, or names two different turns.
+- `CODEX_SEGMENT_TURN_EXPLICIT_INVALID` — a turn id field is present but empty
+  or not a string.
+
+The normal source of rejections is tool items (`commandExecution`,
+`mcpToolCall`) that Codex finishes after their turn ended, mostly after the user
+pressed Stop. The chat already shows such a tool as interrupted. A burst of
+rejected text deltas instead means AutoByteus lost a turn Codex was still
+running; the known cause, a `willRetry: true` error ending the turn, is fixed
+(see the section above).
+
+Rejection logging is bounded per run thread by
+`codex-segment-turn-rejection-accounts.ts`, with one account per rejected
+event's turn id plus one account for events without a turn id:
+
+- The account's first rejection writes one detailed line:
+  `[CodexSegmentTurnAdmissionRejected] { runtimeKind, runId, nativeEventName, reasonCode, itemType, turnId, activeTurnId }`.
+  `itemType` is `params.item.type` as sent, or `null` for events without an
+  item (`item/agentMessage/delta`). `turnId` is the event's own turn id or
+  `null`; `activeTurnId` is the thread's active turn at that moment. No item
+  content is logged.
+- Later rejections of the same account are counted. The pending count of each
+  account is written as
+  `[CodexSegmentTurnAdmissionRejectedSummary] { runtimeKind, runId, turnId, count }`
+  at the next `turn/started` or `turn/completed` the thread sees, when the
+  app-server client closes, and when `CodexThreadManager` releases the thread.
+- Accounts live as long as the thread, so a turn never gets a second detailed
+  line; a whole rejected turn of N events writes one detailed line and one
+  summary per boundary instead of N lines.
+
 ## Apply-Patch / Edit-File Spine
 
 For Codex `apply_patch`, the authoritative mutation spine is the raw `fileChange` item lifecycle, not the `custom_tool_call` completion.
