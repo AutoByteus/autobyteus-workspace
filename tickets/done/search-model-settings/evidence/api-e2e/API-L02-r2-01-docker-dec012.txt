@@ -1,0 +1,9 @@
+# API-L02 (round 2, DEC-012): Docker node ab-sms-validation:8c283c6acc, 24 Projects (20 x 1,000 + 4 small), no model on disk; API-PROBE-dec012-timing.mjs after a container restart, in both cold orders (status first, then projects first), 10 refresh rounds each; then the browser is not used here (see API-L02 browser line below); commit 8c283c6acc; Mon Oct 19 14:52:24 CEST 2026
+host: load averages: 108.56 55.47 30.67
+{"order":"status-first","firstRead":{"status":2111,"projectsAfterStatus":1925},"statusRefresh":{"median":9,"p90":13,"max":13,"all":[13,9,9,9,9,12,11,9,9,8]},"projectsRepeat":{"median":2176,"p90":2378,"max":2378,"all":[2287,2069,1440,2376,2176,2304,1723,2073,1993,2378]},"backlog":{"projects":24,"tasks":20038,"states":{"NOT_INDEXED":23,"READY":1}}}
+host: load averages: 94.16 57.84 32.53
+{"order":"projects-first","firstRead":{"projects":1852,"statusAfterProjects":2010},"statusRefresh":{"median":9,"p90":13,"max":13,"all":[13,9,9,9,8,9,10,7,9,7]},"projectsRepeat":{"median":1816,"p90":2141,"max":2141,"all":[1656,1562,1881,1749,1719,1645,1857,1816,1883,2141]},"backlog":{"projects":24,"tasks":20038,"states":{"NOT_INDEXED":23,"READY":1}}}
+host: load averages: 92.56 61.73 34.99
+{"order":"status-first","firstRead":{"status":1764,"projectsAfterStatus":1796},"statusRefresh":{"median":8,"p90":15,"max":15,"all":[15,8,7,8,8,9,10,6,8,8]},"projectsRepeat":{"median":1785,"p90":1893,"max":1893,"all":[1734,1822,1582,1856,1785,1771,1548,1813,1738,1893]},"backlog":{"projects":24,"tasks":20038,"states":{"NOT_INDEXED":23,"READY":1}}}
+host: load averages: 92.92 64.73 37.00
+{"order":"projects-first","firstRead":{"projects":1780,"statusAfterProjects":1807},"statusRefresh":{"median":9,"p90":21,"max":21,"all":[21,9,9,11,9,10,15,8,7,6]},"projectsRepeat":{"median":1916,"p90":2709,"max":2709,"all":[1694,1881,1610,2100,2238,2709,1631,1936,1916,1783]},"backlog":{"projects":24,"tasks":20038,"states":{"NOT_INDEXED":23,"READY":1}}}

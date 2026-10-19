@@ -1,0 +1,6 @@
+# API-L06 (round 2): Docker node, Granite Ready; Index now on "Load 1" (1,000 Tasks); leave to /projects for 5 s and return during it; until Ready; then Rebuild "Beta platform" with its confirmation; commit 8c283c6acc; host load averages: 144.78 110.65 65.71; Mon Oct 19 14:59:18 CEST 2026
+during Index now: ['Indexing 56 of 1000'] | filters All 24Needs indexing 19Indexing 1Ready 4
+left to http://127.0.0.1:54347/projects
+after return: ['Indexing 80 of 1000']
+Load 1 Ready after 243531 ms more; seen [[['Indexing 80 of 1000']], [['Indexing 88 of 1000']]] ... 109 states
+Beta after Rebuild: ['Ready · 20 Tasks'] after 3116 ms

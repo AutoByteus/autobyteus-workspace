@@ -1,0 +1,9 @@
+# API-L08 step 5 (AC-003) and API-L10 (AC-013): desktop; Remove on the previous model (Granite, now Downloaded) with its confirmation; the active model has no Remove; then pnpm --silent isolated-app restart; open Embedding: Active · Ready with the files on disk; build d2bcb95d3a; Mon Oct 19 13:05:09 CEST 2026
+before: [('granite-embedding-small-english-r2', 'Downloaded', ['use', 'remove']), ('mdbr-leaf-ir', 'Not downloaded', ['download', 'use']), ('embeddinggemma-2', 'Active·Ready', [])] On disk: 401 MB
+after Remove: [('granite-embedding-small-english-r2', 'Not downloaded', ['download', 'use']), ('mdbr-leaf-ir', 'Not downloaded', ['download', 'use']), ('embeddinggemma-2', 'Active·Ready', [])] On disk: 346 MB
+model folders:
+embeddinggemma-2
+== restart
+restart ok True 63817
+{"url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings?section=server-settings&mode=embedding","msToCards":58}
+after restart: [('granite-embedding-small-english-r2', 'Not downloaded', ['download', 'use']), ('mdbr-leaf-ir', 'Not downloaded', ['download', 'use']), ('embeddinggemma-2', 'Active·Ready', [])] On disk: 346 MB ['Ready · 8 Tasks']

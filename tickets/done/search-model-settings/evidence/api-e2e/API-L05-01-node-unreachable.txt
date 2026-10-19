@@ -1,0 +1,16 @@
+# API-L05 (AC-014): docker stop sms-api-node while the Embedding page is open; press Download on EmbeddingGemma 2; docker start; wait for health; press Download again (the next action), then Cancel the 346 MB download; commit d2bcb95d3a; Mon Oct 19 12:28:37 CEST 2026
+node stopped
+{"clicked":"embedding-model-embeddinggemma-2-download","at":1792405720054}
+actionError: 'Failed to fetch' role: alert after 5 ms; models still shown: ['Active·Ready', 'Downloaded', 'Not downloaded']
+node started again
+{"clicked":"embedding-model-embeddinggemma-2-download","at":1792405725671}
+after next action: actionError None | status Downloading 0 of 346 MB · 0% | actions ['cancel'] | disk On disk: 79 MB
+mid-download: 7 of 346 MB · 2% | disk On disk: 86 MB | actions ['cancel']
+   file 495165 /home/autobyteus/data/embeddings/models/embeddinggemma-2/onnx/model_quantized.onnx
+   file 17453219 /home/autobyteus/data/embeddings/models/embeddinggemma-2/onnx/model_quantized.onnx_data.part
+{"clicked":"embedding-model-embeddinggemma-2-cancel","at":1792405729005}
+after Cancel: Not downloaded | actions ['download', 'use'] | failed None | disk On disk: 79 MB | actionError None
+container after Cancel:
+granite-embedding-small-english-r2
+mdbr-leaf-ir
+find: ‘/home/autobyteus/data/embeddings/models/embeddinggemma-2’: No such file or directory

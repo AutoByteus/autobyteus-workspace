@@ -1,0 +1,42 @@
+# API-L02 breakdown: Docker node (same data: 24 Projects, 20,039 Tasks); per-root-field timings vs the existing board reads; commit d2bcb95d3a; host load averages: 8.45 14.73 39.84; Mon Oct 19 12:46:52 CEST 2026
+{
+ "projects": 24,
+ "rounds": 10,
+ "timings": [
+  {
+   "label": "embeddingModelsStatus only",
+   "median": 4,
+   "p90": 7,
+   "min": 3
+  },
+  {
+   "label": "projectTaskIndexes only",
+   "median": 1797,
+   "p90": 2613,
+   "min": 1588
+  },
+  {
+   "label": "panel document (both)",
+   "median": 1842,
+   "p90": 3506,
+   "min": 1614
+  },
+  {
+   "label": "projects list",
+   "median": 1805,
+   "p90": 3745,
+   "min": 1519
+  },
+  {
+   "label": "projectTasks for all 24 Projects (taskId, description, updatedAt), sequential",
+   "median": 2196,
+   "p90": 3953,
+   "min": 2136
+  }
+ ]
+}
+== container: CPUs, data volume, file system
+10
+overlay         1.8T   96G  1.7T   6% /
+overlay on / type overlay (rw,relatime,lowerdir=20081/fs:20080/fs:20079/fs:20078/fs:20077/fs:20076/fs:20075/fs:20074/fs:20073/fs:20072/fs:20071/fs:20070/fs:20069/fs:20068/fs:20067/fs:20066/fs:20065/fs:20064/fs:20063/fs:20062/fs:20061/fs:20060/fs:20059/fs:20058/fs:20057/fs:20056/fs:20055/fs:20054/fs:20053/fs:20052/fs:20051/fs:20050/fs:20049/fs:15593/fs:15592/fs:15591/fs:15590/fs:15589/fs:15588/fs:15587/fs:15586/fs:15585/fs:15584/fs:15583/fs:15582/fs:15581/fs:15580/fs:15579/fs:15578/fs:15577/fs:15576/fs:15575/fs:15574/fs:15573/fs:15572/fs:15571/fs:15570/fs:15210/fs,upperdir=/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/20082/fs,workdir=/var/lib/desktop-containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/20082/work)
+20039

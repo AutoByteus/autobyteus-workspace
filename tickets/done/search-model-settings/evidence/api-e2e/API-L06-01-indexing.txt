@@ -1,0 +1,19 @@
+# API-L06: Docker node (Granite Ready); Index all Projects, leave to /projects and return after 2 s; then Rebuild Beta platform (inline confirmation); then a new Task in Gamma desktop → Needs update → Index now; commit d2bcb95d3a; Mon Oct 19 12:27:50 CEST 2026
+{"clicked":"embedding-index-all","at":1792405671609}
+right after Index all: ['Indexing 0 of 10', 'Indexing 0 of 20', 'Ready · 0 Tasks', 'Indexing 0 of 8']
+left to http://127.0.0.1:61598/projects
+{"url":"http://127.0.0.1:61598/settings?section=server-settings&mode=embedding","msToCards":948}
+== after return
+after return: ['Ready · 10 Tasks', 'Ready · 20 Tasks', 'Ready · 0 Tasks', 'Ready · 8 Tasks']
+all ready after 6 ms timeout False ['Ready · 10 Tasks', 'Ready · 20 Tasks', 'Ready · 0 Tasks', 'Ready · 8 Tasks']
+seen [[['Ready · 10 Tasks'], ['Ready · 20 Tasks'], ['Ready · 0 Tasks'], ['Ready · 8 Tasks'], None]]
+== Rebuild Beta
+{"clicked":"embedding-project-project_9099a536-b5bf-4e5e-b8ab-a1cc5ebb54de-rebuild","at":1792405677640}
+confirmation: ['Alpha docsReady · 10 TasksRebuild']
+{"clicked":"embedding-project-project_9099a536-b5bf-4e5e-b8ab-a1cc5ebb54de-rebuild-confirm","at":1792405678926}
+Beta after rebuild: ['Ready · 20 Tasks'] seen [[['granite-embedding-small-english-r2', 'Active·Ready', None, None, None, None], ['mdbr-leaf-ir', 'Downloaded', None, None, None, None], ['embeddinggemma-2', 'Not downloaded', None, None, None, None], ['Ready · 10 Tasks'], ['Indexing 0 of 20'], ['Ready · 0 Tasks'], ['Ready · 8 Tasks'], None], [['granite-embedding-small-english-r2', 'Active·Ready', None, None, None, None], ['mdbr-leaf-ir', 'Downloaded', None, None, None, None], ['embeddinggemma-2', 'Not downloaded', None, None, None, None], ['Ready · 10 Tasks'], ['Ready · 20 Tasks'], ['Ready · 0 Tasks'], ['Ready · 8 Tasks'], None]]
+== new Task in Gamma
+{"data":{"createProjectTask":{"taskKey":"gamma-desktop-9"}}}
+Gamma: [('Needs update · 1 changed', ['index', 'rebuild'])] after 9684 ms
+{"clicked":"embedding-project-project_da4de0bc-85b5-4e30-a27b-5e6a987251b5-index","at":1792405691871}
+Gamma after Index now: ['Ready · 9 Tasks'] seen [[['granite-embedding-small-english-r2', 'Active·Ready', None, None, None, None], ['mdbr-leaf-ir', 'Downloaded', None, None, None, None], ['embeddinggemma-2', 'Not downloaded', None, None, None, None], ['Ready · 10 Tasks'], ['Ready · 20 Tasks'], ['Ready · 0 Tasks'], ['Indexing 0 of 1'], None], [['granite-embedding-small-english-r2', 'Active·Ready', None, None, None, None], ['mdbr-leaf-ir', 'Downloaded', None, None, None, None], ['embeddinggemma-2', 'Not downloaded', None, None, None, None], ['Ready · 10 Tasks'], ['Ready · 20 Tasks'], ['Ready · 0 Tasks'], ['Ready · 9 Tasks'], None]]

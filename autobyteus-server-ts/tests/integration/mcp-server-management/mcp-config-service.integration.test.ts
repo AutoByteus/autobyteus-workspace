@@ -59,9 +59,6 @@ describe("McpConfigService integration", () => {
 
   afterEach(async () => {
     const registrar = McpToolRegistrar.getInstance();
-    const instanceManager = McpServerInstanceManager.getInstance();
-    await instanceManager.cleanupAllMcpServerInstances();
-
     for (const tool of defaultToolRegistry.listTools()) {
       if (tool.metadata?.mcp_server_id) {
         registrar.unregisterToolsFromServer(String(tool.metadata.mcp_server_id));

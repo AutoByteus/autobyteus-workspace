@@ -13,6 +13,7 @@ export const createAgentRunManagerInfrastructureFixture = (input: Readonly<{
     publishedArtifactRelayService: { attachToRun: () => () => undefined },
     memoryRecorder,
     workJournalUpdater: { attachToRun: () => () => undefined },
+    mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
   });
   return Object.freeze({
     activationRegistry: new AgentRunActivationRegistry(resourceManager),

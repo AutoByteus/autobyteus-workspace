@@ -53,7 +53,8 @@ for (const { impl, available, reason } of prepareMcpTestServers()) {
     });
 
     afterEach(async () => {
-      await instanceManager.cleanupAllMcpServerInstances();
+      // Registration and preview close their own discovery sessions; execution opens one for 'agent-1'.
+      await instanceManager.cleanupMcpServerInstancesForAgent('agent-1');
       toolRegistry.restore(originalDefinitions);
       configService.clearConfigs();
     });

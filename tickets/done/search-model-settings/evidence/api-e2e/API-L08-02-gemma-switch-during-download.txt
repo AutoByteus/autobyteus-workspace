@@ -1,0 +1,22 @@
+# API-L08 step 2 (R-9 / D-2, REQ-009): desktop; Download on EmbeddingGemma 2 (download ahead, 346 MB); at ≥ 30 MB, Settings → Server Settings → Advanced: AUTOBYTEUS_EMBEDDING_MODEL = embeddinggemma-2; back to Embedding; build d2bcb95d3a; Mon Oct 19 13:01:53 CEST 2026
+{"clicked":"embedding-model-embeddinggemma-2-download","at":1792407713878}
+download ahead: Downloading 54 of 346 MB · 15% actions ['cancel'] (Use hidden while downloading ahead)
+== switch through Advanced while the download runs
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+locator.fill: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('tr.bg-gray-50 input').first()
+
+    at /private/tmp/sms-api/advanced-set.js:10:23 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1
+{"url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings?section=server-settings&mode=embedding","msToCards":24}
+   granite-embedding-small-english-r2 | Active·Ready | None | []
+   mdbr-leaf-ir | Not downloaded | None | ['download', 'use']
+   embeddinggemma-2 | Downloaded | None | ['use', 'remove']
+   subtitle Using IBM Granite Embedding Small English R2. | projects ['Ready · 8 Tasks'] | disk On disk: 401 MB

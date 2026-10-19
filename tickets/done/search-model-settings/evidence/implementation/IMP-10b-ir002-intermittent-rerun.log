@@ -1,0 +1,28 @@
+# Check: IMP-10b (isolated reruns of the one IMP-10 failure: tests/unit/agent-execution/native-compaction-terminal-drain.test.ts)
+# Command: (cd autobyteus-server-ts && for i in 1..5: pnpm exec vitest run tests/unit/agent-execution/native-compaction-terminal-drain.test.ts)
+# Commit tested: d2bcb95d3a (branch codex/search-model-settings, IR-002)
+# Environment: Darwin arm64, node v22.23.1
+# Date: 2026-10-19T10:14:38Z
+# Why: the test is outside this change (agent-execution); git diff 8d40ba3b6c HEAD -- autobyteus-server-ts/src/agent-execution is empty
+# diff check:        0 changed lines listed
+## Run 1
+ ✓ tests/unit/agent-execution/native-compaction-terminal-drain.test.ts (1 test) 3222ms
+     ✓ drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch  3221ms
+      Tests  1 passed (1)
+## Run 2
+ ✓ tests/unit/agent-execution/native-compaction-terminal-drain.test.ts (1 test) 3152ms
+     ✓ drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch  3152ms
+      Tests  1 passed (1)
+## Run 3
+ ✓ tests/unit/agent-execution/native-compaction-terminal-drain.test.ts (1 test) 3149ms
+     ✓ drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch  3149ms
+      Tests  1 passed (1)
+## Run 4
+ ✓ tests/unit/agent-execution/native-compaction-terminal-drain.test.ts (1 test) 3145ms
+     ✓ drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch  3144ms
+      Tests  1 passed (1)
+## Run 5
+ ✓ tests/unit/agent-execution/native-compaction-terminal-drain.test.ts (1 test) 3167ms
+     ✓ drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch  3166ms
+      Tests  1 passed (1)
+# Exit code: 0
