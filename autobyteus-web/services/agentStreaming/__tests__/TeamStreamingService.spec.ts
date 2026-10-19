@@ -148,8 +148,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       change_sequence: 1, parent_team_run_id: rootTeamRunId,
       execution: {
         kind: 'task_agent', address: '/Student', agent_run_id: 'dynamic-task-run',
-        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z',
-      },
+        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'Student', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } },
     });
 
     expect(team.view.hasAgentRun('dynamic-task-run')).toBe(true);

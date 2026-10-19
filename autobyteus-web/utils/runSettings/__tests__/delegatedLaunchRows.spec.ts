@@ -35,13 +35,15 @@ const tree = (): TeamRunExecutionTreeDto => ({
           kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se/lead', handoffs: [],
           default_launch_configuration: claude, default_launch_source: { origin: 'inherited', fallbacks: [teamFallback] },
           members: [
-            { address: '/se/lead', agent_definition_id: 'lead' },
-            { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, launch_source: { origin: 'agent_default', fallbacks: [] } },
-            { address: '/se/cr', agent_definition_id: 'cr', launch_source: { origin: 'inherited', fallbacks: [fallback] } },
+            { address: '/se/lead', agent_definition_id: 'lead', launch_configuration: claude, follows_team: true },
+            { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, follows_team: false, launch_source: { origin: 'agent_default', fallbacks: [] } },
+            { address: '/se/cr', agent_definition_id: 'cr', launch_configuration: claude, follows_team: true, launch_source: { origin: 'inherited', fallbacks: [fallback] } },
           ],
         },
       },
-      { kind: 'task_agent', address: '/pm', agent_run_id: 'pm-copy', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: created },
+      // A copy of a configured placement records the placement's launch as its own source (REQ-001).
+      { kind: 'task_agent', address: '/pm', agent_run_id: 'pm-copy', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: created,
+        source: { kind: 'agent', agent_definition_id: 'pm', launch_configuration: claude, launch_source: { origin: 'configured', fallbacks: [] } } },
       { kind: 'task_agent', address: '/closed', agent_run_id: 'closed-run', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: created,
         source: { kind: 'agent', agent_definition_id: 'x', launch_configuration: claude } },
     ],
@@ -57,7 +59,7 @@ describe('delegated launch nodes (REQ-007, AC-010, SR-006)', () => {
       ['/se/lead@lead-run', 1, undefined, 'inherited', 'claude_agent_sdk', 'opus'],
       ['/se/ie@ie-run', 1, undefined, 'agent_default', 'codex_app_server', 'sol-6.1'],
       ['/se/cr@cr-run', 1, undefined, 'inherited', 'claude_agent_sdk', 'opus'],
-      // A copy of a configured placement runs as that placement is configured.
+      // A copy of a configured placement shows its recorded launch, "As configured in this run".
       ['/pm@pm-copy', 0, 'delegated_copy', 'configured', 'claude_agent_sdk', 'opus'],
     ])
     const team = nodes[1]!
@@ -77,23 +79,31 @@ describe('delegated launch nodes (REQ-007, AC-010, SR-006)', () => {
     expect(countRunMemberNotes(team)).toBe(2)
   })
 
-  it('Org and Agent roots (camelCase): the same rules, with a launch lookup for copies without a recorded source', () => {
+  it('Org and Agent roots (camelCase): the same rules, every value from the copy\'s own recorded source', () => {
     const camel = { runtimeKind: 'claude_agent_sdk' as const, llmModelIdentifier: 'opus', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null }
+    const configured = { origin: 'configured' as const, fallbacks: [] }
     const nodes = collaborationDelegatedLaunchNodes({
       taskExecutions: [
-        { address: '/se', agentRunId: 'extra', platformAgentRunId: null, startedAt: created } as never,
-        { address: '/se', teamRunId: 'team-extra', members: [{ address: '/se/lead', agentRunId: 'l2', platformAgentRunId: null }], taskExecutions: [], startedAt: created } as never,
+        { address: '/se', agentRunId: 'extra', platformAgentRunId: null, startedAt: created,
+          source: { kind: 'agent', agentDefinitionId: 'se', launchConfiguration: camel, launchSource: configured } },
+        { address: '/se', teamRunId: 'team-extra', taskExecutions: [], startedAt: created,
+          members: [{ address: '/se/lead', agentRunId: 'l2', platformAgentRunId: null }, { address: '/se/qa', agentRunId: 'q2', platformAgentRunId: null }],
+          source: { kind: 'agent_team', teamDefinitionId: 'se', coordinatorAddress: '/se/qa', handoffs: [],
+            defaultLaunchConfiguration: camel, defaultLaunchSource: configured,
+            members: [
+              { address: '/se/lead', agentDefinitionId: 'lead', launchConfiguration: camel, followsTeam: true },
+              { address: '/se/qa', agentDefinitionId: 'qa', launchConfiguration: { ...camel, llmModelIdentifier: 'sonnet' }, followsTeam: false },
+            ] } },
       ],
-      launchAt: (address) => address === '/se' || address === '/se/lead' ? camel : null,
-      coordinatorAt: (address) => address === '/se' ? '/se/lead' : null,
     }, deps)
-    // A Team copy without a recorded source is led like the in-run Team at its address.
-    expect(nodes.find((node) => node.key === '/se@team-extra')!.children[0]!.isCoordinator).toBe(true)
+    // The Team copy is led by its recorded coordinator, not by the in-run Team at its address.
+    const team = nodes.find((node) => node.key === '/se@team-extra')!
+    expect(team.children.map((child) => [child.key, child.isCoordinator])).toEqual([['/se/lead@l2', false], ['/se/qa@q2', true]])
     expect(flat(nodes)).toEqual([
       ['/se@extra', 0, 'delegated_copy', 'configured', 'claude_agent_sdk', 'opus'],
-      // A Team copy without a recorded source shows its in-run Team's launch (not an empty model).
       ['/se@team-extra', 0, 'delegated_copy', 'configured', 'claude_agent_sdk', 'opus'],
       ['/se/lead@l2', 1, undefined, 'configured', 'claude_agent_sdk', 'opus'],
+      ['/se/qa@q2', 1, undefined, 'configured', 'claude_agent_sdk', 'sonnet'],
     ])
   })
 })

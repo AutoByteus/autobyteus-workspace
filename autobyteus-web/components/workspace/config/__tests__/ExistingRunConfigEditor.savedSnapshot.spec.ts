@@ -178,8 +178,8 @@ it('refreshes a Team selection and its follower, preserves own defaults and neig
       { address: '/team/own', agentRunId: 'own', platformAgentRunId: null },
     ],
     source: { kind: 'agent_team', teamDefinitionId: 'team', coordinatorAddress: '/team/lead', handoffs: [], defaultLaunchConfiguration: launch(), members: [
-      { address: '/team/lead', agentDefinitionId: 'lead' },
-      { address: '/team/own', agentDefinitionId: 'own', launchConfiguration: own, launchSource: { origin: 'agent_default', fallbacks: [] } },
+      { address: '/team/lead', agentDefinitionId: 'lead', launchConfiguration: launch(), followsTeam: true },
+      { address: '/team/own', agentDefinitionId: 'own', launchConfiguration: own, followsTeam: false, launchSource: { origin: 'agent_default', fallbacks: [] } },
     ] } })
   const wrapper = mountEditor(); await flushPromises()
   await wrapper.get('[data-test="edit-/team@team-copy"]').trigger('click')

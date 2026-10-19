@@ -49,16 +49,18 @@ const context = buildTestTeamContext({
     testAgentNode('/Reviewer', { agentRunId: REVIEWER, currentStatus: AgentStatus.Idle })],
   taskExecutions: empty ? [] : [
     ...[TASK_A, TASK_B].map(agent_run_id => ({ kind: 'task_agent' as const, address: '/Worker' as const,
-      agent_run_id, platform_agent_run_id: null, delegator_agent_run_id: REVIEWER, started_at: started })),
+      agent_run_id, platform_agent_run_id: null, delegator_agent_run_id: REVIEWER, started_at: started,
+      source: { kind: 'agent' as const, agent_definition_id: 'worker', launch_configuration: { runtime_kind: 'autobyteus' as const, llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null } } })),
     // A catalog Research Team copy (Teams are flat); its member delegated a task Agent.
     { kind: 'task_team', address: '/Research', team_run_id: TEAM, delegator_agent_run_id: REVIEWER, started_at: started,
       source: { kind: 'agent_team', team_definition_id: 'research-definition', coordinator_address: '/Research/Analyst',
-        members: [{ address: '/Research/Analyst', agent_definition_id: 'analyst-definition' }], handoffs: [],
+        members: [{ address: '/Research/Analyst', agent_definition_id: 'analyst-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null }, follows_team: true }], handoffs: [],
         default_launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
           auto_execute_tools: true, workspace_root_path: null } },
       members: [{ kind: 'task_team_agent', address: '/Research/Analyst', agent_run_id: MEMBER, platform_agent_run_id: null }],
       task_executions: [{ kind: 'task_agent', address: '/Research/Analyst', agent_run_id: NESTED,
-        platform_agent_run_id: null, delegator_agent_run_id: MEMBER, started_at: started }] },
+        platform_agent_run_id: null, delegator_agent_run_id: MEMBER, started_at: started,
+        source: { kind: 'agent', agent_definition_id: 'analyst-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null } } }] },
   ],
 });
 const teamStore = useAgentTeamContextsStore();

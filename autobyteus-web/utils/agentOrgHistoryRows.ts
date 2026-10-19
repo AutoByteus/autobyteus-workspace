@@ -9,10 +9,6 @@ import {
   type AgentOrgTaskTeamMember,
 } from '~/types/collaboration/agentOrgExecution'
 import { foldTeamAggregateStatus, type TeamStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
-import {
-  catalogTeamSourceAt,
-  collaborationTaskExecutionLists,
-} from '~/services/collaborators/agentSourceSelectors'
 import { collaborationTreeWalk, collectClosedSubtrees, type CollaborationTreeNode } from '~/utils/collaboration/taskExecutionClosure'
 
 export type AgentOrgHistoryAgentRow = Readonly<{
@@ -114,13 +110,8 @@ const statusSource = (
       address: addresses.get(delegatorAgentRunId) ?? null,
     }),
     coordinatorFor: (team) => {
-      const rootOrg = (context?.executionTree ?? run.executionTree).rootOrg
-      const configured = rootOrg.members.find((member) => 'teamRunId' in member && member.address === team.address)
-      const source = configured && 'teamRunId' in configured
-        ? configured
-        : catalogTeamSourceAt(collaborationTaskExecutionLists(rootOrg), team.address)
-      if (!source) throw new Error(`Missing captured Team source '${team.address}'.`)
-      const matches = team.members.filter((member) => member.address === source.coordinatorAddress)
+      // A Team copy names its coordinator in its own source.
+      const matches = team.members.filter((member) => member.address === team.source.coordinatorAddress)
       if (matches.length !== 1) throw new Error(`Missing exact task coordinator '${team.teamRunId}'.`)
       return matches[0]!
     },

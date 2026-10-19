@@ -1,4 +1,4 @@
-import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
+import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
 import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange';
 import { computed, reactive, ref, shallowRef } from 'vue';
@@ -471,7 +471,7 @@ export const createTeamExecutionViewState = (
     getAgentWorkspaceRootPath: (agentRunId) => {
       const location = publication.value.locations.get(agentRunId.trim());
       return location
-        ? teamAgentSourceAt(publication.value.tree, location.memberAddress, location.agentRunId)?.launch_configuration.workspace_root_path ?? null
+        ? teamAgentSourceOf(publication.value.tree, location.agentRunId)?.launch_configuration.workspace_root_path ?? null
         : null;
     },
     getAgentExecutionLocation: (agentRunId) => publication.value.locations.get(agentRunId.trim()) ?? null,

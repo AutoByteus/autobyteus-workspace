@@ -1049,16 +1049,17 @@ The saved-run view uses the start surfaces' visual language:
     - Agent default;
     - Team default;
     - Inherited from the run;
-    - As configured in this run: a copy of a configured placement. It has no
-      recorded source and shows the in-run placement's launch;
+    - As configured in this run: a copy of a configured placement. It shows the
+      launch it recorded when it started (origin `configured`), not the placement's
+      current launch;
     - Source not recorded: a record from before sources were recorded.
   - **Fallback line.** A skipped default shows "{layer} {model} was not used:
     {detail}".
   - **Effective values.** Values come from the contract packages' copy launch
     rule (`teamCopyAgentLaunch`, `collaborationCopyAgentLaunch`): the agent's own
-    choice, else its Team's when it follows the Team (`teamMemberFollowsTeam`;
-    for a copy of a configured Team, equal runtime, model and settings), else its
-    started value. This edit's choices are applied as they are made. A member's
+    choice, else its Team's when it follows the Team (the member's recorded
+    `follows_team` / `followsTeam`), else its started value, all read from the
+    copy's own `source`. This edit's choices are applied as they are made. A member's
     source is its own, else its Team's.
   - **Stop.** A running copy (any of its agents not offline) has
     the run's red stop icon on its own row, never on one member of a Team. It

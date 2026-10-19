@@ -519,10 +519,12 @@ nested by task delegation without changing the fixed configured Org topology.
 A task Agent row shows the member marker (solid status dot and initials); the
 starter is kept in the accessible label, not as a visible line. The Org context has no
 collaborator concept: runs that earlier releases recorded as collaborators were converted at
-startup into ordinary task rows. A catalog copy (`delegate_task` to a listed catalog Agent or Team;
-`send_message_to` never creates one) carries `source` on its task
-DTO; `AgentOrgExecutionViewIndex` and the Org history rows resolve it with
-`catalogAgentSourceAt` / `catalogTeamSourceAt`.
+startup into ordinary task rows. Every copy (`delegate_task` to a configured placement or to a
+listed catalog Agent or Team; `send_message_to` never creates one) carries the `source` it started
+with on its task DTO. `AgentOrgExecutionViewIndex` decides by execution kind, never by address: a
+configured member shows its placement, a copy its own `source` (by run ID, with
+`copyAgentSourceOf` / `copyTeamSourceOf`); the Org history rows read a Team copy's coordinator
+from its `source`.
 
 Copies are placed by address (REQ-012, approved behavior change). A
 mounted-team member's copy of an Org-level address now appears at the Org top

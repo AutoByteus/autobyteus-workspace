@@ -19,21 +19,15 @@ export const teamRowKey = (teamRunId: string): string => `team:${teamRunId}`;
 
 const firstSegment = (address: string): string | undefined => address.split('/').filter(Boolean)[0];
 
-/** Whether an address is (or is inside) a catalog copy of the run: a task copy with a recorded `source`. */
-const isCatalogCopyAddress = (tree: TeamRunExecutionTreeDto, address: string): boolean => {
-  const segment = firstSegment(address);
-  const visit = (tasks: readonly TaskExecutionDto[]): boolean => tasks.some((task) =>
-    (task.source !== undefined && firstSegment(task.address) === segment)
-    || (task.kind === 'task_team' && visit(task.task_executions)));
-  return visit(tree.root_team.task_executions);
-};
-
 /**
- * F-03 / CR-002: a catalog copy (and its members and copies) is not a configured member of the
- * root Team, so it reads as a spaced name (`product team`) in rows and contexts.
+ * F-03 / CR-002 (D-7): a catalog copy (and its members and copies) is not at a configured member of the
+ * root Team, so it reads as a spaced name (`product team`) in rows and contexts. A configured member,
+ * and every copy started from it, keeps its address basename; the root never reads as a display name.
  */
-export const readsAsDisplayName = (tree: TeamRunExecutionTreeDto, address: string): boolean =>
-  isCatalogCopyAddress(tree, address);
+export const readsAsDisplayName = (tree: TeamRunExecutionTreeDto, address: string): boolean => {
+  const segment = firstSegment(address);
+  return segment !== undefined && !tree.root_team.members.some((member) => firstSegment(member.address) === segment);
+};
 
 /** Teams are flat: the root Team's configured members are its Agents. */
 export const collectConfiguredAgents = (
