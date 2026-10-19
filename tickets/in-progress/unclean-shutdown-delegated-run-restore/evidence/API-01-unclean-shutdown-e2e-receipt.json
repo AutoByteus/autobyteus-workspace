@@ -1,0 +1,153 @@
+{
+  "cases": {
+    "USR-1": {
+      "accepted": true,
+      "message": "continue (USR-1)",
+      "bytesRemoved": 1241,
+      "warning": " { filePath: '<root>/memory/agent_teams/usdr_marketing_2f619d_a1445693635c45779c972bc2f9df84a4/usdr_lead_2f619d_f07e94074c9f454fbd440246e4e156a7/raw_traces_active.jsonl', bytesRemoved: 1241, recordsKept: 6 }",
+      "recordsBefore": 6,
+      "recordsAfter": 8,
+      "bytesBefore": 1843,
+      "bytesAfter": 2283,
+      "newTraceTypes": [
+        "user",
+        "assistant"
+      ]
+    },
+    "USR-2": {
+      "accepted": true,
+      "message": "continue (USR-2)",
+      "bytesRemoved": 32,
+      "warning": " { filePath: '<root>/memory/agent_teams/usdr_marketing_2f619d_3d122310d19a4956bec9ce474ac80330/usdr_lead_2f619d_410e49dd8b904e53bd00fb1d7c6b44a1/raw_traces_active.jsonl', bytesRemoved: 32, recordsKept: 6 }",
+      "recordsBefore": 6,
+      "recordsAfter": 8,
+      "bytesBefore": 1841,
+      "bytesAfter": 2281,
+      "newTraceTypes": [
+        "user",
+        "assistant"
+      ]
+    },
+    "USR-3": {
+      "accepted": true,
+      "message": "continue (USR-3)",
+      "bytesRemoved": 33,
+      "warning": " { filePath: '<root>/memory/agent_teams/usdr_marketing_2f619d_ac4e55fca47548049d54a525506040b2/usdr_lead_2f619d_35bcfbbe45904778b3a84b5fee6194d7/raw_traces_active.jsonl', bytesRemoved: 33, recordsKept: 6 }",
+      "recordsBefore": 6,
+      "recordsAfter": 8,
+      "bytesBefore": 1843,
+      "bytesAfter": 2283,
+      "newTraceTypes": [
+        "user",
+        "assistant"
+      ]
+    },
+    "USR-4": {
+      "refusal": {
+        "code": "TEAM_SEND_MESSAGE_REJECTED",
+        "message": "The delegated Team at '/usdr_marketing_2f619d' cannot be restored: the saved conversation of its coordinator '/usdr_marketing_2f619d/lead' cannot be read (line 3 of raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup.",
+        "details": "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
+        "error_scope": null,
+        "error_effect": null,
+        "turn_id": null,
+        "change_sequence": null,
+        "agent_run_id": "usdr_lead_2f619d_5199821c0b6845dba0e852167503f696"
+      },
+      "damagedLine": 3,
+      "fileUnchanged": true,
+      "serverWarningLogged": true
+    },
+    "USR-5": {
+      "USR-1": {
+        "recordsBefore": 8,
+        "recordsAfter": 10
+      },
+      "USR-2": {
+        "recordsBefore": 8,
+        "recordsAfter": 10
+      },
+      "USR-3": {
+        "recordsBefore": 8,
+        "recordsAfter": 10
+      },
+      "warningsOnThirdServer": 0
+    }
+  },
+  "setup": {
+    "rootRunId": "usdr_root_2f619d_06c05a97451042c0a5f47072256dba15",
+    "managerRunId": "usdr_manager_2f619d_29a07b4e589e4a9b844c8fc423cccda6",
+    "copies": [
+      {
+        "caseId": "USR-1",
+        "teamRunId": "usdr_marketing_2f619d_a1445693635c45779c972bc2f9df84a4",
+        "address": "/usdr_marketing_2f619d",
+        "coordinator": "usdr_lead_2f619d_f07e94074c9f454fbd440246e4e156a7",
+        "coordinatorAddress": "/usdr_marketing_2f619d/lead",
+        "logPath": "memory/agent_teams/usdr_marketing_2f619d_a1445693635c45779c972bc2f9df84a4/usdr_lead_2f619d_f07e94074c9f454fbd440246e4e156a7/raw_traces_active.jsonl"
+      },
+      {
+        "caseId": "USR-2",
+        "teamRunId": "usdr_marketing_2f619d_3d122310d19a4956bec9ce474ac80330",
+        "address": "/usdr_marketing_2f619d",
+        "coordinator": "usdr_lead_2f619d_410e49dd8b904e53bd00fb1d7c6b44a1",
+        "coordinatorAddress": "/usdr_marketing_2f619d/lead",
+        "logPath": "memory/agent_teams/usdr_marketing_2f619d_3d122310d19a4956bec9ce474ac80330/usdr_lead_2f619d_410e49dd8b904e53bd00fb1d7c6b44a1/raw_traces_active.jsonl"
+      },
+      {
+        "caseId": "USR-3",
+        "teamRunId": "usdr_marketing_2f619d_ac4e55fca47548049d54a525506040b2",
+        "address": "/usdr_marketing_2f619d",
+        "coordinator": "usdr_lead_2f619d_35bcfbbe45904778b3a84b5fee6194d7",
+        "coordinatorAddress": "/usdr_marketing_2f619d/lead",
+        "logPath": "memory/agent_teams/usdr_marketing_2f619d_ac4e55fca47548049d54a525506040b2/usdr_lead_2f619d_35bcfbbe45904778b3a84b5fee6194d7/raw_traces_active.jsonl"
+      },
+      {
+        "caseId": "USR-4",
+        "teamRunId": "usdr_marketing_2f619d_645a345ec99d45309c4b782f1dae5f3b",
+        "address": "/usdr_marketing_2f619d",
+        "coordinator": "usdr_lead_2f619d_5199821c0b6845dba0e852167503f696",
+        "coordinatorAddress": "/usdr_marketing_2f619d/lead",
+        "logPath": "memory/agent_teams/usdr_marketing_2f619d_645a345ec99d45309c4b782f1dae5f3b/usdr_lead_2f619d_5199821c0b6845dba0e852167503f696/raw_traces_active.jsonl"
+      }
+    ],
+    "damage": {
+      "USR-1": {
+        "bytesBefore": 1843,
+        "bytesAfterDamage": 3084,
+        "bytesAdded": 1241,
+        "damagedLine": null,
+        "recordsBefore": 6
+      },
+      "USR-2": {
+        "bytesBefore": 1841,
+        "bytesAfterDamage": 1873,
+        "bytesAdded": 32,
+        "damagedLine": null,
+        "recordsBefore": 6
+      },
+      "USR-3": {
+        "bytesBefore": 1843,
+        "bytesAfterDamage": 1876,
+        "bytesAdded": 33,
+        "damagedLine": null,
+        "recordsBefore": 6
+      },
+      "USR-4": {
+        "bytesBefore": 1841,
+        "bytesAfterDamage": 1841,
+        "bytesAdded": 0,
+        "damagedLine": 3,
+        "recordsBefore": 6
+      }
+    }
+  },
+  "cleanup": {
+    "serversExited": [
+      true,
+      true,
+      true
+    ],
+    "leftoverAgyProcesses": 0,
+    "dataRemoved": true
+  }
+}

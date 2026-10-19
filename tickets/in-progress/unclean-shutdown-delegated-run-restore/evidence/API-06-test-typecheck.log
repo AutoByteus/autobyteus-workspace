@@ -1,0 +1,10 @@
+# Case: API-06 (test-file type check)
+# Command: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.json --noEmit --rootDir .   (tests are in no project type-check gate; `typecheck` covers src only)
+# Commit: f91c9126db
+# Environment: macOS, Node v22.23.1, pnpm 10.28.2; -
+# Date: 2026-10-19
+
+Total errors repo-wide (src + tests, strict index-signature rule): 12009
+Errors in the new E2E file other than TS4111: 0
+TS4111 (index-signature access style) in the new file: 29
+For comparison, TS4111 in task-existing-copy-assignment.e2e.test.ts: 140
