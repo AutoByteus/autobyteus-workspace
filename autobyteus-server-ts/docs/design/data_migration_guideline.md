@@ -158,16 +158,22 @@ that ordinary evolution is absorbed by the reader.
 A rollback means reverting the merge and releasing the older code again (see
 `RELEASE.md`, "Rollback"). Users keep their data as the newer build left it.
 
-- **Applies only to migrations.** A migration converts every user's existing
-  data in place, so the older build meets converted data it cannot undo. For a
-  release with a migration, decide one of two outcomes in the design:
-  - the older build can still read the converted data;
-  - rolling back past this release is not supported, and the release notes say
-    so.
-- **Not needed for ordinary writer changes.** Changing what new code writes
-  touches only data saved after the upgrade. Do not keep fields, dual writes or
-  old-format writers for older builds. After a rollback, the older build may
-  ignore files written in the newer shape.
+- **A release with a migration normally cannot be rolled back.** The migration
+  converts every user's existing data in place, and the code moves forward with
+  it, so an older build usually meets data it was never written for. Do not
+  engineer rollback support: making older builds read converted data would need
+  old code that predicts future formats, or kept copies of the original data.
+  Instead:
+  - the design checks whether the older build happens to work with the
+    converted data unchanged, for example when the migration only added data the
+    older build ignores;
+  - the release notes say whether rolling back is possible;
+  - when it is not, a problem in the release is fixed forward, with a newer
+    release, not by reverting it.
+- **Ordinary writer changes need nothing for rollback.** Changing what new code
+  writes touches only data saved after the upgrade. Do not keep fields, dual
+  writes or old-format writers for older builds. After a rollback, the older
+  build may ignore files written in the newer shape.
 
 ## 5. Operating Assumptions and Reachability
 

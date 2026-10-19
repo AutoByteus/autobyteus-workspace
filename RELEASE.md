@@ -148,15 +148,18 @@ release. Record it as one.
   downgrade. Turning beta updates off waits for the next newer stable.
 - `:beta` and `:latest` on Docker Hub only move forward. Docker users pin an
   earlier version tag to go back.
-- Data compatibility matters only when the release includes an app-data
-  migration that converts existing user data. Then the build you roll back to
-  must still be able to read the converted data, or the release notes must say
-  that rolling back past this release is not supported. See
+- A release with an app-data migration converts users' existing data, so it
+  normally cannot be rolled back. Code moves forward with the data: do not add
+  code to make older builds read converted data. The release notes say whether
+  rolling back is possible. It is possible only when the older build is checked
+  and happens to work with the converted data unchanged, for example when the
+  migration only added data the older build ignores. Otherwise fix problems
+  forward with a newer release instead of reverting. See
   `autobyteus-server-ts/docs/design/data_migration_guideline.md`, section 4,
   "Rolling back after a migration".
-- Other changes to what new code writes need no rollback compatibility. A
-  release may rename or drop stored fields without keeping fields, dual writes
-  or old-format writers for older builds.
+- Other changes need no rollback compatibility either. A release may rename or
+  drop stored fields without keeping fields, dual writes or old-format writers
+  for older builds.
 
 ## Deployment
 
