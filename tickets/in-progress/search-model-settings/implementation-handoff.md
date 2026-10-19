@@ -4,12 +4,12 @@
 
 - Ticket: `search-model-settings` (Project Task `autobyteus-146`, follow-up FU-1 of `autobyteus-71`).
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings`, `codex/search-model-settings`, base `origin/personal` @ `8d40ba3b6c`.
-- Requirements: `requirements-doc.md` at `SR-004` (DEC-009, DEC-010).
-- Design: `design-spec.md` at `SR-004` (DS-001…DS-006, Final File Responsibility Mapping, Change Sequence 1–7, G1–G6); `architecture-design-handoff.md`; `investigation-notes.md`; `solution-revision-record.md`.
-- Architecture review: `design-review-report.md` (ARCH-REV-002, Pass); `architecture-review-revision-record.md`.
+- Requirements: `requirements-doc.md` at `SR-005` (DEC-009, DEC-010, DEC-011 → REQ-010 / AC-014).
+- Design: `design-spec.md` at `SR-005` (G7 added) (DS-001…DS-006, Final File Responsibility Mapping, Change Sequence 1–7, G1–G6); `architecture-design-handoff.md`; `investigation-notes.md`; `solution-revision-record.md`.
+- Architecture review: `design-review-report.md` (ARCH-REV-002, then ARCH-REV-003 Pass after code review CRR-001); `architecture-review-revision-record.md`.
 - Behavior-defining supplement: approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md` (design `4e4ac06`) with VIS-001…VIS-021.
 - Classification carried: task size **Medium**, architectural risk **High** (unchanged; see Routing Classification).
-- Commits: `9c73c22672` (server: embedding layer, search service, GraphQL, server tests, docs), `8469d4bcf5` (web sub-section, web tests, browser probe, QR-001 load check, docs), `56cb7be36a` (server E2E: Advanced setting → Active · Not downloaded), then the ticket-folder commit with this handoff and the evidence. Implementation round: **IR-001**.
+- Commits: `9c73c22672` (server: embedding layer, search service, GraphQL, server tests, docs), `8469d4bcf5` (web sub-section, web tests, browser probe, QR-001 load check, docs), `56cb7be36a` (server E2E: Advanced setting → Active · Not downloaded), then the ticket-folder commit with this handoff and the evidence. Implementation round **IR-001**; rework round **IR-002** (`d2bcb95d3a`, see § IR-002 below).
 
 ## Current Implementation Summary
 
@@ -70,7 +70,7 @@ Web: `pages/settings.vue`, `components/settings/ServerSettingsManager.vue`, `com
 ### Implementation decisions within the design (for the reviewer)
 
 1. **Localization file.** The spec names `settings.ts`; it would pass 500 lines (G6), so the 70 `settings.search.*` keys live in a new `embeddingSettings.ts` per locale, registered like `memorySyncSettings.ts`. Same keys and copy as the spec, except: language labels are keyed by catalog language code (`languagesValue.en` / `.multilingual`) instead of per model id (catalog-driven, per the spec's Data boundary); the reference's `settings.search.reasons.*` keys are not used (reasons are server-provided); the link text "Hugging Face" is a key (`sourceName`, same in both locales) because the literal audit rejects it in a template.
-2. **Action error line.** The spec has no surface for a refused or failed action (the UI hides refused actions, so this is rare: races, network loss). The panel shows the server's message in a quiet red `role="alert"` line above the cards (`embedding-action-error`), cleared by the next action. Flagged in case Product prefers otherwise.
+2. **Action error line.** Now approved as built: REQ-010 / AC-014 (DEC-011, SR-005). A refused or failed action shows the server's message in a red `role="alert"` line above the cards (`embedding-action-error`), cleared by the next action.
 3. **Late listener replay.** The new model-management test found that a preparation joining a running download missed the bytes already reported (the active row showed 0 bytes until the next chunk). `EmbeddingModelDownloads.ensure` now replays the current progress to a joining listener (only when bytes have arrived, so a verify-only "loading" stays loading).
 4. **Waiting copy.** A `WAITING` Project shows "Waiting for the model…" whenever the active model is not Ready, else "Waiting to start…".
 5. **Rebuild on Ready · 0 Tasks** is hidden (DEC-010: no actions).
@@ -149,6 +149,29 @@ Owned downstream: the scenarios above, the Docker run, and a re-run of the probe
 ## Follow-ups (not fixed here)
 
 - If QR-001 is tight on target hardware: cache Task fingerprints per Project (Project store reads dominate).
+
+## IR-002 (CRR-001 → SR-005 / ARCH-REV-003, design G7)
+
+- Trigger: `/software_engineering_team/architecture_reviewer`, ARCH-REV-003 (Pass) after code review CRR-001 (CR-001 Local Fix, CR-002 Requirement Gap decided as DEC-011).
+- Commit: `d2bcb95d3a`.
+- Changes:
+  - CR-001: removed `EmbeddingIndex.modelStatus()` and the types `EmbeddingModelState` / `EmbeddingModelStatus`, and `EmbeddingModelDownloads.isRunning()`. Their assertions now go through `modelsStatus()` (`activeDisplay`: the switch test, with a two-model catalog, and the embed-failure test), `progress()` (downloads test).
+  - R-10: `docs/modules/embeddings.md` no longer shows `modelStatus()`; the `modelsStatus()` lines describe the active model's state.
+  - REQ-010 / AC-014: the action error line kept as built; the web spec now also checks `role="alert"`, an unreachable-node failure, and that the next action clears it; web `docs/settings.md` states the rule.
+  - C-06 (optional, done): `EmbeddingModelFiles.download` calls the cancel at once when the signal was already aborted before its listener was added, so a Cancel at a file boundary does not fetch the next file.
+- Classification recheck: unchanged (Medium / High); cleanup within the design, no new owner or behavior beyond REQ-010.
+
+### Checks Run (IR-002)
+
+| Check ID | What | Commit Tested | Environment | Code It Exercises | Evidence Files | Result / Look For |
+| --- | --- | --- | --- | --- | --- | --- |
+| IMP-09 | Server typecheck | `d2bcb95d3a` | macOS arm64, node 22 | all server `src` | `evidence/implementation/IMP-09-ir002-server-typecheck.log` | Pass (exit 0) |
+| IMP-10 | Server unit suite | `d2bcb95d3a` | macOS arm64, node 22 | whole server incl. changed embedding tests | `evidence/implementation/IMP-10-ir002-server-unit-suite.log`, `IMP-10b-ir002-intermittent-rerun.log` | 6,060 passed, 7 skipped, **1 failed**: `native-compaction-terminal-drain.test.ts` (agent-execution, outside this change: no diff from the base in its source or test; the same intermittent test reported in autobyteus-71; it passed in IR-001's IMP-02). Isolated reruns: 5/5 pass (IMP-10b) |
+| IMP-11 | Server GraphQL E2E (embedding settings, search, model unavailable) | `d2bcb95d3a` | macOS arm64, node 22, Studio HTTP | resolvers over the changed index | `evidence/implementation/IMP-11-ir002-server-graphql-e2e.log` | Pass: 3 files, 9 tests |
+| IMP-12 | Web settings components and settings page tests (incl. AC-014) | `d2bcb95d3a` | macOS arm64, node 22 | Embedding panel, Server Settings, settings page | `evidence/implementation/IMP-12-ir002-web-embedding-and-settings-tests.log` | Pass: 44 files, 253 tests |
+| IMP-13 | No references left to the removed code | `d2bcb95d3a` | — | server `src`/`tests`/`docs`, web | `evidence/implementation/IMP-13-ir002-dead-code-grep.log` | Pass: no references left |
+
+Not rerun in IR-002, and why: the full web suite, guards and the browser probe (no web source changed; only a web test and a doc); the QR-001 load check (status reads unchanged; API/E2E measures it on target environments, C-07).
 
 ## Packaging, Licensing And Final Local Results
 

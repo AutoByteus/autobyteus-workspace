@@ -2,21 +2,21 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/tickets/in-progress/search-model-settings/requirements-doc.md` (SR-004, Approved: the SR-002 baseline, where DEC-005 and the UI were decided by the user via Product, plus DEC-009/DEC-010, which the Solution Designer decided within the direction; user informed 2026-10-19)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/tickets/in-progress/search-model-settings/requirements-doc.md` (SR-005, Approved: the SR-004 basis plus DEC-011 / REQ-010 / AC-014 (Solution Designer within the direction, user informed); SR-004 = the SR-002 baseline, where DEC-005 and the UI were decided by the user via Product, plus DEC-009/DEC-010, which the Solution Designer decided within the direction; user informed 2026-10-19)
 - Upstream Investigation Notes: `.../investigation-notes.md`
-- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-004)
-- Reviewed Design Spec: `.../design-spec.md` (SR-004; incl. "Architecture Review Resolution (ARCH-REV-001 → SR-004)")
+- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-005)
+- Reviewed Design Spec: `.../design-spec.md` (SR-005: G7; the rest unchanged from SR-004, incl. "Architecture Review Resolution (ARCH-REV-001 → SR-004)")
 - Supplemental Task Artifacts Reviewed:
   - the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md` (design `4e4ac06`): State Behavior, Journeys, TR-001…TR-020, Data/Contract/Mock Boundaries, Implementation Fidelity Boundary, D-1…D-5;
   - `product-design-request.md` (history);
   - `architecture-design-handoff.md`.
-- Relevant Solution Revision IDs: SR-002, SR-003 (design round 1), SR-004 (requirement gap decisions plus the design revision answering ARCH-REV-001)
+- Relevant Solution Revision IDs: SR-002, SR-003, SR-004, SR-005 (code review CRR-001: DEC-011 + G7)
 - Architecture Review Revision Record: `.../architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: Solution Designer re-review request for SR-004 (2026-10-19)
-- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, Fail: AR-001…AR-004)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: Solution Designer narrow re-review request for SR-005, which answers code review CRR-001 (CR-001 `Local Fix`, CR-002 `Requirement Gap`), 2026-10-19. Scope: REQ-010 / DEC-011 / AC-014 and G7
+- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, Pass); round 1 (`ARCH-REV-001`, Fail)
+- Latest Authoritative Round: 3
 - Current-State Evidence Basis: worktree `codex/search-model-settings` @ `8d40ba3b6c` (only the ticket folder is uncommitted). Read:
   - `autobyteus-server-ts/src/embeddings/embedding-index.ts`: `activeModel()` switch side effects; `prepareModel`; `retryModel()` only resets to `idle`; `readinessOf` maps every non-ready, non-downloading phase, including `idle`, to `preparing/loading`; `removeOtherModels`;
   - `collection-indexing-job.ts`, `store/embedding-vector-store.ts` (`read` loads vectors), `catalog/embedding-model-catalog.ts` (`languages` `["en"]` / `["multilingual"]`; the LEAF-IR description says "About 23 MB");
@@ -246,47 +246,34 @@
 
 None. The round 1 gap (MP-002) is resolved by DEC-009 / AC-011.
 
+## Round 3 Basis And Code Evidence (SR-005)
+
+- Code: `codex/search-model-settings` @ `e48806b035` (implementation IR-001).
+  - `EmbeddingSettingsPanel.vue` L27: `role="alert"` red line `embedding-action-error`, with its web test.
+  - `EmbeddingIndex.modelStatus()` and the types `EmbeddingModelState` / `EmbeddingModelStatus` (`embedding-index.ts` L35–36, L129), and `EmbeddingModelDownloads.isRunning()` (L79), are called only by their own tests (`embedding-index.test.ts` L111, L135; `embedding-model-downloads.test.ts` L44, L48).
+  - `grep` over the server `src`/`tests` and the web finds no production caller. The other `isRunning()` hits belong to unrelated classes.
+- **REQ-010 / DEC-011 / AC-014:**
+  - The gap is the one the code reviewer named (CR-002): the approved UI spec gives a failed or refused action no surface.
+  - It is reachable through a supported user action whose request fails: the connection drops mid-click, or the server refuses a racing action such as Cancel just as a download completes (`EMBEDDING_DOWNLOAD_NOT_CANCELLABLE`).
+  - The Solution Designer decided it within the direction, following the DEC-009 precedent: options and reasoning recorded, user informed. This technical review does not reopen that decision.
+  - The decision keeps each existing failure surface (Download failed, Unavailable, the panel load error). It uses the spec's existing error treatment, adds no component and changes no contract: the server's message is already the error message of the GraphQL mutation.
+- **G7:**
+  - The dead-code removal is within the ticket: dead code in touched files, Core Principle 7.
+  - Its evidence holds, and its tests move to the live status surfaces (`activeDisplay`, `fileState()`, `progress()`).
+  - The optional `signal.aborted` check after adding the listener is a bounded refinement of DS-002. It doesn't change REQ-002, which already holds (code review C-06).
+- No change to architecture, boundaries, interfaces, persistence or classification. The round 2 structural verdicts stand.
+
 ## Review Decision
 
-`Pass`. The behavior basis (SR-004) is confirmed, AR-001…AR-004 are resolved in the current design spec, and no in-scope machinery depends on an unsupported premise. The design is ready for implementation.
+`Pass`. The SR-005 delta is coherent with the approved basis and the design. The rework (CR-001, kept error line) can proceed to implementation.
 
 ## Findings
 
-None open. Round 2 verification (details in `ARCH-REV-002`):
-
-- **AR-001 — Resolved.**
-  - Terminology § "Active model display state" derives the shown state from the internal phase and the files:
-    - `unavailable` → Unavailable plus Retry;
-    - a running `downloading`/`loading` → Preparing with progress;
-    - `idle`/`ready` with all files → Ready;
-    - `idle` without all files → Not downloaded.
-  - "Nothing else maps to Preparing."
-  - A restart test (AC-013) and the G3 spy test keep the status read-only, with no `activeModel()` call.
-- **AR-002 — Resolved by an approved requirement decision.**
-  - DEC-009 (SR-004): "Active · Not downloaded" plus Download → `prepareActiveModel()` (preparing, no Cancel, per D-2). Index now and Index all also prepare first (REQ-005).
-  - AC-011 covers a fresh data root and an Advanced switch.
-  - The Solution Designer approved it within the direction, with the options recorded; the user was informed.
-- **AR-003 — Resolved.**
-  - DS-006: `retryEmbeddingModel` → `retryModel()` → `prepareActiveModel()`, for Settings and the board alike.
-  - The board's Retry outcome is unchanged; it now restarts at once.
-  - AC-012 covers it.
-- **AR-004 — Resolved.**
-  - Two root fields with one owner each: `embeddingModelsStatus` (`embeddings.ts` → `EmbeddingIndex`) and `projectTaskIndexes` (`project-task-search.ts` → `ProjectTaskSearchService`), fetched in one web document.
-  - The dependency rules are updated.
-- **R-1…R-7 — applied:**
-  - R-1: poll 2 s while work runs, else 10 s; QR-001 measured at 20 × 1,000;
-  - R-2: `collectionStatus` without `activeModel()`, fingerprints only, active-model jobs only;
-  - R-3: `EmbeddingModelDownloads` is the one flight owner, and `prepareModel` uses `downloads.ensure(def, {cancellable: false})`;
-  - R-4: `.part` handling;
-  - R-5: DEC-010;
-  - R-6: `downloadModel(activeId)` = `prepareActiveModel()`;
-  - R-7: concurrent jobs acknowledged.
+None open. AR-001…AR-004 remain resolved (ARCH-REV-002). Round 3 verification is above and in `ARCH-REV-003`.
 
 ## Classification
 
-N/A — `Pass`.
-
-Ticket scope (`references/ticket-scope.md`): no prerequisite or follow-up.
+N/A — `Pass`. Ticket scope: CR-001 and the error line belong to this ticket. No prerequisite or follow-up.
 
 ## Recommended Recipient
 
@@ -294,16 +281,16 @@ Ticket scope (`references/ticket-scope.md`): no prerequisite or follow-up.
 
 ## Residual Risks
 
-- **R-8 — Interface row consistency (implementation note).** The `EmbeddingIndex.modelsStatus()` interface row still shows `readiness?: EmbeddingReadiness`, while the GraphQL row adds `activeDisplay` and Terminology defines the derivation. Implement the GraphQL `activeDisplay` from the Terminology table, as the one active-state field the web reads.
-- **R-9 — An active model with a running flight in `EmbeddingModelDownloads`.** Example: a model downloading ahead becomes active through Advanced or an env file (REQ-009) before the index has observed the switch. Its display should be Preparing with that flight's progress, not "Not downloaded". Derive "actually running" from the flight owner as well as the internal phase.
-- **RSK-001 — Status cost:** measure QR-001 at 20 × 1,000. The escalation trigger stays binding.
-- **RSK-002 — Cancel during rename:** the abort is checked before the rename.
-- **RSK-003 — Proxies** (`autobyteus-168`).
-- **ASM-001 — Disk use** for kept models, with a visible Remove.
-- The design's escalation triggers stay binding.
+- **R-10 — Docs reference to removed code (implementation note).** `autobyteus-server-ts/docs/modules/embeddings.md` L43 still shows `index.modelStatus(); // {activeModelId, state, reason?}`. G7 removes that method, so update the doc line in the same rework (describe `modelsStatus()`), or the docs point at code that no longer exists.
+- **R-11 — One alert line for every action.** The next action clears it (REQ-010). A failure from an action on one row, for example Remove, appears above the cards, not on that row. That is as decided.
+- Carried forward:
+  - R-8 and R-9 (implemented per code review: `activeDisplay`, the flight-aware display);
+  - RSK-001 / code review C-07: the QR-001 margin is 626 ms median at 20 × 1,000; measure in API/E2E on Docker;
+  - RSK-002, RSK-003, ASM-001;
+  - the design's escalation triggers.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. MP-001…MP-003 are addressed by AR-001 (display-state table), DEC-009 (AC-011) and DS-006 (AC-012). MP-004 is handled per R-4.
-- Notes: round 2 checked AR-001…AR-004 and the R-1…R-7 changes against the SR-004 design spec, requirements and revision record. The round 1 verdicts for unaffected sections stand.
+- Material-Premise Gate: `Pass`. The CR-002 trigger is a supported user action whose request fails, so it is reachable, and the response is the approved REQ-010. MP-001…MP-004 are as in round 2.
+- Notes: a narrow round-3 review of REQ-010 / DEC-011 / AC-014 and G7 against the SR-005 artifacts and the code at `e48806b035`.

@@ -96,3 +96,18 @@
 - 2026-10-19: `/software_engineering_team/architecture_reviewer` reported **Pass**, ARCH-REV-002, on SR-004. AR-001…AR-004 are resolved and nothing is open.
 - Non-blocking implementation notes R-8 and R-9 are in `design-review-report.md`.
 - The reviewer delivered the primary handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer does not repeat it.
+
+### SR-005 — Code review CRR-001: DEC-011 (action error line)
+
+- Trigger: `/software_engineering_team/code_reviewer` (run `code_reviewer_cbd4eb1d7fd64728ac4114c14a22416d`), CRR-001 Fail on IR-001 (`8d40ba3b6c..e48806b035`):
+  - CR-002 `Requirement Gap`: the implementer's action error line has no approved UI state;
+  - CR-001 `Local Fix`: dead code.
+- Decision: **DEC-011**, approve the action error line as built (new REQ-010, AC-014). A gap the approved design left; it reuses the spec's existing error treatment and is the same kind as DEC-009. Approved by the Solution Designer within the direction; the user was informed in the Solution Designer conversation, 2026-10-19.
+- Design: guidance G7 (keep the line; CR-001 removal; the optional abort check). No architectural change. Classification unchanged (Medium / High).
+- Next action: the handoff rules, then the rework (CR-001), a targeted code review, then API/E2E.
+
+### Review receipt — ARCH-REV-003 (informational, no new SR round)
+
+- 2026-10-19: `/software_engineering_team/architecture_reviewer` reported **Pass**, ARCH-REV-003, on SR-005 (REQ-010 / DEC-011 / AC-014 and G7), with no new findings.
+- Implementation note R-10 (`docs/modules/embeddings.md` still references `modelStatus()`) went to the implementation engineer.
+- The reviewer delivered the primary handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer does not repeat it.

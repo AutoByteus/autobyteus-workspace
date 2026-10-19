@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer pass, ARCH-REV-002 (`design-review-report.md`) | N/A | `Initial Baseline` | SR-004 (requirements and design), ARCH-REV-002 | Implemented (commits `9c73c22672`, `8469d4bcf5`, `56cb7be36a`); local checks in `implementation-handoff.md` § Checks Run; ready for code review |
+| IR-002 | Architecture reviewer pass ARCH-REV-003 after code review CRR-001 (`code-review-report.md`, round 1) | CR-001, CR-002 (→ DEC-011, REQ-010, AC-014), R-10, C-06 | `Local Fix` (CR-001) + approved Requirement Gap (CR-002) | SR-005, ARCH-REV-003, CRR-001 | Dead code removed; action error line kept and tested for AC-014; doc updated; early-cancel check added; back to code review |
 
 ## Revision Entries
 
@@ -32,3 +33,19 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Changed files or areas: `implementation-handoff.md` § Key Files Or Areas.
 - Local validation and result: `implementation-handoff.md` § Checks Run (evidence under `evidence/implementation/`).
 - Downstream handoff: `/software_engineering_team/code_reviewer` (Medium / High).
+
+### IR-002 — CR-001 cleanup and REQ-010 / AC-014 (design G7)
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `design-review-report.md` (ARCH-REV-003, Pass), after `code-review-report.md` (CRR-001, round 1).
+- Triggering finding IDs: CR-001 (Local Fix), CR-002 (Requirement Gap, decided as DEC-011 → REQ-010 / AC-014), R-10, C-06 (optional).
+- Classification: `Local Fix` for CR-001; CR-002 resolved upstream and verified here.
+- Prior authoritative result: IR-001 at `e48806b035`.
+- Current authoritative result: `d2bcb95d3a` plus the ticket-folder commit recording this round.
+- Related solution revision IDs: SR-005
+- Related architecture-review revision IDs: ARCH-REV-003
+- Related code-review revision IDs: CRR-001
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Implementation delta: removed `EmbeddingIndex.modelStatus()`, `EmbeddingModelState`, `EmbeddingModelStatus`, `EmbeddingModelDownloads.isRunning()`; moved their test assertions to `modelsStatus().activeDisplay` and `progress()`; server doc R-10; AC-014 web test; web doc line for REQ-010; early-abort check in `EmbeddingModelFiles.download`.
+- Local validation and result: `implementation-handoff.md` § IR-002 → Checks Run (IR-002).
+- Downstream handoff: `/software_engineering_team/code_reviewer`.

@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004` (design revised after ARCH-REV-001; SR-003 first round) on the approved SR-004 requirements
+- Current solution revision ID: `SR-005` (DEC-011 integrated after code review CRR-001; SR-004 after ARCH-REV-001; SR-003 first round) on the approved SR-005 requirements
 - Approved requirements baseline: `requirements-doc.md` at `SR-004` (SR-002 + DEC-009/DEC-010 gap decisions), approved by the Solution Designer within the direction. DEC-005 and the whole visible design were decided and confirmed by the user through Product Design ("done", 2026-10-19).
 - Behavior-defining supplements: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md` (design `4e4ac06`, integration `cb384e3`) with VIS-001…VIS-021. Normative except its stated illustrative content and mock mechanisms (spec § Implementation Fidelity Boundary).
 - Design status: `Ready`
@@ -305,3 +305,7 @@ Extend the embedding layer's boundary with model management (status, download ah
 - G4: Remove is refused (error code) for the active model and a downloading model. The UI hides it anyway.
 - G5: Index all chooses Projects from a fresh `indexStatus()` on the server, not from client state.
 - G6: Keep each file under 500 lines.
+- G7 (SR-005, code review CRR-001):
+  - Keep the action error line as built (REQ-010, DEC-011).
+  - Remove the dead code from CR-001: `EmbeddingIndex.modelStatus()`, `EmbeddingModelState` / `EmbeddingModelStatus`, `EmbeddingModelDownloads.isRunning()`. Move their assertions to `modelsStatus().activeDisplay`, `fileState()` and `progress()`.
+  - Optional: check `signal.aborted` right after adding the abort listener, so a Cancel at a file boundary doesn't fetch the next file in full.

@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Solution Designer "Architecture Design Complete" (2026-10-19) | SR-002, SR-003 | N/A | Fail (Design Impact + Requirement Gap) | AR-001, AR-002, AR-003, AR-004 |
 | ARCH-REV-002 | Round 2 / Solution Designer re-review request for SR-004 (2026-10-19) | SR-004 | Fail | Pass | AR-001…AR-004 (resolved) |
+| ARCH-REV-003 | Round 3 / Solution Designer narrow re-review request for SR-005 (code review CRR-001, 2026-10-19) | SR-005 | Pass | Pass | None new |
 
 ## Revision Entries
 
@@ -65,3 +66,28 @@ None
 - Material classification changes: none (Medium / High)
 - Recommended recipient: `/software_engineering_team/implementation_engineer` (primary), `/software_engineering_team/solution_designer` (informational)
 - Remaining risks or uncertainty: R-8, R-9; RSK-001…RSK-003; ASM-001.
+
+### ARCH-REV-003 — Narrow re-review of SR-005 (code review CRR-001)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/tickets/in-progress/search-model-settings/design-review-report.md`
+- Review round and trigger: round 3. The Solution Designer requested re-review of SR-005, which answers code review CRR-001: CR-001 `Local Fix` (dead code) and CR-002 `Requirement Gap` (the action error line).
+- Triggering role, report path, and finding IDs: Solution Designer; `code-review-report.md` (CRR-001: CR-001, CR-002); `requirements-doc.md` REQ-010 / DEC-011 / AC-014; `design-spec.md` G7
+- Relevant solution revision IDs: SR-005
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - The basis moves to SR-005. DEC-011 was decided by the Solution Designer within the direction, with the user informed, like DEC-009.
+  - G7's dead-code evidence was verified at `e48806b035`.
+  - No structural change.
+  - New implementation notes: R-10 (update `docs/modules/embeddings.md` L43, which references the removed `modelStatus()`) and R-11 (one shared alert line, as decided).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-004 | Resolved (ARCH-REV-002) | Resolved (unaffected) | SR-004, SR-005 | SR-005 changes only REQ-010 / DEC-011 / AC-014 and G7 |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (Medium / High)
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary), `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty: R-10, R-11; RSK-001 (QR-001 margin, code review C-07), RSK-002, RSK-003, ASM-001.

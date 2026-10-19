@@ -4,7 +4,7 @@
 - From: Solution Designer, 2026-10-19
 - Result: `Architecture Design Complete`, `task_size=Medium`, `architectural_risk=High`
 - Route: handoff rule "Large or High → independent architecture review" → `/software_engineering_team/architecture_reviewer`
-- Revisions: requirements `SR-004` (approved), design `SR-004` (revised after ARCH-REV-001; SR-003 first round)
+- Revisions: requirements `SR-005` (approved), design `SR-005`
 
 ## Request And Approval
 
@@ -59,6 +59,13 @@ Re-review scope: AR-001…AR-004 and the UI-basis change from AR-002. See "Archi
 - **AR-003:** Retry = `retryModel()` then `prepareActiveModel()` (spine DS-006). AC-012.
 - **AR-004:** `embeddingModelsStatus` (embeddings) and `projectTaskIndexes` (Project search), fetched in one document.
 - **R-1…R-7:** applied; see the table.
+
+## SR-005 Revision (code review CRR-001)
+
+- **CR-002 (`Requirement Gap`):** decided as DEC-011. Keep the implementer's action error line (REQ-010, AC-014).
+- **CR-001 (`Local Fix`, implementation-owned):** remove the dead code listed in design G7.
+- **Unchanged:** architecture, boundaries and contracts. Re-review scope: REQ-010 / DEC-011 and G7 only.
+- **Code:** `codex/search-model-settings` @ `e48806b035`.
 
 ## Expected Next Action
 

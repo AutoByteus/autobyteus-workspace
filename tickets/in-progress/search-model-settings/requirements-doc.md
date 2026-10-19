@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Approved` (SR-004)
-- Current solution revision ID: `SR-004`
+- Status: `Approved` (SR-005)
+- Current solution revision ID: `SR-005`
 - Package identifier: `search-model-settings`
 - Request / ticket: Project Task `autobyteus-146` (`project_task_d5a33e15-bdd7-4fc1-b7d4-5154661ff922`), follow-up FU-1 of `autobyteus-71`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's request of 2026-10-18
 - Requirements owner: Solution Designer
 - Date: 2026-10-19
 - Approved by and reference: `Solution Designer within the direction (user informed)`. The only decision that needed the user (DEC-005) and the visible design were decided by the **user** in the Product Team conversation: the user directed placement under Server Settings named Embedding, technical wording, a cleaner look, only the necessary facts, the source said once and much less text, and then approved the design with "done" on 2026-10-19 (`/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md`, § Status And User Confirmation). The Solution Designer's decisions DEC-001…DEC-004 and DEC-006…DEC-008 were presented to the user on 2026-10-19 without objection. The user was informed in the Solution Designer conversation on 2026-10-19.
-- Exact approved requirements baseline / solution revision: this document at `SR-004` (SR-002 + the SR-004 gap decisions DEC-009, DEC-010, approved by the Solution Designer within the direction; user informed 2026-10-19)
+- Exact approved requirements baseline / solution revision: this document at `SR-005` (SR-002 + the gap decisions DEC-009, DEC-010 (SR-004) and DEC-011 (SR-005), approved by the Solution Designer within the direction; user informed 2026-10-19)
 - Behavior-defining supplements: the Product-owned approved UI/UX specification `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md` (Status `Approved`; design revision `4e4ac06`, integration `cb384e3` on the design repository's `personal`) and its final visual references VIS-001…VIS-021. User-approved 2026-10-19.
 
 ## Problem And Desired Outcome
@@ -86,6 +86,7 @@ None. The architecture review ARCH-REV-001 found no prerequisite; all of its fin
 | REQ-004 | **Use this model** opens a confirmation dialog. Title "Use <model>?"; lead "Every Project has to be indexed again with this model."; one bullet "Until then, meaning search finds exact matches only."; one line with the download size ("Download: <size> MB, not downloaded yet" or "Download: Already downloaded"); Cancel and Use this model. Confirming writes `AUTOBYTEUS_EMBEDDING_MODEL`. The switch takes effect immediately: the new model is prepared (downloaded if needed; the active model's own preparing download has no Cancel), every Project shows Not indexed for it, and indexing follows the existing behavior or the user's Index actions (REQ-006). | BEH-001 | Must | UC-003 | Task; DEC-002, DEC-008 (narrowed by the user via Product) |
 | REQ-005 | The **Project indexes** card ("Using <model>.") lists every Project alphabetically with its state for the active model: **Not indexed**, **Waiting…** (for the model or its turn), **Indexing N of M** (for Needs update: N of K changed), **Ready · M Tasks**, **Needs update · K changed**, or **Unavailable** (when the model is unavailable: every Project, no actions; Retry is on the model). A Project with no Tasks shows **Ready · 0 Tasks** with no actions (DEC-010). While the active model is Not downloaded, Projects show their state for that model (normally Not indexed), and Index now / Index all stay available; they prepare the model first. Filter tabs: All · Needs indexing · Indexing · Ready, with counts. A name filter appears above 8 Projects. Empty: "No Projects yet." The panel has its own loading and load-error (Retry) states. Opening or refreshing the section never starts a download or indexing. | BEH-005 | Must | UC-004 | Task; UI/UX spec D-3, D-5 |
 | REQ-006 | Per Project: **Index now** (Not indexed and Needs update; indexes missing or changed Tasks) and **Rebuild** (Ready and Needs update; inline confirmation "Rebuild “<name>” from scratch? Meaning search is exact-only until it finishes."; drops the Project's vectors for the active model and indexes every Task). **Index all Projects** (the only filled button) runs Index now for every Not indexed or Needs update Project; disabled when there is none or the model is unavailable. Each action prepares the model if needed and shows progress. The board keeps working meanwhile. | BEH-005 | Must | UC-004 | Task; DEC-006, DEC-007; UI/UX spec D-1, D-4 |
+| REQ-010 | When a Settings action (Download, Cancel, Remove, Use this model, Retry, Index now, Rebuild, Index all Projects) fails or is refused by the server, the panel shows the server's message in one red `role="alert"` line above the cards. The next action clears it. Failures with their own approved surface keep it: Download failed (on the row), Unavailable (on the Active row), and the panel load error. | — | Must | A reachable failure must not be silent (code review CR-002) | DEC-011 |
 | REQ-007 | Progress (downloads, indexing) updates live while the section is open, at least every 2 seconds. Leaving the page doesn't stop the work. Returning shows the current state. | BEH-003, BEH-005 | Must | Usability | — |
 | REQ-008 | Everything is server-side. The section works for the node the window is connected to (desktop, Docker, self-hosted) with no Electron dependency. Model choice, downloads and indexing are node state, not browser state. | all | Must | autobyteus-71 REQ-012 | User 2026-10-18 |
 | REQ-009 | The raw setting stays authoritative and consistent. A value set in Advanced or an env file shows as the active model in the Search section. An invalid value is rejected as today. | BEH-001 | Must | One source of truth | — |
@@ -107,6 +108,7 @@ None. The architecture review ARCH-REV-001 found no prerequisite; all of its fin
 | AC-011 | REQ-001, REQ-005 | SCN-001 | Fresh data root (no model on disk), or the setting switched in Advanced to a model that isn't downloaded; open Embedding | The Active row shows "Active · Not downloaded" with Download; nothing downloads until Download (or Index now / Index all) is pressed; then "Preparing…" with progress, no Cancel | — | Server + web tests; real-app run on a fresh data root |
 | AC-012 | REQ-001, REQ-006 | SCN-003 | Active model Unavailable; press Retry in Embedding | Preparation restarts at once (Preparing…), without a board search | Fails again → Unavailable + reason | Server test + real-app run |
 | AC-013 | REQ-001 | SCN-001 | Server restart with the active model on disk; open Embedding | "Active · Ready" (no "Preparing…" while nothing runs) | — | Server test (restart) |
+| AC-014 | REQ-010 | — | An action is refused (e.g. Cancel just as a download completes) or the node can't be reached | A red line with the server's message appears above the cards; the next action clears it | — | Web component test |
 
 ## Relevant Scenarios And Journeys
 
@@ -193,6 +195,7 @@ Settings ▸ Search
 | DEC-008 | Confirm a switch? | A switch re-indexes everything and temporarily limits meaning search | Confirm / none | Confirm. The cost shown is the **download size only**, as the user narrowed it via Product. | Solution Designer; content by the user | Decided |
 | DEC-009 | How does Settings show an **active model that isn't downloaded** and isn't preparing? Examples: a fresh install before the first search (default Granite), or a model chosen in Advanced or an env file (REQ-009). | A gap the approved UI design left (architecture review AR-002). Opening must not start a download (QR-002). | (a) "Active · Not downloaded" with **Download**, which starts preparing the active model; (b) show Ready (untrue); (c) start downloading on open (violates QR-002) | **(a).** It is truthful and uses only the spec's existing pieces: the "Not downloaded" status, the quiet "Download" button and the Active row tint. Once started, the download is the active model's preparing download (Preparing…; no Cancel, as in D-2). A gap the approved design left, so the Solution Designer decides it; no new visual component. | Solution Designer (user informed) | Decided |
 | DEC-010 | What state does a Project with no Tasks show? | An empty collection (review R-5) | Ready · 0 Tasks / Not indexed / hidden | **Ready · 0 Tasks**, no actions. Nothing needs indexing, and the Project stays visible as in the spec's list. | Solution Designer | Decided |
+| DEC-011 | How does Settings report a failed or refused action? | A gap the approved UI spec left. Reachable: the connection can drop mid-click, or a race can refuse an action (e.g. `EMBEDDING_DOWNLOAD_NOT_CANCELLABLE` when Cancel is pressed just as a download finishes). Code review CR-002. | (a) The implementer's red `role="alert"` line above the cards with the server's message, cleared by the next action; (b) silent; (c) ask Product | **(a).** Silence hides real failures. (a) reuses only the spec's existing error treatment (red text, `role="alert"`, the server's message) and adds no component. It's the same kind of gap as DEC-009, so the Solution Designer decides it. | Solution Designer (user informed) | Decided |
 
 ## Traceability
 
@@ -207,6 +210,7 @@ Settings ▸ Search
 | REQ-007 | UC-002, UC-004 | BEH-003, BEH-005 | AC-007 | SCN-002, SCN-004 |
 | REQ-008 | all | all | AC-008 | all |
 | REQ-009 | UC-003 | BEH-001 | AC-009 | SCN-001 |
+| REQ-010 | UC-002, UC-003, UC-004 | BEH-003, BEH-005 | AC-014 | SCN-002…SCN-004 |
 
 ## Architecture Phase Input
 
