@@ -1,0 +1,14 @@
+{
+  "run_id": "work_journal_claude_f4d87114_dddc_4681_a5c2_3a98_5e23edbb0e8f472181d3ac4f32a6351d",
+  "runtime_kind": "claude_agent_sdk",
+  "renderer_revision": 1,
+  "files": [
+    {
+      "journal_file": "work_journal_active.md",
+      "source_file": "raw_traces_active.jsonl",
+      "source_record_count": 11,
+      "state": "open",
+      "content_sha256": "d6beb98816ed358d9fed3d44971b253fb657cdcabc22c2e6aa1d7d3230bd3d9d"
+    }
+  ]
+}

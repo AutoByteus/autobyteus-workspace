@@ -1,0 +1,537 @@
+# API-03a (run 3): env -i PATH HOME=$HOME TMPDIR USER LOGNAME RUN_LMSTUDIO_E2E=1 WORK_JOURNAL_E2E_EVIDENCE_DIR=<evidence>/API-03-live pnpm exec vitest run tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts --no-watch
+# commit c13882fa41 + uncommitted new test file; LM Studio qwen/qwen3.6-35b-a3b; 2026-10-19T04:35:37Z
+# Runs 1-2 failed on a test defect: a multi-line message starts on the line after 'User:'; assertion fixed
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent Definition created successfully with ID: work-journal-autobyteus-3fdc9dd6-7b40-4290-a5d4-45d9f910adc7
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/workspace-autobyteus
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/workspace-autobyteus.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Created and registered workspace ID: agent_ws_d3204e67c5aecddabf205f07cbf59f417b0c94a7295c57e0cf64d40edf9f5f2a
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/workspace-autobyteus
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/workspace-autobyteus.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Reusing registered workspace ID: agent_ws_d3204e67c5aecddabf205f07cbf59f417b0c94a7295c57e0cf64d40edf9f5f2a
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/media
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentRuntimeState initialized for agent_id 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' with config: 'work-journal-autobyteus-3fdc9dd6-7b40-4290-a5d4-45d9f910adc7'.
+AgentWorker initialized for agent_id 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'.
+Registered AgentContext for agent_id 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'. Context registered.
+Agent facade initialized for agent_id 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'.
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' created and stored successfully.
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' requesting runtime to start.
+AgentRuntime for 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Starting worker.
+AgentWorker 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Starting...
+AgentWorker 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' asyncRun(): Starting.
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Runtime init completed (event store initialized).
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Runtime init completed (status deriver initialized).
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Runtime init completed (AgentEventInbox initialized).
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' to become idle (timeout: 30s)...
+AgentEventStream (ID: f5c901ee-a028-4d3f-a721-93ef8fae4de5) initialized for agent_id 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'. Subscribed to notifier.
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Bootstrapper starting direct lifecycle execution.
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Executing SystemPromptProcessingStep.
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': No configured skills. Skipping skill catalog.
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Final processed system prompt configured and captured. Trace ID: rt_1792384546325_a7caa810-4f86-44ae-9a07-1a2ce1800708. Final length: 4413.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentWorker 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' has become idle.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentEventStream (ID: f5c901ee-a028-4d3f-a721-93ef8fae4de5) for 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentEventStream (ID: 27de3758-d1cf-4237-a817-39e531afebce) initialized for agent_id 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent websocket attached for run work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10
+Created agent session b51e3270-4660-4284-906e-b060b9fb714f for run work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10
+Agent WebSocket connected: session=b51e3270-4660-4284-906e-b060b9fb714f, run=work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent run 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': UserInputContextBuildingProcessor completed. Final content length: 277
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent run 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': UserInputContextBuildingProcessor completed. Final content length: 46
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_failed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent run 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': UserInputContextBuildingProcessor completed. Final content length: 317
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent run 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': UserInputContextBuildingProcessor completed. Final content length: 47
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent run 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': UserInputContextBuildingProcessor completed. Final content length: 48
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent run 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': UserInputContextBuildingProcessor completed. Final content length: 47
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+Agent run 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Removing agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'. Attempting graceful shutdown.
+Agent 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentWorker 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Stop requested.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Closed agent session b51e3270-4660-4284-906e-b060b9fb714f
+Agent WebSocket disconnected: b51e3270-4660-4284-906e-b060b9fb714f
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentExternalEventNotifier (NotifierID: 5f2a65aa-5bab-4d73-83a8-40b38e30efdb, AgentID: work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' asyncRun() loop has finished.
+AgentWorker 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentWorker 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Shutdown resource cleanup completed successfully.
+AgentWorker 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Unregistered AgentContext for agent_id 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10'.
+AgentRuntime for 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': Context unregistered.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentRuntime for 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10' stop() method completed.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentEventStream (ID: 27de3758-d1cf-4237-a817-39e531afebce) for 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentEventStream (ID: 27de3758-d1cf-4237-a817-39e531afebce) for 'work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Agent Definition with ID work-journal-autobyteus-3fdc9dd6-7b40-4290-a5d4-45d9f910adc7 deleted successfully.
+
+ ✓ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts (5 tests | 4 skipped) 24525ms
+     ✓ AutoByteus (native): raw records on disk at TURN_COMPLETED; journal current  24277ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  06:35:37
+   Duration  32.70s (transform 5.82s, setup 27ms, import 7.65s, tests 24.53s, environment 0ms)
+
+# Exit status: 0

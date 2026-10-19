@@ -1,0 +1,633 @@
+# API-06: env -i PATH HOME=$HOME TMPDIR USER LOGNAME RUN_LMSTUDIO_E2E=1 WORK_JOURNAL_E2E_EVIDENCE_DIR=<evidence>/API-06 pnpm exec vitest run tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts --no-watch
+# commit c13882fa41 + uncommitted test files; LM Studio qwen/qwen3.6-35b-a3b; 2026-10-19T04:47:32Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent Definition created successfully with ID: journal-skill-target-8db4d0b3-40f5-4caf-a411-b76bc09abf1e
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/workspace.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Created and registered workspace ID: agent_ws_240d6bae9e2dd80f7ae665516b1e28b1f7a1210e7a2c00fe57250406583019bb
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/workspace.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Reusing registered workspace ID: agent_ws_240d6bae9e2dd80f7ae665516b1e28b1f7a1210e7a2c00fe57250406583019bb
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/media
+Resolved skill 'journal_probe_554c8cdf' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/skills/journal_probe_554c8cdf
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentRuntimeState initialized for agent_id 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' with config: 'journal-skill-target-8db4d0b3-40f5-4caf-a411-b76bc09abf1e'.
+AgentWorker initialized for agent_id 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'.
+Registered AgentContext for agent_id 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'. Context registered.
+Agent facade initialized for agent_id 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'.
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' created and stored successfully.
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' requesting runtime to start.
+AgentRuntime for 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Starting worker.
+AgentWorker 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Starting...
+AgentWorker 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' asyncRun(): Starting.
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Runtime init completed (event store initialized).
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Runtime init completed (status deriver initialized).
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Runtime init completed (AgentEventInbox initialized).
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' to become idle (timeout: 30s)...
+AgentEventStream (ID: d5946ab2-56f8-4902-be8d-8fff2e231666) initialized for agent_id 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'. Subscribed to notifier.
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Bootstrapper starting direct lifecycle execution.
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Executing SystemPromptProcessingStep.
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Added 1 configured skill catalog entries with paths.
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Final processed system prompt configured and captured. Trace ID: rt_1792385262456_6a2a0139-cc9e-4609-a658-d3b1b6166eae. Final length: 5126.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentWorker 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' has become idle.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentEventStream (ID: d5946ab2-56f8-4902-be8d-8fff2e231666) for 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentEventStream (ID: 91a08cd2-94f9-459e-87ea-1834825bf382) initialized for agent_id 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent websocket attached for run journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc
+Created agent session 05658429-bf96-4a5c-969d-6f35d8632679 for run journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc
+Agent WebSocket connected: session=05658429-bf96-4a5c-969d-6f35d8632679, run=journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent run 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': UserInputContextBuildingProcessor completed. Final content length: 72
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent run 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': UserInputContextBuildingProcessor completed. Final content length: 46
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent run 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/workspace.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Reusing registered workspace ID: agent_ws_240d6bae9e2dd80f7ae665516b1e28b1f7a1210e7a2c00fe57250406583019bb
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/workspace.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Reusing registered workspace ID: agent_ws_240d6bae9e2dd80f7ae665516b1e28b1f7a1210e7a2c00fe57250406583019bb
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/media
+Resolved skill 'retrospective-skill-improver' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentRuntimeState initialized for agent_id 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': LLM instance 'LMStudioLLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' with config: 'Retrospective Skill Improver'.
+AgentWorker initialized for agent_id 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'.
+Registered AgentContext for agent_id 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'. Context registered.
+Agent facade initialized for agent_id 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'.
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' created and stored successfully.
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' requesting runtime to start.
+AgentRuntime for 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Starting worker.
+AgentWorker 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Starting...
+AgentWorker 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' asyncRun(): Starting.
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Runtime init completed (event store initialized).
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Runtime init completed (status deriver initialized).
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Runtime init completed (AgentEventInbox initialized).
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' to become idle (timeout: 30s)...
+AgentEventStream (ID: 89e43aed-764f-4541-b58f-d64f14a305ca) initialized for agent_id 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'. Subscribed to notifier.
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Bootstrapper starting direct lifecycle execution.
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Executing SystemPromptProcessingStep.
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Added 1 configured skill catalog entries with paths.
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Final processed system prompt configured and captured. Trace ID: rt_1792385278917_9070ed02-fed5-4f99-9040-cf2d49ae740a. Final length: 4933.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentWorker 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' has become idle.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentEventStream (ID: 89e43aed-764f-4541-b58f-d64f14a305ca) for 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentEventStream (ID: d317b5a8-a542-4738-a0cf-ad888efac6c3) initialized for agent_id 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent run 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': UserInputContextBuildingProcessor completed. Final content length: 1277
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+LlmStreamingResponseHandler finalized 3 tool invocations.
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+Agent run 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': UserInputContextBuildingProcessor completed. Final content length: 81
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio) > renders the journal at start, lists it in the improver's trigger, and the improver reads it
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Removing agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'. Attempting graceful shutdown.
+Agent 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentWorker 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Stop requested.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: d2632dbc-dd5e-4807-8964-fbaf02b0ecfd, AgentID: journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' asyncRun() loop has finished.
+AgentWorker 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentWorker 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Shutdown resource cleanup completed successfully.
+AgentWorker 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Unregistered AgentContext for agent_id 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc'.
+AgentRuntime for 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': Context unregistered.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentRuntime for 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc' stop() method completed.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentEventStream (ID: 91a08cd2-94f9-459e-87ea-1834825bf382) for 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Closed agent session 05658429-bf96-4a5c-969d-6f35d8632679
+Agent WebSocket disconnected: 05658429-bf96-4a5c-969d-6f35d8632679
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentEventStream (ID: 91a08cd2-94f9-459e-87ea-1834825bf382) for 'journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Agent run 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': UserInputContextBuildingProcessor completed. Final content length: 53
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Agent run 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Removing agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'. Attempting graceful shutdown.
+Agent 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentWorker 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Stop requested.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentExternalEventNotifier (NotifierID: 174c32c0-ca7c-44cc-a5c6-6908a6f3abed, AgentID: retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' asyncRun() loop has finished.
+AgentWorker 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentWorker 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Shutdown resource cleanup completed successfully.
+AgentWorker 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+Unregistered AgentContext for agent_id 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29'.
+AgentRuntime for 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': Context unregistered.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentRuntime for 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29' stop() method completed.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentEventStream (ID: d317b5a8-a542-4738-a0cf-ad888efac6c3) for 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts > Skill Improvement uses the Work Journal (live, LM Studio)
+AgentEventStream (ID: d317b5a8-a542-4738-a0cf-ad888efac6c3) for 'retrospective_skill_improver_1dd8ecd98cf9466aaa509a123f5d5b29': close() called. Unsubscribing all listeners and signaling.
+
+ ✓ tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts (1 test) 142001ms
+     ✓ renders the journal at start, lists it in the improver's trigger, and the improver reads it  36587ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  06:47:33
+   Duration  150.92s (transform 6.20s, setup 24ms, import 8.40s, tests 142.00s, environment 0ms)
+
+# Exit status: 0

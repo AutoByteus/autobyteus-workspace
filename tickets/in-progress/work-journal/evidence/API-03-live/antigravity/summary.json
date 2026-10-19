@@ -1,0 +1,18 @@
+{
+  "runId": "work_journal_antigravity_8c53ea43_4167_4cf9_816c_a7675af1351f4942934bc50e55c13390",
+  "runtimeKind": "antigravity_cli",
+  "model": "gemini-3.8-flash-low",
+  "toolCalls": [
+    "run_command",
+    "view_file",
+    "write_to_file",
+    "replace_file_content"
+  ],
+  "toolResults": 4,
+  "toolEntries": [
+    "Command: ls (in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-3llbJ6/workspace-antigravity) → ok",
+    "Command: cat /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-3llbJ6/workspace-antigravity/notes.txt → ok (content not recorded: 4 lines, 34 bytes) [↗](../raw_traces_active.jsonl#rt_1792384922709_e3c9148a-7b52-4b84-aadb-a4095650f670)",
+    "Write file: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-3llbJ6/workspace-antigravity/out.txt (1 lines) → ok",
+    "Edit file: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-3llbJ6/workspace-antigravity/out.txt (+1 −1) → ok"
+  ]
+}
