@@ -573,29 +573,17 @@ pnpm test:e2e
 This uses the existing test-owned Vitest setup and test runtime. Do not use a
 development database for tests.
 
-Useful real-provider checks against the same project test runtime:
+Useful real-provider checks against the same project test runtime, with keys
+from the [test vault](../TESTING.md#test-vault) (no import into the test
+database):
 
 ```bash
 # Report configured, missing, or unavailable capabilities without invoking them
-pnpm test:e2e:real:preflight
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real:preflight
 
 # Execute every currently configured capability
-pnpm test:e2e:real
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real
 ```
-
-To preview an explicit import into that test runtime, pass its canonical
-absolute SQLite file URL to the same generic importer:
-
-```bash
-pnpm secrets:import -- \
-  --source /absolute/path/to/assignments \
-  --database-url file:/absolute/path/to/autobyteus-server-ts/db/test.db \
-  --dry-run
-```
-
-There is no test-import wrapper. The importer does not read `.env.test` or the
-generated runtime `.env` and does not inherit a target from parent
-`DATABASE_URL`.
 
 Unavailable or unconfigured external capabilities are skipped and reported
 explicitly; they must not be represented as passed.
