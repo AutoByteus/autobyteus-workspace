@@ -40,6 +40,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`) | `pnpm test:e2e`, or one file with `vitest run` as above |
 | Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
 | Core library tests | `autobyteus-ts` runtime, tools, LLM layer | `pnpm -C autobyteus-ts exec vitest run tests/unit` |
+| Core library MCP integration | The MCP client against the repository's tiny real MCP servers (Python via `uv`, else Node), stdio and HTTP; an opt-in check against a real `uv` server folder | `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp`; the opt-in gate is in the file header |
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` |
 | Browser probes | Renderer journeys in headless Chrome, against fixture pages or a probe-owned real stack | `pnpm -C autobyteus-web test:e2e:<name>` (sources in `autobyteus-web/tests/e2e/`) |
 | Packaged Electron harness | Packaged launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |

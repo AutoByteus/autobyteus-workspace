@@ -1,0 +1,48 @@
+# Case: API-08 mutation check of the rewritten tests: product src edited (stdio loader env: config.env -> env: undefined; HTTP loader requestInit headers -> {}), folder run, both files restored with git checkout (git status of autobyteus-ts/src clean)
+# Command: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp
+# Commit: 8d7edc2827 (test code baaee3a150; later commits: TESTING.md row and ticket files only)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2, uv 0.10.2; <L> = test-owned scratch $TMPDIR/mcp189-api (removed after the round)
+# Date: 2026-10-19
+
+Reading:
+- The env/cwd case fails.
+- The close and hang cases fail too: the pid-file path also travels in the env.
+- The with-token case fails, and the wrong-token case fails because the server sees "missing" instead of "wrong".
+- Side effect: with env dropped, uv run lost UV_PROJECT_ENVIRONMENT and created autobyteus-ts/tests/fixtures/mcp-test-server/.venv (33 MB, self-ignored by uv). It was removed after the run (see report observation O-1).
+
+     × lists and calls tools with the token, which the server saw on every request
+     ✓ fails to connect without a token 
+     × fails to connect with a wrong token
+     × lists and calls tools with the token, which the server saw on every request
+     ✓ fails to connect without a token
+     × fails to connect with a wrong token
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts (6 tests)
+     ✓ registers the server tools with prefix and argument schema 
+     ✓ executes a registered tool through the registry 
+     ✓ previews tools without registering them 
+     ✓ executes a registered tool through the registry 
+     ✓ lists the tools and calls echo, add, fail and slow 
+     × delivers the configured env and cwd to the server
+     × ends the server process when a connected server is closed
+     ✓ fails to connect, with an error, when the server exits at start 
+     × does not connect to a server that hangs at start, and closing it ends its process
+     ✓ lists the tools and calls echo, add, fail and slow 
+     × delivers the configured env and cwd to the server
+     × ends the server process when a connected server is closed
+     ✓ fails to connect, with an error, when the server exits at start
+     × does not connect to a server that hangs at start, and closing it ends its process
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected 'missing' to be 'wrong' // Object.is equality
+Expected: "wrong"
+Received: "missing"
+AssertionError: expected { value: null, …(1) } to deeply equal { value: 'test-dummy', …(1) }
+- Expected
++ Received
+-   "value": "test-dummy",
++   "value": null,
+AssertionError: expected { value: null, …(1) } to deeply equal { value: 'test-dummy', …(1) }
+- Expected
++ Received
+-   "value": "test-dummy",
++   "value": null,
+      Tests  10 failed | 12 passed | 1 skipped (23)

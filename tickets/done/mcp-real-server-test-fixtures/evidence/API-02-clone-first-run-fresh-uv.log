@@ -1,0 +1,91 @@
+# Case: API-02 main-checkout layout: test-owned local clone (not a worktree; .git directory; no autobyteus_mcps beside it), fresh uv environment and cache (first run, network)
+# Command: git clone --no-hardlinks --branch codex/mcp-real-server-test-fixtures <worktree> <L>/clone/autobyteus-workspace; ELECTRON_SKIP_BINARY_DOWNLOAD=1 pnpm install --frozen-lockfile --filter autobyteus-ts...; env -i PATH HOME=<temp> TMPDIR UV_PROJECT_ENVIRONMENT=<L>/uv-fresh/venv UV_CACHE_DIR=<L>/uv-fresh/cache pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp  (clone ignored set before/after: unchanged; venv 27 MB, cache 27 MB, both outside the clone)
+# Commit: 8d7edc2827 (test code baaee3a150; later commits: TESTING.md row and ticket files only)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2, uv 0.10.2; <L> = test-owned scratch $TMPDIR/mcp189-api (removed after the round)
+# Date: 2026-10-19
+
+== api02.log ==
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 <L>/clone/autobyteus-workspace/autobyteus-ts
+
+ ↓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts (1 test | 1 skipped)
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (<L>/uv-fresh/venv)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/http-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (<L>/uv-fresh/venv)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts
+[mcp-test-server] python: used: python via uv (<L>/uv-fresh/venv)
+[mcp-test-server] node: used: node v22.23.1
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+Tool 'fail' failed: 'Error executing tool fail: dummy failure'
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts (6 tests) 4105ms
+     ✓ lists and calls tools with the token, which the server saw on every request  1875ms
+     ✓ fails to connect without a token  867ms
+     ✓ fails to connect with a wrong token  858ms
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts (6 tests) 4430ms
+     ✓ registers the server tools with prefix and argument schema  1624ms
+     ✓ executes a registered tool through the registry  1448ms
+     ✓ previews tools without registering them  742ms
+     ✓ executes a registered tool through the registry  319ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts (10 tests) 15799ms
+     ✓ lists the tools and calls echo, add, fail and slow  1963ms
+     ✓ delivers the configured env and cwd to the server  714ms
+     ✓ ends the server process when a connected server is closed  713ms
+     ✓ fails to connect, with an error, when the server exits at start  710ms
+     ✓ does not connect to a server that hangs at start, and closing it ends its process  5621ms
+     ✓ lists the tools and calls echo, add, fail and slow  471ms
+     ✓ does not connect to a server that hangs at start, and closing it ends its process  5163ms
+
+ Test Files  3 passed | 1 skipped (4)
+      Tests  22 passed | 1 skipped (23)
+   Start at  15:09:58
+   Duration  17.09s (transform 284ms, setup 67ms, import 3.60s, tests 24.33s, environment 0ms)
+
+
