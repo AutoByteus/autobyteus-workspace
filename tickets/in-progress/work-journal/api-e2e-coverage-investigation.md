@@ -187,3 +187,12 @@ Proceed `Yes`; durable coverage added `Yes`; reroute `No`.
 - **Grok: removed from live coverage by user decision.** The one allowed Grok run returned HTTP 429 `subscription:free-usage-exhausted` (free account). The user then decided to keep Grok out of this ticket's live testing; the Grok case was removed from the live suite. Grok rendering stays covered by the reused unit translations on recorded Grok traces (IMP-02).
 - **AutoByteus: DeepSeek added as provider (user direction).** The live suite and the skill-improvement E2E accept `RUN_DEEPSEEK_E2E=1` with `DEEPSEEK_API_KEY` (default model `deepseek-v4-flash`), or `RUN_LMSTUDIO_E2E=1` as before. The key is taken from the user's server-data `.env` into the test's environment only, and saved into the test database's encrypted vault by the existing helper `initializeLiveRuntimeSecretVaultFromEnvironment` (TESTING.md: credentials in the vault, never by editing `.env`). It never appears in logs or evidence (checked by search).
 - **API-02 found a stale existing test** (AOML-1, above) and one suite-order flake (AE-006, untouched code; passes alone).
+
+## Round 2 (CRR-004, IR-003)
+
+- **Delta since round 1** (b105dc9b1b → f0ff3a8671):
+  - docs only from IR-003;
+  - the merge b0c81c8f20 of origin/personal, which changes Codex backend code.
+- **Plan:** rerun API-03c (Codex live), the only case whose exercised code changed; reuse every other case.
+- **Durable coverage:** no change.
+

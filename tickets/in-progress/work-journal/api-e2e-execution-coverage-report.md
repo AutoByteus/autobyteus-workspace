@@ -3,7 +3,7 @@
 ## Execution Round Meta
 
 - Ticket folder: tickets/in-progress/work-journal/ (worktree /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal, branch codex/work-journal)
-- Revision: `API-REV-001`, round 1. Trigger: code_reviewer CRR-002 Pass.
+- Revision: `API-REV-002`, round 2 (round 1: `API-REV-001`). Trigger: code_reviewer CRR-004 Pass (IR-003, docs only).
 - Plan: api-e2e-coverage-investigation.md (including "Round 1 Amendments"). Progress log: api-e2e-test-progress.md.
 - **Tested build:**
   - code at c13882fa41 (product code last changed at 8f5bb563b1; later commits are ticket docs only), plus this round's test files;
@@ -11,6 +11,11 @@
   - claude 2.1.302, codex-cli 0.163.0, agy 1.4.2;
   - DeepSeek `deepseek-v4-flash` and LM Studio `qwen/qwen3.6-35b-a3b` (AutoByteus runtime).
 - Classification carried: Large / High, reviewed route.
+- **Round 2 tested build:** f0ff3a8671.
+  - Since b105dc9b1b (round 1) it adds the docs (b9d04998a4, f0ff3a8671) and the merge b0c81c8f20 of origin/personal.
+  - The merge changes Codex backend code: codex-thread.ts, codex-thread-manager.ts, segment-turn admission and rejection accounts, and their tests.
+  - The journal, skill-improvement, migration and other runtime code are unchanged.
+  - Round 2 reran only the Codex live case (API-03c). All other round 1 cases are reused: the files they exercise are unchanged.
 
 ## Routing Classification
 
@@ -58,7 +63,7 @@
 | API-02 | Server E2E suite on the build | Pass after diagnosis | API-02-*.log |
 | API-03a | AutoByteus live, LM Studio | Pass (run 3) | API-03a-autobyteus.log |
 | API-03b / API-04 | Claude live with `/compact` | Pass, twice (the second on the final file) | API-03b-claude.log, API-03bc-claude-codex-final.log |
-| API-03c | Codex live | Pass, twice (the second on the final file) | API-03c-codex.log, API-03bc-… |
+| API-03c | Codex live | Pass, twice in round 1 (the second on the final file); Pass in round 2 on the merged HEAD (5 calls = 5 entries, including a failed `sed -i` and its python retry) | API-03c-codex.log, API-03bc-…, API-03c-codex-round2.log, API-03-live-round2/codex/ |
 | API-03d | AGY live (host login) | Pass | API-03d-agy.log |
 | API-03e | Grok live | Not Tested: user decision after the account's 429 | API-03e-grok.log |
 | API-03f | AutoByteus live, DeepSeek (final file) | Pass | API-03f-autobyteus-deepseek.log |
@@ -136,7 +141,7 @@ No product source changed. No tests were removed.
 
 ## Latest Authoritative Result / Delivery Limits
 
-**Pass, 93.5%.**
+**Pass, 93.5% (round 2 unchanged from round 1).** No test code changed in round 2; the CRR-003 test review stands.
 
 Delivery limits:
 - Grok has no live proof in this ticket (user decision; Grok's own rendering is unit-proven);

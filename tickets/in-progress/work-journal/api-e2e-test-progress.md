@@ -33,3 +33,5 @@
 | 2026-10-19 | API-03b/API-03c | Started | — | Claude + Codex rerun on the final test file (shared vault setup and ERROR fail-fast added since) |
 | 2026-10-19 | API-03b/API-03c | Completed | Pass | final file: Claude /compact case 29 s, Codex 13 s |
 | 2026-10-19 | API-03a | Stopped | — | LM Studio final-file rerun stopped by the user before a result; incomplete log removed; superseded by API-03f (DeepSeek, final file) |
+| 2026-10-19 | API-03c | Started | — | round 2 (CRR-004): rerun on f0ff3a8671, which merges origin/personal with Codex backend changes (codex-thread, thread-manager, segment-turn admission) |
+| 2026-10-19 | API-03c | Completed | Pass | round 2 on f0ff3a8671: gpt-5.6-luna, 5 calls = 5 Command entries (a failed macOS sed -i, then a python edit), out.txt == beta |
