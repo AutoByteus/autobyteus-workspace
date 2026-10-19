@@ -234,12 +234,16 @@ try {
     assert(await page.locator('[data-testid="embedding-index-all"]').isDisabled(), 'Index all disabled when nothing needs indexing');
   });
 
-  await kase('EMB-006', 'Needs update after a new Task, Index now, and Rebuild with inline confirmation (REQ-005, REQ-006)', async () => {
+  await kase('EMB-006', 'A new Task is indexed with no search within 10 s (REQ-011, AC-015); Rebuild with inline confirmation (REQ-006)', async () => {
+    const started = Date.now();
     await createTask(node, billing, 'Dunning emails for failed card payments');
-    await waitFor('needs update', async () => (await text(`embedding-project-${billing}-status`)) === 'Needs update · 1 changed', 15000);
-    await shot('VIS-010-needs-update');
-    await click(`embedding-project-${billing}-index`);
-    await waitFor('billing ready again', async () => (await text(`embedding-project-${billing}-status`)) === 'Ready · 4 Tasks', 60000);
+    assert(Date.now() - started < 1000, `the save took ${Date.now() - started} ms`);
+    // The panel polls every 10 s when idle; reopen to read the state at once.
+    await waitFor('billing indexed after the write', async () => {
+      await open();
+      return (await text(`embedding-project-${billing}-status`)) === 'Ready · 4 Tasks';
+    }, 10000);
+    evidence.indexedAfterWriteMs = Date.now() - started;
     await click(`embedding-project-${docs}-rebuild`);
     await page.locator(`[data-testid="embedding-project-${docs}-rebuild-confirmation"]`).waitFor();
     await shot('VIS-009-rebuild-confirmation');
