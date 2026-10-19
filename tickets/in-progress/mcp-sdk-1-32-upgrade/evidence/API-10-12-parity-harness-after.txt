@@ -1,0 +1,466 @@
+# Case: API-10, API-11, API-12 parity harness — after
+# Command: CODEX_HOME=<B>/codex-home pnpm --silent isolated-app start --build (in the after worktree); node <B>/harness/parity-harness.mjs after <backendUrl> <B> <after-worktree SDK 1.32.1 esm dir, the constant test instrument> native,claude,codex,agy,grok
+# Commit: f59055f13f (SDK 1.32.1; ticket record a42c1d02e0)
+# Environment: macOS 26 arm64, node 22, pnpm 10.28.2, uv 0.10.2; <B> = test-owned folder $TMPDIR/mcp-parity-api (removed after the round)
+# Date: 2026-10-19
+
+== isolated-app start result ==
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-59206-2e45",
+    "pid": 8593,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:59207",
+    "graphqlUrl": "http://127.0.0.1:59207/graphql",
+    "controlEndpoint": "http://127.0.0.1:59206",
+    "controlPort": 59206,
+    "serverPort": 59207,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Gd3MfU",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Gd3MfU/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-59206-2e45.log"
+  }
+}
+
+== packaged SDK in the app bundle ==
+1.32.1 (only copy)
+
+== harness progress log ==
+10:10:53 preview VideoAudioServer: 32 tools in 1795 ms
+10:10:55 preview media-downloader: 2 tools in 1781 ms
+10:10:55 preview parity_http: 1 tools in 47 ms
+10:10:55 preview exit_at_start: error in 38 ms
+10:11:55 preview hang_at_start: error in 60008 ms
+10:11:55 import {"success":true,"message":"Import complete. Imported: 5, Failed: 0","importedCount":5,"failedCount":0}
+10:11:56 discover VideoAudioServer: {"ms":565,"success":true,"toolCount":32,"message":"Successfully discovered and registered 32 tools."}
+10:11:57 discover media-downloader: {"ms":565,"success":true,"toolCount":2,"message":"Successfully discovered and registered 2 tools."}
+10:11:57 discover parity_http: {"ms":12,"success":true,"toolCount":1,"message":"Successfully discovered and registered 1 tools."}
+10:11:57 discover exit_at_start: {"ms":45,"success":false,"toolCount":0,"message":"McpError: MCP error -32000: Connection closed"}
+10:12:57 discover hang_at_start: {"ms":60005,"success":false,"toolCount":0,"message":"McpError: MCP error -32001: Request timed out"}
+10:12:57 gateway {"toolCount":35,"listsExternal":[["parity_http_auth_probe",true],["video_editing_get_media_duration",true]],"httpTool":{"isError":false,"text":"MARKER-PARITY-HTTP-AFTER"},"stdioTool":{"isError":false,"text":"62.314667"}}
+10:13:25 matrix native: {"projectTools":"pass","externalStdio":"pass","externalHttp":"pass"} turn 28107 ms
+10:13:35 matrix claude: {"projectTools":"pass","externalStdio":"pass","externalHttp":"pass"} turn 8281 ms
+10:13:38 matrix codex: {"projectTools":"fail","externalStdio":"fail","externalHttp":"fail"} turn 2507 ms
+10:13:58 matrix agy: {"projectTools":"pass","externalStdio":"pass","externalHttp":"pass"} turn 14043 ms
+10:14:32 matrix grok: {"projectTools":"pass","externalStdio":"pass","externalHttp":"pass"} turn 28428 ms
+10:14:32 done
+exit 0
+
+== harness result JSON (value-free) ==
+{
+  "side": "after",
+  "backend": "http://127.0.0.1:59207",
+  "startedAt": "2026-10-19T10:10:52.147Z",
+  "servers": {
+    "VideoAudioServer": {
+      "preview": {
+        "ms": 1795,
+        "toolCount": 32,
+        "tools": [
+          "video_editing_get_media_duration",
+          "video_editing_convert_audio_properties",
+          "video_editing_convert_video_properties",
+          "video_editing_change_aspect_ratio",
+          "video_editing_convert_audio_format",
+          "video_editing_set_audio_bitrate",
+          "video_editing_set_audio_sample_rate",
+          "video_editing_set_audio_channels",
+          "video_editing_convert_video_format",
+          "video_editing_set_video_resolution",
+          "video_editing_set_video_codec",
+          "video_editing_set_video_bitrate",
+          "video_editing_set_video_frame_rate",
+          "video_editing_set_video_audio_track_codec",
+          "video_editing_set_video_audio_track_bitrate",
+          "video_editing_set_video_audio_track_sample_rate",
+          "video_editing_set_video_audio_track_channels",
+          "video_editing_trim_video",
+          "video_editing_concatenate_videos",
+          "video_editing_concatenate_audios",
+          "video_editing_change_video_speed",
+          "video_editing_remove_silence",
+          "video_editing_extract_audio_from_video",
+          "video_editing_replace_audio_track",
+          "video_editing_add_subtitles",
+          "video_editing_add_text_overlay",
+          "video_editing_add_image_overlay",
+          "video_editing_create_video_from_image_and_audio",
+          "video_editing_extract_frame_from_video",
+          "video_editing_add_b_roll",
+          "video_editing_add_basic_transitions",
+          "video_editing_health_check"
+        ],
+        "error": null
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 565,
+        "success": true,
+        "toolCount": 32,
+        "message": "Successfully discovered and registered 32 tools."
+      }
+    },
+    "media-downloader": {
+      "preview": {
+        "ms": 1781,
+        "toolCount": 2,
+        "tools": [
+          "download_audio",
+          "download_video"
+        ],
+        "error": null
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 565,
+        "success": true,
+        "toolCount": 2,
+        "message": "Successfully discovered and registered 2 tools."
+      }
+    },
+    "parity_http": {
+      "preview": {
+        "ms": 47,
+        "toolCount": 1,
+        "tools": [
+          "parity_http_auth_probe"
+        ],
+        "error": null
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 12,
+        "success": true,
+        "toolCount": 1,
+        "message": "Successfully discovered and registered 1 tools."
+      }
+    },
+    "exit_at_start": {
+      "preview": {
+        "ms": 38,
+        "toolCount": null,
+        "tools": null,
+        "error": "Failed to preview tools for MCP server: McpError: MCP error -32000: Connection closed"
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 45,
+        "success": false,
+        "toolCount": 0,
+        "message": "McpError: MCP error -32000: Connection closed"
+      }
+    },
+    "hang_at_start": {
+      "preview": {
+        "ms": 60008,
+        "toolCount": null,
+        "tools": null,
+        "error": "Failed to preview tools for MCP server: McpError: MCP error -32001: Request timed out"
+      },
+      "responsiveness": {
+        "healthDuringHang": {
+          "ok": true,
+          "value": 200,
+          "ms": 3
+        },
+        "graphqlDuringHang": {
+          "ok": true,
+          "value": "ok",
+          "ms": 2
+        }
+      },
+      "discover": {
+        "ms": 60005,
+        "success": false,
+        "toolCount": 0,
+        "message": "McpError: MCP error -32001: Request timed out"
+      }
+    }
+  },
+  "matrix": {
+    "native": {
+      "runtime": "native",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "turnMs": 28107,
+      "turnCompleted": true,
+      "errors": [],
+      "toolEvents": [
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "create_task"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "update_task"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "video_editing_get_media_duration"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "parity_http_auth_probe"
+        }
+      ],
+      "projectTools": {
+        "createTaskSucceeded": true,
+        "updateTaskSucceeded": true,
+        "taskSaved": true,
+        "taskStatus": "DONE"
+      },
+      "externalStdio": {
+        "succeeded": true,
+        "durationOnWire": true
+      },
+      "externalHttp": {
+        "succeeded": true,
+        "markerReceived": true,
+        "remoteToolCalls": [
+          "expected"
+        ]
+      },
+      "dummyOnWire": false,
+      "columns": {
+        "projectTools": "pass",
+        "externalStdio": "pass",
+        "externalHttp": "pass"
+      },
+      "status": "run"
+    },
+    "claude": {
+      "runtime": "claude",
+      "model": "haiku",
+      "turnMs": 8281,
+      "turnCompleted": true,
+      "errors": [],
+      "toolEvents": [
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "create_task"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "update_task"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "video_editing_get_media_duration"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "parity_http_auth_probe"
+        }
+      ],
+      "projectTools": {
+        "createTaskSucceeded": true,
+        "updateTaskSucceeded": true,
+        "taskSaved": true,
+        "taskStatus": "DONE"
+      },
+      "externalStdio": {
+        "succeeded": true,
+        "durationOnWire": true
+      },
+      "externalHttp": {
+        "succeeded": true,
+        "markerReceived": true,
+        "remoteToolCalls": [
+          "expected"
+        ]
+      },
+      "dummyOnWire": false,
+      "columns": {
+        "projectTools": "pass",
+        "externalStdio": "pass",
+        "externalHttp": "pass"
+      },
+      "status": "run"
+    },
+    "codex": {
+      "runtime": "codex",
+      "model": "gpt-5.6-luna",
+      "turnMs": 2507,
+      "turnCompleted": false,
+      "errors": [
+        "You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Oct 25th, 2026 4:08 AM.",
+        "You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Oct 25th, 2026 4:08 AM."
+      ],
+      "toolEvents": [],
+      "projectTools": {
+        "createTaskSucceeded": false,
+        "updateTaskSucceeded": false,
+        "taskSaved": false,
+        "taskStatus": null
+      },
+      "externalStdio": {
+        "succeeded": false,
+        "durationOnWire": false
+      },
+      "externalHttp": {
+        "succeeded": false,
+        "markerReceived": false,
+        "remoteToolCalls": []
+      },
+      "dummyOnWire": false,
+      "columns": {
+        "projectTools": "fail",
+        "externalStdio": "fail",
+        "externalHttp": "fail"
+      },
+      "status": "run"
+    },
+    "agy": {
+      "runtime": "agy",
+      "model": "gemini-3.8-flash-low",
+      "turnMs": 14043,
+      "turnCompleted": true,
+      "errors": [],
+      "toolEvents": [
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "create_task"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "update_task"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "video_editing_get_media_duration"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "parity_http_auth_probe"
+        }
+      ],
+      "projectTools": {
+        "createTaskSucceeded": true,
+        "updateTaskSucceeded": true,
+        "taskSaved": true,
+        "taskStatus": "DONE"
+      },
+      "externalStdio": {
+        "succeeded": true,
+        "durationOnWire": true
+      },
+      "externalHttp": {
+        "succeeded": true,
+        "markerReceived": true,
+        "remoteToolCalls": [
+          "expected"
+        ]
+      },
+      "dummyOnWire": false,
+      "columns": {
+        "projectTools": "pass",
+        "externalStdio": "pass",
+        "externalHttp": "pass"
+      },
+      "status": "run"
+    },
+    "grok": {
+      "runtime": "grok",
+      "model": "grok-4.7",
+      "turnMs": 28428,
+      "turnCompleted": true,
+      "errors": [],
+      "toolEvents": [
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "search_tool"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "create_task"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "update_task"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "video_editing_get_media_duration"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "parity_http_auth_probe"
+        }
+      ],
+      "projectTools": {
+        "createTaskSucceeded": true,
+        "updateTaskSucceeded": true,
+        "taskSaved": true,
+        "taskStatus": "DONE"
+      },
+      "externalStdio": {
+        "succeeded": true,
+        "durationOnWire": true
+      },
+      "externalHttp": {
+        "succeeded": true,
+        "markerReceived": true,
+        "remoteToolCalls": [
+          "expected"
+        ]
+      },
+      "dummyOnWire": false,
+      "columns": {
+        "projectTools": "pass",
+        "externalStdio": "pass",
+        "externalHttp": "pass"
+      },
+      "status": "run"
+    }
+  },
+  "gateway": {
+    "toolCount": 35,
+    "listsExternal": [
+      [
+        "parity_http_auth_probe",
+        true
+      ],
+      [
+        "video_editing_get_media_duration",
+        true
+      ]
+    ],
+    "httpTool": {
+      "isError": false,
+      "text": "MARKER-PARITY-HTTP-AFTER"
+    },
+    "stdioTool": {
+      "isError": false,
+      "text": "62.314667"
+    }
+  },
+  "notes": [],
+  "health": 200,
+  "import": {
+    "success": true,
+    "message": "Import complete. Imported: 5, Failed: 0",
+    "importedCount": 5,
+    "failedCount": 0
+  },
+  "importUserShape": {
+    "success": false,
+    "message": "Import complete. Imported: 0, Failed: 1",
+    "importedCount": 0,
+    "failedCount": 1
+  },
+  "health_after_servers": 200,
+  "project": {
+    "projectId": "project_a94d3789-ee3f-41f1-9e14-b24ab79a9939",
+    "name": "Parity probe after"
+  },
+  "httpServerObservationsSummary": {
+    "total": 28,
+    "authValues": [
+      "expected"
+    ]
+  },
+  "finishedAt": "2026-10-19T10:14:32.238Z"
+}

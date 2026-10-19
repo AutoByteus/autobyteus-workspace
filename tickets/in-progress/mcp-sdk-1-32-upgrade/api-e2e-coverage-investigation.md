@@ -2,27 +2,75 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `tickets/in-progress/mcp-sdk-1-32-upgrade/requirements-doc.md` (SR-001, Approved)
+- Requirements Doc: `tickets/in-progress/mcp-sdk-1-32-upgrade/requirements-doc.md` (SR-003, Approved; SR-002 additions by the user)
 - Investigation Notes: `tickets/in-progress/mcp-sdk-1-32-upgrade/investigation-notes.md`
 - Solution Revision Record: `tickets/in-progress/mcp-sdk-1-32-upgrade/solution-revision-record.md`
-- Design Spec (required on every route): `tickets/in-progress/mcp-sdk-1-32-upgrade/design-spec.md` (SR-001; Medium / Low)
+- Design Spec (required on every route): `tickets/in-progress/mcp-sdk-1-32-upgrade/design-spec.md` (SR-001 Medium / Low; SR-002 Addendum and SR-003 section: validation only, Small / Low)
+- SR-002 handoff: `tickets/in-progress/mcp-sdk-1-32-upgrade/handoff-sr-002.md`
 - Supplemental Task Artifacts: none. Predecessor baseline: `origin/personal:tickets/done/mcp-http-auth-headers/` (autobyteus-179).
 - Design Review Report: `N/A — not applicable` (direct route)
 - Architecture Review Revision Record: `N/A — not applicable`
-- Implementation Handoff: `tickets/in-progress/mcp-sdk-1-32-upgrade/implementation-handoff.md` (IR-001)
+- Implementation Handoff: `tickets/in-progress/mcp-sdk-1-32-upgrade/implementation-handoff.md` (IR-002, validation only; check 1 done as IMP-SR2-01)
 - Implementation Revision Record: `tickets/in-progress/mcp-sdk-1-32-upgrade/implementation-revision-record.md`
 - Code Review Report / Revision Record: `N/A — not applicable` (direct route)
-- Delivery Revision Record: N/A
+- Delivery Revision Record: `tickets/in-progress/mcp-sdk-1-32-upgrade/delivery-revision-record.md` (DR-001 delivered round 1)
 - API/E2E Revision Record: `tickets/in-progress/mcp-sdk-1-32-upgrade/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: implementation handoff IR-001 (direct route)
-- Prior Investigation Reviewed: none for this ticket. The 179 investigation and report were read for the preserved baseline.
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: implementation handoff IR-002 (validation only), for SR-002 + SR-003: the user's regression request ("Upgrading a library should make things better instead of breaking things"; "the testing should at least make sure the different runtime for different MCP still works")
+- Prior Investigation Reviewed: round 1 below (API-REV-001); its cases stay valid for the round-1 criteria.
 - Latest Authoritative Investigation: this file
 
-Paths are relative to the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade` (branch `codex/mcp-sdk-1-32-upgrade`). Validated commit: `c7f0c18fdc`. Its source is identical to `4923d179c1`: `git diff --name-only 4923d179c1 c7f0c18fdc` outside `tickets/` is empty.
+Round 1 paths are relative to the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade` (branch `codex/mcp-sdk-1-32-upgrade`). Validated commit: `c7f0c18fdc`. Its source is identical to `4923d179c1`: `git diff --name-only 4923d179c1 c7f0c18fdc` outside `tickets/` is empty.
 
-## Current Requirement And Design Basis
+## Round 2 Plan (IR-002; SR-002 + SR-003 parity) — current
+
+Worktrees:
+- **After:** `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity`, branch `codex/mcp-sdk-1-32-upgrade-parity`, product source `f59055f13f`, SDK 1.32.1. Ticket record `a42c1d02e0`.
+- **Before:** `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity-before`, detached `bf3c550c18`, SDK 1.30.0. Test-owned; removed after the round.
+- `git diff --stat bf3c550c18 f59055f13f -- autobyteus-server-ts/src` is empty. The product difference is `autobyteus-ts` (loaders, WebSocket removal) plus the SDK version, so any behavior difference comes from the upgrade.
+
+Basis:
+- REQ-008 / AC-010…AC-012: real-world parity on the user's kind of servers (`uv` stdio), an HTTP server, and servers that exit or hang at start.
+- REQ-009 / AC-013…AC-015: our own endpoints. The code statement is AC-013; `create_task`/`update_task` through Agent Tools MCP from Claude and Codex; a `/mcp/gateway` call of an external tool.
+- REQ-011 / AC-017: runtime × MCP matrix, before and after.
+- REQ-010 safety.
+- AC-016: plain-words report.
+- Any upgrade-caused difference is a defect of this ticket and goes to the failure route.
+
+Surfaces: isolated desktop instances (packaged worktree builds) of both commits, driven only through their public GraphQL, agent WebSocket and `/mcp/gateway`. The renderer is unchanged, so no UI journey is needed.
+
+Real-use facts found during planning:
+- The user's `VideoAudioServer` entry runs `uv --directory <repo>/video-audio-mcp run server.py`. In the user's `autobyteus_mcps`, `server.py` was removed by commit `a947f1a` (folder turned into a CLI), so the user's entry no longer starts on either commit. Pre-existing and outside this ticket. For the parity check, the last server version (`a947f1a^`) is restored read-only with `git archive` into test-owned copies.
+- `media-downloader` comes from `autobyteus_private_mcps/yt-dlp-mcp` (`HEAD`), restored the same way.
+- Each copy gets a fresh `.venv` from its own `uv.lock` (`uv sync --frozen`), the same on both sides (Python `mcp` 1.28.1 and 1.26.0).
+- The isolated instance's embedded server gets only a system-baseline environment. Its runtimes therefore use the host sign-ins under the real HOME: Claude, AGY, Grok. Codex uses a throwaway `CODEX_HOME` (empty `config.toml`, `auth.json` symlinked). `ANTIGRAVITY_CLI_COMMAND` does not pass through, so AGY runs as the real CLI here. The scripted AGY CLI stays the fallback (built-server harness) if the real one is unavailable.
+- The user's own `mcps.json` shape has no `transport_type`. The harness also records how bulk import treats that shape on both commits.
+
+Planned cases (round 2):
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-R10 | AC-010 | core integration tests against the real `pdf_mcp` | Reused | IMP-SR2-01 (both commits) | Ran by implementation on both commits with a test-owned layout |
+| API-R11 | AC-013 | code statement | Reused | investigation notes "SR-002 Investigation" (grep: no SDK import in `autobyteus-server-ts/src`) | Re-verified on both worktrees in API-15 |
+| API-10 | AC-011, AC-012, REQ-010 | isolated instance per commit: GraphQL preview, bulk import, discover of VideoAudioServer, media-downloader, test-owned HTTP server (dummy token), exit-at-start, hang-at-start; responsiveness during the hang | Temporary Probe (harness) | `pnpm --silent isolated-app start --build` per worktree (throwaway `CODEX_HOME`); `node parity-harness.mjs <side> <backendUrl> …` | The before commit cannot carry durable tests; one harness drives both sides identically |
+| API-11 | AC-015 | `/mcp/gateway` → external HTTP tool and external stdio tool (VideoAudioServer `get_media_duration` on a test-owned sample) | Temporary Probe (same harness) | same run | — |
+| API-12 | AC-014, AC-017, AC-011 (agent call) | runtime × {project tools `create_task`+`update_task`, external stdio, external HTTP} for native (LM Studio), Claude, Codex, AGY, Grok | Temporary Probe (same harness) | same run, runtimes `native,claude,codex,agy,grok` | One agent per runtime with all three tool kinds |
+| API-13 | AC-011, AC-012 | stop each instance; orphan check | Journey | `pnpm --silent isolated-app stop <id>`, then `ps` for processes referencing the test-owned folders or the exit/hang commands | No child may outlive the app |
+| API-14 | REQ-010 | user's repositories and data untouched | Journey | `git status` of `autobyteus_mcps` and `autobyteus_private_mcps` against the baseline taken before the round | Safety |
+| API-15 | AC-013 | SDK import check on both commits | Temporary Probe | `grep -rn "@modelcontextprotocol" autobyteus-server-ts/src` in both worktrees | Confirms the code statement on each commit |
+| API-16 | AC-016, AC-009 | plain-words report; dummy-value scan of round-2 evidence | — | report + grep | — |
+| API-17 | AC-014 (Codex), AC-017 (Codex row) | Codex App Server thread's own MCP client → Agent Tools MCP → project and external tools, without a model turn | Temporary Probe | temporary in-process test copied into each worktree, run, removed | Added during execution: the Codex account hit its usage limit on both commits |
+| API-18 | AC-017 going forward | durable gated runtime × MCP matrix suite on the after branch | Durable | `tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts` with each runtime's gate | Added during execution: closes the durable-coverage gap and answers "the testing should at least make sure the different runtime for different MCP still works" |
+
+- Test progress log: `Yes` (rows appended in `api-e2e-test-progress.md`).
+- Durable coverage: the parity spans a commit that cannot carry new tests, so the parity probes are temporary (sources kept in the evidence). For future upgrades, a durable gated runtime × MCP matrix suite is added on the after branch (API-18).
+
+Not tested in round 2 (planned):
+- Calls on `media-downloader` beyond listing, and every SSH, TTS and image server (REQ-010, DEC-005).
+- `streamable_http_mcp_toy` / `wss_mcp_toy` (exist nowhere; see IMP-SR2-01).
+
+## Current Requirement And Design Basis (round 1)
 
 - REQ-001 / AC-001: one `@modelcontextprotocol/sdk@1.32.1` in both packages, with the Claude Agent SDK and GenAI peers on it.
 - REQ-002 / AC-002, AC-003, QR-001:

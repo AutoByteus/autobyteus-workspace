@@ -1,0 +1,290 @@
+# Case: API-17 Codex MCP client direct (no model turn) — after
+# Command: copy <B>/harness/zz-parity-codex-direct-mcp.e2e.test.ts into <worktree>/autobyteus-server-ts/tests/e2e/runtime/; env -i PATH HOME=$HOME USER LOGNAME TMPDIR CODEX_HOME=<B>/codex-home RUN_PARITY_CODEX=1 PARITY_SIDE_DIR=<B>/after PARITY_SAMPLE=<B>/media/parity-sample.mp4 PARITY_EVIDENCE=<json> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts --no-watch; file removed again
+# Commit: f59055f13f (SDK 1.32.1)
+# Environment: in-process studio server (temp data dir), host codex CLI with throwaway CODEX_HOME (auth.json symlink); real HOME
+# Date: 2026-10-19
+
+== result JSON ==
+{
+  "createTask": {
+    "isError": false,
+    "status": "TODO"
+  },
+  "updateTask": {
+    "isError": false,
+    "status": "DONE"
+  },
+  "savedTask": "DONE",
+  "externalStdio": {
+    "isError": false,
+    "text": "62.314667"
+  },
+  "externalHttp": {
+    "isError": false,
+    "text": "MARKER-PARITY-CODEX-HTTP",
+    "remoteToolCalls": [
+      "expected"
+    ]
+  }
+}
+== vitest output ==
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:32400) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/.env
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: VideoAudioServer
+Populating MCP server config cache for the first time...
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+MCP server config cache populated with 0 items.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+In-memory cache: Added new MCP config VideoAudioServer.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Attempting to discover and register tools for server ID: VideoAudioServer
+
+stderr | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Overwriting existing MCP config with server_id 'VideoAudioServer'.
+
+[10/19/26 12:13:18] INFO     Processing request of type            server.py:733
+                             ListToolsRequest                                   
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Successfully registered tool definition: 'video_editing_get_media_duration'
+Successfully registered tool definition: 'video_editing_convert_audio_properties'
+Successfully registered tool definition: 'video_editing_convert_video_properties'
+Successfully registered tool definition: 'video_editing_change_aspect_ratio'
+Successfully registered tool definition: 'video_editing_convert_audio_format'
+Successfully registered tool definition: 'video_editing_set_audio_bitrate'
+Successfully registered tool definition: 'video_editing_set_audio_sample_rate'
+Successfully registered tool definition: 'video_editing_set_audio_channels'
+Successfully registered tool definition: 'video_editing_convert_video_format'
+Successfully registered tool definition: 'video_editing_set_video_resolution'
+Successfully registered tool definition: 'video_editing_set_video_codec'
+Successfully registered tool definition: 'video_editing_set_video_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_frame_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_codec'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_bitrate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_sample_rate'
+Successfully registered tool definition: 'video_editing_set_video_audio_track_channels'
+Successfully registered tool definition: 'video_editing_trim_video'
+Successfully registered tool definition: 'video_editing_concatenate_videos'
+Successfully registered tool definition: 'video_editing_concatenate_audios'
+Successfully registered tool definition: 'video_editing_change_video_speed'
+Successfully registered tool definition: 'video_editing_remove_silence'
+Successfully registered tool definition: 'video_editing_extract_audio_from_video'
+Successfully registered tool definition: 'video_editing_replace_audio_track'
+Successfully registered tool definition: 'video_editing_add_subtitles'
+Successfully registered tool definition: 'video_editing_add_text_overlay'
+Successfully registered tool definition: 'video_editing_add_image_overlay'
+Successfully registered tool definition: 'video_editing_create_video_from_image_and_audio'
+Successfully registered tool definition: 'video_editing_extract_frame_from_video'
+Successfully registered tool definition: 'video_editing_add_b_roll'
+Successfully registered tool definition: 'video_editing_add_basic_transitions'
+Successfully registered tool definition: 'video_editing_health_check'
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Successfully discovered and registered 32 tools for server ID: VideoAudioServer
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Configuring MCP server with ID: parity_http
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+In-memory cache: Added new MCP config parity_http.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Attempting to discover and register tools for server ID: parity_http
+
+stderr | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Overwriting existing MCP config with server_id 'parity_http'.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Successfully registered tool definition: 'parity_http_auth_probe'
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Successfully discovered and registered 1 tools for server ID: parity_http
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Agent Definition created successfully with ID: parity-codex-direct-a2800b
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/workspace.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Created and registered workspace ID: agent_ws_8b0af3978eb09bd19f8e390c4bcbe598cfdeeb98ada80ce199cd1c90fb6198ef
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parity-codex-direct-mztRBg/workspace.
+
+stdout | tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts > Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn) > calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client
+Reusing registered workspace ID: agent_ws_8b0af3978eb09bd19f8e390c4bcbe598cfdeeb98ada80ce199cd1c90fb6198ef
+
+[10/19/26 12:13:19] INFO     Processing request of type            server.py:733
+                             CallToolRequest                                    
+ ✓ tests/e2e/runtime/zz-parity-codex-direct-mcp.e2e.test.ts (1 test) 2445ms
+     ✓ calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client  2161ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  12:13:04
+   Duration  15.27s (transform 8.32s, setup 27ms, import 11.81s, tests 2.45s, environment 0ms)
+

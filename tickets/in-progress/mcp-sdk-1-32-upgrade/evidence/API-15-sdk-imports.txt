@@ -1,0 +1,16 @@
+# Case: API-15 code statement check (AC-013): which code imports @modelcontextprotocol/sdk, per commit
+# Command: grep -rn "@modelcontextprotocol" <worktree>/autobyteus-server-ts/src | wc -l; grep -rln "@modelcontextprotocol" <worktree>/autobyteus-ts/src
+# Date: 2026-10-19
+
+== mcp-sdk-1-32-upgrade-parity-before (bf3c550c18)
+       0
+autobyteus-ts/src/tools/mcp/server/http-managed-mcp-server.ts
+autobyteus-ts/src/tools/mcp/server/websocket-managed-mcp-server.ts
+autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts
+== mcp-sdk-1-32-upgrade-parity (a42c1d02e0)
+       0
+autobyteus-ts/src/tools/mcp/server/http-managed-mcp-server.ts
+autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts
+autobyteus-ts/src/tools/mcp/server/base-managed-mcp-server.ts
+
+Reading: autobyteus-server-ts/src imports the SDK nowhere on either commit. The Agent Tools MCP server and /mcp/gateway are hand-written. Only the autobyteus-ts MCP client files import the SDK (after: base-managed-mcp-server.ts imports only the Client type).

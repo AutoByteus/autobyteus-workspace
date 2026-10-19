@@ -24,3 +24,15 @@
 | 11:25 | API-08 | Started | — | pnpm --silent isolated-app start --build (background; stdout /tmp/mcp181/api08-start.json, stderr /tmp/mcp181/api08-build.log) |
 | 11:31 | API-08 | Completed | Pass | packaged SDK 1.32.1 only copy; HTTP token + stdio via gateway; cross-origin refused (0 requests); logs clean; instance stopped, data root removed. Next: API-09 scan, report |
 | 11:32 | API-09 | Completed | Pass | scan clean; report, investigation, revision record final; committing |
+| 12:01 | — | Checkpoint | — | ROUND 2 (IR-002, SR-002+SR-003) begins. Test-owned area /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-parity-api (server copies, codex home, logs, harness) |
+| 12:01 | API-10..13 | Started | — | isolated-app start --build for before and after (background) |
+| 12:05 | API-10..12 before | Started | — | both instances up (before iso-59202-159b SDK 1.30.0 :59203; after iso-59206-2e45 SDK 1.32.1 :59207); harness before, runtimes native,claude,codex,agy,grok |
+| 12:10 | API-10..12 before | Completed | Pass (codex not run: account usage limit) | native/claude/agy/grok all cells pass; codex ERROR usage limit until Oct 25 |
+| 12:10 | API-10..12 after | Started | — | harness after, same runtimes |
+| 12:13 | API-17 | Completed | Pass | Codex direct MCP (no model turn; account usage-limited): before and after identical, all 4 tools ok. Two first attempts on before failed on the probe's own result parsing (fixed) |
+| 12:16 | API-10..12 after | Completed | Pass | all server, gateway and matrix results SAME as before (codex: same usage-limit block) |
+| 12:16 | API-13 | Completed | Pass | no orphans after stop on either side; 4 VideoAudioServer sessions per side alive until stop (same both sides) |
+| 12:16 | API-14/15/16 | Completed | Pass | user repos unchanged; SDK import statement confirmed; scan clean |
+| 12:18 | API-18 | Started | — | new durable gated suite mcp-runtime-tool-matrix.e2e.test.ts; first AGY scripted + Codex MCP client |
+| 12:22 | API-18 | Completed | Pass | durable matrix suite: agy, codex-mcp-client, native, claude, grok pass; ungated all skip; src mutation red (dist mutation invalid for in-process, noted) |
+| 12:23 | — | Checkpoint | — | cleanup done (instances stopped, before worktree removed, test-owned area removed, model unloaded); committing |

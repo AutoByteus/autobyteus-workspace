@@ -1,0 +1,21 @@
+# Case: API-16 AC-009 / REQ-007 scan of the round-2 evidence and raw logs
+# PAT: sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_-]{20,}|xox[abp]-|ATATT[0-9A-Za-z]|eyJ[A-Za-z0-9_-]{10,}\.|(Bearer|Basic) [A-Za-z0-9+/=._-]{6,}|"(access|refresh|id)_token"
+# Commands: grep -rEo PAT over evidence/API-1[0-7]*; test-dummy counts in raw harness, start/stop and Codex logs; check that no auth.json content was read or written
+# Date: 2026-10-19
+
+== round-2 evidence files ==
+   1 API-10-17-setup-and-probe-sources.txt:Bearer test-dummy
+(end)
+== raw logs: test-dummy counts ==
+harness-before.log       test-dummy=0
+harness-after.log        test-dummy=0
+codex-direct-before.log  test-dummy=0
+codex-direct-after.log   test-dummy=0
+before.json              test-dummy=0
+after.json               test-dummy=0
+agent wire (all matrix cells, both sides): dummyOnWire=false
+== the auth.json symlink target appears in evidence only as a path, never as content ==
+(no token field in any evidence file)
+
+Result: only the dummy value test-dummy (in the harness source, as the test server's required token) and prose; no credential value in any log, result or agent wire.
+API-18 evidence and suite file: re-scanned after API-16 with the same patterns; no match.
