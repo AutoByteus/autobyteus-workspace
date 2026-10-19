@@ -1,0 +1,15 @@
+# API-09 full server integration suite (excerpt; full log 929620 bytes at /tmp/codex-rejection-api09-integration.log, not committed)
+# Command: pnpm -C autobyteus-server-ts test:integration   (prerequisite check: 'Integration test prerequisites are present.')
+# Commit: 53fc6e9c61 (source dedaf77fba) + new test/fixture; started 2026-10-19 05:50; macOS 26.5.2, node v22.23.1
+
+## New file in the run
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts (4 tests) 786ms
+
+## Failure markers (FAIL / ×) — none expected
+(end)
+
+## Summary
+ Test Files  78 passed | 19 skipped (97)
+      Tests  419 passed | 70 skipped (489)
+   Duration  223.70s (transform 9.11s, setup 883ms, import 85.78s, tests 127.26s, environment 7ms)
+exit 0
