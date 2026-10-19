@@ -98,7 +98,8 @@ describe("Org-root delegated executions: pure spawn, idle shutdown, and wake-on-
     f.handles.get("task-agent-1")!.emit("idle");
     f.clock.fireAll();
     await f.drain();
-    f.inspect.mockReturnValue({ kind: "absent" } as never);
+    // A missing saved conversation is what the inspector reports as `none`.
+    f.inspect.mockReturnValue({ kind: "none" } as never);
     const created = f.handles.size;
 
     await expect(f.owner.deliverExactAgentMessage({
