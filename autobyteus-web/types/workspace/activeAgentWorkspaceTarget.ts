@@ -2,7 +2,7 @@ import type { AgentContext } from '~/types/agent/AgentContext'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { ContextFilePath } from '~/types/conversation'
 import type { ToolApprovalTarget } from '~/types/segments'
-import type { EventMonitorActiveTraceBrowseSubject } from '~/services/eventMonitor/eventMonitorActiveTracePageService'
+import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject'
 import type { CollaborationMessagesContextView } from './collaborationMessagesContextView'
 
 export interface AgentInteractionPort {
@@ -42,7 +42,7 @@ export type WorkspaceAccess = Readonly<{ access: 'live'; interaction: AgentInter
 type WorkspaceTargetCore = WorkspaceAccess & Readonly<{
   context: AgentContext
   workspaceRootPath: string | null
-  browse: EventMonitorActiveTraceBrowseSubject
+  browse: AgentRunReadSubject
 }>
 
 export type ActiveAgentWorkspaceTarget =

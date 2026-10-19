@@ -144,6 +144,17 @@ if (arg === "--version") {
       emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "GENERATED" } });
       return;
     }
+    // `WRITE_FILE_HOLD:<path>` starts an own-MCP write_file call for that path (step ACTIVE, nothing written yet) and
+    // leaves the turn running, so the run records a pending file change whose file does not exist until the run stops
+    // (a file still being written while its owner runs).
+    const writeFileHold = /WRITE_FILE_HOLD:(\S+)/.exec(content);
+    if (writeFileHold && !content.includes("CALL_TOOL:")) {
+      const parameters = { Arguments: { path: writeFileHold[1], content: "not written yet" },
+        ServerName: "autobyteus_agent_tools", ToolName: "write_file" };
+      emit({ event: "step_update", step_update: { conversation_id, step_index: turns * 10 + 1, state: "ACTIVE",
+        step_type: "tool", tool_name: "call_mcp_tool", tool_info: { name: "call_mcp_tool", parameters } } });
+      return;
+    }
     // HOLD_TURN opens one long tool step and leaves the turn running (the agent reads Running) until the
     // user stops it or its run is terminated. A message that also asks for a tool call is not held.
     if (content.includes("HOLD_TURN") && !content.includes("CALL_TOOL:") && !content.includes("CALL_TOOLS:")) {

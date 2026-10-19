@@ -5,7 +5,7 @@ import {
   hydrateTeamRunContextForStreamRecovery,
 } from '../teamRunContextHydrationService';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
-import { GetRunFileChanges } from '~/graphql/queries/runHistoryQueries';
+import { GetRunFileChanges, GetTeamMemberFileChanges } from '~/graphql/queries/runHistoryQueries';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import { commitTeamRunHydration, markCommittedTeamRunHydrationAuthority } from '../teamRunHydrationCommit';
@@ -314,10 +314,12 @@ describe('Team open loads each member artifact list with its run state', () => {
   const serve = (input: { isActive: boolean; failingArtifactsFor?: string }) => {
     const tree = twoMemberTree();
     queryMock.mockImplementation(async ({ query, variables }: { query: unknown; variables: Record<string, unknown> }) => {
-      if (query === GetRunFileChanges) {
-        return variables.runId === input.failingArtifactsFor
-          ? { data: null, errors: [{ message: `artifacts unavailable for ${String(variables.runId)}` }] }
-          : { data: { getRunFileChanges: [artifact(String(variables.runId), '1.png'), artifact(String(variables.runId), '2.png')] }, errors: [] };
+      if (query === GetRunFileChanges) throw new Error('team member artifacts are read through the team, not by run id');
+      if (query === GetTeamMemberFileChanges) {
+        expect(variables.teamRunId).toBe('team-artifacts');
+        return variables.agentRunId === input.failingArtifactsFor
+          ? { data: null, errors: [{ message: `artifacts unavailable for ${String(variables.agentRunId)}` }] }
+          : { data: { getTeamMemberFileChanges: [artifact(String(variables.agentRunId), '1.png'), artifact(String(variables.agentRunId), '2.png')] }, errors: [] };
       }
       if (variables.agentRunId) {
         return { data: { getTeamMemberRunProjection: {
@@ -352,6 +354,11 @@ describe('Team open loads each member artifact list with its run state', () => {
     expect(paths('run-a')).toEqual(['/outputs/1.png', '/outputs/2.png']);
     expect(paths('run-b')).toEqual(['/outputs/1.png', '/outputs/2.png']);
     expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(true);
+    expect(queryMock.mock.calls.filter(([options]) => options.query === GetTeamMemberFileChanges).map(([options]) => options.variables))
+      .toEqual(expect.arrayContaining([
+        { teamRunId: 'team-artifacts', agentRunId: 'run-a' },
+        { teamRunId: 'team-artifacts', agentRunId: 'run-b' },
+      ]));
   });
 
   it('leaves a nonfocused member whose artifacts fail unhydrated, so it is loaded again on selection (AC-007)', async () => {

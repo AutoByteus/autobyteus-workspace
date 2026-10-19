@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   history: {},
   getProjection: vi.fn(),
+  getFileChanges: vi.fn(),
   getActiveTeamRun: vi.fn(),
   getTeamRunResumeConfig: vi.fn(),
   projectExecutionTree: vi.fn((tree: unknown) => tree),
@@ -25,7 +26,7 @@ vi.mock(
 );
 vi.mock(
   "../../../../../src/run-history/services/team-member-run-view-projection-service.js",
-  () => ({ getTeamMemberRunViewProjectionService: () => ({ getProjection: mocks.getProjection }) }),
+  () => ({ getTeamMemberRunViewProjectionService: () => ({ getProjection: mocks.getProjection, getFileChanges: mocks.getFileChanges }) }),
 );
 vi.mock(
   "../../../../../src/agent-team-execution/services/agent-team-run-manager.js",
@@ -58,6 +59,13 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
       });
     expect(mocks.getTeamRunResumeConfig).toHaveBeenCalledWith("team-run-1");
     expect(mocks.projectExecutionTree).toHaveBeenCalledTimes(1);
+  });
+
+  it("reads a team member's file changes through the team-scoped member view", async () => {
+    const entries = [{ id: "agent-1:docs/a.md", path: "docs/a.md" }];
+    mocks.getFileChanges.mockResolvedValue(entries);
+    await expect(new TeamRunHistoryResolver().getTeamMemberFileChanges("team-run-1", "agent-1")).resolves.toBe(entries);
+    expect(mocks.getFileChanges).toHaveBeenCalledExactlyOnceWith("team-run-1", "agent-1");
   });
 
   it("exposes one exact RootTeamRun-owned checkpoint", () => {

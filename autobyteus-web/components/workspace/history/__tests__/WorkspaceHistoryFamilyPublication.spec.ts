@@ -54,8 +54,8 @@ beforeEach(() => {
       summary: 'History member', lastActivityAt: '2026-09-03T00:00:00.000Z',
       conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
     } } };
-    // Member hydration also reads the run's recorded file changes; this history has none.
-    if(name==='GetRunFileChanges') return { data: { getRunFileChanges: [] } };
+    // Member hydration also reads the member's recorded file changes through its org; this history has none.
+    if(name==='GetAgentOrgMemberFileChanges') return { data: { getAgentOrgMemberFileChanges: [] } };
     throw Error('Unexpected query '+name);
   });
 });

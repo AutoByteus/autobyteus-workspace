@@ -1,10 +1,10 @@
 import { computed, ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import type {
-  EventMonitorActiveTraceBrowseSubject,
   EventMonitorActiveTracePageDto,
   EventMonitorActiveTracePageEventDto,
 } from './eventMonitorActiveTracePageService';
 import { fetchEventMonitorActiveTracePage } from './eventMonitorActiveTracePageService';
+import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
 import { buildEventMonitorActiveTraceBrowsePresentation } from './eventMonitorActiveTraceBrowsePresentation';
 
 export type EventMonitorActiveTraceBrowseState =
@@ -20,7 +20,7 @@ export class EventMonitorActiveTraceProtocolError extends Error {
 type PageBlock = { events: EventMonitorActiveTracePageEventDto[] };
 type PageFetcher = typeof fetchEventMonitorActiveTracePage;
 
-const subjectKey = (subject: EventMonitorActiveTraceBrowseSubject): string => {
+const subjectKey = (subject: AgentRunReadSubject): string => {
   switch (subject.kind) {
     case 'run': return `run:${subject.runId}`;
     case 'teamMember': return `team:${subject.teamRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
@@ -74,7 +74,7 @@ const visualCount = (block: PageBlock): number =>
   block.events.reduce((count, event) => count + event.visuals.length, 0);
 
 export const useEventMonitorActiveTraceBrowse = (input: {
-  subject: MaybeRefOrGetter<EventMonitorActiveTraceBrowseSubject>;
+  subject: MaybeRefOrGetter<AgentRunReadSubject>;
   hasEarlierAvailable: MaybeRefOrGetter<boolean>;
   presentationRevision: MaybeRefOrGetter<number>;
   fetchPage?: PageFetcher;

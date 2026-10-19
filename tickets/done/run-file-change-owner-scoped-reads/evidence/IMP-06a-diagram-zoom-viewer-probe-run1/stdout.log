@@ -1,0 +1,8 @@
+# IMP-06a-diagram-zoom-viewer-probe-run1
+# command: pnpm -C autobyteus-web test:e2e:diagram-zoom-viewer --output-dir <ticket>/implementation-evidence (copied here)
+# code: web content identical to commit 03f2d4da05 (run before the commit; only server/web commits followed, no web source change after the run)
+# env: macOS, headless Chrome, probe-owned Nuxt dev server; run 1 of 2 (run 1 = first Nuxt dev start in this worktree)
+# date: 2026-10-19
+
+Diagram zoom viewer probe failed with 1 failure(s). Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-owner-scoped-reads/tickets/in-progress/run-file-change-owner-scoped-reads/implementation-evidence/ir-001/diagram-zoom-viewer-probe/evidence.json
+- DZV-BR-008: Timed out waiting for restored fine-primary concealment transition; last=false

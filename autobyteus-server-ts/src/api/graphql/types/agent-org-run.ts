@@ -3,6 +3,7 @@ import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, InputType, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { getStudioAgentOrgRunService } from "../studio-application-api-services.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
+import { RunFileChangeEntryObject } from "./run-file-changes.js";
 import { getAgentOrgMemberRunViewProjectionService } from "../../../run-history/services/agent-org-member-run-view-projection-service.js";
 import { AgentOrgRunManager } from "../../../agent-org-execution/services/agent-org-run-manager.js";
 import { TokenUsageRunSummaryGraphql, toTokenUsageRunSummaryGraphql } from "./token-usage-stats.js";
@@ -153,6 +154,16 @@ export class AgentOrgRunResolver {
     @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<AgentOrgMemberRunProjectionPayload> {
     return this.memberViews.getProjection(orgRunId, memberAddress, agentRunId);
+  }
+
+  /** One org member's artifact list, located inside the named org run only (live while it runs). */
+  @Query(() => [RunFileChangeEntryObject])
+  async getAgentOrgMemberFileChanges(
+    @Arg("orgRunId", () => String) orgRunId: string,
+    @Arg("memberAddress", () => String) memberAddress: string,
+    @Arg("agentRunId", () => String) agentRunId: string,
+  ): Promise<RunFileChangeEntryObject[]> {
+    return this.memberViews.getFileChanges(orgRunId, memberAddress, agentRunId);
   }
 
   @Query(() => EventMonitorActiveTracePageObject)

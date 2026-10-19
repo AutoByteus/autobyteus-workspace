@@ -154,7 +154,9 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
       seed,
       await fetchMemberRunState({
         fetchProjection: () => fetchProjection(input.orgRunId, seed),
-        fetchFileChanges: () => fetchRunFileChanges(seed.agentRunId),
+        fetchFileChanges: () => fetchRunFileChanges({
+          kind: 'agentOrgMember', orgRunId: input.orgRunId, memberAddress: seed.address, agentRunId: seed.agentRunId,
+        }),
       }),
     )
     return Object.freeze({

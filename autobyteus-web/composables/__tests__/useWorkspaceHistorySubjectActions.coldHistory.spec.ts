@@ -9,7 +9,7 @@ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 import { ListCollaborationRootHistory } from '~/graphql/queries/collaborationRootHistoryQueries'
-import { GetAgentOrgMemberRunProjection, GetAgentOrgRunInspection, GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
+import { GetAgentOrgMemberFileChanges, GetAgentOrgMemberRunProjection, GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
 
 const mocks = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), instances: [] as any[], ready: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
@@ -57,7 +57,7 @@ const setup = async (active = true) => {
     if (query === GetAgentOrgMemberRunProjection) return { data: { getAgentOrgMemberRunProjection: {
       ...variables, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
     } } }
-    if (query === GetRunFileChanges) return { data: { getRunFileChanges: [] } }
+    if (query === GetAgentOrgMemberFileChanges) return { data: { getAgentOrgMemberFileChanges: [] } }
     throw new Error('Unexpected query')
   })
   // Model the already hydrated current route, without mounting the history drawer.

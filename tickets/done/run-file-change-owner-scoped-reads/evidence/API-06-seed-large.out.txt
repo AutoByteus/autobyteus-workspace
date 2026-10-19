@@ -1,0 +1,9 @@
+[2026-10-19T05:59:20.921Z] SEED start: Seed hub, Team and Org runs with member files, plus 680 unrelated saved team runs, through public APIs
+  unrelated team runs 100/680
+  unrelated team runs 200/680
+  unrelated team runs 300/680
+  unrelated team runs 400/680
+  unrelated team runs 500/680
+  unrelated team runs 600/680
+[2026-10-19T06:01:40.081Z] SEED Pass
+{"result":"Pass","cases":{"SEED":"Pass"},"failures":[],"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":19995,"status":"terminated","exit":0}},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-owner-scoped-reads/tickets/in-progress/run-file-change-owner-scoped-reads/evidence/API-06-seed-large/evidence.json"}

@@ -69,7 +69,7 @@ export const loadRunContextHydrationCandidate = async (
       variables: { runId: input.runId },
       fetchPolicy: 'network-only',
     }),
-    fetchRunFileChanges(input.runId),
+    fetchRunFileChanges({ kind: 'run', runId: input.runId }),
   ]);
 
   const projectionErrors = projectionResponse.errors || [];
