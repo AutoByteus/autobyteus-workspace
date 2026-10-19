@@ -45,3 +45,6 @@ Solution Designer chose the code fix (SR-016): the session file keeps writing `s
 
 ## Update — rollback decision superseded (SR-018)
 You corrected the rule: rollback compatibility is needed only for releases whose migration converts existing data. So there is no code fix. The session-file change is an accepted rollback effect: after a rollback, Skill Improvement starts a fresh improver session once. RELEASE.md and the data-migration guideline are updated in this ticket. The revised package returns through architecture review before delivery finalizes.
+
+## DR-002 — Round 2 ready for user verification
+Round 2 (SR-018) is integrated and audited at 8186b9fd9e. The rule docs are committed; the product code is identical to round 1; the base is unchanged; the hygiene and licensing checks pass. The candidate is ready for your verification (same checklist as above) and your release decision (none, beta or stable). probes/ stays uncommitted unless you decide otherwise.
