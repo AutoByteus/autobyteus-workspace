@@ -16,19 +16,24 @@ Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Worktree `/Users
 - Relevant Architecture Review Revision IDs: ARCH-REV-003..ARCH-REV-007
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
+- Current Code Review Revision ID: `CRR-004` (CRR-003 was the separate test-code review)
+- Current Review Round: 3
 - Review Scope: `Targeted Delta Review`
-- Review Scope Evidence (round >1): `git diff 0a303d3a5d..da1d7f5524` changes two source lines-of-concern only:
+- Review Scope Evidence (round 3): IR-003 merges `origin/personal` @ `ad784b0a8f` (46 commits; merge `26ad4ace20`, head `c5da4745e3`).
+  - **Conflicts:** only in the three task-execution adapters. Base `a9b5230505` replaced `ingressAgentRunId` with `ingressMember(indexed): {address, agentRunId}` and resolved a Team copy's coordinator through `this.sources`, which this ticket removed. Reviewed with `git diff ad784b0a8f 26ad4ace20` on each adapter. The merged code is the round-2 adapter shape plus base's `ingressMember` signature, comment and return. `coordinatorAddress` comes from `indexed.source.source.coordinatorAddress`, the copy's own source. No `this.sources` and no stale `ingressAgentRunId` method remain.
+  - **Base content:** none of the 46 commits' source files touches the record, own-file, migration or view code of this ticket, apart from the three adapters and `task-execution-conversation-availability.ts`, which uses only `ingressMember.{address, agentRunId}`. Their added lines contain no read of a copy's `source`, configured placement or own-file section. Base adds no app-data migration, so 20261019 stays last.
+  - **Evidence:** IMP-15..IMP-23 on `26ad4ace20` (typecheck; server unit 6169; integration 419; build; base's unclean-shutdown delegated-team restore e2e 5/5; startup and upgrade e2e 9/9 with TAU-2; web unit 4565; guards; the AC-009 sweep extended to `this.sources` and the stale method, with no hits).
+  - Every other check carries forward from rounds 1-2.
+- Review Scope Evidence (round 2): `git diff 0a303d3a5d..da1d7f5524` changes two source lines-of-concern only:
   - `standalone-root-tree-schema.ts`: the CR-001 loop is removed;
   - `teamExecutionTreeSelectors.ts:162`: the same kind of dead absent-source fallback, removed.
 
   The rest of the diff is ticket documents and evidence. No spine, interface or data shape changed, and no new fixes are stacked on earlier fixes. Round-1 evidence for every other check carries forward.
-- Trigger: implementation handoff IR-002 (CR-001 Local Fix) from `/software_engineering_team/implementation_engineer`
-- Prior Review Round Reviewed: 1 (`CRR-001`, Fail, CR-001)
-- Latest Authoritative Round: 2
+- Trigger: implementation handoff IR-003 (INT-001 Local Fix, the merge resolution requested by delivery in DR-001) from `/software_engineering_team/implementation_engineer`. Round 2 trigger: IR-002 (CR-001).
+- Prior Review Round Reviewed: 2 (`CRR-002`, Pass)
+- Latest Authoritative Round: 3
 - Failure-origin fields: N/A
 
 ## Routing Classification Review
@@ -244,10 +249,10 @@ None new. F-1 (skill-improvement launch of a copy at a configured address) is al
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
+- Review Entry Point: `Implementation Review` (round 3, Targeted Delta Review of the INT-001 merge)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
 - Score Summary: 9.45 / 10 (94.5 / 100); every category ≥ 9.0.
 - Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: `CRR-002`, against IR-002 @ `da1d7f5524`. CR-001 is resolved. The classification Large / High is preserved. API/E2E focus: the Residual Risks above.
+- Notes: `CRR-004`, against IR-003 @ `c5da4745e3` (merge `26ad4ace20`). The merge resolution keeps every copy's coordinator on its own source; no new findings. The classification Large / High is preserved. Because product code changed after API-REV-001, API/E2E revalidates by impact. The DCR-001..003 probe cases and the ingress path of the three adapters (message to a stopped Team copy by run ID) are the directly affected surface. Round 2 notes: `CRR-002` against IR-002 @ `da1d7f5524`; CR-001 resolved.

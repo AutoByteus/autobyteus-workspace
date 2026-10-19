@@ -74,13 +74,17 @@ None. The two observations in the execution report concern existing behavior out
 
 - Sent to: `None`
 
+## Round 2 (API-REV-002, after the INT-001 merge)
+
+- Trigger: API/E2E round 2 on merge `26ad4ace20`, head `698fffef0a` (API-REV-002, Pass, confidence 95.1%).
+- Changed durable test scope: none. `git diff --name-only c5da4745e3..698fffef0a` lists only `tickets/` files. The round reran the existing suites, and the full probe passed 18/18 (`API-10-13-r2-probe-evidence.json`).
+- No durable test file changed: `Yes`. Review result: `Not Applicable`.
+- TO-001 (stale DCR-001 header comment) stays a non-blocking observation. It was deliberately left alone so that no test code changed this round.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed:
-  - `autobyteus-web/tests/e2e/delegated-copy-own-file-cases.mjs`
-  - `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs`
-  - `autobyteus-web/package.json`
+- Result: `Not Applicable` (round 2: no durable test changed). Round 1: `Pass`.
+- Changed durable test paths reviewed: none this round. Round 1 reviewed `delegated-copy-own-file-cases.mjs`, `delegated-launch-defaults-probe.mjs` and `autobyteus-web/package.json`.
 - Unresolved finding IDs: none (TO-001 is a non-blocking observation)
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
-- Notes: `CRR-003`. The classification Large / High is preserved. The CRR-002 edits to `code-review-report.md` and `code-review-revision-record.md`, and this report, are not yet committed.
+- Notes: `CRR-005`. The classification Large / High is preserved. Source review is current at CRR-004 (merge `26ad4ace20`). Not yet committed: this report, `code-review-report.md` (round 3) and `code-review-revision-record.md` (CRR-002..CRR-005).

@@ -9,6 +9,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 handoff | N/A | Fail (Local Fix) | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (Targeted Delta) / IR-002 | Fail (Local Fix) | Pass | CR-001 (resolved) |
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 / API-REV-001 | N/A (first test review) | Pass | None (TO-001 non-blocking observation) |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 3 (Targeted Delta: INT-001 merge) / IR-003 | Pass (CRR-002) | Pass | None |
+| CRR-005 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 2 / API-REV-002 | Pass (CRR-003) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -98,3 +100,59 @@ None.
 - Remaining risks or uncertainty:
   - AC-010 (the user's real data, after his backup) is delivery's;
   - the Memory-page "Unattributed runs" residual for mirrored F-X3b copies stands, as accepted.
+
+### CRR-004 — INT-001 merge resolution reviewed: Pass
+
+- Canonical review report updated: `tickets/in-progress/delegated-copy-restore-from-own-file/code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`. Merge `26ad4ace20` of `origin/personal` @ `ad784b0a8f`; conflict resolution in the three task-execution adapters; base's 46 commits scanned for copy-source readers.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (IR-003, INT-001 requested by delivery in DR-001, `release-deployment-report.md`)
+- Relevant solution revision IDs: SR-008
+- Relevant architecture-review revision IDs: ARCH-REV-007
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001 (its validation predates the merge)
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-002)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - Base's `ingressMember` is kept.
+  - The Team copy's coordinator comes from its own `source`, never from the configured place. No `this.sources` and no stale method remain.
+  - No base change reads a copy's source or placement. No new migration.
+  - IMP-15..IMP-23 pass on the merge, including base's unclean-shutdown delegated-team restore e2e.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None open (CR-001 resolved in CRR-002).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none (9.45 / 10). Classification Large / High preserved.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`, to revalidate by impact after the product-code merge.
+- Remaining risks or uncertainty: as in the report; API/E2E should rerun the cases that exercise Team-copy ingress (DCR-002, DCR-003 and the restore paths) on the merged build.
+
+### CRR-005 — Test-code review after API/E2E round 2: Not Applicable
+
+- Canonical review report updated: `tickets/in-progress/delegated-copy-restore-from-own-file/api-e2e-test-review-report.md`
+- Review entry point and round: proportional API/E2E test-code review, round 2
+- Review scope: `N/A` (test review). `c5da4745e3..698fffef0a` changes only `tickets/` files.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-002, Pass)
+- Relevant solution revision IDs: SR-008
+- Relevant architecture-review revision IDs: ARCH-REV-007
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-003)
+- Current authoritative result: `Not Applicable`. No durable test changed.
+- What changed in the review result and why: none for test code. Round 2 reran the existing suites on the merged build, and the full probe passed 18/18.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (TO-001 remains a non-blocking observation).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none. Classification Large / High preserved.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - AC-010 (the user's data, after his backup);
+  - the accepted Memory-page residual for mirrored F-X3b copies.
