@@ -1,0 +1,13 @@
+# API-L12 (desktop, CR-003, AC-013): pnpm --silent isolated-app restart; open Settings; embedded server threads (ps -M) and footprint; updateProjectTask on Desktop demo t32 with its unchanged description and dependsOnTaskIds=[t31] (the Task page dependency edit; no description change); wait 10 s; threads/footprint, Settings; control: a description edit on t32; Mon Oct 19 16:00:29 CEST 2026
+after restart: [('granite-', 'Active·Ready')] [('Desktop demo', 'Ready · 9 Tasks')]
+baseline:
+server pid 62138 threads 27 Footprint: 433 MB
+{"data":{"updateProjectTask":{"taskId":"project_task_bbecf325-fb6b-48d2-9216-fddfb10a34dc","dependsOnTaskIds":["project_task_487e7853-41cf-47cc-ade1-f238edba600d"]}}}
+10 s after the dependency-only write:
+server pid 62138 threads 26 Footprint: 433 MB
+Settings: [('granite-', 'Active·Ready')] [('Desktop demo', 'Ready · 9 Tasks')]
+== control: description edit on t32
+{"data":{"updateProjectTask":{"taskId":"project_task_bbecf325-fb6b-48d2-9216-fddfb10a34dc"}}}
+10 s after the description edit:
+server pid 62138 threads 30 Footprint: 684 MB
+Settings: [('Desktop demo', 'Ready · 9 Tasks')]

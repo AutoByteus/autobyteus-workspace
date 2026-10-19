@@ -1,0 +1,372 @@
+# API-L03: Docker node; /etc/hosts maps huggingface.co to loopback; Download on MongoDB LEAF-IR (download ahead); then hosts restored and Retry pressed on the row; commit d2bcb95d3a; Mon Oct 19 12:26:57 CEST 2026
+::1             huggingface.co
+== click Download
+{"clicked":"embedding-model-mdbr-leaf-ir-download","at":1792405618277}
+== wait for the failure
+{
+ "elapsedMs": 5,
+ "timeout": false,
+ "seen": [
+  {
+   "t": 5,
+   "state": [
+    [
+     "granite-embedding-small-english-r2",
+     "Active·Not downloaded",
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "mdbr-leaf-ir",
+     "Not downloaded",
+     null,
+     null,
+     "Download failed: Could not reach huggingface.co to download the model: fetch failed",
+     null
+    ],
+    [
+     "embeddinggemma-2",
+     "Not downloaded",
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Not indexed"
+    ],
+    [
+     "Not indexed"
+    ],
+    [
+     "Ready · 0 Tasks"
+    ],
+    [
+     "Not indexed"
+    ],
+    null
+   ]
+  }
+ ],
+ "state": {
+  "panel": true,
+  "loading": false,
+  "loadError": null,
+  "actionError": null,
+  "actionErrorRole": null,
+  "disk": "On disk: 0 MB",
+  "subtitle": "Using IBM Granite Embedding Small English R2.",
+  "indexAll": {
+   "disabled": false,
+   "title": null
+  },
+  "filters": "All 4Needs indexing 3Indexing 0Ready 1",
+  "empty": false,
+  "dialog": null,
+  "announce": "",
+  "models": [
+   {
+    "id": "granite-embedding-small-english-r2",
+    "status": "Active·Not downloaded",
+    "facts": "Languages: English·Download size: 55 MB",
+    "progress": null,
+    "preparing": null,
+    "failed": null,
+    "unavailable": null,
+    "actions": [
+     "download"
+    ]
+   },
+   {
+    "id": "mdbr-leaf-ir",
+    "status": "Not downloaded",
+    "facts": "Languages: English·Download size: 24 MB",
+    "progress": null,
+    "preparing": null,
+    "failed": "Download failed: Could not reach huggingface.co to download the model: fetch failed",
+    "unavailable": null,
+    "actions": [
+     "use",
+     "retry"
+    ]
+   },
+   {
+    "id": "embeddinggemma-2",
+    "status": "Not downloaded",
+    "facts": "Languages: 100+ languages·Download size: 346 MB",
+    "progress": null,
+    "preparing": null,
+    "failed": null,
+    "unavailable": null,
+    "actions": [
+     "download",
+     "use"
+    ]
+   }
+  ],
+  "projects": [
+   {
+    "id": "project_9def7582-e766-4982-beaa-473d5c78a484",
+    "text": "Alpha docsNot indexedIndex now",
+    "status": "Not indexed",
+    "actions": [
+     "index"
+    ]
+   },
+   {
+    "id": "project_9099a536-b5bf-4e5e-b8ab-a1cc5ebb54de",
+    "text": "Beta platformNot indexedIndex now",
+    "status": "Not indexed",
+    "actions": [
+     "index"
+    ]
+   },
+   {
+    "id": "project_c83d813c-084a-4cf4-9893-5eed8cfb7103",
+    "text": "Empty projectReady · 0 Tasks",
+    "status": "Ready · 0 Tasks",
+    "actions": []
+   },
+   {
+    "id": "project_da4de0bc-85b5-4e30-a27b-5e6a987251b5",
+    "text": "Gamma desktopNot indexedIndex now",
+    "status": "Not indexed",
+    "actions": [
+     "index"
+    ]
+   }
+  ]
+ }
+}
+== container files after failure
+mdbr-leaf-ir
+== restore network, click Retry
+{"clicked":"embedding-model-mdbr-leaf-ir-retry","at":1792405619697}
+{
+ "elapsedMs": 3613,
+ "timeout": false,
+ "seen": [
+  {
+   "t": 5,
+   "state": [
+    [
+     "granite-embedding-small-english-r2",
+     "Active·Not downloaded",
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "mdbr-leaf-ir",
+     "Downloading",
+     "0 of 24 MB · 0%",
+     null,
+     null,
+     null
+    ],
+    [
+     "embeddinggemma-2",
+     "Not downloaded",
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Not indexed"
+    ],
+    [
+     "Not indexed"
+    ],
+    [
+     "Ready · 0 Tasks"
+    ],
+    [
+     "Not indexed"
+    ],
+    null
+   ]
+  },
+  {
+   "t": 1555,
+   "state": [
+    [
+     "granite-embedding-small-english-r2",
+     "Active·Not downloaded",
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "mdbr-leaf-ir",
+     "Downloading",
+     "11 of 24 MB · 47%",
+     null,
+     null,
+     null
+    ],
+    [
+     "embeddinggemma-2",
+     "Not downloaded",
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Not indexed"
+    ],
+    [
+     "Not indexed"
+    ],
+    [
+     "Ready · 0 Tasks"
+    ],
+    [
+     "Not indexed"
+    ],
+    null
+   ]
+  },
+  {
+   "t": 3613,
+   "state": [
+    [
+     "granite-embedding-small-english-r2",
+     "Active·Not downloaded",
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "mdbr-leaf-ir",
+     "Downloaded",
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "embeddinggemma-2",
+     "Not downloaded",
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     "Not indexed"
+    ],
+    [
+     "Not indexed"
+    ],
+    [
+     "Ready · 0 Tasks"
+    ],
+    [
+     "Not indexed"
+    ],
+    null
+   ]
+  }
+ ],
+ "state": {
+  "panel": true,
+  "loading": false,
+  "loadError": null,
+  "actionError": null,
+  "actionErrorRole": null,
+  "disk": "On disk: 24 MB",
+  "subtitle": "Using IBM Granite Embedding Small English R2.",
+  "indexAll": {
+   "disabled": false,
+   "title": null
+  },
+  "filters": "All 4Needs indexing 3Indexing 0Ready 1",
+  "empty": false,
+  "dialog": null,
+  "announce": "MongoDB LEAF-IR downloaded.",
+  "models": [
+   {
+    "id": "granite-embedding-small-english-r2",
+    "status": "Active·Not downloaded",
+    "facts": "Languages: English·Download size: 55 MB",
+    "progress": null,
+    "preparing": null,
+    "failed": null,
+    "unavailable": null,
+    "actions": [
+     "download"
+    ]
+   },
+   {
+    "id": "mdbr-leaf-ir",
+    "status": "Downloaded",
+    "facts": "Languages: English·Download size: 24 MB",
+    "progress": null,
+    "preparing": null,
+    "failed": null,
+    "unavailable": null,
+    "actions": [
+     "use",
+     "remove"
+    ]
+   },
+   {
+    "id": "embeddinggemma-2",
+    "status": "Not downloaded",
+    "facts": "Languages: 100+ languages·Download size: 346 MB",
+    "progress": null,
+    "preparing": null,
+    "failed": null,
+    "unavailable": null,
+    "actions": [
+     "download",
+     "use"
+    ]
+   }
+  ],
+  "projects": [
+   {
+    "id": "project_9def7582-e766-4982-beaa-473d5c78a484",
+    "text": "Alpha docsNot indexedIndex now",
+    "status": "Not indexed",
+    "actions": [
+     "index"
+    ]
+   },
+   {
+    "id": "project_9099a536-b5bf-4e5e-b8ab-a1cc5ebb54de",
+    "text": "Beta platformNot indexedIndex now",
+    "status": "Not indexed",
+    "actions": [
+     "index"
+    ]
+   },
+   {
+    "id": "project_c83d813c-084a-4cf4-9893-5eed8cfb7103",
+    "text": "Empty projectReady · 0 Tasks",
+    "status": "Ready · 0 Tasks",
+    "actions": []
+   },
+   {
+    "id": "project_da4de0bc-85b5-4e30-a27b-5e6a987251b5",
+    "text": "Gamma desktopNot indexedIndex now",
+    "status": "Not indexed",
+    "actions": [
+     "index"
+    ]
+   }
+  ]
+ }
+}
+== files
+1529 /home/autobyteus/data/embeddings/models/mdbr-leaf-ir/tokenizer_config.json
+220597 /home/autobyteus/data/embeddings/models/mdbr-leaf-ir/onnx/model_quantized.onnx
+22954752 /home/autobyteus/data/embeddings/models/mdbr-leaf-ir/onnx/model_quantized.onnx_data
+711661 /home/autobyteus/data/embeddings/models/mdbr-leaf-ir/tokenizer.json

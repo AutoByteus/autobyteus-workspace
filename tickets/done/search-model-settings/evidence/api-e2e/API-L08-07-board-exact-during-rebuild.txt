@@ -1,0 +1,6 @@
+# API-L08 step 4b (AC-004): desktop, EmbeddingGemma 2 active; rebuildProjectTaskIndex("Desktop demo") through GraphQL (the Rebuild action), then at once the board: exact query "installer" while preparing, then the paraphrase "backend leaks RAM over a day" once ready; build d2bcb95d3a; Mon Oct 19 13:04:51 CEST 2026
+{"data":{"rebuildProjectTaskIndex":true}}
+{"t":1792407892996,"atOnce":{"status":"Preparing meaning search… 0 of 8 Tasks","rows":["Auto-update downloads the full installer every time"]}}
+{"t":1792407893074,"s":{"status":"Preparing meaning search… 0 of 8 Tasks","rows":["Auto-update downloads the full installer every time"]}}
+{"t":1792407895094,"s":{"status":null,"rows":["Auto-update downloads the full installer every time"]}}
+{"t":1792407897603,"paraphraseAfterReady":{"status":null,"rows":["Server memory keeps growing during long runs"]}}

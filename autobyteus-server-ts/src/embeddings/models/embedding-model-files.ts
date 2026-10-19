@@ -17,10 +17,21 @@ const sha256Of = async (file: string): Promise<string> => {
   return hash.digest("hex");
 };
 
+/** Thrown when a download was cancelled through its abort signal. */
+export class EmbeddingDownloadCancelled extends Error {
+  constructor() {
+    super("The download was cancelled.");
+    this.name = "EmbeddingDownloadCancelled";
+  }
+}
+
 /**
  * The local copies of catalog models, one folder per model under `<root>/<modelId>/`. A model is ready when every
  * catalog file is present with its pinned size and SHA-256; missing or wrong files are downloaded to `<file>.part`,
- * verified while streaming, then renamed into place. One download per model at a time.
+ * verified while streaming, then renamed into place. A download can be aborted through a signal: the `.part` file is
+ * deleted and nothing unverified is renamed. Folders stay until `remove` (a leftover `.part` from an interrupted
+ * process counts on disk until the next download overwrites it or `remove` deletes it). One download per model at a
+ * time (a guard; `EmbeddingModelDownloads` owns the download flights).
  */
 export class EmbeddingModelFiles {
   private readonly inflight = new Map<string, Promise<string>>();
@@ -50,30 +61,44 @@ export class EmbeddingModelFiles {
    * Makes the model's files present and verified; resolves to its folder. Progress counts bytes and is reported only
    * while something is downloaded (files already present are verified silently).
    */
-  ensure(definition: EmbeddingModelDefinition, onProgress: DownloadProgress = () => undefined): Promise<string> {
+  ensure(definition: EmbeddingModelDefinition, onProgress: DownloadProgress = () => undefined, signal?: AbortSignal): Promise<string> {
     let pending = this.inflight.get(definition.id);
     if (!pending) {
-      pending = this.ensureFiles(definition, onProgress).finally(() => this.inflight.delete(definition.id));
+      pending = this.ensureFiles(definition, onProgress, signal).finally(() => this.inflight.delete(definition.id));
       this.inflight.set(definition.id, pending);
     }
     return pending;
   }
 
-  /** Removes the folders of every other model (after a model switch has completed). */
-  async removeAllExcept(modelId: string): Promise<void> {
-    const entries = await fs.readdir(this.rootDir, { withFileTypes: true }).catch(() => []);
-    await Promise.all(entries.filter((entry) => entry.isDirectory() && entry.name !== modelId)
-      .map((entry) => fs.rm(path.join(this.rootDir, entry.name), { recursive: true, force: true })));
+  /** Deletes the model's folder (its verified files and any leftover `.part`). */
+  async remove(definition: Pick<EmbeddingModelDefinition, "id">): Promise<void> {
+    await fs.rm(this.modelDir(definition), { recursive: true, force: true });
   }
 
-  private async ensureFiles(definition: EmbeddingModelDefinition, onProgress: DownloadProgress): Promise<string> {
+  /** Removes the model's folder when it holds no file (e.g. after a failed first download); otherwise keeps it. */
+  async removeIfEmpty(definition: Pick<EmbeddingModelDefinition, "id">): Promise<void> {
+    const dir = this.modelDir(definition);
+    const entries = await fs.readdir(dir, { recursive: true, withFileTypes: true }).catch(() => null);
+    if (entries && !entries.some((entry) => entry.isFile())) await fs.rm(dir, { recursive: true, force: true });
+  }
+
+  /** Bytes of every file under the models folder, including partial downloads. */
+  async diskUsage(): Promise<number> {
+    const entries = await fs.readdir(this.rootDir, { recursive: true, withFileTypes: true }).catch(() => []);
+    const sizes = await Promise.all(entries.filter((entry) => entry.isFile())
+      .map((entry) => fs.stat(path.join(entry.parentPath, entry.name)).then((stat) => stat.size, () => 0)));
+    return sizes.reduce((sum, size) => sum + size, 0);
+  }
+
+  private async ensureFiles(definition: EmbeddingModelDefinition, onProgress: DownloadProgress, signal?: AbortSignal): Promise<string> {
     const dir = this.modelDir(definition);
     const total = definition.files.reduce((sum, file) => sum + file.bytes, 0);
     let done = 0;
     for (const file of definition.files) {
+      if (signal?.aborted) throw new EmbeddingDownloadCancelled();
       const target = path.join(dir, file.path);
       if (!(await this.isVerified(target, file))) {
-        await this.download(definition, file, target, (bytes) => onProgress(done + bytes, total));
+        await this.download(definition, file, target, (bytes) => onProgress(done + bytes, total), signal);
         onProgress(done + file.bytes, total);
       }
       done += file.bytes;
@@ -86,13 +111,18 @@ export class EmbeddingModelFiles {
     return Boolean(stat?.isFile() && stat.size === file.bytes && await sha256Of(target) === file.sha256);
   }
 
-  private async download(definition: EmbeddingModelDefinition, file: EmbeddingModelFile, target: string, onBytes: (bytes: number) => void): Promise<void> {
+  private async download(definition: EmbeddingModelDefinition, file: EmbeddingModelFile, target: string, onBytes: (bytes: number) => void,
+    signal?: AbortSignal): Promise<void> {
     const { repo, revision } = definition.source;
     const url = `${this.options.baseUrl ?? DEFAULT_BASE_URL}/${repo}/resolve/${revision}/${file.path}`;
     const host = new URL(url).host;
     const partial = `${target}.part`;
     await fs.mkdir(path.dirname(target), { recursive: true });
     const controller = new AbortController();
+    const cancel = () => controller.abort(new EmbeddingDownloadCancelled());
+    signal?.addEventListener("abort", cancel, { once: true });
+    // A cancel that landed before the listener was added would never fire it: honour it now, before fetching.
+    if (signal?.aborted) cancel();
     let idle: ReturnType<typeof setTimeout> | undefined;
     const touch = () => {
       clearTimeout(idle);
@@ -121,12 +151,15 @@ export class EmbeddingModelFiles {
       if (bytes !== file.bytes || hash.digest("hex") !== file.sha256) {
         throw new Error(`The downloaded ${file.path} does not match the expected file (size or checksum).`);
       }
+      // A cancel that arrives after the last byte still wins: nothing is renamed into place.
+      if (signal?.aborted) throw new EmbeddingDownloadCancelled();
       await fs.rename(partial, target);
     } catch (error) {
       await fs.rm(partial, { force: true });
       throw controller.signal.aborted && controller.signal.reason instanceof Error ? controller.signal.reason : error;
     } finally {
       clearTimeout(idle);
+      signal?.removeEventListener("abort", cancel);
     }
   }
 }

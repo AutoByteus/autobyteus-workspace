@@ -1,0 +1,13 @@
+# API-L12 (CR-003, AC-013 on Docker): docker restart; open Settings; node process RSS and thread count; updateProjectTask on Alpha t03 with its unchanged description and dependsOnTaskIds=[t01] (a write that changes no description); wait 10 s; RSS/threads, Settings; control: a description edit on t03; wait; RSS/threads, Settings; commit 8c283c6acc; Mon Oct 19 14:58:23 CEST 2026
+after restart: [('granite-', 'Active·Ready'), ('mdbr-lea', 'Downloaded'), ('embeddin', 'Not downloaded')] [('Alpha docsRe', 'Ready · 11 Tasks'), ('Beta platfor', 'Ready · 20 Tasks'), ('Empty projec', 'Ready · 0 Tasks'), ('Gamma deskto', 'Ready · 9 Tasks')]
+baseline:
+node pid 49 rss_kb 669408 threads 23
+{"data":{"updateProjectTask":{"taskId":"project_task_18c2c797-dbd9-4424-8558-c353e05c60a0","dependsOnTaskIds":["project_task_888001e2-5b5c-4cc6-9698-1360fcd8b5aa"]}}}
+10 s after the dependency-only write:
+node pid 49 rss_kb 333080 threads 22
+Settings: [('granite-', 'Active·Ready')] [('Alpha docsRe', 'Ready · 11 Tasks')]
+== control: description edit on t03
+{"data":{"updateProjectTask":{"taskId":"project_task_18c2c797-dbd9-4424-8558-c353e05c60a0"}}}
+10 s after the description edit:
+node pid 49 rss_kb 655284 threads 26
+Settings: [('Alpha docsRe', 'Ready · 11 Tasks')]

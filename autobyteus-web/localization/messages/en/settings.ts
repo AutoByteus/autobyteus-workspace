@@ -22,6 +22,7 @@ const settingsMessages = {
   'settings.page.sections.extensions': 'Extensions',
   'settings.page.sections.updates': 'Updates',
   'settings.page.serverSettings.quick': 'Basics',
+  'settings.page.serverSettings.embedding': 'Embedding',
   'settings.page.serverSettings.advanced': 'Advanced',
   'settings.display.eyebrow': 'Display',
   'settings.display.title': 'App font size',

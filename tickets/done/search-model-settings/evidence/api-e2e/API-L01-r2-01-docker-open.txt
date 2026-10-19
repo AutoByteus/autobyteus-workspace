@@ -1,0 +1,11 @@
+# API-L01 (round 2) + API-L02 browser: Docker node 8c283c6acc (no model on disk, 24 Projects / 20,038 Tasks); open the Embedding page 3 times (ms until the cards render, incl. the page load); snapshot; container folders 20 s later; host load averages: 100.35 71.98 41.74; Mon Oct 19 14:55:23 CEST 2026
+{"url":"http://127.0.0.1:54347/settings?section=server-settings&mode=embedding","msToCards":536}
+{"url":"http://127.0.0.1:54347/settings?section=server-settings&mode=embedding","msToCards":417}
+{"url":"http://127.0.0.1:54347/settings?section=server-settings&mode=embedding","msToCards":409}
+disk On disk: 0 MB | subtitle Using IBM Granite Embedding Small English R2.
+   granite-embedding-small-english-r2 | Active·Not downloaded | Languages: English·Download size: 55 MB | ['download']
+   mdbr-leaf-ir | Not downloaded | Languages: English·Download size: 24 MB | ['download', 'use']
+   embeddinggemma-2 | Not downloaded | Languages: 100+ languages·Download size: 346 MB | ['download', 'use']
+   projects 24 filters All 24Needs indexing 23Indexing 0Ready 1
+container embeddings 20 s later:
+ls: cannot access '/home/autobyteus/data/embeddings': No such file or directory

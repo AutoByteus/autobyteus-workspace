@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import type { AddressInfo } from "node:net";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { EmbeddingModelFiles } from "../../../src/embeddings/models/embedding-model-files.js";
+import { EmbeddingDownloadCancelled, EmbeddingModelFiles } from "../../../src/embeddings/models/embedding-model-files.js";
 import { fakeModel } from "../../helpers/fake-embedding-model.js";
 
 const content = { "onnx/model.onnx": "graph-bytes", "onnx/model.onnx_data": "weights".repeat(1000), "tokenizer.json": "{}" } as Record<string, string>;
@@ -85,12 +85,43 @@ describe("EmbeddingModelFiles", () => {
     await expect(new EmbeddingModelFiles(root, { baseUrl: "http://127.0.0.1:1" }).ensure(model)).rejects.toThrow("Could not reach 127.0.0.1:1");
   });
 
-  it("runs one download per model at a time and removes other models' folders", async () => {
+  it("runs one download per model at a time", async () => {
     const files = new EmbeddingModelFiles(root, { baseUrl });
     await Promise.all([files.ensure(model), files.ensure(model)]);
     expect(requests).toHaveLength(3);
-    await fs.mkdir(path.join(root, "old-model"), { recursive: true });
-    await files.removeAllExcept("tiny");
+  });
+
+  it("keeps other models' folders, removes one model's folder on request, and sums the bytes on disk", async () => {
+    const files = new EmbeddingModelFiles(root, { baseUrl });
+    expect(await files.diskUsage()).toBe(0);
+    await files.ensure(model);
+    await fs.mkdir(path.join(root, "other-model", "onnx"), { recursive: true });
+    await fs.writeFile(path.join(root, "other-model", "onnx", "model.onnx.part"), "12345");
+    const total = model.files.reduce((sum, file) => sum + file.bytes, 0);
+    expect(await files.diskUsage()).toBe(total + 5);
+    await files.remove({ id: "other-model" });
+    expect(await fs.readdir(root)).toEqual(["tiny"]);
+    await files.remove({ id: "never-downloaded" });
+    expect(await files.diskUsage()).toBe(total);
+  });
+
+  it("stops a download when its signal aborts: rejects as cancelled and moves no partial file into place", async () => {
+    const files = new EmbeddingModelFiles(root, { baseUrl });
+    const controller = new AbortController();
+    await expect(files.ensure(model, () => controller.abort(), controller.signal)).rejects.toBeInstanceOf(EmbeddingDownloadCancelled);
+    expect(files.hasAllFiles(model)).toBe(false);
+    const left = await fs.readdir(path.join(root, "tiny"), { recursive: true }).catch(() => [] as string[]);
+    expect(left.filter((name) => name.endsWith(".part") || name === "onnx/model.onnx")).toEqual([]);
+    await expect(files.ensure(model, () => undefined, AbortSignal.abort())).rejects.toBeInstanceOf(EmbeddingDownloadCancelled);
+  });
+
+  it("removes a model folder only when it holds no file (O-1)", async () => {
+    const files = new EmbeddingModelFiles(root, { baseUrl });
+    await fs.mkdir(path.join(root, "empty-model", "onnx"), { recursive: true });
+    await files.removeIfEmpty({ id: "empty-model" });
+    await files.ensure(model);
+    await files.removeIfEmpty(model);
+    await files.removeIfEmpty({ id: "never-created" });
     expect(await fs.readdir(root)).toEqual(["tiny"]);
   });
 });
