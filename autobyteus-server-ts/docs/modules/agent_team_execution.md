@@ -613,8 +613,12 @@ through the wake path below. Helpers stay closed. See
 - **Wake-on-message.** A `send_message_to` run-ID delivery from the same root,
   and an operator composer message, acquire a live lease for the target's chain.
   `assertRestorableChain` first checks that each shut-down ingress has readable
-  conversation activity; otherwise the delivery is rejected with
-  `TASK_EXECUTION_CONTEXT_UNAVAILABLE` and nothing is restored. The chain is then
+  conversation activity (a log's damaged end after an unclean shutdown does
+  not count against it); otherwise the delivery is rejected with
+  `TASK_EXECUTION_CONTEXT_UNAVAILABLE` and nothing is restored. The message
+  names the Agent or Team, its coordinator, the reason in plain words and the
+  next step (see [Agent Memory](agent_memory.md), "Conversation Activity
+  Classification For Restore"). The chain is then
   restored outermost-first in `restore` mode (native or external provider
   session) and the message is delivered. A restore failure returns
   `TASK_EXECUTION_RESTORE_FAILED` and re-arms whatever was already restored.

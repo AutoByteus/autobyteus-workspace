@@ -127,19 +127,54 @@ The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/w
 ## Conversation Activity Classification For Restore
 
 `AgentConversationActivityInspector` is a read-only activation guard over one
-resolved run memory directory. It reports `present` when the active raw-trace
-file or a manifest-declared complete rotated segment contains canonical prior
-activity, `none` when canonical activity is absent, and `indeterminate` when an
-active file, manifest, or complete segment is malformed or unreadable. Pending
-manifest entries do not count as complete history. The inspector never repairs,
-truncates, rotates, or rewrites memory.
+resolved run memory directory. It reads the active raw-trace file and each
+manifest-declared complete rotated segment with the shared memory JSONL line
+rule (`autobyteus-ts/src/memory/store/jsonl-log-file.ts`, see the
+[core memory design](../../../autobyteus-ts/docs/agent_memory_design.md)). It
+reports `present` when the complete records contain canonical prior activity
+and `none` when they do not. A damaged end of a log (what an unclean shutdown
+leaves after the last complete record: an unfinished record and/or zero bytes)
+is ignored, so a log whose complete records hold activity is `present`.
+`indeterminate` is reported for any other damage or unreadable state, and its
+error message is a plain-words reason:
+
+| Cause | Reason |
+| --- | --- |
+| A damaged line other than the damaged end | `line <N> of <file> is damaged` |
+| Missing run ID or memory folder | `its memory folder is unknown` |
+| Manifest not JSON, not an object, or with invalid segments or status | `its conversation index <manifest file> is damaged` |
+| A complete segment without a resolvable file | `its conversation index points to a missing or invalid archive file` |
+| A file-system read error | `<file> could not be read (<error code>)` |
+
+Pending manifest entries do not count as complete history. The inspector never
+repairs, truncates, rotates, or rewrites memory. The damaged end is cut by the
+core `RunMemoryFileStore`, byte-exact and with one warning (file, bytes
+removed, records kept; never content), when the store opens the log for use and
+before its first append to that file, so a restored run's next record starts on
+a clean line. There is no startup scan; an unused damaged log stays as it is.
 
 Team-member activation uses this classification before candidate construction.
 A restored native AutoByteus member with `present` activity selects local-state
 restore, while `none` permits genuinely fresh materialization. An external
 member with `present` activity but no persisted provider binding fails closed.
 `indeterminate` is always a continuation-safety error rather than permission to
-create a replacement run.
+create a replacement run; the member-activation error
+(`COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE`) includes the reason.
+
+Waking a shut-down delegated Agent or Team whose ingress member is not
+`present` is refused with `TASK_EXECUTION_CONTEXT_UNAVAILABLE` by
+`taskExecutionConversationUnavailable`
+(`src/agent-collaboration/execution/task/task-execution-conversation-availability.ts`),
+used by the Team, AgentOrg and standalone task-execution adapters. The message
+names the Agent or Team, its coordinator for a Team, and what to do:
+
+- `none`: "The delegated Agent at '/x' cannot be restored: it has no saved
+  conversation to continue. Start a new delegation for this work."
+- `indeterminate`: "The delegated Team at '/t' cannot be restored: the saved
+  conversation of its coordinator '/t/lead' cannot be read (line 3 of
+  raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a
+  new delegation for this work, or restore its saved conversation from a
+  backup."
 
 Memory Sync does not move or wrap local runtime memory. `memory/agents` and
 `memory/agent_teams` remain the active local runtime roots. Imported Memory Sync
