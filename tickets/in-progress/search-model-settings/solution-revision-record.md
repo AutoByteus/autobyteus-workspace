@@ -150,3 +150,14 @@
   - the baseline line now names SR-007;
   - Out Of Scope no longer contradicts REQ-011 (startup pre-indexing stays out of scope).
 - R-14 and R-15 went to the implementation engineer.
+
+### SR-008 — Clarification for delivery DR-001 O-5 (server-started indexing vs an open Settings panel)
+
+- Trigger: `/software_engineering_team/delivery_engineer` (run `delivery_engineer_195aed7e0be3438c91121012ccf5233a`), DR-001 blocked at verification, `Unclear`, O-5 (`release-deployment-report.md` § Verification; evidence `evidence/api-e2e/API-L11-02…03`).
+- Decision **DEC-015**, option (a) clarify, by the Solution Designer within the direction; the user was informed in the Solution Designer conversation, 2026-10-19:
+  - REQ-007: 2 s updates for work the open section shows as running; server-started work appears at the next idle refresh (≤ 10 s).
+  - AC-015: "Settings shows Ready" applies to Settings opened after the writes; an already open section shows it within 10 s of the server finishing.
+- Measured behavior meets the clarified text (server Ready 3.4–3.8 s; open panel 11.2 s ≈ 3.8 s + one idle refresh).
+- Design unchanged; no rework. The delivery evidence and merged branch stay valid.
+- Intended behavior changed: `No` (a clarification of wording written before REQ-011 to match the approved intent and the implemented design).
+- Next action: reply to the delivery engineer to resume verification on the current evidence.
