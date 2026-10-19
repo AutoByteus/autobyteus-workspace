@@ -33,7 +33,7 @@
 - Post-integration verification result: `Passed`. A first DEL-04 attempt failed one base-added suite because `dist/app.js` predated the merge. It passed after the DEL-05 rebuild (`DEL-04a-e2e-stale-dist-run.full.log.gz` is kept).
 - No-rerun rationale: N/A
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (checked again before the merge; see Repository Finalization)
+- Handoff state current with latest tracked remote base: `Yes`. After verification, the target had moved again; it was re-integrated and rechecked (see Repository Finalization).
 - Blocker: none
 
 ## Verification
@@ -62,7 +62,7 @@
 - More evidence requested: `None`
 - User check needed: `No`. Every criterion is proven through real surfaces, and nothing needs the user's accounts or nodes.
 - User check reference: N/A
-- Re-verification after later re-integration: `Not needed` (`origin/personal` had not moved when checked before the merge)
+- Re-verification after later re-integration: `Done from the rerun evidence`. `origin/personal` moved to `b35259e5b5` (an unrelated MCP credentials fix and the beta.10 bump). After the re-merge (`2fe032750f`), DEL-07 to DEL-11 all pass, including the live cascade suite. The ticket's user-facing behavior did not change, so no new user-facing evidence was needed.
 
 ## Release Decision
 
@@ -89,13 +89,13 @@
 
 - Bootstrap context source: `investigation-notes.md` (finalization target `origin` / `personal`) and RELEASE.md
 - Ticket branch: `codex/task-part-of`
-- Ticket branch commit result: pending (recorded after finalization)
+- Ticket branch commit result: `dc84794859` (docs sync, archive, delivery artifacts), then the re-integration merge `2fe032750f` and the re-integration record commit
 - Ticket branch push result: pending
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: pending
-- Delivery-owned edits protected before re-integration: pending
-- Re-integration before final merge result: pending
+- Target advanced after verification / acceptance: `Yes`, from `8d40ba3b6c` to `b35259e5b5` (9 commits: the MCP credentials fix and the `1.5.6-beta.10` bump; no file overlaps with this ticket)
+- Delivery-owned edits protected before re-integration: `Completed` (committed as `dc84794859` and pushed to `origin/codex/task-part-of`)
+- Re-integration before final merge result: `Completed`. Merge `2fe032750f` had no conflicts. DEL-07 typecheck, DEL-08 web guards, DEL-09 server unit (6079 passed), DEL-10 web (4549 passed) and DEL-11 part-of E2E (39/39, including the live cascade) all pass.
 - Target branch update result: pending
 - Merge into target result: pending
 - Push target branch result: pending

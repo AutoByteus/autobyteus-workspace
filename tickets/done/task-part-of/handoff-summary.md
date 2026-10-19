@@ -34,6 +34,21 @@ Project Task `autobyteus-171`: a "part of" relationship between Project Tasks.
 
 - A first DEL-04 attempt failed in one suite, the base's new `remove-work-trace-exports-startup`. That suite spawns `dist/app.js`, which was still the pre-merge build. After the rebuild (DEL-05) it passed. This was a stale build, not a defect. The log is kept as `DEL-04a-…`.
 
+### Re-integration before the final merge
+
+- During delivery, `origin/personal` moved on to `b35259e5b5` (9 commits: a remote MCP server credentials fix and the `1.5.6-beta.10` version bump). Nothing overlaps with this ticket.
+- It was merged into the ticket branch as `2fe032750f`, with no conflicts. Then these were rerun on that state:
+
+| Check | Command | Result |
+| --- | --- | --- |
+| DEL-07 | server typecheck | exit 0 |
+| DEL-08 | web guards (3) | all passed |
+| DEL-09 | server `test:unit` | 742 files passed, 4 skipped; 6079 tests passed, 7 skipped; exit 0 |
+| DEL-10 | web `test:nuxt --run` | 639 files passed, 2 skipped; 4549 tests passed, 3 skipped; exit 0 |
+| DEL-11 | the five part-of E2E suites, gated (`project-task-parts-live`, `project-task-boundaries`, `projects-graphql`, `project-task-search`, `project-change-feed`) | 5/5 files, 39/39 tests; exit 0 |
+
+- The user-facing behavior of this ticket did not change, so the verification below still holds.
+
 ## Verification From Evidence
 
 - Judgement: `Sufficient`. All 20 ACs are proven. Every critical AC is proven directly, and the final confidence of 96% meets the 95% target, with no category below 95%. No user check is needed.
