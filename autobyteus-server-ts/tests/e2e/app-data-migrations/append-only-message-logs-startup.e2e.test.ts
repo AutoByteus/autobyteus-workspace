@@ -142,13 +142,17 @@ const faithfulRoot = async () => {
   await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
   const fresh = await studio(root);
   const recorded = (await fresh.gql("{getAppDataMigrations{migrationId status}}")).getAppDataMigrations as Json[];
-  expect(recorded.at(-1)?.migrationId, "the conversion is registered last").toBe(OURS);
+  const ids = recorded.map((m) => String(m.migrationId));
+  expect(ids.indexOf(OWN_RUN), "own-run is registered before the conversion").toBeGreaterThanOrEqual(0);
+  expect(ids.indexOf(OURS), "own-run is registered before the conversion").toBeGreaterThan(ids.indexOf(OWN_RUN));
+  // Migrations registered after the conversion are newer than this install, so they never ran either.
+  const neverRan = [OWN_RUN, ...ids.slice(ids.indexOf(OURS))];
   await fresh.stop();
   const db = new DatabaseSync(path.join(root, "db", "production.db"));
-  for (const id of [OWN_RUN, OURS]) db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
+  for (const id of neverRan) db.prepare("DELETE FROM app_data_migration_records WHERE migration_id = ?").run(id);
   const remaining = db.prepare("SELECT migration_id FROM app_data_migration_records").all() as Json[];
   db.close();
-  expect(remaining.length, "every earlier migration stays recorded").toBe(recorded.length - 2);
+  expect(remaining.length, "every earlier migration stays recorded").toBe(recorded.length - neverRan.length);
 
   const memory = path.join(root, "memory");
   await writeReleasedDataRoot(memory);

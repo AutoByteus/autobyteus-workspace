@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../src/agent-definition/domain/models.js";
 import { AgentRunEventType } from "../../src/agent-execution/domain/agent-run-event.js";
 import { DirectAgentRunMessageGrantRegistry } from "../../src/agent-communication/services/direct-agent-run-message-grant-registry.js";
-import { AgentWorkTraceProjectionService } from "../../src/agent-work-traces/services/agent-work-trace-projection-service.js";
+import { WorkJournalService } from "../../src/agent-work-journal/services/work-journal-service.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
 import { SkillImprovementRecordLifecycle } from "../../src/skill-improvement/services/skill-improvement-record-lifecycle.js";
 import { SkillImprovementRunStore } from "../../src/skill-improvement/services/skill-improvement-run-store.js";
@@ -37,22 +37,15 @@ const writeActiveRawTraces = async (
   );
 };
 
-const workTracePackageFor = (memoryDir: string, summaryHash: string, generatedAt = "2026-01-01T00:00:00.000Z") => ({
-  target: { kind: "agent_run" as const, runId: "target-run-1" },
-  targetDisplayName: "Target Agent",
-  workTraceRootPath: path.join(memoryDir, "work_traces"),
-  manifestPath: path.join(memoryDir, "work_traces", "work_traces_manifest.json"),
-  summaryHash,
-  manifest: {
-    schemaVersion: 3 as const,
-    target: { kind: "agent_run" as const, runId: "target-run-1" },
-    targetDisplayName: "Target Agent",
-    generatedAt,
-    workTraceRootPath: path.join(memoryDir, "work_traces"),
-    manifestPath: path.join(memoryDir, "work_traces", "work_traces_manifest.json"),
-    files: [],
-  },
+const workJournalPackageFor = (memoryDir: string, evidenceHash: string) => ({
+  rootPath: path.join(memoryDir, "work_journal"),
+  manifestPath: path.join(memoryDir, "work_journal", "work_journal_manifest.json"),
+  files: [],
+  evidenceHash,
 });
+
+/** The live target run: its runtime (not the stored metadata's) selects the journal's translation (N5). */
+const liveTargetRun = { runId: "target-run-1", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK };
 
 describe("SkillImprovementService executable direct-edit flow", () => {
   let tempRoot: string;
@@ -121,9 +114,9 @@ describe("SkillImprovementService executable direct-edit flow", () => {
       capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
       targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
       skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
-      workTraceProjectionService: {
-        ensureCurrent: vi.fn(async () => workTracePackageFor(targetContext.memoryDir, "hash-123")),
-      } as any,
+      workJournalService: {
+        ensureCurrent: vi.fn(async () => workJournalPackageFor(targetContext.memoryDir, "hash-123")),
+      },
       improverSessionService: {
         activateOrGet: vi.fn(async () => ({
           target: { kind: "agent_run", runId: "target-run-1" },
@@ -137,7 +130,7 @@ describe("SkillImprovementService executable direct-edit flow", () => {
           improvementRunId: input.improvementRunId,
           requestedAt: input.requestedAt,
           targetAgentRunId: "target-run-1",
-          workTracePackage: input.workTracePackage,
+          workJournalPackage: input.workJournalPackage,
           editableSkillTargets: input.editableSkillTargets,
         })),
         postSkillImprovementRequest: vi.fn(async () => ({
@@ -154,7 +147,7 @@ describe("SkillImprovementService executable direct-edit flow", () => {
           notify: vi.fn(async () => ({ status: "next_run_only" })),
         } as any,
       }),
-      agentRunManager: { getActiveRun: vi.fn(() => ({ runId: "target-run-1" })) } as any,
+      agentRunManager: { getActiveRun: vi.fn(() => liveTargetRun) } as any,
     });
   };
 
@@ -183,7 +176,7 @@ describe("SkillImprovementService executable direct-edit flow", () => {
       .resolves.toMatchObject({ status: "completed" });
   });
 
-  it("manual trigger generates real work-trace files before posting the improver request", async () => {
+  it("manual trigger generates real Work Journal files before posting the improver request", async () => {
     await writeActiveRawTraces(targetContext.memoryDir, [
       {
         id: "manual-user-1",
@@ -277,7 +270,7 @@ describe("SkillImprovementService executable direct-edit flow", () => {
       } as any,
       targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
       skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
-      workTraceProjectionService: new AgentWorkTraceProjectionService(),
+      workJournalService: new WorkJournalService(),
       improverSessionService: new SkillImprovementImproverSessionService({
         agentRunService: agentRunService as any,
         settingsResolver: {
@@ -292,7 +285,7 @@ describe("SkillImprovementService executable direct-edit flow", () => {
         timeoutMs: 100,
       }),
       recordLifecycle: new SkillImprovementRecordLifecycle({ runStore }),
-      agentRunManager: { getActiveRun: vi.fn(() => ({ runId: "target-run-1" })) } as any,
+      agentRunManager: { getActiveRun: vi.fn(() => liveTargetRun) } as any,
     });
 
     const result = await service.startForAgentRun({
@@ -301,16 +294,16 @@ describe("SkillImprovementService executable direct-edit flow", () => {
       requestedFrom: "api",
     });
 
-    const workTraceRootPath = path.join(targetContext.memoryDir, "work_traces");
-    const manifestPath = path.join(workTraceRootPath, "work_traces_manifest.json");
-    const workTraceFilePath = path.join(workTraceRootPath, "work_trace_active.md");
+    const journalRootPath = path.join(targetContext.memoryDir, "work_journal");
+    const manifestPath = path.join(journalRootPath, "work_journal_manifest.json");
+    const journalFilePath = path.join(journalRootPath, "work_journal_active.md");
     const manifest = JSON.parse(await fs.readFile(manifestPath, "utf-8")) as Record<string, any>;
-    const workTraceContent = await fs.readFile(workTraceFilePath, "utf-8");
+    const journal = await fs.readFile(journalFilePath, "utf-8");
 
     expect(result.record).toMatchObject({
       status: "completed",
       sourceRunIds: ["target-run-1"],
-      evidenceSummaryHash: expect.any(String),
+      evidenceSummaryHash: expect.stringMatching(/^[0-9a-f]{64}$/),
       improverRunId: "improver-run-1",
       improverAgentDefinitionId: "autobyteus-retrospective-skill-improver",
       notificationSummary: {
@@ -323,47 +316,39 @@ describe("SkillImprovementService executable direct-edit flow", () => {
       agentDefinitionId: "autobyteus-retrospective-skill-improver",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     }));
-    expect(manifest).toMatchObject({
-      schemaVersion: 3,
-      target: { kind: "agent_run", runId: "target-run-1" },
-      targetDisplayName: "Target Agent",
-      workTraceRootPath,
-      manifestPath,
+    expect(manifest).toEqual({
+      run_id: "target-run-1",
+      runtime_kind: RuntimeKind.CLAUDE_AGENT_SDK,
+      renderer_revision: 1,
       files: [{
-        sourceId: "active",
-        sourceKind: "active",
-        fileName: "work_trace_active.md",
-        filePath: workTraceFilePath,
-        recordCount: 5,
+        journal_file: "work_journal_active.md",
+        source_file: "raw_traces_active.jsonl",
+        source_record_count: 5,
+        state: "open",
+        content_sha256: expect.stringMatching(/^[0-9a-f]{64}$/),
       }],
     });
-    expect(JSON.stringify(manifest)).not.toContain("renderContext");
-    expect(JSON.stringify(manifest)).not.toContain("subjectLabel");
-    expect(JSON.stringify(manifest)).not.toContain("rendererVersion");
-    expect(JSON.stringify(manifest)).not.toContain("fingerprint");
-    expect(workTraceContent.startsWith("# Work Trace\n")).toBe(true);
-    expect(workTraceContent).toContain("user:\nPlease prepare Skill Improvement evidence.");
-    expect(workTraceContent).toContain("assistant:\nVisible response for the manual trigger.");
-    expect(workTraceContent).toContain("tool:\nname: inspect_repo\nstatus: success");
-    expect(workTraceContent).not.toContain("Target Agent:");
-    expect(workTraceContent).not.toContain("assistant reasoning:");
-    expect(workTraceContent).not.toContain("INTEGRATED_REASONING_SHOULD_NOT_RENDER");
-    expect(workTraceContent).not.toContain("Source:");
-    expect(workTraceContent).not.toContain("Records:");
+    expect(journal.startsWith("# Work Journal — run target-run-1\nRuntime Claude · file active (open)")).toBe(true);
+    expect(journal).toContain("User: Please prepare Skill Improvement evidence.");
+    expect(journal).toContain("Agent: Visible response for the manual trigger.");
+    expect(journal).toContain("Tool: inspect_repo path=\"SKILL.md\" → ok");
+    expect(journal).toContain("{\"status\":\"ok\"}");
+    expect(journal).not.toContain("INTEGRATED_REASONING_SHOULD_NOT_RENDER");
 
     expect(postedMessages).toHaveLength(1);
     const postedMessage = postedMessages[0] as { content: string; metadata: Record<string, unknown> };
-    expect(postedMessage.content).toContain(`Work trace manifest: ${manifestPath}`);
-    expect(postedMessage.content).toContain(`Work trace root: ${workTraceRootPath}`);
-    expect(postedMessage.content).toContain(`1. ${workTraceFilePath}`);
+    expect(postedMessage.content).toContain("Use the listed Work Journal files as the evidence package.");
+    expect(postedMessage.content).toContain(`Work Journal manifest: ${manifestPath}`);
+    expect(postedMessage.content).toContain(`Work Journal root: ${journalRootPath}`);
+    expect(postedMessage.content).toContain(`1. ${journalFilePath}`);
     expect(postedMessage.content).toContain(`Root directory: ${path.dirname(skillMdPath)}`);
     expect(postedMessage.content).not.toContain("Visible response for the manual trigger.");
     expect(postedMessage.content).not.toContain("INTEGRATED_REASONING_SHOULD_NOT_RENDER");
     expect(postedMessage.content).not.toContain("raw_traces");
     expect(postedMessage.content).not.toContain("target worker");
     expect(postedMessage.metadata).toMatchObject({
-      skill_improvement_work_trace_manifest_path: manifestPath,
-      skill_improvement_work_trace_root_path: workTraceRootPath,
+      skill_improvement_work_journal_manifest_path: manifestPath,
+      skill_improvement_work_journal_root_path: journalRootPath,
       skill_improvement_target_agent_run_id: "target-run-1",
     });
     await expect(runStore.readRecord(result.improvementRunId))
@@ -377,7 +362,7 @@ describe("SkillImprovementService executable direct-edit flow", () => {
       capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
       targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
       skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
-      workTraceProjectionService: { ensureCurrent: vi.fn() } as any,
+      workJournalService: { ensureCurrent: vi.fn() },
       improverSessionService: improverSessionService as any,
       recordLifecycle: new SkillImprovementRecordLifecycle({ runStore }),
       agentRunManager: { getActiveRun: vi.fn(() => null) } as any,
@@ -401,15 +386,11 @@ describe("SkillImprovementService executable direct-edit flow", () => {
     expect(result.record).not.toHaveProperty("updateMetrics");
     expect(result.record).not.toHaveProperty("benefitMetrics");
   });
-  it("refreshes work traces before each improver trigger and reuses the improver run on later clicks", async () => {
+  it("refreshes the Work Journal before each improver trigger and reuses the improver run on later clicks", async () => {
     const runStore = new SkillImprovementRunStore(memoryDir);
     let projectionCount = 0;
-    const packageFor = (count: number) => workTracePackageFor(
-      targetContext.memoryDir,
-      `hash-${count}`,
-      `2026-01-01T00:00:0${count}.000Z`,
-    );
-    const workTraceProjectionService = {
+    const packageFor = (count: number) => workJournalPackageFor(targetContext.memoryDir, `hash-${count}`);
+    const workJournalService = {
       ensureCurrent: vi.fn(async () => packageFor(++projectionCount)),
     };
     const improverSession = {
@@ -426,7 +407,7 @@ describe("SkillImprovementService executable direct-edit flow", () => {
         improvementRunId: input.improvementRunId,
         requestedAt: input.requestedAt,
         targetAgentRunId: "target-run-1",
-        workTracePackage: input.workTracePackage,
+        workJournalPackage: input.workJournalPackage,
         editableSkillTargets: input.editableSkillTargets,
       })),
       postSkillImprovementRequest: vi.fn(async () => ({
@@ -444,35 +425,35 @@ describe("SkillImprovementService executable direct-edit flow", () => {
       capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
       targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
       skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
-      workTraceProjectionService: workTraceProjectionService as any,
+      workJournalService,
       improverSessionService: improverSessionService as any,
       recordLifecycle: new SkillImprovementRecordLifecycle({ runStore }),
-      agentRunManager: { getActiveRun: vi.fn(() => ({ runId: "target-run-1" })) } as any,
+      agentRunManager: { getActiveRun: vi.fn(() => liveTargetRun) } as any,
     });
 
     await service.startFromImprovementRequest(request("improvement-first-click"));
     await service.startFromImprovementRequest(request("improvement-later-click"));
 
-    expect(workTraceProjectionService.ensureCurrent).toHaveBeenCalledTimes(2);
-    expect(workTraceProjectionService.ensureCurrent).toHaveBeenNthCalledWith(1, {
-      target: { kind: "agent_run", runId: "target-run-1" },
+    expect(workJournalService.ensureCurrent).toHaveBeenCalledTimes(2);
+    expect(workJournalService.ensureCurrent).toHaveBeenNthCalledWith(1, {
+      runId: "target-run-1",
       memoryDir: targetContext.memoryDir,
-      targetDisplayName: "Target Agent",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     });
-    expect(workTraceProjectionService.ensureCurrent).toHaveBeenNthCalledWith(2, {
-      target: { kind: "agent_run", runId: "target-run-1" },
+    expect(workJournalService.ensureCurrent).toHaveBeenNthCalledWith(2, {
+      runId: "target-run-1",
       memoryDir: targetContext.memoryDir,
-      targetDisplayName: "Target Agent",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     });
     expect(improverSessionService.activateOrGet).toHaveBeenCalledTimes(2);
     expect(improverSessionService.postSkillImprovementRequest).toHaveBeenCalledTimes(2);
     expect(improverSessionService.postSkillImprovementRequest.mock.calls[0][0].improverRunId).toBe("improver-run-1");
     expect(improverSessionService.postSkillImprovementRequest.mock.calls[1][0].improverRunId).toBe("improver-run-1");
-    expect(improverSessionService.postSkillImprovementRequest.mock.calls[0][1].workTracePackage.summaryHash).toBe("hash-1");
-    expect(improverSessionService.postSkillImprovementRequest.mock.calls[1][1].workTracePackage.summaryHash).toBe("hash-2");
-    expect(workTraceProjectionService.ensureCurrent.mock.invocationCallOrder[0])
+    expect(improverSessionService.postSkillImprovementRequest.mock.calls[0][1].workJournalPackage.evidenceHash).toBe("hash-1");
+    expect(improverSessionService.postSkillImprovementRequest.mock.calls[1][1].workJournalPackage.evidenceHash).toBe("hash-2");
+    expect(workJournalService.ensureCurrent.mock.invocationCallOrder[0])
       .toBeLessThan(improverSessionService.postSkillImprovementRequest.mock.invocationCallOrder[0]);
-    expect(workTraceProjectionService.ensureCurrent.mock.invocationCallOrder[1])
+    expect(workJournalService.ensureCurrent.mock.invocationCallOrder[1])
       .toBeLessThan(improverSessionService.postSkillImprovementRequest.mock.invocationCallOrder[1]);
     await expect(runStore.readRecord("improvement-later-click"))
       .resolves.toMatchObject({ status: "completed", improverRunId: "improver-run-1", evidenceSummaryHash: "hash-2" });
@@ -484,9 +465,9 @@ describe("SkillImprovementService executable direct-edit flow", () => {
       capabilityService: { requireEnabled: vi.fn(async () => undefined) } as any,
       targetContextResolver: { resolve: vi.fn(async () => targetContext) } as any,
       skillTargetResolver: { resolveForAgentDefinition: vi.fn(async () => [skillTarget]) } as any,
-      workTraceProjectionService: {
-        ensureCurrent: vi.fn(async () => workTracePackageFor(targetContext.memoryDir, "hash-123")),
-      } as any,
+      workJournalService: {
+        ensureCurrent: vi.fn(async () => workJournalPackageFor(targetContext.memoryDir, "hash-123")),
+      },
       improverSessionService: {
         activateOrGet: vi.fn(async () => ({
           target: { kind: "agent_run", runId: "target-run-1" },
@@ -500,7 +481,7 @@ describe("SkillImprovementService executable direct-edit flow", () => {
           improvementRunId: input.improvementRunId,
           requestedAt: input.requestedAt,
           targetAgentRunId: "target-run-1",
-          workTracePackage: input.workTracePackage,
+          workJournalPackage: input.workJournalPackage,
           editableSkillTargets: input.editableSkillTargets,
         })),
         postSkillImprovementRequest: vi.fn(async () => {
@@ -508,7 +489,7 @@ describe("SkillImprovementService executable direct-edit flow", () => {
         }),
       } as any,
       recordLifecycle: new SkillImprovementRecordLifecycle({ runStore }),
-      agentRunManager: { getActiveRun: vi.fn(() => ({ runId: "target-run-1" })) } as any,
+      agentRunManager: { getActiveRun: vi.fn(() => liveTargetRun) } as any,
     });
 
     await expect(service.startFromImprovementRequest(request("improvement-improver-error")))

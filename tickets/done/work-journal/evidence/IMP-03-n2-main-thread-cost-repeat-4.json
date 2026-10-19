@@ -1,0 +1,92 @@
+{
+  "thresholdsMs": {
+    "p90": 100,
+    "max": 1000
+  },
+  "node": "v22.23.1",
+  "platform": "darwin arm64",
+  "p90": {
+    "fixture": {
+      "mb": 5.2,
+      "records": 2100,
+      "turns": 140
+    },
+    "cold": {
+      "wallMs": 86,
+      "longestBlockMs": 82,
+      "eventLoopMaxDelayMs": 75,
+      "journalBytes": 2075586
+    },
+    "warm": [
+      {
+        "wallMs": 102,
+        "longestBlockMs": 92,
+        "eventLoopMaxDelayMs": 92,
+        "journalBytes": 2090353
+      },
+      {
+        "wallMs": 85,
+        "longestBlockMs": 77,
+        "eventLoopMaxDelayMs": 77,
+        "journalBytes": 2090353
+      },
+      {
+        "wallMs": 96,
+        "longestBlockMs": 83,
+        "eventLoopMaxDelayMs": 83,
+        "journalBytes": 2090353
+      }
+    ],
+    "warmBreakdownMs": {
+      "listFilesMs": 5,
+      "readAndNormalizeMs": 16,
+      "renderMs": 56,
+      "hashMs": 3
+    },
+    "worstBlockMs": 92,
+    "thresholdMs": 100,
+    "withinThreshold": true
+  },
+  "max": {
+    "fixture": {
+      "mb": 28,
+      "records": 11265,
+      "turns": 751
+    },
+    "cold": {
+      "wallMs": 412,
+      "longestBlockMs": 366,
+      "eventLoopMaxDelayMs": 366,
+      "journalBytes": 11093518
+    },
+    "warm": [
+      {
+        "wallMs": 689,
+        "longestBlockMs": 645,
+        "eventLoopMaxDelayMs": 645,
+        "journalBytes": 11108285
+      },
+      {
+        "wallMs": 515,
+        "longestBlockMs": 465,
+        "eventLoopMaxDelayMs": 465,
+        "journalBytes": 11108285
+      },
+      {
+        "wallMs": 425,
+        "longestBlockMs": 397,
+        "eventLoopMaxDelayMs": 397,
+        "journalBytes": 11108285
+      }
+    ],
+    "warmBreakdownMs": {
+      "listFilesMs": 28,
+      "readAndNormalizeMs": 100,
+      "renderMs": 254,
+      "hashMs": 18
+    },
+    "worstBlockMs": 645,
+    "thresholdMs": 1000,
+    "withinThreshold": true
+  }
+}

@@ -273,7 +273,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runSessions: deactivator,
         runFileChangeService: createNoopSidecar() as never,
         publishedArtifactRelayService: createNoopSidecar() as never,
-        memoryRecorder: recorder,
+        memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
       }),
     );
     const manager = new AgentRunManager({
@@ -482,7 +482,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runSessions: deactivator,
         runFileChangeService: createNoopSidecar() as never,
         publishedArtifactRelayService: createNoopSidecar() as never,
-        memoryRecorder: recorder,
+        memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
       }),
     );
     const manager = new AgentRunManager({
@@ -634,7 +634,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runSessions: deactivator,
         runFileChangeService: createNoopSidecar() as never,
         publishedArtifactRelayService: createNoopSidecar() as never,
-        memoryRecorder: recorder,
+        memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
       }),
     );
     const manager = new AgentRunManager({

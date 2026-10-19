@@ -1,0 +1,29 @@
+# Check: IMP-10
+# Command: (cd autobyteus-web && pnpm exec vitest run services/runHydration/__tests__/runProjectionConversation.spec.ts)
+# Commit: ea867f9708 (branch codex/work-journal)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T03:55:53Z
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-web
+
+stderr | services/runHydration/__tests__/runProjectionConversation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/runProjectionConversation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts (14 tests) 7ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  05:55:57
+   Duration  8.21s (transform 4.43s, setup 7.53s, collect 30ms, tests 7ms, environment 232ms, prepare 147ms)
+
+# Exit status: 0

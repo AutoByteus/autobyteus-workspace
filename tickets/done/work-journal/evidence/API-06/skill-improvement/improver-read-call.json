@@ -1,0 +1,14 @@
+{
+  "id": "rt_1792385297941_turn_0001_835196186_call",
+  "ts": 1792385297.941,
+  "turn_id": "turn_0001",
+  "seq": 4,
+  "trace_type": "tool_call",
+  "content": "",
+  "source_event": "PendingToolInvocationEvent",
+  "tool_name": "read_file",
+  "tool_call_id": "835196186",
+  "tool_args": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-59ATFw/memory/agents/journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc/work_journal/work_journal_manifest.json"
+  }
+}

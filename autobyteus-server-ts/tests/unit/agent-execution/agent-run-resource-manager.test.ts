@@ -11,12 +11,14 @@ describe("AgentRunResourceManager", () => {
     const fileDispose = vi.fn();
     const relayDispose = vi.fn();
     const memoryDispose = vi.fn();
+    const journalDispose = vi.fn();
     const deactivateForRun = vi.fn(() => 2);
     const manager = new AgentRunResourceManager({
       runSessions: { deactivateForRun },
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => relayDispose) },
       memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
+      workJournalUpdater: { attachToRun: vi.fn(() => journalDispose) },
     } as never);
     const run = createRun("run-1");
 
@@ -27,13 +29,14 @@ describe("AgentRunResourceManager", () => {
     expect(first).toMatchObject({
       state: "released",
       deactivatedSessionCount: 2,
-      detached: { fileChanges: true, artifactRelay: true, memoryRecorder: true },
+      detached: { fileChanges: true, artifactRelay: true, memoryRecorder: true, workJournal: true },
     });
     expect(second.state).toBe("already_released");
     expect(deactivateForRun).toHaveBeenCalledTimes(1);
     expect(fileDispose).toHaveBeenCalledTimes(1);
     expect(relayDispose).toHaveBeenCalledTimes(1);
     expect(memoryDispose).toHaveBeenCalledTimes(1);
+    expect(journalDispose).toHaveBeenCalledTimes(1);
   });
 
   it("rolls back partial attachment before reporting the original failure", () => {
@@ -46,6 +49,7 @@ describe("AgentRunResourceManager", () => {
         attachToRun: vi.fn(() => { throw new Error("relay attach failed"); }),
       },
       memoryRecorder: { attachToRun: vi.fn() },
+      workJournalUpdater: { attachToRun: vi.fn() },
     } as never);
     const run = createRun("run-partial");
 
@@ -68,6 +72,7 @@ describe("AgentRunResourceManager", () => {
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => relayDispose) },
       memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
+      workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
     } as never);
     const run = createRun("run-errors");
     manager.attach(run as never);
@@ -96,6 +101,7 @@ describe("AgentRunResourceManager", () => {
       runFileChangeService: { attachToRun: vi.fn(() => vi.fn()) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => vi.fn()) },
       memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
+      workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
       lifecycleObserver: { runReleased },
     } as never);
     const run = createRun("run-observed");
