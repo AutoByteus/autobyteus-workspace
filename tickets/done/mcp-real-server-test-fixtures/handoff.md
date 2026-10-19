@@ -27,3 +27,12 @@ AC-001…AC-009: runs with `uv`, without `uv`, with forced preparation failure, 
 
 ## Route Record
 - 2026-10-19: `get_handoff_rules` matched "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low". Recipient: `/software_engineering_team/implementation_engineer`.
+
+## User confirmation, 2026-10-19 (Solution Designer conversation)
+
+The user asked whether this ticket commits anything. Explained: it adds test code only (no product code). The user: "Or just test code. Test code should be fixed." So the commit is **test code only**:
+- the test servers, the rewritten tests and the opt-in check;
+- the removed `cert.pem`;
+- the TESTING.md row.
+
+No product source change and no release. If a new test exposes a product defect, that is not fixed here: route it as a failure or a follow-up per `ticket-scope.md`. Finalization: merge the test code into `personal`, no release, clean up the worktree.

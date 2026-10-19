@@ -91,6 +91,17 @@ dependency; keep a single copy in `pnpm-lock.yaml`. An SDK upgrade therefore
 changes the external-server client path for every runtime. Rerun these with
 the new SDK:
 
+- `autobyteus-ts/tests/integration/tools/mcp` (ungated; the command is the
+  "Core library MCP integration" row of `TESTING.md`). These tests run the
+  MCP client against the repository's own tiny real MCP servers
+  (`autobyteus-ts/tests/fixtures/mcp-test-server/`, Python via `uv run`, and
+  `mcp-stdio-fixture-server.mjs`, Node) over stdio and streamable HTTP. They
+  cover tools, structured content, tool errors, slow calls, env and cwd, exit
+  and hang at start, closing, and the auth header. Without `uv`, or when `uv`
+  cannot prepare the fixture, the Python cases skip with the reason and the
+  Node cases still run. The opt-in `real-user-kind-mcp-server.test.ts`
+  (`RUN_REAL_MCP_SERVER_E2E=1`, `AUTOBYTEUS_MCPS_DIR`) also lists the tools of a
+  real `uv` server folder from a temp copy.
 - `tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts` and
   `mcp-http-redirect-and-transport.e2e.test.ts` (ungated; need a current
   server build): credentials on every request, the redirect rule and the

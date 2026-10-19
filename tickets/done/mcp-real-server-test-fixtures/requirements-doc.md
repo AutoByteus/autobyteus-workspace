@@ -50,6 +50,9 @@
 
 ### Non-Goals
 
+The commit is test code only, with no product source and no release; the user confirmed this on 2026-10-19 ("Or just test code. Test code should be fixed.").
+
+
 No new MCP features in the fixtures beyond what the tests need; no test of the user's real configuration.
 
 ### Prerequisites
