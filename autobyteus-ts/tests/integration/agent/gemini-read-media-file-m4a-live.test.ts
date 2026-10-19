@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import os from 'node:os';
@@ -24,6 +24,8 @@ import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { ReadMediaFile } from '../../../src/tools/multimedia/media-reader-tool.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
 import { registerToolClass } from '../../../src/tools/tool-meta.js';
+import type { GeminiRuntimeResolver } from '../../../src/utils/gemini-runtime.js';
+import { liveProviderTest } from '../../../../test-support/test-vault/test-vault.js';
 
 const LIVE_FLAG_ENV = 'AUTOBYTEUS_RUN_GEMINI_M4A_LIVE';
 const LIVE_MODEL_ENV = 'AUTOBYTEUS_GEMINI_M4A_LIVE_MODEL';
@@ -31,23 +33,11 @@ const LIVE_MODEL_ENV = 'AUTOBYTEUS_GEMINI_M4A_LIVE_MODEL';
 const isEnabled = (value: string | undefined): boolean =>
   ['1', 'true', 'yes', 'on'].includes((value ?? '').trim().toLowerCase());
 
-const hasVertexApiKey = Boolean(process.env.VERTEX_AI_API_KEY);
-const hasVertexProjectAndLocation = Boolean(process.env.VERTEX_AI_PROJECT && process.env.VERTEX_AI_LOCATION);
-const googleCredentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-const hasExplicitGoogleCredentials = Boolean(
-  googleCredentialsPath && fs.existsSync(googleCredentialsPath),
-);
-const defaultGcloudAdcPath = path.join(
-  process.env.HOME ?? '',
-  '.config',
-  'gcloud',
-  'application_default_credentials.json',
-);
-const hasDefaultGoogleCredentials = fs.existsSync(defaultGcloudAdcPath);
-const hasVertex = hasVertexApiKey || (hasVertexProjectAndLocation && (hasExplicitGoogleCredentials || hasDefaultGoogleCredentials));
-const hasApiKey = Boolean(process.env.GEMINI_API_KEY);
-const shouldRunLiveM4a = isEnabled(process.env[LIVE_FLAG_ENV]) && (hasVertex || hasApiKey);
-const runLiveM4aIntegration = shouldRunLiveM4a ? describe : describe.skip;
+const live = liveProviderTest('Gemini');
+// Also needs its own flag: the m4a continuation uses a costly Gemini Pro model.
+const runLiveM4aIntegration = isEnabled(process.env[LIVE_FLAG_ENV]) ? live.describe : describe.skip;
+// Gemini takes its mode explicitly (a mode, not a key): AI Studio, keyed from the test vault.
+const aiStudioMode: GeminiRuntimeResolver = async () => ({ kind: 'aiStudio' });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -84,7 +74,7 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
     await fsp.rm(tempDir, { recursive: true, force: true });
   });
 
-  it('sends a read_media_file .m4a tool result continuation to direct Gemini', async () => {
+  live.it('sends a read_media_file .m4a tool result continuation to direct Gemini', async () => {
     expect(fs.existsSync(sourceAudioPath)).toBe(true);
     const workspaceAudioPath = path.join(workspaceRoot, 'test_audio.m4a');
     await fsp.copyFile(sourceAudioPath, workspaceAudioPath);
@@ -159,7 +149,7 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
       systemMessage: 'You are validating direct Gemini audio input. Follow the user transcription instruction.',
       temperature: 0,
       maxTokens: 512
-    }));
+    }), undefined, aiStudioMode);
 
     try {
       const response = await llm.sendMessages(request.outboundMessages);

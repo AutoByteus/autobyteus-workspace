@@ -24,6 +24,13 @@ const SEARCH_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
   vertex_ai_search: "search.vertex-ai.api-key",
 });
 
+const FIXED_SECRET_IDS: readonly string[] = Object.freeze([
+  ...Object.values(API_KEY_BINDINGS),
+  ...Object.values(SEARCH_BINDINGS),
+  "provider.google.ai-studio.api-key",
+  "provider.google.vertex-express.api-key",
+]);
+
 export class ProviderCredentialCatalog {
   resolve(consumer: SecretConsumerIdentity): SecretId {
     if (consumer.kind === "agentRuntime") {
@@ -67,11 +74,13 @@ export class ProviderCredentialCatalog {
 
   isKnownSecretId(value: SecretId): boolean {
     const candidate = String(value);
-    return Object.values(API_KEY_BINDINGS).includes(candidate)
-      || Object.values(SEARCH_BINDINGS).includes(candidate)
-      || candidate === "provider.google.ai-studio.api-key"
-      || candidate === "provider.google.vertex-express.api-key"
+    return FIXED_SECRET_IDS.includes(candidate)
       || /^provider\.openai-compatible\.[a-z0-9_-]+\.api-key$/.test(candidate);
+  }
+
+  /** Every built-in secret ID, sorted (custom OpenAI-compatible provider IDs are open-ended). */
+  listFixedSecretIds(): SecretId[] {
+    return [...FIXED_SECRET_IDS].sort().map(secretId);
   }
 
   describeBinding(consumer: SecretConsumerIdentity): { key: string; secretId: SecretId } {

@@ -1,5 +1,5 @@
 import fsp from "node:fs/promises";
-import { DatabaseSync } from "node:sqlite";
+import type { DatabaseSync } from "node:sqlite";
 import type { ApplicationDatabaseLocation } from "../../config/application-database-location.js";
 import {
   SECRET_VAULT_DOMAIN_ID_BYTES,
@@ -9,6 +9,13 @@ import {
   verifyVaultVerifier,
 } from "../crypto/secret-vault-crypto.js";
 import type { SecretId } from "../domain/secret-id.js";
+import {
+  hasRequiredSecretVaultColumns,
+  openReadOnlyVaultDatabase,
+  presentSecretVaultTables,
+  SECRET_VAULT_METADATA_ROWS_QUERY,
+  type SecretVaultMetadataRow,
+} from "../persistence/secret-vault-sqlite-schema.js";
 import { SecretRootKeyFile } from "../root-key/secret-root-key-file.js";
 
 export type ImportTargetState =
@@ -36,43 +43,6 @@ export type ImportTargetInspection = {
     blocked: number;
   };
   instructionCode?: string;
-};
-
-type MetadataRow = {
-  singleton_id: number;
-  encryption_domain_id: Uint8Array;
-  encryption_format_version: number;
-  verifier_nonce: Uint8Array;
-  verifier_ciphertext: Uint8Array;
-  verifier_authentication_tag: Uint8Array;
-};
-
-const REQUIRED_COLUMNS = Object.freeze({
-  secret_entries: new Set([
-    "secret_id",
-    "nonce",
-    "ciphertext",
-    "authentication_tag",
-  ]),
-  secret_encryption_metadata: new Set([
-    "singleton_id",
-    "encryption_domain_id",
-    "encryption_format_version",
-    "verifier_nonce",
-    "verifier_ciphertext",
-    "verifier_authentication_tag",
-  ]),
-});
-
-const hasRequiredColumns = (
-  database: DatabaseSync,
-  table: keyof typeof REQUIRED_COLUMNS,
-): boolean => {
-  const columns = new Set(
-    (database.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>)
-      .map((row) => row.name),
-  );
-  return [...REQUIRED_COLUMNS[table]].every((name) => columns.has(name));
 };
 
 const instructionFor = (state: ImportTargetState): string | undefined => ({
@@ -117,14 +87,8 @@ export class SecretVaultInspectionService {
 
     let database: DatabaseSync | null = null;
     try {
-      database = new DatabaseSync(this.location.databasePath, { readOnly: true });
-      database.exec("PRAGMA query_only=ON; PRAGMA busy_timeout=1000;");
-      const tableNames = new Set(
-        (database.prepare(
-          "SELECT name FROM sqlite_master WHERE type = 'table' AND name IN (?, ?)",
-        ).all("secret_entries", "secret_encryption_metadata") as Array<{ name: string }>)
-          .map((row) => row.name),
-      );
+      database = openReadOnlyVaultDatabase(this.location.databasePath);
+      const tableNames = presentSecretVaultTables(database);
       if (tableNames.size === 0) {
         key.state === "VALID" && key.key.fill(0);
         return this.initializationRequired(orderedIds);
@@ -132,8 +96,8 @@ export class SecretVaultInspectionService {
       if (
         !tableNames.has("secret_entries")
         || !tableNames.has("secret_encryption_metadata")
-        || !hasRequiredColumns(database, "secret_entries")
-        || !hasRequiredColumns(database, "secret_encryption_metadata")
+        || !hasRequiredSecretVaultColumns(database, "secret_entries")
+        || !hasRequiredSecretVaultColumns(database, "secret_encryption_metadata")
       ) {
         key.state === "VALID" && key.key.fill(0);
         return this.closed("CORRUPT", orderedIds);
@@ -142,12 +106,8 @@ export class SecretVaultInspectionService {
       const entryCount = Number(
         (database.prepare("SELECT COUNT(*) AS count FROM secret_entries").get() as { count: number }).count,
       );
-      const metadataRows = database.prepare(`
-        SELECT singleton_id, encryption_domain_id, encryption_format_version,
-               verifier_nonce, verifier_ciphertext, verifier_authentication_tag
-          FROM secret_encryption_metadata
-         LIMIT 2
-      `).all() as MetadataRow[];
+      const metadataRows = database.prepare(SECRET_VAULT_METADATA_ROWS_QUERY)
+        .all() as SecretVaultMetadataRow[];
       if (metadataRows.length === 0 && entryCount === 0) {
         key.state === "VALID" && key.key.fill(0);
         return this.initializationRequired(orderedIds);

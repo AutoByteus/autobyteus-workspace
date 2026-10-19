@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { expect, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
 import os from 'node:os';
@@ -14,10 +14,9 @@ import { LLMProvider } from '../../../src/llm/providers.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { SkillRegistry } from '../../../src/skills/registry.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
-import { skipIfProviderAccessError } from '../helpers/provider-access.js';
+import { liveProviderTest } from '../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.OPENAI_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('OpenAI');
 
 const DEFAULT_MODEL_ID = 'gpt-5.5';
 const modelId = process.env.OPENAI_AGENT_FLOW_MODEL ?? DEFAULT_MODEL_ID;
@@ -105,7 +104,7 @@ const buildOpenAIFlowLLM = () =>
     })
   );
 
-runIntegration('OpenAI single-agent flow', () => {
+live.describe('OpenAI single-agent flow', () => {
   let tempDir: string;
   let memoryDir: string;
 
@@ -122,7 +121,7 @@ runIntegration('OpenAI single-agent flow', () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it('executes a real OpenAI tool flow and persists strict call/result JSONL', async () => {
+  live.it('executes a real OpenAI tool flow and persists strict call/result JSONL', async () => {
     const workspace = tempDir;
     const artifactPath = path.join(workspace, 'openai-agent-single-flow.md');
     const expectedSnippets = [
@@ -296,11 +295,6 @@ runIntegration('OpenAI single-agent flow', () => {
       expect(results[0]).not.toHaveProperty('tool_args');
       expect(rawTraces.indexOf(calls[0])).toBeLessThan(rawTraces.indexOf(results[0]));
       console.info('OPENAI_LIVE_TOOL_MEMORY_ASSERTIONS=PASS');
-    } catch (error) {
-      if (skipIfProviderAccessError('OpenAI', modelId, error)) {
-        return;
-      }
-      throw error;
     } finally {
       notifier?.unsubscribe(EventType.AGENT_TOOL_EXECUTION_STARTED, onToolStarted);
       notifier?.unsubscribe(EventType.AGENT_TOOL_EXECUTION_SUCCEEDED, onToolSucceeded);

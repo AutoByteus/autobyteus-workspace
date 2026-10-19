@@ -196,8 +196,8 @@ export class LLMFactory {
 
   static async createLLM(
     modelIdentifier: string,
-    configInput: LLMFactoryConfigInput | undefined,
-    apiKeyResolver: ProviderApiKeyResolver,
+    configInput?: LLMFactoryConfigInput,
+    apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): Promise<BaseLLM> {
     await LLMFactory.ensureInitialized();

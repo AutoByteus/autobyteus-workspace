@@ -10,7 +10,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnvironment } from "../helpers/live-runtime-secret-vault-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 
 /**
  * The collaboration model on real runtimes (live, paid/local inference): agent-initiated-collaborators SR-005 as revised by
@@ -42,9 +42,10 @@ import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnviro
  *   ID, CLAUDE_E2E_STALE_MODEL; Codex only with CODEX_E2E_STALE_MODEL) gets the failure reason for a catalog copy and
  *   the not-found answer for an outside message; nothing is added.
  *
- * Gates (each runtime independently): RUN_LMSTUDIO_E2E=1 (AutoByteus over LM Studio), RUN_DEEPSEEK_E2E=1 with
- * DEEPSEEK_API_KEY in the environment (AutoByteus over DeepSeek; the key is saved into the test vault), RUN_CODEX_E2E=1,
- * RUN_CLAUDE_E2E=1, RUN_AGY_E2E=1, RUN_GROK_E2E=1 (ACP), plus the runtime's CLI on PATH.
+ * Gates (each runtime independently): RUN_LMSTUDIO_E2E=1 (AutoByteus over LM Studio), RUN_DEEPSEEK_E2E=1 (AutoByteus
+ * over DeepSeek; set AUTOBYTEUS_TEST_VAULT so the key comes from the test vault, see TESTING.md#test-vault; a missing
+ * key is reported as a skip), RUN_CODEX_E2E=1, RUN_CLAUDE_E2E=1, RUN_AGY_E2E=1, RUN_GROK_E2E=1 (ACP), plus the
+ * runtime's CLI on PATH.
  * Root cases (LE-T1, LE-O1) run for the runtimes listed in AIC_ROOT_RUNTIMES (default: claude_agent_sdk).
  * Model overrides: LMSTUDIO_MODEL_ID, CODEX_E2E_TOOL_MODEL, CLAUDE_E2E_TOOL_MODEL, AGY_E2E_TOOL_MODEL, GROK_E2E_MODEL.
  * Per-step timeout override: COLLABORATOR_E2E_STEP_TIMEOUT_MS (default 360000).
@@ -58,8 +59,8 @@ type RuntimeCase = Readonly<{
   enabled: boolean;
   /** AutoByteus provider whose catalog to load (LM Studio by default). */
   provider?: string;
-  /** Provider credentials come from the environment and are saved into the test vault (live-runtime helper). */
-  vaultCredentials?: boolean;
+  /** The provider key this runtime needs from the live vault (the test vault when selected). */
+  requiredSecretId?: string;
   pickModel(models: string[]): string | null;
   toolHint?: string;
 }>;
@@ -83,8 +84,8 @@ const RUNTIMES: readonly RuntimeCase[] = [
     id: "autobyteus_deepseek",
     runtimeKind: "autobyteus",
     provider: "DEEPSEEK",
-    vaultCredentials: true,
-    enabled: process.env.RUN_DEEPSEEK_E2E === "1" && Boolean(process.env.DEEPSEEK_API_KEY?.trim()),
+    requiredSecretId: "provider.deepseek.api-key",
+    enabled: process.env.RUN_DEEPSEEK_E2E === "1",
     pickModel: (models) => preferred(process.env.DEEPSEEK_E2E_MODEL, ["deepseek-v4-flash"], models)
       ?? models.find((model) => /^deepseek-v4-flash/.test(model)) ?? models.find((model) => /^deepseek/.test(model)) ?? null,
   },
@@ -412,7 +413,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
     dataDir = await mkdtemp(path.join(os.tmpdir(), "aic-e2e-appdata-"));
     await writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(dataDir);
-    if (RUNTIMES.some((runtime) => runtime.enabled && runtime.vaultCredentials)) await initializeLiveRuntimeSecretVaultFromEnvironment();
+    if (RUNTIMES.some((runtime) => runtime.enabled && runtime.requiredSecretId)) await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
     mainUrl = started.mainUrl;
@@ -438,7 +439,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
   afterAll(async () => {
     await app?.close();
     app = null;
-    if (RUNTIMES.some((runtime) => runtime.enabled && runtime.vaultCredentials)) await closeLiveRuntimeSecretVault();
+    if (RUNTIMES.some((runtime) => runtime.enabled && runtime.requiredSecretId)) await closeLiveServerVault();
     for (const workspace of workspaces) await rm(workspace, { recursive: true, force: true });
     if (dataDir) await rm(dataDir, { recursive: true, force: true });
   }, 180_000);
@@ -467,7 +468,8 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
   for (const runtime of RUNTIMES) {
     const rootCases = runtime.enabled && (ROOT_RUNTIMES.has(runtime.runtimeKind) || ROOT_RUNTIMES.has(runtime.id ?? ""));
 
-    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID`, async () => {
+    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID`, async (ctx) => {
+      if (runtime.requiredSecretId) await requireLiveCapability(ctx, runtime.requiredSecretId);
       const available = await modelsFor(runtime);
       const model = runtime.pickModel(available);
       expect(model, `no model for ${runtime.runtimeKind} in ${JSON.stringify(available).slice(0, 400)}`).toBeTruthy();
@@ -584,7 +586,8 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       if (listed) expect(second).toEqual(first);
     }, 2_400_000);
 
-    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A2 three catalog copies with source, each one unit; restore after Stop`, async () => {
+    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A2 three catalog copies with source, each one unit; restore after Stop`, async (ctx) => {
+      if (runtime.requiredSecretId) await requireLiveCapability(ctx, runtime.requiredSecretId);
       const model = runtime.pickModel(await modelsFor(runtime));
       const hint = runtime.toolHint ?? "";
       instructionsVisible = runtime.runtimeKind === "claude_agent_sdk";
@@ -676,7 +679,8 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       expect(toolCallResults(woken, "get_handoff_rules").at(-1), "a restored catalog copy keeps its own handoffs").toContain(`${squad.squadAddress}/mate`);
     }, 2_400_000);
 
-    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop`, async () => {
+    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop`, async (ctx) => {
+      if (runtime.requiredSecretId) await requireLiveCapability(ctx, runtime.requiredSecretId);
       const model = runtime.pickModel(await modelsFor(runtime));
       const hint = runtime.toolHint ?? "";
       instructionsVisible = runtime.runtimeKind === "claude_agent_sdk";
@@ -749,7 +753,8 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       expect(copyPath(stored.execution_tree, String(echoCopy.agentRunId)), "placement kept after Stop").toBe(copyPath(placed, String(echoCopy.agentRunId)));
     }, 2_400_000);
 
-    it.runIf(rootCases)(`${runtime.id ?? runtime.runtimeKind}: LE-T1 Team root — catalog copies stay apart with their own scope; a teammate is refused; catalog Agent copies get none; configured scope kept after Stop → reopen`, async () => {
+    it.runIf(rootCases)(`${runtime.id ?? runtime.runtimeKind}: LE-T1 Team root — catalog copies stay apart with their own scope; a teammate is refused; catalog Agent copies get none; configured scope kept after Stop → reopen`, async (ctx) => {
+      if (runtime.requiredSecretId) await requireLiveCapability(ctx, runtime.requiredSecretId);
       const model = runtime.pickModel(await modelsFor(runtime));
       const hint = runtime.toolHint ?? "";
       instructionsVisible = runtime.runtimeKind === "claude_agent_sdk";
@@ -886,7 +891,8 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       expect(copyPath(reopened, str(copyEcho, "agentRunId")), "placement kept after reopen").toBe(copyPath(placed, str(copyEcho, "agentRunId")));
     }, 2_400_000);
 
-    it.runIf(rootCases)(`${runtime.id ?? runtime.runtimeKind}: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a mounted member's teammate is refused; an outside message is not found`, async () => {
+    it.runIf(rootCases)(`${runtime.id ?? runtime.runtimeKind}: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a mounted member's teammate is refused; an outside message is not found`, async (ctx) => {
+      if (runtime.requiredSecretId) await requireLiveCapability(ctx, runtime.requiredSecretId);
       const model = runtime.pickModel(await modelsFor(runtime));
       const hint = runtime.toolHint ?? "";
       instructionsVisible = runtime.runtimeKind === "claude_agent_sdk";
@@ -1048,7 +1054,8 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       expect(copyPath(reopenedOrg, catalogCopyRunId), "placement kept after restore").toBe(copyPath(placedOrg, catalogCopyRunId));
     }, 2_400_000);
 
-    it.runIf(runtime.enabled && Boolean(staleModelFor(runtime.runtimeKind)))(`${runtime.id ?? runtime.runtimeKind}: LE-F1 SC-004 — a run whose model left the catalog: a catalog copy fails with the reason, an outside message is not found, and nothing is added`, async () => {
+    it.runIf(runtime.enabled && Boolean(staleModelFor(runtime.runtimeKind)))(`${runtime.id ?? runtime.runtimeKind}: LE-F1 SC-004 — a run whose model left the catalog: a catalog copy fails with the reason, an outside message is not found, and nothing is added`, async (ctx) => {
+      if (runtime.requiredSecretId) await requireLiveCapability(ctx, runtime.requiredSecretId);
       const staleModel = staleModelFor(runtime.runtimeKind)!;
       const offered = await modelsFor(runtime);
       expect(offered.includes(staleModel), `${staleModel} must not be in the ${runtime.runtimeKind} catalog (${offered.join(", ")})`).toBe(false);

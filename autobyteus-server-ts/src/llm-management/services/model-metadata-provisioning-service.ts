@@ -16,7 +16,7 @@ import { GeminiDeveloperApiModelMetadataProvider } from 'autobyteus-ts/llm/metad
 import { KimiModelMetadataProvider } from 'autobyteus-ts/llm/metadata/kimi-model-metadata-provider.js';
 import { MistralModelMetadataProvider } from 'autobyteus-ts/llm/metadata/mistral-model-metadata-provider.js';
 import type { ProviderApiKeyResolver } from 'autobyteus-ts';
-import { createLlmMetadataProviderApiKeyResolver } from '../../secret-management/resolution/secret-management-provider-api-key-resolver.js';
+import { createLlmMetadataProviderApiKeyResolver } from '../../secret-management/resolution/runtime-provider-api-key-resolvers.js';
 import { getGeminiConfigurationService } from './gemini-configuration-service.js';
 
 export type ModelMetadataProvenanceValue = 'LIVE' | 'CURATED_FALLBACK' | 'CURATED_ONLY';

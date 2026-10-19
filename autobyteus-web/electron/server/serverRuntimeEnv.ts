@@ -6,8 +6,9 @@ import { toPrismaSqliteUrl } from './prismaSqliteUrl'
  *
  * - `inherit-caller`: the server receives the complete caller environment (production launches).
  * - `isolated-baseline`: the server receives only system-baseline variables from the caller
- *   (isolated `e2e` launches). AutoByteus settings then come from the isolated data root's own
- *   `.env`, never from a production environment the caller happened to inherit.
+ *   (isolated `e2e` launches), plus the test-vault selector when the caller sets it. AutoByteus
+ *   settings then come from the isolated data root's own `.env`, never from a production
+ *   environment the caller happened to inherit.
  */
 export type ServerEnvironmentPolicy = 'inherit-caller' | 'isolated-baseline'
 
@@ -63,6 +64,13 @@ export const ISOLATED_SERVER_BASELINE_ENV_NAMES: readonly string[] = Object.free
   'ProgramFiles',
 ])
 
+/**
+ * The test-vault selector: a directory, never a key. An isolated instance started with it reads
+ * the test vault (read-only) for provider keys. A production launch inherits it like any caller
+ * variable; the server itself ignores it on the real app data.
+ */
+export const TEST_VAULT_SETTING_NAME = 'AUTOBYTEUS_TEST_VAULT'
+
 // Matched case-insensitively: Windows environment names are case-insensitive (`Path`, `SystemRoot`).
 const BASELINE_ENV_NAME_SET = new Set(ISOLATED_SERVER_BASELINE_ENV_NAMES.map((name) => name.toUpperCase()))
 
@@ -78,6 +86,8 @@ function pickBaselineEnv(callerEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
       picked[name] = value
     }
   }
+  const testVault = callerEnv[TEST_VAULT_SETTING_NAME]
+  if (typeof testVault === 'string' && testVault.trim()) picked[TEST_VAULT_SETTING_NAME] = testVault
   return picked
 }
 

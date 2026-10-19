@@ -225,6 +225,13 @@ export const materializeTestRuntime = (options = {}) => {
   });
 };
 
+/** The test-vault selector; forwarded to a built test server only by an explicit live opt-in. */
+export const testVaultSettingName = 'AUTOBYTEUS_TEST_VAULT';
+
+/**
+ * A child environment with only system essentials plus `extra`. It never
+ * forwards the test-vault selector or credentials by itself.
+ */
 export const createSanitizedTestEnvironment = (extra = {}) => {
   const environment = { NODE_ENV: 'test' };
   for (const key of inheritedEnvironmentKeys) {
@@ -262,6 +269,11 @@ const waitForServer = async (running, timeoutMs) => {
   throw stableError('TEST_SERVER_START_TIMEOUT');
 };
 
+/**
+ * Starts the built server on a test-owned runtime root. The server uses the
+ * test vault only when the caller passes `testVaultSetting` (a live opt-in:
+ * `test:e2e:real` and live suites); otherwise it uses its own database vault.
+ */
 export const startBuiltTestServer = async (options = {}) => {
   if (!fs.existsSync(builtServerEntry)) throw stableError('TEST_SERVER_BUILD_REQUIRED');
   const port = options.port ?? await reserveLoopbackPort();
@@ -277,7 +289,10 @@ export const startBuiltTestServer = async (options = {}) => {
     [builtServerEntry, '--host', host, '--port', String(port), '--data-dir', materialized.runtimeRoot],
     {
       cwd: serverRoot,
-      env: createSanitizedTestEnvironment(options.environment),
+      env: createSanitizedTestEnvironment({
+        ...options.environment,
+        [testVaultSettingName]: options.testVaultSetting,
+      }),
       stdio: 'pipe',
     },
   );

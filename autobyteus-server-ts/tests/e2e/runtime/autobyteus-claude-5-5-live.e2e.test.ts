@@ -19,15 +19,16 @@
  *                the run's estimated cost equals Anthropic's raw usage priced per call at the matching tier (AC-003, REQ-004)
  * Forced tool_choice (AC-008) has no supported trigger through the agent runtime; it is covered by unit tests.
  *
- * Gate: RUN_CLAUDE_5_5_E2E=1 and ANTHROPIC_API_KEY (saved into the test-owned database vault, never logged). Run it with
- * a clean environment so no live-app variable leaks in. From `autobyteus-server-ts`:
- *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_CLAUDE_5_5_E2E=1 ANTHROPIC_API_KEY=<key> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts --no-watch
+ * Gate: RUN_CLAUDE_5_5_E2E=1, with the Anthropic key in the test vault (AUTOBYTEUS_TEST_VAULT, see
+ * TESTING.md#test-vault; read-only, never logged; a missing key is reported as a skip). Run it with a clean
+ * environment so no live-app variable leaks in. From `autobyteus-server-ts`:
+ *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_CLAUDE_5_5_E2E=1 ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts --no-watch
  * Uses real credits: about 22 calls, i.e. about 20 short Sonnet/Haiku calls plus the two C55-E2E-006 Haiku calls, one of
  * which is ~240K gross input tokens (about $0.24 for that call alone).
  * Optional: CLAUDE_5_5_E2E_EVIDENCE_DIR (per-call summaries and case results), CLAUDE_5_5_E2E_STEP_TIMEOUT_MS
  * (default 600000).
  */
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   NativeRuntimeLiveHarness,
   isRecord,
@@ -36,8 +37,9 @@ import {
   type CapturedCall,
   type Json,
 } from "../helpers/native-runtime-live-harness.js";
+import { requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 
-const ENABLED = process.env.RUN_CLAUDE_5_5_E2E === "1" && Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+const ENABLED = process.env.RUN_CLAUDE_5_5_E2E === "1";
 const describeLive = ENABLED ? describe : describe.skip;
 const STEP_TIMEOUT_MS = Number(process.env.CLAUDE_5_5_E2E_STEP_TIMEOUT_MS || 600_000);
 const EVIDENCE_DIR = process.env.CLAUDE_5_5_E2E_EVIDENCE_DIR?.trim() || null;
@@ -180,6 +182,11 @@ describeLive("AutoByteus native runtime: Claude Sonnet 5.5 and Haiku 5.5 (live)"
       "After the last requested file, reply in one short sentence with exactly what was asked.",
     ].join("\n"), ["read_file"]);
   }, 300_000);
+
+  // A missing key is reported as a skip with its reason, never a pass (TESTING.md#test-vault).
+  beforeEach(async (context) => {
+    await requireLiveCapability(context, "provider.anthropic.api-key");
+  });
 
   afterEach(async (context) => { await harness.finishCase(context); });
   afterAll(async () => { await harness.stop(); }, 180_000);

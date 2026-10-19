@@ -1,12 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import { GrokLLM } from '../../../../src/llm/api/grok-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.GROK_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('Grok');
 
 const buildModel = () =>
   new LLMModel({
@@ -16,9 +17,9 @@ const buildModel = () =>
     provider: LLMProvider.GROK
   });
 
-runIntegration('GrokLLM Integration', () => {
-  it('should successfully make a simple completion call', async () => {
-    const llm = new GrokLLM(buildModel());
+live.describe('GrokLLM Integration', () => {
+  live.it('should successfully make a simple completion call', async () => {
+    const llm = new GrokLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Say hello in five words.' });
 
     try {
@@ -33,8 +34,8 @@ runIntegration('GrokLLM Integration', () => {
     }
   }, 120000);
 
-  it('should stream response incrementally', async () => {
-    const llm = new GrokLLM(buildModel());
+  live.it('should stream response incrementally', async () => {
+    const llm = new GrokLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'List three colors.' });
     const receivedTokens: string[] = [];
     let completeResponse = '';

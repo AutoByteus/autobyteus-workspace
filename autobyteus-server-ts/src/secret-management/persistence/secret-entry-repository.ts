@@ -66,8 +66,4 @@ export class SecretEntryRepository extends BaseRepository.forModel(
   async removeEntry(id: SecretId): Promise<void> {
     await this.deleteMany({ where: { secretId: String(id) } });
   }
-
-  async deleteEntry(id: SecretId): Promise<void> {
-    await this.delete({ where: { secretId: String(id) } });
-  }
 }

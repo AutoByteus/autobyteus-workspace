@@ -18,10 +18,7 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 import {
   E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT,
 } from "../helpers/team-run-graphql-documents.js";
-import {
-  closeLiveRuntimeSecretVault,
-  initializeLiveRuntimeSecretVaultFromEnvironment,
-} from "../helpers/live-runtime-secret-vault-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
@@ -325,7 +322,7 @@ describeAllRuntimeMatrix(
         "utf-8",
       );
       appConfigProvider.config.setCustomAppDataDir(testDataDir);
-      await initializeLiveRuntimeSecretVaultFromEnvironment();
+      await initializeLiveServerVault();
       const require = createRequire(import.meta.url);
       const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
       const graphqlPath = require.resolve("graphql", {
@@ -351,7 +348,7 @@ describeAllRuntimeMatrix(
         await runtimeServerApp.close();
         runtimeServerApp = null;
       }
-      await closeLiveRuntimeSecretVault();
+      await closeLiveServerVault();
       for (const root of createdWorkspaceRoots) {
         await rm(root, { recursive: true, force: true });
       }

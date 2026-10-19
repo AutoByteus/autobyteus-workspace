@@ -1,20 +1,31 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import { OpenAICompatibleLLM } from '../../../../src/llm/api/openai-compatible-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.OPENAI_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('OpenAI');
 
-runIntegration('OpenAICompatibleLLM Integration', () => {
-  it('initializes with environment API key', () => {
+live.describe('OpenAICompatibleLLM Integration', () => {
+  live.it('resolves its API key from the default key source (the test vault)', async () => {
     const model = new LLMModel({
       name: 'gpt-5.4',
       value: 'gpt-5.4',
       canonicalName: 'gpt-5.4',
       provider: LLMProvider.OPENAI
     });
-    const llm = new OpenAICompatibleLLM(model, 'OPENAI_API_KEY', 'https://api.openai.com/v1');
-    expect(llm).toBeDefined();
+    const llm = new OpenAICompatibleLLM(
+      model,
+      'https://api.openai.com/v1',
+      new LLMConfig(),
+      undefined,
+      LLMProvider.OPENAI,
+    );
+    try {
+      await expect((llm as any).getClient()).resolves.toBeDefined();
+    } finally {
+      await llm.cleanup();
+    }
   });
 });

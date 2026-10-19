@@ -7,18 +7,21 @@ import { MissingApiKeyError as MissingApiKeyErrorClass } from 'autobyteus-ts';
 import type { SecretConsumerIdentity } from '../domain/secret-id.js';
 import { SecretVaultError } from '../domain/secret-vault-types.js';
 import type { SecretManagementService } from '../services/secret-management-service.js';
-import { getSecretVaultRuntime } from '../secret-vault-runtime.js';
 
 export type ProviderApiKeyResolverSubject =
   | { kind: 'llm' }
   | { kind: 'llmMetadata' }
   | { kind: 'media'; mediaKind: 'audio' | 'image' | 'video' };
 
+/**
+ * The autobyteus-ts `ProviderApiKeyResolver` over a `SecretManagementService`.
+ * It knows nothing about which vault the service reads: the server binds it to
+ * its runtime (`runtime-provider-api-key-resolvers.ts`), test setups to the test vault.
+ */
 export class SecretManagementProviderApiKeyResolver implements ProviderApiKeyResolver {
   constructor(
     private readonly subject: ProviderApiKeyResolverSubject,
-    private readonly managementProvider: () => SecretManagementService = () =>
-      getSecretVaultRuntime().requireService(),
+    private readonly managementProvider: () => SecretManagementService,
   ) {}
 
   async resolve(providerId: string, slot: ProviderApiKeySlot = 'apiKey'): Promise<SecretValue> {
@@ -52,14 +55,3 @@ export class SecretManagementProviderApiKeyResolver implements ProviderApiKeyRes
     }
   }
 }
-
-export const createLlmProviderApiKeyResolver = (): ProviderApiKeyResolver =>
-  new SecretManagementProviderApiKeyResolver({ kind: 'llm' });
-
-export const createMediaProviderApiKeyResolver = (
-  mediaKind: 'audio' | 'image' | 'video',
-): ProviderApiKeyResolver =>
-  new SecretManagementProviderApiKeyResolver({ kind: 'media', mediaKind });
-
-export const createLlmMetadataProviderApiKeyResolver = (): ProviderApiKeyResolver =>
-  new SecretManagementProviderApiKeyResolver({ kind: 'llmMetadata' });

@@ -1,12 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import { QwenLLM } from '../../../../src/llm/api/qwen-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.DASHSCOPE_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('Qwen');
 
 const buildModel = () =>
   new LLMModel({
@@ -16,9 +17,9 @@ const buildModel = () =>
     provider: LLMProvider.QWEN
   });
 
-runIntegration('QwenLLM Integration', () => {
-  it('should successfully make a simple completion call', async () => {
-    const llm = new QwenLLM(buildModel());
+live.describe('QwenLLM Integration', () => {
+  live.it('should successfully make a simple completion call', async () => {
+    const llm = new QwenLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Hello, Qwen LLM!' });
 
     try {
@@ -31,8 +32,8 @@ runIntegration('QwenLLM Integration', () => {
     }
   }, 120000);
 
-  it('should stream response incrementally', async () => {
-    const llm = new QwenLLM(buildModel());
+  live.it('should stream response incrementally', async () => {
+    const llm = new QwenLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Please write a short greeting.' });
     const receivedTokens: string[] = [];
     let completeResponse = '';
@@ -53,8 +54,8 @@ runIntegration('QwenLLM Integration', () => {
     }
   }, 120000);
 
-  it('should support public sendUserMessage', async () => {
-    const llm = new QwenLLM(buildModel());
+  live.it('should support public sendUserMessage', async () => {
+    const llm = new QwenLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Can you summarize the following text: The quick brown fox jumps over the lazy dog.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
 
@@ -68,8 +69,8 @@ runIntegration('QwenLLM Integration', () => {
     }
   }, 120000);
 
-  it('should support public streamUserMessage', async () => {
-    const llm = new QwenLLM(buildModel());
+  live.it('should support public streamUserMessage', async () => {
+    const llm = new QwenLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Please list three benefits of using Python.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
     const receivedTokens: string[] = [];

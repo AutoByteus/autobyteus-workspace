@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,23 +11,13 @@ import { GeminiJsonSchemaFormatter } from '../../../../src/tools/usage/formatter
 import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
+import type { GeminiRuntimeResolver } from '../../../../src/utils/gemini-runtime.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const hasVertexApiKey = Boolean(process.env.VERTEX_AI_API_KEY);
-const hasVertexProjectAndLocation = Boolean(process.env.VERTEX_AI_PROJECT && process.env.VERTEX_AI_LOCATION);
-const googleCredentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-const hasExplicitGoogleCredentials = Boolean(
-  googleCredentialsPath && fs.existsSync(googleCredentialsPath),
-);
-const defaultGcloudAdcPath = path.join(
-  process.env.HOME ?? '',
-  '.config',
-  'gcloud',
-  'application_default_credentials.json',
-);
-const hasDefaultGoogleCredentials = fs.existsSync(defaultGcloudAdcPath);
-const hasVertex = hasVertexApiKey || (hasVertexProjectAndLocation && (hasExplicitGoogleCredentials || hasDefaultGoogleCredentials));
-const hasApiKey = Boolean(process.env.GEMINI_API_KEY);
-const runIntegration = hasVertex || hasApiKey ? describe : describe.skip;
+const live = liveProviderTest('Gemini');
+// Gemini takes its mode explicitly (a mode, not a key): AI Studio, keyed from the test vault.
+const aiStudioMode: GeminiRuntimeResolver = async () => ({ kind: 'aiStudio' });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,9 +40,9 @@ const resetRegistry = () => {
   registerWriteFileTool();
 };
 
-runIntegration('GeminiLLM Integration', () => {
-  it('should successfully make a simple completion call', async () => {
-    const llm = new GeminiLLM(buildGeminiModel());
+live.describe('GeminiLLM Integration', () => {
+  live.it('should successfully make a simple completion call', async () => {
+    const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig(), undefined, aiStudioMode);
     const userMessage = new LLMUserMessage({ content: 'Hello, Gemini LLM!' });
 
     try {
@@ -65,8 +55,8 @@ runIntegration('GeminiLLM Integration', () => {
     }
   }, 120000);
 
-  it('should stream response incrementally', async () => {
-    const llm = new GeminiLLM(buildGeminiModel());
+  live.it('should stream response incrementally', async () => {
+    const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig(), undefined, aiStudioMode);
     const userMessage = new LLMUserMessage({ content: 'Please write a short greeting.' });
     const receivedTokens: string[] = [];
     let completeResponse = '';
@@ -87,8 +77,8 @@ runIntegration('GeminiLLM Integration', () => {
     }
   }, 120000);
 
-  it('should support public sendUserMessage', async () => {
-    const llm = new GeminiLLM(buildGeminiModel());
+  live.it('should support public sendUserMessage', async () => {
+    const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig(), undefined, aiStudioMode);
     const userMessageText = 'Can you summarize the following text: The quick brown fox jumps over the lazy dog.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
 
@@ -102,8 +92,8 @@ runIntegration('GeminiLLM Integration', () => {
     }
   }, 120000);
 
-  it('should support public streamUserMessage', async () => {
-    const llm = new GeminiLLM(buildGeminiModel());
+  live.it('should support public streamUserMessage', async () => {
+    const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig(), undefined, aiStudioMode);
     const userMessageText = 'Please list three benefits of using Python.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
     const receivedTokens: string[] = [];
@@ -125,12 +115,12 @@ runIntegration('GeminiLLM Integration', () => {
     }
   }, 120000);
 
-  it('should handle multimodal image input', async () => {
+  live.it('should handle multimodal image input', async () => {
     if (!fs.existsSync(imagePath)) {
       return;
     }
 
-    const llm = new GeminiLLM(buildGeminiModel());
+    const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig(), undefined, aiStudioMode);
     const userMessage = new LLMUserMessage({
       content: 'Describe this image.',
       image_urls: [imagePath]
@@ -145,12 +135,12 @@ runIntegration('GeminiLLM Integration', () => {
     }
   }, 120000);
 
-  it('should handle multimodal audio input', async () => {
+  live.it('should handle multimodal audio input', async () => {
     if (!fs.existsSync(audioPath)) {
       return;
     }
 
-    const llm = new GeminiLLM(buildGeminiModel());
+    const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig(), undefined, aiStudioMode);
     const userMessage = new LLMUserMessage({
       content: 'Describe this audio.',
       audio_urls: [audioPath]
@@ -165,12 +155,12 @@ runIntegration('GeminiLLM Integration', () => {
     }
   }, 120000);
 
-  it('should handle multimodal video input', async () => {
+  live.it('should handle multimodal video input', async () => {
     if (!fs.existsSync(videoPath)) {
       return;
     }
 
-    const llm = new GeminiLLM(buildGeminiModel());
+    const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig(), undefined, aiStudioMode);
     const userMessage = new LLMUserMessage({
       content: 'Describe this video.',
       video_urls: [videoPath]
@@ -185,7 +175,7 @@ runIntegration('GeminiLLM Integration', () => {
     }
   }, 120000);
 
-  it('should generate tool calls in the stream', async () => {
+  live.it('should generate tool calls in the stream', async () => {
     resetRegistry();
     const toolDef = defaultToolRegistry.getToolDefinition('write_file');
     expect(toolDef).toBeDefined();
@@ -193,7 +183,7 @@ runIntegration('GeminiLLM Integration', () => {
     const formatter = new GeminiJsonSchemaFormatter();
     const toolSchema = formatter.provide(toolDef!);
 
-    const llm = new GeminiLLM(buildGeminiModel());
+    const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig(), undefined, aiStudioMode);
     const userMessage = new LLMUserMessage({
       content: "Write a python file named tool_test.py with content 'print(1)'"
     });

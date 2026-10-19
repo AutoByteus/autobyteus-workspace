@@ -11,7 +11,10 @@ import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js'
 import { OpenAIResponsesRenderer } from '../prompt-renderers/openai-responses-renderer.js';
 import { createOpenAICompatibleTokenUsageObservation } from './openai-compatible-token-usage-normalizer.js';
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
-import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import {
+  resolveProviderApiKeyResolver,
+  type ProviderApiKeyResolver,
+} from '../../secrets/provider-api-key-resolver.js';
 
 type ResponseInputItem = Record<string, unknown>;
 type ResponseOutputItem = Record<string, unknown>;
@@ -65,11 +68,11 @@ export class OpenAIResponsesLLM extends BaseLLM {
     model: LLMModel,
     baseUrl: string,
     config: LLMConfig,
-    apiKeyResolver: ProviderApiKeyResolver,
+    apiKeyResolver: ProviderApiKeyResolver | undefined,
     apiKeyProviderId: string,
   ) {
     super(model, config);
-    this.apiKeyResolver = apiKeyResolver;
+    this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
     this.apiKeyProviderId = apiKeyProviderId;
     this.baseUrl = baseUrl;
     this._renderer = new OpenAIResponsesRenderer();

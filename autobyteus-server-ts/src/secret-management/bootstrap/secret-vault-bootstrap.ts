@@ -20,6 +20,7 @@ import type {
   SecretVaultRepository,
 } from "../persistence/secret-vault-repository.js";
 import type { SecretVaultMetadataRecord } from "../persistence/secret-vault-persistence-types.js";
+import type { SecretVaultStore } from "../persistence/secret-vault-store.js";
 import { SecretRootKeyFile } from "../root-key/secret-root-key-file.js";
 
 export type SecretVaultBootstrapResult = {
@@ -73,7 +74,60 @@ const validateMetadata = (metadata: SecretVaultMetadataRecord): void => {
   }
 };
 
+/** Throws unless `rootKey` opens the vault domain described by `metadata`. */
+const assertRootKeyOpensDomain = (rootKey: Buffer, metadata: SecretVaultMetadataRecord): void => {
+  validateMetadata(metadata);
+  const verified = verifyVaultVerifier(
+    rootKey,
+    metadata.encryptionDomainId,
+    metadata.encryptionFormatVersion,
+    {
+      nonce: metadata.verifierNonce,
+      ciphertext: metadata.verifierCiphertext,
+      authenticationTag: metadata.verifierAuthenticationTag,
+    },
+  );
+  if (!verified) throw corrupt();
+};
+
 export class SecretVaultBootstrap {
+  /**
+   * Verifies an already established vault without a lock and without any
+   * write: the database identity, the root key file, the metadata and the
+   * verifier. Used for the read-only test vault, which is never initialized
+   * by its consumers.
+   */
+  static async verifyEstablished(
+    store: SecretVaultStore,
+    location: ApplicationDatabaseLocation,
+    rootKeyFile = new SecretRootKeyFile(location),
+  ): Promise<SecretVaultBootstrapResult> {
+    try {
+      await validateDatabaseIdentity(location);
+      const inspectedKey = await rootKeyFile.inspectExisting();
+      if (inspectedKey.state !== "VALID") {
+        throw new SecretVaultError("VAULT_LOCKED", false, "SECRET_VAULT_LOCKED");
+      }
+      try {
+        let metadata: SecretVaultMetadataRecord | null;
+        let entryCount: number;
+        try {
+          [metadata, entryCount] = await Promise.all([store.readMetadata(), store.countEntries()]);
+        } catch (cause) {
+          throw cause instanceof SecretVaultError ? cause : unavailable(cause);
+        }
+        if (!metadata) throw entryCount > 0 ? corrupt() : unavailable();
+        assertRootKeyOpensDomain(inspectedKey.key, metadata);
+        return { health: READY_SECRET_VAULT_HEALTH, rootKey: inspectedKey.key, metadata };
+      } catch (error) {
+        inspectedKey.key.fill(0);
+        throw error;
+      }
+    } catch (error) {
+      return { health: vaultHealthFromError(error), rootKey: null, metadata: null };
+    }
+  }
+
   constructor(
     private readonly location: ApplicationDatabaseLocation,
     private readonly repository: SecretVaultRepository,
@@ -158,18 +212,7 @@ export class SecretVaultBootstrap {
     }
 
     try {
-      validateMetadata(metadata);
-      const verified = verifyVaultVerifier(
-        rootKey,
-        metadata.encryptionDomainId,
-        metadata.encryptionFormatVersion,
-        {
-          nonce: metadata.verifierNonce,
-          ciphertext: metadata.verifierCiphertext,
-          authenticationTag: metadata.verifierAuthenticationTag,
-        },
-      );
-      if (!verified) throw corrupt();
+      assertRootKeyOpensDomain(rootKey, metadata);
       return { rootKey, metadata };
     } catch (error) {
       rootKey.fill(0);

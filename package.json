@@ -4,6 +4,7 @@
   "scripts": {
     "test:native-input-history": "pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web test:nuxt --config ../test-support/native-input-history/vitest.config.mts --run",
     "secrets:import": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js",
+    "test-vault": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/test-vault-cli.js",
     "dev": "pnpm --filter autobyteus-server-ts build && node scripts/development/run-dev.mjs",
     "test:e2e": "pnpm --filter autobyteus-server-ts test --run tests/e2e",
     "test:e2e:real:preflight": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs --preflight",

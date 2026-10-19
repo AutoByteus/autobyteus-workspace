@@ -97,6 +97,8 @@ vi.mock("../../src/config/app-config-provider.js", () => ({
       getLogsDir: () => "/tmp/server-runtime-gate/logs",
       getMemoryDir: () => "/tmp/server-runtime-gate/memory",
       getAppRootDir: () => "/tmp/server-runtime-gate",
+      getAppDataDir: () => "/tmp/server-runtime-gate",
+      get: () => undefined,
       getOperationalDatabaseUrl: () => "file:/tmp/server-runtime-gate/test.db",
       getOperationalDatabaseLocation: () => ({
         databasePath: "/tmp/server-runtime-gate/test.db",
@@ -170,6 +172,10 @@ describe("Studio readable-provider migration startup gate", () => {
         datasourceUrl: "file:/tmp/server-runtime-gate/test.db",
       });
       expect(mocks.initializeSecretVault).toHaveBeenCalledTimes(1);
+      expect(mocks.initializeSecretVault).toHaveBeenCalledWith({
+        kind: "application",
+        location: expect.objectContaining({ databasePath: "/tmp/server-runtime-gate/test.db" }),
+      });
       expect(mocks.assertTokenUsageCurrentSchema.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.initializeSecretVault.mock.invocationCallOrder[0]!);
       expect(mocks.runPending.mock.invocationCallOrder[0])

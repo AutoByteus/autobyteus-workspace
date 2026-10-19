@@ -191,7 +191,7 @@ const exerciseQwenRoutesInFreshProcess = async (input: {
     const values = JSON.parse(process.argv[2]);
     const { appConfigProvider } = await import('./dist/config/app-config-provider.js');
     const { getSecretVaultRuntime } = await import('./dist/secret-management/secret-vault-runtime.js');
-    const { createLlmProviderApiKeyResolver } = await import('./dist/secret-management/resolution/secret-management-provider-api-key-resolver.js');
+    const { createLlmProviderApiKeyResolver } = await import('./dist/secret-management/resolution/runtime-provider-api-key-resolvers.js');
     const { QwenLLM } = await import('autobyteus-ts/llm/api/qwen-llm.js');
     const { LLMModel } = await import('autobyteus-ts/llm/models.js');
     const { LLMProvider } = await import('autobyteus-ts/llm/providers.js');
@@ -200,7 +200,7 @@ const exerciseQwenRoutesInFreshProcess = async (input: {
 
     const config = appConfigProvider.initialize({ appDataDir: runtimeRoot });
     config.initialize();
-    await getSecretVaultRuntime().initialize(config.getOperationalDatabaseLocation());
+    await getSecretVaultRuntime().initialize({ kind: 'application', location: config.getOperationalDatabaseLocation() });
     try {
       for (const value of values) {
         const llm = new QwenLLM(new LLMModel({

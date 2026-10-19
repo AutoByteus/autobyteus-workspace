@@ -117,8 +117,8 @@ export class VideoClientFactory extends Singleton {
 
   static createVideoClient(
     modelIdentifier: string,
-    configOverride: MultimediaConfig | null | undefined,
-    apiKeyResolver: ProviderApiKeyResolver,
+    configOverride?: MultimediaConfig | null,
+    apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseVideoClient {
     return VideoClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver, geminiRuntimeResolver);

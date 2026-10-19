@@ -22,7 +22,7 @@ try {
   await initializePrisma({ datasourceUrl: config.getOperationalDatabaseUrl() });
   await assertTokenUsageCurrentSchema(); await new TokenUsageAnalyticsProjectionWriter().initializeCoverage();
   configureTokenUsageMigrationReadiness({ kind: "CURRENT_SCHEMA_DEGRADED", migrationStatus: "NOT_RUN", logPath: null });
-  await getSecretVaultRuntime().initialize(config.getOperationalDatabaseLocation());
+  await getSecretVaultRuntime().initialize({ kind: "application", location: config.getOperationalDatabaseLocation() });
   const statuses = await getAppDataMigrationRunner().runPending();
   const token = statuses.find(status => status.migrationId === TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID);
   assert(["SUCCEEDED", "SUCCEEDED_WITH_WARNINGS"].includes(token?.status), JSON.stringify(token));
