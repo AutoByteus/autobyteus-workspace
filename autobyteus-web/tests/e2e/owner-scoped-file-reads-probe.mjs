@@ -21,6 +21,9 @@
 //        probe's browser routes that host, HTTP and WebSocket, to the probe backend. Each opened file records how many
 //        content requests the tab opening made (it selects the newest file) and how many the click made (a click on the
 //        selected file refreshes it).
+//      Every journey fails on a page exception or a console error raised during it; the only allowed lines are
+//      Chrome's 404 resource lines for file-change content in B-005, at most one per 404 content response it received.
+//      Errors during the Nuxt warm-up are recorded (warmUpBrowserErrors) but not asserted (cold-start reloads).
 // Timing reads use the backend only; journeys add Nuxt dev (warmed up before asserting) and headless Chrome.
 // Prereqs: pnpm install, server prebuild + build, nuxt prepare in this worktree; Chrome (playwright-core).
 import fs from 'node:fs';
@@ -404,7 +407,8 @@ const main = async () => {
         browser = await chromium.launch({ headless: true, executablePath });
         // Warm the Nuxt dev optimizer before asserting (a cold start reloads pages; TESTING.md "Browser probes").
         await freshPage(); await sleep(8000); await freshPage();
-        for (const [id, description, fn] of journeys) await runCase(id, description, fn);
+        evidence.warmUpBrowserErrors = errors.splice(0);
+        for (const [id, description, fn, options] of journeys) await runCase(id, description, withBrowserErrorCheck(id, fn, options));
         evidence.browserErrors = errors;
       }
     }
@@ -425,13 +429,36 @@ const main = async () => {
 
 // ---------------------------------------------------------------- browser journeys
 let page = null;
+/** Every page exception and console error, with the resource URL Chrome reports for it (TESTING.md: probes fail on browser errors). */
 const errors = [];
+const watchBrowserErrors = (target) => {
+  target.on('pageerror', (e) => errors.push({ at: Date.now(), kind: 'pageerror', text: e.message, url: null }));
+  target.on('console', (m) => { if (m.type() === 'error') errors.push({ at: Date.now(), kind: 'console', text: m.text(), url: m.location()?.url ?? null }); });
+};
+const NOT_FOUND_RESOURCE = 'Failed to load resource: the server responded with a status of 404 (Not Found)';
+/**
+ * Runs one journey and fails it on any browser error raised during it. The only allowed lines are Chrome's 404 resource
+ * lines for file-change content, and only in a journey that expects them (B-005, a deleted file), at most one per 404
+ * content response that journey received.
+ */
+const withBrowserErrorCheck = (id, fn, { allowContent404 = false } = {}) => async () => {
+  const errorStart = errors.length, responseStart = contentResponses.length;
+  const details = await fn();
+  await sleep(500);
+  const caseErrors = errors.slice(errorStart);
+  const content404s = contentResponses.slice(responseStart).filter((r) => r.status === 404).length;
+  const isContent404 = (e) => e.kind === 'console' && e.text === NOT_FOUND_RESOURCE && String(e.url).includes('/file-change-content');
+  const allowed = allowContent404 ? caseErrors.filter(isContent404) : [];
+  const unexpected = caseErrors.filter((e) => !allowed.includes(e));
+  assert(unexpected.length === 0, `${id}: browser errors during the journey`, { unexpected, caseErrors });
+  assert(allowed.length <= content404s, `${id}: more 404 resource errors than 404 content responses`, { allowed, content404s });
+  return { ...details, browserErrors: caseErrors, allowedContent404Errors: allowed.length, content404Responses: content404s };
+};
 const contentResponses = [];
 const freshPage = async () => {
   if (page) await page.close().catch(() => {});
   page = await (await browser.newContext({ viewport: { width: 1600, height: 1000 } })).newPage();
-  page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  watchBrowserErrors(page);
   page.on('response', (r) => { if (r.url().includes('/file-change-content')) contentResponses.push({ at: Date.now(), url: r.url(), status: r.status() }); });
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'domcontentloaded', timeout: 180000 });
   await page.locator('[data-test="workspace-row"]').first().waitFor({ timeout: 180000 });
@@ -512,8 +539,7 @@ const freshMobilePage = async () => {
     ws.onClose(() => upstream.close());
   });
   page = await context.newPage();
-  page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  watchBrowserErrors(page);
   page.on('response', (r) => { if (r.url().includes('/file-change-content')) contentResponses.push({ at: Date.now(), url: r.url().replace(mobileRemote(), stack.backendUrl), status: r.status() }); });
   await page.goto(`${stack.frontendUrl}/mobile?pairing=${encodeURIComponent(pairing)}`, { waitUntil: 'domcontentloaded', timeout: 180000 });
   await page.locator('[data-testid="mobile-pair-button"]').click({ timeout: 120000 });
@@ -615,7 +641,7 @@ const journeys = [
       await shot('B-005-copy-file-deleted');
       return { opened, serverBody: body, requests: expectOnlyOwnerRequests(start, [file, fileOf('standalone run')]) };
     } finally { await fsp.rename(aside, file.absolutePath); }
-  }],
+  }, { allowContent404: true }],
   ['B-006', 'Mobile (Phone Access): an agent run\'s file opens in the mobile Artifacts view through the run route (AC-012, REQ-007)', async () => {
     await freshMobilePage();
     const opened = await mobileOpenArtifact('recent', setup.hubRunId, fileOf('standalone run'));
