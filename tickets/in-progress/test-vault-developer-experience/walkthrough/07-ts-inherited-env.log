@@ -1,0 +1,94 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+ ❯ tests/integration/llm/api/deepseek-llm.test.ts (6 tests | 5 failed) 18ms
+     ✓ sends memory-preserved reasoning_content on assistant tool-call messages through the configured DeepSeekLLM path 11ms
+     × should successfully make a simple completion call 3ms
+     × should stream response incrementally 2ms
+     × should support public sendUserMessage 0ms
+     × should support public streamUserMessage 0ms
+     × should accept tools without forced tool_choice and continue if the model chooses a tool call 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/llm/api/deepseek-llm.test.ts > DeepSeekLLM Integration > should successfully make a simple completion call
+TypeError: Cannot read properties of undefined (reading 'systemMessage')
+ ❯ new BaseLLM src/llm/base.ts:35:38
+     33|     this.extensionRegistry = new ExtensionRegistry();
+     34| 
+     35|     this.systemMessage = this.config.systemMessage || BaseLLM.DEFAULT_…
+       |                                      ^
+     36|   }
+     37| 
+ ❯ new OpenAICompatibleLLM src/llm/api/openai-compatible-llm.ts:40:5
+ ❯ new DeepSeekLLM src/llm/api/deepseek-llm.ts:54:5
+ ❯ tests/integration/llm/api/deepseek-llm.test.ts:249:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/integration/llm/api/deepseek-llm.test.ts > DeepSeekLLM Integration > should stream response incrementally
+TypeError: Cannot read properties of undefined (reading 'systemMessage')
+ ❯ new BaseLLM src/llm/base.ts:35:38
+     33|     this.extensionRegistry = new ExtensionRegistry();
+     34| 
+     35|     this.systemMessage = this.config.systemMessage || BaseLLM.DEFAULT_…
+       |                                      ^
+     36|   }
+     37| 
+ ❯ new OpenAICompatibleLLM src/llm/api/openai-compatible-llm.ts:40:5
+ ❯ new DeepSeekLLM src/llm/api/deepseek-llm.ts:54:5
+ ❯ tests/integration/llm/api/deepseek-llm.test.ts:268:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/integration/llm/api/deepseek-llm.test.ts > DeepSeekLLM Integration > should support public sendUserMessage
+TypeError: Cannot read properties of undefined (reading 'systemMessage')
+ ❯ new BaseLLM src/llm/base.ts:35:38
+     33|     this.extensionRegistry = new ExtensionRegistry();
+     34| 
+     35|     this.systemMessage = this.config.systemMessage || BaseLLM.DEFAULT_…
+       |                                      ^
+     36|   }
+     37| 
+ ❯ new OpenAICompatibleLLM src/llm/api/openai-compatible-llm.ts:40:5
+ ❯ new DeepSeekLLM src/llm/api/deepseek-llm.ts:54:5
+ ❯ tests/integration/llm/api/deepseek-llm.test.ts:295:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/integration/llm/api/deepseek-llm.test.ts > DeepSeekLLM Integration > should support public streamUserMessage
+TypeError: Cannot read properties of undefined (reading 'systemMessage')
+ ❯ new BaseLLM src/llm/base.ts:35:38
+     33|     this.extensionRegistry = new ExtensionRegistry();
+     34| 
+     35|     this.systemMessage = this.config.systemMessage || BaseLLM.DEFAULT_…
+       |                                      ^
+     36|   }
+     37| 
+ ❯ new OpenAICompatibleLLM src/llm/api/openai-compatible-llm.ts:40:5
+ ❯ new DeepSeekLLM src/llm/api/deepseek-llm.ts:54:5
+ ❯ tests/integration/llm/api/deepseek-llm.test.ts:315:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/integration/llm/api/deepseek-llm.test.ts > DeepSeekLLM Integration > should accept tools without forced tool_choice and continue if the model chooses a tool call
+TypeError: Cannot read properties of undefined (reading 'systemMessage')
+ ❯ new BaseLLM src/llm/base.ts:35:38
+     33|     this.extensionRegistry = new ExtensionRegistry();
+     34| 
+     35|     this.systemMessage = this.config.systemMessage || BaseLLM.DEFAULT_…
+       |                                      ^
+     36|   }
+     37| 
+ ❯ new OpenAICompatibleLLM src/llm/api/openai-compatible-llm.ts:40:5
+ ❯ new DeepSeekLLM src/llm/api/deepseek-llm.ts:54:5
+ ❯ tests/integration/llm/api/deepseek-llm.test.ts:343:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  05:08:44
+   Duration  733ms (transform 397ms, setup 17ms, import 575ms, tests 18ms, environment 0ms)
+

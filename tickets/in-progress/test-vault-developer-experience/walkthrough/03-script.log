@@ -1,0 +1,13 @@
+^DIMPORT
+(node:66600) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TARGET /tmp/tv-walk-BAug/vault/test.db
+TARGET_STATUS INITIALIZATION_REQUIRED
+provider.deepseek.api-key MISSING CREATE
+provider.openai.api-key MISSING CREATE
+CREATE 2
+SKIP_CONFIGURED 0
+REPLACE 0
+BLOCKED 0
+INSTRUCTION SECRET_VAULT_INITIALIZATION_REQUIRED
+[1G[0JTarget /tmp/tv-walk-BAug/vault/test.db (INITIALIZATION_REQUIRED). Type IMPORT to continue: [92GLOCAL_SECRET_IMPORT_FAILED IMPORT_CANCELLED
