@@ -61,7 +61,7 @@ describe("SkillImprovementResolver GraphQL boundary", () => {
     expect(getInputFieldNames(schema, "CreateAgentTeamRunInput")).not.toContain("skillImprovement");
     expect(getInputFieldNames(schema, "TeamMemberConfigInput")).not.toContain("skillImprovement");
     expect(getInputFieldNames(schema, "StartAgentRunSkillImprovementInput")).toEqual(["runId"]);
-    expect(getInputFieldNames(schema, "StartTeamMemberSkillImprovementInput")).toEqual(["teamRunId", "memberRunId"]);
+    expect(getInputFieldNames(schema, "StartTeamMemberSkillImprovementInput")).toEqual(["teamRunId", "agentRunId"]);
 
     for (const definitionInput of [
       "CreateAgentDefinitionInput",
