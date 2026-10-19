@@ -1,0 +1,13 @@
+# Check: IMP-06
+# Command: (cd autobyteus-server-ts && pnpm exec vitest run tests/unit/agent-execution --no-watch)
+# Commit: ea867f9708 (branch codex/work-journal)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T03:51:28Z
+
+# Excerpt of the full log (540112 bytes), kept outside the repository at /tmp/wj-evidence-full/IMP-06-agent-execution.log
+
+ Test Files  137 passed | 4 skipped (141)
+      Tests  1488 passed | 6 skipped (1494)
+   Start at  05:51:28
+   Duration  147.26s (transform 7.00s, setup 1.17s, import 55.26s, tests 77.77s, environment 10ms)
+# Exit status: 0

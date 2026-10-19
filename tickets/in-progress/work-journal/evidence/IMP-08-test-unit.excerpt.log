@@ -1,0 +1,13 @@
+# Check: IMP-08
+# Command: (cd autobyteus-server-ts && pnpm test:unit)
+# Commit: ea867f9708 (branch codex/work-journal)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T03:55:50Z
+
+# Excerpt of the full log (1092160 bytes), kept outside the repository at /tmp/wj-evidence-full/IMP-08-test-unit.log
+
+ Test Files  734 passed | 4 skipped (738)
+      Tests  5979 passed | 7 skipped (5986)
+   Start at  05:55:50
+   Duration  545.58s (transform 15.84s, setup 6.72s, import 276.02s, tests 191.51s, environment 1.53s)
+# Exit status: 0
