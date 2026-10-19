@@ -92,6 +92,10 @@ export class ProjectTask {
   @Field(() => [String])
   dependsOnTaskIds!: string[];
 
+  /** The Task of the same Project this Task is part of (its parent); null when none. */
+  @Field(() => String, { nullable: true })
+  partOfTaskId!: string | null;
+
   @Field(() => String)
   createdAt!: string;
 
@@ -111,6 +115,10 @@ export class CreateProjectTaskInput {
   /** Same-Project Task IDs; omitted means none. */
   @Field(() => [String], { nullable: true })
   dependsOnTaskIds?: string[] | null;
+
+  /** The parent, a same-Project Task ID; omitted or null means none. */
+  @Field(() => String, { nullable: true })
+  partOfTaskId?: string | null;
 }
 
 @InputType()
@@ -128,6 +136,10 @@ export class UpdateProjectTaskInput {
   /** Replaces the stored list when supplied (`[]` clears it); omitted keeps it. */
   @Field(() => [String], { nullable: true })
   dependsOnTaskIds?: string[] | null;
+
+  /** A same-Project Task ID replaces the parent, null clears it, omitted keeps it. */
+  @Field(() => String, { nullable: true })
+  partOfTaskId?: string | null;
 }
 
 @InputType()
@@ -181,6 +193,7 @@ const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
   description: task.description,
   status: task.status as ProjectTaskStatus,
   dependsOnTaskIds: [...task.dependsOnTaskIds],
+  partOfTaskId: task.partOfTaskId,
   createdAt: task.createdAt,
   updatedAt: task.updatedAt,
 });

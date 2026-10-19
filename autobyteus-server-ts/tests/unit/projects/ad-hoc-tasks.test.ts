@@ -115,7 +115,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     expect((await taskFile(taskId)).description).toBe("Revised");
     const projectTask = await tasks.createTask({ projectId, description: "Project work" });
     await expect(tasks.updateTaskById({ taskId: projectTask.taskId, description: "Project work, revised" }))
-      .resolves.toEqual({ projectId, taskId: projectTask.taskId, taskReference: projectTask.taskKey, status: "TODO", dependsOnTaskIds: [] });
+      .resolves.toEqual({ projectId, taskId: projectTask.taskId, taskReference: projectTask.taskKey, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
     expect((await store.readTask(projectId, projectTask.taskId))!.description).toBe("Project work, revised");
     await expect(tasks.updateTaskById({ taskId: "ad_hoc_task_missing", status: "DONE" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
     await expect(tasks.updateTaskById({ taskId: "../escape", status: "DONE" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });

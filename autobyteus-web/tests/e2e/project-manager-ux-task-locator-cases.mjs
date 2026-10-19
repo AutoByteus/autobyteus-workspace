@@ -283,7 +283,8 @@ export const createTaskLocatorCases = (h) => {
     // compares with a baseline read just before its own action.
     const settledCenter = (label) => until(`host conversation settled (${label})`, async () => {
       const first = await centerText(page);
-      if (!first.includes('CALLED:')) return null;
+      // The Manager's header status must have left Running too: it turns Idle after the reply is shown.
+      if (!first.includes('CALLED:') || /\nRunning\n/.test(first)) return null;
       await sleep(1000);
       return first === await centerText(page) ? first : null;
     }, 30000);

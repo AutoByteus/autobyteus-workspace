@@ -1,0 +1,9 @@
+# IMP-05-web-guard-localization-boundary
+# Command: pnpm -C autobyteus-web guard:localization-boundary
+# Commit: 179ddb9f77 (server source 6cc6c22d2e); macOS darwin, Node via corepack pnpm 10.28.2; worktree install; 2026-10-19
+
+> autobyteus@1.5.6-beta.8 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+exit=0

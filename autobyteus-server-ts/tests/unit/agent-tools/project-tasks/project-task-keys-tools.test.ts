@@ -56,15 +56,15 @@ describe("keys as the agent-facing Task ID (REQ-018, REQ-019; AC-020, AC-022)", 
     const a = await create("A");
     const b = await create("B", { depends_on: [a.taskId] });
     expect([a, b]).toEqual([
-      { projectId, taskId: "autobyteus-1", status: "TODO", dependsOn: [] },
-      { projectId, taskId: "autobyteus-2", status: "TODO", dependsOn: ["autobyteus-1"] },
+      { projectId, taskId: "autobyteus-1", status: "TODO", dependsOn: [], partOf: null },
+      { projectId, taskId: "autobyteus-2", status: "TODO", dependsOn: ["autobyteus-1"], partOf: null },
     ]);
     const listed = await tool("list_project_tasks", { project_id: projectId });
     expect(listed.tasks.map((t: Record<string, unknown>) => [t.taskId, t.dependsOn])).toEqual([["autobyteus-2", ["autobyteus-1"]], ["autobyteus-1", []]]);
     const idFields = listed.tasks.map(({ contextFiles: _files, ...fields }: Record<string, unknown>) => fields);
     expect(JSON.stringify(idFields)).not.toContain("project_task_");
     const updated = await tool("update_task", { task_id: "autobyteus-2", status: "IN_PROGRESS" });
-    expect(updated.task).toEqual({ projectId, taskId: "autobyteus-2", status: "IN_PROGRESS", dependsOn: ["autobyteus-1"] });
+    expect(updated.task).toEqual({ projectId, taskId: "autobyteus-2", status: "IN_PROGRESS", dependsOn: ["autobyteus-1"], partOf: null });
   });
 
   it("update_task acts on the same Task by key, by long ID and by key in any letter case; unknown keys fail as before", async () => {

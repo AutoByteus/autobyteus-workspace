@@ -104,6 +104,10 @@ describe("task tool exposure and schemas across runtimes", () => {
             "description": "Trimmed non-empty Task content.",
             "type": "string",
           },
+          "part_of": {
+            "description": "The taskId (key, e.g. autobyteus-25) of the bigger Task in the same Project this Task is part of; one level only (a part can't have parts).",
+            "type": "string",
+          },
           "project_id": {
             "description": "Project identity on the current node.",
             "type": "string",
@@ -135,6 +139,10 @@ describe("task tool exposure and schemas across runtimes", () => {
           },
           "description": {
             "description": "Trimmed non-empty Task content; omit to preserve.",
+            "type": "string",
+          },
+          "part_of": {
+            "description": "Project Tasks only: the taskId of the bigger Task in the same Project this Task is part of; one level only (a part can't have parts). Replaces the saved one; "" clears it; omit to keep.",
             "type": "string",
           },
           "status": {

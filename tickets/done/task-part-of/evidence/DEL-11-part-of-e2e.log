@@ -1,0 +1,13 @@
+# Check: DEL-11 part-of E2E suites on re-integrated state 2fe032750f (merge of origin/personal b35259e5b5)
+# Command: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/{project-task-parts-live,project-task-boundaries,projects-graphql,project-task-search,project-change-feed}.e2e.test.ts --no-watch
+# Date: 2026-10-19T07:40:53Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+# Command: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/{project-task-parts-live,project-task-boundaries,projects-graphql,project-task-search,project-change-feed}.e2e.test.ts --no-watch
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 9341ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (14 tests) 6801ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 4342ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (12 tests) 1872ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (3 tests) 635ms
+ Test Files  5 passed (5)
+      Tests  39 passed (39)
+exit=0

@@ -1,0 +1,12 @@
+# Case: API-05
+# Command: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs TASK_PARTS_LIVE_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-parts-live.e2e.test.ts --no-watch
+# Commit: code 179ddb9f77 (HEAD 399303d039) + the API/E2E test edits of this round (uncommitted at run time; committed with this evidence)
+# Environment: macOS darwin arm64, Node via corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR
+# Date: 2026-10-19
+
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 4446ms
+     ✓ POF-LIVE-001: a parent's CANCELLED, then another parent's DONE, close their open parts (stopping a really running task agent), list them in closedParts and update the feed; closed parts, reopen and a part's own close change nothing; re-parent and delete cleanup are live (AC-018, AC-008, AC-007, AC-006)  3122ms
+     ✓ POF-LIVE-002: a Temp task has no parent and is no parent: both refused with TASK_PARENT_INVALID, nothing written (AC-003, AC-014)  591ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+exit=0

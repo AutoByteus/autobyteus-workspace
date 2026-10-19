@@ -1,0 +1,7 @@
+# API-09 — isolated desktop instance (AC-017, AC-016)
+
+- Commit: code `179ddb9f77`; app = this worktree's build `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` (`pnpm -C autobyteus-web build:electron:mac`, what `isolated-app start --build` runs; build exit 0, guards passed).
+- Environment: macOS arm64; `pnpm --silent isolated-app start --from-worktree --data-root /tmp/pof-e2e/desktop-root` (own ports, own data root; never the user's app). CDP attach only to the instance's reported `controlPort` (playwright-core `connectOverCDP`). Date 2026-10-19.
+- Data package: `seed-desktop.mjs` phase1 (instance GraphQL: Projects, Tasks, parents), instance stopped, phase2 (statuses through the product's own `update_task` code, `tests/fixtures/project-task-tool-writer.mjs`; one Task file turned into the step-1 shape), instance started again on the same root.
+- Journeys: `desktop-journey.mjs` J1–J11. Final authoritative run: `final/result.json` (fresh data, all 11 Pass, `errors: []`), screenshots `final/J*.png`, lifecycle receipts `final/start-*.json`, `final/stop-*.json`, `final/isolated-app-list-after.json` (no instances). Data root removed after stop.
+- `earlier-runs/`: runs 1–4 on the first data package; J8–J11 first failed on the script's own navigation (Settings hides the primary nav; "Back to Workspace" capital W; the left nav collapses at 760 px), fixed in the script, then passed.

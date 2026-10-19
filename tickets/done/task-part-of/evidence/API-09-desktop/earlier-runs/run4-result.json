@@ -1,0 +1,35 @@
+{
+  "evidence": {
+    "renderer": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/projects/project_04ed9708-7761-4de0-a0a0-f8d44de39e27/tasks/enterprise-customer-onboarding-experience-redesign-program-2",
+    "results": [
+      [
+        "J10-narrow-board",
+        "Pass",
+        null
+      ],
+      [
+        "J11-step1-task",
+        "Pass",
+        null
+      ]
+    ]
+  },
+  "results": [
+    {
+      "name": "J10-narrow-board",
+      "result": "Pass",
+      "obs": {
+        "lines": 9
+      }
+    },
+    {
+      "name": "J11-step1-task",
+      "result": "Pass",
+      "obs": {
+        "rel": "",
+        "partOfTaskId": null
+      }
+    }
+  ],
+  "errors": []
+}

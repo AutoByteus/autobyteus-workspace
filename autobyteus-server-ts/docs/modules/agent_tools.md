@@ -281,7 +281,7 @@ work are delegated through additional `delegate_task` calls.
 `{target_team_run_id | target_agent_run_id, task_id}` gives a saved Task to an
 existing copy (see [Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy)).
 A Project Task's `task_id` is its key (any letter case) or its long ID; a Task
-with no Project uses its ID (see [Task keys](projects.md#task-keys-and-depends-on)).
+with no Project uses its ID (see [Task keys](projects.md#task-keys-depends-on-and-part-of)).
 `recipient_address` is therefore not required by the parameter schema; the
 parser requires exactly one mode.
 
