@@ -16,10 +16,6 @@ const validateInvariants = (tree: StandaloneRootTreeFile): void => {
   if (getParentAgentTeamAddress(tree.host.address) !== "/") {
     throw new Error("host.address must be a root-level address.");
   }
-  for (const task of tree.taskExecutions) {
-    // An Agent root has no configured placement besides its host: every copy carries its catalog source.
-    if (!task.source) throw new Error(`Task execution at '${task.address}' has no catalog source.`);
-  }
   validateCopyLayouts([tree]);
   validateTaskExecutionDelegators(
     [tree.host.agentRunId],

@@ -159,7 +159,7 @@ export const projectNavigationRows = (inputTree: {
     parentKey: string,
   ): void => {
     const key = teamRowKey(team.team_run_id);
-    const coordinatorAddress = team.source?.coordinator_address ?? team.address;
+    const coordinatorAddress = team.source.coordinator_address;
     const label = nameOf(team.address);
     rows.push(Object.freeze({
       key, kind: 'task_team', address: team.address,
