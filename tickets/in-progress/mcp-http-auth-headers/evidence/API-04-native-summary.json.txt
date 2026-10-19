@@ -1,0 +1,79 @@
+# Case: API-04 value-free summary (native AutoByteus runtime, LM Studio qwen/qwen3.6-35b-a3b -> registry MCP tools -> remote MCP servers)
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" RUN_LMSTUDIO_E2E=1 MCP_AUTH_E2E_EVIDENCE_DIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts --no-watch
+# Commit: e129930bcf + new test files (committed later on this branch)
+# Environment: macOS 26, in-process studio server (temp app data dir), host LM Studio 127.0.0.1:1234 (model loaded just-in-time by this run, unloaded after with lms unload)
+# Date: 2026-10-19
+
+{
+  "runtime": "autobyteus",
+  "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+  "toolNamesSelected": [
+    "hdr_auth_probe",
+    "tok_auth_probe"
+  ],
+  "toolEvents": [
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "tok_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "tok_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "tok_auth_probe"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "tok_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "tok_auth_probe"
+    }
+  ],
+  "remoteToolCalls": {
+    "hdr": [
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ],
+    "tok": [
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ]
+  },
+  "markersReceived": {
+    "hdr": true,
+    "tok": true
+  },
+  "dummyValueOnAgentWire": false
+}
