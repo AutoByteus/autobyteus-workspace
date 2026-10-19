@@ -1,6 +1,6 @@
 # Test Vault Developer Experience: Evaluation Report
 
-Revision SR-006, 2026-10-19. The test vault is selected like a database (one environment variable). Approved by the user on 2026-10-19.
+Revision SR-008, 2026-10-19. The test vault is selected like a database (one environment variable); approved by the user on 2026-10-19 (SR-006/SR-007). SR-008 aligns the details with architecture review ARCH-REV-001.
 Worktree: `codex/test-vault-developer-experience` from `origin/personal` @ `d28c56d5d`.
 Evidence: [investigation-notes.md](investigation-notes.md), raw logs in [walkthrough/](walkthrough/).
 Requirements for approval: [requirements-doc.md](requirements-doc.md).
@@ -94,7 +94,7 @@ Original screenshot: Task context file `ctx_b0352f9590d0__55.png`.
 | F-15 | Env → vault helper | `tests/e2e/helpers/live-runtime-secret-vault-helpers.ts` saves every recognized `*_API_KEY` from `process.env`. It is used by 9 live suites. Root cause of the incident. | High |
 | F-16 | History | A "Dedicated Real-E2E Store" (a standing, read-only test store) existed until 2026-07-27. It was removed for two reasons:<br>• it lived inside production app data;<br>• the harness read it directly, so tests did not use the normal application vault lifecycle (secure-centralized-secret-provisioning ticket).<br>The proposal below keeps that rule: each run works on a **copy** that the normal server opens. | Design input |
 
-## 5. Recommended approach: one standing test vault that runs copy, no keys in the environment
+## 5. Approved approach: one test vault, selected like a database
 
 **SR-003 refinement (user, 2026-10-19).** The test vault should feel like an API service:
 - set up once;
@@ -120,9 +120,9 @@ itself."
 | Who / when | What they do |
 | --- | --- |
 | User, once per machine | `pnpm test-vault setup --source <secrets file>`. It prints `export AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault`. |
-| Server integration / API-E2E tests, test servers, `pnpm test:e2e:real` | Set `AUTOBYTEUS_TEST_VAULT` (and the test's `RUN_*` gate); run as usual |
+| Server live suites, API-E2E live runs, `pnpm test:e2e:real` | Set `AUTOBYTEUS_TEST_VAULT` (plus the test's existing `RUN_*` gate); run as usual. Deterministic suites keep their own vaults even if the variable is exported. |
 | Isolated Electron instance | Set `AUTOBYTEUS_TEST_VAULT`; `pnpm isolated-app start …` |
-| autobyteus-ts tests and investigation scripts | Set `AUTOBYTEUS_TEST_VAULT`; `LLMFactory.createLLM('deepseek-v4-flash')` or `new DeepSeekLLM(model, config)` just works |
+| autobyteus-ts tests and investigation scripts | Set `AUTOBYTEUS_TEST_VAULT` and `RUN_LIVE_PROVIDER_TESTS=1`; `LLMFactory.createLLM('deepseek-v4-flash')` or `new DeepSeekLLM(model, config)` just works |
 | Anyone | `pnpm test-vault status` (location, configured/missing providers) |
 
 Safety:
@@ -135,79 +135,60 @@ Safety:
 
 ### 5.1 Details
 
-What the user and agents need to know:
-
-> The test vault is at `~/.autobyteus-test/vault/`, or wherever `AUTOBYTEUS_TEST_VAULT` points.
-> Create it once with `pnpm test-vault:setup --source <secrets file>`.
-> Live tests use it automatically when their `RUN_*` gate is set.
-
-1. **Standing test vault, created once.**
-   - `pnpm test-vault:setup --source <owner-private secrets file>` is one non-interactive command:
-     - it prints a value-free summary and the vault path;
-     - it needs no database URL and no prompt;
-     - `--replace` overwrites configured keys.
-   - The target is always the test vault, never a user-chosen database. That is why the TTY challenge is no longer needed.
-   - `pnpm test-vault:status` lists the path and configured/missing secret IDs.
-   - `pnpm test-vault:remove` deletes the DB/key pair.
-   - Tooling refuses any vault location inside `~/.autobyteus` or the OS app-data folders.
-2. **Tests find it automatically, and each run uses a copy.**
-   - The harness copies the encrypted DB+key pair into the run-owned data folder. The normal server opens that copy through its usual startup lifecycle.
-   - Tests never write to or migrate the standing vault.
-   - This applies to `test:e2e:real`, the 9 gated server live suites and isolated test instances (`isolated-app start --test-vault`).
-3. **autobyteus-ts live tests read the vault in-process.**
-   - A test-only resolver opens a run copy of the test vault with the server's existing vault code. It decrypts each key at the point of use, inside the test process.
-   - autobyteus-ts itself stays storage-neutral.
-   - The stale tests are repaired to use this resolver.
-4. **No key in the environment.**
+1. **Setup once.**
+   - `pnpm test-vault setup --source <owner-private secrets file>` writes the vault at `$AUTOBYTEUS_TEST_VAULT`, or `~/.autobyteus-test/vault/` when unset. It is non-interactive, needs no database URL and prints the setting to use.
+   - `pnpm test-vault status` and `pnpm test-vault remove` inspect and delete the vault.
+   - Locations inside your real app data are refused: `~/.autobyteus/**` and the desktop app's OS data folders.
+2. **Selected, never copied.**
+   - A server started with `AUTOBYTEUS_TEST_VAULT` set opens the test vault **read-only**, in place of the vault inside its own database. The product's key lookup is otherwise unchanged.
+   - This applies to `test:e2e:real`, isolated Electron instances, and servers or in-process suites of live runs.
+   - Without the variable, or on your real `~/.autobyteus/server-data`, the server uses its own vault, as today.
+   - A selected vault that is missing or unusable stops the server with a clear error; it never falls back silently.
+3. **Live runs opt in; deterministic runs are unaffected.**
+   - Live tests already need their gate (`RUN_LIVE_PROVIDER_TESTS=1` for autobyteus-ts, `RUN_*` for server suites). With the gate and the variable set, they use the test vault.
+   - The deterministic harnesses (default `pnpm test:e2e`, built test servers started without the live opt-in, unit/integration, default autobyteus-ts) keep their own vaults even if the variable is exported in your shell, so their results do not change.
+4. **autobyteus-ts with no extra code.** In a live run, the test setup installs a default key source backed by the test vault, so `LLMFactory.createLLM(id)` and `new XLLM(model, config)` just work. Gemini still takes its mode selection explicitly.
+5. **No key in the environment.**
    - The env → vault helper is removed.
-   - Live tests ignore and strip inherited `*_API_KEY` variables, so production keys cannot reach a test.
-   - Gates (`RUN_*`) and the vault *location* are the only test inputs.
-5. **Missing capability is visible.**
-   - With the gate on, an absent key is reported as `missing capability <secret id> (test vault <path>)`, and a provider refusal as a classified reason (invalid key, quota, rate limit, model access).
-   - Neither is ever counted as passed; `--strict` turns them into failures.
-6. **Safe by default.** Live tests stay explicit opt-in; values are never printed (canary-scan tests); the user's real vault, `.env` and app data are never opened by test tooling.
-7. **One message in docs and skills.**
-   - `AGENTS.md` (loaded by every agent) gets a three-line "Test vault" entry.
-   - TESTING.md gets one "Real-provider tests and the test vault" section.
-   - secret_management.md, the server README, the isolated-app guide, the isolated-app skill and the test-running team skills point to it.
-   - The `script` workaround and per-database import instructions for tests are removed.
+   - Tests strip inherited `*_API_KEY` variables, so production keys cannot reach a test.
+6. **Missing capability is visible.** A reasoned skip (`missing capability <secret id> (test vault <path>)`) or a classified provider refusal, never a pass; strict mode fails.
+7. **One message.** TESTING.md tells test runners to set `AUTOBYTEUS_TEST_VAULT` (a section, a rule and every real-key example). `AGENTS.md` says the same, and the other docs and skills link to it.
 8. **Also fixed:**
    - `pnpm -C autobyteus-ts test` runs and is credential-free;
    - the single-scenario exit bug;
-   - the preflight prints the vault path.
-
-The general `pnpm secrets:import` stays as it is (explicit target, TTY) for production and other explicit databases. Tests no longer need it.
+   - the preflight prints which vault is used.
 
 ### Trade-offs
 
-- (+) Set up once per machine; no per-test or per-run import; one thing to tell agents; no key in env, chat or logs; standing vault never mutated; same vault lifecycle as the app (the reason the old test store was removed).
-- (−) It reverses the documented rule "no test wrapper / never a test-runner fallback" (secret_management.md). That needs your approval.
-- (−) autobyteus-ts live tests need the built server's vault code through a workspace `test-support` module, a test-only dependency in the reverse direction. The alternative is extracting a small shared vault-reader package, which is a bigger refactor. I will choose in design.
-- (−) Medium-to-large: setup tooling, harness copy, replacing the helper in 9 suites, repairing about 14 autobyteus-ts files, the isolated-app option, docs and skills.
-- Keys still exist decrypted in the test process memory at the moment of use. That is unavoidable, and it is the same as in the product.
+- (+)
+  - One variable, set once.
+  - No per-test, per-run, per-worktree or per-instance import.
+  - No copies of your keys anywhere.
+  - Product code is unchanged.
+  - The vault is never written by tests.
+- (−) A new production-code input decides where credentials come from. Mitigations: the real-app-data guard, read-only access, the log line and no silent fallback.
+- (−) autobyteus-ts gets an optional process-default key resolver, which is global state set only by test setup.
+- (−) Large change: about 75 files across the server, autobyteus-ts, test-support, Electron and docs.
+- Keys are decrypted in the test process memory at the moment of use, the same as in the product.
 
 ### Alternatives (not recommended)
 
-- **B — standing plaintext key file instead of a vault:** simpler, but keys stay plaintext at rest. It is not the vault you asked for.
-- **C — keep per-database import and only fix the scripts:** small, but keys keep being copied into many databases.
+- **B — standing plaintext key file:** simpler, but keys stay plaintext at rest.
+- **C — keep per-database import and only fix the scripts:** keys keep being copied into many databases.
+- **SR-005 draft — copy keys into each run's vault:** rejected in favor of read-only selection, which leaves no copies.
 
-## 6. Decisions (all decided within the user's direction on 2026-10-19; reasoning in requirements-doc § Decisions)
+## 6. Decisions
 
-| ID | Question | Recommendation |
-| --- | --- | --- |
-| DEC-001 | Approve the approach in §5 (standing vault, copy per run, in-process resolver, no keys in env), including reversing the "no test wrapper" rule for the **test** vault only? | Yes |
-| DEC-002 | Location: whatever `AUTOBYTEUS_TEST_VAULT` says, and `~/.autobyteus-test/vault/` when it is unset? | Yes |
-| DEC-003 | Setup source: any owner-private file you name explicitly, read once and never modified (it could be `~/.autobyteus/server-data/.env`), or a dedicated test-keys file only? | Any file you name. Docs recommend a dedicated file. |
-| DEC-004 | Remove all env-sourced keys from tests (the helper is removed, aliases ignored, inherited keys stripped)? This changes how today's live suites are started: no more `ANTHROPIC_API_KEY=… vitest …`. | Yes |
-| DEC-005 | Repair all stale autobyteus-ts live provider tests in this task? | Yes (~14 files) |
-| DEC-006 | Absent key or provider refusal: a skip with a reason plus `--strict`, or always a failure? | Skip with a reason + `--strict` |
-| DEC-007 | Include `isolated-app start --test-vault` (isolated instances get a copy instead of an import)? | Yes |
-| DEC-009 | Shell `ask` command and global knowledge placement | Decided 2026-10-19: no `ask` command (the user rejected it); code API only; `AGENTS.md` entry + TESTING.md section |
-| DEC-008 | Old stores in production data (`~/.autobyteus/local-vault`, `server-data/secret-store/real-e2e-secret-store.*`) and the 3 worktree test DBs with copied keys: leave untouched and list them for you to delete, or include a guided cleanup? | Leave them; I list them and you delete them |
+All are decided; reasoning is in `requirements-doc.md` § Decisions (DEC-001..DEC-012):
+- the approach and production default were decided by the user (SR-006);
+- the TESTING.md instruction by the user (SR-007);
+- the rest by the Solution Designer within that direction, including DEC-012 (live runs opt in; deterministic runs unaffected).
 
 Out of scope:
 - CLI-login runtimes (Claude, Codex, AGY, Grok);
-- production vault behavior;
+- production vault behavior when the variable is unset;
 - importer aliases (document the rename instead).
 
-I also recommend, separately from this task, that you remove the plaintext keys from `~/.autobyteus/server-data/.env` once Settings holds them, because the live app exports them into every agent shell.
+Old stores in production data and existing worktree test DBs are left for you to delete (DEC-008).
+
+I also recommend, separately from this task, removing the plaintext keys from `~/.autobyteus/server-data/.env` once Settings holds them, because the live app exports them into every agent shell.

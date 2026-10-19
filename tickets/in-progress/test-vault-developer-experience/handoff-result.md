@@ -1,4 +1,4 @@
-# Handoff: test-vault-developer-experience — SR-006, Architecture Design Complete
+# Handoff: test-vault-developer-experience — SR-008, Architecture Design Complete (revised after ARCH-REV-001)
 
 - Package: `test-vault-developer-experience` (Project Task `c15a77b2-18b8-4ac6-b3de-8afcba81211e`)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) for the user. The user decides directly in the Solution Designer conversation.
@@ -16,7 +16,17 @@
 - One message in TESTING.md, `AGENTS.md` and the skills.
 - The user's model (2026-10-19): "like a database". One environment variable (`AUTOBYTEUS_TEST_VAULT`) selects the vault, normal logic is unchanged, and when it is unset production uses its own vault.
 
-## The design in one paragraph
+## SR-008 revision (answers ARCH-REV-001)
+
+See the "Architecture Review Response" table at the end of `design-spec.md`.
+- AR-001: deterministic workspace harnesses never apply the selector; live runs opt in through their gate; the AC-017 regression proves it.
+- AR-002: concrete refused set and two predicates.
+- AR-003: documents aligned.
+- AR-004: one failure rule (throw at startup).
+- AR-005: Prisma-free read path; resolver split.
+- AR-006: Gemini explicit mode.
+
+## The design in one paragraph (SR-006 basis, still valid)
 
 - `AUTOBYTEUS_TEST_VAULT=<dir>` holds a location, never a key.
 - When it is set, the server's normal vault runtime opens `<dir>/test-vault.db` + `.secret.key` read-only (a `node:sqlite` store behind a new `SecretVaultStore` interface, verify-only bootstrap). The product's `SecretManagementService` and resolvers are reused unchanged. One pure `selectSecretVaultSource` decides this at the two startup sites.

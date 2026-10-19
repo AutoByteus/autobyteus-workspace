@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: Worktree created from freshly fetched `origin/personal`; `pnpm install --frozen-lockfile` succeeded (10 s).
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-006`
+- Current solution revision ID: `SR-008`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md` (2026-10-10); repository `AGENTS.md`, `TESTING.md` (full, 2026-10-10); `autobyteus-server-ts/docs/modules/secret_management.md` (full, 2026-10-10)
 - Investigation status: Evaluation complete and revised on 2026-10-17 for the user update (SR-002). Requirements approved within the user's direction (SR-004, 2026-10-19). Architecture investigation complete (2026-10-19).
 
@@ -167,7 +167,7 @@ N/A — not applicable.
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `test-vault-evaluation-report.md` | Solution Designer | User-facing evaluation report and recommended approach | Whole request | All | Ready for user review | Behavior-defining (recommended approach); part of the approval basis |
+| `test-vault-evaluation-report.md` | Solution Designer | User-facing evaluation report and approved usage model (§5.0) | Whole request | All | Final @ SR-008 | Behavior-defining; approved with SR-006/SR-008 |
 | `walkthrough/*.log` | Solution Designer | Raw walkthrough evidence (value-free) | W-01..W-10 | Evidence | Final | Evidence only |
 | `context/55.png` | User (copied from Task context) | Incident screenshot | REQ-006 | Evidence | Final | Evidence only |
 | `design-spec.md` | Solution Designer | Architecture design | All | Ready @ SR-006 | Design (no user approval needed) |
@@ -177,7 +177,7 @@ N/A — not applicable.
 | ID | Type | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | U-01 | Unknown | Origin of `~/.autobyteus/local-vault` (no reference in this repo; org-wide search did not complete) | User may expect it to be the test vault | Ask user; never modify it in this task | Open |
-| U-02 | Unknown | Whether one shared test-vault DB can be read safely by worktrees at different schema/migration versions | Shared location design | Avoided by run copies (each copy is migrated, never the original); still verify that a copied DB+key pair stays verifiable at a new path | Reduced |
+| U-02 | Unknown | Whether one shared test-vault DB can be read safely by worktrees at different schema/migration versions | Shared location design | Resolved (SR-006): consumers open the vault read-only and read only the two secret tables, so they never migrate it and newer/older worktrees can read it. Re-running setup from an older worktree against a newer vault is observed in implementation (ARCH-REV-001 P-002). | Resolved |
 | R-01 | Risk | Non-interactive import weakens the accidental-target guard | Security | Explicit flag + production-path refusal (QR-002) | Open |
 | R-02 | Risk | Injecting keys into a child process environment exposes them to that process tree | Security | Clean env, test-owned child only, never logged (QR-001) — same exposure the Anthropic live E2E already accepts | Open |
 | R-03 | Risk | Repairing all stale autobyteus-ts live tests may be sizeable (≥12 files) | Scope | Decide coverage in DEC-005 | Open |
@@ -217,6 +217,10 @@ Authorities read for design (2026-10-19), all from `/Users/normy/autobyteus_org/
 | A-20 | `autobyteus-web/electron/server/serverRuntimeEnv.ts` (`inherit-caller` vs `isolated-baseline`, `buildServerProcessEnv`); `electron/appDataPaths.ts` (`~/.autobyteus/server-data`) | Production launches pass the full caller env to the server; isolated launches pass only a baseline | A server-side real-app-data guard is mandatory; the isolated policy forwards the selector explicitly |
 | A-21 | `grep -rln "apiKeyResolver: ProviderApiKeyResolver" autobyteus-ts/src` → 31 files | Every autobyteus-ts client/factory requires an explicit resolver | An optional parameter + process default slot gives "no extra code" in tests |
 | A-22 | `app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.ts:235` | Vault removal only for legacy custom-provider data; failure → sanitized warning | A read-only test vault yields at most a warning on legacy test DBs |
+| A-23 | `autobyteus-web/electron/main.ts:15-23` `getProtectedProductionPaths()`; `autobyteus-web/package.json` name `autobyteus`; `ls ~/Library/Application Support`, `~/Library/Logs` → `autobyteus` | Electron protects `~/.autobyteus` + `userData`/`sessionData`/`logs`/`crashDumps`; userData default = `<appData>/autobyteus` | REQ-004 refused set, mirrored as a pure server predicate |
+| A-24 | `grep -rln "runtime.initialize(" autobyteus-server-ts/tests` → 6 files; env helper used by 8 suites | In-process suites initialize the vault runtime themselves | They pass an explicit source (application, or the live initializer) |
+| A-25 | `autobyteus-web/tests/e2e/*.mjs`: 22 probes spawn `dist/app.js` with `...process.env`; `provider-api-key-save-probe.mjs` saves keys | No shared probe env owner | The key-saving probe strips the selector; others: residual R-D; FU-05 |
+| A-26 | `test-support/live-e2e/live-e2e-harness.ts:1195-1232` | The real-E2E harness opens an in-process runtime on the run DB; preflight reads the server's GraphQL vault status | The harness uses the live initializer; preflight follows the server's selected source |
 
 
 ## Requirement Implications
@@ -225,6 +229,11 @@ Findings F-01..F-14 are summarized in `test-vault-evaluation-report.md` and map 
 
 ## Notes For Architecture Design
 
-- Verify U-02 before choosing direct shared-vault use vs copy-into-run-owned-vault.
-- Reuse `LocalEnvironmentSecretImportService` confirmation port; reuse `createSanitizedTestEnvironment`.
-- autobyteus-ts must stay storage-neutral (no server dependency); inject an env-backed test resolver.
+Superseded by the design (`design-spec.md` @ SR-008). The current constraints are:
+- one selector variable, `AUTOBYTEUS_TEST_VAULT`;
+- the read-only test vault is selected by the normal vault runtime (no copies, no transfer);
+- live runs opt in; deterministic harnesses do not apply the selector;
+- autobyteus-ts `src` stays vault-agnostic, with an optional default resolver installed by the test setup;
+- forbidden locations are listed in REQ-004.
+
+The SR-001/SR-002 note "inject an env-backed test resolver" is withdrawn (REQ-006).

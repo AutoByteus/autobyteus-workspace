@@ -11,6 +11,7 @@
 | SR-005 | Requirement change (user) | User 2026-10-19: "set one environment variable … your normal logic will automatically use the test vault … like a database" | N/A | Approved @ SR-004; design drafted | Ready for Approval; design Needs Revision | REQ-005, REQ-014, DS-003..006, DEC-010, DEC-011 | Usage model changes from helper calls to env-selected automatic use; handoff held |
 | SR-006 | Requirements (approval) + Design | User 2026-10-19: answers on production default and the "like a database" direction ("I think we should go into this direction") | N/A | Ready for Approval @ SR-005 | Approved; design reworked | REQ-001, 005, 007, 012, 014, 016; AC-015, AC-016; DEC-010, DEC-011 | Selector env var; read-only vault selected by the normal vault runtime; production default; autobyteus-ts default resolver |
 | SR-007 | Requirements (user) | User 2026-10-19: "write in TESTING.md to set the test vault environment variable … important in the requirement" | N/A | Approved @ SR-006; design under architecture review | Approved; design updated (docs guidance only) | REQ-013, AC-012 | TESTING.md must instruct setting `AUTOBYTEUS_TEST_VAULT` (section, rule, every real-key example) |
+| SR-008 | Mixed (Design Impact + editorial Requirement Gap) | Architecture review ARCH-REV-001 (Fail): AR-001..AR-006 | AR-001..AR-006 | Approved @ SR-007; design Ready (failed review) | Approved @ SR-008; design Ready (revised) | REQ-004, 005, 011, 013, 014, 016; AC-004, 009, 010, 016, 017; UC-009; SCN-009; DEC-007, 012 | Live opt-in at harnesses; concrete refused set; one failure rule; Prisma-free read path; docs aligned |
 
 ## Revision Entries
 
@@ -139,3 +140,25 @@
 - Current status: Approved @ SR-007; design-spec updated in Guidance For Implementation (docs only); no structural design change
 - IDs affected: REQ-013, AC-012
 - Review impact: architecture reviewer informed of the revised basis (same review; no structural change)
+
+### SR-008 — Answering architecture review ARCH-REV-001
+
+- Classification:
+  - Design Impact: AR-001, AR-002, AR-004;
+  - editorial Requirement Gap: AR-003;
+  - accepted recommendations: AR-005, AR-006.
+- Trigger: `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_de82e19f39ac4442a25216609c2f8983`), `design-review-report.md` ARCH-REV-001 (Fail)
+- Prior status: requirements Approved @ SR-007; design Ready @ SR-007 (failed review)
+- Current status: requirements Approved @ SR-008; design Ready @ SR-008
+- Changes:
+  - **REQ-005 / DEC-012 / AC-017 / UC-009 / SCN-009.** The workspace's deterministic harnesses never apply the selector; live runs opt in through their existing gate.
+    - This resolves P-001 within the already-approved preserved boundary. It does not change the user's model: servers started with the variable, isolated instances, `test:e2e:real` and live tests all use it.
+    - Classified as within direction because the preserved boundary was user-approved and live tests already require their gate; no user decision is needed. The user was informed.
+  - **REQ-004 / AC-004.** Concrete refused set (Electron `userData` defaults for app `autobyteus` per OS + macOS Logs), with separate predicates.
+  - **REQ-016 / AC-016.** One failure rule: a selected test vault that is invalid, forbidden, missing or not READY stops startup.
+  - **REQ-014.** Gemini keeps an explicit mode resolver.
+  - **REQ-013.** TESTING wording: set the variable together with the live gate; deterministic suites ignore it; not in a shell profile.
+  - **Editorial (AR-003).** The superseded copy/option wording was removed from the requirements doc, report and investigation notes; baselines and supplement status updated.
+  - **Design.** Harness owners (DS-005), failure rule, Prisma-free `read-only-test-vault.ts`, resolver split, `startBuiltTestServer({testVaultSetting})`, web-probe strip, review-response table.
+- Intended behavior changed: clarified (REQ-005 scope for deterministic harnesses; REQ-016 failure); no change to the user's model
+- Next action: return to architecture review (round 2)
