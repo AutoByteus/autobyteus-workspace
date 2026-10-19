@@ -18,11 +18,11 @@ Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Worktree `/Users
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code reviewer pass (CRR-002) → API/E2E, message from `/software_engineering_team/code_reviewer`
-- Prior Investigation Reviewed: N/A (first round)
-- Latest Authoritative Investigation: this file, round 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: round 1, code reviewer pass CRR-002. Round 2, CRR-004: the INT-001 merge `26ad4ace20` of `origin/personal` @ `ad784b0a8f` (head `c5da4745e3`). It changes the three task-execution adapters (ingress) and `autobyteus-ts`, a shared foundation, so every case is rerun by impact. The execution report's Round section gives the plan; the coverage decisions are unchanged.
+- Prior Investigation Reviewed: round 1
+- Latest Authoritative Investigation: this file, round 2 (planned cases unchanged; API-01..API-09 reused from the implementation's integration round IMP-15..IMP-22 on the merge)
 
 All paths are relative to `tickets/in-progress/delegated-copy-restore-from-own-file/` unless absolute.
 
