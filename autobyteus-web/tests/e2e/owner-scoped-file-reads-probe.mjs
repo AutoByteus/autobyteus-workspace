@@ -184,22 +184,6 @@ const filesOf = {
   agentOrgMember: (s) => gql('query($o:String!,$m:String!,$a:String!){getAgentOrgMemberFileChanges(orgRunId:$o,memberAddress:$m,agentRunId:$a){path}}', { o: s.orgRunId, m: s.memberAddress, a: s.agentRunId }).then((d) => d.getAgentOrgMemberFileChanges),
 };
 const listOf = (subject) => filesOf[subject.kind](subject.kind === 'run' ? subject.runId : subject);
-/** The paths in a run's stored file_changes.json (the folder named after the run under the data root's memory). */
-const storedPathsOf = async (agentRunId) => {
-  const find = async (dir) => {
-    for (const entry of await fsp.readdir(dir, { withFileTypes: true }).catch(() => [])) {
-      if (!entry.isDirectory()) continue;
-      const full = path.join(dir, entry.name);
-      if (entry.name === agentRunId && fs.existsSync(path.join(full, 'file_changes.json'))) return path.join(full, 'file_changes.json');
-      const found = await find(full);
-      if (found) return found;
-    }
-    return null;
-  };
-  const file = await find(path.join(stack.dataDir, 'memory'));
-  return file ? JSON.parse(await fsp.readFile(file, 'utf8')).entries.map((e) => e.path) : [];
-};
-
 const seed = async () => {
   const workspace = path.join(stack.root, 'workspace'), archive = path.join(stack.root, 'archive');
   for (const dir of [workspace, archive]) await fsp.mkdir(dir, { recursive: true });
@@ -223,14 +207,12 @@ const seed = async () => {
   const delegateWriter = (name) => callTool('delegate_task', { recipient_address: `/${segment(NAMES.helper)}`, description: writeImage(name) });
   const files = [];
   /**
-   * Waits until the file reached the agent's stored record (file_changes.json), then checks the owner list shows it. No
-   * live read happens before the recording is stored: a first live read that overlaps a run's first file-change event
-   * can leave the live projection without that entry while the run runs (RunFileChangeService.load cache race, FU-C).
+   * Polls the owner's list (a live read while the run runs) until it shows the file. The first poll usually overlaps the
+   * agent's first file-change event, as a hydrating Artifacts tab does; the list must still show the file
+   * (run-file-change-live-cache-race, autobyteus-180).
    */
   const recorded = async (label, subject, name) => {
-    const agentRunId = subject.kind === 'run' ? subject.runId : subject.agentRunId;
-    await until(`${label} file ${name} stored`, async () => (await storedPathsOf(agentRunId)).includes(name), 90000);
-    await until(`${label} file ${name} listed`, async () => (await listOf(subject)).some((e) => e.path === name), 30000);
+    await until(`${label} file ${name} listed live`, async () => (await listOf(subject)).some((e) => e.path === name), 90000);
     files.push({ label, subject, path: name, absolutePath: fileIn(name), text: `Owner-scoped file of ${label} (${name}) ${randomUUID().slice(0, 8)}` });
   };
   const taskAgentsIn = (tree) => {
@@ -311,6 +293,11 @@ const seed = async () => {
   await stopped('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', teamRun.teamRunId);
   await stopped('mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}', orgRun.agentOrgRunId);
   for (const socket of sockets.splice(0)) socket.close();
+  // After the stop every list comes from the saved record: it still holds every recorded file (autobyteus-180 REQ-002).
+  for (const file of files) {
+    const listed = (await listOf(file.subject)).map((e) => e.path);
+    assert(listed.includes(file.path), `${file.label}: the saved record lists ${file.path} after the stop`, { listed });
+  }
 
   // Unrelated saved Team runs in another workspace (what a scanning read has to pass).
   const memberConfigs = [{ memberAddress: '/manager', agentDefinitionId: ids.manager, ...config(archive) }, { memberAddress: '/mate', agentDefinitionId: ids.mate, ...config(archive) }];

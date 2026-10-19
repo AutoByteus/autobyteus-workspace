@@ -1,0 +1,23 @@
+# IMP-05-owner-scoped-e2e-loop-control-unfixed (control for AC-003)
+# command: as IMP-04, x10, with autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts temporarily restored to base 87732d5504 (unfixed load); E2E file as in c2bd6991b0; restored afterwards
+# purpose: show the E2E without its stored-record wait detects the race
+# env: macOS 26.5.2, node v22.23.1, scripted AGY CLI
+# date: 2026-10-19T08:48:52Z
+
+run 1: exit=0 |      Tests  2 passed (2)
+run 2: exit=0 |      Tests  2 passed (2)
+run 3: exit=0 |      Tests  2 passed (2)
+run 4: exit=0 |      Tests  2 passed (2)
+run 5: exit=1 |      Tests  1 failed | 1 passed (2)
+     × Team root: configured member, team task agent and a pending file, read through the team run; running, then stopped 60893ms
+Error: Timed out waiting for Team running: configured member /mate (pending): listed
+run 6: exit=1 |      Tests  1 failed | 1 passed (2)
+     × Team root: configured member, team task agent and a pending file, read through the team run; running, then stopped 61172ms
+Error: Timed out waiting for Team running: configured member /mate (pending): listed
+run 7: exit=0 |      Tests  2 passed (2)
+run 8: exit=0 |      Tests  2 passed (2)
+run 9: exit=0 |      Tests  2 passed (2)
+run 10: exit=1 |      Tests  1 failed | 1 passed (2)
+     × Org root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped 62290ms
+Error: Timed out waiting for Org running: direct agent /sibling (pending): listed
+SUMMARY: 7 passed, 3 failed of 10 runs on the unfixed load

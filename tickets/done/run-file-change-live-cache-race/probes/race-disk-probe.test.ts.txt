@@ -1,0 +1,42 @@
+// TEMPORARY PROBE (Solution Designer, autobyteus-180): does a second FILE_CHANGE after the race also lose the first entry on disk?
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { describe, it } from "vitest";
+import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { RunFileChangeProjectionStore } from "../../../src/services/run-file-changes/run-file-change-projection-store.js";
+import { RunFileChangeService } from "../../../src/services/run-file-changes/run-file-change-service.js";
+
+describe("probe", () => {
+  it("race then second event", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "rfc-race2-"));
+    const realStore = new RunFileChangeProjectionStore();
+    let readerGate: (() => void) | null = null;
+    let reads = 0;
+    const store = Object.assign(Object.create(realStore), {
+      readProjection: async (dir: string) => {
+        reads += 1;
+        const result = await realStore.readProjection(dir);
+        if (reads === 1) await new Promise<void>((resolve) => { readerGate = resolve; });
+        return result;
+      },
+      writeProjection: (dir: string, projection: never) => realStore.writeProjection(dir, projection),
+    });
+    const service = new RunFileChangeService({ projectionStore: store as never, workspaceManager: { getWorkspaceById: () => null } as never });
+    const listeners: Array<(event: unknown) => void> = [];
+    const run = { runId: "m1", config: { memoryDir, workspaceId: null }, subscribeToEvents: (l: (e: unknown) => void) => { listeners.push(l); return () => undefined; } };
+    service.attachToRun(run as never);
+    const ev = (p: string) => listeners.forEach((l) => l({ eventType: AgentRunEventType.FILE_CHANGE, runId: "m1", statusHint: null,
+      payload: { path: p, type: "image", status: "available", sourceTool: "generated_output", sourceInvocationId: p } }));
+    const wait = async (n: number) => { const d = Date.now() + 2000; while ((await realStore.readProjection(memoryDir)).entries.length < n && Date.now() < d) await new Promise((r) => setTimeout(r, 10)); };
+    const reader = service.getProjectionForCollaborationMember({ agentRunId: "m1", memoryDir, workspaceRootPath: null });
+    await new Promise((r) => setTimeout(r, 20));
+    ev("/abs/one.png"); await wait(1);
+    readerGate!(); await reader;
+    ev("/abs/two.png"); await new Promise((r) => setTimeout(r, 200));
+    const stored = (await realStore.readProjection(memoryDir)).entries.map((e) => e.path);
+    const live = (await service.getProjectionForCollaborationMember({ agentRunId: "m1", memoryDir, workspaceRootPath: null })).entries.map((e) => e.path);
+    console.log("PROBE " + JSON.stringify({ storedAfterSecondEvent: stored, liveAfterSecondEvent: live }));
+    await fs.rm(memoryDir, { recursive: true, force: true });
+  });
+});

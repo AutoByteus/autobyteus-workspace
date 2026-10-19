@@ -1,0 +1,188 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-live-cache-race/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55619
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-live-cache-race/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55619
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-live-cache-race/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-live-cache-race/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/db/production.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:80456) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1792401744424,"pid":80456,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55623"}
+{"level":30,"time":1792401744449,"pid":80456,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55619"}
+[2026-10-19T09:22:24.449Z] [INFO] [server.runtime] Server listening on 127.0.0.1:55619
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1792401744875,"pid":80456,"hostname":"MacBookPro","reqId":"req-2w","method":"GET","url":"/rest/runs/osr_helper_02728bde00584ee0b031abd4abdc9eae/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.4257080554962158,"msg":"http request completed"}
+{"level":40,"time":1792401744876,"pid":80456,"hostname":"MacBookPro","reqId":"req-2x","method":"GET","url":"/rest/runs/osr_helper_02728bde00584ee0b031abd4abdc9eae/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.27562499046325684,"msg":"http request completed"}
+{"level":40,"time":1792401744878,"pid":80456,"hostname":"MacBookPro","reqId":"req-2y","method":"GET","url":"/rest/runs/osr_helper_02728bde00584ee0b031abd4abdc9eae/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.2455000877380371,"msg":"http request completed"}
+{"level":40,"time":1792401744880,"pid":80456,"hostname":"MacBookPro","reqId":"req-2z","method":"GET","url":"/rest/runs/osr_helper_02728bde00584ee0b031abd4abdc9eae/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.22833406925201416,"msg":"http request completed"}
+{"level":40,"time":1792401744882,"pid":80456,"hostname":"MacBookPro","reqId":"req-30","method":"GET","url":"/rest/runs/osr_helper_02728bde00584ee0b031abd4abdc9eae/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.2292090654373169,"msg":"http request completed"}
+{"level":40,"time":1792401744884,"pid":80456,"hostname":"MacBookPro","reqId":"req-31","method":"GET","url":"/rest/runs/osr_helper_02728bde00584ee0b031abd4abdc9eae/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.26704204082489014,"msg":"http request completed"}
+{"level":40,"time":1792401744889,"pid":80456,"hostname":"MacBookPro","reqId":"req-32","method":"GET","url":"/rest/team-runs/osr_manager_a2d86145b37249faaabee1abf207d808/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":3.409999966621399,"msg":"http request completed"}
+{"level":40,"time":1792401744893,"pid":80456,"hostname":"MacBookPro","reqId":"req-33","method":"GET","url":"/rest/team-runs/osr_manager_a2d86145b37249faaabee1abf207d808/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":2.4299579858779907,"msg":"http request completed"}
+{"level":40,"time":1792401744897,"pid":80456,"hostname":"MacBookPro","reqId":"req-34","method":"GET","url":"/rest/team-runs/osr_manager_a2d86145b37249faaabee1abf207d808/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":2.259916067123413,"msg":"http request completed"}
+{"level":40,"time":1792401744901,"pid":80456,"hostname":"MacBookPro","reqId":"req-35","method":"GET","url":"/rest/team-runs/osr_manager_a2d86145b37249faaabee1abf207d808/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":2.4545000791549683,"msg":"http request completed"}
+{"level":40,"time":1792401744905,"pid":80456,"hostname":"MacBookPro","reqId":"req-36","method":"GET","url":"/rest/team-runs/osr_manager_a2d86145b37249faaabee1abf207d808/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":2.209958076477051,"msg":"http request completed"}
+{"level":40,"time":1792401744910,"pid":80456,"hostname":"MacBookPro","reqId":"req-37","method":"GET","url":"/rest/team-runs/osr_manager_a2d86145b37249faaabee1abf207d808/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":2.6465840339660645,"msg":"http request completed"}
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/archive.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/workspace.
+Created terminal session 27344a77-2c2e-493a-b001-9a829c3d06fe using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Terminal WebSocket connected: 27344a77-2c2e-493a-b001-9a829c3d06fe
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Closed PTY session 27344a77-2c2e-493a-b001-9a829c3d06fe
+Terminal WebSocket disconnected: 27344a77-2c2e-493a-b001-9a829c3d06fe
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/archive.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/workspace.
+Created terminal session 24837697-2c41-4bcf-ad31-61fb9bf10aef using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Terminal WebSocket connected: 24837697-2c41-4bcf-ad31-61fb9bf10aef
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Closed PTY session 24837697-2c41-4bcf-ad31-61fb9bf10aef
+Terminal WebSocket disconnected: 24837697-2c41-4bcf-ad31-61fb9bf10aef
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/archive.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/workspace.
+Created terminal session 56cccc29-6b09-4bad-8984-50981e07bcf6 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Terminal WebSocket connected: 56cccc29-6b09-4bad-8984-50981e07bcf6
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Closed PTY session 56cccc29-6b09-4bad-8984-50981e07bcf6
+Terminal WebSocket disconnected: 56cccc29-6b09-4bad-8984-50981e07bcf6
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/archive.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/workspace.
+Created terminal session f4670c4a-1b23-4a60-81e7-6ccdeb54d4f6 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Terminal WebSocket connected: f4670c4a-1b23-4a60-81e7-6ccdeb54d4f6
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/memory/agent_teams/osr_team_f837884ccd714998b660cf4d6eebb7cd/osr_mate_576e616ca1544c46b5e83dc1aeea2255/raw_traces_active.jsonl
+Closed PTY session f4670c4a-1b23-4a60-81e7-6ccdeb54d4f6
+Terminal WebSocket disconnected: f4670c4a-1b23-4a60-81e7-6ccdeb54d4f6
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/archive.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/workspace.
+Created terminal session 0cfa06d9-d7f0-4cac-8485-f28a4220aba2 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Terminal WebSocket connected: 0cfa06d9-d7f0-4cac-8485-f28a4220aba2
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/memory/agent_orgs/osr_org_1c5153d7534d4253b3a9cf081ad54ae9/osr_sibling_a82e6231ae8e4b5cb45f81ca6bdea344/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/memory/agent_orgs/osr_org_1c5153d7534d4253b3a9cf081ad54ae9/osr_squad_1788a7330d9040108af1cb6ec9a752aa/osr_peer_e7e7420476344e54a9b7e2e53990393a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/memory/agent_orgs/osr_org_1c5153d7534d4253b3a9cf081ad54ae9/osr_sibling_a82e6231ae8e4b5cb45f81ca6bdea344/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/memory/agent_orgs/osr_org_1c5153d7534d4253b3a9cf081ad54ae9/osr_squad_1788a7330d9040108af1cb6ec9a752aa/osr_peer_e7e7420476344e54a9b7e2e53990393a/raw_traces_active.jsonl
+Closed PTY session 0cfa06d9-d7f0-4cac-8485-f28a4220aba2
+Terminal WebSocket disconnected: 0cfa06d9-d7f0-4cac-8485-f28a4220aba2
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/archive.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/workspace.
+Created terminal session 37e5a670-4bb7-446e-9cb2-dbc5b12004e0 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Terminal WebSocket connected: 37e5a670-4bb7-446e-9cb2-dbc5b12004e0
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Closed PTY session 37e5a670-4bb7-446e-9cb2-dbc5b12004e0
+Terminal WebSocket disconnected: 37e5a670-4bb7-446e-9cb2-dbc5b12004e0
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/archive.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/workspace.
+Created terminal session a9cf33c1-ec8a-472e-893e-22b8a212302d using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Terminal WebSocket connected: a9cf33c1-ec8a-472e-893e-22b8a212302d
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-7OZzDE
+Closed PTY session a9cf33c1-ec8a-472e-893e-22b8a212302d
+Terminal WebSocket disconnected: a9cf33c1-ec8a-472e-893e-22b8a212302d
+{"level":40,"time":1792401800919,"pid":80456,"hostname":"MacBookPro","reqId":"req-as","method":"GET","url":"/rest/agent-collaborations/osr_manager_a2d86145b37249faaabee1abf207d808/agent-runs/osr_helper_02728bde00584ee0b031abd4abdc9eae/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md","statusCode":404,"elapsedMs":1.2687909603118896,"msg":"http request completed"}
+{"level":40,"time":1792401802448,"pid":80456,"hostname":"MacBookPro","reqId":"req-au","method":"GET","url":"/rest/agent-collaborations/osr_manager_a2d86145b37249faaabee1abf207d808/agent-runs/osr_helper_02728bde00584ee0b031abd4abdc9eae/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md","statusCode":404,"elapsedMs":1.2300829887390137,"msg":"http request completed"}
+{"level":40,"time":1792401803606,"pid":80456,"hostname":"MacBookPro","reqId":"req-av","method":"GET","url":"/rest/agent-collaborations/osr_manager_a2d86145b37249faaabee1abf207d808/agent-runs/osr_helper_02728bde00584ee0b031abd4abdc9eae/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md","statusCode":404,"elapsedMs":0.8466250896453857,"msg":"http request completed"}
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/archive.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/archive.
+Created metadata-only FileSystemWorkspace at /tmp/rflcr-api/seed-small/workspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-ZFqZEq/server-data/memory/agent_teams/osr_team_f837884ccd714998b660cf4d6eebb7cd/osr_mate_576e616ca1544c46b5e83dc1aeea2255/raw_traces_active.jsonl
+[2026-10-19T09:23:39.908Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-19T09:23:39.985Z] [INFO] [server.runtime] Server closed cleanly.

@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import fs from "node:fs";
-import fsp from "node:fs/promises";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -19,9 +18,8 @@ import { callTool, segment, startCollaborationHarness, type CollaborationHarness
 // against their own launch workspace) and answer 409 for the pending file. The run-id surfaces give every member nothing
 // (the members' runs are active). An agent named under another owner gets an error (list) or 404 (content). After the
 // root stops, the same lists and bytes come from the saved record and the pending file answers 404 "not available".
-// Each running member is first read only after its recording reached its stored `file_changes.json`: a first live read
-// that overlaps a run's first file-change event can leave the live projection without that entry until the run stops
-// (RunFileChangeService.load cache race, outside this ticket; follow-up FU-C of run-file-change-owner-scoped-reads).
+// Members are read live as soon as they write, so a first live read can overlap a run's first file-change event; the
+// read must still list the file (run-file-change-live-cache-race, autobyteus-180).
 // Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts --no-watch
@@ -65,25 +63,14 @@ suite("Team and org member file changes are read through their owner (real HTTP/
   const byRunId = async (runId: string) => (await h.graphql(`query($r:String!){getRunFileChanges(runId:$r){path}}`, { r: runId })).getRunFileChanges as Rec[];
   const runContent = (runId: string, filePath: string) => content(`/runs/${encodeURIComponent(runId)}/file-change-content?path=${encodeURIComponent(filePath)}`);
   const imageIn = (name: string) => path.join(h.workspace, name);
-  /** The stored file_changes.json of a run: the folder named after the run under the data dir's memory. */
-  const storedChangesOf = async (agentRunId: string): Promise<string[]> => {
-    const find = async (dir: string): Promise<string | null> => {
-      for (const entry of await fsp.readdir(dir, { withFileTypes: true }).catch(() => [])) {
-        if (!entry.isDirectory()) continue;
-        const full = path.join(dir, entry.name);
-        if (entry.name === agentRunId && fs.existsSync(path.join(full, "file_changes.json"))) return path.join(full, "file_changes.json");
-        const found = await find(full);
-        if (found) return found;
-      }
-      return null;
-    };
-    const file = await find(path.join(h.dataDir, "memory"));
-    if (!file) return [];
-    return (JSON.parse(await fsp.readFile(file, "utf8")).entries as Rec[]).map((entry) => String(entry.path));
-  };
-  /** Waits until a member's recorded files reached its stored record (no live read before that; see the header). */
-  const recordedOnDisk = (member: { label: string; agentRunId: string }, paths: string[]) =>
-    until(async () => { const stored = await storedChangesOf(member.agentRunId); return paths.every((p) => stored.includes(p)); }, `${member.label} recorded on disk`, 60_000);
+  /** Waits until a member's owner list (a live read while the root runs) lists `paths`. */
+  const listedLive = (list: (member: Member) => Promise<{ data: Rec | null; error: string | null }>, member: Member, paths: string[]) =>
+    until(async () => {
+      const result = await list(member);
+      if (result.error) throw new Error(result.error);
+      const listed = (Object.values(result.data!)[0] as Rec[]).map((entry) => String(entry.path));
+      return paths.every((p) => listed.includes(p));
+    }, `${member.label} listed live`, 60_000);
 
   beforeAll(async () => {
     h = await startCollaborationHarness("owner-scoped-file-changes-e2e");
@@ -131,7 +118,6 @@ suite("Team and org member file changes are read through their owner (real HTTP/
     for (const member of input.members) {
       const label = `${input.label} ${input.running ? "running" : "stopped"}: ${member.label}`;
       const expected = [...member.files, ...(member.pending ? [member.pending] : [])].sort();
-      if (input.running) await recordedOnDisk({ label, agentRunId: member.agentRunId }, expected);
       let listed: Rec[] = [];
       await until(async () => {
         const result = await input.list(member);
@@ -171,14 +157,15 @@ suite("Team and org member file changes are read through their owner (real HTTP/
     const other = await h.startRoot("team", ids);
     const manager: Member = { label: "configured member /manager", address: "/manager", agentRunId: root.members["/manager"]!, files: ["team-manager.png"] };
     const mate: Member = { label: "configured member /mate (pending)", address: "/mate", agentRunId: root.members["/mate"]!, files: [], pending: "docs/team-pending.md" };
+    const teamList = (member: Member) => query(`query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){path runId type status sourceTool}}`, { t: root.rootId, a: member.agentRunId });
     writes(root, manager, manager.files[0]!);
-    await recordedOnDisk(manager, manager.files);
+    await listedLive(teamList, manager, manager.files);
     const taskAgent = await delegatesWriter(root, manager, "team task agent", "team-task-agent.png");
     root.sendTo(mate.agentRunId, `WRITE_FILE_HOLD:${mate.pending}`);
     const members = [manager, taskAgent, mate];
     const reads = (running: boolean) => expectOwnerReads({
       label: "Team", running, members,
-      list: (member) => query(`query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){path runId type status sourceTool}}`, { t: root.rootId, a: member.agentRunId }),
+      list: teamList,
       read: (member, filePath) => content(`/team-runs/${encodeURIComponent(root.rootId)}/agent-runs/${encodeURIComponent(member.agentRunId)}/file-change-content?path=${encodeURIComponent(filePath)}`),
       wrongOwner: (member) => [
         query(`query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){path}}`, { t: other.rootId, a: member.agentRunId }),
@@ -211,9 +198,10 @@ suite("Team and org member file changes are read through their owner (real HTTP/
     const lead: Member = { label: "member-team member /squad/lead", address: "/squad/lead", agentRunId: root.members["/squad/lead"]!, files: ["org-squad-lead.png"] };
     const sibling: Member = { label: "direct agent /sibling (pending)", address: "/sibling", agentRunId: root.members["/sibling"]!, files: [], pending: "docs/org-pending.md" };
     const orgList = `query($o:String!,$m:String!,$a:String!){getAgentOrgMemberFileChanges(orgRunId:$o,memberAddress:$m,agentRunId:$a){path runId type status sourceTool}}`;
+    const orgListOf = (member: Member) => query(orgList, { o: root.rootId, m: member.address, a: member.agentRunId });
     for (const member of [manager, lead]) {
       writes(root, member, member.files[0]!);
-      await recordedOnDisk(member, member.files);
+      await listedLive(orgListOf, member, member.files);
     }
     const rootTaskAgent = await delegatesWriter(root, manager, "org-root task agent", "org-task-agent.png");
     const squadTaskAgent = await delegatesWriter(root, lead, "member-team task agent", "org-squad-task-agent.png");
@@ -225,7 +213,7 @@ suite("Team and org member file changes are read through their owner (real HTTP/
         + `${address === null ? "" : `memberAddress=${encodeURIComponent(address)}&`}path=${encodeURIComponent(filePath)}`);
     const reads = (running: boolean) => expectOwnerReads({
       label: "Org", running, members,
-      list: (member) => query(orgList, { o: root.rootId, m: member.address, a: member.agentRunId }),
+      list: orgListOf,
       read: (member, filePath) => orgRoute(root.rootId, member, filePath),
       wrongOwner: (member) => [
         query(orgList, { o: other.rootId, m: member.address, a: member.agentRunId }),
