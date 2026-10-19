@@ -3,6 +3,7 @@ import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
 import { getTeamMemberRunViewProjectionService } from "../../../run-history/services/team-member-run-view-projection-service.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
+import { RunFileChangeEntryObject } from "./run-file-changes.js";
 import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
 import { getAgentTeamRunManager } from "../../../agent-team-execution/services/agent-team-run-manager.js";
 import { RunModelConfigEditabilityObject } from "./run-model-config.js";
@@ -112,6 +113,15 @@ export class TeamRunHistoryResolver {
       lastActivityAt: projection.lastActivityAt,
       hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
     };
+  }
+
+  /** One team member's artifact list, located inside the named team run only (live while it runs). */
+  @Query(() => [RunFileChangeEntryObject])
+  async getTeamMemberFileChanges(
+    @Arg("teamRunId", () => String) teamRunId: string,
+    @Arg("agentRunId", () => String) agentRunId: string,
+  ): Promise<RunFileChangeEntryObject[]> {
+    return this.teamMemberRunProjectionService.getFileChanges(teamRunId, agentRunId);
   }
 
   @Query(() => TeamRunExecutionCheckpointPayload)

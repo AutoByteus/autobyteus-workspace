@@ -21,85 +21,125 @@ const configured = tree.rootTeam.members[0] as Extract<typeof tree.rootTeam.memb
 const entry = { id: "change-1", runId: "run-1", path: "src/file.ts", type: "file" as const, status: "available" as const, sourceTool: "generated_output" as const, sourceInvocationId: null, content: null, createdAt: "2026-08-15T00:00:00.000Z", updatedAt: "2026-08-15T00:00:00.000Z" };
 const projection = { version: 2 as const, entries: [entry] };
 
-const harness = (input: {
-  standalone?: boolean;
-  storedStandalone?: boolean;
-  team?: boolean;
-  org?: boolean;
-  activeCollaboration?: boolean;
-} = {}) => {
-  const activeStandalone = input.standalone ? { runId: "run-1", config: { workspaceId: null } } : null;
-  const agentRuns = { getActiveRun: vi.fn(() => activeStandalone) };
-  const metadata = { readMetadata: vi.fn(async () => input.storedStandalone ? ({ memoryDir: "/memory/agents/run-1", workspaceRootPath: "/ws/standalone" }) : null) };
+const teamMember = (input: { isActive?: boolean; configuredPlacement?: unknown; agentRunId?: string; tree?: unknown } = {}) => ({
+  rootSubjectKind: "agent_team", rootRunId: "team-1", rootTeamRunId: "team-1",
+  containingTeamRunId: "team-1", ancestorTeamRunIds: [], agentRunId: input.agentRunId ?? "worker-run",
+  memberAddress: "/worker", configuredPlacement: "configuredPlacement" in input ? input.configuredPlacement : configured,
+  memoryDir: `/memory/agent_teams/team-1/${input.agentRunId ?? "worker-run"}`, tree: input.tree ?? tree, isActive: Boolean(input.isActive),
+}) as never;
+const orgMember = () => ({
+  rootSubjectKind: "agent_org", rootRunId: "org-1", containingTeamRunId: "mounted-team-1",
+  ancestorTeamRunIds: ["mounted-team-1"], agentRunId: "org-worker-run",
+  memberAddress: "/research/worker", configuredPlacement: {
+    ...configured,
+    address: "/research/worker",
+    agentRunId: "org-worker-run",
+    launchConfiguration: { ...configured.launchConfiguration, workspaceRootPath: "/ws/org" },
+  },
+  memoryDir: "/memory/agent_orgs/org-1/mounted-team-1/org-worker-run",
+  tree: { schemaVersion: 1, subjectKind: "agent_org" },
+  isActive: false,
+}) as never;
+
+/**
+ * `active`: run ids in the shared activation registry (standalone runs and collaboration members
+ * alike). `standalone`: run ids that have standalone run metadata.
+ */
+const harness = (input: { active?: string[]; standalone?: string[] } = {}) => {
+  const agentRuns = { getActiveRun: vi.fn((runId: string) => input.active?.includes(runId) ? { runId, config: { workspaceId: null } } : null) };
+  const metadata = { readMetadata: vi.fn(async (runId: string) => input.standalone?.includes(runId)
+    ? ({ memoryDir: `/memory/agents/${runId}`, workspaceRootPath: "/ws/standalone" }) : null) };
   const projectionStore = { readProjection: vi.fn(async () => projection) };
   const changes = {
     getProjectionForRun: vi.fn(async () => projection),
     getProjectionForCollaborationMember: vi.fn(async () => projection),
   };
-  const collaborationLocations = { findAgent: vi.fn(async () => input.team ? ({
-    rootSubjectKind: "agent_team", rootRunId: "team-1", rootTeamRunId: "team-1",
-    containingTeamRunId: "team-1", ancestorTeamRunIds: [], agentRunId: "worker-run",
-    memberAddress: "/worker", configuredPlacement: configured,
-    memoryDir: "/memory/agent_teams/team-1/worker-run", tree, isActive: Boolean(input.activeCollaboration),
-  }) : input.org ? ({
-    rootSubjectKind: "agent_org", rootRunId: "org-1", containingTeamRunId: "mounted-team-1",
-    ancestorTeamRunIds: ["mounted-team-1"], agentRunId: "org-worker-run",
-    memberAddress: "/research/worker", configuredPlacement: {
-      ...configured,
-      address: "/research/worker",
-      agentRunId: "org-worker-run",
-      launchConfiguration: { ...configured.launchConfiguration, workspaceRootPath: "/ws/org" },
-    },
-    memoryDir: "/memory/agent_orgs/org-1/mounted-team-1/org-worker-run",
-    tree: { schemaVersion: 1, subjectKind: "agent_org" },
-    isActive: Boolean(input.activeCollaboration),
-  }) : null) };
   const workspaces = { getWorkspaceById: vi.fn() };
   return {
-    agentRuns, metadata, projectionStore, changes, collaborationLocations,
+    agentRuns, metadata, projectionStore, changes,
     service: new RunFileChangeProjectionService({
       agentRunManager: agentRuns as never,
       metadataService: metadata as never,
       projectionStore: projectionStore as never,
       runFileChangeService: changes as never,
-      collaborationLocations: collaborationLocations as never,
       workspaceManager: workspaces as never,
     }),
   };
 };
 
-describe("RunFileChangeProjectionService current run identity", () => {
+describe("RunFileChangeProjectionService standalone runs by run id", () => {
   it("reads an active standalone run from the runtime owner", async () => {
-    const { service, changes, projectionStore } = harness({ standalone: true });
-    await expect(service.getProjection("run-1")).resolves.toEqual([entry]);
+    const { service, changes, projectionStore } = harness({ active: ["run-1"], standalone: ["run-1"] });
+    await expect(service.getStandaloneRunProjection("run-1")).resolves.toEqual([entry]);
     expect(changes.getProjectionForRun).toHaveBeenCalledOnce();
     expect(projectionStore.readProjection).not.toHaveBeenCalled();
   });
 
   it("reads a stored standalone run from its exact metadata memory directory", async () => {
-    const { service, projectionStore } = harness({ storedStandalone: true });
-    await expect(service.getProjection("run-1")).resolves.toEqual([expect.objectContaining({
+    const { service, projectionStore } = harness({ standalone: ["run-1"] });
+    await expect(service.getStandaloneRunProjection("run-1")).resolves.toEqual([expect.objectContaining({
       id: "run-1:src/file.ts",
       runId: "run-1",
       path: "src/file.ts",
     })]);
+    await expect(service.resolveStandaloneRunEntry("run-1", "src/file.ts")).resolves.toMatchObject({
+      entry: { path: "src/file.ts" }, absolutePath: "/ws/standalone/src/file.ts", isActiveRun: false,
+    });
     expect(projectionStore.readProjection).toHaveBeenCalledWith("/memory/agents/run-1");
   });
 
-  it("reads an active Team Agent through the compound collaboration location", async () => {
-    const { service, changes, collaborationLocations } = harness({ team: true, activeCollaboration: true });
-    await expect(service.getProjection("worker-run")).resolves.toEqual([entry]);
-    expect(collaborationLocations.findAgent).toHaveBeenCalledWith({ agentRunId: "worker-run" });
+  it("serves a hub by its own run id, running or saved, and gives its copy's run id nothing", async () => {
+    const running = harness({ active: ["hub", "hub-copy"], standalone: ["hub"] });
+    await expect(running.service.getStandaloneRunProjection("hub")).resolves.toEqual([entry]);
+    expect(running.changes.getProjectionForRun).toHaveBeenCalledOnce();
+    await expect(running.service.getStandaloneRunProjection("hub-copy")).resolves.toEqual([]);
+    await expect(running.service.resolveStandaloneRunEntry("hub-copy", "src/file.ts")).resolves.toBeNull();
+
+    const saved = harness({ standalone: ["hub"] });
+    await expect(saved.service.getStandaloneRunProjection("hub")).resolves.toEqual([expect.objectContaining({ path: "src/file.ts" })]);
+    expect(saved.projectionStore.readProjection).toHaveBeenCalledWith("/memory/agents/hub");
+    await expect(saved.service.getStandaloneRunProjection("hub-copy")).resolves.toEqual([]);
+  });
+
+  // AC-007 / QR-002: a member's run id is never served by run id, whether its owner is saved or
+  // running (members share the activation registry), and the read touches nothing but metadata.
+  it.each([
+    ["saved owner", [] as string[]],
+    ["running owner (member run active)", ["worker-run"]],
+  ])("gives a collaboration member's run id an empty list and no entry (%s)", async (_label, active) => {
+    const { service, agentRuns, metadata, projectionStore, changes } = harness({ active });
+    await expect(service.getStandaloneRunProjection("worker-run")).resolves.toEqual([]);
+    await expect(service.resolveStandaloneRunEntry("worker-run", "src/file.ts")).resolves.toBeNull();
+    expect(metadata.readMetadata).toHaveBeenCalledWith("worker-run");
+    expect(agentRuns.getActiveRun).not.toHaveBeenCalled();
+    expect(projectionStore.readProjection).not.toHaveBeenCalled();
+    expect(changes.getProjectionForRun).not.toHaveBeenCalled();
+    expect(changes.getProjectionForCollaborationMember).not.toHaveBeenCalled();
+  });
+
+  it("returns no entry for a path outside the recorded changes", async () => {
+    await expect(harness({ standalone: ["run-1"] }).service.resolveStandaloneRunEntry("run-1", "src/other.ts")).resolves.toBeNull();
+  });
+});
+
+describe("RunFileChangeProjectionService located collaboration members", () => {
+  it("reads an active Team member's live projection with its own workspace", async () => {
+    const { service, changes, metadata } = harness();
+    await expect(service.getLocatedCollaborationMemberProjection(teamMember({ isActive: true }))).resolves.toEqual([entry]);
     expect(changes.getProjectionForCollaborationMember).toHaveBeenCalledWith({
       agentRunId: "worker-run",
       memoryDir: "/memory/agent_teams/team-1/worker-run",
       workspaceRootPath: "/ws/team",
     });
+    await expect(service.resolveLocatedCollaborationMemberEntry(teamMember({ isActive: true }), "/ws/team/src/file.ts")).resolves.toMatchObject({
+      entry: { path: "src/file.ts" }, absolutePath: "/ws/team/src/file.ts", isActiveRun: true,
+    });
+    expect(metadata.readMetadata).not.toHaveBeenCalled();
   });
 
-  it("reads a historical Team Agent from the exact V2 AgentRun memory directory", async () => {
-    const { service, projectionStore } = harness({ team: true });
-    await expect(service.resolveEntry("worker-run", "src/file.ts")).resolves.toMatchObject({
+  it("reads a historical Team member from its exact AgentRun memory directory", async () => {
+    const { service, projectionStore } = harness();
+    await expect(service.resolveLocatedCollaborationMemberEntry(teamMember(), "src/file.ts")).resolves.toMatchObject({
       entry: expect.objectContaining({ id: "worker-run:src/file.ts", runId: "worker-run", path: "src/file.ts" }),
       absolutePath: "/ws/team/src/file.ts",
       isActiveRun: false,
@@ -107,9 +147,24 @@ describe("RunFileChangeProjectionService current run identity", () => {
     expect(projectionStore.readProjection).toHaveBeenCalledWith("/memory/agent_teams/team-1/worker-run");
   });
 
-  it("reads a historical mounted-Team Agent from its exact AgentOrg V1 memory directory", async () => {
-    const { service, projectionStore } = harness({ org: true });
-    await expect(service.resolveEntry("org-worker-run", "src/file.ts")).resolves.toMatchObject({
+  it("resolves a Team task agent's workspace-relative entry against its catalog launch workspace", async () => {
+    const withCopy = { ...tree, rootTeam: { ...tree.rootTeam, taskExecutions: [{
+      address: "/reviewer", agentRunId: "copy-run", platformAgentRunId: null, delegatorAgentRunId: "worker-run",
+      startedAt: "2026-08-15T00:00:00.000Z",
+      source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: { ...configured.launchConfiguration, workspaceRootPath: "/ws/copy" } },
+    }] } };
+    const { service } = harness();
+    for (const isActive of [false, true]) {
+      await expect(service.resolveLocatedCollaborationMemberEntry(
+        teamMember({ agentRunId: "copy-run", configuredPlacement: null, tree: withCopy, isActive }),
+        "src/file.ts",
+      )).resolves.toMatchObject({ absolutePath: "/ws/copy/src/file.ts", isActiveRun: isActive });
+    }
+  });
+
+  it("reads a historical mounted-Team Agent from its exact AgentOrg memory directory", async () => {
+    const { service, projectionStore } = harness();
+    await expect(service.resolveLocatedCollaborationMemberEntry(orgMember(), "src/file.ts")).resolves.toMatchObject({
       entry: expect.objectContaining({
         id: "org-worker-run:src/file.ts",
         runId: "org-worker-run",
@@ -121,10 +176,6 @@ describe("RunFileChangeProjectionService current run identity", () => {
     expect(projectionStore.readProjection).toHaveBeenCalledWith(
       "/memory/agent_orgs/org-1/mounted-team-1/org-worker-run",
     );
-  });
-
-  it("returns an empty projection when no standalone or collaboration AgentRun exists", async () => {
-    await expect(harness().service.getProjection("missing")).resolves.toEqual([]);
   });
 });
 
@@ -177,9 +228,9 @@ describe("RunFileChangeProjectionService reads the live process authority", () =
   };
 
   const expectLive = async (service: RunFileChangeProjectionService, runId: string, filePath: (name: string) => string, names: string[]) => {
-    expect((await service.getProjection(runId)).map((entry) => entry.path)).toEqual(names.map(filePath));
+    expect((await service.getStandaloneRunProjection(runId)).map((entry) => entry.path)).toEqual(names.map(filePath));
     for (const name of names) {
-      await expect(service.resolveEntry(runId, filePath(name))).resolves.toMatchObject({
+      await expect(service.resolveStandaloneRunEntry(runId, filePath(name))).resolves.toMatchObject({
         entry: { path: filePath(name) }, absolutePath: filePath(name), isActiveRun: true,
       });
     }
@@ -191,29 +242,37 @@ describe("RunFileChangeProjectionService reads the live process authority", () =
       agentRunManager: { getActiveRun: () => null } as never,
       metadataService: { readMetadata: async () => null } as never,
       workspaceManager: {} as never,
-      collaborationLocations: { findAgent: async () => ({
-        rootSubjectKind: "agent_team", rootRunId: "team-1", rootTeamRunId: "team-1",
-        containingTeamRunId: "team-1", ancestorTeamRunIds: [], agentRunId: "worker-run",
-        memberAddress: "/worker", configuredPlacement: { ...configured, launchConfiguration: {
-          ...configured.launchConfiguration, workspaceRootPath: null } },
-        memoryDir, tree, isActive: true,
-      }) } as never,
     });
+    const location = {
+      rootSubjectKind: "agent_team", rootRunId: "team-1", rootTeamRunId: "team-1",
+      containingTeamRunId: "team-1", ancestorTeamRunIds: [], agentRunId: "worker-run",
+      memberAddress: "/worker", configuredPlacement: { ...configured, launchConfiguration: {
+        ...configured.launchConfiguration, workspaceRootPath: null } },
+      memoryDir, tree, isActive: true,
+    } as never;
+    const expectLiveMember = async (names: string[]) => {
+      expect((await reader.getLocatedCollaborationMemberProjection(location)).map((entry) => entry.path)).toEqual(names.map(filePath));
+      for (const name of names) {
+        await expect(reader.resolveLocatedCollaborationMemberEntry(location, filePath(name))).resolves.toMatchObject({
+          entry: { path: filePath(name) }, absolutePath: filePath(name), isActiveRun: true,
+        });
+      }
+    };
     processAuthority().attachToRun(run as never);
 
     await record("a");
-    await expectLive(reader, "worker-run", filePath, ["a"]);
+    await expectLiveMember(["a"]);
     await record("b");
     await record("c");
-    await expectLive(reader, "worker-run", filePath, ["a", "b", "c"]);
+    await expectLiveMember(["a", "b", "c"]);
   });
 
   it("sees artifacts an active standalone run records after an earlier read, bound after the reader was built", async () => {
     const { run, filePath, record } = await liveRun("run-1");
     const reader = new RunFileChangeProjectionService({
       agentRunManager: { getActiveRun: (runId: string) => runId === "run-1" ? run : null } as never,
+      metadataService: { readMetadata: async (runId: string) => runId === "run-1" ? { memoryDir: run.config.memoryDir, workspaceRootPath: null } : null } as never,
       workspaceManager: {} as never,
-      collaborationLocations: { findAgent: async () => null },
     });
     processAuthority().attachToRun(run as never);
 

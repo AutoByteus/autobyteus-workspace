@@ -11,8 +11,9 @@ import { callTool, segment, startCollaborationHarness, type CollaborationHarness
 // AC-009, review R-B) over the real Studio HTTP/GraphQL server, on hubs made by real Agent roots (scripted AGY actor; no
 // inference). Hub A delegates a task agent that produces a real generated-output artifact (`GENERATE_IMAGE:` directive of
 // tests/fixtures/agy-failure-cli.mjs) and a two-member Team copy; hub B delegates the same task agent.
-// - running hub: the task agent's artifact is listed from the live member projection, the same list the generic
-//   run-id query gives; the Team copy's members answer with their (empty) lists;
+// - running hub: the task agent's artifact is listed from the live member projection; the run-id query, which serves
+//   standalone runs only (run-file-change-owner-scoped-reads REQ-005, AC-007), gives the running copy nothing; the Team
+//   copy's members answer with their (empty) lists;
 // - a child of another hub, a wrong address, an unknown hub and a blank hub id are rejected with the hub-scoped error;
 // - stopped hub: the same artifact is listed from the child's stored `file_changes.json`.
 // Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
@@ -95,12 +96,12 @@ suite("agentRunCollaborationMemberFileChanges over real GraphQL (hubs made by re
     }
   }, 180_000);
 
-  it("running hub: lists the copy's live artifact, the same list as the generic run-id query", async () => {
+  it("running hub: lists the copy's live artifact; the run-id query gives the copy nothing", async () => {
     let result: Awaited<ReturnType<typeof scoped>> = { entries: null, error: null };
     await until(async () => (result = await scoped(worker.host, worker.address, worker.agentRunId)).entries?.length === 1, "live artifact listed", 60_000);
     expect(result.error).toBeNull();
     expect(result.entries).toEqual([artifactOf(worker)]);
-    expect(await generic(worker.agentRunId)).toEqual(result.entries);
+    expect(await generic(worker.agentRunId)).toEqual([]);
     // The Team copy's members (coordinator and a never-started member) answer with their own (empty) lists.
     expect(teamMembers).toHaveLength(2);
     for (const member of teamMembers) expect(await scoped(member.host, member.address, member.agentRunId)).toEqual({ entries: [], error: null });
@@ -127,7 +128,7 @@ suite("agentRunCollaborationMemberFileChanges over real GraphQL (hubs made by re
     await h.terminate("agent", hubA.rootId);
     const result = await scoped(worker.host, worker.address, worker.agentRunId);
     expect(result).toEqual({ entries: [artifactOf(worker)], error: null });
-    expect(await generic(worker.agentRunId)).toEqual(result.entries);
+    expect(await generic(worker.agentRunId)).toEqual([]);
     // The stored source: the server-written file_changes.json in the copy's own memory folder.
     const stored = await findFile(path.join(h.dataDir, "memory"), worker.agentRunId, "file_changes.json");
     expect(stored, "stored file_changes.json of the copy").toBeTruthy();

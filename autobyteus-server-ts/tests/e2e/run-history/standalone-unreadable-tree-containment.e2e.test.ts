@@ -9,10 +9,13 @@ import { callTool, segment, startCollaborationHarness, type CollaborationHarness
 
 // remove-nested-task-team AC-002 (REQ-003, DESIGN.md rule 7) through the real Studio server and GraphQL, on data made by real
 // Agent roots (scripted AGY actor; no inference): three standalone runs each delegate a task agent and are stopped; then one
-// run's collaboration tree is truncated (a tree that cannot be read). The other runs keep working where the server looks agents
-// up across standalone runs — file changes and the member conversation of their task agents, and the Token Meter summary of
-// their runs; every scan that reaches the bad run warns naming it and continues; opening the bad run reports its error; no file
-// changes; a server restart starts with the bad tree present and the same holds.
+// run's collaboration tree is truncated (a tree that cannot be read). The other runs keep working — file changes and the member
+// conversation of their task agents (both read through the named hub), and the Token Meter summary of their runs; every scan that
+// reaches the bad run warns naming it and continues; opening the bad run reports its error; no file changes; a server restart
+// starts with the bad tree present and the same holds.
+// The scan that reaches the bad run: a team-member context-file read, whose owner lookup still searches every saved team, org
+// and hub tree (follow-up FU-A of run-file-change-owner-scoped-reads). File-change reads name their owner since that ticket and
+// no longer scan; when FU-A scopes context-file reads too, this trigger must move to a surface that still scans.
 // Prerequisites: `pnpm -C autobyteus-server-ts build` for the current worktree (UC-2 starts dist/app.js).
 // Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -64,7 +67,14 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
     const body = await response.json() as { data?: Rec; errors?: unknown[] };
     return body.errors?.length || !body.data ? { data: null, error: JSON.stringify(body.errors ?? body) } : { data: body.data, error: null as string | null };
   };
-  const fileChanges = (runId: string) => query(`query($r:String!){getRunFileChanges(runId:$r){id runId}}`, { r: runId });
+  const fileChanges = (run: Run) => query(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){id runId}}`,
+    { h: run.host, a: run.childAddress, r: run.child });
+  /** A read whose owner lookup scans every saved hub (see the header): answers 404 after passing the bad run. */
+  const hubScanningRead = async (run: Run) => {
+    const base = processUrl ?? h.url.origin;
+    const response = await fetch(`${base}/rest/team-runs/${encodeURIComponent(run.host)}/agent-runs/${encodeURIComponent(run.child)}/context-files/missing.txt`);
+    return response.status;
+  };
   const member = (run: Run) => query(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){agentRunId conversation}}`,
     { h: run.host, a: run.childAddress, r: run.child });
   const tokenSummary = (runId: string) => query(`query($r:String!){getStandaloneRunTokenUsageSummary(runId:$r){runId}}`, { r: runId });
@@ -108,8 +118,9 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
     const before = await fingerprint(path.join(h.dataDir, "memory", "agents"));
     warnings.length = 0;
     for (const run of [runs[1]!, runs[2]!]) {
-      const changes = await fileChanges(run.child);
+      const changes = await fileChanges(run);
       expect(changes.error, `${label}: file changes of ${run.child}: ${changes.error}`).toBeNull();
+      expect(await hubScanningRead(run), `${label}: scanning context-file read for ${run.child}`).toBe(404);
       const projection = await member(run);
       expect(projection.error, `${label}: member projection of ${run.child}: ${projection.error}`).toBeNull();
       expect((projection.data as Rec).agentRunCollaborationMemberProjection.agentRunId, label).toBe(run.child);
