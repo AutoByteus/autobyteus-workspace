@@ -118,7 +118,7 @@ What now exists:
 ## Known Risks
 
 - R-001: the first Python preparation needs the network (PyPI) to fill the uv cache. Offline with an empty cache, the Python cases skip with the reason (IMP-03); Node still runs.
-- The prepared environment and the uv cache intentionally persist under `os.tmpdir()`, outside the repository (REQ-004), so later runs are fast and offline. They are about 30 MB and can be deleted at any time.
+- The prepared environment and the uv cache intentionally persist under `os.tmpdir()`, outside the repository (REQ-004), so later runs are fast and offline. On this machine: the environment is 27 MB, and the shared uv cache is 99 MB (it also holds the opt-in server's packages). Both can be deleted at any time.
 - The hang case takes about 5.2–5.9 s: a 3 s bound plus the SDK's stdin-close wait and SIGTERM. That is well under the 20 s test timeout. autobyteus-194 can tighten it.
 
 ## Task Design Health Assessment Implementation Check
