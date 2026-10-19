@@ -2,18 +2,18 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `tickets/in-progress/delegated-copy-restore-from-own-file/requirements-doc.md` (Approved; SR-001, SR-002 wording; SR-003 adds REQ-012, AC-011, DEC-010, approved by the user; SR-004 makes AC-007 explicit for team copies; SR-005..SR-007 leave requirements untouched)
+- Upstream Requirements Doc: `tickets/in-progress/delegated-copy-restore-from-own-file/requirements-doc.md` (Approved; SR-001, SR-002 wording; SR-003 adds REQ-012, AC-011, DEC-010, approved by the user; SR-004 makes AC-007 explicit for team copies; SR-005..SR-008 leave requirements untouched)
 - Upstream Investigation Notes: `tickets/in-progress/delegated-copy-restore-from-own-file/investigation-notes.md` (incl. "Review Evidence (ARCH-REV-001)")
-- Upstream Solution Revision Record: `tickets/in-progress/delegated-copy-restore-from-own-file/solution-revision-record.md` (SR-001..SR-007)
-- Reviewed Design Spec: `tickets/in-progress/delegated-copy-restore-from-own-file/design-spec.md` (SR-007, status `Ready`; D-8 added for DI-001; §2 checklist and shape inventory added in SR-006, mirrored rows corrected in SR-007)
-- Supplemental Task Artifacts Reviewed: `implementation-design-impact-DI-001.md` (implementation escalation, input to SR-005)
-- Relevant Solution Revision IDs: SR-001..SR-007
+- Upstream Solution Revision Record: `tickets/in-progress/delegated-copy-restore-from-own-file/solution-revision-record.md` (SR-001..SR-008)
+- Reviewed Design Spec: `tickets/in-progress/delegated-copy-restore-from-own-file/design-spec.md` (SR-008, status `Ready`; D-8 for DI-001, D-9 for DI-002; §2 checklist and shape inventory from SR-006/SR-007)
+- Supplemental Task Artifacts Reviewed: `implementation-design-impact-DI-001.md` (input to SR-005); `implementation-design-impact-DI-002.md` and `evidence/IMP-11-e2e-startup-migrations.log` (input to SR-008)
+- Relevant Solution Revision IDs: SR-001..SR-008
 - Architecture Review Revision Record: `tickets/in-progress/delegated-copy-restore-from-own-file/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-006`
-- Current Review Round: 6
-- Trigger: SR-007 re-review from `/software_engineering_team/solution_designer` (AR-006 correction: the mirrored-copy rows and checklist item 8)
-- Prior Review Round Reviewed: 5 (`ARCH-REV-005`, Fail)
-- Latest Authoritative Round: 6
+- Current Architecture Review Revision ID: `ARCH-REV-007`
+- Current Review Round: 7
+- Trigger: SR-008 re-review from `/software_engineering_team/solution_designer` (DI-002: a partly failed 10-17 retried after the new migration converted its L1 own files stalls forever; scope D-9, the M5 row, checklist items 3/4/6, D-9 tests)
+- Prior Review Round Reviewed: 6 (`ARCH-REV-006`, Pass)
+- Latest Authoritative Round: 7
 - Current-State Evidence Basis: as in round 1, plus:
   - `collaborator-entry-builder.ts:31-52` and `collaborator-launch-resolver.ts:105-126` (how catalog members record launch and launch source);
   - `launch-configuration-source.ts`;
@@ -149,6 +149,7 @@ Unchanged: `Pass`.
 | Agent copy own files | Migration Required | Pass | Pass | Pass | Pass | — |
 | Team copy own trees (M2 catalog member completion, M4) | Migration Required | Pass | Pass | Pass | Pass | AR-002 resolved: M4 projects to 5 keys, the evidence was computed on 5 keys, and `skillAccessMode` fixtures are added. M2 preserves restore (member own ?? default) and followers (had no own launch). `launchSource` is unchanged |
 | §2 checklist and shape inventory (SR-006, SR-007) | — | Pass | Pass | Pass | Pass | The checklist and the non-mirrored rows are coherent (round 5). The mirrored rows are split: 9 catalog agent copies readable (F-X3); 2 configured-place agent copies (F-X3b) and 11 catalog team copies (F-X3c) not shown until `docker-node-1` updates. 9 + 2 + 11 = 22. Item 8 now says 13 of 22 are hidden, with 175 mirrored run folders unaffected. F-X3c requires byte-identity, reporting the copy unavailable, and continued listing of the source's other runs (rule 7). The coverage decision (S26 and the user's rule; user informed) is recorded in SR-007 (AR-006 resolved) |
+| D-9: same-ID repair of 10-17's ownership recognition (SR-008) | — | Pass | Pass | Pass | Pass | Verified in `coordinating-run-migration.ts:137-142, 254-260`: `isOwnedHere` and `partsAtL1` use only `taskAgent.coordinatingRun.{kind, runId}` and, for a team, `rootTeam.members[].agentRunId`. A frozen `readReleasedOwnFileOwnership` that accepts both shapes therefore keeps their released meaning while letting the retry recognize files the new migration converted. A same-ID repair fits guideline §7 (pending or failed installs only; terminal installs skip it). Option A, a global gate, is rightly rejected: one permanently failing run would keep every team copy unreadable (guideline §1; ARCH-F-006 precedent). Option C would couple the new migration to 10-17's per-run intermediate states. M5 and checklist items 3, 4 and 6 are consistent with D-9. Tests: TAU-2, ownership-reader units, and a 10-17 retry with a current-shape L1 file |
 | Admission after migration | — | Pass | Pass | Pass | Pass | Spec lines 197-200: a preserved team copy is rejected by the current validator, reported unavailable and not loaded, with the file untouched. AC-007 covers agent and team copies (AR-004 resolved) |
 | Released 10-17 migration evidence | — | Pass | Pass | Pass | Pass | Change Sequence step 1 (spec lines 464-468) and Guidance line 527 give the 4-part plan (AR-005 resolved) |
 
@@ -191,11 +192,11 @@ None.
 
 ## Review Decision
 
-`Pass`. AR-006 is resolved. Every prior finding (AR-001..AR-006) is resolved in the current canonical artifacts, and DI-001 is resolved by D-8. No in-scope machinery depends on an unsupported premise. The design, including the F-* migration test plan, is ready for implementation.
+`Pass`. AR-006 is resolved. Every prior finding (AR-001..AR-006) is resolved in the current canonical artifacts, and DI-001 is resolved by D-8 and DI-002 by D-9. No in-scope machinery depends on an unsupported premise. The design, including the F-* migration test plan, is ready for implementation.
 
 ## Findings
 
-None open. Resolution of the prior findings is recorded in `architecture-review-revision-record.md` (ARCH-REV-002..ARCH-REV-006).
+None open. Resolution of the prior findings is recorded in `architecture-review-revision-record.md` (ARCH-REV-002..ARCH-REV-007).
 
 ## Classification
 
@@ -213,6 +214,7 @@ N/A (Pass).
 - R-5: M2 rewrites the members of all 80 catalog team copies. The delivery check should include one catalog team copy with a mixed follower set.
 - R-6 (bookkeeping): the requirements header still reads SR-003.
 - R-7 (D-8): complete the bridge's method list with `listChildAgents` and the index constructors, and keep a source-less fixture in one of the four suites.
+- R-9 (D-9, non-blocking): (a) `readReleasedOwnFileOwnership` should keep today's outcome for a file it cannot read: unreadable JSON or no `coordinatingRun` means not owned, so 10-17 still refuses to overwrite it. It must never treat a damaged file as owned. (b) In a partly failed start, M3/M4 can complete a configured-place L1 file while its coordinating tree is still in the pre-own-run shape. The slot locator reads `rootTeam/rootOrg.members[]`, the same in both shapes. A unit case with a pre-own-run coordinating tree would confirm this cheaply.
 - R-8: 13 mirrored copies from `docker-node-1` are not shown until that node runs this build and syncs. The user has been informed (SR-007). The delivery verification should mention this so the user is not surprised.
 - RSK-001: a missed configured-first site. Mitigated by the step 8 grep sweep and the per-root AC-004 tests.
 
@@ -220,4 +222,4 @@ N/A (Pass).
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: `ARCH-REV-006`; SR-001..SR-007. Classification Large / High is preserved. Next: `/software_engineering_team/implementation_engineer`. Implementation continues. The F-A1..F-X3c fixture list in the design spec is the migration test plan.
+- Notes: `ARCH-REV-007`; SR-001..SR-008. D-9 (DI-002) is accepted. Classification Large / High is preserved. Next: `/software_engineering_team/implementation_engineer`, to apply D-9 and its tests and then rerun IMP-02, IMP-09 and IMP-11.

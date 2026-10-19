@@ -11,6 +11,7 @@
 | SR-005 | Design (implementation Design Impact) | DI-001 | DI-001 | Design Ready (SR-004) | Design Ready | REQ-005, AC-009, REQ-010 | D-8: legacy-owned `asSourceIndependentIndexInput` bridge for four released migrations |
 | SR-006 | Evidence (documentation) | User question on guideline compliance | N/A | Design Ready (SR-005) | Design Ready | REQ-008, REQ-009, REQ-010, AC-005..AC-008 | §2 checklist answered in one place; shape → fixture inventory; `imports/` mirror finding |
 | SR-007 | Evidence (review response) | ARCH-REV-005 | AR-006 | Design Ready (SR-006) | Design Ready | REQ-008, QR-001 | Mirror rows split (9 readable, 13 not shown); item 8 corrected; F-X3b/F-X3c |
+| SR-008 | Design (implementation Design Impact) | DI-002 | DI-002 | Design Ready (SR-007) | Design Ready | REQ-008, REQ-009, AC-005..AC-009, QR-001 | D-9: same-ID repair of 10-17 ownership recognition; M5 kept |
 
 ## Revision Entries
 
@@ -130,3 +131,23 @@
 - Intended behavior changed: `No`
 - Approval impact: none
 - Next action: architecture re-review of the corrected rows and item 8
+
+### SR-008 — DI-002: 10-17 retry after the new migration converted its files
+
+- Phase and classification: Design Impact from implementation (`implementation-design-impact-DI-002.md`; IMP-11 TAU-2 failure; IMP-13 option-A prototype)
+- Finding: a partly failed 10-17 leaves own files at L1. The new migration converts them in the same start, and 10-17's retry then fails to recognize them (its full frozen parser requires `origin`). It stalls permanently with "already exists; it is never overwritten". Checklist item 3 was wrong to assume a pending 10-17 leaves no own files.
+- Decision D-9 (technical, within the direction): option B as a same-ID repair of `20261017_task_agent_own_run_v1` (guideline §7). `isOwnedHere` and `partsAtL1` read only `taskAgent.coordinatingRun` and the members' run ids, through a frozen `readReleasedOwnFileOwnership` that accepts both shapes. M5 stays: convert now, non-terminal while 10-17 is pending.
+- Rejected: option A, a global prerequisite. It repeats ARCH-F-006 of the earlier ticket: one permanently failing run would keep every team copy and configured-place copy unreadable, against guideline §1 "gate narrowly". Rejected: option C (coupling to intermediate states; 10-17's step 5 re-reads of reduced runs would still break).
+- Intended behavior changed: `No`
+- Approval impact: none
+- Classification: unchanged (Large / High)
+- Next action: architecture re-review of D-9, M5 and checklist items 3, 4 and 6; then the implementation engineer applies D-9 and reruns IMP-02, IMP-09 and IMP-11
+
+### Note — ARCH-REV-007 Pass (2026-10-19)
+
+- `/software_engineering_team/architecture_reviewer` passed SR-001..SR-008 (D-9 resolves DI-002) and delivered the implementation handoff itself to `/software_engineering_team/implementation_engineer`. The Solution Designer does not repeat it.
+- Non-blocking R-9, passed by the reviewer to implementation: a damaged L1 file must stay "not owned" in `readReleasedOwnFileOwnership`; add a unit case for M3/M4 against a pre-own-run coordinating tree.
+
+### Note — Follow-up Task recorded (2026-10-19)
+
+- `/project_task_manager` recorded the user-directed suggestion as **autobyteus-204** "Declare a minimum upgrade-from version and retire older app-data migrations". It depends on autobyteus-197, is TODO and not dispatched; the user decides the minimum version. Source: `followups/suggested-task-retire-old-migrations.md`.

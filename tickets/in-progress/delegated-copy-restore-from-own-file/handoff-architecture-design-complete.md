@@ -102,3 +102,12 @@ The user's direction (2026-10-19): "the data model should be pure … clean it u
 - Checklist item 8 is corrected to 13 hidden of 22 mirrored copies (175 mirrored run folders in total).
 - Coverage decision (Solution Designer): S26 and the user's rule cover it; the user is informed in the conversation. See SR-007.
 - Re-review scope: the mirrored rows and checklist item 8.
+
+## SR-008 — DI-002 from implementation (re-review requested)
+
+- DI-002: a partly failed 10-17 plus the new migration in the same start stalls 10-17 forever, because its retry ownership checks parse own files with the strict released reader, which requires `origin` (TAU-2 fails, IMP-11).
+- D-9: option B as a same-ID repair (guideline §7). `isOwnedHere` and `partsAtL1` read only `coordinatingRun` and the members' run ids through a frozen `readReleasedOwnFileOwnership` that accepts both shapes. M5 is unchanged.
+- Rejected: option A, a global prerequisite (ARCH-F-006 precedent; guideline §1). Rejected: option C (coupling; step 5 re-reads).
+- Checklist items 3, 4 and 6 are corrected; tests are added (TAU-2, ownership reader units, 10-17 retry with a current-shape file).
+- Implementation state: everything else is committed (`3ed550595c`, `35675e3b5e`, `65ae647bc9`, `7d689455ad`, `2997ff0b9a`); only D-9 and its tests remain.
+- Re-review scope: D-9 (the Migration Plan bullet), the M5 row, checklist items 3, 4 and 6, and the D-9 test guidance.

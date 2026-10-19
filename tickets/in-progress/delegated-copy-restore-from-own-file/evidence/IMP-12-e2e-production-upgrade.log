@@ -1,8 +1,8 @@
 # Check: IMP-12
-# Command: cd autobyteus-server-ts && env -i PATH="/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin" HOME="/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.o4UZEzM8ah" TMPDIR="/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/" pnpm exec vitest run tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts --no-watch --reporter=verbose
-# Commit: 7d689455ad (branch codex/delegated-copy-restore-from-own-file)
+# Command: cd autobyteus-server-ts && env -i PATH="/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin" HOME="/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.tkaacrYXdq" TMPDIR="/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/" pnpm exec vitest run tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts --no-watch --reporter=verbose
+# Commit: 3b6f970cfa (branch codex/delegated-copy-restore-from-own-file)
 # Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
-# Date: 2026-10-19T16:55:56Z
+# Date: 2026-10-19T17:15:11Z
 
 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
 
@@ -99,15 +99,15 @@ migrations/
   └─ 20261009120000_token_meter_context_readings/
     └─ migration.sql
 
-(node:57426) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:39394) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
 AgentFactory (Singleton) initialized.
 
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "team-v1-supported-startup-57426-1792428960890-22f4ec91c3cbf.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/team-v1-supported-startup-57426-1792428960890-22f4ec91c3cbf.db"
+Datasource "db": SQLite database "team-v1-supported-startup-39394-1792430116175-bc690a27312dd.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/team-v1-supported-startup-39394-1792430116175-bc690a27312dd.db"
 
-SQLite database team-v1-supported-startup-57426-1792428960890-22f4ec91c3cbf.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/team-v1-supported-startup-57426-1792428960890-22f4ec91c3cbf.db
+SQLite database team-v1-supported-startup-39394-1792430116175-bc690a27312dd.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/team-v1-supported-startup-39394-1792430116175-bc690a27312dd.db
 
 27 migrations found in prisma/migrations
 
@@ -214,9 +214,9 @@ Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyte
 Database migrations completed successfully.
 
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "team-v1-warning-startup-57426-1792428964932-9bfd72bb7803b.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/team-v1-warning-startup-57426-1792428964932-9bfd72bb7803b.db"
+Datasource "db": SQLite database "team-v1-warning-startup-39394-1792430120105-5447c1a8b4695.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/team-v1-warning-startup-39394-1792430120105-5447c1a8b4695.db"
 
-SQLite database team-v1-warning-startup-57426-1792428964932-9bfd72bb7803b.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/team-v1-warning-startup-57426-1792428964932-9bfd72bb7803b.db
+SQLite database team-v1-warning-startup-39394-1792430120105-5447c1a8b4695.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/team-v1-warning-startup-39394-1792430120105-5447c1a8b4695.db
 
 27 migrations found in prisma/migrations
 
@@ -312,11 +312,11 @@ Running Prisma migrations...
 Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
 Database migrations completed successfully.
 
- ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch 4042ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch 3930ms
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "token-consolidation-retry-startup-57426-1792428968643-8a576ae4a7378.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/token-consolidation-retry-startup-57426-1792428968643-8a576ae4a7378.db"
+Datasource "db": SQLite database "token-consolidation-retry-startup-39394-1792430123830-6b4a02d25381.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/token-consolidation-retry-startup-39394-1792430123830-6b4a02d25381.db"
 
-SQLite database token-consolidation-retry-startup-57426-1792428968643-8a576ae4a7378.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/token-consolidation-retry-startup-57426-1792428968643-8a576ae4a7378.db
+SQLite database token-consolidation-retry-startup-39394-1792430123830-6b4a02d25381.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/token-consolidation-retry-startup-39394-1792430123830-6b4a02d25381.db
 
 27 migrations found in prisma/migrations
 
@@ -412,11 +412,11 @@ Running Prisma migrations...
 Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
 Database migrations completed successfully.
 
- ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root 3711ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root 3725ms
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "token-consolidation-overlap-startup-57426-1792428972741-1af2cf2d5ad0c.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/token-consolidation-overlap-startup-57426-1792428972741-1af2cf2d5ad0c.db"
+Datasource "db": SQLite database "token-consolidation-overlap-startup-39394-1792430127895-a0a44f4a139e1.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/token-consolidation-overlap-startup-39394-1792430127895-a0a44f4a139e1.db"
 
-SQLite database token-consolidation-overlap-startup-57426-1792428972741-1af2cf2d5ad0c.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/token-consolidation-overlap-startup-57426-1792428972741-1af2cf2d5ad0c.db
+SQLite database token-consolidation-overlap-startup-39394-1792430127895-a0a44f4a139e1.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/db/token-consolidation-overlap-startup-39394-1792430127895-a0a44f4a139e1.db
 
 27 migrations found in prisma/migrations
 
@@ -512,13 +512,13 @@ Running Prisma migrations...
 Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
 Database migrations completed successfully.
 
- ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry 4098ms
- ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving both stores 2020ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry 4064ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving both stores 2028ms
 
  Test Files  1 passed (1)
       Tests  4 passed (4)
-   Start at  18:55:57
-   Duration  17.24s (transform 2.07s, setup 24ms, import 2.92s, tests 13.87s, environment 0ms)
+   Start at  19:15:12
+   Duration  16.95s (transform 1.96s, setup 23ms, import 2.78s, tests 13.75s, environment 0ms)
 
 
 # Exit code: 0

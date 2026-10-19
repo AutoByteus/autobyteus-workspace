@@ -1,8 +1,8 @@
 # Check: IMP-09
-# Command: cd autobyteus-server-ts && pnpm exec vitest run tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1 tests/unit/app-data-migrations/task-agent-own-run-v1 tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts --no-watch --reporter=verbose
-# Commit: 7d689455ad (branch codex/delegated-copy-restore-from-own-file)
+# Command: cd autobyteus-server-ts && pnpm exec vitest run tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1 tests/unit/app-data-migrations/task-agent-own-run-v1 tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts tests/unit/app-data-migrations/released-own-file-ownership.test.ts tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts --no-watch --reporter=verbose
+# Commit: 3b6f970cfa (branch codex/delegated-copy-restore-from-own-file)
 # Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
-# Date: 2026-10-19T16:54:41Z
+# Date: 2026-10-19T17:13:55Z
 
 
  RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
@@ -119,7 +119,7 @@ Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] 
 Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
 
- ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 over every released shape > moves each task agent to its own run folder with its own file, links it, and keeps every byte (F-C1..F-C7, F-NS, F-ND, F-SE, F-MSG, F-UNMATERIALIZED) 343ms
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 over every released shape > moves each task agent to its own run folder with its own file, links it, and keeps every byte (F-C1..F-C7, F-NS, F-ND, F-SE, F-MSG, F-UNMATERIALIZED) 345ms
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 over every released shape > changes nothing on a second start: same files, sizes and hashes
 Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
 Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
@@ -141,12 +141,12 @@ stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run
 Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
 
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 over every released shape > changes nothing on a second start: same files, sizes and hashes 397ms
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > one run's unreadable message log > moves its task agents, warns instead of failing, and still migrates every other run
 Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
 
- ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 over every released shape > changes nothing on a second start: same files, sizes and hashes 332ms
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > one run's unreadable message log > moves its task agents, warns instead of failing, and still migrates every other run
 Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
 Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
@@ -155,31 +155,7 @@ stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run
 Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
 
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
-Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
-
- ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > one run's unreadable message log > moves its task agents, warns instead of failing, and still migrates every other run 265ms
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
-Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
-Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
-Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
-
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
-Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
-Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
-Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
-Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
-
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > one run's unreadable message log > moves its task agents, warns instead of failing, and still migrates every other run 501ms
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
 Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
@@ -193,12 +169,36 @@ stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run
 Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
 
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
+Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
+Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
+Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
+Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file
+Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file 957ms
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while reducing a tree
 Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
 
- ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while writing an own file 723ms
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while reducing a tree
 Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
 Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
@@ -228,20 +228,7 @@ stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run
 Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
 
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log
-Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
-
- ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while reducing a tree 671ms
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log
-Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
-Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log
-Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
-
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while reducing a tree 1019ms
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log
 Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
@@ -265,6 +252,67 @@ Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task ag
 Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log
+Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log
+Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log
+Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log
+Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log 1091ms
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > recognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > recognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > recognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > recognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > recognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)
+Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > recognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9) 1428ms
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > never treats a damaged own file, or one naming another run, as its own: it is kept and not overwritten (D-9, R-9 a)
+Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > never treats a damaged own file, or one naming another run, as its own: it is kept and not overwritten (D-9, R-9 a)
+Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > never treats a damaged own file, or one naming another run, as its own: it is kept and not overwritten (D-9, R-9 a)
+Task agent 'c1-reviewer' of agent run 'hub' is not available: Expected property name or '}' in JSON at position 2 (line 1 column 3)
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
+Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
+
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > never treats a damaged own file, or one naming another run, as its own: it is kept and not overwritten (D-9, R-9 a) 484ms
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
+Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
+Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
+
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
 Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
 
@@ -273,20 +321,6 @@ Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] 
 Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
 
- ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > ends where an uninterrupted run ends after a stop while merging a log 571ms
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
-Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
-Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
-Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
-
-stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
-Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
-Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
-
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)
 Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
 Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
@@ -300,7 +334,7 @@ Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] 
 Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
 
- ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG) 524ms
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG) > continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG) 521ms
 stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
 Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
 Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
@@ -335,11 +369,11 @@ stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run
 Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
 
- ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read 369ms
+ ✓ tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read 327ms
 stdout | tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts
 AgentFactory (Singleton) initialized.
 
-(node:26603) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:11632) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > is registered last, required on startup and startup-only
 Platform detection: Windows=false
@@ -347,18 +381,19 @@ App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-c
 App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
 
  ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > is registered last, required on startup and startup-only 3ms
- ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > converts every released shape in one start: catalog copies lose origin, configured-place copies take their slot (AC-005, AC-006, AC-008, AC-011) 164ms
- ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > changes nothing on a second start: every own file is current and none is written (AC-008, F-X2) 145ms
- ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > leaves an unconvertible copy untouched and reported; the store leaves it out and loads the rest (AC-007, REQ-008) 23ms
- ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > converts what is present but stays non-terminal while 20261017_task_agent_own_run_v1 is pending (M5) 145ms
- ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > a write that does not complete fails that item, keeps the file, and the next start converts it 152ms
- ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > reads only own files, and a coordinating tree only for configured-place copies, once per run (QR-002) 155ms
- ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > never discovers Memory Sync mirrors under imports/ (F-X3) 6ms
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > converts every released shape in one start: catalog copies lose origin, configured-place copies take their slot (AC-005, AC-006, AC-008, AC-011) 175ms
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > changes nothing on a second start: every own file is current and none is written (AC-008, F-X2) 140ms
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > leaves an unconvertible copy untouched and reported; the store leaves it out and loads the rest (AC-007, REQ-008) 21ms
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > converts what is present but stays non-terminal while 20261017_task_agent_own_run_v1 is pending (M5) 132ms
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > completes configured-place copies whose coordinating tree is still in its pre-own-run shape (M3, M4, R-9 b) 27ms
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > a write that does not complete fails that item, keeps the file, and the next start converts it 133ms
 stderr | tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, then the current stores > composes every copy from its own file, and a copy of a configured place restores with its slot's values (AC-001, AC-005)
 Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
 
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > reads only own files, and a coordinating tree only for configured-place copies, once per run (QR-002) 138ms
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > never discovers Memory Sync mirrors under imports/ (F-X3) 3ms
 stderr | tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, then the current stores > composes every copy from its own file, and a copy of a configured place restores with its slot's values (AC-001, AC-005)
 Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
 Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
@@ -372,7 +407,7 @@ Task agent 'c2-team-a' of agent run 'hub' is not available: rootTeam.members[0] 
 Task agent 'c2-team-b' of agent run 'hub' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'c7-helper' of agent run 'hub' is not available: its delegator 'c2a-lead' is not available.
 
- ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, then the current stores > composes every copy from its own file, and a copy of a configured place restores with its slot's values (AC-001, AC-005) 524ms
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, then the current stores > composes every copy from its own file, and a copy of a configured place restores with its slot's values (AC-001, AC-005) 448ms
 stderr | tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, then the current stores > continues a stopped start: the app loads and saves in between, and the next start completes both migrations (F-RERUN-MSG)
 Task agent 'c3-writer-copy' of agent_team run 'team-r' is not available: Task agent run metadata.runtimeKind is unsupported.
 Task agent 'c4-qa' of agent_team run 'team-r' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
@@ -381,41 +416,41 @@ stderr | tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/dele
 Task agent 'c5-review' of agent_org run 'org-o' is not available: rootTeam.members[0] is missing required field(s): launchConfiguration, followsTeam.
 Task agent 'ns-director-copy' of agent_org run 'org-o' is not available: Task agent run metadata.runtimeKind is unsupported.
 
- ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, then the current stores > continues a stopped start: the app loads and saves in between, and the next start completes both migrations (F-RERUN-MSG) 591ms
+ ✓ tests/unit/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261017_task_agent_own_run_v1 output, then 20261019_delegated_copy_own_file_complete_v1, then the current stores > continues a stopped start: the app loads and saves in between, and the next start completes both migrations (F-RERUN-MSG) 570ms
 stdout | tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts
 AgentFactory (Singleton) initialized.
 
-(node:27511) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:13624) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > uses trace provenance for duplicate addresses and preserves blobs, non-locator values, origins and suffixes 44ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > enumerates nested, standalone and Org traces, complete archives, task updates and communication references 83ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > preserves the entire affected file on ambiguous proof while independent files progress 17ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > enumerates nested, standalone and Org traces, complete archives, task updates and communication references 84ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > preserves the entire affected file on ambiguous proof while independent files progress 18ms
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > preserves the entire affected file on missing proof while independent files progress 18ms
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > preserves the entire affected file on unsafe proof while independent files progress 17ms
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > retains all bytes when a later reference in the same file is unavailable 6ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > reports source I/O failure without suppressing independent-file progress 19ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > reports source I/O failure without suppressing independent-file progress 22ms
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > leaves external-host locators, prose, provider histories and unchanged lines byte-for-byte 6ms
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > reports not_renamed truthfully and retries live old/current data 30ms
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > reports renamed_finalization_indeterminate truthfully and retries live old/current data 30ms
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > ignores stale released journal and preserves originals and later current writes 17ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > ignores missing released journal and preserves originals and later current writes 19ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > ignores malformed released journal and preserves originals and later current writes 19ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > transforms each source once, writes changed files once and performs zero hash/original/journal work 21ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > retries a ledger completion interruption, then skips terminal SUCCEEDED 22ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > retries a ledger completion interruption, then skips terminal SUCCEEDED_WITH_WARNINGS 21ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > preserves empty/nonempty missing-tree roots with warnings while converting an independent current package 37ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > keeps old unavailable references local, without excluding structural referrers 76ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > keeps current unavailable references local, without excluding structural referrers 76ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > admits a valid cycle, a fresh standalone run and exact current references without trusting ledger labels 72ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > reports an actual file commit failure as FAILED while independent valid conversion proceeds 61ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > ignores missing released journal and preserves originals and later current writes 17ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > ignores malformed released journal and preserves originals and later current writes 17ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > transforms each source once, writes changed files once and performs zero hash/original/journal work 20ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > retries a ledger completion interruption, then skips terminal SUCCEEDED 23ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > Team context-file exact-execution startup transition > retries a ledger completion interruption, then skips terminal SUCCEEDED_WITH_WARNINGS 19ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > preserves empty/nonempty missing-tree roots with warnings while converting an independent current package 34ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > keeps old unavailable references local, without excluding structural referrers 75ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > keeps current unavailable references local, without excluding structural referrers 80ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > admits a valid cycle, a fresh standalone run and exact current references without trusting ledger labels 74ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > reports an actual file commit failure as FAILED while independent valid conversion proceeds 62ms
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > scoped recovery and independent current admission > leaves released evidence untouched for a now structurally excluded group 7ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > completes warnings with ALL historical runs excluded and still publishes new standalone work 27ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > completes warnings with ALL historical runs excluded and still publishes new standalone work 28ms
  ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > preserves an invalid sidecar and bounds missing-package diagnostics without a majority threshold 6ms
- ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > converts message locators in a converted log's sealed and active files when it runs after the conversion (F-LOCATORS-AFTER-OURS) 145ms
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts > converts message locators in a converted log's sealed and active files when it runs after the conversion (F-LOCATORS-AFTER-OURS) 147ms
 stdout | tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts
 AgentFactory (Singleton) initialized.
 
-(node:27512) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:14089) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > is registered after every exact prerequisite as required startup-only
 Platform detection: Windows=false
@@ -424,27 +459,27 @@ App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-c
 
  ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > is registered after every exact prerequisite as required startup-only 3ms
  ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > backfills the uniquely earliest configured mounted-Team prompt and is restart-idempotent 38ms
- ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > restarts successfully after an interrupted attempt durably committed the selected summary 30ms
- ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > does not read traces or overwrite a current non-empty summary 15ms
- ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > reports valid ambiguous evidence as warnings without selecting a tie 17ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > restarts successfully after an interrupted attempt durably committed the selected summary 29ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > does not read traces or overwrite a current non-empty summary 14ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > reports valid ambiguous evidence as warnings without selecting a tie 16ms
  ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > uses current Org communication sidecars only as negative provenance evidence 15ms
- ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > matches internal deliveries against the released envelope header (without sender address) 16ms
- ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > reads the org's messages from its append-only log when it runs after the conversion, with the same result (F-SUMMARY-AFTER-OURS) 37ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > matches internal deliveries against the released envelope header (without sender address) 15ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > reads the org's messages from its append-only log when it runs after the conversion, with the same result (F-SUMMARY-AFTER-OURS) 40ms
  ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > backfills the summary on an org whose log is already converted (F-SUMMARY-AFTER-OURS, empty log) 42ms
- ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > uses current Org task submission sidecars only as negative provenance evidence 17ms
- ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > reads a strictly valid complete archive plus active corpus in chronological classification 27ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > uses current Org task submission sidecars only as negative provenance evidence 16ms
+ ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > reads a strictly valid complete archive plus active corpus in chronological classification 29ms
  ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > gives required current validation and selected-write failures FAILED precedence 16ms
  ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg history summary provenance classifier > never promotes a later trace when the earliest is internal or chronology is contradictory 0ms
  ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg history summary provenance classifier > rejects invalid configured user evidence rather than guessing 0ms
 stdout | tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts
 AgentFactory (Singleton) initialized.
 
-(node:28292) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:14107) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts > runs 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
-App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/released-tree-skip-version-4DQy7v
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/released-tree-skip-version-i0PwWi
 
 stdout | tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts > runs 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
 prisma:info Starting a sqlite pool with 21 connections.
@@ -455,7 +490,7 @@ Task agent 'task-run' of agent_team run 'team-a' is not available: Task agent ru
 stderr | tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts > runs 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
 [20261018_append_only_message_logs_v1] agent_team run 'no-tree': message log kept as JSON (PRESERVED_UNSUPPORTED): The run has no tree file.
 
- ✓ tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts > runs 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing 296ms
+ ✓ tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts > runs 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing 267ms
 stdout | tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts
 AgentFactory (Singleton) initialized.
 
@@ -464,39 +499,39 @@ Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
 App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
 
- ✓ tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts > Memory Sync on the task-agent layout (REQ-015, AC-018) > F-SYNC-NEW: an upgraded node exports task agents as their own run folders and its import shows hubs with their task agents 311ms
- ✓ tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts > Memory Sync on the task-agent layout (REQ-015, AC-018) > F-X3: mirrors from a node on the 10-17 shape stay byte-identical; readable copies are shown, the rest are left out and the source still lists its other runs 26ms
- ✓ tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts > Memory Sync on the task-agent layout (REQ-015, AC-018) > F-SYNC-OLD: an import from a node not yet upgraded shows its hubs without their nested task agents, and nothing is deleted 15ms
+ ✓ tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts > Memory Sync on the task-agent layout (REQ-015, AC-018) > F-SYNC-NEW: an upgraded node exports task agents as their own run folders and its import shows hubs with their task agents 325ms
+ ✓ tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts > Memory Sync on the task-agent layout (REQ-015, AC-018) > F-X3: mirrors from a node on the 10-17 shape stay byte-identical; readable copies are shown, the rest are left out and the source still lists its other runs 30ms
+ ✓ tests/unit/memory-sync/memory-sync-task-agent-layout.test.ts > Memory Sync on the task-agent layout (REQ-015, AC-018) > F-SYNC-OLD: an import from a node not yet upgraded shows its hubs without their nested task agents, and nothing is deleted 18ms
 stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
 AgentFactory (Singleton) initialized.
 
-(node:29926) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:16484) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
 App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
 
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence 18ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence 17ms
  ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > converts standalone v4 with zero-byte lineage, exact active provenance, exact cleanup, and idempotence 8ms
  ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives 7ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > skips any nonempty-lineage location before snapshot inspection or cleanup 4ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > retains equivalent current-v5 bytes while cleaning obsolete files and rejects identity conflict without mutation 9ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade 14ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > skips any nonempty-lineage location before snapshot inspection or cleanup 5ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > retains equivalent current-v5 bytes while cleaning obsolete files and rejects identity conflict without mutation 10ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade 13ms
  ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves the complete location for an actual versionless writer cut: {"results":0} 8ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves the complete location for an actual versionless writer cut: {"results":1} 7ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves the complete location for an actual versionless writer cut: {"results":2} 8ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves the complete location for an actual versionless writer cut: {"results":2,"rawAhead":true} 6ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves the complete location for an actual versionless writer cut: {"results":1} 8ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves the complete location for an actual versionless writer cut: {"results":2} 9ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves the complete location for an actual versionless writer cut: {"results":2,"rawAhead":true} 8ms
  ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails wrong agent without destructive legacy fallthrough 5ms
  ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails missing messages without destructive legacy fallthrough 5ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails invalid entry without destructive legacy fallthrough 5ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails invalid entry without destructive legacy fallthrough 6ms
  ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails missing provenance without destructive legacy fallthrough 5ms
  ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails bad range without destructive legacy fallthrough 5ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails invalid call without destructive legacy fallthrough 4ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails missing arguments without destructive legacy fallthrough 5ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails duplicate ids without destructive legacy fallthrough 5ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails invalid native without destructive legacy fallthrough 4ms
- ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails arbitrary root without destructive legacy fallthrough 4ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails invalid call without destructive legacy fallthrough 5ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails missing arguments without destructive legacy fallthrough 4ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails duplicate ids without destructive legacy fallthrough 6ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails invalid native without destructive legacy fallthrough 5ms
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > preserves and fails arbitrary root without destructive legacy fallthrough 5ms
  ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > does not replay a terminal SUCCEEDED migration 1ms
  ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > does not replay a terminal SUCCEEDED_WITH_WARNINGS migration 0ms
 stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
@@ -509,17 +544,27 @@ stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-
 Failed reading run metadata for mismatched-directory: Run metadata identity or required fields are invalid.
 
 stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry
-Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-KkfHN3/agents/codex-unlink-failure/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-Qdh3ra/agents/codex-unlink-failure/working_context_snapshot.json
 
- ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone, flat-Team, and AgentOrg Codex/Claude snapshots and is idempotent 25ms
- ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > does not traverse directory symlinks and unlinks only the eligible snapshot symlink, not its target 3ms
- ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures 3ms
- ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry 7ms
+ ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone, flat-Team, and AgentOrg Codex/Claude snapshots and is idempotent 26ms
+ ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > does not traverse directory symlinks and unlinks only the eligible snapshot symlink, not its target 4ms
+ ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures 4ms
+ ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry 8ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > readReleasedOwnFileOwnership (D-9) > reads an agent's coordinating run from the released and the current shape 2ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > readReleasedOwnFileOwnership (D-9) > reads a team's coordinating run and member run IDs from the released and the current shape 0ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > readReleasedOwnFileOwnership (D-9) > names the coordinating run as written, so another run's file is told apart 0ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > readReleasedOwnFileOwnership (D-9) > rejects a file with no coordinating run (a damaged file is never owned, R-9 a) 1ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > readReleasedOwnFileOwnership (D-9) > rejects a file with an unsupported coordinating kind (a damaged file is never owned, R-9 a) 0ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > readReleasedOwnFileOwnership (D-9) > rejects a file with an empty run ID (a damaged file is never owned, R-9 a) 0ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > readReleasedOwnFileOwnership (D-9) > rejects a file with a section that is not an object (a damaged file is never owned, R-9 a) 0ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > readReleasedOwnFileOwnership (D-9) > rejects a team file whose members carry no run IDs 0ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > ReleasedTaskAgentOwnFiles.readOwnership (D-9) > is present for an own file in either shape, missing without a file or a taskAgent section 4ms
+ ✓ tests/unit/app-data-migrations/released-own-file-ownership.test.ts > ReleasedTaskAgentOwnFiles.readOwnership (D-9) > is unreadable for broken JSON or a section without its coordinating run (R-9 a) 2ms
 
- Test Files  8 passed (8)
-      Tests  87 passed (87)
-   Start at  18:54:41
-   Duration  17.32s (transform 2.61s, setup 79ms, import 8.44s, tests 7.71s, environment 1ms)
+ Test Files  9 passed (9)
+      Tests  100 passed (100)
+   Start at  19:13:55
+   Duration  20.52s (transform 2.66s, setup 86ms, import 8.37s, tests 10.88s, environment 1ms)
 
 
 # Exit code: 0

@@ -1,11 +1,11 @@
 # Check: IMP-02
 # Command: pnpm -C autobyteus-server-ts test:unit
-# Commit: 7d689455ad (branch codex/delegated-copy-restore-from-own-file)
+# Commit: 3b6f970cfa (branch codex/delegated-copy-restore-from-own-file)
 # Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
-# Date: 2026-10-19T16:24:16Z
+# Date: 2026-10-19T17:05:21Z
 
-# Excerpt of IMP-02-server-unit.log: summary and failure lines. The full log (1154485 bytes) is not committed; it is at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/tickets/in-progress/delegated-copy-restore-from-own-file/evidence/IMP-02-server-unit.log until the worktree is removed.
+# Excerpt of IMP-02-server-unit.log: summary and failure lines. The full log (1159075 bytes) is not committed; it is at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/tickets/in-progress/delegated-copy-restore-from-own-file/evidence/IMP-02-server-unit.log until the worktree is removed.
 
-      Tests  6098 passed | 7 skipped (6105)
- Test Files  743 passed | 4 skipped (747)
+      Tests  6111 passed | 7 skipped (6118)
+ Test Files  744 passed | 4 skipped (748)
 # Exit code: 0

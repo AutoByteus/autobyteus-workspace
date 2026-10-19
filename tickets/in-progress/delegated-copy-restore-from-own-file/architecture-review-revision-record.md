@@ -10,6 +10,7 @@
 | ARCH-REV-004 | Round 4 / SR-005 re-review (DI-001) | SR-005 | Pass | Pass | none (DI-001 resolved by D-8) |
 | ARCH-REV-005 | Round 5 / SR-006 narrow re-review (§2 checklist, shape inventory) | SR-006 | Pass | Fail | AR-006 (new) |
 | ARCH-REV-006 | Round 6 / SR-007 re-review (AR-006) | SR-007 | Fail | Pass | AR-006 (resolved) |
+| ARCH-REV-007 | Round 7 / SR-008 re-review (DI-002) | SR-008 | Pass | Pass | none (DI-002 resolved by D-9) |
 
 ## Revision Entries
 
@@ -153,3 +154,28 @@ None.
 - Material classification changes: none (Large / High)
 - Recommended recipient: `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: R-1, R-2, R-4..R-8, RSK-001 (non-blocking)
+
+### ARCH-REV-007 — SR-008 re-review: D-9 same-ID repair of 10-17 ownership recognition accepted; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/tickets/in-progress/delegated-copy-restore-from-own-file/design-review-report.md`
+- Review round and trigger: round 7; SR-008 re-review after implementation escalation DI-002
+- Triggering role, report path, and finding IDs: implementation_engineer → Solution Designer; `implementation-design-impact-DI-002.md`, `evidence/IMP-11-e2e-startup-migrations.log`; DI-002
+- Relevant solution revision IDs: SR-008
+- Prior authoritative decision: `Pass` (ARCH-REV-006)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - The stall mechanism was confirmed in code: the full frozen parser requires `origin`, inside `isOwnedHere` and `partsAtL1`.
+  - Those two checks only ever use `coordinatingRun` and the members' run ids, so D-9's narrow two-shape ownership reader preserves their released meaning.
+  - Option B as a same-ID repair (guideline §7) is accepted over option A (a global gate, rejected under guideline §1 and the ARCH-F-006 precedent) and option C (coupling to 10-17's intermediate states).
+  - M5 and checklist items 3, 4 and 6 are consistent with D-9, and the D-9 tests are adequate.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001..AR-006 | Resolved | Resolved (unaffected) | SR-003..SR-007 | SR-008 changes only the D-9 bullet, the M5 row, checklist items 3/4/6 and the test guidance |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (Large / High)
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: R-9 (unreadable or damaged L1 file stays "not owned"; a unit case with a pre-own-run coordinating tree for M3/M4), plus R-1, R-2, R-4..R-8, RSK-001
