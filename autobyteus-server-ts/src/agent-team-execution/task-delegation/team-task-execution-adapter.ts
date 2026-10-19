@@ -12,6 +12,7 @@ import {
   TaskDelegationError,
   TaskExecutionTeardownIndeterminateError,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { taskExecutionConversationUnavailable } from "../../agent-collaboration/execution/task/task-execution-conversation-availability.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { foldTeamAggregateStatus, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../agent-collaboration/execution/task/task-execution-tree-projection.js";
@@ -137,7 +138,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   taskExecutionTargetOf(reference: TaskExecutionReference) {
     // The index is keyed by run ID alone: the copy must also be of the requested kind.
     const entry = this.options.getIndex().getTaskExecution(reference);
-    return entry && taskExecutionReferenceKey(referenceOf(entry)) === taskExecutionReferenceKey(reference) ? Object.freeze({ root: this.root, execution: referenceOf(entry), ingressAgentRunId: this.ingressAgentRunId(entry) }) : null;
+    return entry && taskExecutionReferenceKey(referenceOf(entry)) === taskExecutionReferenceKey(reference) ? Object.freeze({ root: this.root, execution: referenceOf(entry), ingressAgentRunId: this.ingressMember(entry).agentRunId }) : null;
   }
   cancelOwnedExecution(reference: TaskExecutionReference): void {
     const entry = this.options.getIndex().getTaskExecution(reference);
@@ -159,7 +160,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   }
   taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null {
     const innermost = this.options.getIndex().listTaskExecutionChainForAgent(agentRunId)[0];
-    return innermost && this.ingressAgentRunId(innermost) === agentRunId ? referenceOf(innermost) : null;
+    return innermost && this.ingressMember(innermost).agentRunId === agentRunId ? referenceOf(innermost) : null;
   }
 
   containsTaskExecution(reference: TaskExecutionReference): boolean { return this.options.getIndex().getTaskExecution(reference) !== null; }
@@ -193,15 +194,14 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     const index = this.options.getIndex();
     for (const indexed of index.listTaskExecutionChainForAgent(agentRunId)) {
       if (this.isLive(referenceOf(indexed))) continue;
-      const ingressAgentRunId = this.ingressAgentRunId(indexed);
-      const memoryDir = this.memoryLocator.getMemoryDir(index.getMemoryPlacementForAgent(ingressAgentRunId), ingressAgentRunId);
+      const ingressMember = this.ingressMember(indexed);
+      const memoryDir = this.memoryLocator.getMemoryDir(index.getMemoryPlacementForAgent(ingressMember.agentRunId), ingressMember.agentRunId);
       const activity = (this.options.activityInspector ?? getAgentConversationActivityInspector())
-        .inspect({ agentRunId: ingressAgentRunId, memoryDir });
+        .inspect({ agentRunId: ingressMember.agentRunId, memoryDir });
       if (activity.kind !== "present") {
-        throw new TaskDelegationError(
-          "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
-          `The delegated ${indexed.kind === "agent" ? "Agent" : "Team"} at '${indexed.address}' is shut down and its saved conversation is unavailable (${activity.kind}); it cannot be restored.`,
-        );
+        throw taskExecutionConversationUnavailable({
+          root: this.root, executionKind: indexed.kind, address: indexed.address, ingressMember, activity,
+        });
       }
     }
   }
@@ -268,8 +268,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     return true;
   }
 
-  private ingressAgentRunId(indexed: IndexedTaskExecution): string {
-    if (indexed.kind === "agent") return indexed.agentRunId;
+  /** The AgentRun a message to this copy enters through: the Agent itself, or the Team's coordinator. */
+  private ingressMember(indexed: IndexedTaskExecution): Readonly<{ address: string; agentRunId: string }> {
+    if (indexed.kind === "agent") return { address: indexed.address, agentRunId: indexed.agentRunId };
     const source = this.sources.resolve(indexed.address, indexed.source.source);
     if (!source || source.kind !== "agent_team") {
       throw new TaskDelegationError("TASK_EXECUTION_CONTEXT_UNAVAILABLE", `AgentTeam '${indexed.address}' is not configured in this run.`);
@@ -283,7 +284,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
         `Task TeamRun '${indexed.teamRunId}' has no coordinator AgentRun at '${coordinatorAddress}'.`,
       );
     }
-    return coordinator.agentRunId;
+    return { address: coordinatorAddress, agentRunId: coordinator.agentRunId };
   }
 
   private async commitActivation(input: {

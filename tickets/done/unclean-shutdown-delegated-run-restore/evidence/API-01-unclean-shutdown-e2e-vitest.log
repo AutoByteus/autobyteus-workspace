@@ -1,0 +1,61 @@
+# Case: API-01, API-02, API-04, API-07 (USR-1..USR-5), run 2
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" USER="$USER" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs USDR_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts --no-watch
+# Commit: f91c9126db (test file); product code = a9b5230505 + b166e0db70; dist built from this worktree at 17:29
+# Environment: macOS, Node v22.23.1, pnpm 10.28.2; clean env, scripted AGY CLI, built server dist/app.js in 3 child processes on a temp data root
+# Date: 2026-10-19
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+stdout | tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:91433) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests) 11067ms
+     ✓ USR-5 SCN-003: a new server process reads every repaired log fresh; another message keeps every record and nothing more is cut  2546ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  17:34:47
+   Duration  21.60s (transform 7.13s, setup 52ms, import 9.53s, tests 11.07s, environment 0ms)
+
+exit=0

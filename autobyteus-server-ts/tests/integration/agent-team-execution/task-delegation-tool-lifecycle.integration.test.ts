@@ -575,7 +575,8 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     harness.emitStatus("/scope_helper", child, "idle");
     harness.clock.fireAll();
     await harness.drain();
-    harness.inspect.mockReturnValue({ kind: "absent" } as never);
+    // A missing saved conversation is what the inspector reports as `none`.
+    harness.inspect.mockReturnValue({ kind: "none" } as never);
 
     await expect(harness.root.deliverExactAgentMessage({
       sender: { kind: "agent", identity: coordinator.identity, displayName: "coordinator" } as never,

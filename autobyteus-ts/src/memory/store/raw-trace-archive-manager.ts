@@ -12,31 +12,8 @@ import {
   type RawTraceArchiveManifest,
   type RawTraceArchiveSegmentEntry,
 } from './raw-trace-archive-manifest.js';
-
-const readJsonl = (filePath: string): Record<string, unknown>[] => {
-  if (!fs.existsSync(filePath)) {
-    return [];
-  }
-  return fs.readFileSync(filePath, 'utf-8')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => JSON.parse(line));
-};
-
-const writeJsonl = (filePath: string, items: Record<string, unknown>[]): void => {
-  const tmpPath = `${filePath}.tmp`;
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(tmpPath, items.map((item) => JSON.stringify(item)).join('\n') + (items.length ? '\n' : ''), 'utf-8');
-  fs.renameSync(tmpPath, filePath);
-};
-
-const writeJson = (filePath: string, payload: Record<string, unknown>): void => {
-  const tmpPath = `${filePath}.tmp`;
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(tmpPath, JSON.stringify(payload), 'utf-8');
-  fs.renameSync(tmpPath, filePath);
-};
+import { replaceFileDurably } from './durable-file-replace.js';
+import { readJsonlRecords, serializeJsonlRecords } from './jsonl-log-file.js';
 
 const traceId = (item: Record<string, unknown>): string | null =>
   typeof item.id === 'string' && item.id.length > 0 ? item.id : null;
@@ -165,7 +142,7 @@ export class RawTraceArchiveManager {
     manifest.segments.push(entry);
     this.writeManifest(manifest);
 
-    writeJsonl(this.resolveNewSegmentPath(fileName), records);
+    replaceFileDurably(this.resolveNewSegmentPath(fileName), serializeJsonlRecords(records));
     const completed = { ...entry, status: 'complete' as const };
     this.writeManifest({
       ...manifest,
@@ -180,8 +157,9 @@ export class RawTraceArchiveManager {
     ) ?? null;
   }
 
+  /** Sealed segments are read with the shared line rule and never cut. */
   private readSegmentRawTraceDicts(entry: RawTraceArchiveSegmentEntry): Record<string, unknown>[] {
-    return readJsonl(this.resolveSegmentPath(entry.file_name));
+    return readJsonlRecords(this.resolveSegmentPath(entry.file_name)).records;
   }
 
   private removePendingSegmentsForBoundary(
@@ -197,7 +175,7 @@ export class RawTraceArchiveManager {
   }
 
   private writeManifest(manifest: RawTraceArchiveManifest): void {
-    writeJson(this.getManifestPath(), manifest as unknown as Record<string, unknown>);
+    replaceFileDurably(this.getManifestPath(), JSON.stringify(manifest));
   }
 
   private getReadableManifestPath(): string {

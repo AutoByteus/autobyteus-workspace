@@ -1,0 +1,83 @@
+# Case: API-01, API-02, API-04, API-07 server output excerpt (run 2)
+# Command: same run; lines of the 3 server processes that show the repair warnings, the refusal log and the restarts. Raw 0x00 bytes printed by the out-of-scope display reader are shown as <NUL>
+# Commit: f91c9126db
+# Environment: macOS, Node v22.23.1, pnpm 10.28.2; data root shown as <root>
+# Date: 2026-10-19
+
+...
+1: ===== server #1 =====
+...
+12: ============================================================
+...
+20: ============================================================
+...
+182: [2026-10-19T15:35:00.179Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+...
+245: ===== server #2 =====
+...
+256: ============================================================
+...
+264: ============================================================
+...
+347: [2026-10-19T15:35:06.149Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+...
+370: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_a1445693635c45779c972bc2f9df84a4/usdr_lead_2f619d_f07e94074c9f454fbd440246e4e156a7/raw_traces_active.jsonl: SyntaxError: Unexpected token '<NUL>', "<NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL>"... is not valid JSON
+...
+374: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_a1445693635c45779c972bc2f9df84a4/usdr_lead_2f619d_f07e94074c9f454fbd440246e4e156a7/raw_traces_active.jsonl: SyntaxError: Unexpected token '<NUL>', "<NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL>"... is not valid JSON
+375: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_a1445693635c45779c972bc2f9df84a4/usdr_lead_2f619d_f07e94074c9f454fbd440246e4e156a7/raw_traces_active.jsonl: SyntaxError: Unexpected token '<NUL>', "<NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL>"... is not valid JSON
+376: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_a1445693635c45779c972bc2f9df84a4/usdr_lead_2f619d_f07e94074c9f454fbd440246e4e156a7/raw_traces_active.jsonl: SyntaxError: Unexpected token '<NUL>', "<NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL>"... is not valid JSON
+...
+378: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_a1445693635c45779c972bc2f9df84a4/usdr_lead_2f619d_f07e94074c9f454fbd440246e4e156a7/raw_traces_active.jsonl: SyntaxError: Unexpected token '<NUL>', "<NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL><NUL>"... is not valid JSON
+379: Removed the damaged end of a memory log. {
+380:   filePath: '<root>/memory/agent_teams/usdr_marketing_2f619d_a1445693635c45779c972bc2f9df84a4/usdr_lead_2f619d_f07e94074c9f454fbd440246e4e156a7/raw_traces_active.jsonl',
+381:   bytesRemoved: 1241,
+382:   recordsKept: 6
+383: }
+384: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_3d122310d19a4956bec9ce474ac80330/usdr_lead_2f619d_410e49dd8b904e53bd00fb1d7c6b44a1/raw_traces_active.jsonl: SyntaxError: Unterminated string in JSON at position 32 (line 1 column 33)
+...
+388: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_3d122310d19a4956bec9ce474ac80330/usdr_lead_2f619d_410e49dd8b904e53bd00fb1d7c6b44a1/raw_traces_active.jsonl: SyntaxError: Unterminated string in JSON at position 32 (line 1 column 33)
+389: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_3d122310d19a4956bec9ce474ac80330/usdr_lead_2f619d_410e49dd8b904e53bd00fb1d7c6b44a1/raw_traces_active.jsonl: SyntaxError: Unterminated string in JSON at position 32 (line 1 column 33)
+...
+391: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_3d122310d19a4956bec9ce474ac80330/usdr_lead_2f619d_410e49dd8b904e53bd00fb1d7c6b44a1/raw_traces_active.jsonl: SyntaxError: Unterminated string in JSON at position 32 (line 1 column 33)
+392: Removed the damaged end of a memory log. {
+393:   filePath: '<root>/memory/agent_teams/usdr_marketing_2f619d_3d122310d19a4956bec9ce474ac80330/usdr_lead_2f619d_410e49dd8b904e53bd00fb1d7c6b44a1/raw_traces_active.jsonl',
+394:   bytesRemoved: 32,
+395:   recordsKept: 6
+396: }
+397: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_ac4e55fca47548049d54a525506040b2/usdr_lead_2f619d_35bcfbbe45904778b3a84b5fee6194d7/raw_traces_active.jsonl: SyntaxError: Unterminated string in JSON at position 32 (line 1 column 33)
+...
+401: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_ac4e55fca47548049d54a525506040b2/usdr_lead_2f619d_35bcfbbe45904778b3a84b5fee6194d7/raw_traces_active.jsonl: SyntaxError: Unterminated string in JSON at position 32 (line 1 column 33)
+402: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_ac4e55fca47548049d54a525506040b2/usdr_lead_2f619d_35bcfbbe45904778b3a84b5fee6194d7/raw_traces_active.jsonl: SyntaxError: Unterminated string in JSON at position 32 (line 1 column 33)
+...
+404: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_ac4e55fca47548049d54a525506040b2/usdr_lead_2f619d_35bcfbbe45904778b3a84b5fee6194d7/raw_traces_active.jsonl: SyntaxError: Unterminated string in JSON at position 32 (line 1 column 33)
+405: Removed the damaged end of a memory log. {
+406:   filePath: '<root>/memory/agent_teams/usdr_marketing_2f619d_ac4e55fca47548049d54a525506040b2/usdr_lead_2f619d_35bcfbbe45904778b3a84b5fee6194d7/raw_traces_active.jsonl',
+407:   bytesRemoved: 33,
+408:   recordsKept: 6
+409: }
+410: [2026-10-19T15:35:06.846Z] [WARN] [agent-collaboration.task-execution] TASK_EXECUTION_CONVERSATION_UNAVAILABLE {
+411:   rootSubjectKind: 'agent_team',
+412:   rootRunId: 'usdr_root_2f619d_06c05a97451042c0a5f47072256dba15',
+413:   address: '/usdr_marketing_2f619d',
+414:   memberAddress: '/usdr_marketing_2f619d/lead',
+415:   memberAgentRunId: 'usdr_lead_2f619d_5199821c0b6845dba0e852167503f696',
+416:   activity: 'indeterminate',
+417:   reason: 'line 3 of raw_traces_active.jsonl is damaged',
+418:   cause: null
+419: }
+420: Skipping malformed JSONL line in <root>/memory/agent_teams/usdr_marketing_2f619d_645a345ec99d45309c4b782f1dae5f3b/usdr_lead_2f619d_5199821c0b6845dba0e852167503f696/raw_traces_active.jsonl: SyntaxError: Expected double-quoted property name in JSON at position 139 (line 1 column 140)
+...
+422: [2026-10-19T15:35:06.901Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+423: [2026-10-19T15:35:07.074Z] [INFO] [server.runtime] Server closed cleanly.
+...
+425: ===== server #3 =====
+...
+436: ============================================================
+...
+444: ============================================================
+...
+517: [2026-10-19T15:35:08.571Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+...
+552: [2026-10-19T15:35:09.270Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+...
+554: [2026-10-19T15:35:09.438Z] [INFO] [server.runtime] Server closed cleanly.

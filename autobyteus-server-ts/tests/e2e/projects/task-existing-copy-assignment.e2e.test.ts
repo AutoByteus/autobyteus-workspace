@@ -801,7 +801,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const from = root.mark();
     const lost = await root.managerCalls(callTool("delegate_task", { target_agent_run_id: helper, task_id: taskI }));
     expect(lost).toMatchObject({ delegated: false });
-    expect(lost.message).toMatch(/saved conversation is unavailable/);
+    expect(lost.message).toMatch(/cannot be restored: it has no saved conversation to continue\. Start a new delegation/);
     expect(await projectFiles(projectId)).toEqual(files);
     expect(root.reopenedSince(from)).toEqual([]);
     expect(processLive(helper)).toBe(false);

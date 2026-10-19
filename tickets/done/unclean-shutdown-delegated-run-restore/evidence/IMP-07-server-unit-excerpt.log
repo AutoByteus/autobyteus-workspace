@@ -1,0 +1,9 @@
+# Check: IMP-07
+# Command: pnpm -C autobyteus-server-ts test:unit (full log: IMP-07-server-unit-full.log.gz)
+# Commit: b166e0db70
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T15:20:10Z
+
+ Test Files  743 passed | 4 skipped (747)
+      Tests  6106 passed | 7 skipped (6113)
+   Duration  518.75s (transform 13.13s, setup 5.86s, import 246.57s, tests 201.42s, environment 681ms)

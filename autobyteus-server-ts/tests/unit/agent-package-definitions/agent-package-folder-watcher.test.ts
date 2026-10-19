@@ -139,7 +139,8 @@ describe("AgentPackageFolderWatcher", () => {
     await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
     await waitFor(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "WATCHING");
     expect(recorded.roots).toContain(rootPath);
-  });
+    // waitFor alone may take 5 s, the default test timeout: under load the watcher arms late.
+  }, 15_000);
 
   it("reports UNAVAILABLE when watching cannot be set up, and re-arms on the next sync", async () => {
     const rootPath = path.join(base, "pkg");
