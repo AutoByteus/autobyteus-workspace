@@ -34,7 +34,7 @@ const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_")
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
 const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId hostRoot { kind runId } start startError { code message } closed status";
-const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId projectId taskKey description status dependsOnTaskIds createdAt updatedAt
+const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId projectId taskKey description status dependsOnTaskIds partOfTaskId createdAt updatedAt
   contextFiles { storedFilename displayName mimeType sizeBytes locator } root { ${ROOT_FIELDS} }}}`;
 const TASKS_WITHOUT_PROJECT = `query{tasksWithoutProject{taskId description status referenceFiles createdAt updatedAt root { ${ROOT_FIELDS} }}}`;
 const PROJECT = `query($id:String!){project(projectId:$id){projectId name description createdAt updatedAt

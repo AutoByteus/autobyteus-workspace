@@ -157,12 +157,12 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     // 1. AC-001/AC-002 through the Manager's own MCP session: create with [png, md], then a files-only patch.
     const create = await managerCalls(callTool("create_task", { project_id: projectId, description: "READ_REFERENCE_FILES", context_files: [shot, notes] }));
     // Tool results name the Project Task by its key; its saved files stay under the stored long ID.
-    expect(create).toEqual({ task: { projectId, taskId: expect.stringMatching(/^task-context-files-[0-9a-f]+-1$/), status: "TODO", dependsOn: [],
+    expect(create).toEqual({ task: { projectId, taskId: expect.stringMatching(/^task-context-files-[0-9a-f]+-1$/), status: "TODO", dependsOn: [], partOf: null,
       attachedContextFiles: [{ storedFilename: expect.any(String), displayName: path.basename(shot) }, { storedFilename: expect.any(String), displayName: "notes.md" }] } });
     const taskKey = create.task.taskId as string;
     const taskId = (await projectTask(projectId, taskKey)).taskId as string;
     const patch = await managerCalls(callTool("update_task", { task_id: taskKey, context_files: [log] }));
-    expect(patch).toEqual({ task: { projectId, taskId: taskKey, status: "TODO", dependsOn: [], attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "server.log.txt" }] } });
+    expect(patch).toEqual({ task: { projectId, taskId: taskKey, status: "TODO", dependsOn: [], partOf: null, attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "server.log.txt" }] } });
     // AC-006: the sources go away (temp screenshot cleaned up); the Task keeps its copies.
     await fs.rm(shot); await fs.rm(notes); await fs.rm(log);
     const saved = await projectTask(projectId, taskId);
@@ -209,7 +209,7 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     // 4. The corrected DONE attaches the file and closes the worker as today (AC-003 alternate).
     const doneFrom = view.frames.length;
     const done = await managerCalls(callTool("update_task", { task_id: taskKey, status: "DONE", context_files: [final] }));
-    expect(done).toEqual({ task: { projectId, taskId: taskKey, status: "DONE", dependsOn: [], attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "final.md" }] } });
+    expect(done).toEqual({ task: { projectId, taskId: taskKey, status: "DONE", dependsOn: [], partOf: null, attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "final.md" }] } });
     await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
     const closedRefs = view.frames.slice(doneFrom).find(closedFrame)!.payload.event.task_executions as any[];
     expect(closedRefs.map((ref) => ref.agentRunId ?? ref.agent_run_id)).toContain(worker);

@@ -91,7 +91,7 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
     const response = await fetch(mcpUrl, { method: "POST", headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "search_project_tasks", arguments: { project_id: projectId, query: "folded navigation panel" } } }) });
     const tool = (await response.json() as { result: { structuredContent: unknown } }).result.structuredContent;
-    expect(tool).toEqual({ projectId, tasks: [{ taskId: sidebar.taskKey, status: "TODO", summary: "Sidebar collapse state is lost after restart", match: "meaning" }], meaningSearch: { state: "ready" } });
+    expect(tool).toEqual({ projectId, tasks: [{ taskId: sidebar.taskKey, status: "TODO", partOf: null, parts: [], summary: "Sidebar collapse state is lost after restart", match: "meaning" }], meaningSearch: { state: "ready" } });
 
     // Deleting a Task removes it at once, and a deleted Project's search fails like any Project read.
     expect((await ok<{ deleteProjectTask: boolean }>("mutation($i:DeleteProjectTaskInput!){deleteProjectTask(input:$i)}", { i: { projectId, taskId: sidebar.taskId } })).deleteProjectTask).toBe(true);
@@ -101,6 +101,32 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
     expect(gone.errors?.[0]?.extensions?.code).toBe("PROJECT_NOT_FOUND");
     const rows = await fs.readdir(path.join(root, "embeddings"));
     expect(rows).toContain("embeddings.sqlite");
+  });
+
+  // task-part-of AC-015: search results name each result's parent and parts by key (parts in numeric key order), from the whole Project.
+  it("POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no long Task ID", async () => {
+    const projectId = (await ok<{ createProject: { projectId: string } }>("mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", { i: { name: "Search Parts" } })).createProject.projectId;
+    const createWith = async (description: string, partOfTaskId?: string) => (await ok<{ createProjectTask: { taskId: string; taskKey: string } }>(
+      "mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}", { i: { projectId, description, ...(partOfTaskId ? { partOfTaskId } : {}) } })).createProjectTask;
+    const parent = await createWith("Release pipeline overhaul");
+    const tasks = [parent];
+    for (let index = 2; index <= 11; index += 1) {
+      // Parts at keys 2 and 11 (numeric order puts 2 first; text order would put 11 first); fillers in between.
+      const isPart = index === 2 || index === 11;
+      tasks.push(await createWith(isPart ? `Release pipeline slice ${index}` : `Unrelated filler ${index}`, isPart ? parent.taskId : undefined));
+    }
+    expect(tasks.map((task) => task.taskKey).at(-1)).toBe("search-parts-11");
+    await untilReady(projectId);
+    const response = await fetch(mcpUrl, { method: "POST", headers: { "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "search_project_tasks", arguments: { project_id: projectId, query: "release pipeline", limit: 30 } } }) });
+    const result = (await response.json() as { result: { structuredContent: { tasks: Array<{ taskId: string; partOf: string | null; parts: string[]; match: string }> } } }).result.structuredContent;
+    const byKey = Object.fromEntries(result.tasks.filter((task) => task.match === "exact").map((task) => [task.taskId, { partOf: task.partOf, parts: task.parts }]));
+    expect(byKey).toEqual({
+      "search-parts-1": { partOf: null, parts: ["search-parts-2", "search-parts-11"] },
+      "search-parts-2": { partOf: "search-parts-1", parts: [] },
+      "search-parts-11": { partOf: "search-parts-1", parts: [] },
+    });
+    expect(JSON.stringify(result)).not.toContain("project_task_");
   });
 
   it("validates the active-model setting and offers Retry only for an unavailable model", async () => {
