@@ -40,8 +40,7 @@ const result = await index.search("project-tasks/<projectId>", items /* complete
 // result.readiness: {state: "ready"} | {state: "preparing", phase, done, total} | {state: "unavailable", reason}
 index.removeItems(collection, ids);  // never waits for indexing
 index.dropCollection(collection);
-index.modelStatus();                 // {activeModelId, state, reason?}
-index.retryModel();                  // clears "unavailable"; the next search tries again
+index.retryModel();                  // clears "unavailable"; the next search (or prepareActiveModel()) tries again
 
 // Settings → Server Settings → Embedding. The two status reads are read-only: they start no download, load or indexing.
 await index.modelsStatus();          // {activeModelId, defaultModelId, onDiskBytes, models: [{id, file, activeDisplay, ...}]}

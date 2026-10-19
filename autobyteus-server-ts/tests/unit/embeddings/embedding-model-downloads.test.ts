@@ -41,11 +41,11 @@ describe("EmbeddingModelDownloads", () => {
     expect(downloads.fileState(model)).toEqual({ state: "downloading", done: 0, total: 100 });
     fake.pending.get("model-b")!.progress(40, 100);
     expect(downloads.fileState(model)).toEqual({ state: "downloading", done: 40, total: 100 });
-    expect(downloads.isRunning("model-b")).toBe(true);
+    expect(downloads.progress("model-b")).toEqual({ done: 40, total: 100 });
     fake.pending.get("model-b")!.resolve();
     await flush();
     expect(downloads.fileState(model)).toEqual({ state: "downloaded" });
-    expect(downloads.isRunning("model-b")).toBe(false);
+    expect(downloads.progress("model-b")).toBeNull();
   });
 
   it("cancels a download ahead: the folder is deleted and the model is not downloaded again", async () => {

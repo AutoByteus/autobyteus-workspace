@@ -300,7 +300,7 @@ describe('EmbeddingSettingsPanel', () => {
     expect(indexAll.attributes('title')).toBe('Every Project is up to date.')
   })
 
-  it('announces a Project that finished indexing and shows a refused action with the server reason', async () => {
+  it('announces a Project that finished indexing, and shows a failed action\'s server message until the next action (AC-014)', async () => {
     await mountPanel()
     current.projects = current.projects.map((entry) => entry.projectId === 'p-web' ? { ...entry, state: 'READY', done: null } : entry)
     await vi.advanceTimersByTimeAsync(BUSY_POLL_MS)
@@ -313,6 +313,15 @@ describe('EmbeddingSettingsPanel', () => {
     await wrapper!.get(`[data-testid="embedding-model-${LEAF}-remove-confirm"]`).trigger('click')
     await flushPromises()
     expect(wrapper!.get('[data-testid="embedding-action-error"]').text()).toBe('MongoDB LEAF-IR is downloading; cancel the download first.')
+    expect(wrapper!.get('[data-testid="embedding-action-error"]').attributes('role')).toBe('alert')
+    // The next action clears it (AC-014); an unreachable node shows its error the same way.
+    io.mutate.mockRejectedValueOnce(new Error('Failed to fetch'))
+    await wrapper!.get('[data-testid="embedding-project-p-billing-index"]').trigger('click')
+    await flushPromises()
+    expect(wrapper!.get('[data-testid="embedding-action-error"]').text()).toBe('Failed to fetch')
+    await wrapper!.get('[data-testid="embedding-index-all"]').trigger('click')
+    await flushPromises()
+    expect(wrapper!.find('[data-testid="embedding-action-error"]').exists()).toBe(false)
   })
 
   it('filters many Projects by name and state, with counts unchanged by the name filter', async () => {

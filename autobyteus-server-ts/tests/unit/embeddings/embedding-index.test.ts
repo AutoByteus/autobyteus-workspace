@@ -96,7 +96,7 @@ describe("EmbeddingIndex", () => {
 
   it("switches models without mixing vectors, rebuilds, keeps only the active model's rows and keeps downloaded files", async () => {
     let active = fakeModel("fake-model-a");
-    const { index, rootDir, runners, removed, present } = await make({ model: () => active });
+    const { index, rootDir, runners, removed, present } = await make({ model: () => active, catalog: [fakeModel("fake-model-a"), fakeModel("fake-model-b")] });
     await settle(index, "tasks/p1", ITEMS);
     active = fakeModel("fake-model-b");
     const switched = await index.search("tasks/p1", ITEMS, "docker");
@@ -108,7 +108,9 @@ describe("EmbeddingIndex", () => {
     expect(new Set(rowsOf(rootDir).map((row) => row.model_id))).toEqual(new Set(["fake-model-b"]));
     expect(removed).toEqual([]);
     expect([...present].sort()).toEqual(["fake-model-a", "fake-model-b"]);
-    expect(index.modelStatus()).toEqual({ activeModelId: "fake-model-b", state: "ready" });
+    const status = await index.modelsStatus();
+    expect(status.activeModelId).toBe("fake-model-b");
+    expect(status.models.find((model) => model.activeDisplay)?.activeDisplay).toEqual({ state: "ready" });
   });
 
   it("reports an unavailable model with its reason, does not retry by itself, and retries after retryModel()", async () => {
@@ -132,7 +134,7 @@ describe("EmbeddingIndex", () => {
     runner().failEmbed = new Error("wasm out of memory");
     const result = await index.search("tasks/p1", ITEMS, "docker");
     expect(result).toEqual({ matches: [], scores: {}, readiness: { state: "unavailable", reason: "wasm out of memory" } });
-    expect(index.modelStatus()).toMatchObject({ state: "unavailable", reason: "wasm out of memory" });
+    expect((await index.modelsStatus()).models[0]!.activeDisplay).toEqual({ state: "unavailable", reason: "wasm out of memory" });
   });
 
   it("waits up to waitForReadyMs for the collection, then answers with meaning matches", async () => {

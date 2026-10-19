@@ -32,8 +32,6 @@ export type EmbeddingSearchResult = {
   scores: Record<string, number>;
   readiness: EmbeddingReadiness;
 };
-export type EmbeddingModelState = "idle" | "downloading" | "loading" | "ready" | "unavailable";
-export type EmbeddingModelStatus = { activeModelId: string; state: EmbeddingModelState; reason?: string };
 /** One catalog model for Settings: its facts, its files and, for the active model, what to display. */
 export type EmbeddingModelEntry = {
   id: string; displayName: string; languages: readonly string[]; downloadBytes: number;
@@ -124,12 +122,6 @@ export class EmbeddingIndex {
     this.collections.get(collection)?.cancel();
     this.collections.delete(collection);
     this.store.dropCollection(collection);
-  }
-
-  modelStatus(): EmbeddingModelStatus {
-    const activeModelId = this.resolveModel().id;
-    const phase = this.model?.definition.id === activeModelId ? this.model.phase : { kind: "idle" as const };
-    return { activeModelId, state: phase.kind, ...(phase.kind === "unavailable" ? { reason: phase.reason } : {}) };
   }
 
   /**

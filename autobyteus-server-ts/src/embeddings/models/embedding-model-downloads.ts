@@ -76,10 +76,6 @@ export class EmbeddingModelDownloads {
     if (flight && !flight.cancelled) flight.cancellable = true;
   }
 
-  isRunning(modelId: string): boolean {
-    return this.flights.has(modelId);
-  }
-
   progress(modelId: string): { done: number; total: number } | null {
     const flight = this.flights.get(modelId);
     return flight ? { done: flight.done, total: flight.total } : null;

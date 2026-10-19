@@ -114,6 +114,8 @@ export class EmbeddingModelFiles {
     const controller = new AbortController();
     const cancel = () => controller.abort(new EmbeddingDownloadCancelled());
     signal?.addEventListener("abort", cancel, { once: true });
+    // A cancel that landed before the listener was added would never fire it: honour it now, before fetching.
+    if (signal?.aborted) cancel();
     let idle: ReturnType<typeof setTimeout> | undefined;
     const touch = () => {
       clearTimeout(idle);

@@ -258,8 +258,10 @@ states.
   otherwise, until the panel unmounts. The latest request wins; a rebinding
   starts over with the new node. Reading never starts work. The actions
   (`graphql/mutations/embeddingSettingsMutations.ts` and the existing
-  `retryEmbeddingModel`) read the status again at once; a refused action shows
-  the server's reason above the cards. Completions are announced in a polite
+  `retryEmbeddingModel`) read the status again at once. A refused or failed
+  action shows the server's message in one red `role="alert"` line above the
+  cards until the next action (REQ-010); Download failed, Unavailable and the
+  load error keep their own surfaces. Completions are announced in a polite
   live region ("<model> downloaded.", "<model> is ready.", "<Project> indexed.").
 - `components/settings/embedding/`: `EmbeddingSettingsPanel` (loading, load
   error, the switch dialog and focus after a switch), `EmbeddingModelCard`
