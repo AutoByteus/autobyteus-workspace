@@ -41,8 +41,10 @@ const toStandardEntry = (config: BaseMcpConfig): McpConfigEntry => {
 
   if (config.transport_type === "streamable_http") {
     const headers = asRecordStringString(source.headers);
+    const token = typeof source.token === "string" ? source.token : null;
     return {
       url: asString(source.url),
+      ...(token ? { token } : {}),
       ...(Object.keys(headers).length > 0 ? { headers } : {}),
       ...(enabled === false ? { enabled: false } : {}),
       ...(toolNamePrefix ? { tool_name_prefix: toolNamePrefix } : {}),

@@ -1,0 +1,55 @@
+# Case: API-05 value-free summary (Codex App Server runtime, live gpt-5.6-luna -> autobyteus_agent_tools -> remote MCP servers)
+# Command: env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" RUN_CODEX_E2E=1 CODEX_E2E_TOOL_MODEL=gpt-5.6-luna MCP_AUTH_E2E_EVIDENCE_DIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts --no-watch
+# Commit: e129930bcf + new test files (committed later on this branch)
+# Environment: macOS 26, in-process studio server (temp app data dir), host signed-in codex CLI (real HOME; the run adds one session to the user codex history), one turn
+# Date: 2026-10-19
+
+{
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "toolNamesSelected": [
+    "hdr_auth_probe",
+    "tok_auth_probe"
+  ],
+  "toolEvents": [
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "tok_auth_probe"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "tok_auth_probe"
+    }
+  ],
+  "remoteToolCalls": {
+    "hdr": [
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ],
+    "tok": [
+      {
+        "httpMethod": "POST",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ]
+  },
+  "markersReceived": {
+    "hdr": true,
+    "tok": true
+  },
+  "dummyValueOnAgentWire": false
+}

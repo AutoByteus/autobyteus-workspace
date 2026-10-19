@@ -154,7 +154,7 @@ export class StreamableHttpMcpServerConfig extends BaseMcpConfig {
         `StreamableHttpMcpServerConfig '${this.server_id}' 'token' must be a string if provided.`
       );
     }
-    this.token = data.token ?? null;
+    this.token = data.token?.trim() || null;
 
     if (data.headers !== undefined) {
       if (data.headers === null || typeof data.headers !== 'object' || Array.isArray(data.headers)) {
@@ -173,6 +173,17 @@ export class StreamableHttpMcpServerConfig extends BaseMcpConfig {
     } else {
       this.headers = {};
     }
+
+    if (this.token && Object.keys(this.headers).some((name) => name.toLowerCase() === 'authorization')) {
+      throw new Error(
+        `Streamable HTTP MCP server '${this.server_id}' sets both 'token' and an 'Authorization' header; use one of them.`
+      );
+    }
+  }
+
+  /** The headers sent on every request: the configured headers, plus the token as a Bearer Authorization header. */
+  requestHeaders(): Record<string, string> {
+    return this.token ? { ...this.headers, Authorization: `Bearer ${this.token}` } : { ...this.headers };
   }
 }
 
