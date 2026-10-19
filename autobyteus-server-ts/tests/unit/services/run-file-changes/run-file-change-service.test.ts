@@ -376,6 +376,78 @@ describe("RunFileChangeService", () => {
     });
   });
 
+  describe("a first read that overlaps the first FILE_CHANGE (autobyteus-180)", () => {
+    /**
+     * A service whose first stored read (the overlapping reader's) waits until `releaseFirstRead`; every later read
+     * goes straight to disk. The reader is started before the event, so it is always the first caller.
+     */
+    const overlapHarness = async () => {
+      const harness = await createRunHarness();
+      const projectionStore = new RunFileChangeProjectionStore();
+      const read = projectionStore.readProjection.bind(projectionStore);
+      let releaseFirstRead!: () => void;
+      const firstReadGate = new Promise<void>((resolve) => { releaseFirstRead = resolve; });
+      vi.spyOn(projectionStore, "readProjection").mockImplementationOnce(async (dir: string) => {
+        const stored = await read(dir);
+        await firstReadGate;
+        return stored;
+      });
+      const service = createService(harness.workspaceRoot, projectionStore);
+      const detach = service.attachToRun(harness.run);
+      const livePaths = async () => (await service.getProjectionForRun(harness.run)).entries.map((entry) => entry.path).sort();
+      const memberPaths = async () => (await service.getProjectionForCollaborationMember({
+        agentRunId: harness.run.runId, memoryDir: harness.memoryDir, workspaceRootPath: harness.workspaceRoot,
+      })).entries.map((entry) => entry.path).sort();
+      const savedPaths = async () => (await read(harness.memoryDir)).entries.map((entry) => entry.path).sort();
+      return { ...harness, projectionStore, service, detach, releaseFirstRead, livePaths, memberPaths, savedPaths };
+    };
+
+    it("keeps the recorded file in the live list after the overlapping read completes (AC-001)", async () => {
+      const h = await overlapHarness();
+      const reader = h.service.getProjectionForCollaborationMember({
+        agentRunId: h.run.runId, memoryDir: h.memoryDir, workspaceRootPath: h.workspaceRoot,
+      });
+      await h.emit(fileChangeEvent(h.run.runId, { path: "src/one.txt" }));
+      await waitForPersistedProjectionStatus(h.projectionStore, h.memoryDir, { path: "src/one.txt", status: "available" });
+
+      h.releaseFirstRead();
+      // The late stored read does not win over the newer live projection, so the reader itself sees the file too.
+      expect((await reader).entries.map((entry) => entry.path)).toEqual(["src/one.txt"]);
+      expect(await h.livePaths()).toEqual(["src/one.txt"]);
+      expect(await h.memberPaths()).toEqual(["src/one.txt"]);
+    });
+
+    it("keeps both files in the saved record and the live list after the next FILE_CHANGE, and after detach (AC-002)", async () => {
+      const h = await overlapHarness();
+      const reader = h.service.getProjectionForRun(h.run);
+      await h.emit(fileChangeEvent(h.run.runId, { path: "src/one.txt" }));
+      await waitForPersistedProjectionStatus(h.projectionStore, h.memoryDir, { path: "src/one.txt", status: "available" });
+      h.releaseFirstRead();
+      await reader;
+
+      await h.emit(fileChangeEvent(h.run.runId, { path: "src/two.txt", sourceInvocationId: "write-2" }));
+      await waitForPersistedProjectionStatus(h.projectionStore, h.memoryDir, { path: "src/two.txt", status: "available" });
+
+      expect(await h.savedPaths()).toEqual(["src/one.txt", "src/two.txt"]);
+      expect(await h.livePaths()).toEqual(["src/one.txt", "src/two.txt"]);
+      h.detach();
+      expect(await h.livePaths()).toEqual(["src/one.txt", "src/two.txt"]);
+    });
+
+    it("does not let a later-completing first read replace a cache another read already filled", async () => {
+      const h = await overlapHarness();
+      const slowReader = h.service.getProjectionForRun(h.run);
+      // A second first read completes at once and fills the cache from the (empty) stored record.
+      expect((await h.service.getProjectionForRun(h.run)).entries).toEqual([]);
+      await h.emit(fileChangeEvent(h.run.runId, { path: "src/one.txt" }));
+      await waitForPersistedProjectionStatus(h.projectionStore, h.memoryDir, { path: "src/one.txt", status: "available" });
+
+      h.releaseFirstRead();
+      expect((await slowReader).entries.map((entry) => entry.path)).toEqual(["src/one.txt"]);
+      expect(await h.livePaths()).toEqual(["src/one.txt"]);
+    });
+  });
+
   describe("process authority binding", () => {
     it("requires an explicitly bound process instance and releases only that instance", () => {
       expect(() => getRunFileChangeService()).toThrow("The process RunFileChangeService is not initialized.");

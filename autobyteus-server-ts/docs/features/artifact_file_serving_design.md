@@ -84,6 +84,15 @@ returns a fresh normalized read of `file_changes.json` and caches nothing, so a
 read can never pin a stale snapshot. Application execution scopes own their own
 scope-local instance and never bind it as the process authority.
 
+An attached run's first read fills its live projection from `file_changes.json`.
+It does so only if the projection is still empty when that stored read returns.
+A `FILE_CHANGE` event, or another read, may have filled it in the meantime. The
+live projection is never older than the saved record, because `handle` updates
+it before writing the record. So the filled projection wins and the late stored
+read is discarded. This keeps a first read that overlaps the run's first file
+change from hiding that file from the live list, or from the saved record that
+the next event writes. Reads never wait for the event queue.
+
 ## Team Communication Reference Flow
 
 1. `send_message_to(recipient_address=...)` accepts natural `content` plus optional

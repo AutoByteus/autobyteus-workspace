@@ -1,0 +1,189 @@
+# IMP-01-regression-tests-red-on-base
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/run-file-changes/run-file-change-service.test.ts --no-watch
+# code: base 87732d5504 src (unfixed RunFileChangeService.load) + the new regression tests (working tree, before the fix)
+# env: macOS 26.5.2, node v22.23.1
+# date: 2026-10-19T08:41:38Z
+# expected: the 3 new tests fail on the unfixed source
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-live-cache-race/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-live-cache-race/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/services/run-file-changes/run-file-change-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/services/run-file-changes/run-file-change-service.test.ts (11 tests | 3 failed) 152ms
+     ✓ projects FILE_CHANGE events, keeps live content transient, and persists metadata only 29ms
+     ✓ canonicalizes absolute and relative FILE_CHANGE references to one workspace row 14ms
+     ✓ ignores unrelated activity events and only consumes FILE_CHANGE 1ms
+     ✓ records failed FILE_CHANGE status 14ms
+       ✓ reads an unattached run fresh from disk on every request 4ms
+       ✓ drops the live projection when the run is detached 14ms
+       ✓ does not re-cache a run whose FILE_CHANGE handling finishes after detach 15ms
+       × keeps the recorded file in the live list after the overlapping read completes (AC-001) 17ms
+       × keeps both files in the saved record and the live list after the next FILE_CHANGE, and after detach (AC-002) 27ms
+       × does not let a later-completing first read replace a cache another read already filled 14ms
+       ✓ requires an explicitly bound process instance and releases only that instance 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > a first read that overlaps the first FILE_CHANGE (autobyteus-180) > keeps the recorded file in the live list after the overlapping read completes (AC-001)
+AssertionError: expected [] to deeply equal [ 'src/one.txt' ]
+
+- Expected
++ Received
+
+- [
+-   "src/one.txt",
+- ]
++ []
+
+ ❯ tests/unit/services/run-file-changes/run-file-change-service.test.ts:415:65
+    413|       h.releaseFirstRead();
+    414|       // The late stored read does not win over the newer live project…
+    415|       expect((await reader).entries.map((entry) => entry.path)).toEqua…
+       |                                                                 ^
+    416|       expect(await h.livePaths()).toEqual(["src/one.txt"]);
+    417|       expect(await h.memberPaths()).toEqual(["src/one.txt"]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > a first read that overlaps the first FILE_CHANGE (autobyteus-180) > keeps both files in the saved record and the live list after the next FILE_CHANGE, and after detach (AC-002)
+AssertionError: expected [ 'src/two.txt' ] to deeply equal [ 'src/one.txt', 'src/two.txt' ]
+
+- Expected
++ Received
+
+  [
+-   "src/one.txt",
+    "src/two.txt",
+  ]
+
+ ❯ tests/unit/services/run-file-changes/run-file-change-service.test.ts:431:36
+    429|       await waitForPersistedProjectionStatus(h.projectionStore, h.memo…
+    430| 
+    431|       expect(await h.savedPaths()).toEqual(["src/one.txt", "src/two.tx…
+       |                                    ^
+    432|       expect(await h.livePaths()).toEqual(["src/one.txt", "src/two.txt…
+    433|       h.detach();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > a first read that overlaps the first FILE_CHANGE (autobyteus-180) > does not let a later-completing first read replace a cache another read already filled
+AssertionError: expected [] to deeply equal [ 'src/one.txt' ]
+
+- Expected
++ Received
+
+- [
+-   "src/one.txt",
+- ]
++ []
+
+ ❯ tests/unit/services/run-file-changes/run-file-change-service.test.ts:446:69
+    444| 
+    445|       h.releaseFirstRead();
+    446|       expect((await slowReader).entries.map((entry) => entry.path)).to…
+       |                                                                     ^
+    447|       expect(await h.livePaths()).toEqual(["src/one.txt"]);
+    448|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 8 passed (11)
+   Start at  10:41:39
+   Duration  4.96s (transform 3.11s, setup 30ms, import 4.27s, tests 152ms, environment 0ms)
+
+exit=0
