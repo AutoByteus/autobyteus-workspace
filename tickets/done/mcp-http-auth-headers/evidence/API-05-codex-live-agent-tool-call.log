@@ -1,0 +1,260 @@
+# Case: API-05 (Codex App Server runtime, live gpt-5.6-luna -> autobyteus_agent_tools -> remote MCP servers)
+# Command: env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" RUN_CODEX_E2E=1 CODEX_E2E_TOOL_MODEL=gpt-5.6-luna MCP_AUTH_E2E_EVIDENCE_DIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts --no-watch
+# Commit: e129930bcf + new test files (committed later on this branch)
+# Environment: macOS 26, in-process studio server (temp app data dir), host signed-in codex CLI (real HOME; the run adds one session to the user codex history), one turn
+# Date: 2026-10-19
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-auth-headers/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-auth-headers/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:27141) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-auth-headers/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-auth-headers/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/.env
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-auth-headers/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-auth-headers/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: hdr
+Populating MCP server config cache for the first time...
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+MCP server config cache populated with 0 items.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+In-memory cache: Added new MCP config hdr.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Attempting to discover and register tools for server ID: hdr
+
+stderr | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Overwriting existing MCP config with server_id 'hdr'.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'hdr_auth_probe'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully discovered and registered 1 tools for server ID: hdr
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Configuring MCP server with ID: tok
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+In-memory cache: Added new MCP config tok.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Attempting to discover and register tools for server ID: tok
+
+stderr | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Overwriting existing MCP config with server_id 'tok'.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'tok_auth_probe'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully discovered and registered 1 tools for server ID: tok
+
+stderr | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+[CodexAppServerClient] stderr: 2026-10-19T06:46:08.015982Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+Agent Definition created successfully with ID: mcp-http-auth-codex-532a7944-9a9b-4cd8-83f8-73f58bdff24d
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/workspace-codex
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/workspace-codex.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+Created and registered workspace ID: agent_ws_1bc788ca709c8e676824cfea6ca4e09a31865b3639b3cca594a7d633e3b3dc42
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/workspace-codex
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-bwPvdy/workspace-codex.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+Reusing registered workspace ID: agent_ws_1bc788ca709c8e676824cfea6ca4e09a31865b3639b3cca594a7d633e3b3dc42
+
+stderr | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+[CodexAppServerClient] stderr: 2026-10-19T06:46:08.432555Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+Agent websocket attached for run mcp_http_auth_codex_532a7944_9a9b_4cd8_83f8_73f5_31f542fc8da0405eb4ed7d2924c5466b
+Created agent session 9df66bb7-01ff-4110-b57c-cf14b22b53f1 for run mcp_http_auth_codex_532a7944_9a9b_4cd8_83f8_73f5_31f542fc8da0405eb4ed7d2924c5466b
+Agent WebSocket connected: session=9df66bb7-01ff-4110-b57c-cf14b22b53f1, run=mcp_http_auth_codex_532a7944_9a9b_4cd8_83f8_73f5_31f542fc8da0405eb4ed7d2924c5466b
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Closed agent session 9df66bb7-01ff-4110-b57c-cf14b22b53f1
+Agent WebSocket disconnected: 9df66bb7-01ff-4110-b57c-cf14b22b53f1
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Agent Definition with ID mcp-http-auth-codex-532a7944-9a9b-4cd8-83f8-73f58bdff24d deleted successfully.
+
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts (4 tests | 3 skipped) 12242ms
+     ✓ codex: the agent's tool calls reach both servers with their credentials  11255ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 3 skipped (4)
+   Start at  08:45:57
+   Duration  21.68s (transform 6.50s, setup 32ms, import 8.84s, tests 12.24s, environment 0ms)
+

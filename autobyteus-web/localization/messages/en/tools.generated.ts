@@ -52,6 +52,7 @@ const messages = {
   'tools.components.tools.McpServerFormModal.paste_a_standard_mcpservers_json_object': 'Paste a standard `mcpServers` JSON object below. When applied, the first valid server config will populate the form.',
   'tools.components.tools.McpServerFormModal.server_id': 'Server ID',
   'tools.components.tools.McpServerFormModal.tabs': 'Tabs',
+  'tools.components.tools.McpServerFormModal.token_hint': 'Sent as "Authorization: Bearer <token>". For other schemes (for example Basic), add an Authorization header in the JSON view instead.',
   'tools.components.tools.McpServerFormModal.token_optional': 'Token (Optional)',
   'tools.components.tools.McpServerFormModal.tool_name_prefix_optional': 'Tool Name Prefix (Optional)',
   'tools.components.tools.McpServerFormModal.transport_type': 'Transport Type',

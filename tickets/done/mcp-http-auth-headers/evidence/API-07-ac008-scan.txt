@@ -1,0 +1,38 @@
+# Case: API-07 AC-008 / REQ-007 / QR-001 scan
+# Commands: grep -rEo '<PAT>' <evidence folder> | sort | uniq -c; same over the three new test files; git diff d6f2d6ceb5..HEAD | grep '^+' | grep -Eo '<PAT>'; grep -c for test-dummy/test-wrong in every raw API/E2E run log (vitest output incl. the in-process server console for API-03..06)
+# PAT: sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_-]{20,}|xox[abp]-|ATATT[0-9A-Za-z]|eyJ[A-Za-z0-9_-]{10,}\.|(Bearer|Basic) [A-Za-z0-9+/=._-]{6,}
+# Commit: e129930bcf + the new API/E2E test files and evidence (before the API/E2E commit)
+# Environment: macOS 26, local grep
+# Date: 2026-10-19
+
+== credential-like patterns in evidence (all files) ==
+   2 IMP-00-core-real-sdk-red-on-base.log:Bearer Authorization
+   2 IMP-00-core-real-sdk-red-on-base.log:Bearer test-wrong
+   2 IMP-10-dummy-mcp-server.mjs:Bearer test-dummy
+   1 IMP-10-render-check.md:Basic test-dummy
+   1 IMP-10-render-check.md:Bearer header
+   4 IMP-10-render-check.md:Bearer test-dummy
+== in the three new test files ==
+(none)
+== added lines of branch diff d6f2d6ceb5..HEAD ==
+  13 Basic test-dummy
+   2 Basic test-other
+   4 Bearer Authorization
+   1 Bearer header
+   1 Bearer scheme
+  13 Bearer test-dummy
+   3 Bearer test-wrong
+== dummy values in raw API/E2E run logs ==
+mcp-auth-api01-mutant.log            bytes=8066     test-dummy=0 test-wrong=0
+mcp-auth-api01.log                   bytes=5043     test-dummy=0 test-wrong=0
+mcp-auth-api03.log                   bytes=20914    test-dummy=0 test-wrong=0
+mcp-auth-api04.log                   bytes=45450    test-dummy=0 test-wrong=0
+mcp-auth-api05.log                   bytes=22319    test-dummy=0 test-wrong=0
+mcp-auth-api06.log                   bytes=21386    test-dummy=0 test-wrong=0
+mcp-auth-final01.log                 bytes=5043     test-dummy=0 test-wrong=0
+mcp-auth-final03.log                 bytes=21217    test-dummy=0 test-wrong=0
+mcp-auth-final08.log                 bytes=5194     test-dummy=0 test-wrong=0
+== built-server output scan (in-test, both server starts) ==
+{'outputBytes': 29247, 'containsDummy': False, 'containsWrong': False}
+
+Result: only dummy values (test-dummy, test-wrong, test-other) and prose (Bearer header/scheme/Authorization) appear; no credential-like value; no dummy value in any server or agent output.
