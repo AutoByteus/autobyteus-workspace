@@ -7,6 +7,7 @@ Commits, oldest first:
 - `b19714658c` test(server): baseline fix for two stale skill-improvement tests (TESTING.md Rule 9; not caused by this change)
 - `ea867f9708` feat(server): Work Journal content scope D5 (SR-014)
 - `8f5bb563b1` fix(server): keep in-hunk `--- `/`+++ ` lines in Work Journal patches (CRR-001 F-001, IR-002)
+- `b9d04998a4` docs: rollback compatibility applies only to data-converting migrations (SR-018, ARCH-REV-005, IR-003; the Solution Designer's edits, committed unchanged)
 - the ticket-folder commit that carries this handoff and `evidence/` (see the handoff message)
 
 ## Upstream Artifact Package
@@ -25,11 +26,11 @@ Commits, oldest first:
 
 A new subsystem `autobyteus-server-ts/src/agent-work-journal/` renders each run's raw traces into `<run memory folder>/work_journal/`. It writes one Markdown file per raw-trace file and a manifest. A per-run updater keeps live runs current, and skill improvement consumes the package. The old `src/agent-work-traces` export and its replay-projection options are removed. A startup migration deletes the retired `work_traces/` folders.
 
-- Implementation cycle: `Rework` (IR-002, Local Fix)
+- Implementation cycle: `Rework` (IR-003: SR-018 docs, after the IR-002 Local Fix)
 - Implementation revision record: `tickets/in-progress/work-journal/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (baseline `IR-001`)
-- Related solution revision IDs: `SR-010`, `SR-012`, `SR-014`
-- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
+- Current implementation revision ID: `IR-003` (baseline `IR-001`; IR-002 Local Fix F-001)
+- Related solution revision IDs: `SR-010`, `SR-012`, `SR-014`, `SR-018` (`SR-016` withdrawn)
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-005` (`ARCH-REV-004` withdrawn)
 - Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`

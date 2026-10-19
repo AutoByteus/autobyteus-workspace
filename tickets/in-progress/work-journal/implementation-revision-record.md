@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer / design-review-report.md / ARCH-REV-001, -002, -003 | N/A (non-blocking notes N1–N7 applied) | `Initial Baseline` | SR-010, SR-012, SR-014; ARCH-REV-001, ARCH-REV-002, ARCH-REV-003; CRR N/A; API-REV N/A; DR N/A | Implemented; routed to Code Review |
 | IR-002 | code_reviewer / code-review-report.md / CRR-001, round 1 | F-001 | `Local Fix` | SR-014; ARCH-REV-003; CRR-001; API-REV N/A; DR N/A | Fixed; routed to Code Review (Targeted Delta Review) |
+| IR-003 | architecture_reviewer / design-review-report.md / ARCH-REV-005 on SR-018 | N/A | `Design Impact` (resolved upstream; docs-only delta) | SR-016 (withdrawn), SR-018; ARCH-REV-004 (withdrawn), ARCH-REV-005; CRR-002; API-REV-001; DR (delivery Design Impact) | Docs committed; no code change |
 
 ## Revision Entries
 
@@ -73,3 +74,25 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - The Codex no-hunk path (a new file written from the raw patch) doesn't use `readPatch`'s lines, so it is unaffected.
 - Next recipient or routing: Code Review, Targeted Delta Review.
 - Remaining limitations or risks: unchanged from IR-001. NB-1 (cut only the kept lines in the shorteners) is not taken in this fix.
+
+### IR-003 — Rollback rule docs (SR-018); SR-016 constant not added
+
+- Triggering role, report path, and round: `/architecture_reviewer`, `tickets/in-progress/work-journal/design-review-report.md`, ARCH-REV-005 Pass on SR-018. It follows delivery's Design Impact on rollback readability, ARCH-REV-004 on SR-016 (withdrawn by the user) and the Solution Designer's stop message.
+- Triggering finding IDs: `N/A`
+- Classification: `Design Impact` (resolved upstream); the implementation delta is docs-only.
+- Prior authoritative result: IR-002.
+- Current authoritative result:
+  - **Session writer:** `improver_session.json` stays as in SR-010: no `schemaVersion` and a tolerant projection reader (design-spec.md Persisted Data item 3). The SR-016 `schemaVersion: 1` writer constant and its two tests were never added; I stopped before any SR-016 change. A search for `schemaVersion` in `autobyteus-server-ts/src/skill-improvement` returns no match.
+  - **Rollback docs:** the two repository docs that state the corrected rollback rule (DEC-W12) are committed as the Solution Designer wrote them, without edits: `RELEASE.md` "Rollback" and `autobyteus-server-ts/docs/design/data_migration_guideline.md` §4 "Rolling back after a migration".
+- Related solution revision IDs: `SR-016` (withdrawn), `SR-018`
+- Related architecture-review revision IDs: `ARCH-REV-004` (withdrawn), `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-002`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: see `delivery-revision-record.md` (delivery's Design Impact)
+- Why this implementation revision is recorded: ARCH-REV-005 puts the two doc edits into the change and confirms that the SR-016 constant is not added.
+- Approved behavior or requirement IDs affected: none in code. DEC-W12 is reflected in the repository docs.
+- Implementation delta: commit `b9d04998a4` (two docs, 27 lines added, 2 removed).
+- Changed files or areas: `RELEASE.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md`.
+- Local validation and result: no code or test changed, so no check was rerun. IMP-01 to IMP-11 and IR-002's IMP-01/IMP-02 still stand. The diff is limited to the two Markdown files.
+- Next recipient or routing: per `get_handoff_rules`.
+- Remaining limitations or risks: unchanged from IR-002.
