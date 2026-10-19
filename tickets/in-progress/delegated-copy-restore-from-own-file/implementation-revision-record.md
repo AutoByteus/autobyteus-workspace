@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer, ARCH-REV-003 → ARCH-REV-007 (initial implementation, including the DI-001 and DI-002 rounds) | N/A | `Initial Baseline` | SR-001..SR-008; ARCH-REV-003..ARCH-REV-007; CRR N/A; API-REV N/A; DR N/A | Implemented D-1..D-9 and M0..M5; ready for code review |
 | IR-002 | code_reviewer, `code-review-report.md`, CRR-001 (round 1) | CR-001 | `Local Fix` | SR-008; ARCH-REV-007; CRR-001; API-REV N/A; DR N/A | Dead absent-source checks removed; back to code review for a targeted delta review |
+| IR-003 | delivery_engineer, `release-deployment-report.md`, DR-001 (INT-001) | INT-001 | `Local Fix` | SR-008; ARCH-REV-007; CRR-001..CRR-003; API-REV-001; DR-001 | origin/personal @ ad784b0a8f merged; three adapter conflicts resolved from the copy's own source; back to code review |
 
 ## Revision Entries
 
@@ -76,3 +77,48 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - IMP-07 web unit, including the team execution tree selectors.
 - **Next recipient or routing:** `/software_engineering_team/code_reviewer`, targeted delta review of CR-001.
 - **Remaining limitations or risks:** unchanged from IR-001 (`implementation-handoff.md`, Known Risks).
+
+### IR-003 — Merge origin/personal and resolve the adapter conflicts (INT-001)
+
+- **Triggering role, report path, and round:** delivery_engineer, `tickets/in-progress/delegated-copy-restore-from-own-file/release-deployment-report.md`, DR-001 (latest-base integration refresh blocked by INT-001).
+- **Triggering finding IDs:** INT-001.
+- **Classification:** `Local Fix`.
+- **Prior authoritative result:** IR-002 at `da1d7f5524`. CRR-002/CRR-003 and API-REV-001 passed; delivery was blocked because merging `origin/personal` @ `ad784b0a8f` (46 commits) conflicted.
+- **Current authoritative result:** merge commit `26ad4ace20` on `codex/delegated-copy-restore-from-own-file`. Classification is unchanged: Large / High.
+- **Related solution revision IDs:** SR-008.
+- **Related architecture-review revision IDs:** ARCH-REV-007.
+- **Related code-review revision IDs:** CRR-001..CRR-003.
+- **Related API/E2E revision IDs:** API-REV-001.
+- **Related delivery revision IDs:** DR-001.
+- **Why this implementation revision is recorded:** the integration merge resolves conflicts in product code.
+- **Approved behavior or requirement IDs affected:** REQ-001, REQ-005 / AC-009. Behavior is unchanged.
+- **Implementation delta:**
+  - **What base changed:** `a9b5230505` (unclean-shutdown restore fix) replaced `ingressAgentRunId(indexed): string` with `ingressMember(indexed): { address, agentRunId }` in the three task-execution adapters, used by its new `taskExecutionConversationUnavailable` check. For a Team copy, base takes the coordinator address from the configured place at the copy's address (`this.sources.resolve` / `this.sources.require`). This ticket deleted those resolvers.
+  - **Resolution, the same in all three adapters:**
+    - kept base's `ingressMember` signature, doc comment and `{ address: coordinatorAddress, agentRunId }` return;
+    - the coordinator address comes from the copy's own recorded source, `indexed.source.source.coordinatorAddress` (as IR-001 did);
+    - the stale `ingressAgentRunId` method is removed. Its callers already use `ingressMember(...).agentRunId` after the auto-merge. The `ingressAgentRunId` plan field is unrelated and present on both sides.
+    - No `this.sources` or configured-place resolution of a copy came back.
+  - **Auto-merged overlaps, checked:**
+    - server `docs/modules/agent_team_execution.md`: base's added restore-message text; this ticket's edits are intact;
+    - web `docs/settings.md`: base's new Embedding section;
+    - web `package.json`: version and a new probe script.
+
+    None needs a change. Base adds no app-data migration, so the registry order is unchanged (`20261019_delegated_copy_own_file_complete_v1` stays last).
+- **Changed files or areas:**
+  - `autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts`;
+  - `autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts`;
+  - `autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts`;
+  - plus base's own changes.
+- **Local validation and result:** all checks pass on `26ad4ace20` (`evidence/IMP-00-summary.txt`, "integration round"):
+  - IMP-15 server typecheck;
+  - IMP-16 server unit: 6169 passed;
+  - IMP-17 server integration: 419 passed;
+  - IMP-18 build;
+  - IMP-19 base's `unclean-shutdown-delegated-team-restore.e2e` on the built server: 5 passed;
+  - IMP-20 the API-09 startup and upgrade e2e: 9 passed, including TAU-2;
+  - IMP-21 web unit: 4565 passed;
+  - IMP-22 web guards;
+  - IMP-23 the AC-009 sweep, extended with `this.sources` in the three adapters and the stale `ingressAgentRunId`: no hits.
+- **Next recipient or routing:** `/software_engineering_team/code_reviewer`, review of the merge resolution in product code.
+- **Remaining limitations or risks:** unchanged from IR-001, plus one note. Base's restore-unavailable message names the Team's coordinator. For a copy, that coordinator now always comes from the copy's own source, which is the same address the configured place had when the copy started.

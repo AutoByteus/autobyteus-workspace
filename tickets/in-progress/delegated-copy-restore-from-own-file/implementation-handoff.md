@@ -23,15 +23,15 @@ Every delegated copy now carries its `source`: the definition and launch it star
 
 A new startup migration, `20261019_delegated_copy_own_file_complete_v1`, completes existing own files. A same-ID repair of `20261017_task_agent_own_run_v1` (D-9) keeps that migration's retry working after the new migration has completed its files.
 
-- Implementation cycle: `Rework` (IR-002, CR-001 Local Fix; IR-001 was the initial handoff)
+- Implementation cycle: `Rework` (IR-003, INT-001 Local Fix from delivery; IR-002 was CR-001; IR-001 the initial handoff)
 - Implementation revision record: `tickets/in-progress/delegated-copy-restore-from-own-file/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: SR-001..SR-008
 - Related architecture-review revision IDs: ARCH-REV-003..ARCH-REV-007
-- Related code-review revision IDs: CRR-001
-- Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: CR-001
+- Related code-review revision IDs: CRR-001..CRR-003
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: DR-001
+- Triggering finding IDs: INT-001 (IR-003); CR-001 (IR-002)
 
 Commits, in order:
 - `3ed550595c` step 1 freeze;
@@ -43,7 +43,9 @@ Commits, in order:
 - `2253b8044b` the DLP-006 probe case updated to model an upgrade through the own-file completion (see Known Risks);
 - `0a303d3a5d` documents and evidence round 2 (the IR-001 handoff);
 - `96de77efb3` CR-001: the last absent-source checks for copies removed (IR-002);
-- the IR-002 handoff commit, with these documents and evidence round 3.
+- `da1d7f5524` the IR-002 documents and evidence round 3;
+- `26ad4ace20` the merge of `origin/personal` @ `ad784b0a8f`. It resolves INT-001: the three task-execution adapters keep base's `ingressMember` and take a Team copy's coordinator from its own source (IR-003);
+- the IR-003 handoff commit, with these documents and the integration-round evidence.
 
 ## Routing Classification (Mandatory)
 
@@ -183,6 +185,18 @@ Commits, in order:
 Evidence is in `tickets/in-progress/delegated-copy-restore-from-own-file/evidence/`. `IMP-00-summary.txt` lists every run.
 - Round 1 ran on `7d689455ad`.
 - Round 2 reran, on `3b6f970cfa`, every check D-9 affects.
+- Integration round (IR-003, INT-001), on the merge `26ad4ace20`, all passing:
+  - IMP-15 typecheck;
+  - IMP-16 server unit, 6169;
+  - IMP-17 server integration, 419;
+  - IMP-18 build;
+  - IMP-19 base's `unclean-shutdown-delegated-team-restore.e2e`, 5;
+  - IMP-20 API-09 startup and upgrade e2e, 9;
+  - IMP-21 web unit, 4565;
+  - IMP-22 web guards;
+  - IMP-23 the AC-009 sweep (`IMP-23-merged-ac009-sweep.log`, "none" for every pattern).
+
+  These supersede the earlier rows for the merged state. The full logs of IMP-16, IMP-17 and IMP-21 are committed as excerpts.
 - Round 3 (IR-002, CR-001) reran IMP-01, IMP-02 and IMP-07 on `96de77efb3`. The other rows are unaffected: IR-002 only removes code that could not run, in one server schema and one web selector.
 
 The full logs of IMP-02, IMP-03 and IMP-07 are committed as excerpts because of their size; the full files remain in the worktree.
