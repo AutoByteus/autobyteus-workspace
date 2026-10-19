@@ -59,7 +59,7 @@ Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`.
 
 - More evidence requested: `None`
 - User check needed: `No`. Every criterion is proven through real surfaces with local dummy servers; nothing needs the user's accounts. The Task's "user's check in the next beta" is a product check after a release, not a delivery gate; the user may do it once a beta containing this change is published.
-- Re-verification after later re-integration: see Finalization Record (target re-checked before merge)
+- Re-verification after later re-integration: `Not needed` (target unchanged after verification)
 
 ## Release Decision
 
@@ -128,13 +128,28 @@ Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`.
 
 | Step | Result |
 | --- | --- |
-| Ticket archive | pending |
+| Ticket archive | `git mv tickets/in-progress/mcp-http-auth-headers tickets/done/mcp-http-auth-headers`. 51 tracked files; longest ticket path 87 characters; no Windows-hostile names; no build output |
+| Pre-commit checks (ticket branch) | `check_repository_artifact_hygiene.py`: `Repository artifact hygiene check passed.` `check_licensing.py`: `Licensing is consistent.` |
+| Ticket branch commit | `72af44de0d` "docs(delivery): sync docs and archive mcp-http-auth-headers (DR-001)" |
+| Ticket branch push | `origin/codex/mcp-http-auth-headers` → `72af44de0d` (new remote branch) |
+| Target refresh after verification | Re-fetched `origin/personal`: still `8d40ba3b6c`, the integrated and verified base. No re-integration needed |
+| Finalize branch | `finalize/mcp-http-auth-headers` from `origin/personal`, in the ticket worktree (`RELEASE.md`) |
+| Merge | `git merge --no-ff codex/mcp-http-auth-headers` → `3a6aa85e28`. Tree identical to the verified ticket branch (`git diff --quiet` passes) |
+| Checks on the merged state | Hygiene check passed; licensing consistent |
+| Push target | Fetched before the push: `origin/personal` = `3a6aa85e28^1` (`8d40ba3b6c`), unchanged. `git push origin HEAD:personal`: `8d40ba3b6c..3a6aa85e28` |
+| Repository finalization status | `Completed` |
+| Release / publication / deployment | `Not required` (No release, the `RELEASE.md` default). No tag; no pipelines triggered |
+| Delivery record commit | This record is committed on `finalize/mcp-http-auth-headers` on top of `3a6aa85e28` and pushed to `personal` after a fresh fetch shows the target unchanged |
+| Worktree cleanup | After the record push: `git worktree remove --force` (only untracked build output remains) and `git worktree prune`, from the main repository's git dir; the main checkout's working tree is not touched |
+| Local branch cleanup | After the record push: `codex/mcp-http-auth-headers` and `finalize/mcp-http-auth-headers` deleted once `origin/personal` contains them |
+| Remote branch cleanup | `Not required`. By repository practice, merged `codex/*` ticket branches stay on `origin` |
 
 ## Final Status
 
 - Verification complete (from the evidence): `Yes`
-- Repository finalization complete: pending
+- Repository finalization complete: `Yes` (`origin/personal` @ `3a6aa85e28`, followed by this record commit)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
-- Applicable safe cleanup complete or not required: pending
+- Applicable safe cleanup complete or not required: `Yes` (worktree and local branches removed after the record push; see the Finalization Record)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: pending
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, sent after this record commit and cleanup (DR-001)

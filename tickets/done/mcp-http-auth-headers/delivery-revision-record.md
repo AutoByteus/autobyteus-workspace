@@ -18,9 +18,9 @@
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: merged `origin/personal` @ `8d40ba3b6c` into the ticket branch (`cebd751772`), no conflicts; DR-01..05 passed on the integrated state
-- Verification and finalization state: verified from the evidence, no user check needed; finalization per `RELEASE.md` (see the report's Finalization Record)
+- Verification and finalization state: verified from the evidence, no user check needed; ticket branch `72af44de0d` pushed; merged `--no-ff` into `personal` as `3a6aa85e28` and pushed (`8d40ba3b6c..3a6aa85e28`); no release; worktree and local branches removed after the record push
 - Terminal return to `/solution_designer`: `Sent` after finalization and cleanup
-- Terminal return message/reference: `send_message_to` to the recipient returned by `get_handoff_rules`
+- Terminal return message/reference: `send_message_to` `/software_engineering_team/solution_designer` (rule "Delivery Completed …" from `get_handoff_rules`)
 - Why this baseline was recorded: first completed delivery result
 - Next recipient/action: Solution Designer verifies the receipt
 - Remaining blockers, rollback concerns, or untested scope: no blockers; rollback possible (see report); R-001/FU-2 plain-text storage, O-001 WebSocket follow-up, live runtimes not rerun after integration (unchanged path, DR-03 covers it)
