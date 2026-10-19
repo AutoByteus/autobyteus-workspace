@@ -1,0 +1,9 @@
+# Check: IMP-03
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit (full log: IMP-03-ts-unit-full.log.gz)
+# Commit: a9b5230505
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T15:01:45Z
+
+ Test Files  303 passed (303)
+      Tests  2087 passed (2087)
+   Duration  10.34s (transform 9.87s, setup 1.33s, import 35.47s, tests 20.93s, environment 23ms)
