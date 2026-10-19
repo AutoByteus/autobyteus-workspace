@@ -6,6 +6,8 @@
 // released tree records). Parsers and writers are those of `src/run-history/store/task-agent-own-*` at that
 // commit. Owned by `20261017_task_agent_own_run_v1` (its own-file writes and reads) and by
 // `20261019_delegated_copy_own_file_complete_v1` (its classifier); current runtime code must never import it.
+// One addition after the release (D-9, a same-ID repair of 20261017): `readReleasedOwnFileOwnership`, the narrow
+// ownership reader 20261017's retry uses, which also reads the own files 20261019 has already completed.
 
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -402,6 +404,42 @@ export const releasedTaskAgentTeamOwnTree = (input: Readonly<{
   };
 };
 
+// ---- ownership (D-9: same-ID repair of 20261017_task_agent_own_run_v1) -----------------------------------------
+
+/**
+ * Whose own file this is: its coordinating run and, for a task agent team, its members' run IDs. These are the
+ * only facts 20261017's retry reads from an own file it may have written on an earlier start (`isOwnedHere`,
+ * `partsAtL1`). Both shapes carry them unchanged: the released one (with `origin`) and the current one that
+ * `20261019_delegated_copy_own_file_complete_v1` may already have written in the same start.
+ */
+export type ReleasedOwnFileOwnership = Readonly<{
+  coordinatingRun: ReleasedTaskAgentCoordinatingRun;
+  /** A task agent team's members' run IDs; null for an agent. */
+  memberAgentRunIds: readonly string[] | null;
+}>;
+
+/** Reads only the ownership facts; a file without them is not owned (it throws, and the caller reports it unreadable). */
+export const readReleasedOwnFileOwnership = (value: unknown, kind: "agent" | "team", label = "ownFile"): ReleasedOwnFileOwnership => {
+  const file = objectRecord(value, label);
+  const section = objectRecord(file.taskAgent, `${label}.taskAgent`);
+  const coordinating = objectRecord(section.coordinatingRun, `${label}.taskAgent.coordinatingRun`);
+  if (!COORDINATING_RUN_KINDS.includes(coordinating.kind as ReleasedTaskAgentCoordinatingRun["kind"])) {
+    throw new Error(`${label}.taskAgent.coordinatingRun.kind is unsupported.`);
+  }
+  const coordinatingRun = {
+    kind: coordinating.kind as ReleasedTaskAgentCoordinatingRun["kind"],
+    runId: requiredString(coordinating.runId, `${label}.taskAgent.coordinatingRun.runId`),
+  };
+  if (kind === "agent") return { coordinatingRun, memberAgentRunIds: null };
+  const rootTeam = objectRecord(file.rootTeam, `${label}.rootTeam`);
+  if (!Array.isArray(rootTeam.members)) throw new Error(`${label}.rootTeam.members must be an array.`);
+  return {
+    coordinatingRun,
+    memberAgentRunIds: rootTeam.members.map((member, index) =>
+      requiredString(objectRecord(member, `${label}.rootTeam.members[${index}]`).agentRunId, `${label}.rootTeam.members[${index}].agentRunId`)),
+  };
+};
+
 // ---- files (`task-agent-own-files.ts`, `agent-run-metadata-store.ts`) ------------------------------------------
 
 export type ReleasedOwnFileReadState<T> =
@@ -450,14 +488,12 @@ export class ReleasedTaskAgentOwnFiles {
     return this.layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] });
   }
 
-  readAgent(agentRunId: string): Promise<ReleasedOwnFileReadState<ReleasedTaskAgentRunMetadata>> {
-    return readState(path.join(this.layout.getStandaloneRunDirPath(agentRunId), RELEASED_TASK_AGENT_RUN_METADATA_FILE),
-      (parsed) => parseReleasedTaskAgentRunMetadata(parsed, agentRunId));
-  }
-
-  readTeam(teamRunId: string): Promise<ReleasedOwnFileReadState<ReleasedTaskAgentTeamTreeFile>> {
-    return readState(path.join(this.teamDir(teamRunId), RELEASED_TASK_AGENT_TEAM_TREE_FILE),
-      (parsed) => validateReleasedTaskAgentTeamTreePayload(parsed, teamRunId));
+  /** The ownership of a task agent's own file (D-9): missing when there is none, unreadable when it is damaged. */
+  readOwnership(kind: "agent" | "team", runId: string): Promise<ReleasedOwnFileReadState<ReleasedOwnFileOwnership>> {
+    const filePath = kind === "agent"
+      ? path.join(this.layout.getStandaloneRunDirPath(runId), RELEASED_TASK_AGENT_RUN_METADATA_FILE)
+      : path.join(this.teamDir(runId), RELEASED_TASK_AGENT_TEAM_TREE_FILE);
+    return readState(filePath, (parsed) => readReleasedOwnFileOwnership(parsed, kind));
   }
 
   writeAgent(metadata: ReleasedTaskAgentRunMetadata): Promise<RunPackageFileWriteResult> {

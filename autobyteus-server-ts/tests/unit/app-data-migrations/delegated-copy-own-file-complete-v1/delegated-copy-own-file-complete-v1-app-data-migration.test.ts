@@ -286,6 +286,45 @@ describe("20261019_delegated_copy_own_file_complete_v1", () => {
     expect(done.summary.migratedCount).toBe(0);
   });
 
+  it("completes configured-place copies whose coordinating tree is still in its pre-own-run shape (M3, M4, R-9 b)", async () => {
+    // 10-17 stopped after writing these own files and before reducing the coordinating trees: the trees still hold
+    // the full released records (no links). The slot locator reads the same `members[]` in both shapes.
+    const memory = await memoryRoot();
+    const fullAgentRecord = (address: string, agentRunId: string, delegator: string) =>
+      ({ address, agentRunId, platformAgentRunId: null, delegatorAgentRunId: delegator, startedAt: T0 });
+    await writeTeamRun(memory, "team-pre", {
+      members: [configuredAgent("/lead", "lead-p", "lead"), configuredAgent("/writer", "writer-p", "writer", slotLaunch({ llmModelIdentifier: "writer-model" }))],
+      links: [fullAgentRecord("/writer", "pre-writer-copy", "lead-p")],
+    });
+    const group = mountedTeam("/group", "group-run", slotLaunch(), [
+      configuredAgent("/group/one", "one-run", "one", slotLaunch()),
+      configuredAgent("/group/two", "two-run", "two", slotLaunch({ llmModelIdentifier: "other-model" })),
+    ]);
+    await writeOrgRun(memory, "org-pre", {
+      members: [configuredAgent("/director", "director-p", "director"), group],
+      handoffs: [{ from: "/group/two", to: "/director", rules: ["report"] }],
+      links: [{ address: "/group", teamRunId: "pre-group-copy", delegatorAgentRunId: "director-p", startedAt: T0, taskExecutions: [],
+        members: [{ address: "/group/one", agentRunId: "pre-group-copy-one", platformAgentRunId: null },
+          { address: "/group/two", agentRunId: "pre-group-copy-two", platformAgentRunId: null }] }],
+    });
+    const teamPre = { kind: "agent_team" as const, runId: "team-pre" };
+    const orgPre = { kind: "agent_org" as const, runId: "org-pre" };
+    await put(agentFile(memory, "pre-writer-copy"), releasedAgentOwnFile(memory, "pre-writer-copy",
+      { coordinating: teamPre, address: "/writer", origin: "configured_place", agentDefinitionId: "writer", launch: null, delegator: "lead-p" }));
+    await put(teamFile(memory, "pre-group-copy"), releasedTeamOwnTree("pre-group-copy", {
+      coordinating: orgPre, address: "/group", origin: "configured_place", teamDefinitionId: "student-study-group", delegator: "director-p",
+      members: ["one", "two"].map((name) => ({ name, launchConfiguration: projected(slotLaunch()) })) }));
+
+    const result = await migrate(memory, { predecessor: "FAILED" });
+    expect(dispositions(result)).toEqual({ "task_agent:pre-writer-copy": "MIGRATED", "task_agent_team:pre-group-copy": "MIGRATED" });
+    expect(await readJson(agentFile(memory, "pre-writer-copy"))).toMatchObject({ agentDefinitionId: "writer", ...launch, llmModelIdentifier: "writer-model",
+      taskAgent: { coordinatingRun: teamPre, address: "/writer", launchSource: CONFIGURED } });
+    const copy = await readJson(teamFile(memory, "pre-group-copy"));
+    expect(copy.rootTeam.members.map((member: any) => [member.address, member.followsTeam, member.launchConfiguration.llmModelIdentifier]))
+      .toEqual([["/group/one", true, launch.llmModelIdentifier], ["/group/two", false, "other-model"]]);
+    expect(copy.handoffs).toEqual([{ from: "/group/two", to: "/director", rules: ["report"] }]);
+  });
+
   it("a write that does not complete fails that item, keeps the file, and the next start converts it", async () => {
     const memory = await memoryRoot();
     await seedConvertible(memory);

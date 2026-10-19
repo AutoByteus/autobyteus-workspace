@@ -62,6 +62,11 @@ Current runtime code must never import these modules.
   task team member whose launch is present only when it runs on its own agent default; their readers, the
   two released writers and the own-file reads and writes under one memory root. Used by
   `20261017_task_agent_own_run_v1` (every own-file read and write) and by
-  `20261019_delegated_copy_own_file_complete_v1` (its classifier of the released shape).
+  `20261019_delegated_copy_own_file_complete_v1` (its classifier of the released shape). One addition
+  after the release, a same-ID repair of 20261017 (D-9): `readReleasedOwnFileOwnership` reads only an own
+  file's coordinating run and, for a team, its members' run IDs, in the released shape and in the shape
+  20261019 writes. 20261017's retry uses it to recognize its own earlier output (`isOwnedHere`,
+  `partsAtL1`) after 20261019 has completed that file in the same start. A damaged file is never owned.
+  Every other 20261017 read and write stays strict and released.
 
 Current runtime code must never import this module.

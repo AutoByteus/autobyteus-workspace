@@ -133,12 +133,20 @@ export class CoordinatingRunMigration {
     return { runId, disposition: "MIGRATED" };
   }
 
-  /** The own file at L1 names this coordinating run. */
+  /**
+   * The own file at L1 names this coordinating run. Only its ownership is read (D-9): on a retry the file may already
+   * be in the shape 20261019_delegated_copy_own_file_complete_v1 writes. A damaged file is never owned, so it is
+   * never overwritten.
+   */
   private async isOwnedHere(record: TaskExecution): Promise<boolean> {
-    const state = "agentRunId" in record ? await this.files.readAgent(record.agentRunId) : await this.files.readTeam(record.teamRunId);
-    if (state.kind !== "present") return false;
-    const own = state.value.taskAgent;
-    return own.coordinatingRun.kind === this.coordinatingRun.kind && own.coordinatingRun.runId === this.coordinatingRun.runId;
+    const state = "agentRunId" in record
+      ? await this.files.readOwnership("agent", record.agentRunId)
+      : await this.files.readOwnership("team", record.teamRunId);
+    return state.kind === "present" && this.isThisRun(state.value.coordinatingRun);
+  }
+
+  private isThisRun(run: ReleasedTaskAgentCoordinatingRun): boolean {
+    return run.kind === this.coordinatingRun.kind && run.runId === this.coordinatingRun.runId;
   }
 
   private resolvePlace = (address: AgentTeamAddress) => {
@@ -252,11 +260,9 @@ export class CoordinatingRunMigration {
 
   /** The task agent's parts when its own file at L1 names this run; `null` otherwise. */
   private async partsAtL1(runId: string, kind: "agent" | "team"): Promise<ReadonlySet<string> | null> {
-    const state = kind === "agent" ? await this.files.readAgent(runId) : await this.files.readTeam(runId);
-    if (state.kind !== "present") return null;
-    const own = state.value.taskAgent;
-    if (own.coordinatingRun.kind !== this.coordinatingRun.kind || own.coordinatingRun.runId !== this.coordinatingRun.runId) return null;
-    return new Set("rootTeam" in state.value ? state.value.rootTeam.members.map((member) => member.agentRunId) : [runId]);
+    const state = await this.files.readOwnership(kind, runId);
+    if (state.kind !== "present" || !this.isThisRun(state.value.coordinatingRun)) return null;
+    return new Set(state.value.memberAgentRunIds ?? [runId]);
   }
 
   private async readCoordinatingLog(): Promise<readonly CollaborationCommunicationMessage[]> {

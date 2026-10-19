@@ -2,7 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { TaskAgentOwnRunV1AppDataMigration } from "../../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
+import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID, TaskAgentOwnRunV1AppDataMigration } from "../../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
+import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "../../../../src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import type { AppDataMigrationRecordSnapshot } from "../../../../src/app-data-migrations/domain/app-data-migration-types.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
@@ -181,6 +182,69 @@ describe("a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)"
     const second = await migrate(memory);
     expect(second.status, JSON.stringify(second.summary.details)).toBe("SUCCEEDED");
     expect(await snapshot(memory)).toEqual(expected);
+  });
+
+  /**
+   * D-9 (SR-008, DI-002): a stop while reducing a tree leaves its task agents' own files at L1; the same start's
+   * 20261019_delegated_copy_own_file_complete_v1 completes them (no `origin`). The retry still recognizes them as its
+   * own output: skipped as already current, their message logs merged as by an uninterrupted run.
+   */
+  const stoppedThenCompleted = async () => {
+    const memory = await dataRoot();
+    const first = await migrate(memory, failingOnce((input) => input.file === "execution_tree"));
+    expect(first.status).toBe("FAILED");
+    const stopped = first.summary.details.filter((item) => item.status === "FAILED").map((item) => item.itemId.split("/").at(-1)!);
+    const completion = await new DelegatedCopyOwnFileCompleteV1AppDataMigration(memory, {
+      ledger: succeededLedger({ [TASK_AGENT_OWN_RUN_V1_MIGRATION_ID]: "FAILED" }),
+    }).execute();
+    expect(completion.status, "non-terminal while 10-17 is pending (M5)").toBe("FAILED");
+    // The task agents of the stopped run whose own files are at L1, now in the current shape.
+    const atL1: Array<{ runId: string; file: string }> = [];
+    for (const runId of stopped) {
+      const file = path.join(memory, NEW_FOLDERS[runId]!, NEW_FOLDERS[runId]!.startsWith("agents/") ? "run_metadata.json" : "team_run_execution_tree.json");
+      const own = await readJson(file).catch(() => null);
+      if (own) { expect(own.taskAgent, runId).not.toHaveProperty("origin"); atL1.push({ runId, file }); }
+    }
+    expect(atL1.length, `own files of the stopped run ${JSON.stringify(stopped)}`).toBeGreaterThanOrEqual(2);
+    return { memory, atL1 };
+  };
+  const messageLogs = (files: Record<string, string>, runIds: readonly string[]) => Object.fromEntries(Object.entries(files)
+    .filter(([file]) => runIds.some((runId) => file.startsWith(`${NEW_FOLDERS[runId]}/`)) && file.includes("communication_messages")));
+
+  it("recognizes its own earlier output after 20261019 completed it: skipped as already current, its logs merged (D-9)", async () => {
+    const clean = await dataRoot();
+    await migrate(clean);
+    const expected = await snapshot(clean);
+
+    const { memory, atL1 } = await stoppedThenCompleted();
+    const retried = await migrate(memory);
+    expect(retried.status, JSON.stringify(retried.summary.details)).toBe("SUCCEEDED");
+    const byRun = new Map(retried.summary.details.map((item) => [item.itemId.split("/").at(-1)!, item.message]));
+    for (const { runId } of atL1) expect(byRun.get(runId), runId).toBe("SKIPPED_ALREADY_CURRENT");
+    const ids = atL1.map(({ runId }) => runId);
+    const logs = messageLogs(await snapshot(memory), ids);
+    expect(Object.keys(logs).length, "the copies' merged logs").toBeGreaterThan(0);
+    expect(logs).toEqual(messageLogs(expected, ids));
+  });
+
+  it("never treats a damaged own file, or one naming another run, as its own: it is kept and not overwritten (D-9, R-9 a)", async () => {
+    const { memory, atL1 } = await stoppedThenCompleted();
+    const [damaged, foreign] = atL1;
+    await fs.writeFile(damaged!.file, "{ damaged");
+    const other = await readJson(foreign!.file);
+    other.taskAgent.coordinatingRun = { kind: "agent_team", runId: "another-run" };
+    await fs.writeFile(foreign!.file, `${JSON.stringify(other, null, 2)}\n`);
+    const before = await snapshot(memory);
+
+    const retried = await migrate(memory);
+    expect(retried.status).toBe("FAILED");
+    const byRun = new Map(retried.summary.details.map((item) => [item.itemId.split("/").at(-1)!, item.message]));
+    for (const { runId } of [damaged!, foreign!]) expect(byRun.get(runId), runId).toMatch(/already exists; it is never overwritten/);
+    const after = await snapshot(memory);
+    for (const { file } of [damaged!, foreign!]) {
+      const key = path.relative(memory, file);
+      expect(after[key], key).toBe(before[key]);
+    }
   });
 
   it("continues after a stop between the move and the tree, keeping a message the app wrote in between (F-RERUN-MSG)", async () => {
