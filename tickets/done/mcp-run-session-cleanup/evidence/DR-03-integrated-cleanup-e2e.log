@@ -1,0 +1,15 @@
+# Case: DR-03 MCP run-session cleanup e2e (scripted AGY)
+# Command: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts --no-watch
+# Commit: 98365d815d (codex/mcp-run-session-cleanup merged with origin/personal b5e4dd6cdc)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; tests under env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-19 (delivery, integrated state)
+
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts (5 tests) 66193ms
+     ✓ ends the run's stdio server process when the run is terminated  805ms
+     ✓ leaves no stdio server process once a terminated run is deleted  761ms
+     ✓ gives a run woken right after termination a new, working stdio server process  1399ms
+     ✓ leaves another run's stdio server process and the gateway working when one run ends  1603ms
+     ✓ ends a delegated copy's stdio server process when the copy is shut down after the idle grace period  60987ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Duration  74.58s (transform 5.86s, setup 26ms, import 7.88s, tests 66.19s, environment 0ms)
