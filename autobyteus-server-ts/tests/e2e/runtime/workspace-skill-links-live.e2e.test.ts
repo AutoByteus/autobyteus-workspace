@@ -193,6 +193,9 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
     };
   };
 
+  /** The turn's errors as one line, so a failure (for example a provider rate limit) names its cause. */
+  const turnErrors = (errors: string[]) => `turn errors: ${errors.join(" | ").slice(0, 400)}`;
+
   const linkedWorkspace = async (label: string) => {
     const workspace = await fs.mkdtemp(path.join(root, `${label}-ws-`));
     for (const runtimeFolder of [".claude", ".codex", ".grok"]) {
@@ -233,7 +236,7 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       let stream = await openSocket(`/ws/agent/${runId}`);
       const first = await ask(stream, runId, `What is the new-run link probe code? Use your ${skillName} skill. Reply with only the code.`);
       console.info(`SKILL_LINKS_LIVE_NEW_RUN ${name}`, JSON.stringify({ runId, text: first.text.slice(0, 200), tools: first.tools }));
-      expect(first.errors).toEqual([]);
+      expect(first.errors, turnErrors(first.errors)).toEqual([]);
       expect(first.text).toContain(newRunCode);
 
       stream.socket.close();
@@ -249,7 +252,7 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       const second = await ask(stream, runId,
         `We continue after a restart. What is the restore link probe code? Use your ${skillName} skill. Reply with only the code.`);
       console.info(`SKILL_LINKS_LIVE_RESTORED_RUN ${name}`, JSON.stringify({ runId, text: second.text.slice(0, 200), tools: second.tools }));
-      expect(second.errors).toEqual([]);
+      expect(second.errors, turnErrors(second.errors)).toEqual([]);
       expect(second.text).toContain(restoreCode);
       stream.socket.close();
     }, 900_000);
@@ -292,7 +295,7 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       const memberFoldersAfter = await fs.readdir(teamMemoryDir).catch(() => [] as string[]);
       console.info(`SKILL_LINKS_LIVE_TEAM_MEMBER ${name}`, JSON.stringify({ designerRunId, text: reply.text.slice(0, 200),
         tools: reply.tools, memberFoldersAfter }));
-      expect(reply.errors).toEqual([]);
+      expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
       expect(reply.text).toContain(newRunCode);
       stream.socket.close();
     }, 900_000);
@@ -326,7 +329,7 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       const reply = await ask(stream, allInstalled.runId!,
         `What is the new-run link probe code? Use your ${skillName} skill. Reply with only the code.`);
       console.info(`SKILL_LINKS_LIVE_ALL_INSTALLED ${name}`, JSON.stringify({ text: reply.text.slice(0, 200), tools: reply.tools }));
-      expect(reply.errors).toEqual([]);
+      expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
       expect(reply.text).toContain(workspaceOwnCode);
       expect(reply.text).not.toContain(newRunCode);
       stream.socket.close();
