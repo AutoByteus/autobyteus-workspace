@@ -117,9 +117,12 @@ Markdown. No clock and no filesystem; times come from the records.
 - **Pairing:** a call pairs with its result by (turn, call id) within the file. A result whose
   call is in the previous file is `Tool result (call not in this file): <name>`.
 - **Other records:** `User:`, `Message from <sender>:` (teammate envelopes, with `Files:`),
-  `Agent:`, `Notice:`, `System instructions set (n chars)`, `Context compacted (…)`,
-  `Turn interrupted (…)`. Model reasoning and bookkeeping records are omitted on purpose; a
-  record type the format does not name is shown as `Record (<type>)`, never dropped.
+  `Agent:`, `Notice:`, and `Turn interrupted by the user.` (another reason:
+  `Turn interrupted (<reason>).`). The journal holds what was said to the agent, what it said
+  and what it did, so these are omitted on purpose: model reasoning, bookkeeping records, and
+  runtime machinery (system instructions, compaction boundaries, model-request and output-limit
+  recoveries; a compaction shows as the boundary between journal files). A record type the
+  format does not name is shown as `Record (<type>)`, never dropped.
 - **Shortening (visible):** output longer than 40 lines keeps its first and last 20 lines around
   `…[N lines omitted; full output: [raw#<id>](…)]`; diffs keep 40 lines, written content 20,
   long arguments 40; a line longer than 400 characters is cut with `…[+n chars]`. Limits are

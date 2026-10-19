@@ -21,9 +21,9 @@ Each entry is `[HH:MM:SS] <action> → <outcome>`, with details indented below a
 - `Write file:`, `Edit file:` — the path, size or `+added −removed`, and the content or diff;
 - `Search web:` — the queries;
 - `Tool:` — any other tool, with its name as recorded, arguments and result;
-- `Notice:`, `Context compacted`, `Turn interrupted` — system events.
+- `Notice:` and `Turn interrupted by the user.` — platform notices and interruptions.
 
-Long output keeps its first and last lines around a marker such as `…[N lines omitted; full output: raw#<id>]`; follow the link when the omitted part matters. Model reasoning is not in the journal. The task message and manifest provide the target identity.
+Long output keeps its first and last lines around a marker such as `…[N lines omitted; full output: raw#<id>]`; follow the link when the omitted part matters. Model reasoning and runtime machinery (system instructions, context compaction) are not in the journal; a compaction shows as the start of the next journal file. The task message and manifest provide the target identity.
 
 ## Workflow
 

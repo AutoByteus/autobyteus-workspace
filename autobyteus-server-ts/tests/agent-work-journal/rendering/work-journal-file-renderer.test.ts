@@ -100,16 +100,15 @@ describe("REQ-W2 nothing lost silently (AC-W2)", () => {
     ];
     const rendering = render(RuntimeKind.CLAUDE_AGENT_SDK, records);
     expect(rendering.renderedRecordCount + rendering.omittedRecordCount).toBe(records.length);
-    expect(rendering.omittedRecordCount).toBe(4);
+    // reasoning, empty agent text, tool continuation, and (D5) the system instruction and both compaction records.
+    expect(rendering.omittedRecordCount).toBe(6);
     expect(comparableLines(rendering.markdown)).toEqual([
-      "System instructions set (1,234 chars)",
       "User: Start",
       "Command: ls → ok",
       "           a",
       "Command: cat -n /w/a → no result in this file",
       "Tool result (call not in this file): Grep → ok",
       "           x",
-      "Context compacted (automatic; 158,422 → 9,847 tokens; 12.4 s)",
       "Record (future_record_type): kept",
       "Agent: Done",
     ]);
@@ -134,7 +133,7 @@ describe("REQ-W2 nothing lost silently (AC-W2)", () => {
     ]);
   });
 
-  it("attachments appear as references, Claude background-task notices and §8 lines appear", () => {
+  it("attachments appear as references, Claude background-task notices and interruptions appear; runtime machinery does not (D5)", () => {
     const builder = new RecordBuilder();
     const records = [
       builder.user("See this", {
@@ -145,19 +144,22 @@ describe("REQ-W2 nothing lost silently (AC-W2)", () => {
       builder.record("provider_compaction_boundary", { toolResult: { status: "failed", error_message: "context too small" } }),
       builder.record("provider_compaction_boundary", { toolResult: JSON.stringify({ status: "compacted", trigger: "manual" }) }),
       builder.record("operation_boundary", { content: "Turn interrupted. Reason: user_interrupt. Do not retry." }),
+      builder.record("operation_boundary", { content: "Turn interrupted. Reason: shutdown_requested. Do not retry." }),
       builder.record("llm_request_recovery", {}),
       builder.record("output_limit_recovery", {}),
+      builder.record("system_instruction", { content: "You are an agent." }),
     ];
-    expect(comparableLines(render(RuntimeKind.CLAUDE_AGENT_SDK, records).markdown)).toEqual([
+    const rendering = render(RuntimeKind.CLAUDE_AGENT_SDK, records);
+    expect(comparableLines(rendering.markdown)).toEqual([
       "User: See this",
       "           Attachments: /w/shot.png, /w/spec.pdf",
       "Notice: Background task b1 completed (exit 0)",
-      "Context compaction failed: context too small",
-      "Context compacted (manual)",
-      "Turn interrupted (user interrupt).",
-      "Notice: a model request failed before a usable response and was rolled back.",
-      "Notice: the previous response was cut off by the output limit; the agent was asked to continue.",
+      "Turn interrupted by the user.",
+      "Turn interrupted (shutdown_requested).",
     ]);
+    expect(rendering.omittedRecordCount).toBe(5);
+    expect(rendering.renderedRecordCount + rendering.omittedRecordCount).toBe(records.length);
+    expect(rendering.markdown).not.toMatch(/compact|System instructions|model request|output limit/i);
   });
 
   it("AutoByteus agent text keeps its prose without tool markup; the requirement banner is removed", () => {
