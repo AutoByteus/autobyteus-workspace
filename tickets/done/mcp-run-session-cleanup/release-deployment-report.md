@@ -87,8 +87,25 @@ Repository finalization of `codex/mcp-run-session-cleanup` into `origin/personal
 
 | Step | Result |
 | --- | --- |
-| Ticket archive | pending |
+| Ticket archive | `git mv tickets/in-progress/mcp-run-session-cleanup tickets/done/mcp-run-session-cleanup`. 37 tracked files; longest ticket path 92 characters; no Windows-hostile names; no build output |
+| Pre-commit checks | Hygiene check passed; licensing consistent; no unstaged changes before the push |
+| Ticket branch commit | `868db78ddb` "docs(delivery): sync docs and archive mcp-run-session-cleanup (DR-001)" |
+| Ticket branch push | `origin/codex/mcp-run-session-cleanup` → `868db78ddb` (new remote branch) |
+| Target refresh after verification | `origin/personal` still `b5e4dd6cdc`, the integrated and verified base |
+| Merge | `finalize/mcp-run-session-cleanup` from `origin/personal`; `git merge --no-ff` → `a66eee725f`; tree identical to the ticket branch; checks passed on the merged state |
+| Push target | `origin/personal` unchanged before the push; `b5e4dd6cdc..a66eee725f` |
+| Release / publication / deployment | `Not required` (No release); no tag, no pipelines |
+| Delivery record commit | Committed on top of `a66eee725f` and pushed to `personal` after a fresh fetch |
+| Worktree cleanup | After the record push: `git worktree remove --force` (only untracked build output, including the packaging outputs API/E2E left), `git worktree prune` |
+| Local branch cleanup | `codex/mcp-run-session-cleanup` and `finalize/mcp-run-session-cleanup` deleted once `origin/personal` contains them |
+| Remote branch cleanup | `Not required` (merged `codex/*` branches stay on `origin`) |
 
 ## Final Status
 
-- pending
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`a66eee725f`, then this record)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
+- Applicable safe cleanup complete: `Yes` (after the record push)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, after this record commit and cleanup (DR-001)
