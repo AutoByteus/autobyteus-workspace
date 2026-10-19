@@ -94,9 +94,9 @@ describe("EmbeddingIndex", () => {
     expect(second.runner().documents).toEqual(["What did this chat cost in tokens"]);
   });
 
-  it("switches models without mixing vectors, rebuilds, and keeps only the active model's rows and files", async () => {
+  it("switches models without mixing vectors, rebuilds, keeps only the active model's rows and keeps downloaded files", async () => {
     let active = fakeModel("fake-model-a");
-    const { index, rootDir, runners, removedExcept } = await make({ model: () => active });
+    const { index, rootDir, runners, removed, present } = await make({ model: () => active });
     await settle(index, "tasks/p1", ITEMS);
     active = fakeModel("fake-model-b");
     const switched = await index.search("tasks/p1", ITEMS, "docker");
@@ -106,7 +106,8 @@ describe("EmbeddingIndex", () => {
     await settle(index, "tasks/p1", ITEMS);
     expect(runners[1]!.documents).toHaveLength(3);
     expect(new Set(rowsOf(rootDir).map((row) => row.model_id))).toEqual(new Set(["fake-model-b"]));
-    expect(removedExcept).toEqual(["fake-model-a", "fake-model-b"]);
+    expect(removed).toEqual([]);
+    expect([...present].sort()).toEqual(["fake-model-a", "fake-model-b"]);
     expect(index.modelStatus()).toEqual({ activeModelId: "fake-model-b", state: "ready" });
   });
 

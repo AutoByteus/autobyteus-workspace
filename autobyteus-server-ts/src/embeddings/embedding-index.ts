@@ -1,16 +1,21 @@
 import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
+import { DEFAULT_EMBEDDING_MODEL_ID, EMBEDDING_MODEL_CATALOG } from "./catalog/embedding-model-catalog.js";
 import type { EmbeddingModelDefinition } from "./catalog/embedding-model-definition.js";
 import { resolveActiveEmbeddingModel } from "./catalog/embedding-model-setting.js";
-import { CollectionIndexingJob, type CollectionItem } from "./collection-indexing-job.js";
-import { READY, unavailable, type EmbeddingReadiness } from "./embedding-readiness.js";
+import { CollectionIndexingJob, fingerprintOf, statusFromFingerprints, type CollectionItem } from "./collection-indexing-job.js";
+import { EmbeddingModelError } from "./embedding-model-error.js";
+import { READY, unavailable, type CollectionIndexStatus, type EmbeddingActiveDisplay, type EmbeddingReadiness } from "./embedding-readiness.js";
+import { EmbeddingModelDownloads, type EmbeddingModelFileState } from "./models/embedding-model-downloads.js";
 import { EmbeddingModelFiles } from "./models/embedding-model-files.js";
 import { selectRelevant, type ScoredItem } from "./relevance.js";
 import { EmbeddingModelRunner, type EmbeddingRunner, type EmbeddingRunnerFactory } from "./runtime/embedding-model-runner.js";
 import { EmbeddingVectorStore } from "./store/embedding-vector-store.js";
 
 export type { CollectionItem } from "./collection-indexing-job.js";
-export type { EmbeddingReadiness } from "./embedding-readiness.js";
+export type { CollectionIndexStatus, EmbeddingActiveDisplay, EmbeddingReadiness } from "./embedding-readiness.js";
+export type { EmbeddingModelFileState } from "./models/embedding-model-downloads.js";
+export { EmbeddingModelError, type EmbeddingModelErrorCode } from "./embedding-model-error.js";
 
 export type EmbeddingSearchOptions = {
   /** Most meaning matches returned (default 20). */
@@ -29,6 +34,12 @@ export type EmbeddingSearchResult = {
 };
 export type EmbeddingModelState = "idle" | "downloading" | "loading" | "ready" | "unavailable";
 export type EmbeddingModelStatus = { activeModelId: string; state: EmbeddingModelState; reason?: string };
+/** One catalog model for Settings: its facts, its files and, for the active model, what to display. */
+export type EmbeddingModelEntry = {
+  id: string; displayName: string; languages: readonly string[]; downloadBytes: number;
+  file: EmbeddingModelFileState; activeDisplay: EmbeddingActiveDisplay | null;
+};
+export type EmbeddingModelsStatus = { activeModelId: string; defaultModelId: string; onDiskBytes: number; models: EmbeddingModelEntry[] };
 
 type ModelPhase =
   | { kind: "idle" } | { kind: "downloading"; done: number; total: number } | { kind: "loading" } | { kind: "ready" }
@@ -41,8 +52,11 @@ type Dependencies = {
   createRunner?: EmbeddingRunnerFactory;
   files?: ModelFiles;
   store?: EmbeddingVectorStore;
+  /** The models Settings lists and downloads (default: the catalog) and the default among them. */
+  catalog?: readonly EmbeddingModelDefinition[];
+  defaultModelId?: string;
 };
-type ModelFiles = Pick<EmbeddingModelFiles, "hasAllFiles" | "ensure" | "removeAllExcept">;
+type ModelFiles = Pick<EmbeddingModelFiles, "hasAllFiles" | "ensure" | "remove" | "diskUsage">;
 
 const DEFAULT_LIMIT = 20;
 const reasonOf = (error: unknown): string => error instanceof Error ? error.message : String(error);
@@ -64,12 +78,18 @@ export class EmbeddingIndex {
   private readonly collections = new Map<string, CollectionIndexingJob>();
   private readonly waiters = new Set<() => void>();
   private readonly files: ModelFiles;
+  private readonly downloads: EmbeddingModelDownloads;
   private readonly store: EmbeddingVectorStore;
+  private readonly catalog: readonly EmbeddingModelDefinition[];
+  private readonly defaultModelId: string;
   private readonly resolveModel: () => EmbeddingModelDefinition;
   private readonly createRunner: EmbeddingRunnerFactory;
 
   constructor(deps: Dependencies) {
     this.files = deps.files ?? new EmbeddingModelFiles(path.join(deps.rootDir, "models"));
+    this.downloads = new EmbeddingModelDownloads(this.files);
+    this.catalog = deps.catalog ?? EMBEDDING_MODEL_CATALOG;
+    this.defaultModelId = deps.defaultModelId ?? DEFAULT_EMBEDDING_MODEL_ID;
     this.store = deps.store ?? new EmbeddingVectorStore(path.join(deps.rootDir, "embeddings.sqlite"));
     this.resolveModel = deps.resolveModel ?? (() => resolveActiveEmbeddingModel());
     this.createRunner = deps.createRunner ?? ((definition, modelDir) => new EmbeddingModelRunner(definition, modelDir));
@@ -112,6 +132,71 @@ export class EmbeddingIndex {
     return { activeModelId, state: phase.kind, ...(phase.kind === "unavailable" ? { reason: phase.reason } : {}) };
   }
 
+  /**
+   * Settings' model list, read-only: resolves the active model from the setting without switching to it, and starts
+   * no download, load or indexing. Only the file sizes on disk are read.
+   */
+  async modelsStatus(): Promise<EmbeddingModelsStatus> {
+    const active = this.resolveModel();
+    return {
+      activeModelId: active.id,
+      defaultModelId: this.defaultModelId,
+      onDiskBytes: await this.files.diskUsage(),
+      models: this.catalog.map((definition) => ({
+        id: definition.id, displayName: definition.displayName, languages: definition.languages,
+        downloadBytes: definition.files.reduce((sum, file) => sum + file.bytes, 0),
+        file: this.downloads.fileState(definition),
+        activeDisplay: definition.id === active.id ? this.activeDisplay(active) : null,
+      })),
+    };
+  }
+
+  /**
+   * A collection's index state for the active model, read-only: no job is created, no model work starts. Uses the
+   * collection's in-memory job when it belongs to the active model, else the stored fingerprints (no vectors).
+   */
+  collectionStatus(collection: string, items: readonly CollectionItem[]): CollectionIndexStatus {
+    const active = this.resolveModel();
+    const current = this.model?.definition.id === active.id ? this.model : null;
+    if (current?.phase.kind === "unavailable") return { state: "unavailable" };
+    const job = current ? this.collections.get(collection) : undefined;
+    if (job) return job.status(items);
+    const stored = this.store.readFingerprints(collection, active.id);
+    return statusFromFingerprints(items.map((item) => [item.id, fingerprintOf(active.documentPrefix, item.text)] as const), (id) => stored.get(id));
+  }
+
+  /** Prepares the active model now (download if needed, then load), without touching any collection. */
+  prepareActiveModel(): void {
+    const model = this.activeModel();
+    if (model.phase.kind === "idle") this.prepareModel(model);
+  }
+
+  /** Downloads a catalog model ahead of time; for the active model this is its (not cancellable) preparation. */
+  downloadModel(modelId: string): void {
+    const definition = this.catalogModel(modelId);
+    if (definition.id === this.resolveModel().id) return this.prepareActiveModel();
+    this.downloads.start(definition);
+  }
+
+  /** Cancels a download ahead; refused for the active model's preparation. */
+  cancelDownload(modelId: string): void {
+    const definition = this.catalogModel(modelId);
+    if (definition.id === this.resolveModel().id || !this.downloads.cancel(definition.id)) {
+      throw new EmbeddingModelError("EMBEDDING_DOWNLOAD_NOT_CANCELLABLE", `There is no download of ${definition.displayName} that can be cancelled.`);
+    }
+  }
+
+  /** Deletes a downloaded model's files; refused for the active model and while it downloads. */
+  async removeModel(modelId: string): Promise<void> {
+    const definition = this.catalogModel(modelId);
+    if (definition.id === this.resolveModel().id) {
+      throw new EmbeddingModelError("EMBEDDING_MODEL_ACTIVE", `${definition.displayName} is the active model and cannot be removed.`);
+    }
+    if (!(await this.downloads.remove(definition))) {
+      throw new EmbeddingModelError("EMBEDDING_MODEL_DOWNLOADING", `${definition.displayName} is downloading; cancel the download first.`);
+    }
+  }
+
   /** Clears an `unavailable` model so the next operation that needs it tries again. True when there was one to retry. */
   retryModel(): boolean {
     const model = this.model;
@@ -138,6 +223,8 @@ export class EmbeddingIndex {
     for (const job of this.collections.values()) job.cancel();
     this.collections.clear();
     void this.model?.runner?.stop();
+    // A download the previous model's preparation pinned becomes an ordinary (cancellable) download ahead.
+    if (this.model) this.downloads.release(this.model.definition.id);
     this.model = { definition, phase: { kind: "idle" }, runner: null };
     this.notify();
     return this.model;
@@ -163,14 +250,16 @@ export class EmbeddingIndex {
    */
   private prepareModel(model: ActiveModel): void {
     const { definition } = model;
-    model.phase = this.files.hasAllFiles(definition)
-      ? { kind: "loading" }
-      : { kind: "downloading", done: 0, total: definition.files.reduce((sum, file) => sum + file.bytes, 0) };
+    const running = this.downloads.progress(definition.id);
+    model.phase = running ? { kind: "downloading", ...running }
+      : this.files.hasAllFiles(definition) ? { kind: "loading" }
+        : { kind: "downloading", done: 0, total: definition.files.reduce((sum, file) => sum + file.bytes, 0) };
     void (async () => {
       try {
-        const modelDir = await this.files.ensure(definition, (done, total) => {
+        // The shared download: a download ahead of this model is joined (and can no longer be cancelled).
+        const modelDir = await this.downloads.ensure(definition, { cancellable: false, onProgress: (done, total) => {
           if (model.phase.kind === "downloading" || model.phase.kind === "loading") model.phase = { kind: "downloading", done, total };
-        });
+        } });
         if (this.model !== model) return;
         model.phase = { kind: "loading" };
         this.notify();
@@ -179,7 +268,7 @@ export class EmbeddingIndex {
         if (this.model !== model || model.phase.kind !== "loading") return void runner.stop();
         model.runner = runner;
         model.phase = { kind: "ready" };
-        this.removeOtherModels(definition.id);
+        this.removeOtherModelsVectors(definition.id);
         for (const job of this.collections.values()) this.startJob(model, job);
       } catch (error) {
         if (this.model === model) this.failModel(model, error);
@@ -203,14 +292,31 @@ export class EmbeddingIndex {
     this.notify();
   }
 
-  /** After a switch completes: only the active model's vectors and files are kept. */
-  private removeOtherModels(modelId: string): void {
+  /** After a switch completes, only the active model's vectors are kept. Downloaded model files stay until removed. */
+  private removeOtherModelsVectors(modelId: string): void {
     try {
       this.store.deleteOtherModels(modelId);
     } catch (error) {
       console.warn("EMBEDDING_OLD_VECTORS_REMOVE_FAILED", { error: reasonOf(error) });
     }
-    this.files.removeAllExcept(modelId).catch((error: unknown) => console.warn("EMBEDDING_OLD_MODELS_REMOVE_FAILED", { error: reasonOf(error) }));
+  }
+
+  /** The active model's display state (Terminology table): Preparing only while a download or load runs. */
+  private activeDisplay(active: EmbeddingModelDefinition): EmbeddingActiveDisplay {
+    const phase = this.model?.definition.id === active.id ? this.model.phase : { kind: "idle" as const };
+    if (phase.kind === "unavailable") return { state: "unavailable", reason: phase.reason };
+    if (phase.kind === "downloading") return { state: "preparing", phase: "downloading", done: phase.done, total: phase.total };
+    if (phase.kind === "loading") return { state: "preparing", phase: "loading", done: 0, total: 0 };
+    // A download of this model running outside the index's preparation (e.g. ahead, then made active in Advanced).
+    const flight = this.downloads.progress(active.id);
+    if (flight) return { state: "preparing", phase: "downloading", ...flight };
+    return this.files.hasAllFiles(active) ? { state: "ready" } : { state: "notDownloaded" };
+  }
+
+  private catalogModel(modelId: string): EmbeddingModelDefinition {
+    const definition = this.catalog.find((model) => model.id === modelId);
+    if (!definition) throw new EmbeddingModelError("EMBEDDING_MODEL_UNKNOWN", `Unknown embedding model '${modelId}'.`);
+    return definition;
   }
 
   private readinessOf(job: CollectionIndexingJob): EmbeddingReadiness {

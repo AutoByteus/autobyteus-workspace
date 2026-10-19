@@ -48,7 +48,11 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
     searchCleanup: processProjectTaskSearchCleanup,
   });
   // Search reads the Task service's current Tasks; the embedding index is created at the first search or cleanup.
-  initializeProjectTaskSearchService({ listTasks: (projectId) => service.listTasks(projectId), index: getEmbeddingIndex });
+  initializeProjectTaskSearchService({
+    listProjects: () => getProjectService().listProjectSummaries(),
+    listTasks: (projectId) => service.listTasks(projectId),
+    index: getEmbeddingIndex,
+  });
   // The `/ws/projects` feed: views are built from the services' committed state, after `load()`.
   getProjectChangePublisher().bind({
     readProject: (projectId) => getProjectService().getProject(projectId),

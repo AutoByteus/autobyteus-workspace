@@ -14,9 +14,12 @@ the one-time model download, meaning search works offline.
 
 - `src/embeddings/embedding-index.ts`: `EmbeddingIndex`, the layer's **only public boundary**, and `getEmbeddingIndex()`.
 - `src/embeddings/collection-indexing-job.ts`: one collection's fingerprints, cached vectors and background indexing (internal).
-- `src/embeddings/relevance.ts`: the relevance rule; `src/embeddings/embedding-readiness.ts`: readiness shapes.
+- `src/embeddings/relevance.ts`: the relevance rule; `src/embeddings/embedding-readiness.ts`: readiness and status shapes.
+- `src/embeddings/embedding-model-error.ts`: `EmbeddingModelError`, the refusals of model management (with a code).
 - `src/embeddings/catalog/`: the model definition type, the catalog and the active-model setting.
-- `src/embeddings/models/embedding-model-files.ts`: download, SHA-256 verification and placement of model files (internal).
+- `src/embeddings/models/embedding-model-files.ts`: download, SHA-256 verification, placement and removal of model files (internal).
+- `src/embeddings/models/embedding-model-downloads.ts`: the one owner of running downloads, their progress, failure and
+  cancellation, shared by downloads ahead and the active model's preparation (internal).
 - `src/embeddings/runtime/embedding-model-runner.ts` and `embedding-worker.ts`: the worker thread that runs the model (internal).
 - `src/embeddings/store/embedding-vector-store.ts`: the vector file (internal).
 
@@ -39,6 +42,14 @@ index.removeItems(collection, ids);  // never waits for indexing
 index.dropCollection(collection);
 index.modelStatus();                 // {activeModelId, state, reason?}
 index.retryModel();                  // clears "unavailable"; the next search tries again
+
+// Settings → Server Settings → Embedding. The two status reads are read-only: they start no download, load or indexing.
+await index.modelsStatus();          // {activeModelId, defaultModelId, onDiskBytes, models: [{id, file, activeDisplay, ...}]}
+index.collectionStatus(collection, items); // notIndexed | waiting | indexing | ready | needsUpdate | unavailable
+index.prepareActiveModel();          // download (if needed) and load the active model now
+index.downloadModel(id);             // a download ahead; for the active model, its preparation (not cancellable)
+index.cancelDownload(id);            // a download ahead only; deletes what was downloaded
+await index.removeModel(id);         // a downloaded model that is neither active nor downloading
 ```
 
 A collection key is a string its consumer owns (Project Task search uses `project-tasks/<projectId>`). Each `search` or
@@ -56,7 +67,7 @@ calibration. The worker and the index have no per-model branches.
 | Setting value | Model | Languages | Licence | Source (pinned revision) | Download | Indexing cost (WebAssembly, 4 threads, fast laptop) |
 | --- | --- | --- | --- | --- | --- | --- |
 | `granite-embedding-small-english-r2` (default) | IBM Granite Embedding Small English R2 | English (reads up to 1,024 tokens of a Task) | Apache-2.0 | `onnx-community/granite-embedding-small-english-r2-ONNX` @ `1dc7835ba0cb9c76a3618d0bf0c427c97671b3c8` | ≈ 55 MB | ≈ 0.5 s per Task; ≈ 0.4 GB loaded, ≈ 0.7 GB peak |
-| `mdbr-leaf-ir` (small Projects) | MongoDB LEAF-IR | English | Apache-2.0 | `MongoDB/mdbr-leaf-ir` @ `4262131b32c3182bd06e67e92ae69d7bd66e0c5c` | ≈ 23 MB | ≈ 0.1 s per Task; ≈ 0.27 GB loaded, ≈ 0.5 GB peak |
+| `mdbr-leaf-ir` (small Projects) | MongoDB LEAF-IR | English | Apache-2.0 | `MongoDB/mdbr-leaf-ir` @ `4262131b32c3182bd06e67e92ae69d7bd66e0c5c` | ≈ 24 MB | ≈ 0.1 s per Task; ≈ 0.27 GB loaded, ≈ 0.5 GB peak |
 | `embeddinggemma-2` | Google EmbeddingGemma 2 | 100+ languages | Apache-2.0 | `onnx-community/embeddinggemma-2-ONNX` @ `daa72c51243991dfcaf9f9137d2c573d8f7790c0` | ≈ 346 MB | ≈ 4 s per long Task; ≈ 1.1 GB loaded, ≈ 1.5 GB peak |
 
 Models are not shipped with the app: the server downloads the active model from Hugging Face
@@ -80,7 +91,36 @@ catalog is ignored with one logged warning (`EMBEDDING_MODEL_SETTING_UNKNOWN`), 
 
 A change takes effect at the next search, without a restart: the index stops the old model, downloads and loads the new
 one, and rebuilds each collection in the background (exact search keeps working). Vectors of different models are never
-compared. When the new model is ready, the vectors and files of other models are deleted.
+compared. When the new model is ready, the vectors of other models are deleted; their downloaded files are kept until
+removed in Settings, so switching back needs no new download.
+
+### Managing Models In Settings
+
+Settings → Server Settings → Embedding (GraphQL `embeddingModelsStatus` and `projectTaskIndexes`, read in one
+document) lists the catalog with each model's files (`notDownloaded`, `downloading` with bytes, `downloaded`, or
+`failed` with the reason of the last attempt), the bytes on disk under `models/` (including partial files), and the
+active model's display state:
+
+| Display | When |
+| --- | --- |
+| Ready | the model is loaded, or idle with every file on disk |
+| Preparing (downloading bytes / loading) | its download or load runs, including a download started ahead before it became active |
+| Not downloaded | idle and its files are missing (a fresh install); Download prepares it |
+| Unavailable + reason | its last preparation or use failed; Retry (`retryEmbeddingModel`) clears it and prepares it at once |
+
+`useEmbeddingModel(modelId)` writes `AUTOBYTEUS_EMBEDDING_MODEL` through the usual setting validation and prepares the
+new model at once. `downloadEmbeddingModel`, `cancelEmbeddingModelDownload` and `removeEmbeddingModel` refuse with a
+GraphQL error code: `EMBEDDING_MODEL_UNKNOWN`, `EMBEDDING_MODEL_ACTIVE` (the active model cannot be removed),
+`EMBEDDING_MODEL_DOWNLOADING` (cancel first) or `EMBEDDING_DOWNLOAD_NOT_CANCELLABLE` (the active model's preparation, or
+no download). One download per model runs at a time: a preparation joins a running download ahead, which then can no
+longer be cancelled; a cancelled download deletes the model's folder.
+
+Each Project's index state comes from the Project's current Tasks and the stored fingerprints (no vectors are read, no
+job is created): `notIndexed` (nothing for the active model), `waiting` (Tasks to index, model not ready), `indexing`
+(`done`/`total` of the current run), `ready` (every Task indexed; a Project without Tasks is ready with 0),
+`needsUpdate` (`changed` Tasks are new or edited since) or `unavailable` (the active model is unavailable).
+`indexProjectTasks`, `rebuildProjectTaskIndex` (drops the Project's vectors, then indexes every Task) and
+`indexAllProjectTasks` (every Project that is not indexed or needs an update) start indexing.
 
 ### Relevance
 
@@ -136,6 +176,8 @@ Nothing in the layer is created or loaded at server startup.
 ## Testing
 
 - `tests/unit/embeddings/`: the index (with the deterministic stand-in model `tests/helpers/fake-embedding-model.ts`),
-  store, model files (local HTTP server), catalog, setting, relevance rule and the worker's load failure.
+  model management and read-only status, downloads, store, model files (local HTTP server), catalog, setting, relevance
+  rule and the worker's load failure.
+- `tests/e2e/projects/embedding-settings.e2e.test.ts`: the Settings GraphQL queries and mutations over Studio HTTP.
 - `tests/integration/embeddings/embedding-model-quality.integration.test.ts`: the gated real-model check of the
   catalog on the production stack (`RUN_EMBEDDING_MODEL_E2E=1`; options in the file header).

@@ -34,7 +34,7 @@ describe("search_project_tasks tool", () => {
     registerProjectTaskTools();
     projectId = (await getProjectService().createProject({ name: "Tool search fixture" })).projectId;
     fake = await createFakeEmbeddingIndex();
-    initializeProjectTaskSearchService({ listTasks: (id) => getProjectTaskService().listTasks(id), index: () => fake.index });
+    initializeProjectTaskSearchService({ listProjects: () => getProjectService().listProjectSummaries(), listTasks: (id) => getProjectTaskService().listTasks(id), index: () => fake.index });
   });
   afterEach(async () => {
     vi.restoreAllMocks();

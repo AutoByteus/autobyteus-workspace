@@ -1,4 +1,4 @@
-import type { EmbeddingIndex, EmbeddingReadiness, EmbeddingSearchResult } from "../../embeddings/embedding-index.js";
+import type { CollectionIndexStatus, EmbeddingIndex, EmbeddingReadiness, EmbeddingSearchResult } from "../../embeddings/embedding-index.js";
 import type { ProjectTaskView } from "../domain/models.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { isTerminalTaskStatus } from "../domain/task-status.js";
@@ -13,6 +13,9 @@ export type ProjectTaskSearchOptions = {
   waitForReadyMs?: number;
 };
 
+/** One Project's index for the active model (Settings → Embedding), read-only. */
+export type ProjectTaskIndexStatus = { projectId: string; name: string } & CollectionIndexStatus;
+
 /** The cleanup port the Task and Project services call after a committed delete. Never throws, never waits. */
 export type ProjectTaskSearchCleanup = {
   forgetTask(projectId: string, taskId: string): void;
@@ -20,10 +23,12 @@ export type ProjectTaskSearchCleanup = {
 };
 
 type Dependencies = {
+  /** Every Project (the Project service's authority). */
+  listProjects: () => Promise<Array<{ projectId: string; name: string }>>;
   /** The Project's current Tasks (the Task service's authority); fails with PROJECT_NOT_FOUND for an unknown Project. */
   listTasks: (projectId: string) => Promise<ProjectTaskView[]>;
   /** The embedding index, resolved at use (nothing of the embedding layer is touched at startup). */
-  index: () => Pick<EmbeddingIndex, "search" | "removeItems" | "dropCollection">;
+  index: () => Pick<EmbeddingIndex, "search" | "sync" | "collectionStatus" | "removeItems" | "dropCollection">;
 };
 
 /** Up to this many meaning matches, as the relevance rule allows (REQ-003). */
@@ -33,6 +38,8 @@ const reasonOf = (error: unknown): string => error instanceof Error ? error.mess
 /** Open Tasks first, then most recently updated: the order the index embeds them in. */
 const indexingOrder = (a: ProjectTaskView, b: ProjectTaskView): number =>
   Number(isTerminalTaskStatus(a.status)) - Number(isTerminalTaskStatus(b.status)) || b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId);
+/** A Project's collection items: each Task's description, in indexing order. */
+const itemsOf = (tasks: readonly ProjectTaskView[]) => [...tasks].sort(indexingOrder).map((task) => ({ id: task.taskId, text: task.description }));
 
 /**
  * Project Task search policy: the collection of each Project (its Tasks' descriptions), the exact tier (today's
@@ -64,6 +71,34 @@ export class ProjectTaskSearchService implements ProjectTaskSearchCleanup {
     return { matches: options.limit === undefined ? matches : matches.slice(0, options.limit), meaningSearch: meaning.readiness };
   }
 
+  /** Every Project's index state for the active model, alphabetical. Read-only: nothing is scheduled. */
+  async indexStatus(): Promise<ProjectTaskIndexStatus[]> {
+    const projects = [...await this.deps.listProjects()].sort((a, b) => a.name.localeCompare(b.name) || a.projectId.localeCompare(b.projectId));
+    return Promise.all(projects.map(async ({ projectId, name }) => ({
+      projectId, name, ...this.deps.index().collectionStatus(collectionOf(projectId), itemsOf(await this.deps.listTasks(projectId))),
+    })));
+  }
+
+  /** Indexes the Project's missing or changed Tasks (preparing the model first if needed). */
+  async indexProject(projectId: string): Promise<void> {
+    this.deps.index().sync(collectionOf(projectId), itemsOf(await this.deps.listTasks(projectId)));
+  }
+
+  /** Drops the Project's vectors for the active model, then indexes every Task (DEC-006). */
+  async rebuildProject(projectId: string): Promise<void> {
+    const items = itemsOf(await this.deps.listTasks(projectId));
+    const collection = collectionOf(projectId);
+    this.deps.index().dropCollection(collection);
+    this.deps.index().sync(collection, items);
+  }
+
+  /** Index now for every Project that is Not indexed or Needs update, chosen from a fresh status; returns how many. */
+  async indexAllProjects(): Promise<number> {
+    const due = (await this.indexStatus()).filter((project) => project.state === "notIndexed" || project.state === "needsUpdate");
+    for (const project of due) await this.indexProject(project.projectId);
+    return due.length;
+  }
+
   forgetTask(projectId: string, taskId: string): void {
     this.forget(() => this.deps.index().removeItems(collectionOf(projectId), [taskId]), { projectId, taskId });
   }
@@ -76,8 +111,7 @@ export class ProjectTaskSearchService implements ProjectTaskSearchCleanup {
   private async meaningSearch(projectId: string, tasks: ProjectTaskView[], text: string, exact: ProjectTaskView[], waitForReadyMs: number)
     : Promise<EmbeddingSearchResult> {
     try {
-      const items = [...tasks].sort(indexingOrder).map((task) => ({ id: task.taskId, text: task.description }));
-      return await this.deps.index().search(collectionOf(projectId), items, text, {
+      return await this.deps.index().search(collectionOf(projectId), itemsOf(tasks), text, {
         limit: MEANING_LIMIT, waitForReadyMs, scoreIds: exact.map((task) => task.taskId),
       });
     } catch (error) {
@@ -96,7 +130,7 @@ export class ProjectTaskSearchService implements ProjectTaskSearchCleanup {
 }
 
 let instance: ProjectTaskSearchService | null = null;
-/** Called once by the process composition, which supplies the Task service's `listTasks` and the embedding index. */
+/** Called once by the process composition, which supplies the Project and Task services' reads and the embedding index. */
 export const initializeProjectTaskSearchService = (deps: Dependencies): ProjectTaskSearchService => {
   if (instance) throw new Error("The process ProjectTaskSearchService is already initialized.");
   return instance = new ProjectTaskSearchService(deps);
