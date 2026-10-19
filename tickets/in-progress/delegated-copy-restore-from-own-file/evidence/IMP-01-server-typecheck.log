@@ -1,8 +1,8 @@
 # Check: IMP-01
 # Command: pnpm -C autobyteus-server-ts typecheck
-# Commit: 3b6f970cfa (branch codex/delegated-copy-restore-from-own-file)
+# Commit: 96de77efb3 (branch codex/delegated-copy-restore-from-own-file)
 # Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
-# Date: 2026-10-19T17:05:08Z
+# Date: 2026-10-19T17:47:51Z
 
 
 > autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
@@ -13,8 +13,8 @@
 > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
 
 Scope: 3 of 13 workspace projects
-autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
 autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
 autobyteus-application-sdk-contracts build: Done
 autobyteus-ts build: [verify:runtime-deps] OK
 autobyteus-ts build: Done

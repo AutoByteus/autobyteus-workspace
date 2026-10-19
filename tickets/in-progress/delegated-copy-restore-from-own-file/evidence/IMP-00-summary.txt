@@ -20,3 +20,8 @@ IMP-11 e2e-startup-migrations exit=0
 IMP-12 e2e-production-upgrade exit=0
 done
 IMP-14 browser-delegated-launch-defaults exit=0 (commit 2253b8044b; Summary: 15 Pass, 0 Fail)
+--- rerun on 96de77efb3 (CR-001) ---
+IMP-01 server-typecheck exit=0
+IMP-02 server-unit exit=0
+IMP-07 web-unit exit=0
+done

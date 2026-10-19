@@ -23,15 +23,15 @@ Every delegated copy now carries its `source`: the definition and launch it star
 
 A new startup migration, `20261019_delegated_copy_own_file_complete_v1`, completes existing own files. A same-ID repair of `20261017_task_agent_own_run_v1` (D-9) keeps that migration's retry working after the new migration has completed its files.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, CR-001 Local Fix; IR-001 was the initial handoff)
 - Implementation revision record: `tickets/in-progress/delegated-copy-restore-from-own-file/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-001..SR-008
 - Related architecture-review revision IDs: ARCH-REV-003..ARCH-REV-007
-- Related code-review revision IDs: N/A
+- Related code-review revision IDs: CRR-001
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: CR-001
 
 Commits, in order:
 - `3ed550595c` step 1 freeze;
@@ -41,7 +41,9 @@ Commits, in order:
 - `2997ff0b9a` ticket folder, DI-002 and evidence round 1;
 - `3b6f970cfa` D-9 and the R-9 tests;
 - `2253b8044b` the DLP-006 probe case updated to model an upgrade through the own-file completion (see Known Risks);
-- the handoff commit, with these documents and evidence round 2.
+- `0a303d3a5d` documents and evidence round 2 (the IR-001 handoff);
+- `96de77efb3` CR-001: the last absent-source checks for copies removed (IR-002);
+- the IR-002 handoff commit, with these documents and evidence round 3.
 
 ## Routing Classification (Mandatory)
 
@@ -138,6 +140,7 @@ Commits, in order:
   - web `launchAt`/`coordinatorAt`/`configuredFollows`;
   - `findTaskConfigNode`, `findAgentOrgConfiguredSourceNode`;
   - the `RootTeamRun` `config` pass-through;
+  - (IR-002, CR-001) the standalone-root schema's "has no catalog source" loop and the web `addTaskTeam` coordinator fallback;
   - the frozen `readAgent`/`readTeam`, now unused after D-9.
 
   A sweep for `configured_place`, `resolvePlace`, `readTaskSource`, `TaskSourceResolver`, `configuredFollows`, `launchAt` and `TaskAgentOrigin` finds them only in migration-owned code and its tests.
@@ -180,18 +183,19 @@ Commits, in order:
 Evidence is in `tickets/in-progress/delegated-copy-restore-from-own-file/evidence/`. `IMP-00-summary.txt` lists every run.
 - Round 1 ran on `7d689455ad`.
 - Round 2 reran, on `3b6f970cfa`, every check D-9 affects.
+- Round 3 (IR-002, CR-001) reran IMP-01, IMP-02 and IMP-07 on `96de77efb3`. The other rows are unaffected: IR-002 only removes code that could not run, in one server schema and one web selector.
 
 The full logs of IMP-02, IMP-03 and IMP-07 are committed as excerpts because of their size; the full files remain in the worktree.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IMP-01 | `pnpm -C autobyteus-server-ts typecheck` | `3b6f970cfa` | macOS, Node 22 | all server source | AC-009, escalation trigger 3 | Pass | `IMP-01-server-typecheck.log` | `# Exit code: 0` |
-| IMP-02 | `pnpm -C autobyteus-server-ts test:unit` | `3b6f970cfa` | same | server unit | BEH-001..008 | Pass | `IMP-02-server-unit.excerpt.txt` | `Tests  6111 passed \| 7 skipped (6118)` |
+| IMP-01 | `pnpm -C autobyteus-server-ts typecheck` | `96de77efb3` (IR-002) | macOS, Node 22 | all server source | AC-009, escalation trigger 3 | Pass | `IMP-01-server-typecheck.log` | `# Exit code: 0` |
+| IMP-02 | `pnpm -C autobyteus-server-ts test:unit` | `96de77efb3` (IR-002) | same | server unit | BEH-001..008 | Pass | `IMP-02-server-unit.excerpt.txt` | `Tests  6111 passed \| 7 skipped (6118)` |
 | IMP-03 | `test:integration:prepare` then `test:integration` | `7d689455ad` (D-9 touches only migration code, which the integration suites do not run) | same | server integration | BEH-001, 002, 004 | Pass | `IMP-03-server-integration.excerpt.txt` | `Tests  419 passed \| 70 skipped (489)` |
 | IMP-04 | `pnpm -C autobyteus-team-stream-contracts test` | `7d689455ad` (contracts unchanged since) | same | team contract | BEH-004, 007 | Pass | `IMP-04-contracts-team.log` | `# Exit code: 0` |
 | IMP-05 | `pnpm -C autobyteus-collaboration-stream-contracts test` | `7d689455ad` (unchanged since) | same | collaboration contract | BEH-004, 007 | Pass | `IMP-05-contracts-collaboration.log` | `# Exit code: 0` |
 | IMP-06 | `git status` on both `dist/` after IMP-04/05 rebuilt them | `7d689455ad` | same | committed contract `dist/` | TESTING.md dist rule | Pass | `IMP-06-contracts-dist-unchanged.log` | no `M` lines |
-| IMP-07 | `cd autobyteus-web && pnpm exec cross-env NUXT_TEST=true vitest run` | `7d689455ad` (web unchanged since) | same | web unit and component | BEH-004, 006, R-2 | Pass | `IMP-07-web-unit.excerpt.txt` | `Tests  4549 passed \| 5 skipped (4554)` |
+| IMP-07 | `cd autobyteus-web && pnpm exec cross-env NUXT_TEST=true vitest run` | `96de77efb3` (IR-002) | same | web unit and component | BEH-004, 006, R-2 | Pass | `IMP-07-web-unit.excerpt.txt` | `Tests  4549 passed \| 5 skipped (4554)` |
 | IMP-08 | web `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `7d689455ad` (web unchanged since) | same | web | — | Pass | `IMP-08-web-guards.log` | `[guard:web-boundary] Passed.` |
 | IMP-09 | focused migration units: new migration, 10-17, D-9 ownership, skip-version, memory-sync F-X3, four D-8 suites | `3b6f970cfa` | same | migrations | BEH-008, AC-005..009, AC-011, D-8, D-9, R-9 | Pass | `IMP-09-migration-focused-unit.log` | `Tests  100 passed (100)` |
 | IMP-10 | `pnpm -C autobyteus-server-ts build` | `3b6f970cfa` | same | built server for e2e | — | Pass | `IMP-10-server-build.log` | `Built-in agents bootstrap smoke check passed.` |
