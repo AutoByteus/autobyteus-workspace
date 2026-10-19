@@ -8,6 +8,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery package from code review (CRR-005 Pass, API-REV-002 Pass) | N/A | Blocked — `Local Fix` (integration conflicts with `origin/personal` @ `2b04a9971d`) | `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-002 | Delivery package on the merge (IR-004, CRR-006 Pass, API-REV-003 Pass, CRR-007 N/A) | Blocked (DR-001) | Delivery Completed — verified from evidence, finalized to `personal`, companion PR merged, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
+| DR-003 | The user asked for a new beta | Delivery Completed, no release (DR-002) | Delivery Completed — beta `v1.5.6-beta.8` published completely | `release-deployment-report.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -56,3 +57,33 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Remaining blockers, rollback concerns, or untested scope:
   - No blockers.
   - Residual risks: C-12, C-10, untested x64/Windows/Linux/Docker amd64 packaging, RSK-002, O-2, O-3/FU-5, O-4, C-14, FU-1…FU-6, autobyteus-147, and the companion-before-release timing (see `handoff-summary.md`).
+
+### DR-003 — Beta `v1.5.6-beta.8` at the user's request
+
+- Delivery round and trigger: the user asked to "finalize and release a new beta", then confirmed a new beta "following the delivery principle". That came after delivery reported that `v1.5.6-beta.7` already contained this ticket.
+- Prior authoritative result: DR-002 `Delivery Completed`, `No release`.
+- Current authoritative result: `Delivery Completed`. Beta `v1.5.6-beta.8` was published completely: 4/4 workflows succeeded and the release has 17/17 assets.
+- Re-verification on the release state:
+  - After DR-002, `personal` gained the adoption withdrawal (`a9ec1b37e4`). Its IR-006 merged this ticket and resolved conflicts in `project-service.ts` and `project-task-service.ts` (4 hunks): it kept the search cleanup and removed the adoption calls.
+  - Product code at the release (`cba6b85122`) equals the withdrawal's validated `a130f4a86f` apart from the version in `autobyteus-web/package.json`.
+  - That commit passed the whole server E2E suite (API-REV-006 WDR-2: `Test Files 119 passed | 49 skipped (168)`, `failed files: 0`), including `project-task-search` and `project-task-search-model-unavailable`.
+  - Delivery checked the tag directly. The search delete cleanup is present, and the packaged tool set has seven tools. The adoption feature is absent: no file it added remains, its identifiers have no matches in product source, and the files it touched differ from pre-adoption only by this ticket's search wiring and the separate message-logs change.
+- Verification judgement: `Sufficient`; no new user check needed.
+- Finalization and release, per `RELEASE.md`:
+  - Fresh worktree `finalize/project-task-semantic-search-beta8` from `origin/personal` `89d8d2f62f`.
+  - Checks before tagging: `check_licensing.py` → `Licensing is consistent.`; `check_repository_artifact_hygiene.py` → passed.
+  - `bash scripts/desktop-release.sh beta --branch finalize/project-task-semantic-search-beta8 --no-push` → `cba6b85122 chore(release): bump workspace release version to 1.5.6-beta.8` and annotated tag `v1.5.6-beta.8`.
+  - Refetched `personal` (unchanged), then pushed `89d8d2f62f..cba6b85122 HEAD -> personal` (fast-forward, no merge) and the tag.
+- Rollout watched to completion:
+  - Desktop Release `39192669074` success.
+  - Android APK Release `39192668980` success.
+  - iOS App Store Connect Release `39192668982` success, with Archive And Upload To App Store Connect.
+  - Server Docker Release `39192669046` success.
+  - GitHub pre-release `v1.5.6-beta.8`: 17 assets (macOS arm64/x64 dmg+zip with blockmaps, Linux x64/arm64 AppImages, Windows exe, four `latest*.yml`, the Android APK and its `.sha256`).
+  - Docker `autobyteus/autobyteus-server:1.5.6-beta.8` for amd64 and arm64; `:beta` points at the same digest `sha256:0c20c588…`.
+- Release notes: GitHub generated notes (any pre-release tag uses them; no ticket `release-notes.md` needed).
+- Product content: identical to `v1.5.6-beta.7` apart from the version. Beta users get an update with no functional change.
+- Rollback: revert on `personal` and cut the next beta. Desktop never downgrades; Docker users pin `1.5.6-beta.7` or earlier. The never-move-a-published-tag rule applies.
+- Cleanup: release worktree and local finalize branch removed after this record was pushed.
+- Terminal return to `/solution_designer`: `Sent` (Delivery Completed, DR-003).
+- Remaining blockers: none. Residual risks as in DR-002.

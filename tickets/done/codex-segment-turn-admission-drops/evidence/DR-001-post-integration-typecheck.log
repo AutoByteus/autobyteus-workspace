@@ -1,0 +1,9 @@
+# DR-001 post-integration typecheck
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: e6a5adc58b; 2026-10-19
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/codex-segment-turn-admission-drops/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

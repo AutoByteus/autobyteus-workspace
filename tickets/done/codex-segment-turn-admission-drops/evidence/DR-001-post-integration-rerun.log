@@ -1,0 +1,29 @@
+# DR-001 post-integration rerun
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/thread/ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts --no-watch (tail 25)
+# Commit: e6a5adc58b (merge of origin/personal 20c91afd4d into ticket branch); macOS 26.5.2, node v22.23.1; 2026-10-19
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > run termination writes one summary per pending account, and nothing when nothing is pending (AC-005)
+[receipt] AC-005 pending {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-a","activeTurnId":null},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":"commandExecution","turnId":"codex-turn-b","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-a","count":4},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-b","count":2}]}
+[receipt] AC-005 clean {"detailed":[],"summaries":[]}
+
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > an app-server exit writes the pending summaries (client close)
+[receipt] client close {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-z","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","turnId":"codex-turn-z","count":2}]}
+
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts (4 tests) 839ms
+     ✓ SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered  570ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts (48 tests) 168ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-model-call-timing.test.ts (7 tests) 14ms
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts (9 tests) 11ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-client-thread-router.test.ts (5 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-user-input-mapper.test.ts (5 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-admission.test.ts (6 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-rejection-accounts.test.ts (4 tests) 3ms
+
+ Test Files  8 passed (8)
+      Tests  88 passed (88)
+   Start at  05:57:00
+   Duration  7.29s (transform 2.93s, setup 83ms, import 4.99s, tests 1.04s, environment 1ms)
+
+exit=0

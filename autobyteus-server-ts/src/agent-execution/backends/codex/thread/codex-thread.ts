@@ -2,7 +2,7 @@ import { submitCodexStartInput, submitCodexAppendInput } from "./codex-thread-in
 import { CodexThreadReleaseScope } from "./codex-thread-release-scope.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CodexReadyTokenUsageUpdate } from "./codex-thread-token-usage.js";
-import { asString } from "../codex-app-server-json.js";
+import { asObject, asString } from "../codex-app-server-json.js";
 import type { CodexAppServerClient } from "../../../../runtime-management/codex/client/codex-app-server-client.js";
 import { handleAppServerNotification as applyAppServerNotification } from "./codex-thread-notification-handler.js";
 import {
@@ -24,7 +24,11 @@ import {
   isCodexSegmentTurnAdmissionEventName,
   resolveCodexSegmentTurnAdmission,
 } from "./codex-segment-turn-admission.js";
-import { logCodexSegmentTurnAdmissionRejection } from "../events/codex-thread-event-debug.js";
+import {
+  logCodexSegmentTurnAdmissionRejection,
+  logCodexSegmentTurnAdmissionRejectionSummaries,
+} from "../events/codex-thread-event-debug.js";
+import { CodexSegmentTurnRejectionAccounts } from "./codex-segment-turn-rejection-accounts.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import {
   CodexPendingMcpToolCallRegistry,
@@ -83,6 +87,7 @@ export class CodexThread {
   lastTerminalTurnId: string | null;
   private readonly releaseScope = new CodexThreadReleaseScope(this);
   private pendingSystemInstructionCapture: SystemInstructionTraceRecord | null = null;
+  private readonly segmentTurnRejections = new CodexSegmentTurnRejectionAccounts();
 
   constructor(input: {
     runContext: CodexRunContext;
@@ -253,20 +258,28 @@ export class CodexThread {
 
   handleAppServerNotification(method: string, params: JsonObject): void {
     const nativeEventName = method.trim();
+    if (
+      nativeEventName === CodexThreadEventName.TURN_STARTED ||
+      nativeEventName === CodexThreadEventName.TURN_COMPLETED
+    ) {
+      this.flushSegmentTurnRejectionSummaries();
+    }
     let admittedParams: Readonly<JsonObject> = Object.freeze({ ...params });
     if (isCodexSegmentTurnAdmissionEventName(nativeEventName)) {
-      const admission = resolveCodexSegmentTurnAdmission(
-        nativeEventName,
-        params,
-        this.activeTurnId,
-      );
+      const activeTurnId = this.activeTurnId;
+      const admission = resolveCodexSegmentTurnAdmission(nativeEventName, params, activeTurnId);
       if (!admission.accepted) {
-        logCodexSegmentTurnAdmissionRejection({
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          runId: this.runId,
-          nativeEventName,
-          reasonCode: admission.reason,
-        });
+        if (this.segmentTurnRejections.record(admission.eventTurnId)) {
+          logCodexSegmentTurnAdmissionRejection({
+            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+            runId: this.runId,
+            nativeEventName,
+            reasonCode: admission.reason,
+            itemType: asString(asObject(params.item)?.type),
+            turnId: admission.eventTurnId,
+            activeTurnId,
+          });
+        }
         return;
       }
       admittedParams = admission.paramsWithExactTurn;
@@ -280,6 +293,14 @@ export class CodexThread {
     if (handling.emitNativeMessage) {
       this.emitThreadEventMessage(nativeMessage);
     }
+  }
+
+  /** Writes one count summary per rejection account with pending rejections. */
+  flushSegmentTurnRejectionSummaries(): void {
+    logCodexSegmentTurnAdmissionRejectionSummaries(
+      { runtimeKind: RuntimeKind.CODEX_APP_SERVER, runId: this.runId },
+      this.segmentTurnRejections.takeSummaries(),
+    );
   }
 
   handleAppServerRequest(
@@ -325,6 +346,7 @@ export class CodexThread {
       errorMessage ??
       "Codex app server closed before app server message processing completed.";
 
+    this.flushSegmentTurnRejectionSummaries();
     this.rejectStartupReady(
       new Error(`Codex app server closed before startup completed: ${message}`),
     );

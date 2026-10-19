@@ -1,5 +1,6 @@
 import type { CodexThreadEventMessage } from "../thread/codex-thread.js";
 import type { CodexSegmentTurnRejectionReason } from "../thread/codex-segment-turn-admission.js";
+import type { CodexSegmentTurnRejectionSummary } from "../thread/codex-segment-turn-rejection-accounts.js";
 import type { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { appendRuntimeRawEventLog } from "../../shared/runtime-raw-event-file-debug.js";
 
@@ -116,16 +117,43 @@ export const logRawCodexThreadEventDetails = (
   });
 };
 
-export const logCodexSegmentTurnAdmissionRejection = (input: Readonly<{
-  runtimeKind: RuntimeKind;
-  runId: string;
-  nativeEventName: string;
-  reasonCode: CodexSegmentTurnRejectionReason;
-}>): void => {
+type CodexSegmentTurnRejectionLogContext = Readonly<{ runtimeKind: RuntimeKind; runId: string }>;
+
+/**
+ * Detailed line for a rejection account's first rejected event. Logs ids and the item type only,
+ * never item content. Later rejections of the same account are counted by the thread and written
+ * by `logCodexSegmentTurnAdmissionRejectionSummaries` at its boundaries.
+ */
+export const logCodexSegmentTurnAdmissionRejection = (
+  input: CodexSegmentTurnRejectionLogContext & Readonly<{
+    nativeEventName: string;
+    reasonCode: CodexSegmentTurnRejectionReason;
+    itemType: string | null;
+    turnId: string | null;
+    activeTurnId: string | null;
+  }>,
+): void => {
   console.warn("[CodexSegmentTurnAdmissionRejected]", {
     runtimeKind: input.runtimeKind,
     runId: input.runId,
     nativeEventName: input.nativeEventName,
     reasonCode: input.reasonCode,
+    itemType: input.itemType,
+    turnId: input.turnId,
+    activeTurnId: input.activeTurnId,
   });
+};
+
+export const logCodexSegmentTurnAdmissionRejectionSummaries = (
+  context: CodexSegmentTurnRejectionLogContext,
+  summaries: readonly CodexSegmentTurnRejectionSummary[],
+): void => {
+  for (const summary of summaries) {
+    console.warn("[CodexSegmentTurnAdmissionRejectedSummary]", {
+      runtimeKind: context.runtimeKind,
+      runId: context.runId,
+      turnId: summary.turnId,
+      count: summary.count,
+    });
+  }
 };

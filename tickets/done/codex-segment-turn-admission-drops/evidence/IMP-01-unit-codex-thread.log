@@ -1,0 +1,29 @@
+# Check: IMP-01
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/thread/ --no-watch --reporter=verbose (excerpt: new/changed tests, willRetry/stale-boundary tests, summary)
+# Commit: dedaf77fba (branch codex/codex-segment-turn-admission-drops)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T03:41Z
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread input submission policy > preserves active identity on steer rejection and mismatch without start fallback 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > keeps a retryable native error diagnostic on the active turn and admits later work 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > retains matching active terminal error state and cleanup for exact non-retryable errors 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > suppresses exact stale terminal boundaries without mutating or emitting against a newer turn 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread exact-turn rejection logging > writes one detailed line for a whole rejected turn and one count summary at the next turn start (AC-001) 2ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread exact-turn rejection logging > writes one detailed CONFLICT line per late tool item of distinct ended turns and no summary (AC-002, AC-006) 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread exact-turn rejection logging > logs itemType null for an item-less delta (AC-006) 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread exact-turn rejection logging > uses one 'no turn id' account for rejected events without a turn id (AC-003) 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread exact-turn rejection logging > never writes a second detailed line for a turn whose account was already summarized (AC-008) 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread exact-turn rejection logging > flushes pending counts when the app-server client closes 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts > CodexThreadManager > writes one summary per pending rejection account when the thread is released (AC-005) 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-rejection-accounts.test.ts > CodexSegmentTurnRejectionAccounts > marks only the first rejection of an account as due a detailed line and counts the rest 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-rejection-accounts.test.ts > CodexSegmentTurnRejectionAccounts > keeps separate accounts per turn id and one account for events without a turn id 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-rejection-accounts.test.ts > CodexSegmentTurnRejectionAccounts > resets pending counts on take but keeps accounts, so a turn never gets a second detailed line 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-rejection-accounts.test.ts > CodexSegmentTurnRejectionAccounts > returns no summaries when nothing is pending 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-admission.test.ts > resolveCodexSegmentTurnAdmission > accepts an explicit matching turn id and stamps the exact turn 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-admission.test.ts > resolveCodexSegmentTurnAdmission > lets a governed event without a turn id inherit the active turn 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-admission.test.ts > resolveCodexSegmentTurnAdmission > rejects an invalid explicit turn id without an event turn id 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-admission.test.ts > resolveCodexSegmentTurnAdmission > rejects any event while no turn is active, carrying the event's own turn id or null 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-admission.test.ts > resolveCodexSegmentTurnAdmission > rejects a turn id other than the active one as a conflict, carrying the first explicit turn id 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-admission.test.ts > resolveCodexSegmentTurnAdmission > rejects an ungoverned event that omits its turn id 0ms
+ Test Files  7 passed (7)
+      Tests  84 passed (84)

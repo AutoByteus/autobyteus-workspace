@@ -1,0 +1,16 @@
+# Check: IMP-03
+# Command: pnpm -C autobyteus-server-ts test:unit (excerpt: Codex thread files and summary; full ~1.2 MB log not committed)
+# Commit: dedaf77fba (branch codex/codex-segment-turn-admission-drops)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T03:41Z
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts (48 tests) 169ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts (9 tests) 9ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-model-call-timing.test.ts (7 tests) 18ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-client-thread-router.test.ts (5 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-user-input-mapper.test.ts (5 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-admission.test.ts (6 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-rejection-accounts.test.ts (4 tests) 3ms
+ Test Files  735 passed | 4 skipped (739)
+      Tests  5990 passed | 7 skipped (5997)
+test:unit exit 0

@@ -26,6 +26,8 @@ export type CodexSegmentTurnAdmission =
   | Readonly<{
       accepted: false;
       reason: CodexSegmentTurnRejectionReason;
+      /** The rejected event's own (first explicit, trimmed) turn id; null when none or invalid. */
+      eventTurnId: string | null;
     }>;
 
 type Candidate = Readonly<{ present: boolean; value: unknown }>;
@@ -43,8 +45,10 @@ const candidate = (owner: JsonObject | null, key: string): Candidate =>
     ? Object.freeze({ present: true, value: owner[key] })
     : Object.freeze({ present: false, value: undefined });
 
-const reject = (reason: CodexSegmentTurnRejectionReason): CodexSegmentTurnAdmission =>
-  Object.freeze({ accepted: false, reason });
+const reject = (
+  reason: CodexSegmentTurnRejectionReason,
+  eventTurnId: string | null,
+): CodexSegmentTurnAdmission => Object.freeze({ accepted: false, reason, eventTurnId });
 
 export const isCodexSegmentTurnAdmissionEventName = (eventName: string): boolean =>
   governedEventNames.has(eventName);
@@ -67,28 +71,29 @@ export const resolveCodexSegmentTurnAdmission = (
   const explicitTurnIds: string[] = [];
   for (const entry of candidates) {
     if (typeof entry.value !== "string" || entry.value.trim().length === 0) {
-      return reject("CODEX_SEGMENT_TURN_EXPLICIT_INVALID");
+      return reject("CODEX_SEGMENT_TURN_EXPLICIT_INVALID", null);
     }
     explicitTurnIds.push(entry.value.trim());
   }
 
+  const eventTurnId = explicitTurnIds[0] ?? null;
   const normalizedActiveTurnId = activeTurnId?.trim() ?? "";
   if (!normalizedActiveTurnId) {
-    return reject("CODEX_SEGMENT_TURN_INACTIVE");
+    return reject("CODEX_SEGMENT_TURN_INACTIVE", eventTurnId);
   }
 
   if (
     explicitTurnIds.some((turnId) => turnId !== normalizedActiveTurnId) ||
     new Set(explicitTurnIds).size > 1
   ) {
-    return reject("CODEX_SEGMENT_TURN_CONFLICT");
+    return reject("CODEX_SEGMENT_TURN_CONFLICT", eventTurnId);
   }
 
   if (
     explicitTurnIds.length === 0 &&
     !isCodexSegmentTurnAdmissionEventName(nativeEventName)
   ) {
-    return reject("CODEX_SEGMENT_TURN_OMISSION_UNLISTED");
+    return reject("CODEX_SEGMENT_TURN_OMISSION_UNLISTED", eventTurnId);
   }
 
   return Object.freeze({
