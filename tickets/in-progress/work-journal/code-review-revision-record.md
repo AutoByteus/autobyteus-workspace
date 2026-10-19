@@ -8,6 +8,7 @@ The latest `code-review-report.md` / `api-e2e-test-review-report.md` remains aut
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | code-review-report.md | Implementation Review, round 1 / IR-001 | N/A | Fail — Local Fix → implementation_engineer | F-001 |
 | CRR-002 | code-review-report.md | Implementation Review, round 2 (Targeted Delta Review) / IR-002 | Fail (F-001) | Pass → api_e2e_engineer | F-001 (resolved) |
+| CRR-003 | api-e2e-test-review-report.md | Proportional API/E2E test-code review / API-REV-001 | Pass (CRR-002, source) | Pass → delivery_engineer | None |
 
 ## Revision Entries
 
@@ -75,3 +76,34 @@ None.
 - Remaining risks or uncertainty:
   - N2 margin on slower hardware.
   - AutoByteus native write ordering (P1) and live per-runtime checks (API/E2E).
+
+### CRR-003 — Proportional test-code review after API/E2E Pass (API-REV-001)
+
+- Canonical review report updated: api-e2e-test-review-report.md (new)
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review). Five durable E2E test files at b105dc9b1b; product code unchanged since 8f5bb563b1.
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; api-e2e-execution-coverage-report.md (API-REV-001); SCN-W1/W5/W6, BEH-W4–W6, P1
+- Relevant solution revision IDs: SR-010, SR-012, SR-014
+- Relevant architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-002, implementation review)
+- Current authoritative result: Pass (test review)
+- What changed in the review result and why:
+  - The tests enter through real triggers and assert the approved ACs.
+  - The AOML-1 stale assumption was fixed correctly.
+  - NB-T1: the live test's `>=` per-call check is weaker than its comment. I verified the claim offline against the 7 saved live summaries (all exact). Non-blocking.
+- Supported product scenario / material-premise basis changes: None. Deleting `work_journal/` accepted as a faithful reproduction of a pre-feature run (SCN-W6).
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings; F-001 was resolved in CRR-002).
+
+- New or remaining finding IDs: None (non-blocking NB-T1, NB-T2; follow-ups FU-T1, FU-T2)
+- Material score or classification changes: N/A (no scorecard for test review)
+- Recommended recipient: delivery_engineer
+- Remaining risks or uncertainty:
+  - Live Grok not covered (user decision).
+  - N2 on slower hardware.
+  - The full server E2E suite was not re-run after the AOML-1 fix.
