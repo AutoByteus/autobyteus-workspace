@@ -532,10 +532,14 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect((await listProjects()).find((item) => item.projectId === other.projectId)?.openTaskCount).toBe(0);
 
     // REQ-003: there is no status-changing operation, and Task types never reuse delegated-task names.
+    // The meaning-search index mutations (search-model-settings REQ-006) maintain the search index and never
+    // change a Task, so they are the only other mutations whose names mention Project Tasks.
     const mutationFields = Object.keys(schema.getMutationType()?.getFields() ?? {});
-    expect(mutationFields.filter((name) => /projecttask/i.test(name)).sort()).toEqual(
+    const indexMutations = ["indexAllProjectTasks", "indexProjectTasks", "rebuildProjectTaskIndex"];
+    expect(mutationFields.filter((name) => /projecttask/i.test(name) && !indexMutations.includes(name)).sort()).toEqual(
       ["createProjectTask", "deleteProjectTask", "updateProjectTask"],
     );
+    expect(indexMutations.every((name) => mutationFields.includes(name))).toBe(true);
     const updateInputFields = Object.keys((schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> }).getFields());
     expect(updateInputFields.sort()).toEqual(["contextChanges", "dependsOnTaskIds", "description", "projectId", "taskId"]);
     expect(schema.getType("Task")).toBeUndefined();
