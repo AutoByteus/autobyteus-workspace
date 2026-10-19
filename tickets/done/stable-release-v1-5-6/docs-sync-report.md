@@ -42,5 +42,5 @@ None in this ticket. Removal of `create_or_update_project` shipped in the betas;
 
 ## Delivery Continuation
 
-- Result: `Pass`
+- Result: `Pass` (DR-002: notes published byte-equal as the v1.5.6 body)
 - Next delivery action: finalize branch, pre-tag checks, cut `v1.5.6`.
