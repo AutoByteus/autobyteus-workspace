@@ -296,3 +296,54 @@ N/A.
 - Keep error messages value-free; dummy values only.
 - `pnpm -C autobyteus-ts build` before the server suites.
 - Check that `grep -rn "setSdkLoader\|initialize?\|\.default?\.\|as any\|WEBSOCKET\|Websocket" autobyteus-ts/src/tools/mcp` returns nothing (AC-005).
+
+## SR-002 Addendum — Regression parity validation (2026-10-19)
+
+- Basis: `requirements-doc.md` SR-002 (REQ-008…REQ-010, AC-010…AC-016), approved by the user (his words relayed by `/project_task_manager`).
+- Authorities: as above, plus the updated `references/ticket-scope.md` (skill updated 2026-10-19).
+- **No product source change is designed.** SR-002 adds verification only. If a check shows a difference caused by the upgrade, that is a defect in this ticket ("This ticket" in `ticket-scope.md`): diagnose and route it as a failure through the normal route. A pre-existing problem (the same on 1.30.0) is a follow-up.
+
+### Before and after
+
+- Before: commit `bf3c550c18` (SDK 1.30.0, old loaders, WebSocket present).
+- After: current `personal` (`f59055f13f`; SDK 1.32.1).
+- Each in its own worktree and build. Never use an installed app, and never use the user's running instance or data (TESTING.md Rules 1-2).
+
+### Checks
+
+1. **Toy integration tests (AC-010).**
+   - Give each worktree a test-owned `autobyteus_mcps` at `<worktree>/autobyteus_mcps`: a symlink to a test-owned copy of only the needed toy folders (e.g. `pdf_mcp`). It must not be committed.
+   - Run `pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp` with a clean environment on both commits.
+   - The HTTP toy does not exist, so report its cases as "cannot run on either". On "before", the WebSocket integration test also exists; report it as removed in "after".
+2. **Real-world servers in isolated apps (AC-011, AC-012).**
+   - Run `pnpm --silent isolated-app start --build` per worktree.
+   - Add servers through the product (bulk import JSON):
+     - copies of the user's definitions for `VideoAudioServer` and `media-downloader`, with env removed and `--directory` pointing at test-owned copies of `video-audio-mcp` and `yt-dlp-mcp` (copy without `.venv`; `uv` builds a fresh one there);
+     - one test-owned local HTTP MCP server (e.g. the 179 helper `autobyteus-server-ts/tests/e2e/helpers/auth-required-mcp-server.ts`, or an in-process SDK server with a dummy header);
+     - a stdio server that exits at start (e.g. `node -e "process.exit(1)"`) and one that hangs (e.g. `node -e "setInterval(()=>{},1e9)"`).
+   - For each: preview the tools, save, then have an agent on the native runtime and on Codex or Claude call one harmless read-only tool (the media-info style tool of VideoAudioServer on a test-owned small media file; nothing on media-downloader beyond listing). Then stop the instance.
+   - Record: tools listed (names and count), call results, error texts, time to fail or wait for the broken servers, the app stays responsive, no orphan `uv`/`python`/`node` child after stop (`ps`).
+3. **Own endpoints (AC-013…AC-015).**
+   - The code statement is in investigation notes SR-002 (no SDK in `autobyteus-server-ts/src`).
+   - Live, in the same isolated instances: a Claude run and a Codex run each call `create_task` then `update_task` through the Agent Tools MCP server on a test-owned project. Then an MCP client (the SDK client from a test script, or the `autobyteus-ts` HTTP client) calls an external MCP-origin tool (the HTTP test server's tool) through `/mcp/gateway` on loopback.
+   - Same results on both commits.
+4. **Report (AC-016).** A plain-words table: each check × before/after × same/different, plus every difference and everything that could not run, with the cause.
+
+### Safety (REQ-010)
+
+- Never touch `~/.autobyteus`, the user's running app, or the user's `autobyteus_mcps` / `autobyteus_private_mcps` folders (copies only).
+- No SSH, download, paid or model-heavy tool calls.
+- Dummy values only. Codex and Claude use the existing signed-in CLIs per TESTING.md (throwaway `CODEX_HOME`; note any host-login use).
+
+### Classification for this round
+
+- `task_size=Small`, `architectural_risk=Low`: validation only, no source change. Escalation: any upgrade-caused difference → a defect in this ticket, through the failure route.
+
+### SR-003 — Runtime × MCP matrix (extends checks 2 and 3)
+
+In each isolated app (before and after), configure one agent per runtime with the same three tool kinds:
+- (a) `create_task` + `update_task` from the Agent Tools MCP project tools, on a test-owned project;
+- (b) the external stdio tool: the VideoAudioServer read-only tool, from its test-owned copy;
+- (c) the external HTTP tool: the test-owned HTTP MCP server's tool.
+
+Runtimes: native AutoByteus, Claude Agent SDK, Codex, AGY, and Grok if installed. Use the scripted AGY CLI (`tests/fixtures/agy-failure-cli.mjs`, `CALL_TOOL:`) where no live model is wanted. Report a matrix with each cell's before and after result. Unavailable runtimes are "not run" with the reason. Live model runs follow TESTING.md: a throwaway `CODEX_HOME`, and real `HOME` only where the CLI needs its sign-in (say so in the report).

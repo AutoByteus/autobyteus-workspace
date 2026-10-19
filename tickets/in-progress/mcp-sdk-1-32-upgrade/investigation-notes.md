@@ -77,3 +77,22 @@ Question: does anything have to be fixed before this upgrade can reach its goal 
 - the 179 auth path (unchanged option shape in 1.32.1, `requestInit` at L110/L171).
 
 Result: no prerequisite found.
+
+## SR-002 Investigation (2026-10-19): regression request from the user
+
+- Trigger: `/project_task_manager` relayed the user's words: "we have to make sure that the mcp upgrade doesn't break. Upgrading a library should make things better instead of breaking things." A later addition (check 3): our own MCP endpoints. The user is unhappy that nothing ran against his real MCP servers or our own MCP endpoints.
+- Workspace for this round: `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity`, branch `codex/mcp-sdk-1-32-upgrade-parity`, base `origin/personal` @ `f59055f13fc1d76c4b3ad0d5f021beaad957b967`. The ticket folder was moved back from `tickets/done/` to `tickets/in-progress/` because the Task is still open.
+
+| Date | Type | Source / Command | Finding |
+| --- | --- | --- | --- |
+| 2026-10-19 | Code | `grep -rn "@modelcontextprotocol" autobyteus-server-ts/src` | **No import at all.** The Agent Tools MCP server (`src/agent-tools/mcp/*`, JSON-RPC in `agent-tools-mcp-method-dispatcher.ts`) and `/mcp/gateway` (`src/mcp-gateway/*`) are hand-written |
+| 2026-10-19 | Code | `src/mcp-gateway/mcp-gateway-tool-catalog.ts` L1-38; `mcp-gateway-method-dispatcher.ts` L126 | The gateway lists and executes `ToolOrigin.MCP` registry tools. Executing one goes through `autobyteus-ts` managed servers, i.e. the upgraded SDK **client**, toward the external server |
+| 2026-10-19 | Code | `autobyteus-server-ts/src/agent-tools/project-tasks/*` | `create_task`/`update_task` are server-owned tools. Through the Agent Tools endpoint, no SDK code runs on our side |
+| 2026-10-19 | Code | `node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280…/` grep for `@modelcontextprotocol/sdk` in `*.mjs`/`*.js` | No import: the Claude Agent SDK bundles its own MCP code, so its 1.32.1 peer is not loaded at run time. Codex is a separate binary with its own MCP client |
+| 2026-10-19 | Contract | `gh api …/compare/1.30.0...1.32.1` (`src/client`, `src/shared`) | `client/stdio.ts` is **unchanged**. `shared/protocol.ts` (+44/−9) only changes the experimental session-bound task store (not used by us). `shared/transport.ts` adds the redirect helpers |
+| 2026-10-19 | Code | `autobyteus-ts/tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts` L17-19; `ls` | `repoRoot` = `autobyteus-ts`, so `mcpsRoot` = `<repository root>/autobyteus_mcps`. That folder does not exist in the main checkout either; the toy repo is at `/Users/normy/autobyteus_org/autobyteus_mcps`. The tests cannot run in **any** current layout without a test-owned link. The HTTP toy `streamable_http_mcp_toy` does not exist in `autobyteus_mcps`; the stdio test uses `pdf_mcp`, which does |
+| 2026-10-19 | Data | user's `~/.autobyteus/server-data/mcps.json`, read-only: command basename, path-like args, env key names only | 6 stdio servers, all `uv --directory <repo>/…`: VideoAudioServer (`video-audio-mcp`, no env), tts (`tts-mcp`, `TTS_MCP_BACKEND`), autobyteus-image-audio (API key and model envs), ssh_remote and ssh_ali (`ssh-mcp`, host/user/private-key-file envs), media-downloader (`autobyteus_private_mcps/yt-dlp-mcp`, no env) |
+| 2026-10-19 | Code | `git show bf3c550c18:autobyteus-ts/package.json` | Pre-upgrade commit pins `@modelcontextprotocol/sdk` 1.30.0 (the first parent of merge `6990940b8d`) |
+
+- **Correction** to my autobyteus-181 receipt verification (`…/jira-mcp-server-presets/…/autobyteus-181-delivery-receipt-verification.md`, "AC-008 exception" row). I accepted the explanation that the toy tests fail only in a worktree. In fact they fail in every current layout (`<repository root>/autobyteus_mcps`), and the HTTP toy they need does not exist. The receipt's conclusion (out of scope, follow-up `autobyteus-189`) still holds, but the stated cause was incomplete. The record there has been corrected.
+- Safety constraints for SR-002: REQ-010 / DEC-005 in `requirements-doc.md`.
