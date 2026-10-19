@@ -90,6 +90,7 @@ export class CodexThreadManager {
         try {
           await thread.releaseRuntimeInput();
           thread.rejectStartupReady(new Error("Codex preparation was closed."));
+          thread.flushSegmentTurnRejectionSummaries();
           thread.clearListeners(); thread.clearApprovalRecords(); thread.clearPendingMcpToolCalls(); thread.unbindAll();
         } catch (error) { errors.push(error); }
       }

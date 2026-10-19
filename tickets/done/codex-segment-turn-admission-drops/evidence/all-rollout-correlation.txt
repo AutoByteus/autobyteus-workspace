@@ -1,0 +1,128 @@
+agent_package_creator_e18ab71a9d9b437f9032a5344323dd10 thread 01a100a6-0093-71a3-9fdb-490a89d465e9 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+api_e2e_engineer_0272d2536f6643218b7d44a832581a82 thread 01a02070-3873-7d70-b3ed-7279e2b6bcfc rollouts 1 | log {'completed:CONFLICT': 2} | rollout late item_completed {}
+api_e2e_engineer_03f479060ea9420c817ccbce06f7b460 thread 01a046cb-4c6b-73c0-91ef-f1db037a69ad rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+api_e2e_engineer_05ac65f2dc1e494da53c518bbe4e4956 thread 01a0d921-0d0f-7b83-9421-2a377b6e2087 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+api_e2e_engineer_298b6d2eecbc4050a84da14d0638dbcc thread 01a01fd1-1c2b-7b83-84ad-0a0070abb448 rollouts 1 | log {'completed:CONFLICT': 3} | rollout late item_completed {}
+api_e2e_engineer_30084b3da05444d999e23ed0ca302c04 thread 01a041cd-b8dc-7e23-a815-e33ed05e8d69 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+api_e2e_engineer_450b25f17f2245fe89b9c52cd17038ae thread None rollouts 0 | log {'completed:CONFLICT': 21} | rollout late item_completed {}
+api_e2e_engineer_4635c98c67914d11ab5aa08bd455fc82 thread 01a10101-5b54-7ed3-b18a-f329e3f43388 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+api_e2e_engineer_4a3e0c65837844e8a34f48453f5626ca thread 01a01f0d-bcd5-73b1-b632-c0ef97ffc60f rollouts 1 | log {'completed:CONFLICT': 3} | rollout late item_completed {}
+api_e2e_engineer_4b3516b0eb7d448586471bee29383f50 thread 01a136b0-1215-79c2-924e-0ad9d8733b71 rollouts 1 | log {'completed:CONFLICT': 5} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 5}
+api_e2e_engineer_68cc98fe10194bef9b8c4997c08c2316 thread 01a060b8-55c4-7941-b9e0-8b46dbed10e3 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+api_e2e_engineer_6cd0cc6875984f2a97174bb9d6281eee thread 019fad91-cd33-76e0-9531-74779825d9db rollouts 1 | log {'completed:INACTIVE': 1, 'completed:CONFLICT': 2} | rollout late item_completed {}
+api_e2e_engineer_71a74d31e4d54664aeeb96a5d1c5496f thread 01a028f4-8f36-70f1-b6b7-2f43cfb323af rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+api_e2e_engineer_7bcd95c96f4045ed834fa693b4c8c585 thread None rollouts 0 | log {'completed:CONFLICT': 1, 'started:INACTIVE': 1} | rollout late item_completed {}
+api_e2e_engineer_96e63b834264434986f16a8037990c3f thread 01a0df5d-b920-7051-b8db-c1cf83268874 rollouts 1 | log {'completed:CONFLICT': 4, 'completed:INACTIVE': 1, 'started:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 4, ('INACTIVE', 'CommandExecution'): 1}
+api_e2e_engineer_af460c9e326549dc853f29521642488c thread 01a0142d-9671-7623-8eb7-0e0390aea27b rollouts 1 | log {'completed:CONFLICT': 3} | rollout late item_completed {}
+api_e2e_engineer_b27ab4bc0917401987f4ea5fc4c72f9e thread 01a03494-3ecd-7f73-988b-67362635bdcb rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+api_e2e_engineer_d2e1541145ab4853b2851d07f3db56e7 thread 01a02da8-4496-7e50-b456-522996feccb9 rollouts 1 | log {'completed:CONFLICT': 1, 'started:INACTIVE': 1, 'completed:INACTIVE': 1} | rollout late item_completed {}
+api_e2e_engineer_f646069b19394b7a86c604f610aabfed thread 01a041c6-1241-7090-90f5-7f9a1cc1afe4 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+api_e2e_engineer_fabfac5ae1404df280274d448f9ef652 thread 01a0def0-27cd-7b23-bc09-6749275134d9 rollouts 1 | log {'completed:CONFLICT': 6} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 8}
+architecture_reviewer_2990d705f7794417ac6dcb85c8836357 thread None rollouts 0 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+architecture_reviewer_6378e4cdfe814cb4bb683925893a2faf thread 01a0d2bd-f98c-7430-8e72-f1a99937633e rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+architecture_reviewer_6ecbff54c4114a3cb26ae83e47a955f6 thread 01a01da8-6678-7b53-90b5-c4c0a4effcca rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+architecture_reviewer_bc04c941d30d42f281a24cdf5fa5aa93 thread 01a041ac-0db0-7861-b38a-ca3d919bd479 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+architecture_reviewer_d1cf3728bbc643cb9848a93efd4e13f8 thread 01a02d22-1185-7353-8377-a698244954ce rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+architecture_reviewer_f1c40218108a4232b83ea1369a1fdc9c thread 01a0343f-42d8-7790-8b55-61347587b1d0 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+architecture_reviewer_f9d3db4b7137472ea265ba833a5caec8 thread 01a032ca-b18c-77d0-8584-61e52fbeda9e rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+code_reviewer_02f77c75d93a4880b94f04ba6cf326f6 thread 01a0e22b-b699-7f63-8ca2-9fffa05157e6 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+code_reviewer_3140eed185e04aba9f34ecba67818f0c thread 01a01fa8-a56c-7440-8fb9-c580dbf9d8c7 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+code_reviewer_3529c7c9f04240f1a4706d5850384154 thread 01a0140e-f66c-7700-88c8-ebca568d4888 rollouts 1 | log {'completed:INACTIVE': 3} | rollout late item_completed {}
+code_reviewer_36dd3253c5264cf88ee568a20c997e17 thread 01a050e2-5dc1-7490-9fd8-07f3ec63bca3 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+code_reviewer_c2303644039e427aba5ab55ec5667b19 thread 01a032dc-c9c1-7560-93ef-5834155c4931 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+code_reviewer_cb9056d9ec7d4aa08a3dc0615dbcb04d thread 019fad6c-049e-73c3-bd6d-b0fe14eb7f29 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+code_reviewer_ed947d742002467797e5ccb4e2cf6d4a thread 01a02302-920d-7942-b26b-972a9311b68b rollouts 1 | log {'completed:INACTIVE': 2} | rollout late item_completed {}
+code_reviewer_f3515fe5d1a24a508919698c503186d4 thread 01a0d289-7cff-7ce1-a69e-2879c59dc322 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+codex_431f19f1c88d4581829830c83bbc9394 thread 01a07162-6b1f-7601-92ce-5eaf36b93889 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+codex_45ce1b9e80ea42db869dc86615d51fc3 thread 01a038c4-03c6-7a83-80cb-10a99331ae18 rollouts 1 | log {'completed:INACTIVE': 191, 'completed:CONFLICT': 5, 'started:CONFLICT': 1, 'started:INACTIVE': 189, 'agentMessage:INACTIVE': 684} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1, ('CONFLICT', 'CommandExecution'): 1}
+codex_7e59a8dde05a4b41beebc9d9565d6c64 thread 01a0cf0d-10ba-7a02-a4df-efbc81d6f275 rollouts 1 | log {'completed:CONFLICT': 2, 'completed:INACTIVE': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 2, ('INACTIVE', 'CommandExecution'): 1}
+codex_d36a223f75fe426eb082be7fb26514f6 thread None rollouts 0 | log {'completed:INACTIVE': 3, 'completed:CONFLICT': 4} | rollout late item_completed {}
+daily_assistant_91d77af705a04b67b19b95d59ed9adb4 thread 01a1301f-cec4-7873-b29e-7b78035cd002 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+delivery_engineer_0947b7bfedcd49819b06dbc3059b73a5 thread 01a04feb-0ca8-7860-85d2-ac243188b1ba rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+delivery_engineer_10cae42ceb8a4959b449fab96b4b4fe3 thread 01a0ddb5-d77d-7743-a2ef-68674973f207 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+delivery_engineer_12ce9265d70b41acbcc69f2a8766e0e2 thread 01a0f77d-a516-7cd2-81ab-f0989694ca0e rollouts 1 | log {'completed:INACTIVE': 1, 'completed:CONFLICT': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1, ('CONFLICT', 'CommandExecution'): 1}
+delivery_engineer_1c5e4e3646f340af8e543f6dc65605d9 thread 01a0330f-2b7e-7943-a6d4-e68ca3047fd4 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+delivery_engineer_3cb24dc424374efc83c4149c92bcc4af thread 01a0fdc2-5d1d-77c2-aa67-a5c8af086166 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+delivery_engineer_3cf42ae750ed40988e270ffc41f4719a thread 01a05d47-6d3b-72d1-866a-7fa19c97000c rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+delivery_engineer_402aa2487bea4db0b760bde660a99b24 thread 01a0e6b5-0e6a-7590-b09a-9f0e7ff33d65 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+delivery_engineer_40e96b521bc844c0858c5e0f16a51c1f thread 01a062eb-2d90-79d0-abab-1cffb10a0904 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+delivery_engineer_4e54fbf3fade46e8b0e6925a68dc00a4 thread 01a0d30f-6b8e-7d30-9813-8d87e9e7d9e1 rollouts 1 | log {'completed:INACTIVE': 2} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 2}
+delivery_engineer_69876f062637477994617b4a0f1f2cbd thread 01a05113-4979-74c3-a684-224ccea5db38 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+delivery_engineer_7d19a6f8ec4a4ef5afc3ce4aea081ead thread 01a0d507-c349-7f10-ab8c-7689831d5882 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+delivery_engineer_98549b654492424d98728579c5be1130 thread 01a117a6-36e8-7822-80d7-b557ff414909 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+delivery_engineer_9d67c2f099f140bea351afff29ec7d16 thread 01a01fee-d22f-7f81-99c1-a3efc5a47c4c rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+delivery_engineer_a247eae634024453bb16c97b2c975940 thread 01a130db-dfe6-7983-8efd-4991db548bc1 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+delivery_engineer_a644fb8ec5bf495d8463b1e6875da940 thread 01a020f4-43bb-7213-9a34-de199f8074fd rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+delivery_engineer_a7dfcf929f11426da3fa5247449caea9 thread 01a05e35-dda5-7132-86d3-4831e77c8007 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+delivery_engineer_b04b793cdfe444948e125510978d0011 thread 01a0f72f-77c8-7683-a468-542a5c2c237b rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+delivery_engineer_b37cd411531d46208591a36d700ea181 thread 01a041e2-51c8-73b3-96dc-9cafc25cb8ef rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+delivery_engineer_b80caceea41240d68f6cdcca53c2d973 thread 01a0df32-0983-7c12-8457-1547bb4075ff rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1, ('INACTIVE', 'CommandExecution'): 3}
+delivery_engineer_b9af6803e5674aaa859d740e6538be78 thread 01a0a576-b519-7c03-a1f7-7527b09acd8f rollouts 1 | log {'started:INACTIVE': 1, 'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+delivery_engineer_d841da94fda24934a311f9f5204a712c thread None rollouts 0 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+delivery_engineer_de6bba9862264ac29f9ed9c2144360ee thread 01a01f5f-c4ec-74a2-a902-9aa3b72495b4 rollouts 1 | log {'started:INACTIVE': 1, 'completed:INACTIVE': 1} | rollout late item_completed {}
+delivery_engineer_f32a1972cdfb4572996682df6da676fb thread None rollouts 0 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+delivery_engineer_fba919f34f424f63abb8d4c5eee07865 thread 01a02f47-b1e9-7840-a8b9-4bc1b53e1abd rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+implementation_engineer_0460873ee406497ab45c41aabc3129cc thread 01a023c3-e5ba-7303-9962-d40222dacbf0 rollouts 1 | log {'completed:INACTIVE': 2} | rollout late item_completed {}
+implementation_engineer_124b8e89e6dd4377a15033adc283c75e thread 01a043fb-b57c-7971-b93f-af92745ffd63 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+implementation_engineer_2aecb94e0e3244999389307e23c382c9 thread 01a0d36d-44b9-7c32-b3c5-e6a694ede0ff rollouts 1 | log {'completed:CONFLICT': 2, 'completed:INACTIVE': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 2, ('INACTIVE', 'CommandExecution'): 1}
+implementation_engineer_2c60a2b9fdf1490c818f25289337aa21 thread 01a1360b-018c-7fe0-9082-b88ed87e6107 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+implementation_engineer_3b80687a35a54aca901bb872da37370a thread 01a0281a-c518-7272-9a76-634588442a3b rollouts 1 | log {'completed:CONFLICT': 1, 'completed:INACTIVE': 1} | rollout late item_completed {}
+implementation_engineer_3da7d98afe744a8c9f5a66a7f67b341d thread 01a04d74-0f06-79e1-8000-d344605c17c5 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+implementation_engineer_66d418bbff2b41eb9b0ceb4e4b149576 thread 01a02d71-5987-7840-a636-6c7fb6c6d80c rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+implementation_engineer_a13cd2164075468b81e0be066f77d2af thread 01a03443-a7b5-7a20-95fe-7207fcc9d32a rollouts 1 | log {'completed:INACTIVE': 3} | rollout late item_completed {}
+implementation_engineer_b92463634cee43079c4c46a03522adaa thread 01a05dff-5c44-7623-b12f-79598fb9c1d9 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+implementation_engineer_f84b5074541a47fea830604d1bcb77c3 thread None rollouts 0 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+implementation_engineer_fa59a890fdb149169c471f1d5fe8f44b thread 01a050dc-365c-79a2-aad3-ca717e9b6fe9 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+implementer_397045d65da04a758bd5f186c62a0aef thread 01a03d91-af97-7070-ab08-a9493fd5766e rollouts 1 | log {'completed:CONFLICT': 2} | rollout late item_completed {}
+investigator_1f26108d1bdf41f7abc1305f63c31270 thread 01a03d5b-b8e2-7291-b3cb-c545b9770a7e rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+investigator_2b0536a32258406c8527696a7986fe24 thread 01a03d5b-d8dd-7c43-8d7f-47bd2102892a rollouts 1 | log {'completed:CONFLICT': 1, 'completed:INACTIVE': 1} | rollout late item_completed {}
+investigator_566b84f471c44578a51840efd42b703d thread 01a03d9a-1f14-70c0-92a3-aebbfb84ba24 rollouts 1 | log {'completed:INACTIVE': 5, 'completed:CONFLICT': 1} | rollout late item_completed {}
+planner_ebc21f060ef147aa8c2c7c70aaa3e651 thread 01a03d5a-f843-79e1-80a1-26aa78e8520d rollouts 1 | log {'completed:INACTIVE': 1, 'completed:CONFLICT': 1} | rollout late item_completed {}
+product_prototyper_3341cdc3b9f044779d58fa22ab7d9485 thread 01a0fbeb-3c19-73e0-a982-81363311f340 rollouts 1 | log {'completed:CONFLICT': 8, 'started:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 7, ('CONFLICT', 'McpToolCall'): 1, ('INACTIVE', 'CommandExecution'): 1}
+product_prototyper_3395cb44d81e4df5a6460dec32215585 thread None rollouts 0 | log {'completed:INACTIVE': 1, 'completed:CONFLICT': 1} | rollout late item_completed {}
+product_prototyper_85e97d55d3ae4b5396dc88088b074643 thread 01a10029-7555-7781-a8af-f34bc392d064 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+product_ui_ux_designer_f1b47b534b5e4da49ef50e43e23fbef3 thread 01a11621-95c3-77f1-8777-9d9d015f387a rollouts 1 | log {'completed:INACTIVE': 1, 'completed:CONFLICT': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 2, ('CONFLICT', 'CommandExecution'): 1}
+prototype_bootstrapper_abed47840270461f8820e6bb7dbca179 thread 01a0fb22-2a0e-71a1-b096-f65ac2808da1 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+skill_optimizer_a14dffd5e50441eeb93244046df8a54a thread 01a0dcd3-5227-77c3-b474-009d6fe0e21e rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+solution_designer_004c62983f134d37855a26796af6c214 thread 01a04d32-a0db-7651-940e-66c0c76be4e0 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+solution_designer_05432e34bccd4d989eb7994563732dcb thread 01a1148d-002d-7791-9b1f-8fc527090835 rollouts 1 | log {'started:INACTIVE': 2, 'completed:INACTIVE': 2, 'started:CONFLICT': 2, 'completed:CONFLICT': 2} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 2, ('CONFLICT', 'McpToolCall'): 1, ('CONFLICT', 'CommandExecution'): 1}
+solution_designer_19b10b52e5534789b6c868edcb3302da thread 01a0fd60-e346-7272-9a8e-41f78d19493e rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+solution_designer_1b5e6ff7403d4a869f302baf62866c68 thread 01a050cc-00f0-74d1-a633-4e04aa43d48c rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+solution_designer_1b7b11abc64d444c866c24974df1b2c9 thread 01a0dc05-e4e5-7aa1-b8f9-a1ad88a1db02 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+solution_designer_42e4b5c86f1242b794b72ff42712bd26 thread 01a05d8b-afd5-7723-b44f-51225e0b4e64 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+solution_designer_4d70731a76584fceaf1bc0632d0493f8 thread 01a1033d-6467-7843-a1f3-56596e284872 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+solution_designer_514de91a555e45fea173f8530f28ace4 thread 01a100bc-dcb3-7950-aa80-71cf319c6aa4 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+solution_designer_5c3e5229be2f477fbd282f1cef00d259 thread 01a023a5-b6da-7752-9d1e-07517fa52417 rollouts 1 | log {'completed:CONFLICT': 3} | rollout late item_completed {}
+solution_designer_63a39e72fb2442918628d96c3ae49963 thread None rollouts 0 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+solution_designer_74d30258d52a495bb61c7a61b97a2e0f thread 01a01d8a-5fbf-7cc3-8ae0-836ef97a467f rollouts 1 | log {'completed:CONFLICT': 2} | rollout late item_completed {}
+solution_designer_8d9e41ebc0e94d2e9d6e65dc64103aa9 thread 01a0d248-d274-7fb0-9a8d-9a17683c71c7 rollouts 1 | log {'completed:CONFLICT': 3, 'completed:INACTIVE': 2} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 3, ('INACTIVE', 'CommandExecution'): 2}
+solution_designer_8fc61d4886ac4c189f9285f39e4d3bf4 thread 01a053d0-2f86-71a3-b3f0-fd2074d0f02a rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+solution_designer_8ff8df2bce774b37b05e7584f1b7131d thread 01a01841-1d8a-7b50-b1da-59a2808b0a8d rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+solution_designer_948f0fdfe2cc46eb9b6294523204d017 thread 01a0328c-2d07-73c3-928b-9155c21beac0 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+solution_designer_9546d05221d848d48392224ce079efcf thread 01a119d1-80f4-7933-ba8b-15a0049cd4a9 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+solution_designer_9a3ccf7c6d6d44cb8a9af72fe7485d5e thread 01a0d2c0-487f-7973-a4e7-dc218b0362a4 rollouts 1 | log {'completed:CONFLICT': 2} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 2}
+solution_designer_ae0f9c0298e7466aab82bf2b4b0fd2c5 thread 01a0e669-8eef-78e2-a342-5bd1e0d9a709 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+solution_designer_b0aea954fc794d47830d055b5e8d68e1 thread 01a10576-7630-79c3-88cd-d9bb2e084bfb rollouts 1 | log {'completed:CONFLICT': 1, 'completed:INACTIVE': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1, ('INACTIVE', 'CommandExecution'): 1}
+solution_designer_b1a3b7b01d35499d9fa06baf799a2046 thread None rollouts 0 | log {'completed:INACTIVE': 2} | rollout late item_completed {}
+solution_designer_b5b6a96dfade433a8918534abd45b96a thread 01a01e39-e661-7570-9e11-7c9cdc259f54 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+solution_designer_b648c1b32f264b3bbe09532b95c3ec33 thread 01a012f0-65eb-74f3-9287-2fe5eacd3a38 rollouts 1 | log {'completed:CONFLICT': 4, 'completed:INACTIVE': 1} | rollout late item_completed {}
+solution_designer_b92b4ccf8e4647069b1c924dcfbaeb28 thread None rollouts 0 | log {'completed:INACTIVE': 2, 'started:INACTIVE': 1, 'completed:CONFLICT': 1} | rollout late item_completed {}
+solution_designer_b9e48ba18f66457882763c1861808ca2 thread 019f9d05-4a0f-7d33-9e44-bf8dec782fce rollouts 1 | log {'completed:CONFLICT': 1, 'completed:INACTIVE': 1} | rollout late item_completed {}
+solution_designer_bccdd1d8fb6742c0a0144be986f784fc thread 01a0f658-d1af-75c3-b616-d0b29988e789 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 1}
+solution_designer_becb88510c5b40e2bf4fd6cfdf2f4294 thread 019fbba2-3096-72a3-ae0c-85f9016cc25e rollouts 1 | log {'completed:INACTIVE': 2} | rollout late item_completed {}
+solution_designer_c1cf88985b7f4756866d21a1165599c0 thread 01a03436-be7c-7d00-a9cb-e82e1142e8a9 rollouts 1 | log {'completed:INACTIVE': 2, 'completed:CONFLICT': 1} | rollout late item_completed {}
+solution_designer_c25f32917f7d4ef8a23a79bcdb813cfe thread 01a0607d-c2e0-7b00-a0ca-2213ffd85531 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+solution_designer_ccc76494f523485bb3ce745671dd8b90 thread 01a0d8f3-254c-7fc2-a41b-774d27728033 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+solution_designer_d718c89262ff46f383e7dbd230b0bd6d thread 01a0e201-0895-7852-8760-09774f831331 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+solution_designer_da640a17b8f94512a236c6c3975039c2 thread 01a02cf5-5754-7a80-9cb0-57312b9ed515 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+solution_designer_de48509adc6541a2ac656a81ccd93bbc thread 01a0282c-b7ec-7200-8f2a-fca471339d32 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {}
+solution_designer_e431ef6e57ff451f9e85989ebd239c87 thread 01a0ffcc-5eeb-7913-99cb-e12694542366 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+solution_designer_e701e7ccdbde45d2b373f697ea44923f thread 01a0443d-2789-7ba1-ae99-c5bc3d96ae62 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+solution_designer_ef2854b4b6584744a63b5674a0899293 thread 01a056dd-ada3-72f2-afa1-02d3fc2c09c3 rollouts 1 | log {'started:INACTIVE': 32, 'completed:INACTIVE': 32, 'completed:CONFLICT': 2, 'agentMessage:INACTIVE': 585} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1, ('CONFLICT', 'CommandExecution'): 2}
+solution_designer_efde697085304719ba640fab5b2ea2e5 thread 01a0fc38-ce5f-7e52-8e61-81b04569e1f6 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+solution_designer_fcfd4ac39f104bc984ab0cab13488b04 thread 01a10088-d766-7203-86cb-cda19bf88976 rollouts 1 | log {'completed:CONFLICT': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1, ('CONFLICT', 'CommandExecution'): 1}
+solution_designer_ff9bb51075be4fdbbcd1b6eceba5ccdf thread 01a1334d-13da-7483-bd43-ac6b9f4a3a68 rollouts 1 | log {'completed:CONFLICT': 3, 'started:INACTIVE': 1, 'completed:INACTIVE': 1} | rollout late item_completed {('CONFLICT', 'CommandExecution'): 3, ('INACTIVE', 'CommandExecution'): 1}
+student_one_2f440b2175bb4d949c8c03fe917a5eeb thread None rollouts 0 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+ui_baseline_bootstrapper_9f22a91a249f48f7bf87803f910b026c thread 01a11621-976c-7641-ba79-bee9f6f6ab1e rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {('INACTIVE', 'CommandExecution'): 1}
+validator_6e0868e1f1524b3092a18a9e904b5551 thread 01a03d92-c25f-7153-bae8-a448d6459d66 rollouts 1 | log {'completed:INACTIVE': 1} | rollout late item_completed {}
+TOTAL rollout late item_completed by (expected reason, item type): {('INACTIVE', 'CommandExecution'): 46, ('CONFLICT', 'CommandExecution'): 60, ('CONFLICT', 'McpToolCall'): 2}

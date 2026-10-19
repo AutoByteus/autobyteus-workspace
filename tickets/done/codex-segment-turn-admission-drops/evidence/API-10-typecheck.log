@@ -1,0 +1,9 @@
+# API-10 server typecheck
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 53fc6e9c61 + new test/fixture; date 2026-10-19 05:50
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/codex-segment-turn-admission-drops/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+typecheck exit 0
