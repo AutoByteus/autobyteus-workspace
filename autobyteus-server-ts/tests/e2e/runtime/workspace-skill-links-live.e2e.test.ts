@@ -178,8 +178,12 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
     }
     await wait(500);
     const turn = stream.messages.slice(from).filter(ofRun);
+    // The Team socket coalesces text into SEGMENT_CONTENT_BATCH frames whose items carry their agent_run_id.
+    const textParts = turn.flatMap((m) => m.type === "SEGMENT_CONTENT" ? [m.payload]
+      : m.type === "SEGMENT_CONTENT_BATCH" ? (m.payload.items as Array<Record<string, unknown>> | undefined ?? [])
+        .filter((item) => item.agent_run_id === runId) : []);
     return {
-      text: turn.filter((m) => m.type === "SEGMENT_CONTENT").map((m) => String(m.payload.delta ?? "")).join(""),
+      text: textParts.map((part) => String(part.delta ?? "")).join(""),
       errors: turn.filter((m) => m.type === "ERROR").map((m) => JSON.stringify(m.payload)),
       tools: turn.filter((m) => m.type === "TOOL_EXECUTION_STARTED").map((m) => String(m.payload.tool_name)),
     };
