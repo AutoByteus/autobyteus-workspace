@@ -7,6 +7,7 @@ import { AgentRunActivationRegistry } from "../../agent-execution/runtime/agent-
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { AgentRunProvisioningService } from "../../agent-execution/services/agent-run-provisioning-service.js";
+import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
 import { AgentRunResourceManager } from "../../agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunProviderInputNormalizer } from "../../agent-execution/input/agent-run-provider-input-normalizer.js";
 import { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
@@ -102,6 +103,7 @@ export const buildApplicationExecutionScopeKernel = (
       publishedArtifactRelayService: relay,
       memoryRecorder,
       workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
+      mcpServerInstances: McpServerInstanceManager.getInstance(),
     });
     const activationRegistry = new AgentRunActivationRegistry(resourceManager);
     const projectionStore = new PublishedArtifactProjectionStore();

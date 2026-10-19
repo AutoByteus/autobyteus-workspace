@@ -85,6 +85,7 @@ describe("WorkJournalRunUpdater (DS-001)", () => {
       publishedArtifactRelayService: { attachToRun: () => () => undefined },
       memoryRecorder: recorder,
       workJournalUpdater: updater,
+      mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     });
     resources.attach(run);
 
@@ -113,6 +114,7 @@ describe("WorkJournalRunUpdater (DS-001)", () => {
       publishedArtifactRelayService: sidecar("artifactRelay"),
       memoryRecorder: sidecar("memoryRecorder"),
       workJournalUpdater: sidecar("workJournal"),
+      mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     }).attach(createRun({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, memoryDir: null }));
     expect(order).toEqual(["fileChanges", "artifactRelay", "memoryRecorder", "workJournal"]);
   });

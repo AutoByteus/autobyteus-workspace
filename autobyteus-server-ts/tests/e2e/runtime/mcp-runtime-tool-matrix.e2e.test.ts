@@ -7,8 +7,9 @@
  *     from the saved config must reach it);
  *   - an external streamable HTTP MCP tool (a local server that requires a dummy Bearer token).
  * The Task must be saved and DONE, the stdio tool must report the configured env value and cwd, and the HTTP server must
- * see the credential on the tool call itself. Native AutoByteus runs the registry tools directly; the other runtimes reach
- * them through the run's `autobyteus_agent_tools` MCP endpoint.
+ * see the credential on the tool call itself. Then the run is terminated, and its stdio server process (pid from
+ * MCP_TEST_SERVER_PID_FILE) must be gone within 10 s (autobyteus-193, AC-003). Native AutoByteus runs the registry tools
+ * directly; the other runtimes reach them through the run's `autobyteus_agent_tools` MCP endpoint.
  * Gates (a skip is not a pass):
  *   - AGY, scripted (no model): RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs
  *   - Native AutoByteus with a local LM Studio model: RUN_LMSTUDIO_E2E=1 (optional LMSTUDIO_TARGET_TEXT_MODEL)
@@ -63,10 +64,12 @@ const KIND: Record<Runtime, RuntimeKind> = { agy: RuntimeKind.ANTIGRAVITY_CLI, n
 const LLM_CONFIG: Partial<Record<Runtime, Record<string, unknown>>> = { native: { temperature: 0 }, codex: { reasoning_effort: "low" } };
 const suite = Object.values(ENABLED).some(Boolean) ? describe : describe.skip;
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const isAlive = (pid: number) => { try { process.kill(pid, 0); return true; } catch { return false; } };
 
 suite("Runtime × MCP tool matrix: project tools, external stdio and external HTTP", () => {
   let dataDir = "";
   let stdioCwd = "";
+  let stdioPidFile = "";
   let app: FastifyInstance | null = null;
   let url: URL;
   let httpServer: AuthRequiredMcpServer;
@@ -145,6 +148,18 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
     return { socket, messages, turn };
   };
 
+  /** Terminates the run and reports whether its stdio server process (the latest pid written) ended within 10 s. */
+  const stdioProcessEndsOnTermination = async (runId: string) => {
+    const pid = Number((await fs.readFile(stdioPidFile, "utf8")).trim());
+    expect(isAlive(pid)).toBe(true);
+    const result = await gql<{ terminateAgentRun: { success: boolean; message: string } }>(
+      "mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success message } }", { id: runId });
+    expect(result.terminateAgentRun.success, result.terminateAgentRun.message).toBe(true);
+    const deadline = Date.now() + 10_000;
+    while (Date.now() < deadline && isAlive(pid)) await wait(100);
+    return !isAlive(pid);
+  };
+
   /** The three tool kinds worked: Task saved and DONE, stdio env/cwd delivered, HTTP credential on the tool call. */
   const assertCell = async (runtime: string, description: string, wireText: string, httpMark: number, extra: Record<string, unknown> = {}) => {
     const task = await taskByDescription(description);
@@ -164,6 +179,7 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
   beforeAll(async () => {
     dataDir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "mcp-runtime-matrix-e2e-")));
     stdioCwd = path.join(dataDir, "stdio-cwd");
+    stdioPidFile = path.join(dataDir, "stdio-server.pid");
     await fs.mkdir(stdioCwd);
     await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     appConfigProvider.config.setCustomAppDataDir(dataDir);
@@ -173,7 +189,7 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
     url = started.mainUrl;
     for (const input of [
       { serverId: "matrix_stdio", transportType: "STDIO", enabled: true, toolNamePrefix: "matrix_stdio",
-        stdioConfig: { command: process.execPath, args: [FIXTURE], env: { MATRIX_ENV: ENV_VALUE }, cwd: stdioCwd } },
+        stdioConfig: { command: process.execPath, args: [FIXTURE], env: { MATRIX_ENV: ENV_VALUE, MCP_TEST_SERVER_PID_FILE: stdioPidFile }, cwd: stdioCwd } },
       { serverId: "matrix_http", transportType: "STREAMABLE_HTTP", enabled: true, toolNamePrefix: "matrix_http",
         streamableHttpConfig: { url: httpServer.url, token: DUMMY, headers: null } },
     ]) {
@@ -215,7 +231,9 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
       { name: HTTP_TOOL, arguments: {} },
     ])}`);
     socket.close();
-    await assertCell("agy", description, JSON.stringify(messages), httpMark);
+    const stdioProcessGone = await stdioProcessEndsOnTermination(runId);
+    await assertCell("agy", description, JSON.stringify(messages), httpMark, { stdioProcessGoneAfterTermination: stdioProcessGone });
+    expect(stdioProcessGone).toBe(true);
   }, 300_000);
 
   for (const runtime of ["native", "claude", "codex", "grok"] as const) {
@@ -233,7 +251,9 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
         "Then reply with the single word FINISHED.",
       ].join("\n"));
       socket.close();
-      await assertCell(runtime, description, JSON.stringify(messages), httpMark, { model });
+      const stdioProcessGone = await stdioProcessEndsOnTermination(runId);
+      await assertCell(runtime, description, JSON.stringify(messages), httpMark, { model, stdioProcessGoneAfterTermination: stdioProcessGone });
+      expect(stdioProcessGone).toBe(true);
     }, 420_000);
   }
 
@@ -261,6 +281,8 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
     const responses = [created, await call("update_task", { task_id: taskId, status: "DONE" }),
       await call(STDIO_TOOL, { name: "MATRIX_ENV" }), await call(HTTP_TOOL, {})];
     expect(responses.map((r) => r.isError ?? false)).toEqual([false, false, false, false]);
-    await assertCell("codex-mcp-client", description, JSON.stringify(responses), httpMark);
+    const stdioProcessGone = await stdioProcessEndsOnTermination(runId);
+    await assertCell("codex-mcp-client", description, JSON.stringify(responses), httpMark, { stdioProcessGoneAfterTermination: stdioProcessGone });
+    expect(stdioProcessGone).toBe(true);
   }, 300_000);
 });

@@ -309,7 +309,7 @@ await server.connect(new StdioServerTransport());
 
 const resetDefaultMcpState = async (): Promise<void> => {
   try {
-    await McpServerInstanceManager.getInstance().cleanupAllMcpServerInstances();
+    await McpServerInstanceManager.getInstance().cleanupMcpServerInstancesForAgent(MCP_GATEWAY_EXECUTION_SCOPE_ID);
   } catch {
     // Best-effort cleanup for singleton state that may not have been initialized yet.
   }
