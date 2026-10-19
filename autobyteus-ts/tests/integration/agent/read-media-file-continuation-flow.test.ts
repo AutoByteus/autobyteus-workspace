@@ -87,7 +87,7 @@ describe('read_media_file continuation flow (integration)', () => {
     expect(pipelineResult.llmUserMessage?.video_urls).toEqual([videoPath]);
 
     const geminiDefinition = supportedModelDefinitions.find(
-      (definition) => definition.name === 'gemini-3.5-flash',
+      (definition) => definition.name === 'gemini-3.8-flash',
     );
     expect(geminiDefinition).toBeDefined();
 
