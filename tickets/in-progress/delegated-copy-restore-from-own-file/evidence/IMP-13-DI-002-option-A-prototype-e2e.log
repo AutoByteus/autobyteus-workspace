@@ -1,0 +1,121 @@
+# Check: IMP-13 (DI-002 option A prototype; not committed)
+# Command: pnpm -C autobyteus-server-ts build && env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR pnpm exec vitest run tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts --no-watch --reporter=verbose
+# Commit: 7d689455ad + IMP-13-DI-002-option-A-prototype.diff (uncommitted)
+# Environment: macOS 26.5.2, Node v22.23.1
+# Date: 2026-10-19T16:56:14Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:70947) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing 6434ms
+stdout | tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows)
+TAU-2 first start: FAILED (5 task agent item(s) are not migrated yet; the next start continues.)
+
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows) 5720ms
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are not listed 5630ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  18:56:33
+   Duration  20.51s (transform 1.56s, setup 25ms, import 2.27s, tests 17.79s, environment 0ms)
+
+# Exit code: 0
+prototype reverted
+dist rebuilt from the committed code
