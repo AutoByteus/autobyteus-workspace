@@ -50,7 +50,7 @@ type TestServerSetting = {
 const mountComponent = async (
   initialSettings: TestServerSetting[] = [],
   options: {
-    sectionMode?: 'quick' | 'advanced' | 'migrations'
+    sectionMode?: 'quick' | 'embedding' | 'advanced' | 'migrations'
     fetchError?: string
     keepFetchPending?: boolean
   } = {},
@@ -107,6 +107,9 @@ const mountComponent = async (
         },
         ServerMigrationsManager: {
           template: '<div data-testid="server-migrations-manager-stub">Migrations Panel Stub</div>',
+        },
+        EmbeddingSettingsPanel: {
+          template: '<div data-testid="embedding-settings-panel-stub">Embedding Panel Stub</div>',
         },
       },
     },
@@ -171,6 +174,13 @@ describe('ServerSettingsManager', () => {
     expect(wrapper.text()).toContain('Value')
   })
 
+
+  it('routes Embedding mode to its own panel without waiting for the raw settings', async () => {
+    const { wrapper } = await mountComponent([], { sectionMode: 'embedding', keepFetchPending: true })
+    expect(wrapper.find('[data-testid="embedding-settings-panel-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="server-settings-initial-loading"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="server-settings-basics-panel-stub"]').exists()).toBe(false)
+  })
 
   it('routes Migrations mode to the migrations panel shell', async () => {
     const { wrapper } = await mountComponent([], { sectionMode: 'migrations' })

@@ -216,6 +216,10 @@ edit the line may show for one 2 s interval while that Task is indexed again. A
 failed search request shows "Search failed: <reason>" with Retry. Temp tasks
 keep their own description-substring search.
 
+Models and indexes are managed in Settings -> Server Settings -> Embedding
+(`settings.md`): download a model ahead of time, choose the active one, and
+index or rebuild Projects on purpose.
+
 Search text is transient per Project. Cancel/back/detail preserves it; successful
 creation clears it before returning to the full board. Refresh never clears search
 or navigates. Lane counts are filtered; Project all/open totals derive from the

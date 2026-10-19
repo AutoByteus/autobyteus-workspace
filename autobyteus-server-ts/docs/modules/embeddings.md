@@ -179,5 +179,7 @@ Nothing in the layer is created or loaded at server startup.
   model management and read-only status, downloads, store, model files (local HTTP server), catalog, setting, relevance
   rule and the worker's load failure.
 - `tests/e2e/projects/embedding-settings.e2e.test.ts`: the Settings GraphQL queries and mutations over Studio HTTP.
+- `tests/integration/projects/project-task-index-status-load.integration.test.ts`: the gated load check of one
+  Settings status poll at 20 Projects × 1,000 Tasks (`RUN_PROJECT_INDEX_STATUS_LOAD=1`; budget 1 s).
 - `tests/integration/embeddings/embedding-model-quality.integration.test.ts`: the gated real-model check of the
   catalog on the production stack (`RUN_EMBEDDING_MODEL_E2E=1`; options in the file header).
