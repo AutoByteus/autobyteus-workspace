@@ -1,0 +1,18 @@
+# API-L07 (round 2): packaged desktop iso-56939-a508 (build of 8c283c6acc), fresh data root; open Embedding; 20 s later; data-root listing; Mon Oct 19 15:10:00 CEST 2026
+{"url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings?section=server-settings&mode=embedding","msToCards":48}
+disk On disk: 0 MB
+   granite-embedding-small-english-r2 | Active·Not downloaded | ['download']
+   mdbr-leaf-ir | Not downloaded | ['download', 'use']
+   embeddinggemma-2 | Not downloaded | ['download', 'use']
+server-data listing:
+agent-orgs
+agent-teams
+agents
+application-packages
+db
+download
+llm
+logs
+memory
+skills
+temp_workspace

@@ -21,7 +21,7 @@ import type { EmbeddingModelDefinition } from "./embedding-model-definition.js";
 const LEAF_IR: EmbeddingModelDefinition = {
   id: "mdbr-leaf-ir",
   displayName: "MongoDB LEAF-IR",
-  description: "English; for small Projects. About 23 MB to download and the fastest to index (about 0.1 s per Task on a fast laptop CPU), but its relevance degrades on large Projects (hundreds of Tasks): unrelated searches start to show matches.",
+  description: "English; for small Projects. About 24 MB to download and the fastest to index (about 0.1 s per Task on a fast laptop CPU), but its relevance degrades on large Projects (hundreds of Tasks): unrelated searches start to show matches.",
   licence: "Apache-2.0",
   languages: ["en"],
   source: { repo: "MongoDB/mdbr-leaf-ir", revision: "4262131b32c3182bd06e67e92ae69d7bd66e0c5c" },

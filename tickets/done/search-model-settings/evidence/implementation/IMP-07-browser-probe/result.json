@@ -1,0 +1,64 @@
+{
+  "startedAt": "2026-10-19T09:50:45.319Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "EMB-001": {
+      "title": "Fresh data root: Active · Not downloaded, Projects Not indexed, opening starts nothing (AC-011, REQ-005)",
+      "result": "Pass",
+      "ms": 4214
+    },
+    "EMB-002": {
+      "title": "Download ahead with progress, Cancel deletes it, Download again completes (AC-002)",
+      "result": "Pass",
+      "ms": 4633
+    },
+    "EMB-003": {
+      "title": "Switch dialog for a not-downloaded model; Cancel changes nothing (REQ-004)",
+      "result": "Pass",
+      "ms": 83
+    },
+    "EMB-004": {
+      "title": "Use a downloaded model: setting written, Active Ready, Projects Not indexed (AC-004)",
+      "result": "Pass",
+      "ms": 2194
+    },
+    "EMB-005": {
+      "title": "Index all Projects: progress, then Ready with Task counts (REQ-006)",
+      "result": "Pass",
+      "ms": 2256
+    },
+    "EMB-006": {
+      "title": "Needs update after a new Task, Index now, and Rebuild with inline confirmation (REQ-005, REQ-006)",
+      "result": "Pass",
+      "ms": 10489
+    },
+    "EMB-007": {
+      "title": "Leave and return: current state shown; restart: Active · Ready with files on disk (REQ-007, AC-013)",
+      "result": "Pass",
+      "ms": 11793
+    },
+    "EMB-008": {
+      "title": "zh-CN copy and narrow layout render",
+      "result": "Pass",
+      "ms": 708
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:57142",
+    "backend": "terminated:59242",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-embedding-settings-e2e-xX9hp6",
+    "backend": "http://127.0.0.1:57851",
+    "frontend": "http://127.0.0.1:57872"
+  },
+  "browserVersion": "155.0.8059.84",
+  "finishedAt": "2026-10-19T09:51:52.487Z"
+}

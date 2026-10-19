@@ -1,0 +1,8 @@
+# Check: IMP-13
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings && bash -c if grep -rn "modelStatus()\|EmbeddingModelStatus\b\|EmbeddingModelState\b" autobyteus-server-ts/src autobyteus-server-ts/tests autobyteus-server-ts/docs autobyteus-web --include=*.ts --include=*.vue --include=*.md --exclude-dir=node_modules; then echo "FOUND"; exit 1; fi; if grep -rn "isRunning(" autobyteus-server-ts/src/embeddings autobyteus-server-ts/tests/unit/embeddings; then echo FOUND; exit 1; fi; echo "no references left")
+# Commit tested: d2bcb95d3a (branch codex/search-model-settings, IR-002)
+# Environment: Darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T10:14:24Z
+
+no references left
+# Exit code: 0

@@ -8,7 +8,9 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import type { EmbeddingModelDefinition } from "../../src/embeddings/catalog/embedding-model-definition.js";
+import { vi } from "vitest";
 import { EmbeddingIndex } from "../../src/embeddings/embedding-index.js";
+import { EmbeddingDownloadCancelled } from "../../src/embeddings/models/embedding-model-files.js";
 import type { EmbeddingRunner, EmbeddingTextKind } from "../../src/embeddings/runtime/embedding-model-runner.js";
 
 export const CONCEPTS: readonly string[][] = [
@@ -77,35 +79,61 @@ export class FakeEmbeddingRunner implements EmbeddingRunner {
   }
 }
 
-/** An index over a temp folder whose model files "download" instantly; `runners` lists every runner it created. */
+/**
+ * An index over a temp folder whose model files "download" instantly (or when released, with `holdDownloads`).
+ * A model's files are present after a download or when listed in `filesPresent`; `removed` lists removals.
+ * `runners` lists every runner the index created.
+ */
 export const createFakeEmbeddingIndex = async (options: {
-  model?: () => EmbeddingModelDefinition; rootDir?: string; failDownload?: () => Error | null; filesPresent?: boolean;
+  model?: () => EmbeddingModelDefinition; rootDir?: string; failDownload?: () => Error | null;
+  filesPresent?: boolean | string[]; catalog?: EmbeddingModelDefinition[];
 } = {}) => {
   const rootDir = options.rootDir ?? await fs.mkdtemp(path.join(os.tmpdir(), "embedding-index-"));
   const runners: FakeEmbeddingRunner[] = [];
   const downloads: string[] = [];
-  const removedExcept: string[] = [];
+  const removed: string[] = [];
   const definition = fakeModel();
+  const present = new Set(options.filesPresent === true ? [definition.id] : options.filesPresent || []);
+  let held: Array<() => void> | null = null;
+  const files = {
+    hasAllFiles: (model: EmbeddingModelDefinition) => present.has(model.id),
+    ensure: vi.fn(async (model: EmbeddingModelDefinition, onProgress?: (done: number, total: number) => void, signal?: AbortSignal) => {
+      downloads.push(model.id);
+      if (held) {
+        onProgress?.(1, 2);
+        await new Promise<void>((resolve, reject) => {
+          held!.push(resolve);
+          signal?.addEventListener("abort", () => reject(new EmbeddingDownloadCancelled()), { once: true });
+        });
+      }
+      const failure = options.failDownload?.();
+      if (failure) throw failure;
+      present.add(model.id);
+      return path.join(rootDir, "models", model.id);
+    }),
+    remove: vi.fn(async (model: Pick<EmbeddingModelDefinition, "id">) => { removed.push(model.id); present.delete(model.id); }),
+    removeIfEmpty: vi.fn(async (_model: Pick<EmbeddingModelDefinition, "id">) => undefined),
+    diskUsage: async () => present.size * 1_000_000,
+  };
   const index = new EmbeddingIndex({
     rootDir,
     resolveModel: options.model ?? (() => definition),
-    files: {
-      hasAllFiles: () => options.filesPresent ?? false,
-      ensure: async (model) => {
-        downloads.push(model.id);
-        const failure = options.failDownload?.();
-        if (failure) throw failure;
-        return path.join(rootDir, "models", model.id);
-      },
-      removeAllExcept: async (modelId) => { removedExcept.push(modelId); },
-    },
+    files,
+    catalog: options.catalog ?? [definition],
+    defaultModelId: (options.catalog ?? [definition])[0]!.id,
     createRunner: (model) => {
       const runner = new FakeEmbeddingRunner(model);
       runners.push(runner);
       return runner;
     },
   });
-  return { index, rootDir, runners, downloads, removedExcept, runner: () => runners[runners.length - 1]! };
+  return {
+    index, rootDir, runners, downloads, removed, files, present,
+    runner: () => runners[runners.length - 1]!,
+    /** Downloads wait (reporting half their bytes) until `releaseDownloads()`; an abort cancels them. */
+    holdDownloads: () => { held ??= []; },
+    releaseDownloads: () => { const waiting = held ?? []; held = null; for (const resolve of waiting) resolve(); },
+  };
 };
 
 /** Resolves after pending microtasks and timers of the fake model (instant) have run. */

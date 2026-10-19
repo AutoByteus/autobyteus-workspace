@@ -25,6 +25,7 @@ const translationMap: Record<string, string> = {
   'settings.page.sections.extensions': 'Extensions',
   'settings.page.sections.updates': 'Updates',
   'settings.page.serverSettings.quick': 'Basics',
+  'settings.page.serverSettings.embedding': 'Embedding',
   'settings.page.serverSettings.advanced': 'Advanced',
   'settings.page.serverSettings.migrations': 'Migrations',
 }
@@ -334,6 +335,21 @@ describe('settings page', () => {
     await nextTick()
 
     expect(wrapper.get('[data-testid="section-server-settings"]').text()).toContain('mode=migrations')
+  })
+
+  it('supports the server settings embedding mode query and lists Embedding after Basics', async () => {
+    routeMock.query = { section: 'server-settings', mode: 'embedding' }
+    const wrapper = mountSettings()
+    await nextTick()
+
+    expect(wrapper.get('[data-testid="section-server-settings"]').text()).toContain('mode=embedding')
+    const items = wrapper.findAll('[data-testid^="settings-nav-server-settings-"]').map((item) => item.attributes('data-testid'))
+    expect(items).toEqual([
+      'settings-nav-server-settings-quick', 'settings-nav-server-settings-embedding',
+      'settings-nav-server-settings-advanced', 'settings-nav-server-settings-migrations',
+    ])
+    expect(wrapper.get('[data-testid="settings-nav-server-settings-embedding"]').text()).toBe('Embedding')
+    expect(wrapper.get('[data-testid="settings-nav-server-settings-embedding"]').classes()).toContain('font-medium')
   })
 
   it('keeps the default section for an unknown section query', async () => {
