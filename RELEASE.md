@@ -154,7 +154,9 @@ release. Record it as one.
   rolling back is possible. It is possible only when the older build is checked
   and happens to work with the converted data unchanged, for example when the
   migration only added data the older build ignores. Otherwise fix problems
-  forward with a newer release instead of reverting. See
+  forward with a newer release instead of reverting. When a release cannot be
+  rolled back, its release notes say so and tell users who need to go back to
+  contact support instead of installing an older version. See
   `autobyteus-server-ts/docs/design/data_migration_guideline.md`, section 4,
   "Rolling back after a migration".
 - Other changes need no rollback compatibility either. A release may rename or

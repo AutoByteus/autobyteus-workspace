@@ -167,7 +167,9 @@ A rollback means reverting the merge and releasing the older code again (see
   - the design checks whether the older build happens to work with the
     converted data unchanged, for example when the migration only added data the
     older build ignores;
-  - the release notes say whether rolling back is possible;
+  - the release notes say whether rolling back is possible. When it is not,
+    they tell users who need to go back to contact support instead of
+    installing an older version;
   - when it is not, a problem in the release is fixed forward, with a newer
     release, not by reverting it.
 - **Ordinary writer changes need nothing for rollback.** Changing what new code
