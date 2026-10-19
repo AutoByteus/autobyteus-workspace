@@ -3,8 +3,7 @@ import {
   BaseMcpConfig,
   McpTransportType,
   StdioMcpServerConfig,
-  StreamableHttpMcpServerConfig,
-  WebsocketMcpServerConfig
+  StreamableHttpMcpServerConfig
 } from '../../../../src/tools/mcp/types.js';
 import { McpConfigService } from '../../../../src/tools/mcp/config-service.js';
 import fs from 'node:fs';
@@ -51,21 +50,6 @@ const VALID_HTTP_CONFIG_LIST_ITEM = {
   }
 };
 
-const VALID_WEBSOCKET_CONFIG_LIST_ITEM = {
-  server_id: 'ws_server_1',
-  transport_type: 'websocket',
-  enabled: true,
-  tool_name_prefix: 'ws_',
-  websocket_params: {
-    url: 'wss://localhost:8765/mcp',
-    headers: { 'X-Test': '1' },
-    subprotocols: ['custom'],
-    open_timeout: 5,
-    ping_interval: 15,
-    verify_tls: false
-  }
-};
-
 function createConfigService(): McpConfigService {
   (McpConfigService as any).instance = undefined;
   const service = McpConfigService.getInstance();
@@ -101,13 +85,12 @@ describe('McpConfigService', () => {
   it('loads multiple configs from dict', () => {
     const configsData = {
       stdio_server_1: VALID_STDIO_CONFIG_LIST_ITEM,
-      http_server_1: VALID_HTTP_CONFIG_LIST_ITEM,
-      ws_server_1: VALID_WEBSOCKET_CONFIG_LIST_ITEM
+      http_server_1: VALID_HTTP_CONFIG_LIST_ITEM
     };
 
     const loaded = service.loadConfigsFromDict(configsData);
-    expect(loaded).toHaveLength(3);
-    expect(service.getAllConfigs()).toHaveLength(3);
+    expect(loaded).toHaveLength(2);
+    expect(service.getAllConfigs()).toHaveLength(2);
 
     const config1 = service.getConfig('stdio_server_1');
     expect(config1).toBeInstanceOf(StdioMcpServerConfig);
@@ -116,17 +99,12 @@ describe('McpConfigService', () => {
     const config2 = service.getConfig('http_server_1');
     expect(config2).toBeInstanceOf(StreamableHttpMcpServerConfig);
     expect((config2 as StreamableHttpMcpServerConfig).url).toBe('http://localhost:9000/stream');
-
-    const config3 = service.getConfig('ws_server_1');
-    expect(config3).toBeInstanceOf(WebsocketMcpServerConfig);
-    expect((config3 as WebsocketMcpServerConfig).url).toBe('wss://localhost:8765/mcp');
   });
 
   it('loads configs from file with list', () => {
     const fileContent = [
       VALID_STDIO_CONFIG_LIST_ITEM,
-      VALID_HTTP_CONFIG_LIST_ITEM,
-      VALID_WEBSOCKET_CONFIG_LIST_ITEM
+      VALID_HTTP_CONFIG_LIST_ITEM
     ];
 
     const tempDir = fs.mkdtempSync(path.join(process.cwd(), 'mcp-config-'));
@@ -134,7 +112,7 @@ describe('McpConfigService', () => {
     fs.writeFileSync(configFile, JSON.stringify(fileContent), 'utf-8');
 
     const loaded = service.loadConfigsFromFile(configFile);
-    expect(loaded).toHaveLength(3);
+    expect(loaded).toHaveLength(2);
 
     const stdioConfig = service.getConfig('stdio_server_1');
     expect(stdioConfig).toBeInstanceOf(StdioMcpServerConfig);
@@ -143,10 +121,6 @@ describe('McpConfigService', () => {
     const httpConfig = service.getConfig('http_server_1');
     expect(httpConfig).toBeInstanceOf(StreamableHttpMcpServerConfig);
     expect((httpConfig as StreamableHttpMcpServerConfig).url).toBe('http://localhost:9000/stream');
-
-    const wsConfig = service.getConfig('ws_server_1');
-    expect(wsConfig).toBeInstanceOf(WebsocketMcpServerConfig);
-    expect((wsConfig as WebsocketMcpServerConfig).url).toBe('wss://localhost:8765/mcp');
   });
 
   it('loads configs from file with dict', () => {
@@ -189,11 +163,6 @@ describe('McpConfigService', () => {
       })
     ).toThrowError('incompatible parameters for STREAMABLE_HTTP config');
 
-    expect(() =>
-      service.loadConfigsFromDict({
-        myid: { transport_type: 'websocket', websocket_params: {} }
-      })
-    ).toThrowError("WebsocketMcpServerConfig 'myid' 'url' must be a non-empty string");
   });
 
   it('adds configs and overwrites existing config', () => {
@@ -238,6 +207,17 @@ describe('McpConfigService', () => {
     expect(() => (McpConfigService as any).parseTransportType('INVALID', 'server1')).toThrowError(
       "Invalid 'transport_type' string 'INVALID'"
     );
+  });
+
+  it('rejects the removed websocket transport and lists the supported transports', () => {
+    expect(() =>
+      service.loadConfigsFromDict({
+        ws_server: { transport_type: 'websocket', url: 'ws://127.0.0.1:8765/mcp' }
+      })
+    ).toThrowError(
+      "Invalid 'transport_type' string 'websocket' for server 'ws_server'. Valid types are: stdio, streamable_http."
+    );
+    expect(service.getAllConfigs()).toHaveLength(0);
   });
 
   it('parses a single mcp config dict', () => {
