@@ -152,6 +152,16 @@ describe("Embedding settings over the production GraphQL boundary", () => {
     expect(await refusal("mutation($m:String!){useEmbeddingModel(modelId:$m)}", { m: "bogus" }))
       .toEqual({ code: "EMBEDDING_MODEL_UNKNOWN", message: expect.stringContaining("Embedding model must be blank (default) or one of:") });
     expect(resolveActiveEmbeddingModel().id).toBe(GRANITE);
+    // The key set the Advanced way (AC-009) to a model that isn't downloaded shows as Active · Not downloaded and
+    // starts nothing (AC-011).
+    const downloadsBefore = fake.downloads.length;
+    expect((await ok<{ updateServerSetting: string }>("mutation($k:String!,$v:String!){updateServerSetting(key:$k,value:$v)}",
+      { k: "AUTOBYTEUS_EMBEDDING_MODEL", v: LEAF })).updateServerSetting).toContain("updated successfully");
+    const advanced = (await status()).embeddingModelsStatus;
+    expect(advanced.activeModelId).toBe(LEAF);
+    expect(advanced.models[1]).toMatchObject({ file: { state: "NOT_DOWNLOADED" }, activeDisplay: { state: "NOT_DOWNLOADED" } });
+    expect(advanced.models[0]!.activeDisplay).toBeNull();
+    expect(fake.downloads).toHaveLength(downloadsBefore);
     expect((await ok<{ useEmbeddingModel: boolean }>("mutation($m:String!){useEmbeddingModel(modelId:$m)}", { m: LEAF })).useEmbeddingModel).toBe(true);
     expect(appConfigProvider.config.get("AUTOBYTEUS_EMBEDDING_MODEL")).toBe(LEAF);
     await until((current) => current.embeddingModelsStatus.activeModelId === LEAF && current.embeddingModelsStatus.models[1]!.activeDisplay?.state === "READY");
