@@ -66,8 +66,8 @@
 
 ## Release Decision
 
-- Decision: `No release`
-- Decided by: RELEASE.md default ("No release … the default when the user does not ask for one"); the request did not ask for one. A beta is available on request; `release-notes.md` is ready.
+- Decision: `Beta` (DR-002). DR-001 finalized with `No release` (the RELEASE.md default).
+- Decided by: the user, 2026-10-19, after being told that the beta he runs, `v1.5.7-beta.2`, was tagged before the fix (the fix commit `a9b5230505` is not an ancestor of `8b15c5a274`): "can you please release new beta?"
 
 ## Docs Sync Result
 
@@ -82,7 +82,9 @@
 
 ## Version / Tag / Release Commit
 
-- None (no release).
+- Version: `1.5.7-beta.3` (`python3 scripts/release_versions.py next-beta`)
+- Release commit: `7e166dc50c` `chore(release): bump workspace release version to 1.5.7-beta.3` on `personal` (only `autobyteus-web/package.json`)
+- Tag: annotated `v1.5.7-beta.3` → `7e166dc50c`; contains the fix (`a9b5230505`) and the merge `e591b13c2e`
 
 ## Repository Finalization
 
@@ -103,9 +105,13 @@
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required` (kept in the archived ticket for a later release)
+- Applicable: `Yes` (DR-002)
+- Method: `Project Release Guide` (RELEASE.md, Cutting The Release, beta)
+- Method reference / command: fresh worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore-release` on `finalize/unclean-shutdown-delegated-run-restore` from `origin/personal` @ `2e5b241937` (the only new commits since `f96ea0938e` were three search-model-settings delivery records); `check_licensing.py` and `check_repository_artifact_hygiene.py` pass; `bash scripts/desktop-release.sh beta --branch finalize/unclean-shutdown-delegated-run-restore --no-push`; fetched and checked `origin/personal` was still `2e5b241937`; `git push origin HEAD:personal` (`2e5b241937..7e166dc50c`); `git push origin v1.5.7-beta.3`
+- Pipelines triggered and their results: all `success` — Desktop Release `39291371899`, Server Docker Release `39291371919`, Android APK Release `39291371924`, iOS App Store Connect Release `39291371944` (`gh run watch --exit-status`, exit 0 each)
+- Published artifacts checked against what the release should produce: `gh release view v1.5.7-beta.3` → `isPrerelease: true`, 17 assets (macOS ARM64/x64 `.dmg`/`.zip` + blockmaps, Linux x64/ARM64 AppImages, Windows `.exe`, `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, Android APK + `.sha256`). Docker Hub: `autobyteus/autobyteus-server:1.5.7-beta.3` and `:beta` both `sha256:83c27a92b96f…`; `:latest` unchanged (`sha256:375f2ac4b656…`, v1.5.6)
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` — pre-release tags use GitHub generated notes (RELEASE.md); the curated `release-notes.md` stays for the next stable
 
 ## Post-Finalization Cleanup
 
@@ -116,12 +122,12 @@
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `tickets/done/unclean-shutdown-delegated-run-restore/release-notes.md`
-- Archived release notes artifact used for release/publication: not used (no release)
+- Archived release notes artifact used for release/publication: not used — the beta uses GitHub generated notes; kept for the next stable
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-- None. This repository deploys no hosted service.
+- None. This repository deploys no hosted service. The user's Docker node upgrades with `autobyteus-docker upgrade --all --tag beta`; desktop installs with **Receive beta updates** on are offered `1.5.7-beta.3`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -141,8 +147,8 @@
 
 - Verification complete (from the evidence): `Yes`
 - Repository finalization complete: `Yes` (`personal` @ `e591b13c2e`)
-- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, no release)
-- Applicable safe cleanup complete or not required: run after this record commit; reported in the terminal message
+- Applicable release/deployment/rollout complete or not required: `Yes` (DR-002: beta `v1.5.7-beta.3` published, 4/4 workflows, 17 assets, Docker `1.5.7-beta.3` = `:beta`)
+- Applicable safe cleanup complete or not required: DR-001 cleanup `Completed`; DR-002 release worktree removed after this record commit (reported in the message to `/solution_designer`)
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to `/solution_designer`: after cleanup (see `delivery-revision-record.md` DR-001)

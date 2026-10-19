@@ -29,7 +29,8 @@
 
 ## Release
 
-- `No release` (RELEASE.md default; not requested). The fix is user-visible and matters for the user's Docker node; `release-notes.md` is ready, and a beta (next after `v1.5.7-beta.2`) can be cut on request.
+- DR-001: `No release` (RELEASE.md default).
+- DR-002: at the user's request, beta **`v1.5.7-beta.3`** (release commit `7e166dc50c`) was published completely: all four workflows succeeded, the GitHub pre-release has 17 assets, and `autobyteus/autobyteus-server:1.5.7-beta.3` is `:beta`. `v1.5.7-beta.2`, which the user ran, predates the fix. Upgrade: `autobyteus-docker upgrade --all --tag beta`. `release-notes.md` stays for the next stable.
 
 ## Follow-ups
 
