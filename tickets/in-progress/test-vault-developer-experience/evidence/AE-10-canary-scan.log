@@ -1,0 +1,6 @@
+# AE-10 | python3 -I canary_scan.py over evidence/AE-*, all round logs (/private/tmp/tv-apie2e/logs/*.log incl. full E2E logs), isolated-instance logs and JSON results | values: 12 real inherited *_API_KEY values from the agent shell (never printed), 9 synthetic vault/save canaries, 4 env canaries | commit 12a23e7b8a | 2026-10-19T19:47:15Z
+files scanned: 40
+real inherited *_API_KEY values checked: 12 (names: ['AUTOBYTEUS_API_KEY', 'DEEPSEEK_API_KEY', 'GEMINI_API_KEY', 'GLM_API_KEY', 'GOOGLE_CSE_API_KEY', 'GROK_API_KEY', 'KIMI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'SERPAPI_API_KEY', 'VERTEX_AI_API_KEY', 'ZHIPU_API_KEY'])
+real key value matches: 0
+synthetic vault canary matches: 0
+env canary matches: 0

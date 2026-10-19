@@ -1,0 +1,38 @@
+# AE-04 | env -u DEEPSEEK_API_KEY -u GOOGLE_CSE_API_KEY -u SERPAPI_API_KEY -u ZHIPU_API_KEY -u KIMI_API_KEY -u OPENAI_API_KEY -u AUTOBYTEUS_API_KEY -u VERTEX_AI_API_KEY -u OLLAMA_API_KEY -u GLM_API_KEY -u GEMINI_API_KEY -u QWEN_API_KEY -u GROK_API_KEY  (all real *_API_KEY removed) ANTHROPIC_API_KEY/OPENAI_API_KEY/DEEPSEEK_API_KEY=<env canaries> AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-full RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/zz-ae-key-identity.probe.test.ts tests/unit/test-setup-credential-isolation.test.ts | commit 12a23e7b8a + temporary probe | 2026-10-19T19:18:05Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+stdout | tests/unit/test-setup-credential-isolation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:32558) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32559) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > no credential variable is visible to the test process
+[AE probe] AUTOBYTEUS_TEST_VAULT visible=true RUN_LIVE_PROVIDER_TESTS=1
+
+ ✓ tests/unit/test-setup-credential-isolation.test.ts (2 tests | 1 skipped) 2ms
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > LLMFactory.createLLM(id) with no resolver uses the vault key
+[AE probe] createLLM response length=8 live=false
+
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > LLMFactory.createLLM(id) with no resolver uses the vault key
+[AE probe] createLLM bearer sha256 matches vault canary; differs from env canary
+
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > new DeepSeekLLM(model, config) with no resolver uses the vault key
+[AE probe] DeepSeekLLM bearer sha256 matches vault canary
+
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > a provider missing from the vault gives the missing-capability error
+[AE probe] missing provider error: missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-apie2e/v-full); add it with pnpm test-vault setup
+
+ ✓ tests/integration/llm/zz-ae-key-identity.probe.test.ts (4 tests) 12ms
+
+ Test Files  2 passed (2)
+      Tests  5 passed | 1 skipped (6)
+   Start at  21:18:05
+   Duration  2.10s (transform 2.58s, setup 3.96s, import 17ms, tests 14ms, environment 0ms)
+
+exit=0

@@ -1,0 +1,93 @@
+# AE-06 | env <all real *_API_KEY removed> GROK_API_KEY=<env canary> AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-full RUN_LIVE_PROVIDER_TESTS=1 [AUTOBYTEUS_LIVE_STRICT=1] pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/grok-llm.test.ts | commit 12a23e7b8a | 2026-10-19T19:19:23Z
+## run 1: gate on, Grok key missing from the vault, not strict
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+stdout | tests/integration/llm/api/grok-llm.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:65207) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+[live provider skip] missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-apie2e/v-full); add it with pnpm test-vault setup
+
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+[live provider skip] missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-apie2e/v-full); add it with pnpm test-vault setup
+
+ ✓ tests/integration/llm/api/grok-llm.test.ts (2 tests | 2 skipped) 3ms
+
+ Test Files  1 passed (1)
+      Tests  2 skipped (2)
+   Start at  21:19:23
+   Duration  1.94s (transform 1.24s, setup 1.83s, import 9ms, tests 3ms, environment 0ms)
+
+exit=0
+## run 2: same with AUTOBYTEUS_LIVE_STRICT=1
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+stdout | tests/integration/llm/api/grok-llm.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:65939) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+[live provider skip] missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-apie2e/v-full); add it with pnpm test-vault setup
+
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+[live provider skip] missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-apie2e/v-full); add it with pnpm test-vault setup
+
+ ❯ tests/integration/llm/api/grok-llm.test.ts (2 tests | 2 failed) 6ms
+     × should successfully make a simple completion call 4ms
+     × should stream response incrementally 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+ FAIL  tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+Error: LIVE_PROVIDER_UNAVAILABLE: missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-apie2e/v-full); add it with pnpm test-vault setup
+ ❯ reportUnavailable ../test-support/test-vault/live-provider-test.ts:45:21
+     43| ): never => {
+     44|   console.warn(`[live provider skip] ${reason}`);
+     45|   if (strict) throw new Error(`LIVE_PROVIDER_UNAVAILABLE: ${reason}`, …
+       |                     ^
+     46|   return context.skip(reason);
+     47| };
+ ❯ ../test-support/test-vault/live-provider-test.ts:78:11
+
+Caused by: MissingApiKeyError: missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-apie2e/v-full); add it with pnpm test-vault setup
+ ❯ Object.resolve ../test-support/test-vault/test-vault-default-resolver.ts:54:17
+ ❯ GrokLLM.initializeClient src/llm/api/openai-compatible-llm.ts:85:22
+ ❯ GrokLLM._sendMessagesToLLM src/llm/api/openai-compatible-llm.ts:169:22
+ ❯ tests/integration/llm/api/grok-llm.test.ts:26:24
+ ❯ ../test-support/test-vault/live-provider-test.ts:74:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { kind: 'missing_api_key', providerId: 'GROK' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  21:19:26
+   Duration  2.13s (transform 1.42s, setup 2.02s, import 12ms, tests 6ms, environment 0ms)
+
+exit=1
+## run 3: gate on, no selector
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+[live provider skip] no test vault selected for Grok: set AUTOBYTEUS_TEST_VAULT (TESTING.md#test-vault)
+
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+[live provider skip] no test vault selected for Grok: set AUTOBYTEUS_TEST_VAULT (TESTING.md#test-vault)
+
+ ✓ tests/integration/llm/api/grok-llm.test.ts (2 tests | 2 skipped) 2ms
+
+ Test Files  1 passed (1)
+      Tests  2 skipped (2)
+   Start at  21:19:28
+   Duration  371ms (transform 140ms, setup 45ms, import 232ms, tests 2ms, environment 0ms)
+
+exit=0

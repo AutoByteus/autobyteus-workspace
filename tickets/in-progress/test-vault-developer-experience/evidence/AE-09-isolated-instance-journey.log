@@ -1,0 +1,83 @@
+# AE-09 | isolated desktop instance of the worktree build (autobyteus-web/electron-dist/mac-arm64/AutoByteus.app, 1.5.7-beta.3) | commit 12a23e7b8a | macOS 26.5.2 arm64 | 2026-10-19T19:46:28Z
+# launching shell: real *_API_KEY removed (env -u); steps 1-4 AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-full (synthetic vault from AE-01); browser-automation attach-only on the controlPort
+
+## 1. pnpm --silent isolated-app start --build  (stdout)
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-51425-01d8",
+    "pid": 54913,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:51426",
+    "graphqlUrl": "http://127.0.0.1:51426/graphql",
+    "controlEndpoint": "http://127.0.0.1:51425",
+    "controlPort": 51425,
+    "serverPort": 51426,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5Z60tS",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5Z60tS/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-51425-01d8.log"
+  }
+}
+exit=0
+
+## 2. instance log: vault line (start + restart)
+[2026-10-19T19:44:17.759Z] [INFO] [electron.embedded-server.stdout] [2026-10-19T19:44:17.759Z] [INFO] [secret-management.vault] Secret vault: test vault /private/tmp/tv-apie2e/v-full (read-only)
+[2026-10-19T19:45:38.502Z] [INFO] [electron.embedded-server.stdout] [2026-10-19T19:45:38.502Z] [INFO] [secret-management.vault] Secret vault: test vault /private/tmp/tv-apie2e/v-full (read-only)
+
+## 3. GraphQL providerCredentialSettings after start: configured = ANTHROPIC, DEEPSEEK, LMSTUDIO, OPENAI (all others false); getSecretVaultStatus READY
+
+## 4. Settings UI (renderer #/settings, API Keys): DeepSeek panel 'Configured'; typed a synthetic key; clicked 'Save Key'
+run-script result: toasts=["Failed to save API key for DeepSeek"], console=["Failed to save API key: SECRET_VAULT_READ_ONLY"], panel still "DeepSeek\nConfigured"
+screenshots: AE-09-settings-anthropic-configured.png, AE-09-settings-save-refused-toast.png
+
+## 5. Same mutation directly on the instance's GraphQL
+{"data":null,"errors":[{"message":"SECRET_VAULT_READ_ONLY","locations":[{"line":1,"column":12}],"path":["saveProviderApiKey"]}]}
+
+## 6. pnpm --silent isolated-app restart iso-51425-01d8 (selector still set): exit 0; vault line repeated (see 2); configured after restart: ['ANTHROPIC', 'DEEPSEEK', 'LMSTUDIO', 'OPENAI']
+
+## 7. stop
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-51425-01d8",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5Z60tS",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+exit=0
+
+## 8. v-full sha256 before AE-09 / after save attempts / after stop
+7c279c527c89f5886ed35e338ce75b7e1b60318ba63c2530eeada58ad2639c43  /private/tmp/tv-apie2e/v-full/test-vault.db
+fe4b20e768ccaeaa90cb854c4b5b73fdb4595c22bbc63e9ba6d9f14611fe6c5f  /private/tmp/tv-apie2e/v-full/test-vault.db.secret.key
+7c279c527c89f5886ed35e338ce75b7e1b60318ba63c2530eeada58ad2639c43  v-full/test-vault.db
+fe4b20e768ccaeaa90cb854c4b5b73fdb4595c22bbc63e9ba6d9f14611fe6c5f  v-full/test-vault.db.secret.key
+7c279c527c89f5886ed35e338ce75b7e1b60318ba63c2530eeada58ad2639c43  /private/tmp/tv-apie2e/v-full/test-vault.db
+fe4b20e768ccaeaa90cb854c4b5b73fdb4595c22bbc63e9ba6d9f14611fe6c5f  /private/tmp/tv-apie2e/v-full/test-vault.db.secret.key
+test-vault.db
+test-vault.db.secret.key
+
+## 9. AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/no-vault-here pnpm --silent isolated-app start --from-worktree
+ok: False | exit: 5 | code: APP_EXITED_BEFORE_READY
+   D","summary":"Failed to initialize secret vault: SecretVaultError: TEST_VAULT_NOT_FOUND: no test vault in /private/tmp/tv-apie2e/no-vault-here; run pnpm test-vault setup","logPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-lRCB0I/server-data/logs/server.log"}
+   ZATION_FAILED]: Failed to initialize secret vault: SecretVaultError: TEST_VAULT_NOT_FOUND: no test vault in /private/tmp/tv-apie2e/no-vault-here; run pnpm test-vault setup Server log: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-lRCB0I/server-data/logs/server.log
+no-vault-here created by the start: no; auto data root removed: yes (ls: No such file or directory); isolated-app list afterwards: 0 instances
+
+## 10. no selector (env -u AUTOBYTEUS_TEST_VAULT; DEEPSEEK_API_KEY/OPENAI_API_KEY=<env canaries>) pnpm --silent isolated-app start --from-worktree
+[2026-10-19T19:46:08.835Z] [INFO] [electron.embedded-server.stdout] [2026-10-19T19:46:08.834Z] [INFO] [secret-management.vault] Secret vault: application database
+GraphQL configured providers: []
+  "ok": true,
+    "wasRunning": true,
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,

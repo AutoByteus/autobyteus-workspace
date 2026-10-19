@@ -1,0 +1,562 @@
+# AE-07 | env -i PATH HOME=<temp> TMPDIR USER LOGNAME ANTHROPIC/OPENAI/DEEPSEEK_API_KEY=<env canaries> AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-nods (no DeepSeek key) RUN_DEEPSEEK_E2E=1 [AUTOBYTEUS_LIVE_STRICT=1] pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts --no-watch | commit 12a23e7b8a | 2026-10-19T19:37:03Z
+## run 1: not strict
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:91929) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/.env
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+[2026-10-19T19:37:14.432Z] [INFO] [secret-management.vault] Secret vault: test vault /private/tmp/tv-apie2e/v-nods (read-only)
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-y2ToFV/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[live provider skip] missing capability provider.deepseek.api-key (test vault /private/tmp/tv-apie2e/v-nods); add it with pnpm test-vault setup
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[live provider skip] missing capability provider.deepseek.api-key (test vault /private/tmp/tv-apie2e/v-nods); add it with pnpm test-vault setup
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[live provider skip] missing capability provider.deepseek.api-key (test vault /private/tmp/tv-apie2e/v-nods); add it with pnpm test-vault setup
+
+ ✓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts (36 tests | 36 skipped) 186ms
+
+ Test Files  1 passed (1)
+      Tests  36 skipped (36)
+   Start at  21:37:05
+   Duration  9.36s (transform 6.46s, setup 32ms, import 8.72s, tests 186ms, environment 0ms)
+
+exit=0
+## run 2: AUTOBYTEUS_LIVE_STRICT=1
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.23                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:95100) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/.env
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+[2026-10-19T19:37:22.349Z] [INFO] [secret-management.vault] Secret vault: test vault /private/tmp/tv-apie2e/v-nods (read-only)
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Ue8PJp/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[live provider skip] missing capability provider.deepseek.api-key (test vault /private/tmp/tv-apie2e/v-nods); add it with pnpm test-vault setup
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[live provider skip] missing capability provider.deepseek.api-key (test vault /private/tmp/tv-apie2e/v-nods); add it with pnpm test-vault setup
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[live provider skip] missing capability provider.deepseek.api-key (test vault /private/tmp/tv-apie2e/v-nods); add it with pnpm test-vault setup
+
+ ❯ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts (36 tests | 3 failed | 33 skipped) 202ms
+     ↓ autobyteus: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+     ↓ autobyteus: LE-A2 three catalog copies with source, each one unit; restore after Stop
+     ↓ autobyteus: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+     ↓ autobyteus: LE-T1 Team root — catalog copies stay apart with their own scope; a teammate is refused; catalog Agent copies get none; configured scope kept after Stop → reopen
+     ↓ autobyteus: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a mounted member's teammate is refused; an outside message is not found
+     ↓ autobyteus: LE-F1 SC-004 — a run whose model left the catalog: a catalog copy fails with the reason, an outside message is not found, and nothing is added
+     × autobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID 5ms
+     × autobyteus_deepseek: LE-A2 three catalog copies with source, each one unit; restore after Stop 1ms
+     × autobyteus_deepseek: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop 1ms
+     ↓ autobyteus_deepseek: LE-T1 Team root — catalog copies stay apart with their own scope; a teammate is refused; catalog Agent copies get none; configured scope kept after Stop → reopen
+     ↓ autobyteus_deepseek: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a mounted member's teammate is refused; an outside message is not found
+     ↓ autobyteus_deepseek: LE-F1 SC-004 — a run whose model left the catalog: a catalog copy fails with the reason, an outside message is not found, and nothing is added
+     ↓ codex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+     ↓ codex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+     ↓ codex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+     ↓ codex_app_server: LE-T1 Team root — catalog copies stay apart with their own scope; a teammate is refused; catalog Agent copies get none; configured scope kept after Stop → reopen
+     ↓ codex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a mounted member's teammate is refused; an outside message is not found
+     ↓ codex_app_server: LE-F1 SC-004 — a run whose model left the catalog: a catalog copy fails with the reason, an outside message is not found, and nothing is added
+     ↓ claude_agent_sdk: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+     ↓ claude_agent_sdk: LE-A2 three catalog copies with source, each one unit; restore after Stop
+     ↓ claude_agent_sdk: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+     ↓ claude_agent_sdk: LE-T1 Team root — catalog copies stay apart with their own scope; a teammate is refused; catalog Agent copies get none; configured scope kept after Stop → reopen
+     ↓ claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a mounted member's teammate is refused; an outside message is not found
+     ↓ claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: a catalog copy fails with the reason, an outside message is not found, and nothing is added
+     ↓ antigravity_cli: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+     ↓ antigravity_cli: LE-A2 three catalog copies with source, each one unit; restore after Stop
+     ↓ antigravity_cli: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+     ↓ antigravity_cli: LE-T1 Team root — catalog copies stay apart with their own scope; a teammate is refused; catalog Agent copies get none; configured scope kept after Stop → reopen
+     ↓ antigravity_cli: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a mounted member's teammate is refused; an outside message is not found
+     ↓ antigravity_cli: LE-F1 SC-004 — a run whose model left the catalog: a catalog copy fails with the reason, an outside message is not found, and nothing is added
+     ↓ grok_build: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+     ↓ grok_build: LE-A2 three catalog copies with source, each one unit; restore after Stop
+     ↓ grok_build: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+     ↓ grok_build: LE-T1 Team root — catalog copies stay apart with their own scope; a teammate is refused; catalog Agent copies get none; configured scope kept after Stop → reopen
+     ↓ grok_build: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a mounted member's teammate is refused; an outside message is not found
+     ↓ grok_build: LE-F1 SC-004 — a run whose model left the catalog: a catalog copy fails with the reason, an outside message is not found, and nothing is added
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+Error: LIVE_PROVIDER_UNAVAILABLE: missing capability provider.deepseek.api-key (test vault /private/tmp/tv-apie2e/v-nods); add it with pnpm test-vault setup
+ ❯ requireLiveCapability ../test-support/test-vault/live-server-vault.ts:81:52
+     79|   const reason = `missing capability ${id} (${describeSource()}); add …
+     80|   console.warn(`[live provider skip] ${reason}`);
+     81|   if (process.env[LIVE_STRICT_GATE] === '1') throw new Error(`LIVE_PRO…
+       |                                                    ^
+     82|   context.skip(reason);
+     83| };
+ ❯ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts:472:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A2 three catalog copies with source, each one unit; restore after Stop
+Error: LIVE_PROVIDER_UNAVAILABLE: missing capability provider.deepseek.api-key (test vault /private/tmp/tv-apie2e/v-nods); add it with pnpm test-vault setup
+ ❯ requireLiveCapability ../test-support/test-vault/live-server-vault.ts:81:52
+     79|   const reason = `missing capability ${id} (${describeSource()}); add …
+     80|   console.warn(`[live provider skip] ${reason}`);
+     81|   if (process.env[LIVE_STRICT_GATE] === '1') throw new Error(`LIVE_PRO…
+       |                                                    ^
+     82|   context.skip(reason);
+     83| };
+ ❯ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts:590:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+Error: LIVE_PROVIDER_UNAVAILABLE: missing capability provider.deepseek.api-key (test vault /private/tmp/tv-apie2e/v-nods); add it with pnpm test-vault setup
+ ❯ requireLiveCapability ../test-support/test-vault/live-server-vault.ts:81:52
+     79|   const reason = `missing capability ${id} (${describeSource()}); add …
+     80|   console.warn(`[live provider skip] ${reason}`);
+     81|   if (process.env[LIVE_STRICT_GATE] === '1') throw new Error(`LIVE_PRO…
+       |                                                    ^
+     82|   context.skip(reason);
+     83| };
+ ❯ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts:683:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 33 skipped (36)
+   Start at  21:37:15
+   Duration  7.41s (transform 5.00s, setup 32ms, import 6.75s, tests 202ms, environment 0ms)
+
+exit=1

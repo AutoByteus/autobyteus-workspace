@@ -1,0 +1,36 @@
+// TEMPORARY API/E2E probe (AE-05, ticket test-vault-developer-experience). Not durable coverage.
+// Run with AUTOBYTEUS_TEST_VAULT=<vault> and ANTHROPIC_API_KEY/OPENAI_API_KEY/DEEPSEEK_API_KEY env canaries.
+// A gated live suite's opt-in (initializeLiveServerVault) followed by the product runtime resolver:
+// each key must be the vault's (compared by SHA-256 only), never the env alias.
+import { createHash } from 'node:crypto';
+import { afterAll, describe, expect, it } from 'vitest';
+import { createLlmProviderApiKeyResolver } from '../../src/secret-management/resolution/runtime-provider-api-key-resolvers.js';
+import { closeLiveServerVault, initializeLiveServerVault } from '../../../test-support/test-vault/live-server-vault.js';
+
+const sha = (value: string): string => createHash('sha256').update(value).digest('hex');
+
+describe('AE probe: server live opt-in resolves keys from the test vault, never env aliases', () => {
+  afterAll(async () => { await closeLiveServerVault(); });
+
+  it('setup removed credential variables and the selector from process.env', () => {
+    expect(Object.keys(process.env).filter((name) => /_API_KEY$/i.test(name))).toEqual([]);
+    expect(process.env.AUTOBYTEUS_TEST_VAULT).toBeUndefined();
+  });
+
+  it('initializeLiveServerVault selects the test vault; the product resolver returns vault keys', async () => {
+    const source = await initializeLiveServerVault();
+    console.log(`[AE probe] source=${JSON.stringify(source)}`);
+    expect(source.kind).toBe('test');
+    const resolver = createLlmProviderApiKeyResolver();
+    for (const [provider, expectVar, envVar] of [
+      ['DEEPSEEK', 'AE_EXPECT_VAULT_DEEPSEEK_SHA256', 'AE_ENV_CANARY_DEEPSEEK_SHA256'],
+      ['OPENAI', 'AE_EXPECT_VAULT_OPENAI_SHA256', 'AE_ENV_CANARY_OPENAI_SHA256'],
+      ['ANTHROPIC', 'AE_EXPECT_VAULT_ANTHROPIC_SHA256', 'AE_ENV_CANARY_ANTHROPIC_SHA256'],
+    ] as const) {
+      const digest = sha((await resolver.resolve(provider)).revealToTrustedConsumer());
+      expect(digest, provider).toBe(process.env[expectVar]);
+      expect(digest, provider).not.toBe(process.env[envVar]);
+      console.log(`[AE probe] ${provider} key sha256 matches vault canary; differs from env canary`);
+    }
+  });
+});

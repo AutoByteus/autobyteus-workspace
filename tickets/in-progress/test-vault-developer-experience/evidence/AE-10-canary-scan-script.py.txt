@@ -1,0 +1,22 @@
+import os, sys, glob, re
+synthetic = ["sk-vaultcanary-deepseek-AE0123456789abcdef","sk-vaultcanary-openai-AE0123456789abcdef","sk-ant-vaultcanary-AE0123456789abcdef",
+             "vaultcanary-lmstudio-AE0123456789","vaultcanary-unknown-AE0123456789","sk-vaultcanary-kimi-AE0123456789abcdef",
+             "synthetic-ui-save-attempt-AE09","synthetic-ui-save-attempt-AE09b","synthetic-gql-save-attempt-AE09"]
+envcan = ["sk-ant-envcanary-AE0000000000","sk-envcanary-openai-AE0000000000","sk-envcanary-deepseek-AE0000000000","xai-envcanary-AE0000000000"]
+real = {k: v for k, v in os.environ.items() if re.search(r"_API_KEY$", k) and len(v) >= 8}
+files = []
+for pattern in sys.argv[1:]:
+    files += [f for f in glob.glob(pattern, recursive=True) if os.path.isfile(f)]
+def scan(values):
+    hits = {}
+    for f in files:
+        data = open(f, "rb").read()
+        for v in values:
+            if v.encode() in data: hits.setdefault(f, 0); hits[f] += 1
+    return hits
+print(f"files scanned: {len(files)}")
+print(f"real inherited *_API_KEY values checked: {len(real)} (names: {sorted(real)})")
+for label, vals in (("real key value", list(real.values())), ("synthetic vault canary", synthetic), ("env canary", envcan)):
+    h = scan(vals)
+    print(f"{label} matches: {sum(h.values())}")
+    for f, n in sorted(h.items()): print(f"  {n} in {f}")
