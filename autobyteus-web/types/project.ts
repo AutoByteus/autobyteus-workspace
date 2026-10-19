@@ -67,6 +67,8 @@ export interface ProjectTask {
   taskKey: string
   /** Tasks of the same Project this Task depends on (informs only). An ID that names no current Task is ignored. */
   dependsOnTaskIds: string[]
+  /** The Task of the same Project this Task is a part of (its parent), or null. One level only; an ID that names no current Task is ignored. */
+  partOfTaskId: string | null
 }
 
 /** A Task with no Project ("Temp task"): created by an agent's described delegation; read only. */

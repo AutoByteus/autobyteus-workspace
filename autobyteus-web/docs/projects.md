@@ -191,6 +191,47 @@ Temp tasks have no key and no dependencies.
 - Dependencies only inform: nothing in the app stops starting, delegating or
   finishing a blocked Task. Board search matches descriptions only.
 
+### "Part of"
+
+A Project Task can be part of one other Task of the same Project (its parent),
+one level only: a part has no parts and a Task with parts is no part. Only the
+part stores it (`partOfTaskId`); a parent's parts and progress are derived in
+`utils/projects/taskParts.ts` from the Project's Task list the store already
+holds, so they update live from the change feed. A parent ID that names no
+current Task is never shown or counted. Temp tasks show none of this.
+
+- **Card** (`ProjectTaskRow`): one wrapping relation line (after the summary and
+  preview) holds, in this order, the Blocked / Dependency-cancelled badge, a
+  parent's progress pill (`TaskPartsProgress`: "2 of 4 done", slate; emerald with
+  a check once every counted part is Done; hidden when no part counts; the hover
+  title adds "· 1 cancelled") and a part's quiet "↳ Part of <key>" line
+  (`TaskPartOfMarker`; hover: "Part of <key>: <summary> (<status>)"). The board
+  stays flat: lanes, order, search and the Cancelled toggle are unchanged.
+- **Task page / tab Task view** (`TaskPartsSection`, between Description and
+  Dependencies): a part shows **Part of** with its parent's row (key · status
+  pill · summary); any other Task shows **Parts**: every part in key order,
+  Done ones with ✓ and Cancelled ones included, with "N of M done · K cancelled"
+  in the header (M leaves out Cancelled parts; only "K cancelled" when no part
+  counts; "No parts yet." when there are none). While a To Do / In Progress
+  parent has an open part, a static line says that setting it to Done or
+  Cancelled also sets its open parts the same way (the server does that; the
+  app only displays status). The page offers **New part**, which opens New task
+  at `…/tasks/new?partOf=<task ID>` with this Task chosen; the tab has no New
+  part and its rows open inside the tab.
+- **New / Edit task**: `TaskPartOfPicker`, "Part of (optional)" above "Depends
+  on". It holds one Task: a chosen row (key, summary, status, "Remove <key>")
+  and a combobox search ("Choose a Task" / "Choose another Task" · "Search by key
+  or text") listing at most 8 Tasks of this Project, newest key first, never the
+  Task itself. Tasks that are parts are greyed with "Already part of a Task" and
+  cannot be chosen (arrows skip them). A Task that has parts shows "This Task has
+  parts, so it can't be part of another Task." instead of the search. Edit
+  starts from the parent that still exists and always sends it (`null` clears);
+  New task sends it only when chosen. `?partOf=` is used only while it names a
+  current Task of the Project. A server refusal shows in the editor's error line.
+- **Delete**: a parent's confirmation adds "Its 5 parts stay as separate Tasks."
+  ("Its part stays as a separate Task." for one); after deleting, its parts stay
+  without a parent.
+
 Search finds a Project's Tasks by meaning as well as by the words the user
 remembers (project-task-semantic-search). The placeholder invites a sentence
 ("Describe the task you're looking for"). `useProjectTaskSearch` sends the query
@@ -491,6 +532,9 @@ the Task ID alone (no `project_id`) and patches text and/or exact status; unknow
 For a Project Task the agent-facing Task ID is its key: results show it as `taskId`, and
 `task_id` accepts the key (any letter case) or the long ID. Both create and update take
 optional `depends_on` (Tasks of the same Project, by key or ID); results show `dependsOn` as keys.
+They also take optional `part_of` (the parent, by key or ID; `""` clears it on update); results
+show `partOf`, list and search results also `parts`, and an `update_task` that closed a parent's
+open parts lists them in `closedParts`.
 Both modes take optional `context_files` (absolute node-local file paths). The server
 copies each file into the Task's saved context under the same upload policy as the
 Task page (allowed types by extension, 25 MiB), so agent-attached files appear in
