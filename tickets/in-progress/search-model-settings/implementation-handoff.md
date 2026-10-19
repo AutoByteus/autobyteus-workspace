@@ -9,7 +9,7 @@
 - Architecture review: `design-review-report.md` (ARCH-REV-002; ARCH-REV-003 after CRR-001; ARCH-REV-005 Pass after API-REV-001 / FO-001); `architecture-review-revision-record.md`.
 - Behavior-defining supplement: approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md` (design `4e4ac06`) with VIS-001…VIS-021.
 - Classification carried: task size **Medium**, architectural risk **High** (unchanged; see Routing Classification).
-- Commits: `9c73c22672` (server: embedding layer, search service, GraphQL, server tests, docs), `8469d4bcf5` (web sub-section, web tests, browser probe, QR-001 load check, docs), `56cb7be36a` (server E2E: Advanced setting → Active · Not downloaded), then the ticket-folder commit with this handoff and the evidence. Implementation round **IR-001**; rework round **IR-002** (`d2bcb95d3a`, see § IR-002 below); rework round **IR-003** (`70bb03632c`, `1b24f59009`, see § IR-003 below).
+- Commits: `9c73c22672` (server: embedding layer, search service, GraphQL, server tests, docs), `8469d4bcf5` (web sub-section, web tests, browser probe, QR-001 load check, docs), `56cb7be36a` (server E2E: Advanced setting → Active · Not downloaded), then the ticket-folder commit with this handoff and the evidence. Implementation round **IR-001**; rework round **IR-002** (`d2bcb95d3a`, see § IR-002 below); rework round **IR-003** (`70bb03632c`, `1b24f59009`, see § IR-003 below); local fix **IR-004** (`8c283c6acc`, see § IR-004 below).
 
 ## Current Implementation Summary
 
@@ -199,7 +199,7 @@ What changed:
 3. **Grouping writes:** the 3 s window starts at the first write and is not extended by later writes, so a steady stream of writes still indexes every 3 s (bounded latency) instead of never; a write after the run started schedules the next run.
 4. **Gate at schedule time is synchronous** (`activeModelOnDisk()` = a few `stat` calls of the model files), and only when no run is pending for that Project. The marks contract's "never reads" concerns Project state; flagged in case the reviewer prefers a deferred check (the fire-time check already exists).
 5. **`taskRemoved` only marks dirty** (no index run): deletes already remove index entries at once.
-6. **Every Task mark schedules a run** when the model is on disk (R-12); for marks that change no description, the run costs one `listTasks` and a no-op `sync`.
+6. **Every Task mark schedules a run** when the model is on disk (R-12); for marks that change no description, the run costs one `listTasks` and syncs nothing (corrected in IR-004, CR-003: before, the no-op `sync` created a job and loaded an idle model).
 7. In the browser probe, EMB-006 now proves AC-015 on the real stack (a new Task becomes Ready with no search within 10 s) instead of showing Needs update, which index-after-write now resolves within 3 s.
 
 ### Checks Run (IR-003)
@@ -215,6 +215,27 @@ What changed:
 | IMP-20 | Real-stack browser probe, clean env (EMB-006 = AC-015) | `1b24f59009` | built server on a fresh data root, Nuxt dev, headless Chrome, real huggingface.co | whole feature | `evidence/implementation/IMP-20-ir003-browser-probe/` | Pass: 8/8; AC-015 indexed 3,106 ms after the save with no search; no browser errors |
 
 Not run in IR-003, and why: a Docker-node rerun of API-L02 and the AC-015 real-app run on Docker belong to API/E2E (R-13: with host load recorded).
+
+## IR-004 (CRR-004 CR-003, Local Fix)
+
+- Trigger: `/software_engineering_team/code_reviewer`, CRR-004 (round 4, Fail, `Local Fix`): CR-003.
+- Commit: `8c283c6acc`.
+- Problem: the write-triggered run called `indexProject` → `index.sync`, which creates a job (reading the collection's vectors) and prepares an idle model even when nothing is pending. Task status, dependency and execution-resource commits all send `taskChanged`, so after a restart the first agent status or assignment change loaded the worker (0.4–1.5 GB) with nothing to embed.
+- Fix: `indexAfterWrite` now reads the Project (`readProject`: `listTasks` + `fingerprintItems`, kept as the Project's inputs, which also makes it clean), computes `collectionStatus` from those fingerprints, and syncs only when the state is `notIndexed`, `needsUpdate`, `waiting` or `indexing` (something to index, or a run whose item set must follow the write). `ready` and `unavailable` sync nothing: no job, no model load. Index now, Index all and Rebuild are unchanged (they prepare on purpose, REQ-006).
+- Test: `project-task-index-status.test.ts` "loads no model for a write that changes no description (CR-003), and indexes a description edit": after a restart with the model on disk and idle, a status-only `updateTask` leaves `sync` and `prepareActiveModel` uncalled, creates no runner, and Settings keeps showing Active · Ready and the Project Ready; a description edit then syncs once, loads the model and indexes the new text. Control: the same test fails against the `70bb03632c` service (`sync` called once).
+- Doc: `docs/modules/embeddings.md` states that such marks load no model.
+- Classification recheck: unchanged (Medium / High).
+
+### Checks Run (IR-004)
+
+| Check ID | What | Commit Tested | Environment | Code It Exercises | Evidence Files | Result / Look For |
+| --- | --- | --- | --- | --- | --- | --- |
+| IMP-21 | Server typecheck | `8c283c6acc` | M1 Max, node 22 | all server `src` | `evidence/implementation/IMP-21-ir004-server-typecheck.log` | Pass |
+| IMP-22 | The SR-007 / CR-003 test file, plus a control run of the CR-003 test against the unfixed service | `8c283c6acc` | M1 Max, node 22 | write path, status | `evidence/implementation/IMP-22-ir004-cr003-test-and-unfixed-control.log` | Pass: 8/8 on the fix; control: the CR-003 test fails on the `70bb03632c` service (`sync` called once); source restored |
+| IMP-23 | Server unit suite | `8c283c6acc` | M1 Max, node 22 | whole server | `evidence/implementation/IMP-23-ir004-server-unit-suite.log` | Pass: 741 files passed, 4 skipped; 6,072 tests passed, 7 skipped |
+| IMP-24 | Server GraphQL E2E (`tests/e2e/projects`, server settings; AC-015 included) | `8c283c6acc` | M1 Max, node 22, Studio HTTP | composition, write trigger | `evidence/implementation/IMP-24-ir004-server-graphql-e2e.log` | Pass: 8 files (17 gated skipped), 52 tests, AC-015 included |
+
+Not rerun in IR-004, and why: web suite, guards and browser probe (no web change); QR-001 load check (the status read path is unchanged; the write path is not part of it; API/E2E reruns API-L02 on Docker).
 
 ## Packaging, Licensing And Final Local Results
 

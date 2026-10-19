@@ -1,0 +1,311 @@
+# Check: IMP-22
+# Command: (cd autobyteus-server-ts && bash -c pnpm exec vitest run tests/unit/projects/project-task-index-status.test.ts; echo "## Control: the CR-003 test against the unfixed service (70bb03632c version), expected to fail"; cp src/projects/search/project-task-search-service.ts /tmp/sms-fixed-control.ts; git show 70bb03632c:autobyteus-server-ts/src/projects/search/project-task-search-service.ts > src/projects/search/project-task-search-service.ts; pnpm exec vitest run tests/unit/projects/project-task-index-status.test.ts -t CR-003; echo "## control exit: $? (non-zero expected)"; cp /tmp/sms-fixed-control.ts src/projects/search/project-task-search-service.ts; git diff --quiet -- src/projects/search/project-task-search-service.ts && echo "## source restored, worktree clean")
+# Commit tested: 8c283c6acc (branch codex/search-model-settings, IR-004)
+# Environment: Darwin arm64, Apple M1 Max, node v22.23.1, pnpm 10.28.2
+# Host load average at start: { 12.75 37.31 35.57 }
+# Date: 2026-10-19T12:14:44Z
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:298) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts[2m > [22m[2mProject index status and index after writes[2m > [22m[2mreads a Project's Tasks only when they changed, it is new, or the model switched (warm poll: no listTasks)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-axQzOC
+
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts[2m > [22m[2mProject index status and index after writes[2m > [22m[2mMP-005: after a finished job, an edit shows Needs update on every poll, and Index all includes the Project
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-epp0zN
+
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts[2m > [22m[2mProject index status and index after writes[2m > [22m[2mMP-006: the poll after the job finishes shows Ready
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-rHHveJ
+
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts[2m > [22m[2mProject index status and index after writes[2m > [22m[2mMP-007: a board search that indexes the Project between polls shows as Ready on the next poll
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-RkcZJ5
+
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts[2m > [22m[2mProject index status and index after writes[2m > [22m[2mindexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-aVQKUY
+
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts[2m > [22m[2mProject index status and index after writes[2m > [22m[2mloads no model for a write that changes no description (CR-003), and indexes a description edit
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-MRoriY
+
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts[2m > [22m[2mProject index status and index after writes[2m > [22m[2mnever starts a download after a write: nothing is scheduled when the model is not on disk, nor run after a switch to one
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-qJ2AUY
+
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts[2m > [22m[2mProject index status and index after writes[2m > [22m[2mkeeps background runs away from writers: failures are contained, a deleted Project is skipped, shutdown drops pending runs
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-4kE09R
+
+ [32m✓[39m tests/unit/projects/project-task-index-status.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 1294[2mms[22m[39m
+     [33m[2m✓[22m[39m never starts a download after a write: nothing is scheduled when the model is not on disk, nor run after a switch to one [33m 308[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps background runs away from writers: failures are contained, a deleted Project is skipped, shutdown drops pending runs [33m 390[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m   Start at [22m 14:14:45
+[2m   Duration [22m 5.38s[2m (transform 2.45s, setup 25ms, import 3.57s, tests 1.29s, environment 0ms)[22m
+
+## Control: the CR-003 test against the unfixed service (70bb03632c version), expected to fail
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:314) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/projects/project-task-index-status.test.ts[2m > [22m[2mProject index status and index after writes[2m > [22m[2mloads no model for a write that changes no description (CR-003), and indexes a description edit
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-k3XUWr
+
+ [31m❯[39m tests/unit/projects/project-task-index-status.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m7 skipped[39m[2m)[22m[32m 218[2mms[22m[39m
+     [2m[90m↓[39m[22m reads a Project's Tasks only when they changed, it is new, or the model switched (warm poll: no listTasks)
+     [2m[90m↓[39m[22m MP-005: after a finished job, an edit shows Needs update on every poll, and Index all includes the Project
+     [2m[90m↓[39m[22m MP-006: the poll after the job finishes shows Ready
+     [2m[90m↓[39m[22m MP-007: a board search that indexes the Project between polls shows as Ready on the next poll
+     [2m[90m↓[39m[22m indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)
+[31m     [31m×[31m loads no model for a write that changes no description (CR-003), and indexes a description edit[39m[32m 217[2mms[22m[39m
+     [2m[90m↓[39m[22m never starts a download after a write: nothing is scheduled when the model is not on disk, nor run after a switch to one
+     [2m[90m↓[39m[22m keeps background runs away from writers: failures are contained, a deleted Project is skipped, shutdown drops pending runs
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/projects/project-task-index-status.test.ts[2m > [22mProject index status and index after writes[2m > [22mloads no model for a write that changes no description (CR-003), and indexes a description edit
+[31m[1mAssertionError[22m: expected "sync" to not be called at all, but actually been called 1 times[90m
+
+Received: 
+
+[1m  1st sync call:
+
+[22m    Array [
+      "project-tasks/project_67e2ff3d-a5f9-454d-b653-437bcf78c207",
+      Array [
+        Object {
+          "id": "project_task_45a2b26d-0841-4c81-ae69-ddad04dcb0fa",
+          "text": "Docker image fails on ARM servers",
+        },
+      ],
+    ]
+[31m[90m
+
+Number of calls: [1m1[22m
+[31m[39m
+[36m [2m❯[22m tests/unit/projects/project-task-index-status.test.ts:[2m178:22[22m[39m
+    [90m176| [39m    await tasks.updateTask({ projectId: alpha, taskId: task.taskId, st…
+    [90m177| [39m    [35mawait[39m [34msleep[39m([34m150[39m)[33m;[39m
+    [90m178| [39m    [34mexpect[39m(sync)[33m.[39mnot[33m.[39m[34mtoHaveBeenCalled[39m()[33m;[39m
+    [90m   | [39m                     [31m^[39m
+    [90m179| [39m    [34mexpect[39m(prepare)[33m.[39mnot[33m.[39m[34mtoHaveBeenCalled[39m()[33m;[39m
+    [90m180| [39m    [34mexpect[39m(fake[33m.[39mrunners)[33m.[39m[34mtoHaveLength[39m(runnersBefore)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m7 skipped[39m[90m (8)[39m
+[2m   Start at [22m 14:14:51
+[2m   Duration [22m 4.00s[2m (transform 2.37s, setup 24ms, import 3.30s, tests 218ms, environment 0ms)[22m
+
+## control exit: 1 (non-zero expected)
+## source restored, worktree clean
+# Exit code: 0

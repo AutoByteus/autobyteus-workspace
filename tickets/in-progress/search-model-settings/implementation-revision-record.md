@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture reviewer pass, ARCH-REV-002 (`design-review-report.md`) | N/A | `Initial Baseline` | SR-004 (requirements and design), ARCH-REV-002 | Implemented (commits `9c73c22672`, `8469d4bcf5`, `56cb7be36a`); local checks in `implementation-handoff.md` § Checks Run; ready for code review |
 | IR-002 | Architecture reviewer pass ARCH-REV-003 after code review CRR-001 (`code-review-report.md`, round 1) | CR-001, CR-002 (→ DEC-011, REQ-010, AC-014), R-10, C-06 | `Local Fix` (CR-001) + approved Requirement Gap (CR-002) | SR-005, ARCH-REV-003, CRR-001 | Dead code removed; action error line kept and tested for AC-014; doc updated; early-cancel check added; back to code review |
 | IR-003 | Architecture reviewer pass ARCH-REV-005 after API/E2E API-REV-001 (F-001) and code review CRR-003 (FO-001) | FO-001, AR-005, REQ-011 / AC-015, R-14, R-15, O-1, O-2, O-4 | `Design Impact` (resolved upstream as SR-006 → SR-007; implemented here) | SR-007, ARCH-REV-005, CRR-003, API-REV-001 | Status from cached fingerprint inputs (computed fresh); index after Task writes; O-1/O-2/O-4; back to code review |
+| IR-004 | Code reviewer, CRR-004 (`code-review-report.md`, round 4, Fail) | CR-003 | `Local Fix` | SR-007, ARCH-REV-005, CRR-004 | Write-triggered runs sync only when the Project has something to index; no job or model load for status/dependency/assignment marks; test with control; back to code review |
 
 ## Revision Entries
 
@@ -65,4 +66,20 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Related delivery revision IDs: N/A
 - Implementation delta: `EmbeddingIndex.fingerprintItems` / `fingerprintsAreCurrent` / `activeModelOnDisk`; `collectionStatus(collection, fingerprints)`; job status and `statusFromFingerprints` over fingerprint maps; `ProjectTaskSearchService` input cache, dirty marks, fresh status, index-after-write timers, `dispose()`; composition fan-out of `ProjectChangeMarks`; `EmbeddingModelFiles.removeIfEmpty` + downloads failure path; web `act()` (O-2) and the unreachable message (O-4); tests (new `project-task-index-status.test.ts`, AC-015 E2E, O-1/O-2/O-4); load check targets; docs. The never-implemented SR-006 cache needed no removal.
 - Local validation and result: `implementation-handoff.md` § IR-003 → Checks Run (IR-003).
+- Downstream handoff: `/software_engineering_team/code_reviewer`.
+
+### IR-004 — CR-003: no model load for writes that change no description
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-004, round 4, Fail).
+- Triggering finding IDs: CR-003
+- Classification: `Local Fix`
+- Prior authoritative result: IR-003 at `997cffe1ae` (code `70bb03632c`).
+- Current authoritative result: `8c283c6acc` plus the ticket-folder commit recording this round.
+- Related solution revision IDs: SR-007
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: CRR-004
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Implementation delta: `ProjectTaskSearchService.readProject` (shared by the status re-read and the write path); `indexAfterWrite` syncs only on `notIndexed` / `needsUpdate` / `waiting` / `indexing`; new unit test with a control run; one doc sentence.
+- Local validation and result: `implementation-handoff.md` § IR-004 → Checks Run (IR-004).
 - Downstream handoff: `/software_engineering_team/code_reviewer`.

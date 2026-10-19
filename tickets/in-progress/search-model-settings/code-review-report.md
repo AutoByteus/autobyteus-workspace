@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 3). Round 2 (`CRR-002`, Pass) is the latest implementation-review result; its sections below are carried forward.
+- Review Entry Point: `Implementation Review` (round 4: IR-003, the SR-007 rework of FO-001). Round 3 was the failure-origin review (`CRR-003`). Round-1/2 sections below are carried forward except where the Round 4 section notes a change.
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-005; DEC-001…DEC-011; REQ-010, AC-014 added for CR-002)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (as indexed by the design)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md`
@@ -16,8 +16,9 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
-- Current Review Round: 3 (failure-origin; Review Scope `N/A`)
+- Current Code Review Revision ID: `CRR-004`
+- Current Review Round: 4
+- Review Scope (round 4): `Full Re-Audit`. The delta `671a1e596b..70bb03632c` adds a new spine (index after Task writes, REQ-011), changes a boundary interface (`collectionStatus(collection, fingerprints)`, plus `fingerprintItems`, `fingerprintsAreCurrent` and `activeModelOnDisk`), and rewires the Task service's change marks, so the structural checks and the full scorecard were rerun. Also reviewed: the web O-2/O-4 changes and probe case `1b24f59009`.
 - Review Scope: `Targeted Delta Review` (round 1: `Full Review`)
 - Review Scope Evidence: the delta `e48806b035..d2bcb95d3a` touches 8 files, all within the prior findings:
   - removals in `embedding-index.ts` and `embedding-model-downloads.ts` (CR-001), with their tests;
@@ -26,8 +27,9 @@
 
   No spine, interface used by a caller, or data shape changed, so round-1 evidence for unaffected checks is carried forward.
 - Trigger: implementation engineer handoff for IR-002 (after the Solution Designer's SR-005 / DEC-011 and ARCH-REV-003 Pass)
-- Prior Review Round Reviewed: round 2 (`CRR-002`, Pass)
-- Latest Authoritative Round: 3
+- Prior Review Round Reviewed: round 3 (`CRR-003`, Fail — Design Impact)
+- Latest Authoritative Round: 4
+- Basis (round 4): requirements SR-007 (REQ-011, AC-015, QR-001 as DEC-012, DEC-013, DEC-014); design SR-007 (AR-005 inputs-not-results rule, MP-005…MP-007, R-12…R-15); ARCH-REV-005 Pass; handoff § IR-003
 - Failure-origin context (round 3):
   - trigger: API-REV-001 (`/software_engineering_team/api_e2e_engineer`), F-001 / case API-L02, QR-001 on a Docker node (the round-1 hold C-07);
   - validated code: `d2bcb95d3a`; API/E2E commits `c02a54bc3e` (test) and `671a1e596b` (reports);
@@ -52,6 +54,73 @@
 - Tests reviewed proportionately: the new unit tests (downloads, model management with the G3 spies, files), the changed index and search tests, the GraphQL E2E test, the gated QR-001 load test, the web panel spec and the browser probe script.
 - Checks: the implementer's Checks Run (IMP-01…IMP-08) were recorded on the code under review. None was rerun (skill rule: no rerun to confirm).
 - Explicit exclusions: the Docker node run (AC-008) and the desktop run, which are downstream; the probe's screenshots, which were compared by the implementer and are owned by API/E2E for the visual sign-off.
+
+## Implementation Review Round 4 (CRR-004): IR-003, the SR-007 rework
+
+### Behavior basis
+
+- Confirmed against SR-007:
+  - **FO-001 resolution (DEC-012):** the search service caches per-Project fingerprint inputs (`Map<projectId, ItemFingerprints>` plus `dirty`). The status is computed fresh on every poll through `collectionStatus(collection, fingerprints)`, following AR-005's inputs-not-results rule.
+  - **REQ-011 / DEC-014:** Task writes schedule a debounced background `indexProject` per Project, gated by `activeModelOnDisk()` at schedule time and again at run time (R-14).
+  - **O-1:** `removeIfEmpty` after a failed download.
+  - **O-2:** `act()` settles after the mutation answers.
+  - **O-4 / DEC-013:** "Couldn’t reach the server." for a failure with no server message.
+- Status: `Confirmed`, except for CR-003 (an implementation deviation, not a basis gap).
+
+### Structural re-audit (round 4 delta)
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Spine / ownership | Pass | The write trigger lives in `ProjectTaskSearchService` (Task search policy owner). The fan-out lives in the composition, the one binding place. The index stays the only embedding boundary; `ItemFingerprints` is opaque (decision 1, `fingerprintsAreCurrent`), so the consumer never reads fingerprint internals |
+| AR-005 rule (inputs, never results) | Pass | `indexStatus` → `fingerprintsOf` (cached unless dirty, missing or stale-model) → `collectionStatus` computed fresh. MP-005…MP-007 are covered in `project-task-index-status.test.ts` |
+| Invalidation correctness | Pass | `dirty` is cleared before the read, so a write during the read marks the Project again; the model switch is handled twice (`fingerprintsAreCurrent` and the `modelId` guard in `collectionStatus`); deleted Projects are dropped; `forgetProject` clears entry, dirty and timer |
+| Writer isolation (REQ-011 "saving never waits / never fails") | Pass | `taskChanged` is synchronous and catches the gate; the timer callback catches everything, `PROJECT_NOT_FOUND` skipped (R-15); timers are `unref`'d; `dispose()` runs at release before the index shuts down |
+| Gate (a write never starts a download) | Pass | `activeModelOnDisk()` (files present, not unavailable) at schedule time and at run time (R-14). The synchronous `stat` calls at schedule are acceptable (decision 4) |
+| Debounce (decision 3) | Pass | The window is fixed from the first write, and later writes join it because Tasks are read when the run starts. A write after the run's read starts a new window. Latency ≤ 3 s plus the run, within AC-015's 10 s |
+| Cost of non-description marks (decision 6, R-12) | **Fail** | **CR-003**: `indexProject` → `index.sync` → `syncCollection` creates a job (reading the collection's vectors) and calls `prepareModel` whenever the model phase is `idle`, even when no fingerprint changed. The design promised such marks "cost one `listTasks` of that Project" |
+| Interface clarity | Pass | `collectionStatus(collection, fingerprints)`; read-only helpers named for what they answer |
+| Dead code | Pass | No SR-006 leftovers (never implemented); `messageOf` replaced by `serverMessageOf`; nothing unused found in the delta |
+| Size | Pass | `embedding-index.ts` 339 → 367; `project-task-search-service.ts` 135 → 228; composition 69 → 82; `project-task-service.ts` 500 → 500 (one-line `Pick` change; the file stays at the limit, follow-up autobyteus-147); composable 138 → 148 |
+| Web O-2 / O-4 | Pass | `act()` resolves after the mutation (`void refresh()`); the error kind is `server` or `unreachable`; en/zh-CN copy per DEC-013; spec cases added |
+| Tests | Pass | Warm poll with no `listTasks`; MP-005…MP-007; burst → one run; model not on disk → no download; R-14; R-15; GraphQL E2E AC-015 over the real composition; probe AC-015 on the real stack (3,106 ms) |
+| Checks | Pass (recorded) | IMP-14 QR-001 (cold 773 ms, warm median 25 ms, host load ≈ 9.5), typecheck, unit suite (6,071), GraphQL E2E (52), web suite (4,539) and guards, probe 8/8. They cover the reviewed code, so none was rerun |
+
+### Candidates (round 4)
+
+| Candidate ID | Observation | Scenario / Contract | Independent Trigger | Consequence | Evidence | Disposition | Scope | Response |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C-09 | A write-triggered run whose Project has no changed fingerprints still loads the model worker when the model is idle, and loads that collection's vectors into a new job | Design SR-007 "Index after writes" ("an unchanged fingerprint set schedules nothing, so marks that aren't description changes cost one `listTasks`"); DESIGN.md (keep unrelated work off the path) | After a server restart (model phase `idle`, model on disk), any Task mark without a description change fires `taskChanged`, e.g. an agent's `update_task` status change, a dependency write, or an execution-resource commit (`project-task-service.ts` L82: every assignment or adoption commit). These are normal during agent work | 3 s later, `indexProject` → `sync` → `prepareModel` loads the worker: about 0.4 GB for Granite, 1.1–1.5 GB and seconds of CPU for EmbeddingGemma 2. It is held until the 10-minute idle stop, with no search and nothing to embed. Settings briefly shows "Preparing…" | `embedding-index.ts` `syncCollection` L257–269; `project-task-search-service.ts` `indexProject` L111–113 and `indexAfterWrite`; no test covers a non-description mark | Promote | This ticket (the change introduced it; it contradicts the reviewed design) | CR-003 Local Fix: the write path skips `sync` when the Project's fresh fingerprints show nothing to index (e.g. `collectionStatus` is `ready`), so only a Project with missing or changed Tasks prepares the model. Add a unit test: a status-only mark after a restart starts no runner |
+| C-10 | Over-invalidation: every Task mark (resource commits included) re-reads that Project's Tasks once and marks it dirty (R-12) | Design R-12 (kept on purpose) | Agent work | One `listTasks` per Project per 3 s window, bounded | Design | Reject (as a finding) | — | Approved trade-off; the cost becomes as designed once CR-003 is fixed |
+| C-11 | The fan-out `taskChangeMarks` calls the publisher before search, so a throwing publisher would skip search | Composition | — | The publisher contract is "never throws" (existing) | Code | Reject | — | Not reachable under the existing contract |
+
+### Scorecard (round 4, full)
+
+- Overall: 9.2/10 (92/100)
+
+| Priority | Category | Score | Why | Weak | Improve |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.4 | The new write spine is clear: mark → dirty + debounced run → gate → `indexProject` | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Opaque fingerprints; the fan-out lives in the composition; search owns the policy | — | — |
+| 3 | API / Interface Clarity | 9.3 | Read-only boundary helpers with exact names | — | — |
+| 4 | Separation of Concerns and File Placement | 9.2 | The search service grows to 228 lines, still one owner | — | — |
+| 5 | Shared-Structure / Data-Model Tightness | 9.3 | `ItemFingerprints` is singular and opaque | — | — |
+| 6 | Naming Quality and Local Readability | 9.2 | — | — | — |
+| 7 | API/E2E Readiness | 8.8 | AC-015 proven on the real stack; QR-001 measured | CR-003 behavior is untested | Test plus fix |
+| 8 | Runtime Correctness And Behavioral Fidelity | 8.6 | Invalidation, gate, R-14 and R-15 are correct | CR-003: non-description writes load the model, contrary to the design | Fix CR-003 |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | — | — | — |
+| 10 | Cleanup Completeness | 9.3 | — | — | — |
+
+### CR-003 — Write-triggered indexing loads the model even when nothing changed (Local Fix, implementation)
+
+- Protects: design SR-007 "Index after writes" (non-description marks "cost one `listTasks`"); REQ-011's intent (index new or edited Tasks, a background cost proportionate to work); DESIGN.md rule 3 (no avoidable work on unrelated events).
+- Evidence:
+  - `ProjectTaskSearchService.indexAfterWrite` → `indexProject` → `index.sync(...)`.
+  - `EmbeddingIndex.syncCollection` creates a job (`store.read`, loading vectors) and, when `model.phase.kind === "idle"` (any time after a server start, before a search or an action), calls `prepareModel` regardless of pending items.
+  - `ProjectTaskService` fires `taskChanged` for status updates, dependency writes and every execution-resource commit (L82, L429, L459). So after a restart, the first agent status or assignment change loads the worker: about 0.4 GB (Granite), or 1.1–1.5 GB (EmbeddingGemma 2), held until the 10-minute idle stop.
+- Required action:
+  - In the write path, skip `sync` when the Project has nothing to index. For example, compute the fresh fingerprints (already done for the dirty re-read) and run `sync` only when `collectionStatus` is `notIndexed` or `needsUpdate`, or when a job with pending work exists.
+  - Keep the Index now / Index all / Rebuild actions as they are: they prepare the model on purpose (REQ-006).
+  - Add a unit test: with the model on disk and idle, a status-only mark creates no runner and starts no preparation; a description edit does.
 
 ## API/E2E Failure-Origin Review (Round 3, CRR-003)
 
@@ -280,12 +349,14 @@ Non-blocking note: C-06, the abort-listener window in `EmbeddingModelFiles.downl
 
 ## Classification
 
+- Round 4: `Local Fix` (CR-003). FO-001 is resolved by SR-007 / IR-003.
 - Round 3: `Design Impact` (FO-001), with a possible prerequisite (Project store read cost) and a requirement question (the QR-001 scope on Docker nodes).
 - Round 2: N/A — `Pass` (CR-001 resolved; CR-002 resolved upstream as DEC-011).
 - Round 1: `Requirement Gap` (CR-002) and `Local Fix` (CR-001).
 
 ## Recommended Recipient
 
+- Round 4: `/software_engineering_team/implementation_engineer` (`Local Fix` CR-003); then a targeted code review, then API/E2E.
 - Round 3: `/software_engineering_team/solution_designer` (`Design Impact` FO-001).
 - Round 2: `/software_engineering_team/api_e2e_engineer` (primary pass handoff); `/software_engineering_team/implementation_engineer` (informational).
 - Round 1: `/software_engineering_team/solution_designer`.
@@ -299,15 +370,14 @@ Non-blocking note: C-06, the abort-listener window in `EmbeddingModelFiles.downl
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (failure-origin review of API-REV-001)
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 3)
-- Supported Product Scenario Gate: `Pass` (QR-001 with QR-004 / REQ-008 on a Docker node)
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review` (round 4, Full Re-Audit of IR-003)
+- Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: no new scorecard for a failure-origin round (round 2: 9.4/10, unchanged)
-- Failure Origin: `Design Impact`, FO-001. The status design reads every Task of every Project per read (DS-001). That misses QR-001 on a Docker node at 20 × 1,000 Tasks (median 2,017 ms, minimum 1,588 ms). The cost is the Project store's file reads; the existing `projects` list is equally slow there. It is not an implementation defect, not a test problem, and not a review gap (it was held as C-07)
-- Recommended Recipient: `/software_engineering_team/solution_designer`
-- Notes for the Solution Designer:
-  - choose the remedy owner: this ticket (a status fingerprint cache), or a prerequisite (Project store read cost);
-  - settle the QR-001 scope on Docker;
-  - consider having API/E2E re-measure on an unloaded host first, since the measurement ran under a host load average of 9.7 to 44;
-  - API/E2E's O-1, O-2 and O-4 can optionally join the rework.
+- Score Summary: 9.2/10. Below 9.0: Runtime Correctness 8.6, API/E2E Readiness 8.8.
+- Failure Origin: N/A
+- Recommended Recipient: `/software_engineering_team/implementation_engineer` (`Local Fix` CR-003)
+- Notes:
+  - FO-001 is resolved as designed: QR-001 cold 773 ms and warm 25 ms on the host; AC-015 proven.
+  - Decisions 1, 3, 4 and 6 are sound, apart from CR-003's cost on non-description marks.
+  - O-1, O-2 and O-4 are applied correctly.

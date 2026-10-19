@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001 handoff) | N/A | Fail — Requirement Gap (+ Local Fix) | CR-001, CR-002 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2, targeted delta (IR-002) | Fail — Requirement Gap (+ Local Fix) | Pass | CR-001, CR-002 (resolved) |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 (API-REV-001, F-001) | Pass | Fail — Design Impact | FO-001 (from C-07) |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4, Full Re-Audit (IR-003, SR-007) | Fail — Design Impact | Fail — Local Fix | FO-001 (resolved), CR-003 (new) |
 
 ## Revision Entries
 
@@ -112,3 +113,35 @@ None.
   - the true margin on an unloaded node;
   - whether a Project store prerequisite is warranted;
   - the API-D01 test change, which awaits the next test review.
+
+### CRR-004 — Full re-audit of IR-003 (SR-007: fingerprint-input status, index after Task writes)
+
+- Canonical review report updated: `code-review-report.md` (§ Implementation Review Round 4, meta, classification, latest result)
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Full Re-Audit` (a new spine, a changed boundary interface and rewired change marks)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (§ IR-003); FO-001, REQ-011, O-1, O-2, O-4
+- Relevant solution revision IDs: SR-006, SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-004, ARCH-REV-005
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail`, `Design Impact` (CRR-003)
+- Current authoritative result: `Fail`, `Local Fix` → implementation engineer
+- What changed in the review result and why:
+  - FO-001 is resolved as designed (the AR-005 inputs-not-results cache; QR-001 cold 773 ms, warm 25 ms).
+  - REQ-011 is implemented with the gate, R-14 and R-15.
+  - O-1, O-2 and O-4 are correct.
+  - New CR-003: write-triggered `indexProject` → `sync` loads the model (and the collection's vectors) whenever the model is idle, even when no fingerprint changed. Status, dependency and execution-resource marks are normal during agent work, so after a restart they load 0.4–1.5 GB with nothing to embed, contrary to the design's "cost one `listTasks`".
+- Supported product scenario / material-premise basis changes: C-09 promoted (CR-003); C-10 (R-12 over-invalidation, approved) and C-11 (publisher never throws) rejected.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| FO-001 | Open (`Design Impact`) | Resolved | SR-006/SR-007 (DEC-012), ARCH-REV-005, IR-003 | Input cache plus fresh `collectionStatus`; warm poll does no `listTasks` (unit test); IMP-14: cold 773 ms, warm median 25 ms |
+| CR-001, CR-002 | Resolved | Resolved | — | Unchanged; CR-002's copy is refined by DEC-013 (O-4), verified in the web spec |
+
+- New or remaining finding IDs: CR-003
+- Material score or classification changes: full scorecard 9.2/10; Runtime Correctness 8.6, API/E2E Readiness 8.8
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: QR-001 on Docker (API/E2E re-measures with host load recorded, R-13); `project-task-service.ts` stays at 500 lines (autobyteus-147).
