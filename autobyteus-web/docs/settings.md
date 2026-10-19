@@ -242,6 +242,49 @@ Add a new per-node feature capability as another factory instance plus a card
 wrapper, never as a copied store or card. See `applications.md` and
 `projects.md` for feature-specific behavior.
 
+## Server Settings: Embedding
+
+Settings -> Server Settings -> **Embedding** (`?section=server-settings&mode=embedding`;
+sub-navigation Basics · Embedding · Advanced · Migrations) manages the bound
+node's embedding models and its Projects' meaning-search indexes. Everything is
+node state; nothing is Electron-specific. `ServerSettingsManager` renders the
+panel before its raw-settings loading gate, so it has its own loading and error
+states.
+
+- `composables/settings/useEmbeddingSettings.ts` owns the data: one read-only
+  GraphQL document (`embeddingModelsStatus` + `projectTaskIndexes`,
+  `graphql/queries/embeddingSettingsQueries.ts`), read on open and polled every
+  2 s while a download, a model preparation or indexing runs and every 10 s
+  otherwise, until the panel unmounts. Indexing the server starts on its own
+  after a Task write (`embeddings.md`, Index after writes) shows at the next
+  10 s refresh and is then polled every 2 s (DEC-015); opening the section
+  shows the current state at once. The latest request wins; a rebinding
+  starts over with the new node. Reading never starts work. The actions
+  (`graphql/mutations/embeddingSettingsMutations.ts` and the existing
+  `retryEmbeddingModel`) read the status again at once. A refused or failed
+  action shows the server's message (or "Couldn’t reach the server." when the
+  request got no server answer) in one red `role="alert"` line above the
+  cards until the next action (REQ-010); the pressed buttons come back as soon
+  as the action is answered; Download failed, Unavailable and the
+  load error keep their own surfaces. Completions are announced in a polite
+  live region ("<model> downloaded.", "<model> is ready.", "<Project> indexed.").
+- `components/settings/embedding/`: `EmbeddingSettingsPanel` (loading, load
+  error, the switch dialog and focus after a switch), `EmbeddingModelCard`
+  (models with state, language label, size in decimal MB, on-disk total; Download,
+  Cancel, Use this model, Remove with an inline confirmation, Retry),
+  `ProjectIndexesCard` (Index all Projects, filter tabs, a name filter above 8
+  Projects, Index now, Rebuild with an inline confirmation) and
+  `EmbeddingSwitchDialog`. Copy lives in
+  `localization/messages/{en,zh-CN}/embeddingSettings.ts` (`settings.search.*`);
+  failure reasons come from the server.
+- The active model's row shows the server's display state: Ready, Preparing…
+  (download bytes or loading), Not downloaded with **Download** (which prepares
+  it; no Cancel), or Unavailable with the reason and **Retry**. While the model
+  is unavailable every Project shows Unavailable without actions.
+- `tests/e2e/embedding-settings-probe.mjs` (`pnpm test:e2e:embedding-settings`)
+  drives the section against a real node on a fresh data root, with real
+  downloads of the small LEAF-IR model.
+
 ## Settings: Agent Packages Auto-Refresh
 
 `components/settings/AgentPackagesManager.vue` shows each package row's

@@ -1,0 +1,68 @@
+# Check: IMP-02
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit/memory/jsonl-log-file.test.ts tests/unit/memory/durable-file-replace.test.ts tests/unit/memory/run-memory-file-store-damaged-end.test.ts tests/unit/memory/run-memory-file-store.test.ts tests/unit/memory/raw-trace-archive-manager.test.ts tests/unit/memory/working-context-snapshot-store.test.ts --reporter=verbose
+# Commit: a9b5230505
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T15:01:44Z
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-ts
+
+ ✓ tests/unit/memory/durable-file-replace.test.ts > replaceFileDurably > syncs the temporary file before renaming it over the file, then syncs the folder 3ms
+ ✓ tests/unit/memory/durable-file-replace.test.ts > replaceFileDurably > creates the folder when it is missing 21ms
+ ✓ tests/unit/memory/durable-file-replace.test.ts > replaceFileDurably > ignores a folder sync the platform does not support 5ms
+ ✓ tests/unit/memory/working-context-snapshot-store.test.ts > WorkingContextSnapshotStore > writes, reads, and checks existence 25ms
+ ✓ tests/unit/memory/working-context-snapshot-store.test.ts > WorkingContextSnapshotStore > supports flat team-member snapshot layout when agentRootSubdir is empty 14ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > reads an intact file completely 3ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > reads a missing file and an empty file as empty 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > treats a zero-filled end after non-ASCII records as the damaged end, measured in bytes 17ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > treats a torn last record without a newline as the damaged end 6ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > treats a torn last record with a newline as the damaged end 2ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > keeps records whose edges carry zeros, and zero-only lines between records 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > cuts trailing empty, whitespace-only and zero-only lines with the damaged end 5ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > accepts a complete last record whose newline never landed 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > reports a damaged line before the last non-empty line with its file and line number 6ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > reports a JSON line that is not an object as damage 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > never accepts a record with interior zeros: mid-file it is damage, as the last line it is the damaged end 10ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > never accepts a zero run joining two records: mid-file it is damage, as the last line it is the damaged end 6ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > readJsonlRecords > never changes the file 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > repairJsonlDamagedEnd > cuts the damaged end byte-exact and warns once with the file and bytes removed 11ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > repairJsonlDamagedEnd > cuts a torn record after non-ASCII content without leaving any of it 6ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > repairJsonlDamagedEnd > adds the newline a complete last record lacks 2ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > repairJsonlDamagedEnd > leaves an intact file alone without a warning 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > repairJsonlDamagedEnd > leaves mid-file damage untouched and reports it 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > jsonlLogEndsCleanly > is true for a missing, empty or intact file 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > jsonlLogEndsCleanly > is true when the last record is longer than the checked tail but the file is intact 2ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > jsonlLogEndsCleanly > is false for a zero-filled end 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > jsonlLogEndsCleanly > is false for a torn record without newline 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > jsonlLogEndsCleanly > is false for a torn record with newline 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > jsonlLogEndsCleanly > is false for a last record with interior zeros and a newline 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > jsonlLogEndsCleanly > is false for a complete record without newline 1ms
+ ✓ tests/unit/memory/jsonl-log-file.test.ts > serializeJsonlRecords > writes one newline-terminated line per record and nothing for no records 0ms
+ ✓ tests/unit/memory/raw-trace-archive-manager.test.ts > RawTraceArchiveManager > creates direct rotated raw trace segment files and preserves manifest boundary authority 40ms
+ ✓ tests/unit/memory/raw-trace-archive-manager.test.ts > RawTraceArchiveManager > reads old-layout complete archive segments through the old manifest fallback 3ms
+ ✓ tests/unit/memory/raw-trace-archive-manager.test.ts > RawTraceArchiveManager > ignores pending archive manifest segments during complete archive reads 2ms
+ ✓ tests/unit/memory/raw-trace-archive-manager.test.ts > RawTraceArchiveManager > supersedes stale pending entries when retrying archive creation for the same boundary 36ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore damaged end > cuts a zero-filled end exactly when the log is opened for use and warns (AC-003) 3ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore damaged end > cuts a torn last record exactly when the log is opened for use and warns (AC-003) 5ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore damaged end > leaves an intact log unchanged and logs nothing (AC-003) 5ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore damaged end > keeps every record appended after a damaged end without any prior read (AC-004) 2ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore damaged end > keeps an append after a torn last record that did get its newline (AC-004) 6ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore damaged end > starts an append on its own line after a complete record whose newline never landed (AC-004) 10ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore damaged end > checks each memory file of the store separately (AC-004) 9ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore damaged end > keeps a system-instruction record appended after a damaged end (AC-004) 10ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore damaged end > refuses to append onto mid-file damage, leaves the file unchanged, and checks again next time 6ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts > RunMemoryFileStore > does not create a missing run directory for read-only complete-corpus reads 2ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts > RunMemoryFileStore > owns standard raw-trace and snapshot file IO for a direct memory directory 13ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts > RunMemoryFileStore > archives pruned raw traces with the shared segmented archive manifest 43ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore whole-file rewrites (AC-007) > syncs the archive segment, manifest and rewritten active log before each rename 105ms
+ ✓ tests/unit/memory/run-memory-file-store-damaged-end.test.ts > RunMemoryFileStore whole-file rewrites (AC-007) > syncs the working-context snapshot before it replaces the old one 65ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts > RunMemoryFileStore > archives an exact native selection under its canonical full selection digest 170ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts > RunMemoryFileStore > rejects an inexact native selection without changing active or archive storage 2ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts > RunMemoryFileStore > rotates active traces before a provider boundary marker and keeps complete corpus ordered 67ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts > RunMemoryFileStore > keeps active plus archive complete when the same boundary is replayed after post-boundary records 84ms
+
+ Test Files  6 passed (6)
+      Tests  53 passed (53)
+   Start at  17:01:44
+   Duration  704ms (transform 592ms, setup 91ms, import 684ms, tests 847ms, environment 0ms)
+

@@ -1,0 +1,41 @@
+{
+  "projects": 20,
+  "tasksPerProject": 1000,
+  "seedingMs": 484414,
+  "states": {
+    "needsUpdate": 3,
+    "ready": 17
+  },
+  "firstLoadMs": 773,
+  "refreshMs": [
+    26,
+    25,
+    25,
+    24,
+    24,
+    24,
+    25,
+    24,
+    25,
+    25
+  ],
+  "medianRefreshMs": 25,
+  "maxRefreshMs": 26,
+  "firstLoadBudgetMs": 1000,
+  "refreshBudgetMs": 300,
+  "hostLoadAverage": {
+    "before": [
+      9.46,
+      10.27,
+      9.72
+    ],
+    "after": [
+      9.26,
+      10.22,
+      9.71
+    ]
+  },
+  "node": "v22.23.1",
+  "platform": "darwin-arm64",
+  "cpus": 10
+}

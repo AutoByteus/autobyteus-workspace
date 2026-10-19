@@ -1,3 +1,4 @@
+import type { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import type {
   AgentToolMcpRunSessionDeactivator,
@@ -27,7 +28,10 @@ type ResourceRecord = {
   artifactRelay: (() => void) | null;
   memoryRecorder: (() => void) | null;
   workJournal: (() => void) | null;
-  mcpReleased: boolean;
+  /** The run's Agent Tools MCP endpoint sessions. */
+  mcpSessionsReleased: boolean;
+  /** The MCP server instances (stdio processes, HTTP sessions) opened for the run's tool calls. */
+  mcpServersReleased: boolean;
 };
 
 const toError = (value: unknown): Error =>
@@ -53,6 +57,8 @@ export class AgentRunResourceManager {
     publishedArtifactRelayService: Pick<ApplicationPublishedArtifactRelayService, "attachToRun">;
     memoryRecorder: Pick<AgentRunMemoryRecorder, "attachToRun">;
     workJournalUpdater: Pick<WorkJournalRunUpdater, "attachToRun">;
+    /** Closes the MCP server instances opened for a run (keyed by its runId on every runtime). */
+    mcpServerInstances: Pick<McpServerInstanceManager, "cleanupMcpServerInstancesForAgent">;
     /** Told after a run's attachments are released, which every removal of a run goes through. */
     lifecycleObserver?: Pick<AgentRunLifecycleObserver, "runReleased"> | null;
   }) {}
@@ -67,7 +73,8 @@ export class AgentRunResourceManager {
       artifactRelay: null,
       memoryRecorder: null,
       workJournal: null,
-      mcpReleased: false,
+      mcpSessionsReleased: false,
+      mcpServersReleased: false,
     };
     this.resourcesByRunId.set(run.runId, record);
     try {
@@ -104,11 +111,15 @@ export class AgentRunResourceManager {
       workJournal: false,
     };
 
-    if (!record.mcpReleased) {
+    if (!record.mcpSessionsReleased) {
       try {
         deactivatedSessionCount = this.dependencies.runSessions.deactivateForRun(runId);
-        record.mcpReleased = true;
+        record.mcpSessionsReleased = true;
       } catch (error) { errors.push(toError(error)); }
+    }
+    if (!record.mcpServersReleased) {
+      record.mcpServersReleased = true;
+      this.closeMcpServerInstances(runId);
     }
     for (const key of ["fileChanges", "artifactRelay", "memoryRecorder", "workJournal"] as const) {
       if (!record[key]) continue;
@@ -135,6 +146,17 @@ export class AgentRunResourceManager {
       detached: Object.freeze(detached),
       errors: Object.freeze(errors),
     });
+  }
+
+  /** Started, never awaited: closing a run's MCP servers neither delays nor fails its release. */
+  private closeMcpServerInstances(runId: string): void {
+    const warn = (error: unknown) =>
+      console.warn(`Closing the MCP server instances of agent run '${runId}' failed: ${String(error)}`);
+    try {
+      void this.dependencies.mcpServerInstances.cleanupMcpServerInstancesForAgent(runId).catch(warn);
+    } catch (error) {
+      warn(error);
+    }
   }
 
   private alreadyReleased(runId: string): AgentRunResourceReleaseResult {

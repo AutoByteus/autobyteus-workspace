@@ -104,7 +104,11 @@ describe("ConfiguredAgentActivationPlanner external restore", () => {
   it("fails closed when durable conversation activity cannot be classified", async () => {
     const fixture = build({ activity: "indeterminate" });
 
-    expect(() => fixture.planner.begin(config, fixture.binding, "restore")).toThrowError(expect.objectContaining({ code: "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE" }));
+    expect(() => fixture.planner.begin(config, fixture.binding, "restore")).toThrowError(expect.objectContaining({
+      code: "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE",
+      // The inspector's plain-words reason is part of the message.
+      message: "The local conversation state cannot be inspected safely: unreadable trace.",
+    }));
     expect(fixture.prepareNewAgentRun).not.toHaveBeenCalled();
     expect(fixture.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
   });

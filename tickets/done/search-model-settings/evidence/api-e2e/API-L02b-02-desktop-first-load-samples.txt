@@ -1,0 +1,31 @@
+# API-L02b (more samples): after each pnpm --silent isolated-app restart: status as the first request (x3), and Projects list then the status 5 s later (x3); probe API-PROBE-first-load-sequence.mjs; same instance and data; Mon Oct 19 15:55:44 CEST 2026
+host: load averages: 10.25 16.61 38.58
+{"mode":"status-cold","statusFirst":849,"nextRefresh":7}
+host: load averages: 12.47 16.89 38.42
+{"mode":"projects-then-status","projectsFirst":857,"statusFirstAfter5s":883,"nextRefresh":4}
+host: load averages: 12.30 16.64 37.96
+{"mode":"status-cold","statusFirst":997,"nextRefresh":6}
+host: load averages: 12.95 16.65 37.71
+{"mode":"projects-then-status","projectsFirst":847,"statusFirstAfter5s":1204,"nextRefresh":6}
+host: load averages: 23.54 18.85 38.13
+{"mode":"status-cold","statusFirst":928,"nextRefresh":14}
+host: load averages: 20.99 18.46 37.77
+{"mode":"projects-then-status","projectsFirst":1112,"statusFirstAfter5s":840,"nextRefresh":4}
+
+# API-L02b (8 more samples of projects-then-status, each after a restart); Mon Oct 19 15:57:19 CEST 2026
+host: load averages: 13.99 17.00 36.35
+{"mode":"projects-then-status","projectsFirst":769,"statusFirstAfter5s":674,"nextRefresh":4}
+host: load averages: 13.14 16.72 36.02
+{"mode":"projects-then-status","projectsFirst":778,"statusFirstAfter5s":672,"nextRefresh":5}
+host: load averages: 27.08 19.59 36.60
+{"mode":"projects-then-status","projectsFirst":871,"statusFirstAfter5s":671,"nextRefresh":4}
+host: load averages: 32.67 21.17 36.86
+{"mode":"projects-then-status","projectsFirst":873,"statusFirstAfter5s":765,"nextRefresh":4}
+host: load averages: 40.60 23.45 37.40
+{"mode":"projects-then-status","projectsFirst":867,"statusFirstAfter5s":721,"nextRefresh":5}
+host: load averages: 44.30 25.07 37.73
+{"mode":"projects-then-status","projectsFirst":811,"statusFirstAfter5s":617,"nextRefresh":4}
+host: load averages: 47.97 26.82 38.13
+{"mode":"projects-then-status","projectsFirst":857,"statusFirstAfter5s":711,"nextRefresh":4}
+host: load averages: 53.68 29.10 38.74
+{"mode":"projects-then-status","projectsFirst":807,"statusFirstAfter5s":709,"nextRefresh":4}

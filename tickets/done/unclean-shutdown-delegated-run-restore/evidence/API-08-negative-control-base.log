@@ -1,0 +1,220 @@
+# Case: API-08 negative control (the new E2E file on the base build)
+# Command: git worktree add --detach <temp> f171032e88; pnpm install --frozen-lockfile --prefer-offline; pnpm -C autobyteus-server-ts prebuild; pnpm -C autobyteus-server-ts build; copy tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (f91c9126db) into it; same env -i vitest command as API-01
+# Commit: base f171032e88 (no fix) + test file f91c9126db
+# Environment: macOS, Node v22.23.1, pnpm 10.28.2; clean env, scripted AGY CLI, built base server in 3 child processes
+# Date: 2026-10-19
+# Expected: every case fails; USR-1..3 are refused with the old "(indeterminate)" text the user saw; USR-4 has the old text.
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/usdr-api-negative-control-base/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/usdr-api-negative-control-base/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+stdout | tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:82655) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests | 5 failed) 10823ms
+     × USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue' restores it, the end is cut and logged 69ms
+     × USR-2 AC-005 variant: a torn last record without a newline 57ms
+     × USR-3 AC-005 variant: a torn last record whose newline landed 59ms
+     × USR-4 AC-006: a damaged line before the last record is refused with the Team, coordinator, line and next step; the file is unchanged 54ms
+     × USR-5 SCN-003: a new server process reads every repaired log fresh; another message keeps every record and nothing more is cut 2151ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue' restores it, the end is cut and logged
+AssertionError: USR-1: the message is accepted: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "payload": {
++       "agent_run_id": "usdr_lead_9c71b5_9f8286523e414ac7bd042b997cd1be9e",
++       "change_sequence": null,
++       "code": "TEAM_SEND_MESSAGE_REJECTED",
++       "details": "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
++       "error_effect": null,
++       "error_scope": null,
++       "message": "The delegated Team at '/usdr_marketing_9c71b5' is shut down and its saved conversation is unavailable (indeterminate); it cannot be restored.",
++       "turn_id": null,
++     },
++     "type": "ERROR",
++   },
++ ]
+
+ ❯ continueAfterDamagedEnd tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts:266:97
+    264|       return okCount(await restartTeam.conversationOf(copy.coordinator…
+    265|     }, `${caseId}: the coordinator answers "${message}"`, 90_000);
+    266|     expect(restartTeam.errorsFor(copy.coordinator, from), `${caseId}: …
+       |                                                                                                 ^
+    267|     const conversation = stringsOf(await restartTeam.conversationOf(co…
+    268|     expect(conversation.some((text) => text.includes(message)), `${cas…
+ ❯ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts:290:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-2 AC-005 variant: a torn last record without a newline
+AssertionError: USR-2: the message is accepted: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "payload": {
++       "agent_run_id": "usdr_lead_9c71b5_05031704ac5242b6a3bfcd8f3fa14a6e",
++       "change_sequence": null,
++       "code": "TEAM_SEND_MESSAGE_REJECTED",
++       "details": "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
++       "error_effect": null,
++       "error_scope": null,
++       "message": "The delegated Team at '/usdr_marketing_9c71b5' is shut down and its saved conversation is unavailable (indeterminate); it cannot be restored.",
++       "turn_id": null,
++     },
++     "type": "ERROR",
++   },
++ ]
+
+ ❯ continueAfterDamagedEnd tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts:266:97
+    264|       return okCount(await restartTeam.conversationOf(copy.coordinator…
+    265|     }, `${caseId}: the coordinator answers "${message}"`, 90_000);
+    266|     expect(restartTeam.errorsFor(copy.coordinator, from), `${caseId}: …
+       |                                                                                                 ^
+    267|     const conversation = stringsOf(await restartTeam.conversationOf(co…
+    268|     expect(conversation.some((text) => text.includes(message)), `${cas…
+ ❯ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts:294:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-3 AC-005 variant: a torn last record whose newline landed
+AssertionError: USR-3: the message is accepted: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "payload": {
++       "agent_run_id": "usdr_lead_9c71b5_d277167c336e4527a8442c16ce62a75a",
++       "change_sequence": null,
++       "code": "TEAM_SEND_MESSAGE_REJECTED",
++       "details": "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
++       "error_effect": null,
++       "error_scope": null,
++       "message": "The delegated Team at '/usdr_marketing_9c71b5' is shut down and its saved conversation is unavailable (indeterminate); it cannot be restored.",
++       "turn_id": null,
++     },
++     "type": "ERROR",
++   },
++ ]
+
+ ❯ continueAfterDamagedEnd tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts:266:97
+    264|       return okCount(await restartTeam.conversationOf(copy.coordinator…
+    265|     }, `${caseId}: the coordinator answers "${message}"`, 90_000);
+    266|     expect(restartTeam.errorsFor(copy.coordinator, from), `${caseId}: …
+       |                                                                                                 ^
+    267|     const conversation = stringsOf(await restartTeam.conversationOf(co…
+    268|     expect(conversation.some((text) => text.includes(message)), `${cas…
+ ❯ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts:298:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-4 AC-006: a damaged line before the last record is refused with the Team, coordinator, line and next step; the file is unchanged
+AssertionError: expected 'The delegated Team at \'/usdr_marketi…' to be 'The delegated Team at \'/usdr_marketi…' // Object.is equality
+
+Expected: "The delegated Team at '/usdr_marketing_9c71b5' cannot be restored: the saved conversation of its coordinator '/usdr_marketing_9c71b5/lead' cannot be read (line 3 of raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup."
+Received: "The delegated Team at '/usdr_marketing_9c71b5' is shut down and its saved conversation is unavailable (indeterminate); it cannot be restored."
+
+ ❯ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts:309:38
+    307|     const [refusal] = restartTeam.errorsFor(copy.coordinator, from);
+    308|     expect(refusal!.payload).toMatchObject({ code: "TEAM_SEND_MESSAGE_…
+    309|     expect(refusal!.payload.message).toBe(`The delegated Team at '${co…
+       |                                      ^
+    310|       + `'${copy.coordinatorAddress}' cannot be read (line ${damagedLi…
+    311|       + "Start a new delegation for this work, or restore its saved co…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads every repaired log fresh; another message keeps every record and nothing more is cut
+AssertionError: USR-1: accepted after the second restart: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "payload": {
++       "agent_run_id": "usdr_lead_9c71b5_9f8286523e414ac7bd042b997cd1be9e",
++       "change_sequence": null,
++       "code": "TEAM_SEND_MESSAGE_REJECTED",
++       "details": "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
++       "error_effect": null,
++       "error_scope": null,
++       "message": "The delegated Team at '/usdr_marketing_9c71b5' is shut down and its saved conversation is unavailable (indeterminate); it cannot be restored.",
++       "turn_id": null,
++     },
++     "type": "ERROR",
++   },
++ ]
+
+ ❯ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts:339:109
+    337|         await until(async () => view.errorsFor(copy.coordinator, from)…
+    338|           `${copy.caseId}: answer after the second restart`, 90_000);
+    339|         expect(view.errorsFor(copy.coordinator, from), `${copy.caseId}…
+       |                                                                                                             ^
+    340|         let after = Buffer.alloc(0);
+    341|         await until(async () => { after = await fsp.readFile(copy.logP…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  17:38:16
+   Duration  21.72s (transform 7.34s, setup 26ms, import 9.75s, tests 10.82s, environment 0ms)
+
+exit=1

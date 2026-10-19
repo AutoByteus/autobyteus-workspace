@@ -1,0 +1,34 @@
+# Check: IMP-09
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/architecture --no-watch (not part of test:unit/test:integration). Ran on content equal to a9b5230505.
+# Commit: a9b5230505
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T15:20:10Z
+
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority
+AssertionError: expected [ …(25) ] to deeply equal [ …(24) ]
+
+- Expected
++ Received
+
+@@ -1,10 +1,11 @@
+  [
+    "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
++   "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
+    "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
+    "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
+    "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
+    "autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts",
+    "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
+
+ ❯ tests/architecture/application-framework-boundaries.test.ts:3000:41
+    2998|       );
+    2999|     }).sort();
+    3000|     expect(definitionGetterOccurrences).toEqual([
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 43 passed (44)
+
+# Cause: base f171032e88 already contains AgentDefinitionService.getInstance( in src/agent-memory/services/agent-memory-explorer-service.ts:53 (added by 3e3a7b08cc); this ticket changes neither that file nor tests/architecture.

@@ -1,0 +1,5 @@
+# API-D01: env -i PATH HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/projects-graphql.e2e.test.ts --no-watch, after updating API-007 (stale name filter); code d2bcb95d3a + this test change; macOS arm64, Node 22.23.1; Mon Oct 19 12:22:43 CEST 2026
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (11 tests) 1211ms
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+exit=0

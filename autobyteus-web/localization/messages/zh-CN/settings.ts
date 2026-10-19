@@ -22,6 +22,7 @@ const settingsMessages = {
   'settings.page.sections.extensions': '扩展',
   'settings.page.sections.updates': '更新',
   'settings.page.serverSettings.quick': '基础',
+  'settings.page.serverSettings.embedding': '嵌入',
   'settings.page.serverSettings.advanced': '高级',
   'settings.display.eyebrow': '显示',
   'settings.display.title': '应用字体大小',

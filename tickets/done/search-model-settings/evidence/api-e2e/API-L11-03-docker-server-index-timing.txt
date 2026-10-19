@@ -1,0 +1,5 @@
+# API-L11 timing (AC-015): Docker node, Granite Ready; createProjectTask in Gamma desktop (Not indexed, 8 Tasks) and updateProjectTask (new description) on t02 in Alpha docs (Ready); the read-only projectTaskIndexes polled every 250 ms (no search) until both are Ready; commit 8c283c6acc; host load averages: 159.19 101.63 58.37; Mon Oct 19 14:57:58 CEST 2026
+writes saved after 55 ms
++69 ms Alpha docs: NEEDS_UPDATE changed 1 | Gamma desktop: NOT_INDEXED
++3272 ms Alpha docs: INDEXING 0/1 | Gamma desktop: INDEXING 0/9
++3804 ms Alpha docs: READY | Gamma desktop: READY

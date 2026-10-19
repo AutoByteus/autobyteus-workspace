@@ -126,7 +126,10 @@ run, its run-session, and its attached resources active so the operation can be
 retried. An accepted finish does not return success until the exact run is
 inactive, `AgentRunActivationRegistry.removeIfCurrent(...)` removes that same
 object, and resource release has deactivated the run-session and detached the
-file-change, artifact-relay, and memory observers.
+file-change, artifact-relay, and memory observers. The same release also starts
+closing the external MCP server instances (stdio processes, HTTP sessions) that
+the run's tool calls opened; that close runs in the background and is not
+awaited (see [MCP Server Management](./mcp_server_management.md#server-instance-lifetime)).
 
 `MixedAgentMemberHandle` delegates to that manager boundary and disposes its
 local handle only after accepted managed finish. It does not own a second Agent

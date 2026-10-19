@@ -1,0 +1,109 @@
+# Check: IMP-06
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts tests/unit/agent-memory/external-runtime-memory-writer.test.ts tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts --no-watch --reporter=verbose
+# Commit: b166e0db70
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T15:20:01Z
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+
+stdout | tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > spawns a agent with one tree write, shuts it down after the grace period, and restores it on a message
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > spawns a agent with one tree write, shuts it down after the grace period, and restores it on a message 138ms
+stderr | tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing
+[2026-10-19T15:20:06.826Z] [WARN] [agent-collaboration.task-execution] TASK_EXECUTION_CONVERSATION_UNAVAILABLE {
+  rootSubjectKind: 'agent_org',
+  rootRunId: 'org-idle-shutdown-agent',
+  address: '/worker',
+  memberAddress: '/worker',
+  memberAgentRunId: 'task-agent-1',
+  activity: 'none',
+  reason: null,
+  cause: null
+}
+
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > spawns a team with one tree write, shuts it down after the grace period, and restores it on a message 81ms
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing 49ms
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > treats an errored delegated agent as quiet: no root open work, shut down after the grace period (AC-015) 47ms
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > treats an errored delegated team as quiet: no root open work, shut down after the grace period (AC-015) 64ms
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > keeps a delegated agent with a running background task past the grace period; the task's end re-arms it (AC-002/003/004) 55ms
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > keeps a delegated team with a running background task past the grace period; the task's end re-arms it (AC-002/003/004) 59ms
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts > Org-root delegated executions: pure spawn, idle shutdown, and wake-on-message > disposes pending idle timers when the root terminates 47ms
+stdout | tests/unit/agent-memory/external-runtime-memory-writer.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > writes exact normalized raw fields without creating a WorkingContext snapshot
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-runtime-memory-writer-RnOoOt/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > keeps every trace appended after a zero-filled end left by an unclean shutdown (AC-004) 6ms
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > keeps every trace appended after a torn last record left by an unclean shutdown (AC-004) 2ms
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > writes exact normalized raw fields without creating a WorkingContext snapshot 4ms
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > continues sequence numbers from active and complete archived traces after recreation 47ms
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > writes strict call/result rows and hydrates archived calls with active null results 43ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > classifies user or assistant records in the active trace as present without mutating files 4ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > finds conversation activity in a complete archived segment when the active trace is empty 46ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > returns none for an absent trace corpus and for non-conversation records 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > fails closed as indeterminate for malformed active JSONL with a plain-words reason 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > fails closed as indeterminate for a manifest that is not JSON with a plain-words reason 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > fails closed as indeterminate for malformed manifest with a plain-words reason 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > fails closed as indeterminate for a manifest segment with an invalid status with a plain-words reason 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > fails closed as indeterminate for a complete segment without file name with a plain-words reason 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > fails closed as indeterminate for a complete segment outside the run folder with a plain-words reason 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > fails closed as indeterminate for unreadable complete segment with a plain-words reason 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > treats missing required identity or memory path as indeterminate 0ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > after an unclean shutdown (synthesized logs) > classifies a log ending in 1,241 zero bytes as present and leaves it byte for byte unchanged (AC-001) 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > after an unclean shutdown (synthesized logs) > classifies a log ending in a torn final record as present and leaves it byte for byte unchanged (AC-001) 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > after an unclean shutdown (synthesized logs) > classifies a log without conversation records and with a damaged end as none (AC-002) 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > after an unclean shutdown (synthesized logs) > reports a zero run inside a record before the last record as indeterminate with the file and line (AC-002) 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > after an unclean shutdown (synthesized logs) > reports a zero run joining two records before the last record as indeterminate with the file and line (AC-002) 1ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts > AgentConversationActivityInspector > after an unclean shutdown (synthesized logs) > reads a complete archive segment with a damaged end tolerantly without cutting it 1ms
+stdout | tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent_team root adapter refusal (AC-006) > refuses a Team whose coordinator's log is damaged mid-file, naming the Team, coordinator, line and next step
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > taskExecutionConversationUnavailable > names the Team, its coordinator, the damaged line and a next step 2ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > taskExecutionConversationUnavailable > says a delegated Agent has no saved conversation to continue 0ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > taskExecutionConversationUnavailable > says which coordinator of a Team has no saved conversation 0ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent_team root adapter refusal (AC-006) > refuses a Team whose coordinator's log is damaged mid-file, naming the Team, coordinator, line and next step 7ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent_team root adapter refusal (AC-006) > refuses a delegated Agent with a damaged log by its own address 3ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent_team root adapter refusal (AC-006) > restores the chain when every shut-down entry has a saved conversation 1ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent_org root adapter refusal (AC-006) > refuses a Team whose coordinator's log is damaged mid-file, naming the Team, coordinator, line and next step 2ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent_org root adapter refusal (AC-006) > refuses a delegated Agent with a damaged log by its own address 1ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent_org root adapter refusal (AC-006) > restores the chain when every shut-down entry has a saved conversation 2ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent root adapter refusal (AC-006) > refuses a Team whose coordinator's log is damaged mid-file, naming the Team, coordinator, line and next step 1ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent root adapter refusal (AC-006) > refuses a delegated Agent with a damaged log by its own address 1ms
+ ✓ tests/unit/agent-collaboration/task-execution-conversation-availability.test.ts > agent root adapter refusal (AC-006) > restores the chain when every shut-down entry has a saved conversation 1ms
+stdout | tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts > ConfiguredAgentActivationPlanner external restore > starts a fresh provider conversation for a never-messaged member with a prospective thread id 3ms
+ ✓ tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts > ConfiguredAgentActivationPlanner external restore > restores the exact provider conversation when durable user or assistant activity exists 1ms
+ ✓ tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts > ConfiguredAgentActivationPlanner external restore > fails closed when real conversation activity has no provider binding 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts > ConfiguredAgentActivationPlanner external restore > fails closed when durable conversation activity cannot be classified 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts > ConfiguredAgentActivationPlanner per-attempt mode > plans the same member fresh or restore depending on the attempt's mode 0ms
+ ✓ tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts > ConfiguredAgentActivationPlanner per-attempt mode > starts new in fresh mode when there is no prior activity 0ms
+
+ Test Files  5 passed (5)
+      Tests  48 passed (48)
+   Start at  17:20:02
+   Duration  7.93s (transform 3.01s, setup 60ms, import 6.29s, tests 735ms, environment 0ms)
+

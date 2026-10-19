@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { replaceFileDurably } from './durable-file-replace.js';
 import { WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from './memory-file-names.js';
 
 export class WorkingContextSnapshotStore {
@@ -31,11 +32,7 @@ export class WorkingContextSnapshotStore {
   }
 
   write(agentId: string, payload: Record<string, unknown>): void {
-    const filePath = this.getPath(agentId);
-    const temporaryPath = `${filePath}.tmp`;
-    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    fs.writeFileSync(temporaryPath, JSON.stringify(payload), 'utf-8');
-    fs.renameSync(temporaryPath, filePath);
+    replaceFileDurably(this.getPath(agentId), JSON.stringify(payload));
   }
 
   private getPath(agentId: string): string {

@@ -1,0 +1,323 @@
+# Case: API-04 AC-008 isolated desktop instance (packaged worktree build) with a copied user-kind uv server; descendant process counts
+# Commands: CODEX_HOME=<L>/codex-home pnpm --silent isolated-app start --build; node <L>/harness/ac008-harness.mjs <backendUrl> <appPid> <L>; pnpm --silent isolated-app stop iso-53507-6383
+# Server copy: git -C autobyteus_mcps archive a947f1a^ video-audio-mcp | tar -x -C <L>/servers; uv sync --frozen (fresh .venv in the copy); tool video_editing_get_media_duration on <L>/servers/sample.mp4 (read-only)
+# Commit: 7fa2819630 (fix a8b849af79; later commits are ticket files only)
+# Environment: macOS 26 arm64; isolated instance iso-53507-6383 (own ports and data root); native = LM Studio qwen/qwen3.6-35b-a3b (unloaded after), Claude = haiku (real HOME sign-in)
+# Date: 2026-10-19
+
+== isolated-app start ==
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-53507-6383",
+    "pid": 48960,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-run-session-cleanup/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:53508",
+    "graphqlUrl": "http://127.0.0.1:53508/graphql",
+    "controlEndpoint": "http://127.0.0.1:53507",
+    "controlPort": 53507,
+    "serverPort": 53508,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-CXmhmi",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-CXmhmi/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-53507-6383.log"
+  }
+}
+
+== harness progress ==
+14:45:57 baseline (app idle, no MCP server configured): total=6 mcp=0
+14:45:59 after discovery (discovery session closes itself): total=6 mcp=0
+14:46:34 native: {"turnCompleted":true,"toolSucceeded":true,"errors":[]}
+14:46:41 claude: {"turnCompleted":true,"toolSucceeded":true,"errors":[]}
+14:46:41 both runs alive after their tool calls: total=11 mcp=4
+14:46:42 after terminating both runs: total=6 mcp=0
+14:46:47 after the woken run called the tool again: total=9 mcp=2
+14:46:49 after terminating the woken run: total=6 mcp=0
+14:46:49 done {"mcpGoneWithin10s":true,"backToBaseline":true,"wake":{"restore":{"success":true,"message":"Agent run restored successfully."},"turn":{"turnCompleted":true,"toolSucceeded":true,"errors":[]},"newProcess":true,"terminate":{"success":true,"message":"Agent run terminated successfully."},"mcpGoneWithin10s":true},"finalBackToBaseline":true}
+
+== harness result (value-free; process lists with <L> for the scratch path) ==
+{
+  "backend": "http://127.0.0.1:53508",
+  "appPid": 48960,
+  "steps": [
+    {
+      "label": "baseline (app idle, no MCP server configured)",
+      "at": "2026-10-19T14:45:57.100Z",
+      "totalDescendants": 6,
+      "mcpServerProcesses": [],
+      "otherNonElectron": []
+    },
+    {
+      "label": "after discovery (discovery session closes itself)",
+      "at": "2026-10-19T14:45:59.856Z",
+      "totalDescendants": 6,
+      "mcpServerProcesses": [],
+      "otherNonElectron": []
+    },
+    {
+      "label": "both runs alive after their tool calls",
+      "at": "2026-10-19T14:46:41.087Z",
+      "totalDescendants": 11,
+      "mcpServerProcesses": [
+        {
+          "pid": 69686,
+          "cmd": "uv --directory <L>/servers/video-audio-mcp run server.py"
+        },
+        {
+          "pid": 72271,
+          "cmd": "uv --directory <L>/servers/video-audio-mcp run server.py"
+        },
+        {
+          "pid": 72304,
+          "cmd": "<L>/servers/video-audio-mcp/.venv/bin/python3 server.py"
+        },
+        {
+          "pid": 69687,
+          "cmd": "<L>/servers/video-audio-mcp/.venv/bin/python3 server.py"
+        }
+      ],
+      "otherNonElectron": [
+        "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model haiku --permission-prompt-tool stdio"
+      ]
+    },
+    {
+      "label": "after terminating both runs",
+      "at": "2026-10-19T14:46:42.305Z",
+      "totalDescendants": 6,
+      "mcpServerProcesses": [],
+      "otherNonElectron": []
+    },
+    {
+      "label": "after the woken run called the tool again",
+      "at": "2026-10-19T14:46:47.942Z",
+      "totalDescendants": 9,
+      "mcpServerProcesses": [
+        {
+          "pid": 76137,
+          "cmd": "uv --directory <L>/servers/video-audio-mcp run server.py"
+        },
+        {
+          "pid": 76138,
+          "cmd": "<L>/servers/video-audio-mcp/.venv/bin/python3 server.py"
+        }
+      ],
+      "otherNonElectron": [
+        "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model haiku --permission-prompt-tool stdio"
+      ]
+    },
+    {
+      "label": "after terminating the woken run",
+      "at": "2026-10-19T14:46:49.178Z",
+      "totalDescendants": 6,
+      "mcpServerProcesses": [],
+      "otherNonElectron": []
+    }
+  ],
+  "configure": {
+    "saveErrors": null,
+    "discover": {
+      "success": true,
+      "message": "Successfully discovered and registered 32 tools."
+    }
+  },
+  "runs": {
+    "native": {
+      "runId": "ac008_native_9b1092_928bcced67c64e72a8325a9c9d6dff75",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "turn": {
+        "turnCompleted": true,
+        "toolSucceeded": true,
+        "errors": []
+      },
+      "terminate": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    },
+    "claude": {
+      "runId": "ac008_claude_8f389d_1768af4160aa439b83ff1287cd087df4",
+      "model": "haiku",
+      "turn": {
+        "turnCompleted": true,
+        "toolSucceeded": true,
+        "errors": []
+      },
+      "terminate": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    }
+  },
+  "mcpGoneWithin10s": true,
+  "mcpGoneMs": 1078,
+  "backToBaseline": true,
+  "mcpProcessesDuringRuns": 4,
+  "wake": {
+    "restore": {
+      "success": true,
+      "message": "Agent run restored successfully."
+    },
+    "turn": {
+      "turnCompleted": true,
+      "toolSucceeded": true,
+      "errors": []
+    },
+    "newProcess": true,
+    "terminate": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "mcpGoneWithin10s": true
+  },
+  "finalBackToBaseline": true
+}
+== stop ==
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-53507-6383",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-CXmhmi",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+ps afterwards: no process referencing <L>, server.py or the worktree app
+
+== baseline before this fix (from the mcp-sdk-1-32-upgrade parity round, API-13) ==
+On both SDK versions, four VideoAudioServer uv/python pairs (one per terminated agent run) stayed alive until the app was stopped.
+
+== harness source ==
+// Temporary API/E2E harness (ticket mcp-run-session-cleanup, API-04 / AC-008). Drives ONE isolated AutoByteus
+// instance through its public GraphQL and agent WebSocket only, and counts the app's descendant processes with `ps`.
+// Usage: node ac008-harness.mjs <backendUrl> <appPid> <baseDir>
+// Writes <baseDir>/results/ac008.json; value-free.
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+
+const [BACKEND, APP_PID, BASE] = process.argv.slice(2);
+const SERVER_DIR = path.join(BASE, 'servers', 'video-audio-mcp');
+const SAMPLE = path.join(BASE, 'servers', 'sample.mp4');
+const TOOL = 'video_editing_get_media_duration';
+const out = { backend: BACKEND, appPid: Number(APP_PID), steps: [] };
+const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
+const save = () => { fs.mkdirSync(path.join(BASE, 'results'), { recursive: true }); fs.writeFileSync(path.join(BASE, 'results', 'ac008.json'), JSON.stringify(out, null, 2)); };
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** All descendants of the app process: [{pid, ppid, cmd}]. */
+const descendants = () => {
+  const rows = execFileSync('ps', ['-axo', 'pid=,ppid=,command='], { encoding: 'utf8' }).trim().split('\n').map((line) => {
+    const m = /^\s*(\d+)\s+(\d+)\s+(.*)$/.exec(line);
+    return m ? { pid: Number(m[1]), ppid: Number(m[2]), cmd: m[3] } : null;
+  }).filter(Boolean);
+  const kids = new Map();
+  for (const r of rows) { if (!kids.has(r.ppid)) kids.set(r.ppid, []); kids.get(r.ppid).push(r); }
+  const result = []; const stack = [Number(APP_PID)];
+  while (stack.length) { const p = stack.pop(); for (const c of kids.get(p) ?? []) { result.push(c); stack.push(c.pid); } }
+  return result;
+};
+const isMcp = (d) => d.cmd.includes(SERVER_DIR) || /\bserver\.py\b/.test(d.cmd);
+const shortCmd = (cmd) => cmd.replace(BASE, '<L>').replace(/\/Users\/[^ ]*\/autobyteus-worktrees\/[^ /]+/g, '<worktree>').slice(0, 140);
+const snapshot = (label) => {
+  const all = descendants();
+  const mcp = all.filter(isMcp);
+  const entry = { label, at: new Date().toISOString(), totalDescendants: all.length, mcpServerProcesses: mcp.map((d) => ({ pid: d.pid, cmd: shortCmd(d.cmd) })),
+    otherNonElectron: all.filter((d) => !isMcp(d) && !/AutoByteus\.app\/Contents\/(Frameworks|MacOS)/.test(d.cmd)).map((d) => shortCmd(d.cmd)) };
+  out.steps.push(entry); save();
+  log(`${label}: total=${entry.totalDescendants} mcp=${mcp.length}`);
+  return entry;
+};
+const gql = async (query, variables) => {
+  const res = await fetch(`${BACKEND}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) });
+  return res.json();
+};
+const waitFor = async (check, ms) => { const end = Date.now() + ms; while (Date.now() < end) { if (check()) return true; await wait(250); } return check(); };
+
+const runTurn = async (runId, content) => {
+  const socket = new WebSocket(`${BACKEND.replace('http', 'ws')}/ws/agent/${runId}`);
+  const msgs = [];
+  socket.onmessage = (ev) => { try { const m = JSON.parse(String(ev.data)); if (typeof m.type === 'string') msgs.push({ type: m.type, payload: m.payload ?? {} }); } catch { /* ignore */ } };
+  await new Promise((r, j) => { socket.onopen = r; socket.onerror = j; });
+  const id = `e2e-${randomUUID()}`;
+  socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { message_id: id, dedupe_key: `agent_run_input:e2e:${id}`, context_file_paths: [], image_urls: [], agent_run_id: runId, content } }));
+  const t0 = Date.now();
+  while (Date.now() - t0 < 300_000 && !msgs.some((m) => m.type === 'TURN_COMPLETED' || m.type === 'ERROR')) await wait(250);
+  socket.close();
+  const ok = msgs.some((m) => m.type === 'TOOL_EXECUTION_SUCCEEDED' && String(m.payload.tool_name ?? '').endsWith(TOOL));
+  return { turnCompleted: msgs.some((m) => m.type === 'TURN_COMPLETED'), toolSucceeded: ok, errors: msgs.filter((m) => m.type === 'ERROR').map((m) => String(m.payload.message ?? '').slice(0, 200)) };
+};
+
+try {
+  await wait(5_000);
+  const baseline = snapshot('baseline (app idle, no MCP server configured)');
+  const saved = await gql('mutation($input: McpServerInput!) { configureMcpServer(input: $input) { savedConfig { __typename } } }', { input: {
+    serverId: 'VideoAudioServer', transportType: 'STDIO', enabled: true, toolNamePrefix: 'video_editing',
+    stdioConfig: { command: 'uv', args: ['--directory', SERVER_DIR, 'run', 'server.py'], env: null, cwd: null } } });
+  const disc = await gql('mutation($id: String!) { discoverAndRegisterMcpServerTools(serverId: $id) { success message } }', { id: 'VideoAudioServer' });
+  out.configure = { saveErrors: saved.errors ?? null, discover: disc.data?.discoverAndRegisterMcpServerTools ?? disc.errors };
+  await waitFor(() => descendants().filter(isMcp).length === 0, 10_000);
+  snapshot('after discovery (discovery session closes itself)');
+
+  const runs = {};
+  for (const runtime of ['native', 'claude']) {
+    let model = null;
+    if (runtime === 'native') {
+      const c = await gql('mutation($p: String!, $r: String) { ensureProviderModelCatalog(providerId: $p, runtimeKind: $r) { llmModels { modelIdentifier } } }', { p: 'LMSTUDIO', r: 'autobyteus' });
+      model = c.data?.ensureProviderModelCatalog?.llmModels?.map((m) => m.modelIdentifier).find((m) => m.includes('qwen3.6-35b-a3b')) ?? null;
+    } else model = 'haiku';
+    const def = await gql('mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }', { input: {
+      name: `ac008-${runtime}-${randomUUID().slice(0, 6)}`, role: 'assistant', category: 'runtime-e2e', description: 'AC-008 probe', toolNames: [TOOL],
+      instructions: 'You are a tool-calling test agent. When asked, call the named tool exactly once with the given arguments, then reply DONE. Do not call other tools.' } });
+    const ws = path.join(BASE, 'workspaces', runtime); fs.mkdirSync(ws, { recursive: true });
+    const run = await gql('mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }', { input: {
+      agentDefinitionId: def.data.createAgentDefinition.id, workspaceRootPath: ws, llmModelIdentifier: model,
+      llmConfig: runtime === 'native' ? { temperature: 0 } : null, autoExecuteTools: true, runtimeKind: runtime === 'native' ? 'autobyteus' : 'claude_agent_sdk' } });
+    const runId = run.data?.createAgentRun?.runId;
+    const turn = await runTurn(runId, `Call ${TOOL} with media_path "${SAMPLE}". Then reply DONE.`);
+    runs[runtime] = { runId, model, turn };
+    log(`${runtime}: ${JSON.stringify(turn)}`);
+  }
+  out.runs = runs;
+  const during = snapshot('both runs alive after their tool calls');
+
+  const t0 = Date.now();
+  for (const runtime of ['native', 'claude']) {
+    const r = await gql('mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success message } }', { id: runs[runtime].runId });
+    runs[runtime].terminate = r.data?.terminateAgentRun ?? r.errors;
+  }
+  const mcpGone = await waitFor(() => descendants().filter(isMcp).length === 0, 10_000);
+  out.mcpGoneWithin10s = mcpGone; out.mcpGoneMs = Date.now() - t0;
+  await waitFor(() => descendants().length <= baseline.totalDescendants, 20_000);
+  const after = snapshot('after terminating both runs');
+  out.backToBaseline = after.totalDescendants === baseline.totalDescendants;
+  out.mcpProcessesDuringRuns = during.mcpServerProcesses.length;
+
+  // Wake the Claude run, call again (new process), terminate again.
+  const restored = await gql('mutation($id: String!) { restoreAgentRun(agentRunId: $id) { success message } }', { id: runs.claude.runId });
+  out.wake = { restore: restored.data?.restoreAgentRun ?? restored.errors };
+  const oldPids = new Set(during.mcpServerProcesses.map((p) => p.pid));
+  out.wake.turn = await runTurn(runs.claude.runId, `Call ${TOOL} with media_path "${SAMPLE}" again. Then reply DONE.`);
+  const woke = snapshot('after the woken run called the tool again');
+  out.wake.newProcess = woke.mcpServerProcesses.length > 0 && woke.mcpServerProcesses.every((p) => !oldPids.has(p.pid));
+  const term2 = await gql('mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success message } }', { id: runs.claude.runId });
+  out.wake.terminate = term2.data?.terminateAgentRun ?? term2.errors;
+  out.wake.mcpGoneWithin10s = await waitFor(() => descendants().filter(isMcp).length === 0, 10_000);
+  await waitFor(() => descendants().length <= baseline.totalDescendants, 20_000);
+  const final = snapshot('after terminating the woken run');
+  out.finalBackToBaseline = final.totalDescendants === baseline.totalDescendants;
+} catch (e) {
+  out.error = String(e);
+} finally {
+  save();
+  log('done', JSON.stringify({ mcpGoneWithin10s: out.mcpGoneWithin10s, backToBaseline: out.backToBaseline, wake: out.wake, finalBackToBaseline: out.finalBackToBaseline, error: out.error }));
+}

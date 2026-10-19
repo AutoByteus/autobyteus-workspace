@@ -1,0 +1,7 @@
+# API-L03 (round 2, O-1): Docker node; huggingface.co blocked; Download on MongoDB LEAF-IR → failure; models folder afterwards; restore; Retry → Downloaded; commit 8c283c6acc; Mon Oct 19 14:56:05 CEST 2026
+failed: Download failed: Could not reach huggingface.co to download the model: fetch failed | actions ['use', 'retry'] | disk On disk: 0 MB
+models folder after the failure:
+total 8
+drwxr-xr-x 2 root root 4096 Oct 19 12:56 .
+drwxr-xr-x 3 root root 4096 Oct 19 12:56 ..
+after Retry: Downloaded ['use', 'remove'] On disk: 24 MB

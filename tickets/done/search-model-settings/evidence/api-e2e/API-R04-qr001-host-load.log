@@ -1,0 +1,10 @@
+# API-R04: RUN_PROJECT_INDEX_STATUS_LOAD=1 pnpm -C autobyteus-server-ts exec vitest run tests/integration/projects/project-task-index-status-load.integration.test.ts --no-watch; commit d2bcb95d3a; macOS arm64 host (M1 Max), Node 22.23.1; host load averages: 9.15 12.92 35.94; Mon Oct 19 12:48:45 CEST 2026
+# Excerpt
+stdout | tests/integration/projects/project-task-index-status-load.integration.test.ts > Embedding section status load (QR-001)
+stdout | tests/integration/projects/project-task-index-status-load.integration.test.ts > Embedding section status load (QR-001) > answers one status poll within 1000 ms
+ ✓ tests/integration/projects/project-task-index-status-load.integration.test.ts (1 test) 384916ms
+     ✓ answers one status poll within 1000 ms  3835ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  389.08s (transform 2.45s, setup 24ms, import 3.64s, tests 384.92s, environment 0ms)
+exit=0

@@ -1,0 +1,188 @@
+# API-L01: Docker node ab-sms-validation:d2bcb95d3a (fresh data root), Nuxt dev bound to it (BACKEND_NODE_BASE_URL), headless Chrome 1440x1180; open /settings?section=server-settings&mode=embedding; snapshot at open and 25 s later; container models folder; commit d2bcb95d3a; Mon Oct 19 12:26:12 CEST 2026
+{"url":"http://127.0.0.1:61598/settings?section=server-settings&mode=embedding","msToCards":454}
+== snapshot at open
+{
+ "panel": true,
+ "loading": false,
+ "loadError": null,
+ "actionError": null,
+ "actionErrorRole": null,
+ "disk": "On disk: 0 MB",
+ "subtitle": "Using IBM Granite Embedding Small English R2.",
+ "indexAll": {
+  "disabled": false,
+  "title": null
+ },
+ "filters": "All 4Needs indexing 3Indexing 0Ready 1",
+ "empty": false,
+ "dialog": null,
+ "announce": "",
+ "models": [
+  {
+   "id": "granite-embedding-small-english-r2",
+   "status": "Active·Not downloaded",
+   "facts": "Languages: English·Download size: 55 MB",
+   "progress": null,
+   "preparing": null,
+   "failed": null,
+   "unavailable": null,
+   "actions": [
+    "download"
+   ]
+  },
+  {
+   "id": "mdbr-leaf-ir",
+   "status": "Not downloaded",
+   "facts": "Languages: English·Download size: 24 MB",
+   "progress": null,
+   "preparing": null,
+   "failed": null,
+   "unavailable": null,
+   "actions": [
+    "download",
+    "use"
+   ]
+  },
+  {
+   "id": "embeddinggemma-2",
+   "status": "Not downloaded",
+   "facts": "Languages: 100+ languages·Download size: 346 MB",
+   "progress": null,
+   "preparing": null,
+   "failed": null,
+   "unavailable": null,
+   "actions": [
+    "download",
+    "use"
+   ]
+  }
+ ],
+ "projects": [
+  {
+   "id": "project_9def7582-e766-4982-beaa-473d5c78a484",
+   "text": "Alpha docsNot indexedIndex now",
+   "status": "Not indexed",
+   "actions": [
+    "index"
+   ]
+  },
+  {
+   "id": "project_9099a536-b5bf-4e5e-b8ab-a1cc5ebb54de",
+   "text": "Beta platformNot indexedIndex now",
+   "status": "Not indexed",
+   "actions": [
+    "index"
+   ]
+  },
+  {
+   "id": "project_c83d813c-084a-4cf4-9893-5eed8cfb7103",
+   "text": "Empty projectReady · 0 Tasks",
+   "status": "Ready · 0 Tasks",
+   "actions": []
+  },
+  {
+   "id": "project_da4de0bc-85b5-4e30-a27b-5e6a987251b5",
+   "text": "Gamma desktopNot indexedIndex now",
+   "status": "Not indexed",
+   "actions": [
+    "index"
+   ]
+  }
+ ]
+}
+== snapshot 25 s later
+{
+ "panel": true,
+ "loading": false,
+ "loadError": null,
+ "actionError": null,
+ "actionErrorRole": null,
+ "disk": "On disk: 0 MB",
+ "subtitle": "Using IBM Granite Embedding Small English R2.",
+ "indexAll": {
+  "disabled": false,
+  "title": null
+ },
+ "filters": "All 4Needs indexing 3Indexing 0Ready 1",
+ "empty": false,
+ "dialog": null,
+ "announce": "",
+ "models": [
+  {
+   "id": "granite-embedding-small-english-r2",
+   "status": "Active·Not downloaded",
+   "facts": "Languages: English·Download size: 55 MB",
+   "progress": null,
+   "preparing": null,
+   "failed": null,
+   "unavailable": null,
+   "actions": [
+    "download"
+   ]
+  },
+  {
+   "id": "mdbr-leaf-ir",
+   "status": "Not downloaded",
+   "facts": "Languages: English·Download size: 24 MB",
+   "progress": null,
+   "preparing": null,
+   "failed": null,
+   "unavailable": null,
+   "actions": [
+    "download",
+    "use"
+   ]
+  },
+  {
+   "id": "embeddinggemma-2",
+   "status": "Not downloaded",
+   "facts": "Languages: 100+ languages·Download size: 346 MB",
+   "progress": null,
+   "preparing": null,
+   "failed": null,
+   "unavailable": null,
+   "actions": [
+    "download",
+    "use"
+   ]
+  }
+ ],
+ "projects": [
+  {
+   "id": "project_9def7582-e766-4982-beaa-473d5c78a484",
+   "text": "Alpha docsNot indexedIndex now",
+   "status": "Not indexed",
+   "actions": [
+    "index"
+   ]
+  },
+  {
+   "id": "project_9099a536-b5bf-4e5e-b8ab-a1cc5ebb54de",
+   "text": "Beta platformNot indexedIndex now",
+   "status": "Not indexed",
+   "actions": [
+    "index"
+   ]
+  },
+  {
+   "id": "project_c83d813c-084a-4cf4-9893-5eed8cfb7103",
+   "text": "Empty projectReady · 0 Tasks",
+   "status": "Ready · 0 Tasks",
+   "actions": []
+  },
+  {
+   "id": "project_da4de0bc-85b5-4e30-a27b-5e6a987251b5",
+   "text": "Gamma desktopNot indexedIndex now",
+   "status": "Not indexed",
+   "actions": [
+    "index"
+   ]
+  }
+ ]
+}
+== container: embeddings folder?
+ls: cannot access '/home/autobyteus/data/embeddings': No such file or directory
+ls: cannot access '/home/autobyteus/data/embeddings/models': No such file or directory
+== server log lines about embedding/download:
+Successfully registered tool definition: 'download_media'
+(end)

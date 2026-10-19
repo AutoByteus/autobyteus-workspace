@@ -80,6 +80,21 @@ entries in its failed count, and the per-entry reason is in the server log. At
 startup, a stored entry that does not parse as one of these transports is
 skipped, and the other entries still register.
 
+## Server Instance Lifetime
+
+An MCP tool call runs on a server instance (a stdio child process or an HTTP
+client session) that `McpServerInstanceManager` in `autobyteus-ts` keeps per
+agent id and server id. Every runtime uses the AgentRun's `runId` as that agent
+id: native runs directly, the others through the Agent Tools MCP endpoint. When a
+run is released, `AgentRunResourceManager.release()` starts closing that run's
+instances; every way a run ends goes through it (termination, idle shutdown of a
+delegated copy, replacement, removal). The close runs in the background: it
+never delays or fails the release, and a failed close is logged with the run and
+server ids. The manager detaches a run's instances before closing them, so a run
+woken right after it ended gets new instances. The `/mcp/gateway` instances are
+shared under one scope (`mcp-gateway/default`) and are not tied to any run.
+Preview and tool discovery open their own short-lived sessions.
+
 ## Verifying An MCP SDK Upgrade
 
 In AutoByteus code, only `autobyteus-ts/src/tools/mcp/server/` imports

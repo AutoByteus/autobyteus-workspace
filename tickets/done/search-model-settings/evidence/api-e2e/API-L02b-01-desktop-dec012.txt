@@ -1,0 +1,9 @@
+# API-L02b (DEC-012, desktop host): packaged desktop iso-50179-e4cd (build of 8c283c6acc) with 21 Projects (20 x 1,000 + 8), no model on disk (embeddings folders: 0); API-PROBE-dec012-timing.mjs after each pnpm --silent isolated-app restart, both cold orders twice, 10 refresh rounds; Mon Oct 19 15:53:37 CEST 2026
+host: load averages: 9.12 20.39 43.24
+{"order":"status-first","firstRead":{"status":950,"projectsAfterStatus":1579},"statusRefresh":{"median":4,"p90":6,"max":6,"all":[6,5,4,4,4,4,6,4,4,3]},"projectsRepeat":{"median":1783,"p90":2421,"max":2421,"all":[616,2178,590,2017,796,2363,745,1783,688,2421]},"backlog":{"projects":21,"tasks":20008,"states":{"NOT_INDEXED":21}}}
+host: load averages: 9.48 19.55 42.27
+{"order":"projects-first","firstRead":{"projects":866,"statusAfterProjects":1652},"statusRefresh":{"median":4,"p90":8,"max":8,"all":[6,4,4,4,3,3,8,4,4,3]},"projectsRepeat":{"median":1586,"p90":3993,"max":3993,"all":[589,2196,609,3922,614,3993,569,1586,666,3330]},"backlog":{"projects":21,"tasks":20008,"states":{"NOT_INDEXED":21}}}
+host: load averages: 7.45 18.09 40.95
+{"order":"status-first","firstRead":{"status":909,"projectsAfterStatus":2043},"statusRefresh":{"median":4,"p90":6,"max":6,"all":[6,4,4,4,4,4,5,2,4,3]},"projectsRepeat":{"median":1321,"p90":6218,"max":6218,"all":[743,1984,583,1960,553,1495,602,1321,759,6218]},"backlog":{"projects":21,"tasks":20008,"states":{"NOT_INDEXED":21}}}
+host: load averages: 7.87 17.33 40.02
+{"order":"projects-first","firstRead":{"projects":839,"statusAfterProjects":1171},"statusRefresh":{"median":4,"p90":6,"max":6,"all":[6,4,5,4,4,3,5,4,4,4]},"projectsRepeat":{"median":763,"p90":3103,"max":3103,"all":[670,1762,617,2051,628,2429,763,615,3103,558]},"backlog":{"projects":21,"tasks":20008,"states":{"NOT_INDEXED":21}}}

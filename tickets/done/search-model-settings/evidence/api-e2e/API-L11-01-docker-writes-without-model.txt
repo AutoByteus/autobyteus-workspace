@@ -1,0 +1,3 @@
+# API-L11 alternate (AC-015: model not on disk → no download): Docker node ab-sms-validation:8c283c6acc after 20,038 Task creations on a fresh root (no model downloaded); Mon Oct 19 14:52:23 CEST 2026
+ls: cannot access '/home/autobyteus/data/embeddings': No such file or directory
+ls: cannot access '/home/autobyteus/data/embeddings/models': No such file or directory
