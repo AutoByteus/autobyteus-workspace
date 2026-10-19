@@ -1,0 +1,8 @@
+# API-L05 (round 2, O-4 / DEC-013, O-2): Docker node stopped while the page is open; Download on EmbeddingGemma 2; the alert text and whether the row's buttons are enabled right after; node started; next action clears the line; then Cancel; commit 8c283c6acc; Mon Oct 19 14:56:13 CEST 2026
+node stopped
+actionError: 'Couldn’t reach the server.' role: alert after 8 ms
+buttons of the row (disabled?): [["download",false],["use",false]]
+node started
+next action: actionError None | Downloading 0 of 346 MB · 0% ['cancel']
+after Cancel: [('embeddinggemma-2', 'Not downloaded')] On disk: 24 MB
+mdbr-leaf-ir

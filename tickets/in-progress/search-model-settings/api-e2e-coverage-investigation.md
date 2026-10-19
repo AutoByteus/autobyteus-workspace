@@ -16,11 +16,11 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code reviewer pass handoff (CRR-002) from `/software_engineering_team/code_reviewer`
+- Current API/E2E Revision ID: `API-REV-002` (round 2; `API-REV-001` = round 1, Fail F-001)
+- Current Investigation Round: 2
+- Trigger: round 1 — code reviewer pass CRR-002; round 2 — code reviewer pass CRR-005 of IR-003/IR-004 (SR-007: QR-001 redefined by DEC-012, DEC-013 copy, REQ-011 / AC-015 index after writes; CR-003 fix)
 - Prior Investigation Reviewed: none
-- Latest Authoritative Investigation: this file, round 1
+- Latest Authoritative Investigation: this file, round 2 (§ Round 2 Rerun Plan)
 
 Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings`, branch `codex/search-model-settings`, base `origin/personal` @ `8d40ba3b6c`. Code under validation: `d2bcb95d3a` (HEAD `8cbbf9afe8` adds only `tickets/`). Paths below are relative to the worktree unless absolute.
 
@@ -188,6 +188,44 @@ None.
 - Seed data: GraphQL only; fixture Task descriptions from `autobyteus-server-ts/tests/fixtures/project-task-search/tasks.json` and the autobyteus-71 generator (`…/project-task-semantic-search/evidence/probes/API-PROBE-generate-backlog.mjs` in that ticket's archive, or an equivalent generator kept with this ticket's probes).
 - Evidence: DOM state and text, screenshots compared with VIS-*, GraphQL responses, container file listings, timings.
 - Cleanup: the container, the image, the frontend process, Chrome profiles, the isolated instance and its data root, temp folders.
+
+
+## Round 2 Rerun Plan (IR-003 + IR-004, commit `8c283c6acc`)
+
+Validated in round 1: `d2bcb95d3a` (Fail F-001: QR-001 on Docker). Changed since (`git diff --name-only d2bcb95d3a 8c283c6acc`):
+- server: `project-task-search-service.ts` (fingerprint inputs cached per Project, marks, index after writes, CR-003 gate), `embedding-index.ts` (`fingerprintItems`, `fingerprintsAreCurrent`, `activeModelOnDisk`, `collectionStatus` from fingerprints), `collection-indexing-job.ts`, `embedding-model-downloads.ts` / `embedding-model-files.ts` (O-1), composition (marks fan-out), `project-task-service.ts` (marks), docs;
+- web: `useEmbeddingSettings.ts` (O-2, O-4), `EmbeddingSettingsPanel.vue`, copy key, probe.
+
+No shared foundation changed (no lockfile, manifest, schema, `autobyteus-ts`, contract package, test harness or build config), and only `tickets/` changed after `8c283c6acc`.
+
+New basis (SR-007):
+- QR-001 / DEC-012: refreshes ≤ 300 ms; first load ≤ 1 s on the desktop host; on Docker the first load is no slower than the existing Projects list; host load recorded (R-13).
+- REQ-010 / DEC-013: "Couldn’t reach the server."
+- REQ-011 / AC-015: index after Task writes within 10 s when the model is on disk; no download otherwise.
+- CR-003: a write that changes no description loads no model.
+
+Seeding rule for this round: the 20 × 1,000 load data is seeded **before** any model is on disk. Writes then trigger no indexing (REQ-011's gate), which also proves AC-015's alternate. No later write or Index all touches those Projects.
+
+| Case ID | Decision | Reason |
+| --- | --- | --- |
+| API-R01 | Reused: IMP-21 | Typecheck on `8c283c6acc` |
+| API-R02 | Reused: IMP-23 | Unit suite on `8c283c6acc` (incl. `project-task-index-status.test.ts`, CR-003 test) |
+| API-R03, API-D01 | Reused: IMP-24 | `tests/e2e/projects` + server settings on `8c283c6acc` (8 files, 52 tests; includes my updated `projects-graphql`) |
+| API-R04 | Reused: IMP-14 | Gated host load on `70bb03632c`; IR-004 changed the write path in `project-task-search-service.ts`; the status read now goes through the refactored `readProject` helper, which does the same reads. Desktop-host timing is rerun on the real app in API-L02b |
+| API-R05 | Reused: IMP-18, IMP-19 | Web suite and guards on `70bb03632c`; web changed after it only in the probe |
+| API-R06 | Rerun | Browser probe on `8c283c6acc` (IMP-20 ran on `1b24f59009`, before the server fix) |
+| API-R07 | Rerun | Licensing + hygiene |
+| API-L01 | Rerun (Docker) | Fresh open; the status path changed |
+| API-L02 | Rerun (Docker) | DEC-012: cold first load vs the existing Projects list on the same backlog; warm refreshes ≤ 300 ms; host load |
+| API-L02b (new) | New (desktop host) | DEC-012: first load ≤ 1 s and refreshes ≤ 300 ms on the packaged app over GraphQL, Projects list alongside, host load |
+| API-L03 | Rerun (Docker) | O-1: a failed download leaves no empty folder |
+| API-L04 | Rerun (Docker) | Unavailable + Retry; the index layer changed |
+| API-L05 | Rerun (Docker) | O-4 copy and O-2 buttons with the node stopped |
+| API-L06 | Rerun (Docker) | Index now / Rebuild / Index all after the status and job changes |
+| API-L11 (new) | New (Docker + desktop) | AC-015: create a Task and edit another; Settings shows Ready within 10 s with no search; meaning search finds both; save time; model not on disk → no download |
+| API-L12 (new) | New (Docker + desktop) | CR-003: after a restart, a write that changes no description (dependencies) loads no model: process memory stays flat and Settings stays Active · Ready; control: a description edit loads it |
+| API-L07, API-L10 | Rerun (desktop) | Fresh open; restart |
+| API-L08 | Still valid (round 1) | R-9 join path, Remove and the switch: the flight and switch code is unchanged except O-1's empty-folder removal after a failure (exercised in API-L03); the probe's EMB-003/004 rerun the switch on `8c283c6acc` |
 
 ## Not Tested / Infeasible / Deferred
 
