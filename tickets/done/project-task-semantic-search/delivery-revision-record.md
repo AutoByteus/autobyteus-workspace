@@ -9,6 +9,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | DR-001 | Delivery package from code review (CRR-005 Pass, API-REV-002 Pass) | N/A | Blocked — `Local Fix` (integration conflicts with `origin/personal` @ `2b04a9971d`) | `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-002 | Delivery package on the merge (IR-004, CRR-006 Pass, API-REV-003 Pass, CRR-007 N/A) | Blocked (DR-001) | Delivery Completed — verified from evidence, finalized to `personal`, companion PR merged, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-003 | The user asked for a new beta | Delivery Completed, no release (DR-002) | Delivery Completed — beta `v1.5.6-beta.8` published completely | `release-deployment-report.md`, `delivery-revision-record.md` |
+| DR-004 | The user's field confirmation | Delivery Completed (DR-003) | Delivery Completed — in use by the user; ticket closed | `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -87,3 +88,11 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Cleanup: release worktree and local finalize branch removed after this record was pushed.
 - Terminal return to `/solution_designer`: `Sent` (Delivery Completed, DR-003).
 - Remaining blockers: none. Residual risks as in DR-002.
+
+### DR-004 — The user confirms the change is in use
+
+- Trigger: after the `v1.5.6-beta.8` release, the user wrote: "the semantic search i am already using now. the project task manager is also using now … so the task is done".
+- Prior authoritative result: DR-003 `Delivery Completed` (beta `v1.5.6-beta.8`).
+- Current authoritative result: `Delivery Completed`, with the change in use. The user is using semantic Project Task search and the Project Task Manager with `search_project_tasks` (companion PR #63). The user considers the task done.
+- Delivery action: record only. No code, release or deployment change.
+- Remaining follow-ups: unchanged (DR-002 residual risks; FU-1…FU-6, autobyteus-147).
