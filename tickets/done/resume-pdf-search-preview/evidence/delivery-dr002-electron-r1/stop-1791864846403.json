@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-38291-78a3",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/tmp/resume-delivery-dr002.dFwKXl/runtime-tmp/autobyteus-isolated-root-dbErE7",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}

@@ -1,0 +1,4760 @@
+[
+  {
+    "case": "OLR-E2E-012-OPENAI",
+    "name": "OLR-E2E-012 (OPENAI): an output-limited write_file response is recovered the same way (AC-011)",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "gpt-5.4-mini",
+      "error": null,
+      "calls": [
+        {
+          "index": 0,
+          "phase": "OLR-012-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:incomplete",
+            "max_output_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 1,
+          "phase": "OLR-012-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:completed"
+          ],
+          "maxReportedOutputTokens": 1042,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 2,
+          "phase": "OLR-012-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:completed"
+          ],
+          "maxReportedOutputTokens": 115,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 3,
+          "phase": "OLR-012-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:completed"
+          ],
+          "maxReportedOutputTokens": 33,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d80e46ba_f6a2644c973f4730a88f63626757f067"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "discardedIds": [
+        "call_3cLhHV2zRxJovC7cvgi8EMya"
+      ],
+      "executedIds": [
+        "call_M3veWoiQmtQVdkfOSH4ETsM6",
+        "call_M3veWoiQmtQVdkfOSH4ETsM6",
+        "call_E7cJHvyNvB3E6BG4QCc5XBF3",
+        "call_E7cJHvyNvB3E6BG4QCc5XBF3"
+      ],
+      "recoveryTail": [
+        {
+          "role": "system",
+          "text": "## Agent Identity\n\n- Name: output-limit-recovery-writer-d80e46ba\n- Description: Live native-runtime validation agent.\n\n### Responsibilities and Boundaries\n\nYou are a file-writing agent working in the workspace with tools.\nUse write_file to create a file and edit_file to change or extend an existing one.\nWhen a task is finished, reply with the single word done.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined ",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "Create the file sea-lines.md with exactly 100 lines. Line N (for every N from 1 to 100) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 1200 tokens while generating a `write_file` tool call; the call was discarded and not executed. Break the work into smaller pieces (for example, write a large file in several smaller parts) and continue. Do not apologize or recap.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "fileLineCount": 100
+    },
+    "at": "2026-10-10T06:33:32.661Z"
+  },
+  {
+    "case": "OLR-E2E-012-GEMINI",
+    "name": "OLR-E2E-012 (GEMINI): an output-limited write_file response is recovered the same way (AC-011)",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "gemini-3.8-flash",
+      "error": null,
+      "calls": [
+        {
+          "index": 4,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 173,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 5,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "MAX_TOKENS"
+          ],
+          "maxReportedOutputTokens": null,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 6,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 675,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 7,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 23,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 8,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 197,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 9,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d80e46ba_989df911120745469ec6014e6dbb6121"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "discardedIds": [],
+      "executedIds": [
+        "call_132649",
+        "call_132649",
+        "call_40930",
+        "call_40930",
+        "call_1356200",
+        "call_1356200",
+        "call_32200",
+        "call_32200"
+      ],
+      "recoveryTail": [
+        {
+          "role": "assistant",
+          "text": "",
+          "toolUses": 1,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "",
+          "toolUses": 0,
+          "toolResults": [
+            "{\"id\":\"call_132649\",\"name\":\"run_bash\",\"response\":{\"result\":{\"exitCode\":0,\"effectiveCwd\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-aCgnBB\"}}}"
+          ]
+        },
+        {
+          "role": "user",
+          "text": "System note: your previous response hit the output limit of 1200 tokens before producing any visible output, so nothing was kept. Answer again from the start, breaking the work into smaller pieces.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "fileLineCount": 100
+    },
+    "at": "2026-10-10T06:34:07.645Z"
+  }
+]

@@ -49,7 +49,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: reactivat
     // The released authority stays registered: restoring it in place fails (the reason for the discard).
     await expect(f.adapter.restoreChain('B-worker', () => undefined)).rejects.toThrow();
     f.resources.setTaskOpen('B');
-    expect(await f.message('B-worker')).toMatchObject({ accepted: true, message: 'Delivered message to B-worker. B-worker was reactivated.' });
+    expect(await f.message('B-worker')).toMatchObject({ accepted: true, message: 'Delivered message to B-worker. B-worker continues with its conversation.' });
     const restored = f.active.get('B-worker');
     expect(restored).not.toBe(original);
     expect(restored.alive).toBe(true);
@@ -99,12 +99,12 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: reactivat
     await f.done('B');
     f.resources.addTask('C');
     const refused = async (copy: { teamRunId: string } | { agentRunId: string }) => (await f.assignTo(copy, 'C') as { message: string }).message;
-    expect(await refused({ agentRunId: 'A-lead' })).toBe('A-lead is the coordinator of Team copy A-team; use target_team_run_id "A-team".');
-    expect(await refused({ agentRunId: 'A-nested-lead' })).toBe('A-nested-lead is the coordinator of Team copy A-nested; use target_team_run_id "A-nested".');
-    expect(await refused({ agentRunId: 'A-team' })).toBe('A-team is a Team copy\'s team run ID; use target_team_run_id "A-team".');
-    expect(await refused({ teamRunId: 'B-worker' })).toBe('B-worker is an Agent copy\'s agent run ID; use target_agent_run_id "B-worker".');
-    expect(await refused({ agentRunId: 'A-child' })).toContain('sub-work or a helper of a Task worker');
-    expect(await refused({ agentRunId: 'nobody' })).toContain('nobody is not a delegated copy in this run.');
+    expect(await refused({ agentRunId: 'A-lead' })).toBe('A-lead is the coordinator of task agent team A-team; use target_team_run_id "A-team".');
+    expect(await refused({ agentRunId: 'A-nested-lead' })).toBe('A-nested-lead is the coordinator of task agent team A-nested; use target_team_run_id "A-nested".');
+    expect(await refused({ agentRunId: 'A-team' })).toBe('A-team is a task agent team\'s run id; use target_team_run_id "A-team".');
+    expect(await refused({ teamRunId: 'B-worker' })).toBe('B-worker is a task agent\'s run id; use target_agent_run_id "B-worker".');
+    expect(await refused({ agentRunId: 'A-child' })).toContain("works on part of another agent's Task");
+    expect(await refused({ agentRunId: 'nobody' })).toContain('nobody is not one of your task agents.');
     // A copy whose start failed is linked on the Task side but never reached the actual tree (CR-001, AC-009).
     f.resources.addTask('D');
     await f.resources.linkNewTaskExecution({ role: 'assigned', taskId: 'D', assignedBy: f.managerId, recipientAddress: '/never', hostRoot: f.root, execution: { agentRunId: 'never-started' } });
@@ -135,7 +135,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: reactivat
     // A member that is not the ingress cannot reactivate the Team.
     expect(await f.lifecycle.deliverToExactTarget(f.managerId, 'A-child', async () => ({ accepted: true })))
       .toMatchObject({ accepted: false, code: 'TASK_AGENT_RESOURCE_CLOSED' });
-    expect(await f.message('A-lead')).toMatchObject({ accepted: true, message: expect.stringContaining('A-lead was reactivated.') });
+    expect(await f.message('A-lead')).toMatchObject({ accepted: true, message: expect.stringContaining('A-lead continues with its conversation.') });
     const restored = f.getManaged('A-team')!;
     expect(restored).not.toBe(live);
     expect(restored.isActive()).toBe(true);

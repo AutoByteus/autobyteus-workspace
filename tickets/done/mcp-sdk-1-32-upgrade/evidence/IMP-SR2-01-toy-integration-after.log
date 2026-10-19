@@ -1,0 +1,93 @@
+# Check: IMP-SR2-01 toy integration tests (after)
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp
+# Commit: f59055f13f (SDK 1.32.1), worktree /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity
+# Toys: <worktree>/autobyteus_mcps -> test-owned /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-parity-check1.lKxa/after/autobyteus_mcps (pdf_mcp restored from autobyteus_mcps@e259f54^, fresh .venv via uv sync --frozen); streamable_http_mcp_toy and wss_mcp_toy do not exist anywhere
+# Environment: macOS 26.5.2, node v22.23.1, uv uv 0.10.2 (Homebrew 2026-02-10)
+# Date: 2026-10-19
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-ts
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > loads and registers tools from pdf_mcp
+Overwriting existing MCP config with server_id 'pdf-mcp'.
+
+<frozen runpy>:128: RuntimeWarning: 'pdf_mcp.server' found in sys.modules after import of package 'pdf_mcp', but prior to execution of 'pdf_mcp.server'; this may result in unpredictable behaviour
+<frozen runpy>:128: RuntimeWarning: 'pdf_mcp.server' found in sys.modules after import of package 'pdf_mcp', but prior to execution of 'pdf_mcp.server'; this may result in unpredictable behaviour
+Processing request of type ListToolsRequest
+Processing request of type ListToolsRequest
+Processing request of type CallToolRequest
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > loads and registers tools from pdf_mcp
+Successfully registered tool definition: 'pdf_read_pdf_pages'
+Successfully registered tool definition: 'pdf_pdf_metadata'
+Successfully registered tool definition: 'pdf_merge_pdf_files'
+Successfully registered tool definition: 'pdf_add_pdf_page_numbers'
+Successfully registered tool definition: 'pdf_create_pdf_catalog'
+Successfully registered tool definition: 'pdf_render_pdf_pages'
+Successfully registered tool definition: 'pdf_image_to_pdf_page'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > executes a registered MCP tool via the registry
+Overwriting existing MCP config with server_id 'pdf-mcp-exec'.
+
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts (1 test) 1017ms
+     ✓ lists tools and executes image_to_pdf_page  1017ms
+<frozen runpy>:128: RuntimeWarning: 'pdf_mcp.server' found in sys.modules after import of package 'pdf_mcp', but prior to execution of 'pdf_mcp.server'; this may result in unpredictable behaviour
+Processing request of type ListToolsRequest
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > executes a registered MCP tool via the registry
+Successfully registered tool definition: 'pdf_read_pdf_pages'
+Successfully registered tool definition: 'pdf_pdf_metadata'
+Successfully registered tool definition: 'pdf_merge_pdf_files'
+Successfully registered tool definition: 'pdf_add_pdf_page_numbers'
+Successfully registered tool definition: 'pdf_create_pdf_catalog'
+Successfully registered tool definition: 'pdf_render_pdf_pages'
+Successfully registered tool definition: 'pdf_image_to_pdf_page'
+
+<frozen runpy>:128: RuntimeWarning: 'pdf_mcp.server' found in sys.modules after import of package 'pdf_mcp', but prior to execution of 'pdf_mcp.server'; this may result in unpredictable behaviour
+Processing request of type CallToolRequest
+<frozen runpy>:128: RuntimeWarning: 'pdf_mcp.server' found in sys.modules after import of package 'pdf_mcp', but prior to execution of 'pdf_mcp.server'; this may result in unpredictable behaviour
+Processing request of type ListToolsRequest
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts (3 tests) 2199ms
+     ✓ loads and registers tools from pdf_mcp  951ms
+     ✓ executes a registered MCP tool via the registry  828ms
+     ✓ previews tools without registering them  419ms
+ ❯ tests/integration/tools/mcp/http-managed-mcp-server.test.ts (1 test | 1 skipped) 32360ms
+     ↓ lists tools and calls echo_text + server_time
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer integration (streamable_http_mcp_toy)
+Error: Streamable HTTP MCP server did not become ready: TypeError: fetch failed
+ ❯ waitForServerReady tests/integration/tools/mcp/http-managed-mcp-server.test.ts:81:9
+     79|   }
+     80| 
+     81|   throw new Error(`Streamable HTTP MCP server did not become ready: ${…
+       |         ^
+     82| }
+     83| 
+ ❯ tests/integration/tools/mcp/http-managed-mcp-server.test.ts:98:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯ Uncaught Exception ⎯⎯⎯⎯⎯
+Error: spawn /opt/homebrew/bin/uv ENOENT
+ ❯ Process.ChildProcess._handle.onexit node:internal/child_process:285:19
+ ❯ onErrorNT node:internal/child_process:483:16
+ ❯ processTicksAndRejections node:internal/process/task_queues:89:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'spawn /opt/homebrew/bin/uv', path: '/opt/homebrew/bin/uv', spawnargs: [ 'run', 'python', 'src/streamable_http_mcp_toy/server.py', '--host', '127.0.0.1', '--port', '8764' ] }
+This error originated in "tests/integration/tools/mcp/http-managed-mcp-server.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  4 passed | 1 skipped (5)
+     Errors  1 error
+   Start at  11:54:07
+   Duration  32.53s (transform 204ms, setup 46ms, import 206ms, tests 35.58s, environment 0ms)
+

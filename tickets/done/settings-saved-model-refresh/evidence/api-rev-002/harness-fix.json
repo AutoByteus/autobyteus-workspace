@@ -1,0 +1,9 @@
+{
+  "commit": "e00d34ffdd7ed2421522ddde7182b3ed48a3f223",
+  "classification": "API-owned baseline test selector Local Fix",
+  "path": "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+  "probeSha256": "5d812485b8215d97f4839ad7beafdfb4dbe98efb452c1dbf12be14076258d443",
+  "applicationSourceChanged": false,
+  "onlyChangedSourcePath": "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+  "reason": "Earlier stopped SSR Pair rows share display label; root/kind/address scopes the intended DCP Team row. Native-keyboard/style/real-action assertions unchanged."
+}

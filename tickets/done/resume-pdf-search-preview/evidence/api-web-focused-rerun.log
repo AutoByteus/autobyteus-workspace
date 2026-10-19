@@ -1,0 +1,217 @@
+
+> autobyteus@1.5.3-beta.1 test:nuxt /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/fileExplorerStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts composables/__tests__/useWorkspaceFileExplorer.spec.ts components/fileExplorer/__tests__ --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+
+stderr | components/fileExplorer/__tests__/FileExplorerLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/fileExplorerNodeRouting.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/MonacoEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/fileExplorerStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/fileExplorerStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/MonacoEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorerLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Opening file: /tmp/diagram.SVG
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Determined file type for "/tmp/diagram.SVG": Image
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/tmp/diagram.SVG'[39m,
+  type: [32m'Image'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/diagram.SVG": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.SVG
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Opening file: /tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Determined file type for "/tmp/diagram.svg": Image
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/tmp/diagram.svg'[39m,
+  type: [32m'Image'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+[FileExplorer] Constructed local media URL: local-file://local/tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Opening file: /tmp/notes.md
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Determined file type for "/tmp/notes.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/tmp/notes.md'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "/tmp/notes.md" via GraphQL.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Opening file: /tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Determined file type for "/tmp/diagram.svg": Image
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/tmp/diagram.svg'[39m,
+  type: [32m'Image'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/diagram.svg": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Opening file: /tmp/archive.zip
+
+stderr | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Unsupported local file type "Unsupported" for "/tmp/archive.zip".
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Determined file type for "/tmp/archive.zip": Unsupported
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/tmp/archive.zip'[39m,
+  type: [32m'Unsupported'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > routes supported Lua code through the text reader instead of Unsupported
+[FileExplorer] Opening file: /tmp/script.lua
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > routes supported Lua code through the text reader instead of Unsupported
+[FileExplorer] Determined file type for "/tmp/script.lua": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/tmp/script.lua'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+ ✓ stores/__tests__/fileExplorerNodeRouting.spec.ts (6 tests) 13ms
+stderr | stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children GraphQL errors instead of converting them to an empty tree
+Error fetching folder children: Error: Workspace root is unavailable
+    at createFolderChildrenError [90m(/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/[39mstores/fileExplorerTreeActions.ts:25:3[90m)[39m
+    at Proxy.fetchFolderChildren [90m(/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/[39mstores/fileExplorerTreeActions.ts:125:15[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+
+stderr | stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children payload errors instead of converting them to an empty tree
+Error fetching folder children: Error: Workspace not found
+    at createFolderChildrenError [90m(/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/[39mstores/fileExplorerTreeActions.ts:25:3[90m)[39m
+    at Proxy.fetchFolderChildren [90m(/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/[39mstores/fileExplorerTreeActions.ts:142:15[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+
+ ✓ stores/__tests__/fileExplorerStore.spec.ts (7 tests) 13ms
+ ✓ components/fileExplorer/__tests__/MonacoEditor.spec.ts (3 tests) 105ms
+ ✓ components/fileExplorer/__tests__/FileViewer.spec.ts (6 tests) 30ms
+ ✓ components/fileExplorer/__tests__/FileItem.spec.ts (7 tests) 71ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.spec.ts (2 tests) 25ms
+ ✓ components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts (14 tests) 89ms
+ ✓ components/fileExplorer/__tests__/FileExplorerLayout.spec.ts (3 tests) 35ms
+ ✓ components/fileExplorer/__tests__/FileExplorer.spec.ts (10 tests) 288ms
+
+ Test Files  9 passed (9)
+      Tests  58 passed (58)
+   Start at  16:23:14
+   Duration  17.68s (transform 7.95s, setup 120.89s, collect 4.46s, tests 668ms, environment 19.07s, prepare 6.34s)
+

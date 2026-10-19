@@ -1,0 +1,50 @@
+{
+  "revision": "API-REV-002",
+  "source": "eff597d4ce1f40f1fbe489a6b9a340d6623e2a77",
+  "result": "Pass",
+  "postRepositoryConfidence": 94.2,
+  "finalConfidence": 97.5,
+  "priorFailure": "API-F001",
+  "resolution": "executably resolved, proportional repair review pending",
+  "allRound2RunsSerial": true,
+  "targetExecutions": {
+    "target-3": {
+      "passed": 8,
+      "skipped": 1,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "privateRootRemoved": true
+    },
+    "target-4": {
+      "passed": 8,
+      "skipped": 1,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "privateRootRemoved": true
+    },
+    "target-5": {
+      "passed": 8,
+      "skipped": 1,
+      "exit": 0,
+      "unhandled": false,
+      "ownedGroupRemaining": [],
+      "workspaceRemnants": [],
+      "privateRootRemoved": true
+    }
+  },
+  "lifecyclePassed": 17,
+  "regressionsPassed": 109,
+  "productionTypecheckExit": 0,
+  "focusedTypesIntroduced": 0,
+  "focusedTypesKnownBaseline": 7,
+  "broaderLifecycleFinalPassed": 3,
+  "initialProbeInstrumentationFailureResolved": true,
+  "temporaryProbeRemoved": true,
+  "productionChanged": false,
+  "deliveryReady": false,
+  "proportionalReviewRequired": "CRR-001 failure-rework request"
+}

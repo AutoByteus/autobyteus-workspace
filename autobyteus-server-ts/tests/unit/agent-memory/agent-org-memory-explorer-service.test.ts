@@ -8,7 +8,7 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { AgentOrgExecutionTreeLocationService } from "../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { resetCollaborationRunHistoryCatalogState } from "../../../src/run-history/services/collaboration-run-history-catalog-core.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
@@ -26,7 +26,8 @@ const touch = async (filePath: string, mtime: number) => {
 /**
  * `/ceo`; configured team `/engineering` with `/engineering/solution_designer`. With tasks: a delegated `/ceo`
  * task agent and a task team delegated to the configured team address `/engineering` (same address, own
- * teamRunId) whose members are `/engineering/solution_designer` and a nested team `/engineering/review`.
+ * teamRunId) whose member `/engineering/solution_designer` delegates a task team `/engineering/review`, which
+ * the coordinating run links at its top level (CM-7).
  */
 const orgTree = (orgRunId: string, orgDefinitionId: string, withTasks: boolean): AgentOrgRunExecutionTreeSnapshot => {
   const designer = testOrgAgentNode("/engineering/solution_designer", `${orgRunId}-designer`);
@@ -51,16 +52,24 @@ const orgTree = (orgRunId: string, orgDefinitionId: string, withTasks: boolean):
           teamRunId: `${orgRunId}-engineering-task`,
           members: [
             { address: assertAgentTeamAddress("/engineering/solution_designer"), agentRunId: `${orgRunId}-task-team-designer`, platformAgentRunId: null },
-            {
-              address: assertAgentTeamAddress("/engineering/review"),
-              teamRunId: `${orgRunId}-review`,
-              members: [{ address: assertAgentTeamAddress("/engineering/review/reviewer"), agentRunId: `${orgRunId}-reviewer`, platformAgentRunId: null }],
-              taskExecutions: [],
-            },
           ],
           taskExecutions: [],
           delegatorAgentRunId: `${orgRunId}-ceo`,
           startedAt: "2026-09-01T00:02:00.000Z",
+        },
+        // Delegated by a task-team member: linked at the coordinating run's top level (CM-7, U-5).
+        {
+          address: assertAgentTeamAddress("/engineering/review"),
+          teamRunId: `${orgRunId}-review`,
+          members: [{ address: assertAgentTeamAddress("/engineering/review/reviewer"), agentRunId: `${orgRunId}-reviewer`, platformAgentRunId: null }],
+          taskExecutions: [],
+          delegatorAgentRunId: `${orgRunId}-task-team-designer`,
+          startedAt: "2026-09-01T00:03:00.000Z",
+          source: {
+            kind: "agent_team", teamDefinitionId: "review-team", coordinatorAddress: assertAgentTeamAddress("/engineering/review/reviewer"),
+            members: [{ address: assertAgentTeamAddress("/engineering/review/reviewer"), agentDefinitionId: "reviewer" }],
+            handoffs: [], defaultLaunchConfiguration: base.rootOrg.defaultLaunchConfiguration,
+          },
         },
       ],
     },
@@ -75,10 +84,13 @@ describe("AgentOrgMemoryExplorerService", () => {
     const tree = orgTree(orgRunId, orgDefinitionId, withTasks);
     const packageDir = layout.getOrgDirPath(orgRunId);
     await new AgentOrgRunExecutionTreeStore().write(packageDir, tree);
-    await new AgentOrgCommunicationMessagesV1Store().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
+    await new AgentOrgCommunicationMessagesStore().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
   };
 
   const orgDir = (...parts: string[]) => path.join(memoryDir, "agent_orgs", ...parts);
+  // A task agent is a normal run (contract L1): an agent at `agents/<id>/`, a task team's members at `agent_teams/<team>/<id>/`.
+  const taskAgentDir = (...parts: string[]) => path.join(memoryDir, "agents", ...parts);
+  const taskTeamDir = (...parts: string[]) => path.join(memoryDir, "agent_teams", ...parts);
 
   const resetState = () => {
     resetCollaborationRunHistoryCatalogState(memoryDir, "agent_org");
@@ -93,9 +105,9 @@ describe("AgentOrgMemoryExplorerService", () => {
     await writeOrg("org-a-1", "org-a", true);
     await touch(orgDir("org-a-1", "org-a-1-ceo", "working_context_snapshot.json"), Date.parse("2026-09-01T01:00:00.000Z"));
     await touch(orgDir("org-a-1", "org-a-1-engineering", "org-a-1-designer", "raw_traces_active.jsonl"), Date.parse("2026-09-01T02:00:00.000Z"));
-    await touch(orgDir("org-a-1", "org-a-1-task-ceo", "episodic.jsonl"), Date.parse("2026-09-01T03:00:00.000Z"));
-    await touch(orgDir("org-a-1", "org-a-1-engineering-task", "org-a-1-task-team-designer", "semantic.jsonl"), Date.parse("2026-09-01T04:00:00.000Z"));
-    await touch(orgDir("org-a-1", "org-a-1-engineering-task", "org-a-1-review", "org-a-1-reviewer", "semantic.jsonl"), Date.parse("2026-09-01T05:00:00.000Z"));
+    await touch(taskAgentDir("org-a-1-task-ceo", "episodic.jsonl"), Date.parse("2026-09-01T03:00:00.000Z"));
+    await touch(taskTeamDir("org-a-1-engineering-task", "org-a-1-task-team-designer", "semantic.jsonl"), Date.parse("2026-09-01T04:00:00.000Z"));
+    await touch(taskTeamDir("org-a-1-review", "org-a-1-reviewer", "semantic.jsonl"), Date.parse("2026-09-01T05:00:00.000Z"));
 
     // Org A, run 2: only the root agent has memory; newer.
     await writeOrg("org-a-2", "org-a");
@@ -149,7 +161,7 @@ describe("AgentOrgMemoryExplorerService", () => {
 
     const engineering = { teamRunId: "org-a-1-engineering", address: "/engineering", displayName: "engineering", kind: "CONFIGURED_TEAM", startedAt: null };
     const engineeringTask = { teamRunId: "org-a-1-engineering-task", address: "/engineering", displayName: "engineering", kind: "TASK_TEAM", startedAt: "2026-09-01T00:02:00.000Z" };
-    const review = { teamRunId: "org-a-1-review", address: "/engineering/review", displayName: "engineering/review", kind: "TASK_TEAM", startedAt: null };
+    const review = { teamRunId: "org-a-1-review", address: "/engineering/review", displayName: "engineering/review", kind: "TASK_TEAM", startedAt: "2026-09-01T00:03:00.000Z" };
     expect(page.entries[1]?.memberTargets.map((member) => ({
       displayName: member.displayName,
       agentRunId: member.agentRunId,
@@ -162,7 +174,7 @@ describe("AgentOrgMemoryExplorerService", () => {
       { displayName: "ceo", agentRunId: "org-a-1-task-ceo", agentDefinitionId: "definition-org-a-1-ceo", executionKind: "TASK_AGENT", startedAt: "2026-09-01T00:01:00.000Z", groupPath: [] },
       { displayName: "engineering/solution_designer", agentRunId: "org-a-1-designer", agentDefinitionId: "definition-org-a-1-designer", executionKind: "CONFIGURED", startedAt: null, groupPath: [engineering] },
       { displayName: "engineering/solution_designer", agentRunId: "org-a-1-task-team-designer", agentDefinitionId: "definition-org-a-1-designer", executionKind: "TASK_TEAM_MEMBER", startedAt: null, groupPath: [engineeringTask] },
-      { displayName: "engineering/review/reviewer", agentRunId: "org-a-1-reviewer", agentDefinitionId: null, executionKind: "TASK_TEAM_MEMBER", startedAt: null, groupPath: [engineeringTask, review] },
+      { displayName: "engineering/review/reviewer", agentRunId: "org-a-1-reviewer", agentDefinitionId: null, executionKind: "TASK_TEAM_MEMBER", startedAt: null, groupPath: [review] },
     ]);
   });
 
@@ -187,7 +199,9 @@ describe("AgentOrgMemoryExplorerService", () => {
   });
 
   it("omits a group whose members have no memory", async () => {
-    await fs.rm(orgDir("org-a-1", "org-a-1-engineering-task"), { recursive: true, force: true });
+    // Both task teams are their own runs now (L1): neither has member memory left.
+    await fs.rm(taskTeamDir("org-a-1-engineering-task"), { recursive: true, force: true });
+    await fs.rm(taskTeamDir("org-a-1-review"), { recursive: true, force: true });
     const page = await new AgentOrgMemoryExplorerService(memoryDir).listAgentOrgRunsWithMemory("org-a", "org-a-1");
     const members = page.entries[0]?.memberTargets ?? [];
     expect(members.map((member) => member.agentRunId)).toEqual(["org-a-1-ceo", "org-a-1-task-ceo", "org-a-1-designer"]);

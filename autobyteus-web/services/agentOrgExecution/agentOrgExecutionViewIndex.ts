@@ -4,10 +4,9 @@ import {
   catalogAgentSourceAt,
   catalogTeamSourceAt,
   collaborationTaskExecutionLists,
-  collaboratorAgentSourceAt,
-  collaboratorExecutionNodes,
-  collaboratorTeamSourceAt,
+  collaborationInstanceSource,
   type CollaborationAgentSource,
+  type CollaborationInstances,
   type CollaborationTeamSource,
 } from '~/services/collaborators/agentSourceSelectors'
 
@@ -18,13 +17,14 @@ export type OrgConfiguredTeam = Extract<OrgConfiguredMember, { teamRunId: string
 export type OrgTaskExecution = Root['taskExecutions'][number]
 type TaskTeam = Extract<OrgTaskExecution, { teamRunId: string }>
 type TaskMember = TaskTeam['members'][number]
-export type OrgTeamNode = OrgConfiguredTeam | TaskTeam | Extract<TaskMember, { teamRunId: string }>
-export type OrgAgentNode = OrgConfiguredAgent | Extract<OrgTaskExecution | TaskMember, { agentRunId: string }>
+/** An Org's Team, configured or delegated; Teams are flat, so its members are Agents. */
+export type OrgTeamNode = OrgConfiguredTeam | TaskTeam
+export type OrgAgentNode = OrgConfiguredAgent | Extract<OrgTaskExecution, { agentRunId: string }> | TaskMember
 export type OrgWorkspaceSelection =
   | Readonly<{ kind: 'agent_execution'; agentRunId: string }>
   | Readonly<{ kind: 'configured_team'; teamRunId: string }>
 export type OrgExecutionHost = Readonly<{ kind: 'root' | 'team'; runId: string }>
-/** A configured member, or the collaborator entry a task execution at its address was started from. */
+/** A configured member, or the catalog source a delegated copy was started from. */
 export type OrgAgentSource = CollaborationAgentSource
 export type OrgTeamSource = CollaborationTeamSource
 /** Membership in a delegated child: its execution run ID and the AgentRun that started it. */
@@ -77,9 +77,7 @@ export class AgentOrgExecutionViewIndex {
       if ('agentRunId' in member) this.addAgent(member, rootHost, null, true, 'configured')
       else this.addTeam(member, null, true)
     }
-    // Collaborators are hosted by the root and shown with the delegated-child rows.
-    ;[...collaboratorExecutionNodes(root.collaborators ?? []) as OrgTaskExecution[], ...root.taskExecutions]
-      .forEach((task) => this.addTask(task, rootHost, true))
+    root.taskExecutions.forEach((task) => this.addTask(task, rootHost, true))
     for (const identity of [...this.agents.values(), ...this.teams.values()]) {
       const delegator = identity.delegation?.delegatorAgentRunId
       if (delegator && !this.agents.has(delegator)) {
@@ -111,9 +109,7 @@ export class AgentOrgExecutionViewIndex {
     return team && !team.delegation ? this.coordinator(team.teamRunId) : null
   }
   teamMembers(teamRunId: string): readonly OrgAgentViewIdentity[] {
-    const collect = (team: OrgTeamNode): OrgAgentViewIdentity[] => team.members.flatMap((member) =>
-      'agentRunId' in member ? [this.requireAgent(member.agentRunId)] : collect(member))
-    return collect(this.requireTeam(teamRunId).execution)
+    return this.requireTeam(teamRunId).execution.members.map((member) => this.requireAgent(member.agentRunId))
   }
   coordinator(teamRunId: string): OrgAgentViewIdentity {
     const team = this.requireTeam(teamRunId)
@@ -125,6 +121,16 @@ export class AgentOrgExecutionViewIndex {
   private catalogTasks() {
     return collaborationTaskExecutionLists(this.view.execution_tree.rootOrg)
   }
+  /** The root's copies: what each of their agents runs with (its user choice, DS-003). */
+  private instances(): CollaborationInstances {
+    return {
+      taskExecutions: this.catalogTasks(),
+      configuredTeamLaunchAt: (address) => {
+        const team = this.configured.get(address as AgentTeamAddress)
+        return team && 'teamRunId' in team ? team.defaultLaunchConfiguration : null
+      },
+    }
+  }
   private register(runId: string): void {
     if (this.allRunIds.has(runId)) throw new Error(`Duplicate Org execution '${runId}'.`)
     this.allRunIds.add(runId)
@@ -135,27 +141,23 @@ export class AgentOrgExecutionViewIndex {
     const configured = this.configured.get(execution.address)
     const source = configured
       ? ('agentRunId' in configured ? configured : null)
-      : collaboratorAgentSourceAt(this.view.execution_tree.rootOrg.collaborators ?? [], execution.address)
-        ?? catalogAgentSourceAt(this.catalogTasks(), execution.address)
+      : catalogAgentSourceAt(this.catalogTasks(), execution.address)
     if (!source) throw new Error(`No captured Agent source at '${execution.address}'.`)
     this.agentsById.set(execution.agentRunId, Object.freeze({ agentRunId: execution.agentRunId,
-      address: parseAgentTeamAddress(execution.address), source, execution, host, delegation, kind, live }))
+      address: parseAgentTeamAddress(execution.address), source: collaborationInstanceSource(this.instances(), execution.agentRunId, source),
+      execution, host, delegation, kind, live }))
   }
   private addTeam(execution: OrgTeamNode, delegation: OrgDelegationBinding | null, live: boolean): void {
     this.register(execution.teamRunId)
     const configured = this.configured.get(execution.address)
     const source = configured
       ? ('teamRunId' in configured ? configured : null)
-      : collaboratorTeamSourceAt(this.view.execution_tree.rootOrg.collaborators ?? [], execution.address)
-        ?? catalogTeamSourceAt(this.catalogTasks(), execution.address)
+      : catalogTeamSourceAt(this.catalogTasks(), execution.address)
     if (!source) throw new Error(`No captured Team source at '${execution.address}'.`)
     this.teamsById.set(execution.teamRunId, Object.freeze({ teamRunId: execution.teamRunId,
       address: parseAgentTeamAddress(execution.address), source, execution, delegation, live }))
     const host: OrgExecutionHost = { kind: 'team', runId: execution.teamRunId }
-    execution.members.forEach((member) => {
-      if ('agentRunId' in member) this.addAgent(member, host, delegation, live, delegation ? 'task_team_member' : 'configured')
-      else this.addTeam(member, delegation, live)
-    })
+    execution.members.forEach((member) => this.addAgent(member, host, delegation, live, delegation ? 'task_team_member' : 'configured'))
     this.coordinator(execution.teamRunId)
     execution.taskExecutions.forEach((child) => this.addTask(child, host, live))
   }

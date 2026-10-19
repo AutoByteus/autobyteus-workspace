@@ -1,8 +1,8 @@
 import type { TeamAgentExecutionBinding } from "./team-agent-execution-binding.js";
 import type { TeamAgentEvent } from "./team-agent-event.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import type { TeamCommunicationMessageV1 } from "../../services/team-communication/team-communication-v1-types.js";
-import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import type { DelegatedLaunchSelectionRecord } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
@@ -11,7 +11,7 @@ export enum TeamRunEventSourceType {
   TASK_EXECUTIONS_REOPENED = "TASK_EXECUTIONS_REOPENED",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
-  COLLABORATOR = "COLLABORATOR",
+  DELEGATED_LAUNCH_SELECTIONS = "DELEGATED_LAUNCH_SELECTIONS",
 }
 
 export type TeamRunTaskExecutionEvent = Readonly<{
@@ -56,7 +56,7 @@ export type TeamRunEvent =
     }>
   | Readonly<{
       eventSourceType: TeamRunEventSourceType.COMMUNICATION;
-      payload: TeamCommunicationMessageV1;
+      payload: CollaborationCommunicationMessage;
     }>
   | Readonly<{
       eventSourceType: TeamRunEventSourceType.MEMBER_INPUT;
@@ -64,9 +64,9 @@ export type TeamRunEvent =
       payload: TeamRunMemberInputEventPayload;
     }>
   | Readonly<{
-      /** Committed at the root before any task execution references its address. */
-      eventSourceType: TeamRunEventSourceType.COLLABORATOR;
-      payload: Readonly<{ eventType: "COLLABORATOR_ADDED"; collaborator: CollaboratorEntry }>;
+      /** The user's model choices of these copies were committed on the live run (DS-001). */
+      eventSourceType: TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS;
+      selections: readonly DelegatedLaunchSelectionRecord[];
     }>;
 
 export type TeamRunEventListener = (event: TeamRunEvent) => void;

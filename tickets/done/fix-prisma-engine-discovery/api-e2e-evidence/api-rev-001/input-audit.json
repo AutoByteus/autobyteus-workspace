@@ -1,0 +1,19 @@
+{
+  "trackedNonTicketChanged": [
+    "autobyteus-server-ts/package.json",
+    "autobyteus-server-ts/src/startup/migrations.ts",
+    "autobyteus-server-ts/tests/unit/startup/migrations-command.test.ts",
+    "autobyteus-server-ts/tests/unit/startup/migrations-prisma-engine-env.test.ts"
+  ],
+  "newDurableHarness": "autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs",
+  "packageDeltaOnlyOneScript": true,
+  "script": "node tests/e2e/startup/prisma-engine-discovery.docker.mjs",
+  "sourceAndTestHashes": {
+    "autobyteus-server-ts/src/startup/migrations.ts": "02902ddd053b2f4ccb944a8b035bbd9fee20444535778af7cb495e17c38b9cc0",
+    "autobyteus-server-ts/tests/unit/startup/migrations-prisma-engine-env.test.ts": "c424538f91eb2c5d8f16c3a03710b82f88e5f1d587e3f49f080f9f87bbff9515",
+    "autobyteus-server-ts/tests/unit/startup/migrations-command.test.ts": "ef4755fd03940b10ed91cf4a2c1b73b2a02935a9976775e97d284979c275b33e",
+    "autobyteus-server-ts/package.json": "e4e242bcf21905a2f08622d4be929e76c744312ee9d3f206c7e080d6e6b0eee2",
+    "autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs": "3c53ee3205226487d526f87b518126643ff4a7850a287113b0442a4b66e603b8"
+  },
+  "preservedInputs": "All other tracked non-ticket files byte-identical to base; includes dependencies, lockfile, recipes, launchers, schema, callers, license inputs. Generated untracked dist not staged."
+}

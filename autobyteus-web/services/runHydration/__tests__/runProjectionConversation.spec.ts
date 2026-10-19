@@ -404,7 +404,7 @@ describe('runProjectionConversation', () => {
     ]);
   });
 
-  it('ignores compaction projection entries while preserving ordered work trace replay', () => {
+  it('ignores compaction projection entries while preserving ordered tool replay', () => {
     const conversation = buildConversationFromProjection(
       'run-6',
       [
@@ -560,7 +560,7 @@ describe('runProjectionConversation', () => {
     ], { agentDefinitionId: 'a', agentName: 'A', llmModelIdentifier: 'm' });
     expect(conversation.messages.map((message) => message.type)).toEqual(['ai', 'user']);
     expect(conversation.messages[0]).toMatchObject({ segments: [
-      { type: 'inter_agent_message', senderAgentRunId: 'researcher-run', senderAddress: '/researcher', content: 'Please prototype it.' },
+      { type: 'inter_agent_message', senderAgentRunId: 'researcher-run', content: 'Please prototype it.' },
       { type: 'text', content: 'On it.' },
     ] });
   });

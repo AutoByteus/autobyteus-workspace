@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import { validateTeamCommunicationMessagesV1Payload } from "../../../services/team-communication/team-communication-v1-schema.js";
+import { validateTeamCommunicationMessagesPayload } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { validateTeamRunStatePackage } from "./team-run-state-package-v1-validator.js";
 import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
 import type { PlannedTeamRunV1Package } from "./predecessor-team-run-planner.js";
@@ -42,7 +42,7 @@ const readAndValidateStaged = async (
   validateTeamRunStatePackage({
     executionTree: validateTeamRunExecutionTreePayload(await parse(staged.executionTree), rootTeamRunId),
     taskRecords: validateTaskDelegationRecordsV1Payload(await parse(staged.taskRecords), rootTeamRunId),
-    communicationMessages: validateTeamCommunicationMessagesV1Payload(await parse(staged.communicationMessages), rootTeamRunId),
+    communicationMessages: validateTeamCommunicationMessagesPayload(await parse(staged.communicationMessages), rootTeamRunId),
   });
 };
 

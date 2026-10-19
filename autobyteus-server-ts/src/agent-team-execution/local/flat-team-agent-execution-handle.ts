@@ -11,7 +11,12 @@ import type {
   ConfiguredAgentExecutionHandle,
   PreparedConfiguredAgentActivation,
 } from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import type {
+  AgentModelChoice,
+  RetainedAgentExecutionControl,
+} from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
+import type { AgentRunMemoryPlacement } from "../../agent-memory/domain/agent-run-memory-placement.js";
+import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import {
   createCollaborationMemberExecutionIdentity,
   sameCollaborationMemberExecutionIdentity,
@@ -25,24 +30,30 @@ import type { FlatAgentExecutionContext, ConfiguredMemberActivationMode, FlatTea
 import type { FlatTeamExecutionCallbacks } from "./flat-team-execution-callbacks.js";
 
 /** Root-neutral local adapter for one Agent execution inside a concrete TeamRun. */
-export class FlatTeamAgentExecutionHandle {
+export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionControl {
   readonly context: FlatAgentExecutionContext;
   private handle: ConfiguredAgentExecutionHandle | null = null;
   private construction: Promise<ConfiguredAgentExecutionHandle> | null = null;
   private rootShutdownFenced = false;
+  /** The node the next activation uses; only its model choice changes, and only while stopped. */
+  private config: TeamRunAgentNode;
+  /** Activation fence while no inner handle exists yet (the inner handle owns it afterwards). */
+  private activationFence: Promise<void> | null = null;
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<FlatTeamExecutionContext>;
     context: FlatAgentExecutionContext;
     config: TeamRunAgentNode;
+    /** Where this agent's memory directory is (contract L1): a team member at its team's placement, a task agent as its own run. */
+    memoryPlacement: AgentRunMemoryPlacement;
     activationMode: ConfiguredMemberActivationMode;
     callbacks: FlatTeamExecutionCallbacks;
     agentRunManager?: AgentRunManager;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     executionFactory?: ConfiguredAgentExecutionFactory;
-  }) { this.context = options.context; }
+  }) { this.context = options.context; this.config = options.config; }
 
   isActive(): boolean { return this.handle?.isActive() ?? false; }
   hasOpenExecutionWork(): boolean { return this.handle?.hasOpenExecutionWork() ?? false; }
@@ -96,12 +107,33 @@ export class FlatTeamAgentExecutionHandle {
   async terminate() { return this.handle ? this.handle.terminate() : { accepted: true as const }; }
   dispose(): void { this.handle?.dispose(); this.handle = null; }
 
+  isStopped(): boolean { return !this.construction && (this.handle?.isStopped() ?? true); }
+  async withActivationFence<T>(operation: () => Promise<T> | T): Promise<T> {
+    if (this.construction) await this.construction.catch(() => null);
+    if (this.handle) return this.handle.withActivationFence(operation);
+    while (this.activationFence) await this.activationFence;
+    let release!: () => void;
+    this.activationFence = new Promise<void>((resolve) => { release = resolve; });
+    try { return await operation(); }
+    finally { this.activationFence = null; release(); }
+  }
+  async releaseRuntimeForUserStop(): Promise<AgentOperationResult> {
+    if (this.construction) await this.construction.catch(() => null);
+    return this.handle ? this.handle.releaseRuntimeForUserStop() : { accepted: true };
+  }
+  replaceModelChoice(choice: AgentModelChoice): void {
+    if (!this.isStopped()) throw new Error(`AgentRun '${this.context.agentRunId}' is running; its model can change only while it is stopped.`);
+    this.handle?.replaceModelChoice(choice);
+    this.config = Object.freeze({ ...this.config, llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig });
+  }
+
   private getHandle(): Promise<ConfiguredAgentExecutionHandle> {
     if (this.rootShutdownFenced) {
       return Promise.reject(new Error(`AgentRun '${this.context.agentRunId}' is fenced for root shutdown.`));
     }
     if (this.handle) return Promise.resolve(this.handle);
     if (this.construction) return this.construction;
+    if (this.activationFence) return this.activationFence.then(() => this.getHandle());
     const attempt = this.createHandle();
     this.construction = attempt;
     void attempt.finally(() => { if (this.construction === attempt) this.construction = null; }).catch(() => undefined);
@@ -115,7 +147,7 @@ export class FlatTeamAgentExecutionHandle {
       identity,
       physicalScope: this.options.teamContext.physicalScope,
       execution,
-      sourceNode: this.options.config,
+      sourceNode: this.config,
       hostTeam: Object.freeze({
         address: this.options.teamContext.teamNode.address,
         teamDefinitionId: this.options.teamContext.teamNode.teamDefinitionId,
@@ -126,6 +158,7 @@ export class FlatTeamAgentExecutionHandle {
     const handle = (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({
       identity,
       physicalScope: this.options.teamContext.physicalScope,
+      memoryPlacement: this.options.memoryPlacement,
       execution,
       activationMode: this.options.activationMode,
       memberExecutionContext,
@@ -178,12 +211,12 @@ export class FlatTeamAgentExecutionHandle {
   }
   private executionSpec() {
     return Object.freeze({
-      agentDefinitionId: this.options.config.agentDefinitionId,
-      llmModelIdentifier: this.options.config.llmModelIdentifier,
-      llmConfig: this.options.config.llmConfig,
-      autoExecuteTools: this.options.config.autoExecuteTools,
-      runtimeKind: this.options.config.runtimeKind,
-      workspaceRootPath: this.options.config.workspaceRootPath,
+      agentDefinitionId: this.config.agentDefinitionId,
+      llmModelIdentifier: this.config.llmModelIdentifier,
+      llmConfig: this.config.llmConfig,
+      autoExecuteTools: this.config.autoExecuteTools,
+      runtimeKind: this.config.runtimeKind,
+      workspaceRootPath: this.config.workspaceRootPath,
       platformAgentRunId: this.context.getPlatformAgentRunId(),
     });
   }

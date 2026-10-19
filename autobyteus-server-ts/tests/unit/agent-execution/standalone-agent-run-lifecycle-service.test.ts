@@ -266,7 +266,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const run = { runId: RUN_ID };
     const helper = metadata({ launchPurpose: "server_helper" });
     const current = harness({ metadataStates: [{ kind: "present", metadata: helper }], preparedCandidate: candidate({ run }) });
-    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cannot host collaborators");
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cannot host delegated copies");
     await expect(current.service.activateHost(RUN_ID, { memberExecutionContext: null })).resolves.toMatchObject({ run });
     expect(current.agentRunManager.newPreparation).toHaveBeenCalledWith({
       runId: RUN_ID,
@@ -742,7 +742,7 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
     return {
       runId: context.runId,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      inputCapabilities: { kind: "start_only" },
+      inputCapabilities: { activeTurnAppend: "unsupported" },
       compactionRecovery: { kind: "unsupported" },
       getContext: () => context,
       getPlatformAgentRunId: () => THREAD_ID,
@@ -779,7 +779,8 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
     const runSessions = { deactivateForRun: vi.fn(() => 0) };
     const activationRegistry = new AgentRunActivationRegistry(new AgentRunResourceManager({
       runSessions, runFileChangeService: noop as never, publishedArtifactRelayService: noop as never,
-      memoryRecorder: memoryRecorder as never,
+      memoryRecorder: memoryRecorder as never, workJournalUpdater: noop as never,
+      mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     }));
     const manager = new AgentRunManager({
       autoByteusBackendFactory: testBackendFactory(unavailable) as never,

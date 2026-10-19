@@ -1,0 +1,52 @@
+{
+  "accessDateUTC": "2026-10-13T19:46:13.650145+00:00",
+  "sources": [
+    {
+      "publisher": "Apple OSS Distributions",
+      "commit": "93733ffccece4daee73bf6306b291d1ae69130c0",
+      "path": "nfsd/main.c",
+      "sha256": "293777002a7a698cb37a920979f4ceb42ee2716beab1d825484d6d17960e88a3",
+      "sourceUrl": "https://raw.githubusercontent.com/apple-oss-distributions/NFS/93733ffccece4daee73bf6306b291d1ae69130c0/nfsd/main.c",
+      "citationUrl": "https://github.com/apple-oss-distributions/NFS/blob/93733ffccece4daee73bf6306b291d1ae69130c0/nfsd/main.c",
+      "sourceLineRanges": [
+        [
+          415,
+          427
+        ],
+        [
+          1443,
+          1455
+        ],
+        [
+          1479,
+          1519
+        ],
+        [
+          1526,
+          1553
+        ]
+      ],
+      "interpretation": "Activation delegates to launchctl and checks its child exit/PID; it is not an export/RPC usability proof."
+    },
+    {
+      "publisher": "Apple OSS Distributions",
+      "commit": "93733ffccece4daee73bf6306b291d1ae69130c0",
+      "path": "mount_nfs/mount_nfs.c",
+      "sha256": "8c785847e4ff5c5a2a6813b41d4b6f3059ccb6b5b4224f7c43385788d4ec1bd9",
+      "sourceUrl": "https://raw.githubusercontent.com/apple-oss-distributions/NFS/93733ffccece4daee73bf6306b291d1ae69130c0/mount_nfs/mount_nfs.c",
+      "citationUrl": "https://github.com/apple-oss-distributions/NFS/blob/93733ffccece4daee73bf6306b291d1ae69130c0/mount_nfs/mount_nfs.c",
+      "sourceLineRanges": [
+        [
+          693,
+          705
+        ],
+        [
+          1936,
+          1943
+        ]
+      ],
+      "interpretation": "The EPROGUNAVAIL error branch can probe statd and emit the remote-lock diagnostic without checking the selected lock mode. The locallocks parser separately selects local mode."
+    }
+  ],
+  "limits": "Published primary source corroborates command/diagnostic semantics; not claimed as a byte-for-byte identification of the macOS26.6.2 guest system binaries. No vendor source copied into repository; no packet/failure-time RPC trace obtained."
+}

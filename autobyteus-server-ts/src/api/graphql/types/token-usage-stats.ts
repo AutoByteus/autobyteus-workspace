@@ -1,5 +1,5 @@
-import { Arg, Field, Float, Int, ObjectType, Query, Resolver } from "type-graphql";
-import { GraphQLJSON, GraphQLSafeInt } from "graphql-scalars";
+import { Arg, Field, Float, ObjectType, Query, Resolver } from "type-graphql";
+import { GraphQLSafeInt } from "graphql-scalars";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
 import type { TokenUsageCostSummaryAggregate } from "../../../token-usage/projections/token-usage-cost-summary-aggregate.js";
 import { TokenUsageCostSummaryAggregateGraphql, toTokenUsageCostSummaryAggregateGraphql } from "./token-usage-cost-summary.js";
@@ -36,6 +36,13 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
 
   @Field(() => Float, { nullable: true })
   contextWindowUsagePercent?: number | null;
+
+  @Field(() => GraphQLSafeInt, { nullable: true })
+  contextCompactionThresholdTokens?: number | null;
+
+  /** Sum of the summarized records' revisions; orders live and fetched summaries (D-9). */
+  @Field(() => GraphQLSafeInt)
+  revision!: number;
 
   @Field(() => String, { nullable: true })
   latestModelProvider?: string | null;
@@ -223,6 +230,8 @@ export const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPaylo
   latestPromptTokens: summary.latest_prompt_tokens,
   effectiveContextWindowTokens: summary.effective_context_window_tokens,
   contextWindowUsagePercent: summary.context_window_usage_percent,
+  contextCompactionThresholdTokens: summary.context_compaction_threshold_tokens,
+  revision: summary.revision,
   latestModelProvider: summary.latest_model_provider,
   latestModelIdentifier: summary.latest_model_identifier,
   latestRuntimeKind: summary.latest_runtime_kind,
@@ -312,7 +321,7 @@ export class TokenUsageStatisticsResolver {
     return toTokenUsageRunSummaryGraphql(await store.getAgentRunSummary(runId));
   }
 
-  /** A standalone run's usage including its collaborators and task copies (REQ-006). */
+  /** A standalone run's usage including its delegated copies (REQ-006). */
   @Query(() => TokenUsageRunSummaryGraphql)
   async getStandaloneRunTokenUsageSummary(
     @Arg("runId", () => String) runId: string,

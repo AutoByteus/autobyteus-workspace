@@ -1,0 +1,145 @@
+{
+  "projects": [
+    {
+      "projectId": "project_14b75dca-5eb9-4bc4-a687-9321702d9639",
+      "name": "AutoByteus",
+      "createdAt": "2026-10-17T14:03:43.272Z",
+      "tasks": [
+        {
+          "taskId": "project_task_527300af-4dff-4545-bcd6-a806a6075549",
+          "description": "Set up the repository layout",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.323Z"
+        },
+        {
+          "taskId": "project_task_9e63d05f-0f68-4a0c-94d5-e6a6b52579e2",
+          "description": "Design the Task board schema\nColumns, lanes and ordering",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.360Z"
+        },
+        {
+          "taskId": "project_task_211f5295-d80d-4b3a-8dd3-3787390b408c",
+          "description": "Ship the board UI",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.396Z"
+        },
+        {
+          "taskId": "project_task_2bfb8ec9-b773-4262-a630-bece2b047236",
+          "description": "Prototype the old sync service",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.431Z"
+        },
+        {
+          "taskId": "project_task_2eaa36fc-783d-440f-889c-9a456261fcc8",
+          "description": "Write the API reference",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.467Z"
+        },
+        {
+          "taskId": "project_task_21c4cc33-dc3a-499e-83fa-0ba3fcb9cef5",
+          "description": "Prepare the beta release notes",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.504Z"
+        }
+      ]
+    },
+    {
+      "projectId": "project_ee803414-012f-499e-8dc1-2990cd0369eb",
+      "name": "Customer Onboarding Experience Redesign",
+      "createdAt": "2026-10-17T14:03:43.540Z",
+      "tasks": [
+        {
+          "taskId": "project_task_03c1bfff-26c7-4990-9d56-269462d8dd8c",
+          "description": "Map the onboarding journey",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.582Z"
+        },
+        {
+          "taskId": "project_task_04caddd0-df71-41d9-aec5-4d67f1fe6d56",
+          "description": "Redesign the welcome screens",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.619Z"
+        },
+        {
+          "taskId": "project_task_ca2b4728-da86-4512-a735-a9dcaef90c76",
+          "description": "Usability test with five customers",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.654Z"
+        }
+      ]
+    },
+    {
+      "projectId": "project_7d38dd21-b5b7-42b4-896e-3bc7e627a560",
+      "name": "AutoByteus!",
+      "createdAt": "2026-10-17T14:03:43.690Z",
+      "tasks": [
+        {
+          "taskId": "project_task_31f0e518-c668-4eaa-a4eb-8700cb2b63e6",
+          "description": "Collision check Task",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.731Z"
+        }
+      ]
+    },
+    {
+      "projectId": "project_15ed276f-abab-4e71-bceb-ce34cff90c19",
+      "name": "Doomed Project",
+      "createdAt": "2026-10-17T14:03:43.767Z",
+      "tasks": [
+        {
+          "taskId": "project_task_99745679-11f9-44ab-993f-b0e05908632a",
+          "description": "Will be deleted with its Project",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.808Z"
+        }
+      ]
+    },
+    {
+      "projectId": "project_74b3521e-d9cc-46ea-a7d1-a2f3052cf687",
+      "name": "Café Ops",
+      "createdAt": "2026-10-17T14:03:43.844Z",
+      "tasks": [
+        {
+          "taskId": "project_task_6b0d10ee-bf38-4c41-b27a-11a40357be58",
+          "description": "Order the espresso beans",
+          "status": "TODO",
+          "createdAt": "2026-10-17T14:03:43.885Z"
+        }
+      ]
+    }
+  ],
+  "deletedProject": {
+    "projectId": "project_15ed276f-abab-4e71-bceb-ce34cff90c19",
+    "deleted": true
+  },
+  "projectsAfter": [
+    {
+      "projectId": "project_14b75dca-5eb9-4bc4-a687-9321702d9639",
+      "name": "AutoByteus",
+      "taskCount": 6,
+      "openTaskCount": 6,
+      "createdAt": "2026-10-17T14:03:43.272Z"
+    },
+    {
+      "projectId": "project_7d38dd21-b5b7-42b4-896e-3bc7e627a560",
+      "name": "AutoByteus!",
+      "taskCount": 1,
+      "openTaskCount": 1,
+      "createdAt": "2026-10-17T14:03:43.690Z"
+    },
+    {
+      "projectId": "project_74b3521e-d9cc-46ea-a7d1-a2f3052cf687",
+      "name": "Café Ops",
+      "taskCount": 1,
+      "openTaskCount": 1,
+      "createdAt": "2026-10-17T14:03:43.844Z"
+    },
+    {
+      "projectId": "project_ee803414-012f-499e-8dc1-2990cd0369eb",
+      "name": "Customer Onboarding Experience Redesign",
+      "taskCount": 3,
+      "openTaskCount": 3,
+      "createdAt": "2026-10-17T14:03:43.540Z"
+    }
+  ]
+}

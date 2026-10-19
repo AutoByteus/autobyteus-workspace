@@ -26,7 +26,6 @@ import {
 } from './teamClientMessageFactory';
 import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
-import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService';
 import { COLLABORATOR_ADD_FAILED, collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
 import {
@@ -377,8 +376,6 @@ export class TeamStreamingService {
         effect.agentRunIds.forEach((agentRunId) => {
           invalidateTeamMemberProjection(context, agentRunId);
         });
-      } else if (effect.kind === 'collaborators_changed') {
-        collaboratorCandidatesService.invalidate('agent_team', context.view.getRootTeamRunId());
       } else if (effect.kind === 'reconcile_team_navigation') {
         if (this.isMountedContext(context)) {
           useRunHistoryStore().refreshRunNavigationTopology('team-stream-structure');

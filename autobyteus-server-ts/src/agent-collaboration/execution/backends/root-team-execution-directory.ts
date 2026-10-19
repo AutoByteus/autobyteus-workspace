@@ -1,3 +1,4 @@
+import { stopTaskTeamRunForUser } from "../../../agent-team-execution/domain/task-team-user-stop.js";
 import { acceptTaskSeed } from "../task/task-execution-seed-admission.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { RootExecutionPhysicalScope } from "../domain/root-execution-identity.js";
@@ -7,7 +8,7 @@ import { FlatTeamExecutionFactory, type FlatTeamPreparationOperation, type Prepa
 import type { TeamRun } from "../../../agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentTeamNode } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { PrepareTaskTeamInput } from "../../../agent-team-execution/domain/task-team-execution.js";
-import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
 import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
 import type { ConfiguredMemberActivationMode } from "../../../agent-team-execution/local/flat-team-execution-context.js";
@@ -93,7 +94,7 @@ export class RootTeamExecutionDirectory {
     this.reserveIds([input.teamNode.teamRunId]);
     let prepared: PreparedFlatTeamExecution;
     try {
-      prepared = await this.factory.beginMaterialization(input).prepare();
+      prepared = await this.factory.beginMaterialization({ ...input, teamKind: "configured" }).prepare();
     } catch (error) {
       this.releaseIds([input.teamNode.teamRunId]);
       throw error;
@@ -147,6 +148,7 @@ export class RootTeamExecutionDirectory {
     });
     const factoryControl = this.factory.beginMaterialization({
       physicalScope: input.physicalScope,
+      teamKind: "task",
       teamNode: input.task.teamNode,
       handoffs: input.task.handoffs,
       applicationBinding: null,
@@ -165,8 +167,8 @@ export class RootTeamExecutionDirectory {
       prepare: async (assertAccepting) => {
     const prepared = await factoryControl.prepare();
     assertAccepting();
-    const coordinator = input.task.teamNode.children.find((child) => child.kind === "agent" && child.address === input.task.teamNode.coordinatorAddress);
-    if (!coordinator || coordinator.kind !== "agent") {
+    const coordinator = input.task.teamNode.children.find((child) => child.address === input.task.teamNode.coordinatorAddress);
+    if (!coordinator) {
       eventGate.abort();
       await prepared.abort();
       throw new Error(`Task TeamRun '${input.task.teamRunId}' has no exact coordinator.`);
@@ -252,7 +254,7 @@ export class RootTeamExecutionDirectory {
     this.reserveIds([input.teamNode.teamRunId]);
     const id = input.teamNode.teamRunId;
     const operation = this.factory.beginMaterialization({
-      physicalScope: input.physicalScope, teamNode: input.teamNode, handoffs: input.handoffs,
+      physicalScope: input.physicalScope, teamKind: "task", teamNode: input.teamNode, handoffs: input.handoffs,
       applicationBinding: null, activationMode: "restore", callbacks: input.callbacks,
     });
     this.restorations.set(id, operation);
@@ -289,6 +291,31 @@ export class RootTeamExecutionDirectory {
       });
       if (!result.accepted) {
         throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' shutdown was rejected.`);
+      }
+      this.releasedTeams.set(teamRunId, run);
+      this.active.delete(teamRunId);
+      this.taskTeamRunIds.delete(teamRunId);
+      return true;
+    } finally {
+      this.shuttingDown.delete(teamRunId);
+    }
+  }
+
+  /**
+   * User Stop (DS-002) of one live root-hosted task Team, quiet or not: fences and interrupts every
+   * agent in it, finishes its termination and keeps the same released state as idle shutdown, so
+   * the next message restores it from its records.
+   */
+  async shutDownRootTaskTeamForUser(teamRunId: string): Promise<boolean> {
+    const run = this.active.get(teamRunId);
+    if (!run?.isActive() || !this.taskTeamRunIds.has(teamRunId) || this.shuttingDown.has(teamRunId)) return false;
+    this.shuttingDown.add(teamRunId);
+    try {
+      const result = await stopTaskTeamRunForUser(run).catch((cause: unknown) => {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, `Task TeamRun '${teamRunId}' stop did not finish.`, { cause });
+      });
+      if (!result.accepted) {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' stop was rejected.`);
       }
       this.releasedTeams.set(teamRunId, run);
       this.active.delete(teamRunId);

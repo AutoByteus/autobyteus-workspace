@@ -1,0 +1,35 @@
+{
+  "scope": "new API-REV-003 text logs only; historical raw patches untouched",
+  "files": [
+    {
+      "path": "desktop/desktop-start.log",
+      "beforeSha256": "b01a049b8a1691bf391d680eaecaf5ed2ccdedcd380498ce0b6486b2365c6e0c",
+      "afterSha256": "74a9dccb0e904c83c81fb9fe8ee58ab1ffa6bf3d891830921a1e9d1471c0026b",
+      "change": "trailing whitespace / excess EOF only; no output lines removed"
+    },
+    {
+      "path": "narrow.log",
+      "beforeSha256": "0b4e77107be5f63e87c7ee3015297034fdbe0949e12ed45d976ec6008501fbdd",
+      "afterSha256": "59dc8337aca79ca2748d10689e347fb2cc80490064d45a1260419fe85c1c416b",
+      "change": "trailing whitespace / excess EOF only; no output lines removed"
+    },
+    {
+      "path": "prisma-unit.log",
+      "beforeSha256": "465fb6b23d962198136fe8700264d35f50239e3196fee14121fe61db4a2b272e",
+      "afterSha256": "cfa89dc122baaf32e9a708b1bc5cfb9997a2f28fd6ca82dd7f3f7e167f4b6be8",
+      "change": "trailing whitespace / excess EOF only; no output lines removed"
+    },
+    {
+      "path": "server-e2e.log",
+      "beforeSha256": "385843bc214d26fa39ae5e0cf9303680f752dce7ae3920d942b624ef5e221100",
+      "afterSha256": "1bbc18722bd269c147a3d054252a9d32a8969460ae412e94868b13b908227606",
+      "change": "trailing whitespace / excess EOF only; no output lines removed"
+    },
+    {
+      "path": "web-regression.log",
+      "beforeSha256": "4559bfc34ee9e6135b4761862f728e1c32e43886024d16064729b6d85e6ffeab",
+      "afterSha256": "50ff8e40474d410fc485575f209c9204645ee05433f498cec533b694aa5fcd4d",
+      "change": "trailing whitespace / excess EOF only; no output lines removed"
+    }
+  ]
+}

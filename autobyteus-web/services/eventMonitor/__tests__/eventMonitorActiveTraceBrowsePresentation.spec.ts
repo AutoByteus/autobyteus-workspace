@@ -47,7 +47,7 @@ describe('event monitor active trace browse presentation', () => {
       }],
     });
     const presentation = buildEventMonitorActiveTraceBrowsePresentation([
-      delivery('with-address', 'You received a message from sender name: lead, sender address: /eng/lead, sender id: lead-run\nmessage:\nStatus?', '/eng/lead'),
+      delivery('with-address', 'You received a message from the agent with sender run id "lead-run".\nmessage:\nStatus?', '/eng/lead'),
       textEvent('raw:reply', 'visual:reply', 'turn:with-address'),
       // A stored delivery from before the header carried the address, on a host page (no resolved address).
       delivery('stored', 'You received a message from sender name: lead, sender id: lead-run\nmessage:\nEarlier', null),
@@ -57,7 +57,7 @@ describe('event monitor active trace browse presentation', () => {
         kind: 'assistant', key: 'browse-assistant-group:turn:with-address:visual:with-address',
         visuals: [
           { kind: 'inter_agent', visualId: 'visual:with-address', segment: expect.objectContaining({
-            type: 'inter_agent_message', senderAgentRunId: 'lead-run', senderAddress: '/eng/lead', senderName: 'lead', content: 'Status?',
+            type: 'inter_agent_message', senderAgentRunId: 'lead-run', content: 'Status?',
           }) },
           expect.objectContaining({ kind: 'text', visualId: 'visual:reply' }),
         ],
@@ -65,7 +65,7 @@ describe('event monitor active trace browse presentation', () => {
       expect.objectContaining({
         kind: 'assistant',
         visuals: [{ kind: 'inter_agent', visualId: 'visual:stored', segment: expect.objectContaining({
-          senderAddress: null, senderName: 'lead', content: 'Earlier',
+          senderAgentRunId: 'lead-run', content: 'Earlier',
         }) }],
       }),
     ]);

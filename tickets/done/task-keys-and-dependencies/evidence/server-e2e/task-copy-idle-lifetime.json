@@ -1,0 +1,137 @@
+{
+  "team": {
+    "rootId": "til_team_797517_2d208bb83f9241bd9cbc58f80a0d10fc",
+    "quietShutdownMs": 62400,
+    "doneStopMs": 2207,
+    "rootStopMs": 1007,
+    "stopCopyAliveMs": 158477,
+    "doneCopyAliveBeforeDoneMs": 71076,
+    "doneTaskStoppedMs": 1149,
+    "agentCopy": {
+      "endStatus": "failed",
+      "runningMs": 100665,
+      "shutdownAfterEndMs": 60808
+    },
+    "teamCopy": {
+      "endStatus": "completed",
+      "members": [
+        "til_worker_797517_6c112e880da84ce5b5b55877c1e392c4",
+        "til_worker_797517_eb7416a6db4049d1830b83387d9612e2"
+      ],
+      "runningMs": 101377,
+      "shutdownAfterEndMs": 60862
+    },
+    "wakeRelaunch": [
+      "--conversation",
+      "04433840-b161-4428-a1c4-1b199374429c"
+    ]
+  },
+  "org": {
+    "rootId": "til_org_797517_bac0edc54e664bccb89ce149bcbc10bf",
+    "quietShutdownMs": 60054,
+    "doneStopMs": 2266,
+    "rootStopMs": 3035,
+    "stopCopyAliveMs": 163509,
+    "doneCopyAliveBeforeDoneMs": 69963,
+    "doneTaskStoppedMs": 1224,
+    "agentCopy": {
+      "endStatus": "failed",
+      "runningMs": 100761,
+      "shutdownAfterEndMs": 60808
+    },
+    "teamCopy": {
+      "endStatus": "completed",
+      "members": [
+        "til_worker_797517_fab2501653d84442aa840923be26a142",
+        "til_worker_797517_fdd8bdb3d9b54f8d8c8aad4de0ed2824"
+      ],
+      "runningMs": 100524,
+      "shutdownAfterEndMs": 61980
+    },
+    "wakeRelaunch": [
+      "--conversation",
+      "d54940bb-8f85-4b18-a58b-e9ff1735b9da"
+    ]
+  },
+  "processTimes": {
+    "til_manager_797517_e073406cb962432fa18ba13a95e31321": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247695223
+    },
+    "til_manager_797517_6bf379e792cf4e4dba88c6e369465d77": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247695223
+    },
+    "til_manager_797517_f428e8620bcc403fbea740cdd9c9c05b": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247695223
+    },
+    "til_worker_797517_382995365d814de38a88e98b629fd537": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247687810
+    },
+    "til_worker_797517_c8b5f012b2914d5f8d9401d228e2aa53": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247687810
+    },
+    "til_worker_797517_b5691c622e934c2ab9a517c8388661f6": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247687810
+    },
+    "til_worker_797517_fab2501653d84442aa840923be26a142": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247687810
+    },
+    "til_worker_797517_80af3a7c31fe4f919285c532f64c5ce3": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247689901
+    },
+    "til_worker_797517_6c112e880da84ce5b5b55877c1e392c4": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247687810
+    },
+    "til_worker_797517_57aa693ddd194caaa47b156bf65f8b1e": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247669796
+    },
+    "til_worker_797517_3ca9880aad4141d3a71557a4ea936cdc": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247599677
+    },
+    "til_worker_797517_7b05284cd43a428aab723d64777a31b1": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247590868
+    },
+    "til_worker_797517_5cb6d97ad77f43afb623e245b0cdba48": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247669796
+    },
+    "til_worker_797517_223d9839789c42d79ffe2f9889260285": {
+      "firstSeen": 1792247535276,
+      "lastSeen": 1792247695223
+    },
+    "til_worker_797517_2179bcbbe1c84814bb488237f348e9c5": {
+      "firstSeen": 1792247543633,
+      "lastSeen": 1792247607507
+    },
+    "til_worker_797517_ef9059aaa9074ad88ee999898f5fc486": {
+      "firstSeen": 1792247543633,
+      "lastSeen": 1792247695223
+    },
+    "til_worker_797517_8158f8d82a8f45eda93362de0516ba33": {
+      "firstSeen": 1792247543633,
+      "lastSeen": 1792247695223
+    },
+    "til_worker_797517_33514ce03ca643c6919e90fb68c18825": {
+      "firstSeen": 1792247543633,
+      "lastSeen": 1792247695223
+    }
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "homeRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

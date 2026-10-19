@@ -1,7 +1,6 @@
 import type { ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
 import type {
   AgentLaunchConfigurationDto,
-  ConfiguredMemberExecutionDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts'
 import { existingRunModelConfigsEqual, cloneExistingRunSelection } from './existingAgentModelConfigDraft'
@@ -48,21 +47,10 @@ export const createExistingTeamModelConfigDraft = (
     })
   }
   add('CONFIGURED_TEAM', '/', null, tree.root_team.default_launch_configuration, null)
-  const visit = (
-    members: readonly ConfiguredMemberExecutionDto[],
-    parentAddress: string,
-    parentLaunch: AgentLaunchConfigurationDto,
-  ): void => {
-    for (const member of members) {
-      if (member.kind === 'configured_agent') {
-        add('CONFIGURED_AGENT', member.address, parentAddress, member.launch_configuration, parentLaunch)
-        continue
-      }
-      add('CONFIGURED_TEAM', member.address, parentAddress, member.default_launch_configuration, parentLaunch)
-      visit(member.members, member.address, member.default_launch_configuration)
-    }
+  // Teams are flat: the root Team's members are its Agents.
+  for (const member of tree.root_team.members) {
+    add('CONFIGURED_AGENT', member.address, '/', member.launch_configuration, tree.root_team.default_launch_configuration)
   }
-  visit(tree.root_team.members, '/', tree.root_team.default_launch_configuration)
   return createExistingHierarchicalModelConfigDraft(scopes)
 }
 

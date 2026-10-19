@@ -1,6 +1,14 @@
 import { ApolloClient, ApolloLink, InMemoryCache, Observable, type Operation, type FetchResult } from '@apollo/client/core'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 
+/** The file-change list read of each owner kind and its response field. */
+const FILE_CHANGE_LIST_FIELDS: Record<string, string> = {
+  GetRunFileChanges: 'getRunFileChanges',
+  GetTeamMemberFileChanges: 'getTeamMemberFileChanges',
+  GetAgentOrgMemberFileChanges: 'getAgentOrgMemberFileChanges',
+  GetAgentRunCollaborationMemberFileChanges: 'agentRunCollaborationMemberFileChanges',
+}
+
 // Transport-only control. The caller still executes the installed Apollo query manager,
 // actual documents, strict readers, Pinia stores and staged publication.
 export class ControlledOrgApollo {
@@ -10,13 +18,18 @@ export class ControlledOrgApollo {
     fail(message: string): void;
     graphqlError(message: string): void;
   }> = []
-  /** Recorded artifacts served for `GetRunFileChanges` by runId; answered at once and not queued in `requests`. */
+  /**
+   * Recorded artifacts served for every owner's file-change list read (standalone run, team, org or
+   * hub member) by agent run; answered at once and not queued in `requests`.
+   */
   fileChangesByRunId = new Map<string, Record<string, unknown>[]>()
   client = new ApolloClient({
     cache: new InMemoryCache(),
     link: new ApolloLink(operation => new Observable<FetchResult>(observer => {
-      if (operation.operationName === 'GetRunFileChanges') {
-        observer.next({ data: { getRunFileChanges: this.fileChangesByRunId.get(operation.variables.runId) ?? [] } })
+      const fileChangesField = FILE_CHANGE_LIST_FIELDS[operation.operationName]
+      if (fileChangesField) {
+        const runId = operation.variables.runId ?? operation.variables.agentRunId
+        observer.next({ data: { [fileChangesField]: this.fileChangesByRunId.get(runId) ?? [] } })
         observer.complete()
         return
       }

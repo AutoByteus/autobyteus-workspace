@@ -1,0 +1,10 @@
+{
+  "source": "https://gallery.ecr.aws/cirruslabs/macos",
+  "tags": [
+    "sonoma-xcode-15.1",
+    "sonoma-base",
+    "sonoma-xcode",
+    "sonoma-xcode-15.2",
+    "sonoma-xcode-15.0.1"
+  ]
+}

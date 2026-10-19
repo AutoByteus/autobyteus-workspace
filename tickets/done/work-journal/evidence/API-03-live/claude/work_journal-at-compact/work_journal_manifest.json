@@ -1,0 +1,21 @@
+{
+  "run_id": "work_journal_claude_36e76407_a5cf_40cb_b2eb_e12e_5a28ae8344dd4927a94ad9a541c3c0ae",
+  "runtime_kind": "claude_agent_sdk",
+  "renderer_revision": 1,
+  "files": [
+    {
+      "journal_file": "work_journal_000001.md",
+      "source_file": "raw_traces_000001.jsonl",
+      "source_record_count": 17,
+      "state": "closed",
+      "content_sha256": "f37d3d7733e11c47a153e3bf082b493058b432c63123466ae3c6fac7f1b26103"
+    },
+    {
+      "journal_file": "work_journal_active.md",
+      "source_file": "raw_traces_active.jsonl",
+      "source_record_count": 1,
+      "state": "open",
+      "content_sha256": "333833e43411f4e095fd915982613cddc0d36af2ac9fd257eaed975fba20afc0"
+    }
+  ]
+}

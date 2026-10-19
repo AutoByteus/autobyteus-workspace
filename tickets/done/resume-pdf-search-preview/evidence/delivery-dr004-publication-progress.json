@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-13T05:34:56.208620+00:00",
+  "ticketCommit": "e48827099502ab562c00916d318dd863a73b118d",
+  "targetMergeCommit": "f9ce142e84142807434aa6e8bfc0769f1c0a1113",
+  "releaseCommit": "8d52dc4eb378609ae2dca6089eb62678eeafe803",
+  "tag": "v1.5.3-beta.3",
+  "repoFinalization": "Completed\u2014ticket pushed,no-ff personal merge pushed",
+  "releaseTagPush": "Completed once",
+  "pipelineIds": [
+    38351985837,
+    38351985841,
+    38351985828,
+    38351985796
+  ],
+  "publication": "In progress\u2014must verify allfour and17assets/TestFlight/Docker",
+  "actual8001Rollout": "Not performed",
+  "publishedTagMayMoveOrDelete": false
+}

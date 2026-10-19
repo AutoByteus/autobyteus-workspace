@@ -1,0 +1,24 @@
+{
+  "initialGate": "git diff --check origin/personal: two upstream implementation test logs had blank EOF; caught before archive/commit",
+  "corrections": [
+    {
+      "path": "evidence/implementation-unit-final.log",
+      "beforeSha256": "b244bddb0908e22e8e0867f176e397e90521642afb2e408a23c0c71af42eea15",
+      "afterSha256": "b6c967d82602ed8ba4b86cdc320f838fe9b7273da22b39119018205961817770",
+      "change": "Terminal whitespace only; all result/diagnostic content retained"
+    },
+    {
+      "path": "evidence/implementation-unit-first.log",
+      "beforeSha256": "980ae8e50e5cb1dcab96d1149739131c359648a023ffa3385a7fb3b58b6ed6b3",
+      "afterSha256": "7c205901ddea6e17d591d18ce7c6b77200c7532d682f95979d58d848ec997e3f",
+      "change": "Terminal whitespace only; all result/diagnostic content retained"
+    },
+    {
+      "path": "evidence/delivery/unit.log",
+      "beforeSha256": "3d73da1d965fc1b8dda4e1aaaa3777a25b44902549680b49fd98891209d194cc",
+      "afterSha256": "047828f460759043b7abb88e2903dac5e169063c3ac07d40db9a8e053431d900",
+      "change": "Terminal whitespace only; all result/diagnostic content retained"
+    }
+  ],
+  "rawOriginals": "/home/autobyteus/workspace/.codex/delivery-records/sidebar-stop-red-default"
+}

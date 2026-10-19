@@ -1,0 +1,65 @@
+{
+  "result": "CR006/API-F004 resolved at executed Linux native+Docker storage/native+managed HTTP scope",
+  "uniqueFixtures": 40,
+  "readerChecks": 80,
+  "modes": [
+    {
+      "evidence": "visibility-result.json",
+      "fixtures": 20,
+      "kindCounts": {
+        "inplace": 12,
+        "atomic": 4,
+        "new": 4
+      },
+      "readerChecks": 40,
+      "maxSeconds": {
+        "native": 0.9279331459999867,
+        "http": 0.9349140159999934
+      },
+      "source": "/home/admin/ab-nfs-api005-linux-618f79bb-native-source",
+      "connection": {
+        "storageId": "4e42e117-1978-48cd-a77f-468aed63f2ef",
+        "endpoint": "192.168.64.4",
+        "export": "/autobyteus/4e42e117-1978-48cd-a77f-468aed63f2ef",
+        "protocol": "4.1",
+        "mountRoot": "/Volumes/autobyteus-shared"
+      },
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api005-s1d2nqng/autobyteus-nfs-linux-arm64",
+        "sha256": "32772499817bccc6dc8c8bd01b15a457457848e17321af6053544adf53803a64",
+        "size": 11046973
+      },
+      "activationVerified": true
+    },
+    {
+      "evidence": "docker-visibility-result.json",
+      "fixtures": 20,
+      "kindCounts": {
+        "inplace": 12,
+        "atomic": 4,
+        "new": 4
+      },
+      "readerChecks": 40,
+      "maxSeconds": {
+        "native": 0.8274980019999703,
+        "http": 0.8391053779999993
+      },
+      "source": "/home/admin/ab-nfs-api005-linux-618f79bb-native-source",
+      "connection": {
+        "storageId": "4e42e117-1978-48cd-a77f-468aed63f2ef",
+        "endpoint": "192.168.64.4",
+        "export": "/autobyteus/4e42e117-1978-48cd-a77f-468aed63f2ef",
+        "protocol": "4.1",
+        "mountRoot": "/Volumes/autobyteus-shared"
+      },
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api005-s1d2nqng/autobyteus-nfs-docker-linux-arm64",
+        "sha256": "d9ba0370c10d1fb7c39ae70970e5407563d6cf5595afc718de601b5bf771ed6f",
+        "size": 11046989
+      },
+      "activationVerified": true
+    }
+  ],
+  "notFullQualification": true,
+  "method": "Recomputed from raw current API005 phases, no runtime reexecution. Reviewed guest script: warmed fresh opens, writer flush/fsync/close before timer; real HTTP; observer polling only."
+}

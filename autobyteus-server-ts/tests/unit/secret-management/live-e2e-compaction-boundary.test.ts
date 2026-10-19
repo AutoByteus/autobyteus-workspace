@@ -1,15 +1,12 @@
 import fs from 'node:fs/promises';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from 'autobyteus-ts/llm/utils/messages.js';
-import { LLMConfig } from 'autobyteus-ts/llm/utils/llm-config.js';
-import { LLMModel } from 'autobyteus-ts/llm/models.js';
-import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
-import { COMPACTION_SUMMARY_PROMPT } from 'autobyteus-ts/memory/compaction/compaction-summary-prompt.js';
+import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from 'autobyteus-ts/memory/compaction/compaction-summary-prompt.js';
 import { CompactionContentBuilder } from 'autobyteus-ts/memory/compaction/compaction-content-builder.js';
 import { AutoByteusAgentRunBackendFactory } from '../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js';
 import * as availableLlm from '../../../src/agent-execution/backends/autobyteus/available-llm-construction.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
-import { inspectDirectSummaryRequest, LiveE2eScenarioExecution } from '../../../../test-support/live-e2e/live-e2e-harness.js';
+import { inspectSummaryRequest, LiveE2eScenarioExecution } from '../../../../test-support/live-e2e/live-e2e-harness.js';
 import { assertNoInventedPlanChanges } from '../../../../test-support/live-e2e/compaction-quality-checks.js';
 import { liveE2eScenarios } from '../../../../test-support/live-e2e/live-e2e-scenarios.mjs';
 
@@ -32,10 +29,11 @@ describe('shared live compaction setup boundary (no provider calls)', () => {
   ])('retires unsupported omission-pressure reporting from %s', async (_label, relativePath) => {
     const source = await fs.readFile(new URL(relativePath, import.meta.url), 'utf8');
     expect(source.includes('directSummaryShieldOmissionPressureVerified')).toBe(false);
+    expect(source.includes('directSummary')).toBe(false);
     for (const retainedField of [
-      'directSummaryTaskFramingVerified',
-      'directSummarySourceToolTailVerified',
-      'directSummaryProviderSafeUnicodeVerified',
+      'summaryRequestFramingVerified',
+      'summarySourceToolTailVerified',
+      'summaryProviderSafeUnicodeVerified',
       'unicodeShieldSourceImmutableVerified',
     ]) {
       expect(source.includes(retainedField)).toBe(true);
@@ -43,33 +41,25 @@ describe('shared live compaction setup boundary (no provider calls)', () => {
   });
 
   it.each(['deepseek.compaction-agent-flow', 'lmstudio.qwen36.compaction-agent-flow'])(
-    '%s reaches fresh direct-provider setup without retired assets or exports', async (scenarioId) => {
+    '%s reaches agent setup with no separate compaction model, retired assets or exports', async (scenarioId) => {
       const scenario = new LiveE2eScenarioExecution(scenarioId, liveE2eScenarios[scenarioId]!, {} as never, 'http://127.0.0.1:1');
       vi.spyOn(scenario as any, 'resolveScenarioModelIdentifier').mockResolvedValue('fixture-parent');
       vi.spyOn(appConfigProvider.config, 'get').mockReturnValue(undefined);
-      const registerExtension = vi.fn();
-      const create = vi.spyOn(availableLlm, 'createAvailableLlm').mockImplementation(async (id, configure) => {
-        expect(id).toBe('fixture-parent');
-        expect(typeof configure).toBe('function');
-        const model = new LLMModel({ name: id, value: id, provider: LLMProvider.OPENAI });
-        const config = (configure as Function)(model, new LLMConfig());
-        expect(config.systemMessage).toBe(COMPACTION_SUMMARY_PROMPT);
-        return { registerExtension } as never;
-      });
-      const reached = new Error('DIRECT_SETUP_REACHED_WITHOUT_GENERATION');
+      const create = vi.spyOn(availableLlm, 'createAvailableLlm');
+      const reached = new Error('AGENT_SETUP_REACHED_WITHOUT_GENERATION');
       const backend = vi.spyOn(AutoByteusAgentRunBackendFactory.prototype, 'createBackend')
         .mockImplementation(async function (this: any, config) {
           expect(config.llmModelIdentifier).toBe('fixture-parent');
           for (const name of ['read_file', 'write_file', 'edit_file', 'run_bash']) {
             expect(defaultToolRegistry.getToolDefinition(name)?.name).toBe(name);
           }
-          await this.compactionLlmFactory({ parentModelIdentifier: config.llmModelIdentifier });
-          throw reached; // Stop at setup; no parent or summarizer generation/network.
+          // Compaction summarizes on the agent's own LLM; no compaction LLM factory exists.
+          expect(this).not.toHaveProperty('compactionLlmFactory');
+          throw reached; // Stop at setup; no generation/network.
         });
       await expect(scenario.executeCompactionAgentFlow()).rejects.toBe(reached);
       expect(backend).toHaveBeenCalledTimes(1);
-      expect(create).toHaveBeenCalledTimes(1);
-      expect(registerExtension).toHaveBeenCalledTimes(1);
+      expect(create).not.toHaveBeenCalled();
     },
   );
 
@@ -99,18 +89,31 @@ describe('shared live compaction setup boundary (no provider calls)', () => {
       { role: MessageRole.SYSTEM, content: COMPACTION_SUMMARY_PROMPT, toolPayload: null, provenance: null },
       { role: MessageRole.USER, content: history, toolPayload: null, provenance: null },
     ] };
-    expect(inspectDirectSummaryRequest(invocation)).toEqual({
+    expect(inspectSummaryRequest(invocation)).toEqual({
+      mode: 'transcript',
       sourceToolTailVerified: true,
     });
     expect(history).toContain(assistantText);
     expect(history).toContain(fixture.tool_call_id);
     expect(await fs.readFile(fixtureUrl, 'utf8')).toBe(before);
-    expect(() => inspectDirectSummaryRequest({ messages: [invocation.messages[1]!] }))
-      .toThrow('LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID');
+    expect(() => inspectSummaryRequest({ messages: [invocation.messages[1]!] }))
+      .toThrow('LIVE_E2E_SUMMARY_REQUEST_INVALID');
     const malformed = structuredClone(invocation);
     malformed.messages[1]!.content = malformed.messages[1]!.content.replace(assistantText, '\uD83D');
-    expect(() => inspectDirectSummaryRequest(malformed))
-      .toThrow('LIVE_E2E_DIRECT_SUMMARY_UNICODE_UNSAFE');
+    expect(() => inspectSummaryRequest(malformed))
+      .toThrow('LIVE_E2E_SUMMARY_UNICODE_UNSAFE');
+
+    // The cached summary request: the agent's own conversation, unchanged, plus the instruction.
+    const snapshot = (message: Message) => ({ role: message.role, content: message.content, toolPayload: message.tool_payload, provenance: null });
+    const cached = { messages: [
+      snapshot(new Message(MessageRole.SYSTEM, { content: 'Agent system prompt' })), ...messages.map(snapshot),
+      snapshot(new Message(MessageRole.USER, { content: COMPACTION_SUMMARY_INSTRUCTION })),
+    ] };
+    expect(inspectSummaryRequest(cached)).toEqual({ mode: 'cached', sourceToolTailVerified: true });
+    expect(inspectSummaryRequest({ messages: [cached.messages[0]!, cached.messages.at(-1)!] }))
+      .toEqual({ mode: 'cached', sourceToolTailVerified: false });
+    expect(() => inspectSummaryRequest({ messages: [cached.messages.at(-1)!, ...cached.messages] }))
+      .toThrow('LIVE_E2E_SUMMARY_REQUEST_INVALID');
   });
 });
 

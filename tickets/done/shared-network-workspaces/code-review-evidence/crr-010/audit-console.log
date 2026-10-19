@@ -1,0 +1,67 @@
+{
+  "result": "Pass evidence audit; API-F004 remains Fail",
+  "references": 992,
+  "retainedCandidates": 15,
+  "trials": [
+    {
+      "file": "visibility-d3f108eedd3f48ebb44f9b86c3155066.bin",
+      "size": 1024,
+      "observations": 122,
+      "firstFreshSeconds": {
+        "native": 61.149,
+        "http": 61.149
+      },
+      "firstStaleBeyondFiveSeconds": {
+        "seconds": 5.053,
+        "nativeSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+        "httpSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9"
+      },
+      "lastStale": {
+        "seconds": 60.644,
+        "nativeSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+        "httpSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9"
+      },
+      "firstFresh": {
+        "seconds": 61.149,
+        "nativeSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+        "httpSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7"
+      },
+      "sourceMtimeNsBefore": 1792052354148877476,
+      "sourceMtimeNsAfter": 1792052354188377912,
+      "sourceFileInodeUnchanged": true,
+      "sourceSHAAfter": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+      "result": "Fail"
+    },
+    {
+      "file": "visibility-930e44580b2c41aeaf35874512eec797.bin",
+      "size": 1024,
+      "observations": 121,
+      "firstFreshSeconds": {
+        "native": 60.975,
+        "http": 60.975
+      },
+      "firstStaleBeyondFiveSeconds": {
+        "seconds": 5.051,
+        "nativeSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+        "httpSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9"
+      },
+      "lastStale": {
+        "seconds": 60.467,
+        "nativeSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+        "httpSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9"
+      },
+      "firstFresh": {
+        "seconds": 60.975,
+        "nativeSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+        "httpSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7"
+      },
+      "sourceMtimeNsBefore": 1792052415349779814,
+      "sourceMtimeNsAfter": 1792052415378968604,
+      "sourceFileInodeUnchanged": true,
+      "sourceSHAAfter": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+      "result": "Fail"
+    }
+  ],
+  "sourceFiles": 6,
+  "expiryPatchMentions": []
+}

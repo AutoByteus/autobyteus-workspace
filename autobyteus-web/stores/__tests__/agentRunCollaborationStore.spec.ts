@@ -30,7 +30,11 @@ const build = () => {
 }
 vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: vi.fn(async () => ({})),
-  stageAgentRunCollaborationContext: vi.fn(async () => ({ context: build(), commit: () => undefined })),
+  buildAgentRunCollaborationContext: vi.fn(async () => build()),
+}))
+const childHydration = vi.hoisted(() => ({ hydrate: vi.fn(async (_input: { agentRunId: string }) => 'hydrated') }))
+vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
+  hydrateAgentRunCollaborationChild: childHydration.hydrate,
 }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn() }) }))
@@ -38,13 +42,17 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyR
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 
 describe('agentRunCollaborationStore', () => {
-  beforeEach(() => { setActivePinia(createPinia()); stream.instances.length = 0 })
+  beforeEach(() => { setActivePinia(createPinia()); stream.instances.length = 0; childHydration.hydrate.mockClear() })
 
-  it('reads a stopped run without connecting, opens a new task Team once and lists its rows', async () => {
+  it('reads a stopped run without connecting, keeps a new task Team collapsed and preserves explicit disclosure', async () => {
     const store = useAgentRunCollaborationStore()
     store.syncHost('host-run', false)
     await store.inspect('host-run')
     expect(stream.instances).toHaveLength(0)
+    expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(false)
+    expect(store.taskRows('host-run').map((entry) => entry.row.displayName)).toEqual(['computer use agent', 'product team'])
+    store.toggleTaskTeam('host-run', 'team-run')
+    await store.inspect('host-run')
     expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(true)
     expect(store.taskRows('host-run').map((entry) => entry.row.displayName)).toEqual(['computer use agent', 'product team', 'prototyper', 'bootstrapper'])
     store.toggleTaskTeam('host-run', 'team-run')
@@ -66,6 +74,8 @@ describe('agentRunCollaborationStore', () => {
     expect(store.childTargetFor('host-run')).toMatchObject({ kind: 'agent_run_task_agent', agentRunId: 'cua-run', workspaceRootPath: '/ws' })
     store.selectChild('host-run', 'unknown')
     expect(store.childTargetFor('host-run')).toBeNull()
+    // Each selected child starts one load of its details; the run's own agent and unknown children none.
+    expect(childHydration.hydrate.mock.calls.map(([input]) => input.agentRunId)).toEqual(['pp-run', 'cua-run'])
   })
 
   it('reads a child\'s earlier events from the host\'s collaboration package, not as a top-level run (CR-002)', async () => {

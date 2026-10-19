@@ -1,0 +1,9 @@
+test_nfs_workflow_build_only_never_pushes_or_publishes (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_shell_selected_attachment_arguments_and_wrong_daemon_refusal (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_unpublished_installer_fails_before_download (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_unqualified_release_cannot_publish (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.806s
+
+OK

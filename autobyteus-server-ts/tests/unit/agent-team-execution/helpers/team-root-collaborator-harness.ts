@@ -10,15 +10,13 @@ import type { RunModelSelectionValidator } from "../../../../src/llm-management/
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { buildDeliveryEndpointForParticipant } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
-import type { CollaboratorEntry } from "../../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { buildInitialTeamRunExecutionTree } from "../../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { MemberExecutionContextBuilder } from "../../../../src/agent-team-execution/services/member-team-context-builder.js";
-import type { TeamRunCollaborators } from "../../../../src/agent-team-execution/services/team-run-collaborators.js";
 import { materializeTeamRoot } from "../../../../src/agent-team-execution/services/team-root-materializer.js";
 import { buildTeamRunConfigFromExecutionTree } from "../../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
-import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
@@ -50,9 +48,9 @@ export const admission = (runnable = true) => createCollaboratorAdmission({
   validateMany: async (inputs: readonly unknown[]) => inputs.map(() => runnable
     ? { kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } }
     : { kind: "model_unavailable" as const }),
-} as unknown as RunModelSelectionValidator);
+} as unknown as RunModelSelectionValidator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 
-export const harness = async (options: { runnable?: boolean } = {}) => {
+export const harness = async (options: { runnable?: boolean; withTeammate?: boolean; teammateDefinitionId?: string } = {}) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-root-collaborators-")); directories.push(memoryDir);
@@ -65,7 +63,7 @@ export const harness = async (options: { runnable?: boolean } = {}) => {
     } as never),
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
     executionTreeStore: new TeamRunExecutionTreeStore(),
-    communicationStore: new TeamCommunicationV1Store(),
+    communicationStore: new TeamCommunicationStore(),
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.
     taskExecutionResources: new InMemoryTaskExecutionResources(),
@@ -73,7 +71,10 @@ export const harness = async (options: { runnable?: boolean } = {}) => {
   };
   const config = testTeamRunConfig({
     rootTeamRunId: ROOT, rootTeamDefinitionId: "se-team", coordinatorAddress: "/coordinator",
-    children: [testAgentNode("/coordinator", { agentRunId: "run-coordinator", runtimeKind: RuntimeKind.CODEX_APP_SERVER })],
+    children: [
+      testAgentNode("/coordinator", { agentRunId: "run-coordinator", runtimeKind: RuntimeKind.CODEX_APP_SERVER }),
+      ...(options.withTeammate ? [testAgentNode("/worker", { agentRunId: "run-worker", runtimeKind: RuntimeKind.CODEX_APP_SERVER, ...(options.teammateDefinitionId ? { agentDefinitionId: options.teammateDefinitionId } : {}) })] : []),
+    ],
   });
   const root = await materializeTeamRoot({
     config,
@@ -83,7 +84,7 @@ export const harness = async (options: { runnable?: boolean } = {}) => {
   });
   const reopen = async () => {
     const tree = (await dependencies.executionTreeStore.read(teamMemoryDir, ROOT))!;
-    const messages = (await dependencies.communicationStore.read(teamMemoryDir, ROOT))!;
+    const messages = (await dependencies.communicationStore.read(teamMemoryDir, tree))!;
     return materializeTeamRoot({
       config: buildTeamRunConfigFromExecutionTree(tree), tree, messages,
       teamMemoryDir, mode: "restore", persistInitialPackage: false, ...dependencies,
@@ -96,7 +97,7 @@ export const harness = async (options: { runnable?: boolean } = {}) => {
     sender: buildDeliveryEndpointForParticipant({ kind: "agent", identity: sender, displayName: sender.memberAddress.split("/").at(-1)! }),
     recipientAddress, content,
   });
-  return { root, handles, reopen, identity, message, dependencies, teamMemoryDir };
+  return { root, handles, reopen, identity, message, dependencies, memoryDir, teamMemoryDir };
 };
 
 /** `@` of both catalog definitions by the coordinator: resolves their addresses, adds nothing. */
@@ -104,19 +105,3 @@ export const mentionBoth = (root: Awaited<ReturnType<typeof harness>>["root"]) =
   focusedAgentRunId: "run-coordinator",
   mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }],
 });
-/**
- * Brings both in as collaborators (Offline, nothing started): the bring-in step of the
- * coordinator's first send_message_to each catalog address, without delivering the message.
- */
-export const bringInBoth = async (root: Awaited<ReturnType<typeof harness>>["root"]) => {
-  const collaborators = (root as unknown as { collaborators: TeamRunCollaborators }).collaborators;
-  return [
-    await collaborators.bringInAt({ address: "/code_reviewer", senderRunId: "run-coordinator" }),
-    await collaborators.bringInAt({ address: "/product_team", senderRunId: "run-coordinator" }),
-  ];
-};
-export const entriesOf = (root: Awaited<ReturnType<typeof harness>>["root"]) => {
-  const [reviewer, product] = root.getExecutionTreeSnapshot().rootTeam.collaborators as CollaboratorEntry[];
-  if (reviewer?.kind !== "agent" || product?.kind !== "agent_team") throw new Error("collaborators were not added");
-  return { reviewer, product, lead: product.members[0]!, designer: product.members[1]! };
-};

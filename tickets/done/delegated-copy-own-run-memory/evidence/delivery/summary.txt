@@ -1,0 +1,11 @@
+D0-install exit=0
+D0-prebuild exit=0
+D0-build exit=0
+D0-nuxt-prepare exit=0
+D1-typecheck exit=0
+D2-unit exit=0
+D3-integration-prepare exit=0
+D3-integration exit=1
+D4-server-e2e exit=1
+D5-web exit=0
+DONE

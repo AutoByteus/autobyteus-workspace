@@ -1,0 +1,38 @@
+# API-04..07 mutation checks (does the new integration test fail when the behavior breaks?)
+# Commit: 53fc6e9c61 + uncommitted new test/fixture; date 2026-10-19 05:48; macOS 26.5.2, node v22.23.1
+# Each mutation is a temporary source edit, restored with git checkout before the next one.
+
+## M1: remove the release flush in CodexThreadManager.releasePreparation
+ .../src/agent-execution/backends/codex/thread/codex-thread-manager.ts    | 1 -
+ 1 file changed, 1 deletion(-)
+     ✓ SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered  533ms
+     ✓ SCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary 187ms
+     × run termination writes one summary per pending account, and nothing when nothing is pending (AC-005) 147ms
+     ✓ an app-server exit writes the pending summaries (client close) 97ms
+
+## M2: remove the client-close flush in CodexThread.handleClientClosed (and boundary flush kept)
+ .../src/agent-execution/backends/codex/thread/codex-thread.ts            | 1 -
+ 1 file changed, 1 deletion(-)
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts (4 tests) 741ms
+     ✓ SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered  466ms
+
+## M3: unbounded logging (record() always reports a first rejection)
+ .../src/agent-execution/backends/codex/thread/codex-thread.ts           | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+     × SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered 469ms
+     × SCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary 67ms
+     × run termination writes one summary per pending account, and nothing when nothing is pending (AC-005) 38ms
+     × an app-server exit writes the pending summaries (client close) 40ms
+
+## Restored: git status of src
+(empty = all source files restored)
+
+## Reading
+- M1 (no release flush): only the AC-005 termination case fails -> the termination case proves the releasePreparation flush.
+- M2 (no handleClientClosed flush): all pass, expected. On app-server exit the router calls
+  thread.handleClientClosed (flush) and then the manager's handleUnexpectedThreadClosure ->
+  releasePreparation (flush). Either one writes the pending summary; the thread-level flush is the
+  synchronous one and does not depend on releaseRuntimeInput() succeeding. After this check the client-close
+  case was strengthened to wait until the manager released the closed thread and then assert the
+  summary was written exactly once (no double count across both flush paths).
+- M3 (unbounded logging): all 4 cases fail -> every case proves the bound.

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { GetRunFileChanges } from '~/graphql/queries/runHistoryQueries';
+import { GetAgentOrgMemberFileChanges, GetRunFileChanges, GetTeamMemberFileChanges } from '~/graphql/queries/runHistoryQueries';
+import { GetAgentRunCollaborationMemberFileChanges } from '~/graphql/queries/collaboratorQueries';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunFileChangesStore, type RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { commitMemberRunStates, fetchMemberRunState } from '../memberRunStateHydration';
@@ -24,47 +25,74 @@ const deferred = <T>() => {
 
 describe('fetchRunFileChanges', () => {
   beforeEach(() => vi.clearAllMocks());
+  const read = (document: unknown, variables: Record<string, string>) => ({
+    query: document, variables, fetchPolicy: 'network-only', context: { queryDeduplication: false },
+  });
 
-  it('reads the run artifacts network-only and treats a missing payload as no artifacts', async () => {
+  it('reads a standalone run\'s artifacts by run id, network-only, and treats a missing payload as no artifacts', async () => {
     query.mockResolvedValueOnce({ data: { getRunFileChanges: [artifact('a.png')] } });
-    await expect(fetchRunFileChanges(RUN)).resolves.toEqual([artifact('a.png')]);
-    expect(query).toHaveBeenCalledWith({ query: GetRunFileChanges, variables: { runId: RUN }, fetchPolicy: 'network-only' });
+    await expect(fetchRunFileChanges({ kind: 'run', runId: RUN })).resolves.toEqual([artifact('a.png')]);
+    expect(query).toHaveBeenCalledWith(read(GetRunFileChanges, { runId: RUN }));
     query.mockResolvedValueOnce({ data: {} });
-    await expect(fetchRunFileChanges(RUN)).resolves.toEqual([]);
+    await expect(fetchRunFileChanges({ kind: 'run', runId: RUN })).resolves.toEqual([]);
+  });
+
+  it('reads each member kind through its owner\'s query', async () => {
+    query.mockResolvedValueOnce({ data: { getTeamMemberFileChanges: [artifact('t.png')] } });
+    await expect(fetchRunFileChanges({ kind: 'teamMember', teamRunId: 'team-1', memberAddress: '/lead', agentRunId: RUN }))
+      .resolves.toEqual([artifact('t.png')]);
+    expect(query).toHaveBeenLastCalledWith(read(GetTeamMemberFileChanges, { teamRunId: 'team-1', agentRunId: RUN }));
+
+    query.mockResolvedValueOnce({ data: { getAgentOrgMemberFileChanges: [artifact('o.png')] } });
+    await expect(fetchRunFileChanges({ kind: 'agentOrgMember', orgRunId: 'org-1', memberAddress: '/team/lead', agentRunId: RUN }))
+      .resolves.toEqual([artifact('o.png')]);
+    expect(query).toHaveBeenLastCalledWith(read(GetAgentOrgMemberFileChanges, { orgRunId: 'org-1', memberAddress: '/team/lead', agentRunId: RUN }));
+
+    query.mockResolvedValueOnce({ data: { agentRunCollaborationMemberFileChanges: [artifact('c.png')] } });
+    await expect(fetchRunFileChanges({ kind: 'standaloneMember', hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: RUN }))
+      .resolves.toEqual([artifact('c.png')]);
+    expect(query).toHaveBeenLastCalledWith(read(GetAgentRunCollaborationMemberFileChanges, { hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: RUN }));
+    expect(query).not.toHaveBeenCalledWith(expect.objectContaining({ query: GetRunFileChanges }));
   });
 
   it('throws on GraphQL errors', async () => {
     query.mockResolvedValueOnce({ data: null, errors: [{ message: 'run unknown' }] });
-    await expect(fetchRunFileChanges(RUN)).rejects.toThrow('run unknown');
+    await expect(fetchRunFileChanges({ kind: 'run', runId: RUN })).rejects.toThrow('run unknown');
+    query.mockResolvedValueOnce({ data: null, errors: [{ message: 'not in team' }] });
+    await expect(fetchRunFileChanges({ kind: 'teamMember', teamRunId: 'team-1', memberAddress: '/lead', agentRunId: RUN }))
+      .rejects.toThrow('not in team');
   });
 });
 
 describe('fetchMemberRunState', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('fetches the projection and the artifacts in parallel', async () => {
+  it('fetches the projection and the artifacts in parallel, each through the caller\'s fetcher', async () => {
     const projection = deferred<{ id: string }>();
-    const artifacts = deferred<{ data: { getRunFileChanges: RunFileChangeArtifact[] } }>();
+    const artifacts = deferred<RunFileChangeArtifact[]>();
     const fetchProjection = vi.fn(() => projection.promise);
-    query.mockReturnValueOnce(artifacts.promise);
+    const fetchFileChanges = vi.fn(() => artifacts.promise);
 
-    const state = fetchMemberRunState({ runId: RUN, fetchProjection });
+    const state = fetchMemberRunState({ fetchProjection, fetchFileChanges });
     expect(fetchProjection).toHaveBeenCalledOnce();
-    expect(query).toHaveBeenCalledOnce();
-    artifacts.resolve({ data: { getRunFileChanges: [artifact('a.png')] } });
+    expect(fetchFileChanges).toHaveBeenCalledOnce();
+    artifacts.resolve([artifact('a.png')]);
     projection.resolve({ id: 'projection' });
 
     await expect(state).resolves.toEqual({ projection: { id: 'projection' }, fileChanges: [artifact('a.png')] });
+    expect(query).not.toHaveBeenCalled();
   });
 
   it('fails when the artifacts fail, exactly as when the projection fails (AC-007)', async () => {
-    query.mockResolvedValueOnce({ errors: [{ message: 'artifacts unavailable' }] });
-    await expect(fetchMemberRunState({ runId: RUN, fetchProjection: async () => ({}) }))
-      .rejects.toThrow('artifacts unavailable');
+    await expect(fetchMemberRunState({
+      fetchProjection: async () => ({}),
+      fetchFileChanges: () => Promise.reject(new Error('artifacts unavailable')),
+    })).rejects.toThrow('artifacts unavailable');
 
-    query.mockResolvedValueOnce({ data: { getRunFileChanges: [] } });
-    await expect(fetchMemberRunState({ runId: RUN, fetchProjection: () => Promise.reject(new Error('projection unavailable')) }))
-      .rejects.toThrow('projection unavailable');
+    await expect(fetchMemberRunState({
+      fetchProjection: () => Promise.reject(new Error('projection unavailable')),
+      fetchFileChanges: async () => [],
+    })).rejects.toThrow('projection unavailable');
   });
 });
 

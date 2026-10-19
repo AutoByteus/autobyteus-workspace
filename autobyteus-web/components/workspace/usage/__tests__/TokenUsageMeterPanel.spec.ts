@@ -1,7 +1,8 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import TokenUsageMeterPanel from '../TokenUsageMeterPanel.vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -112,10 +113,13 @@ const messages: Record<string, string> = {
   'shell.tokenUsage.outputCost': 'Output cost',
   'shell.tokenUsage.outputCostShort': 'Out',
   'shell.tokenUsage.empty': 'No token usage has been reported for the active run yet.',
+  'shell.tokenUsage.autoCompactsAt': 'Auto-compacts at {tokens}',
+  'shell.tokenUsage.overContextWindow': "Over the runtime's window",
+  'shell.tokenUsage.compactedAwaitingReading': 'Compacted — updates on the next model call',
 };
 
 const translate = (key: string, params?: Record<string, unknown>) => {
-  const template = messages[key] ?? key;
+  const template = messages[key] ?? localizationRuntime.translate(key);
   return Object.entries(params ?? {}).reduce(
     (text, [param, value]) => text.replace(`{${param}}`, String(value)).replace(`{{${param}}}`, String(value)),
     template,
@@ -125,6 +129,7 @@ const translate = (key: string, params?: Record<string, unknown>) => {
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({
     t: translate,
+    resolvedLocale: ref('en'),
   }),
 }));
 
@@ -174,10 +179,13 @@ const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsage
   latestPromptTokens: 1000,
   effectiveContextWindowTokens: 128000,
   contextWindowUsagePercent: 0.78125,
+  contextCompactionThresholdTokens: null,
   latestModelProvider: 'OPENAI',
   latestModelIdentifier: 'gpt-test',
   latestRuntimeKind: 'autobyteus',
   usageReportCount: 1,
+  // Each fixture's revision follows its call count unless a test sets it.
+  revision: overrides.usageReportCount ?? 1,
   updatedAt: '2026-06-25T00:00:00.000Z',
   ...overrides,
 });
@@ -234,10 +242,12 @@ const buildSummaryDto = (summary: TokenUsageRunSummary) => ({
   latest_prompt_tokens: summary.latestPromptTokens,
   effective_context_window_tokens: summary.effectiveContextWindowTokens,
   context_window_usage_percent: summary.contextWindowUsagePercent,
+  context_compaction_threshold_tokens: summary.contextCompactionThresholdTokens,
   latest_model_provider: summary.latestModelProvider,
   latest_model_identifier: summary.latestModelIdentifier,
   latest_runtime_kind: summary.latestRuntimeKind,
   usage_report_count: summary.usageReportCount,
+  revision: summary.revision,
   updated_at: summary.updatedAt,
 });
 
@@ -293,6 +303,50 @@ describe('TokenUsageMeterPanel', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+  });
+
+  it('shows the newest TPS of the exact selected run, independent of totals, and "—" otherwise (AC-006)', async () => {
+    const contexts = useAgentContextsStore();
+    const selection = useAgentSelectionStore();
+    const meter = useTokenUsageMeterStore();
+    const context = buildAgentContext('run-1', 'Project Task Manager');
+    context.state.currentStatus = AgentStatus.Running;
+    contexts.runs.set('run-1', context);
+    selection.setRunSelection('run-1', 'agent');
+    vi.mocked(getApolloClient).mockReturnValue({ query: vi.fn().mockResolvedValue({ data: {} }) } as any);
+    const wrapper = mountPanel();
+    expect(wrapper.find('[data-test="token-usage-primary"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="throughput-empty"]').text()).toBe('—');
+    const call = (revision: number, outputThroughput: { method: 'generation'; output_tokens: number; duration_ms: number } | null) =>
+      meter.applyTokenUsageUpdated({
+        usage_event_id: `report-${revision}`, idempotency_key: `report-${revision}`, run_id: 'run-1',
+        turn_id: 'turn', model_identifier: 'exact-reported-model', reports_model_call: true,
+        observed_at: '2026-10-13T10:00:00.000Z', output_throughput: outputThroughput,
+        run_summary_after_event: buildSummaryDto(buildSummary({ revision, usageReportCount: revision })),
+      });
+    call(1, { method: 'generation', output_tokens: 1200, duration_ms: 10_000 });
+    await nextTick();
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('120.0 tokens/s');
+    expect(wrapper.get('[data-test="throughput-model"]').text()).toBe('exact-reported-model');
+    call(2, null); // a 12-token tool call carries no TPS
+    meter.upsertRecordBackedStandaloneRunSummary({ runId: 'run-1', summary: buildSummary({
+      outputTokens: 99999, latestModelIdentifier: 'child-model', revision: 500,
+    }) });
+    context.config.llmModelIdentifier = 'changed-model';
+    context.state.currentStatus = AgentStatus.Offline;
+    await nextTick();
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('120.0 tokens/s');
+    expect(wrapper.get('[data-test="throughput-model"]').text()).toBe('exact-reported-model');
+    expect(wrapper.get('[data-test="token-usage-primary"]').text()).toContain('child-model');
+    contexts.runs.set('new-run', buildAgentContext('new-run', 'Other Agent'));
+    selection.setRunSelection('new-run', 'agent');
+    await nextTick();
+    expect(wrapper.find('[data-test="throughput-value"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="throughput-empty"]').text()).toBe('—');
+    selection.setRunSelection('run-1', 'agent');
+    await nextTick();
+    expect(wrapper.get('[data-test="throughput-value"]').text()).toBe('120.0 tokens/s');
+    wrapper.unmount();
   });
 
   it('shows selected Claude model and configured estimate with a visible assumed cache rate', () => {
@@ -458,6 +512,129 @@ describe('TokenUsageMeterPanel', () => {
     expect(primary.get('.bg-blue-500').attributes('style')).toContain('width: 2.2135%');
     expect(primary.text()).toContain('claude-opus-5-5');
     expect(primary.text()).toContain('$0.0032');
+  });
+
+  it('marks the runtime-reported compaction threshold on the context bar (AC-008)', () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Claude Agent'));
+    upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
+      latestPromptTokens: 5_659, effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 0.5659,
+      contextCompactionThresholdTokens: 967_000 }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const primary = mountPanel().get('[data-test="token-usage-primary"]');
+    expect(primary.get('[data-test="context-compaction-label"]').text()).toBe('Auto-compacts at 967,000');
+    expect(primary.get('[data-test="context-compaction-marker"]').attributes('style')).toContain('left: 96.7%');
+    expect(primary.find('[data-test="context-over-window"]').exists()).toBe(false);
+  });
+
+  it('shows no compaction marker when the runtime reports no threshold', () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Codex Agent'));
+    upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: 'codex_app_server',
+      latestPromptTokens: 68_630, effectiveContextWindowTokens: 258_400, contextWindowUsagePercent: 26.56 }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const primary = mountPanel().get('[data-test="token-usage-primary"]');
+    expect(primary.find('[data-test="context-compaction-marker"]').exists()).toBe(false);
+    expect(primary.find('[data-test="context-compaction-label"]').exists()).toBe(false);
+    expect(primary.text()).toContain('68,630 / 258,400');
+  });
+
+  it("marks a genuine runtime-reported overflow and keeps the bar clamped (REQ-009, P7)", () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Codex Agent'));
+    upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: 'codex_app_server',
+      latestPromptTokens: 259_056, effectiveContextWindowTokens: 258_400, contextWindowUsagePercent: 100.2539 }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const primary = mountPanel().get('[data-test="token-usage-primary"]');
+    expect(primary.get('[data-test="context-percent"]').text()).toBe('100.3%');
+    expect(primary.get('[data-test="context-percent"]').classes()).toContain('text-amber-700');
+    expect(primary.get('[data-test="context-over-window"]').text()).toBe("Over the runtime's window");
+    expect(primary.get('[data-test="context-bar-fill"]').attributes('style')).toContain('width: 100%');
+    expect(primary.get('[data-test="context-bar-fill"]').classes()).toContain('bg-amber-500');
+    expect(primary.text()).toContain('259,056 / 258,400');
+  });
+
+  describe('after a completed compaction (D-13)', () => {
+    const seed = (latestRuntimeKind: string) => {
+      const agentContextsStore = useAgentContextsStore();
+      const selectionStore = useAgentSelectionStore();
+      const meterStore = useTokenUsageMeterStore();
+      agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Agent'));
+      const reading = { latestRuntimeKind, latestPromptTokens: 911_000, effectiveContextWindowTokens: 1_000_000,
+        contextWindowUsagePercent: 91.1, contextCompactionThresholdTokens: 967_000 };
+      // The card shows the roll-up; the host's exact summary drives the mark.
+      upsertStandaloneRunSummary(meterStore, buildSummary({ ...reading, usageReportCount: 30, revision: 40 }));
+      meterStore.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ ...reading, usageReportCount: 12, revision: 15 }) });
+      meterStore.markCompactionCompleted('run-1');
+      selectionStore.setRunSelection('run-1', 'agent');
+      return meterStore;
+    };
+
+    it.each(['autobyteus', 'claude_agent_sdk'])('keeps the previous %s reading muted with the note until the next reading', async (runtime) => {
+      const meterStore = seed(runtime);
+      const wrapper = mountPanel();
+      const primary = () => wrapper.get('[data-test="token-usage-primary"]');
+      expect(primary().get('[data-test="context-compacted-note"]').text()).toBe('Compacted — updates on the next model call');
+      expect(primary().text()).toContain('911,000 / 1,000,000');
+      expect(primary().get('[data-test="context-percent"]').classes()).toContain('text-slate-400');
+      expect(primary().get('[data-test="context-bar-fill"]').classes()).toContain('bg-slate-300');
+      expect(primary().get('[data-test="context-tokens"]').classes()).toContain('text-slate-400');
+
+      // A live event without a model call (the turn-end remainder after a manual /compact), a fetched
+      // summary and a child's live call all keep the note (SR-014).
+      const reading = { latestRuntimeKind: runtime, latestPromptTokens: 911_000, effectiveContextWindowTokens: 1_000_000,
+        contextWindowUsagePercent: 91.1 };
+      meterStore.applyTokenUsageUpdated({ usage_event_id: 'remainder', idempotency_key: 'remainder', run_id: 'run-1',
+        reports_model_call: false, run_summary_after_event: buildSummaryDto(buildSummary({ ...reading, usageReportCount: 12, revision: 16 })) } as any);
+      meterStore.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ ...reading, usageReportCount: 12, revision: 17 }) });
+      meterStore.applyTokenUsageUpdated({ usage_event_id: 'child-call', idempotency_key: 'child-call', run_id: 'child-run',
+        reports_model_call: true, run_summary_after_event: buildSummaryDto(buildSummary({ ...reading, runId: 'child-run' })) } as any);
+      await nextTick();
+      expect(primary().find('[data-test="context-compacted-note"]').exists()).toBe(true);
+
+      // The host's next live model call: the note goes and the value shows normally.
+      meterStore.applyTokenUsageUpdated({ usage_event_id: 'next-call', idempotency_key: 'next-call', run_id: 'run-1',
+        reports_model_call: true, run_summary_after_event: buildSummaryDto(buildSummary({ latestRuntimeKind: runtime,
+          latestPromptTokens: 42_000, effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 4.2,
+          usageReportCount: 13, revision: 18 })) } as any);
+      await flushPromises();
+      expect(primary().find('[data-test="context-compacted-note"]').exists()).toBe(false);
+      expect(primary().get('[data-test="context-bar-fill"]').classes()).toContain('bg-blue-500');
+    });
+
+    it.each(['codex_app_server', 'antigravity_cli'])('shows no note for %s', (runtime) => {
+      seed(runtime);
+      const primary = mountPanel().get('[data-test="token-usage-primary"]');
+      expect(primary.find('[data-test="context-compacted-note"]').exists()).toBe(false);
+      expect(primary.get('[data-test="context-percent"]').classes()).toContain('text-slate-900');
+    });
+  });
+
+  it('refetches a standalone roll-up when the host saves a reading without a new model call (D-9)', async () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Codex Agent'));
+    const queryMock = vi.fn().mockResolvedValue({ data: { getStandaloneRunTokenUsageSummary: buildSummary({ revision: 41 }) } });
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+    meterStore.upsertRecordBackedAgentRunSummary({ runId: 'run-1', summary: buildSummary({ usageReportCount: 12, revision: 41 }) });
+    selectionStore.setRunSelection('run-1', 'agent');
+    mountPanel();
+    await flushPromises();
+    const callsBefore = queryMock.mock.calls.length;
+    meterStore.applyTokenUsageUpdated({ usage_event_id: 'codex-compaction', idempotency_key: 'codex-compaction', run_id: 'run-1',
+      run_summary_after_event: buildSummaryDto(buildSummary({ usageReportCount: 12, revision: 42, latestPromptTokens: 68_630 })) } as any);
+    await flushPromises();
+    expect(queryMock.mock.calls.length).toBe(callsBefore + 1);
   });
 
   it('shows prompt usage and an explicit unavailable context limit without a fake denominator', () => {

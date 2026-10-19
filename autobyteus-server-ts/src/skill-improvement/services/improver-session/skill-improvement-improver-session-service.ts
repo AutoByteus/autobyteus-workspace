@@ -100,16 +100,16 @@ export class SkillImprovementImproverSessionService {
         ...session.state,
         status: "active",
         currentImproverRunId: session.improverRunId,
-        workTraces: {
-          rootPath: request.workTracePackage.workTraceRootPath,
-          manifestPath: request.workTracePackage.manifestPath,
-          lastSummaryHash: request.workTracePackage.summaryHash,
+        workJournal: {
+          rootPath: request.workJournalPackage.rootPath,
+          manifestPath: request.workJournalPackage.manifestPath,
+          lastEvidenceHash: request.workJournalPackage.evidenceHash,
         },
         lastRequest: {
           improvementRunId: request.improvementRunId,
           requestedAt: request.requestedAt,
           postedAt: new Date().toISOString(),
-          workTraceSummaryHash: request.workTracePackage.summaryHash,
+          workJournalEvidenceHash: request.workJournalPackage.evidenceHash,
         },
       });
       const outputText = await watcher.waitForCompletion(this.timeoutMs);
@@ -156,7 +156,6 @@ export class SkillImprovementImproverSessionService {
     });
     const run = this.requireActiveRun(created.runId);
     const state: SkillImprovementImproverSessionState = await this.improverSessionStore.write(context, {
-      schemaVersion: 1,
       target: context.target,
       status: "active",
       currentImproverRunId: run.runId,
@@ -166,10 +165,10 @@ export class SkillImprovementImproverSessionService {
       llmModelIdentifier: resolved.llmModelIdentifier,
       workspaceRootPath: context.workspaceRootPath,
       memoryRootPath: context.memoryDir,
-      workTraces: existing?.workTraces ?? {
+      workJournal: existing?.workJournal ?? {
         rootPath: null,
         manifestPath: null,
-        lastSummaryHash: null,
+        lastEvidenceHash: null,
       },
       lastRequest: existing?.lastRequest ?? null,
       updatedAt: new Date().toISOString(),
@@ -218,14 +217,14 @@ export class SkillImprovementImproverSessionService {
     improvementRunId: string;
     requestedAt: string;
     target: SkillImprovementTargetRef;
-    workTracePackage: SkillImprovementImproverTriggerRequest["workTracePackage"];
+    workJournalPackage: SkillImprovementImproverTriggerRequest["workJournalPackage"];
     editableSkillTargets: SkillImprovementSkillTarget[];
   }): SkillImprovementImproverTriggerRequest {
     return {
       improvementRunId: input.improvementRunId,
       requestedAt: input.requestedAt,
       targetAgentRunId: this.resolveTargetAgentRunId(input.target),
-      workTracePackage: input.workTracePackage,
+      workJournalPackage: input.workJournalPackage,
       editableSkillTargets: input.editableSkillTargets,
     };
   }

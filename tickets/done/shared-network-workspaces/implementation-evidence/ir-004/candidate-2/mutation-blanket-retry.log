@@ -1,0 +1,18 @@
+--- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution (0.00s)
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/#00 (0.00s)
+        apple_startup_test.go:106: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error (0.00s)
+        apple_startup_test.go:106: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch (0.00s)
+        apple_startup_test.go:106: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host (0.00s)
+        apple_startup_test.go:106: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied (0.00s)
+        apple_startup_test.go:106: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option (0.00s)
+        apple_startup_test.go:106: retried invalid/unknown setup
+    --- FAIL: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive (0.00s)
+        apple_startup_test.go:106: retried invalid/unknown setup
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.363s
+FAIL

@@ -167,7 +167,7 @@ describe("Project Task local context files", () => {
     expect(after.contextFiles[0]).toEqual(before.contextFiles[0]);
     expect(after.contextFiles[1]).toMatchObject({ displayName: "shot2.png", mimeType: "image/png" });
     expect(after).toMatchObject({ description: before.description, status: "TODO" });
-    expect(ack).toEqual({ projectId, taskId: task.taskId, status: "TODO", attachedContextFiles: [after.contextFiles[1]] });
+    expect(ack).toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null, attachedContextFiles: [after.contextFiles[1]] });
     // Attaching the same source again creates another saved copy (no dedupe).
     const again = await tasks.updateTaskById({ taskId: task.taskId, localContextFiles: [shot] });
     expect(again.attachedContextFiles![0]!.storedFilename).not.toBe(after.contextFiles[1].storedFilename);
@@ -205,7 +205,7 @@ describe("Project Task local context files", () => {
   it("requires a change: an empty files list alone is TASK_PATCH_REQUIRED; a patch without files keeps the plain acknowledgement (AC-004, AC-009)", async () => {
     const task = await uiTask();
     await expect(tasks.updateTaskById({ taskId: task.taskId, localContextFiles: [] })).rejects.toMatchObject({ code: "TASK_PATCH_REQUIRED" });
-    await expect(tasks.updateTaskById({ taskId: task.taskId, description: "Plain" })).resolves.toEqual({ projectId, taskId: task.taskId, status: "TODO" });
+    await expect(tasks.updateTaskById({ taskId: task.taskId, description: "Plain" })).resolves.toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
   });
 
   it("rejects files on a Task with no Project before any write; its text/status patch still works (AC-007)", async () => {
@@ -214,6 +214,6 @@ describe("Project Task local context files", () => {
     await expect(tasks.updateTaskById({ taskId, status: "DONE", localContextFiles: [await source("notes.md")] }))
       .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: "Context files can be attached only to Project Tasks; this Task has no Project." });
     expect(tasks.isOpen({ agentRunId: "copy" })).toBe(true);
-    await expect(tasks.updateTaskById({ taskId, description: "Still editable" })).resolves.toEqual({ projectId: null, taskId, status: "TODO" });
+    await expect(tasks.updateTaskById({ taskId, description: "Still editable" })).resolves.toEqual({ projectId: null, taskId, taskReference: taskId, status: "TODO" });
   });
 });

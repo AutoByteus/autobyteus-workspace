@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-65457-638a",
+    "pid": 90295,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/dcm-released-base/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:65458",
+    "graphqlUrl": "http://127.0.0.1:65458/graphql",
+    "controlEndpoint": "http://127.0.0.1:65457",
+    "controlPort": 65457,
+    "serverPort": 65458,
+    "dataRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/dcm-upgrade-desktop-root",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/dcm-upgrade-desktop-root/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-65457-638a.log"
+  }
+}

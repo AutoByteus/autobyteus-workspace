@@ -1,0 +1,171 @@
+diff --git a/autobyteus-web/tests/e2e/team-status-live-probe.mjs b/autobyteus-web/tests/e2e/team-status-live-probe.mjs
+index b12eae0885..d8bc970f86 100644
+--- a/autobyteus-web/tests/e2e/team-status-live-probe.mjs
++++ b/autobyteus-web/tests/e2e/team-status-live-probe.mjs
+@@ -12,7 +12,8 @@
+ //   - any other text is answered at once (Idle).
+ // No provider inference and no mocked routes: every Team dot is derived from real AGENT_STATUS / lifecycle events.
+ // Cases: TS-001 delegated Team under an Agent run; TS-002 TEAMS run and group rows across three runs;
+-// TS-003 a Team delegated by a Team run's member; TS-004 delegated and Org-internal Teams under an Org run.
++// TS-003 a Team delegated by a Team run's member; TS-004 delegated and Org-internal Teams under an Org run;
++// TS-005/006/007 a task Team delegated by a task Team member under an Agent, Team and Org run (each dot = its shown agents).
+ // TS-001/003/004 also check the delegated Team row's layout: dot → people-group icon → name, the dot centered on the
+ // name line, no overlap with the Task summary line or the per-copy Stop icon, and Stop shown only while the copy is live.
+ // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
+@@ -43,7 +44,7 @@ const ledger = getArg('ledger-file', getArg('ledger'));
+ const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
+   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
+     .find((candidate) => fs.existsSync(candidate));
+-const ALL_CASES = ['TS-001', 'TS-002', 'TS-003', 'TS-004'];
++const ALL_CASES = ['TS-001', 'TS-002', 'TS-003', 'TS-004', 'TS-005', 'TS-006', 'TS-007'];
+ const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
+ 
+ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+@@ -322,7 +323,9 @@ const collapseTaskTeam = async (page, kind, teamRunId) => {
+   if ((await row.getAttribute('aria-expanded')) === 'true') await (kind === 'org' ? row : row.locator('[data-test="workspace-team-transient-disclosure"]')).click();
+ };
+ /** Counts the app's HTTP requests while a status change arrives (REQ-008: no new request or polling is needed). */
+-const countRequests = (page) => { const seen = []; const on = (r) => { if (/\/graphql|\/rest\//.test(r.url())) seen.push(`${r.method()} ${r.url()}`); }; page.on('request', on);
++const countRequests = (page) => { const seen = []; const on = (r) => { if (/\/graphql|\/rest\//.test(r.url())) {
++  let op = ''; try { op = r.postDataJSON()?.operationName ?? ''; } catch { /* not JSON */ }
++  seen.push(`${r.method()} ${r.url()}${op ? ` ${op}` : ''}`); } }; page.on('request', on);
+   return () => { page.off('request', on); return seen; }; };
+ /** Checks one task Team row against the member rows under it (expanded), then returns the observation. */
+ const consistency = async (page, kind, s, alive, where) => {
+@@ -593,11 +596,136 @@ const orgRootJourney = async () => {
+   } finally { s.input.close(); await context.close(); }
+ };
+ 
++/**
++ * TS-005..007 (REQ-001..003, REQ-005, REQ-007; AC-005, AC-007, AC-009): a task Team delegated by a member of a task Team,
++ * under an Agent, Team and Org run. The Manager delegates the Docs Review Team; its coordinator (as its own task) delegates
++ * the Build Crew. Each Team row's dot equals the rule applied to the agent rows shown under it, the same collapsed and
++ * expanded, live; agent rows have no Team dot; rows do not overlap; a stopped run makes both Teams gray. Where the inner
++ * Team is shown (inside the outer Team or beside it) is recorded as `placement`, not assumed.
++ */
++const nestedTaskTeamJourney = (kind) => async () => {
++  const label = { agent: 'TsNestAgent', team: 'TsNestTeam', org: 'TsNestOrg' }[kind];
++  const { ids, names } = await createDefinitions(label);
++  names.crew = `Build Crew ${label} ${randomUUID().slice(0, 4)}`;
++  ids.crew = (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}',
++    { input: { name: names.crew, description: names.crew, instructions: 'Deliver.', coordinatorMemberName: 'builder',
++      nodes: [{ memberName: 'builder', ref: ids.worker, refScope: 'SHARED' }, { memberName: 'checker', ref: ids.helper, refScope: 'SHARED' }] } })).createAgentTeamDefinition.id;
++  const root = await createRoot(kind, ids);
++  const input = await managerInput(root);
++  const crewAddress = `/${segment(names.crew)}`;
++  // The outer coordinator's task description is its own tool call: it delegates the Build Crew.
++  input.send(callTool('delegate_task', { recipient_address: kind === 'org' ? '/squad' : `/${segment(names.squad)}`,
++    description: callTool('delegate_task', { recipient_address: crewAddress, description: 'Check the release page.' }) }));
++  const { outer, inner } = await until('a task Team delegated by a task Team member', async () => {
++    const teams = taskTeams(await storedTree(root));
++    const inner = teams.find((t) => t.address === crewAddress && t.members.length >= 2);
++    const outer = teams.find((t) => t !== inner && t.members.length >= 2);
++    return inner && outer ? { outer, inner } : null;
++  }, 90000);
++  const byRole = (team, role) => team.members.find((m) => new RegExp(`/${role}$`).test(m.address));
++  const agents = { reviewer: byRole(outer, 'reviewer'), editor: byRole(outer, 'editor'), builder: byRole(inner, 'builder'), checker: byRole(inner, 'checker') };
++  assert(Object.values(agents).every(Boolean), 'task Team members not found', { outer, inner });
++  const rowSelector = (team) => (kind === 'org' ? `[data-test="agent-org-task-team-row-${team.teamRunId}"]` : `${TASK_TEAM_ROW}[data-member-address="${team.address}"]`);
++  const teamRow = (page, team) => page.locator(rowSelector(team)).first();
++  const setExpanded = async (page, team, expanded) => {
++    const row = teamRow(page, team);
++    if ((await row.getAttribute('aria-expanded')) !== String(expanded)) {
++      await (kind === 'org' ? row : row.locator('[data-test="workspace-team-transient-disclosure"]')).click();
++      await until(`${team.address} ${expanded ? 'expanded' : 'collapsed'}`, async () => (await row.getAttribute('aria-expanded')) === String(expanded), 10000);
++    }
++    await sleep(800); // let the tree-row transition settle before measuring
++  };
++  /** The visible tree rows in order (agent rows carry their run id), with depth and box; for subtree and overlap checks. */
++  const treeRows = (page) => page.evaluate((isOrg) => {
++    const sel = isOrg ? '[role="tree"] [role="treeitem"]'
++      : '[data-test="workspace-team-transient-execution-row"], [data-test^="workspace-team-member-"]';
++    const all = [...document.querySelectorAll(sel)];
++    // Outermost matches only (a row's own parts, such as its avatar, can match the same prefix).
++    return all.filter((el) => el.getClientRects().length && !all.some((other) => other !== el && other.contains(el))).map((el) => {
++      const r = el.getBoundingClientRect();
++      const depth = Number(el.getAttribute('aria-level') ?? el.getAttribute('data-tree-depth') ?? NaN);
++      const agentRunId = el.getAttribute('data-agent-run-id') ?? (el.getAttribute('data-test') ?? '').match(/agent-org-(?:task-)?agent-row-(.+)$/)?.[1] ?? null;
++      return { test: el.getAttribute('data-test'), address: el.getAttribute('data-member-address'), agentRunId, depth, top: r.top, bottom: r.bottom };
++    });
++  }, kind === 'org');
++  /** The agent run ids shown under a Team row: the rows after it, deeper than it, until the next row at its depth or above. */
++  const shownUnder = (rows, team) => {
++    const index = rows.findIndex((r) => (kind === 'org' ? r.test === `agent-org-task-team-row-${team.teamRunId}` : r.address === team.address && r.agentRunId === null));
++    assert(index >= 0, `${team.address} row not found among the tree rows`, rows);
++    const out = [];
++    for (let i = index + 1; i < rows.length && rows[i].depth > rows[index].depth; i += 1) if (rows[i].agentRunId) out.push(rows[i].agentRunId);
++    return out;
++  };
++  /** Both Teams expanded: each dot equals the rule applied to the agent rows shown under it; agent rows have no Team dot; no overlap. */
++  const check = async (page, where) => {
++    await setExpanded(page, outer, true);
++    await setExpanded(page, inner, true);
++    for (const a of Object.values(agents)) await agentRow(page, kind, a.agentRunId).waitFor({ state: 'visible', timeout: 30000 });
++    const rows = await treeRows(page);
++    for (let i = 1; i < rows.length; i += 1) assert(rows[i].top >= rows[i - 1].bottom - 1, `${where}: tree rows overlap`, [rows[i - 1], rows[i]]);
++    const statusOf = async (id) => agentStatusOf(page, kind, id);
++    const result = { dots: {}, shown: {}, expected: {}, statuses: {} };
++    for (const [role, a] of Object.entries(agents)) result.statuses[role] = await statusOf(a.agentRunId);
++    for (const [name, team] of Object.entries({ outer, inner })) {
++      result.shown[name] = shownUnder(rows, team);
++      const statuses = []; for (const id of result.shown[name]) statuses.push(await statusOf(id));
++      result.expected[name] = expectedTeamStatus(statuses, true);
++      result.dots[name] = await teamDotOf(teamRow(page, team));
++      assertTeamDot(result.dots[name], result.expected[name], `${where}: ${name} Team against the agent rows shown under it`);
++    }
++    for (const a of Object.values(agents)) assert(await agentRow(page, kind, a.agentRunId).locator(TEAM_DOT).count() === 0, `${where}: an agent row shows a Team dot`);
++    const innerIds = [agents.builder.agentRunId, agents.checker.agentRunId];
++    result.placement = result.shown.outer.some((id) => innerIds.includes(id)) ? 'inner Team shown inside the outer Team' : 'inner Team shown beside the outer Team';
++    return result;
++  };
++  const { page, errors, context } = await newPage();
++  const out = { kind, root, outer: { teamRunId: outer.teamRunId, address: outer.address }, inner: { teamRunId: inner.teamRunId, address: inner.address } };
++  try {
++    const runRow = await openRoot(page, root, names);
++    await teamRow(page, outer).waitFor({ state: 'visible', timeout: 30000 });
++    await waitTeamStatus('outer Team idle', teamRow(page, outer), 'idle', 60000);
++    out.idle = await check(page, 'idle');
++    assert(out.idle.statuses.builder === 'idle' && out.idle.statuses.reviewer === 'idle', 'unexpected coordinator statuses', out.idle);
++    if (kind !== 'team') assert(await runRow.locator(TEAM_DOT).count() === 0, 'the root row shows a Team dot (BEH-006)');
++    if (kind === 'team') assert(await page.locator(`[data-test="workspace-team-member-${root.rootId}-/manager"]`).locator(TEAM_DOT).count() === 0, 'a configured Agent row shows a Team dot');
++    await shot(page, `ts-nested-${kind}-idle-expanded`);
++    // Only the inner Team's coordinator works, both Teams collapsed: the inner Team turns busy live, with no new request.
++    await setExpanded(page, inner, false); await setExpanded(page, outer, false);
++    const stopCounting = countRequests(page);
++    input.send(callTool('send_message_to', { target_agent_run_id: agents.builder.agentRunId, content: 'Check it again. HOLD_TURN' }));
++    await waitTeamStatus('collapsed inner Team busy', teamRow(page, inner), 'running', 60000);
++    await sleep(1000);
++    out.requestsDuringChange = stopCounting();
++    out.busyCollapsed = { outer: await teamDotOf(teamRow(page, outer)), inner: await teamDotOf(teamRow(page, inner)) };
++    assertTeamDot(out.busyCollapsed.inner, 'running', 'collapsed inner Team');
++    if (kind === 'team') { await waitTeamStatus('run row busy', runRow, 'running', 60000); assertTeamDot(await teamDotOf(runRow), 'running', 'Team run row counts all its agents', { icon: false }); }
++    await shot(page, `ts-nested-${kind}-busy-collapsed`);
++    // Expanded: each dot against the rows shown under it, and the collapsed dots were the same.
++    out.busyExpanded = await check(page, 'busy, expanded');
++    assert(out.busyExpanded.statuses.builder === 'running' && out.busyExpanded.statuses.reviewer !== 'running', 'only the inner coordinator should be working', out.busyExpanded);
++    for (const name of ['outer', 'inner']) assert(out.busyCollapsed[name].status === out.busyExpanded.dots[name].status, `${name} Team dot differs collapsed vs expanded`, out);
++    await shot(page, `ts-nested-${kind}-busy-expanded`);
++    // AC-007: the run stops → both Teams gray.
++    const t = await terminateViaApi(root);
++    assert(t.success, `terminate failed: ${t.message}`);
++    await waitTeamStatus('outer Team gray', teamRow(page, outer), 'offline', 60000);
++    await waitTeamStatus('inner Team gray', teamRow(page, inner), 'offline', 60000);
++    out.stopped = { outer: await teamDotOf(teamRow(page, outer)), inner: await teamDotOf(teamRow(page, inner)) };
++    assertTeamDot(out.stopped.outer, 'offline', 'stopped outer Team'); assertTeamDot(out.stopped.inner, 'offline', 'stopped inner Team');
++    await shot(page, `ts-nested-${kind}-stopped`);
++    assert(errors.length === 0, 'browser errors', errors);
++    return out;
++  } finally { input.close(); await context.close(); }
++};
++
+ const CASES = {
+   'TS-001': ['Agent run: delegated Team idle → busy while collapsed → busy+error → error after Stop generation → gray when the run stops', agentRootJourney],
+   'TS-002': ['TEAMS rows: idle run green, alive unstarted gray with Stop, group = highest run, Stop button → gray, all stopped → gray', teamsSectionJourney],
+   'TS-003': ['Team run: member-delegated Team row and the run row count the delegated agents; Stop → gray', teamRootJourney],
+   'TS-004': ['Org run: delegated and Org-internal Team rows, Org root row unchanged; stop → gray', orgRootJourney],
++  'TS-005': ['Agent run: a task Team delegated by a task Team member; each Team dot = its shown agents, collapsed or expanded; stop → gray', nestedTaskTeamJourney('agent')],
++  'TS-006': ['Team run: a task Team delegated by a task Team member; each Team dot = its shown agents; run row counts all; stop → gray', nestedTaskTeamJourney('team')],
++  'TS-007': ['Org run: a task Team delegated by a member of a delegated Org Team copy; each Team dot = its shown agents; stop → gray', nestedTaskTeamJourney('org')],
+ };
+ 
+ let result = 'Pass';

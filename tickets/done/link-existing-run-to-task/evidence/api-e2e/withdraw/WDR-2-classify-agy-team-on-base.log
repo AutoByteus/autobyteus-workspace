@@ -1,0 +1,648 @@
+# WDR-2 classification: the two AGY team-member failures on the base commit (no revert)
+# Command: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<base fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-context-files-transport.e2e.test.ts tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts --no-watch
+# Commit: 2b04a9971d (origin/personal base)
+# Date: 2026-10-18T19:44:43Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:55639) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Agent Definition created successfully with ID: agy-context-files-4f375d12-e667-42ce-9749-77279749dbac
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Created and registered workspace ID: agent_ws_b83180b3d943ba33d2ef078cc47a821a653ee888dc5475422f89002f7e1a40e0
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Reusing registered workspace ID: agent_ws_b83180b3d943ba33d2ef078cc47a821a653ee888dc5475422f89002f7e1a40e0
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+AGY compaction detection off for run agy_context_files_4f375d12_e667_42ce_9749_772797_e0037c018fa34bfa9dc6bbb21f702dfb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+Agent websocket attached for run agy_context_files_4f375d12_e667_42ce_9749_772797_e0037c018fa34bfa9dc6bbb21f702dfb
+Created agent session 5d48a3f2-b83c-488b-99e2-143a83b18b90 for run agy_context_files_4f375d12_e667_42ce_9749_772797_e0037c018fa34bfa9dc6bbb21f702dfb
+Agent WebSocket connected: session=5d48a3f2-b83c-488b-99e2-143a83b18b90, run=agy_context_files_4f375d12_e667_42ce_9749_772797_e0037c018fa34bfa9dc6bbb21f702dfb
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Reusing registered workspace ID: agent_ws_b83180b3d943ba33d2ef078cc47a821a653ee888dc5475422f89002f7e1a40e0
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Reusing registered workspace ID: agent_ws_b83180b3d943ba33d2ef078cc47a821a653ee888dc5475422f89002f7e1a40e0
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+AGY compaction detection off for run agy_context_files_4f375d12_e667_42ce_9749_772797_073caf270fb64ddb8ad6a527d013eb73: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+Agent websocket attached for run agy_context_files_4f375d12_e667_42ce_9749_772797_073caf270fb64ddb8ad6a527d013eb73
+Created agent session df52c3d5-2193-48bc-b2e5-27a6337833ad for run agy_context_files_4f375d12_e667_42ce_9749_772797_073caf270fb64ddb8ad6a527d013eb73
+Agent WebSocket connected: session=df52c3d5-2193-48bc-b2e5-27a6337833ad, run=agy_context_files_4f375d12_e667_42ce_9749_772797_073caf270fb64ddb8ad6a527d013eb73
+
+stderr | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+SEND_MESSAGE command not accepted for agent run agy_context_files_4f375d12_e667_42ce_9749_772797_073caf270fb64ddb8ad6a527d013eb73: [RUNTIME_REJECTED] AgentRun input content must be a non-empty string.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Reusing registered workspace ID: agent_ws_b83180b3d943ba33d2ef078cc47a821a653ee888dc5475422f89002f7e1a40e0
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Reusing registered workspace ID: agent_ws_b83180b3d943ba33d2ef078cc47a821a653ee888dc5475422f89002f7e1a40e0
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+AGY compaction detection off for run agy_context_files_4f375d12_e667_42ce_9749_772797_3cd60fd4b16449a1999215a1a2f6fa06: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+Agent websocket attached for run agy_context_files_4f375d12_e667_42ce_9749_772797_3cd60fd4b16449a1999215a1a2f6fa06
+Created agent session ea66c6f6-4c4b-41b4-b3db-882e88923460 for run agy_context_files_4f375d12_e667_42ce_9749_772797_3cd60fd4b16449a1999215a1a2f6fa06
+Agent WebSocket connected: session=ea66c6f6-4c4b-41b4-b3db-882e88923460, run=agy_context_files_4f375d12_e667_42ce_9749_772797_3cd60fd4b16449a1999215a1a2f6fa06
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Agent Team Definition created successfully with ID: agy-context-files-team-4ba4342c-e210-486e-96ea-2ffab6c1457d
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Reusing registered workspace ID: agent_ws_b83180b3d943ba33d2ef078cc47a821a653ee888dc5475422f89002f7e1a40e0
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Agent team websocket attached for team run agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e
+Created agent session 014b7404-71b5-4c76-beb4-a6e92d7ab17e for run agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Agent Team WebSocket connected: session=014b7404-71b5-4c76-beb4-a6e92d7ab17e, run=agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+Reusing registered workspace ID: agent_ws_b83180b3d943ba33d2ef078cc47a821a653ee888dc5475422f89002f7e1a40e0
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+AGY compaction detection off for run agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Closed agent session 5d48a3f2-b83c-488b-99e2-143a83b18b90
+Agent WebSocket disconnected: 5d48a3f2-b83c-488b-99e2-143a83b18b90
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Closed agent session 014b7404-71b5-4c76-beb4-a6e92d7ab17e
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Closed agent session ea66c6f6-4c4b-41b4-b3db-882e88923460
+Agent WebSocket disconnected: ea66c6f6-4c4b-41b4-b3db-882e88923460
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Closed agent session df52c3d5-2193-48bc-b2e5-27a6337833ad
+Agent WebSocket disconnected: df52c3d5-2193-48bc-b2e5-27a6337833ad
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Agent Team Definition with ID agy-context-files-team-4ba4342c-e210-486e-96ea-2ffab6c1457d deleted successfully.
+
+stdout | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI)
+Agent Definition with ID agy-context-files-4f375d12-e667-42ce-9749-77279749dbac deleted successfully.
+
+ ❯ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests | 1 failed) 22684ms
+     ✓ E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged  609ms
+     ✓ E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text  529ms
+     ✓ E2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image  407ms
+     × E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket 20475ms
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:59550) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/_tmp-wdr-base-check/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Agent Definition created successfully with ID: agy-interrupt-resend-9efda910-32c4-4c3a-9d51-fbb645f10015
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Created and registered workspace ID: agent_ws_1a290d4ad2ceeeb190d73b06e3d53e176a1e3268c033deb4f8bbfa09ea527b43
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Reusing registered workspace ID: agent_ws_1a290d4ad2ceeeb190d73b06e3d53e176a1e3268c033deb4f8bbfa09ea527b43
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+AGY compaction detection off for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_5e6db13581a74fecb69f5029145e9fd7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Agent websocket attached for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_5e6db13581a74fecb69f5029145e9fd7
+Created agent session b911b22a-0817-4488-a8ee-64f5ea65f51c for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_5e6db13581a74fecb69f5029145e9fd7
+Agent WebSocket connected: session=b911b22a-0817-4488-a8ee-64f5ea65f51c, run=agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_5e6db13581a74fecb69f5029145e9fd7
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+Reusing registered workspace ID: agent_ws_1a290d4ad2ceeeb190d73b06e3d53e176a1e3268c033deb4f8bbfa09ea527b43
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)
+AGY compaction detection off for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_5e6db13581a74fecb69f5029145e9fd7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Agent Team Definition created successfully with ID: agy-interrupt-resend-team-189844d3-6572-41db-a3ca-699e51d86b44
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Reusing registered workspace ID: agent_ws_1a290d4ad2ceeeb190d73b06e3d53e176a1e3268c033deb4f8bbfa09ea527b43
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Agent team websocket attached for team run agy_interrupt_resend_team_189844d3_6572_41db_a3c_2c25c59c627941b8a81afc86cbc454eb
+Created agent session 380cf93d-9ab0-4e99-b414-66d99692092e for run agy_interrupt_resend_team_189844d3_6572_41db_a3c_2c25c59c627941b8a81afc86cbc454eb
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Agent Team WebSocket connected: session=380cf93d-9ab0-4e99-b414-66d99692092e, run=agy_interrupt_resend_team_189844d3_6572_41db_a3c_2c25c59c627941b8a81afc86cbc454eb
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Reusing registered workspace ID: agent_ws_1a290d4ad2ceeeb190d73b06e3d53e176a1e3268c033deb4f8bbfa09ea527b43
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+AGY compaction detection off for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Reusing registered workspace ID: agent_ws_1a290d4ad2ceeeb190d73b06e3d53e176a1e3268c033deb4f8bbfa09ea527b43
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+AGY compaction detection off for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+Agent Team Definition with ID agy-interrupt-resend-team-189844d3-6572-41db-a3ca-699e51d86b44 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Reusing registered workspace ID: agent_ws_1a290d4ad2ceeeb190d73b06e3d53e176a1e3268c033deb4f8bbfa09ea527b43
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Reusing registered workspace ID: agent_ws_1a290d4ad2ceeeb190d73b06e3d53e176a1e3268c033deb4f8bbfa09ea527b43
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+AGY compaction detection off for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_ae3cf7cadb334ee2ab5470cb47201d52: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Agent websocket attached for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_ae3cf7cadb334ee2ab5470cb47201d52
+Created agent session 832acec8-8342-48e7-a9ce-4f552ce80317 for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_ae3cf7cadb334ee2ab5470cb47201d52
+Agent WebSocket connected: session=832acec8-8342-48e7-a9ce-4f552ce80317, run=agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_ae3cf7cadb334ee2ab5470cb47201d52
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+Reusing registered workspace ID: agent_ws_1a290d4ad2ceeeb190d73b06e3d53e176a1e3268c033deb4f8bbfa09ea527b43
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > answers a message sent after the interrupted process has fully stopped (AC-002)
+AGY compaction detection off for run agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_ae3cf7cadb334ee2ab5470cb47201d52: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Closed agent session 832acec8-8342-48e7-a9ce-4f552ce80317
+Agent WebSocket disconnected: 832acec8-8342-48e7-a9ce-4f552ce80317
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Closed agent session 380cf93d-9ab0-4e99-b414-66d99692092e
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Closed agent session b911b22a-0817-4488-a8ee-64f5ea65f51c
+Agent WebSocket disconnected: b911b22a-0817-4488-a8ee-64f5ea65f51c
+
+stdout | tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket
+Agent Definition with ID agy-interrupt-resend-9efda910-32c4-4c3a-9d51-fbb645f10015 deleted successfully.
+
+ ❯ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests | 1 failed) 27541ms
+     ✓ answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005)  1656ms
+     × restarts a Team member interrupted on AGY when it immediately receives new work (AC-006) 21402ms
+     ✓ answers a message sent after the interrupted process has fully stopped (AC-002)  2140ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/agy-context-files-transport.e2e.test.ts > AGY receives app-attached context files as text through the real server (fake AGY CLI) > E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+AssertionError: [{"type":"CONNECTED","payload":{"session_id":"014b7404-71b5-4c76-beb4-a6e92d7ab17e","root_team_run_id":"agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e"}},{"type":"TEAM_EXECUTION_VIEW_SNAPSHOT","payload":{"root_team_run_id":"agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e","base_change_sequence":0,"execution_tree":{"created_at":"2026-10-18T19:44:56.372Z","archived_at":null,"application_binding":null,"handoffs":[],"root_team":{"address":"/","team_definition_id":"agy-context-files-team-4ba4342c-e210-486e-96ea-2ffab6c1457d","team_definition_name":"agy-context-files-team-4ba4342c-e210-486e-96ea-2ffab6c1457d","team_run_id":"agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e","coordinator_address":"/alpha","default_launch_configuration":{"runtime_kind":"antigravity_cli","llm_model_identifier":"gemini-3.8-flash-low","llm_config":{},"auto_execute_tools":true,"workspace_root_path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace"},"members":[{"kind":"configured_agent","address":"/alpha","agent_definition_id":"agy-context-files-4f375d12-e667-42ce-9749-77279749dbac","role":null,"description":null,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422","platform_agent_run_id":null,"launch_configuration":{"runtime_kind":"antigravity_cli","llm_model_identifier":"gemini-3.8-flash-low","llm_config":{},"auto_execute_tools":true,"workspace_root_path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/workspace"}}],"task_executions":[]}},"closed_task_executions":[],"messages":[],"agent_statuses":[{"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422","member_address":"/alpha","status":"offline","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"recoverableBlock":null}],"agent_input_states":[]}},{"type":"TEAM_RUN_LIFECYCLE","payload":{"is_active":true}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"initializing","trigger":"member_command","tool_name":null,"error_message":null,"error_details":null,"change_sequence":1,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"742dadfa-1ace-42cc-9474-155108ed7638","revision":1,"entries":[],"recoverableBlock":null,"change_sequence":2,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"initializing","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":3,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"742dadfa-1ace-42cc-9474-155108ed7638","revision":2,"entries":[{"sequence":1,"message_id":"e2e-2fdb8dde-6056-4e7f-aa03-a5196b9f8b80","dedupe_key":"agent_run_input:e2e:e2e-2fdb8dde-6056-4e7f-aa03-a5196b9f8b80","turn_id":null,"state":"queued","content":"her","sender_type":"user","file_attachments":[{"uri":"/rest/team-runs/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agent-runs/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context-files/ctx_35fac1377a2b__notes.txt","file_type":"text","file_name":"ctx_35fac1377a2b__notes.txt"},{"uri":"/rest/team-runs/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agent-runs/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context-files/ctx_8a84589c4e49__diagram.png","file_type":"image","file_name":"ctx_8a84589c4e49__diagram.png"}]}],"recoverableBlock":null,"change_sequence":4,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"MEMBER_INPUT_MESSAGE","payload":{"change_sequence":5,"recipient_agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422","message_id":"e2e-2fdb8dde-6056-4e7f-aa03-a5196b9f8b80","dedupe_key":"agent_run_input:e2e:e2e-2fdb8dde-6056-4e7f-aa03-a5196b9f8b80","content":"her","input_origin":"user_message","received_at":"2026-10-18T19:44:56.775Z","context_file_paths":[{"path":"/rest/team-runs/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agent-runs/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context-files/ctx_35fac1377a2b__notes.txt","type":"text"},{"path":"/rest/team-runs/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agent-runs/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context-files/ctx_8a84589c4e49__diagram.png","type":"image"}],"sender_agent_run_id":null,"parent_communication_message_id":null}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":6,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"TURN_STARTED","payload":{"turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","change_sequence":7,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"742dadfa-1ace-42cc-9474-155108ed7638","revision":3,"entries":[{"sequence":1,"message_id":"e2e-2fdb8dde-6056-4e7f-aa03-a5196b9f8b80","dedupe_key":"agent_run_input:e2e:e2e-2fdb8dde-6056-4e7f-aa03-a5196b9f8b80","turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","state":"queued","content":"her","sender_type":"user","file_attachments":[{"uri":"/rest/team-runs/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agent-runs/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context-files/ctx_35fac1377a2b__notes.txt","file_type":"text","file_name":"ctx_35fac1377a2b__notes.txt"},{"uri":"/rest/team-runs/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agent-runs/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context-files/ctx_8a84589c4e49__diagram.png","file_type":"image","file_name":"ctx_8a84589c4e49__diagram.png"}]}],"recoverableBlock":null,"change_sequence":8,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"742dadfa-1ace-42cc-9474-155108ed7638","revision":4,"entries":[{"sequence":1,"message_id":"e2e-2fdb8dde-6056-4e7f-aa03-a5196b9f8b80","dedupe_key":"agent_run_input:e2e:e2e-2fdb8dde-6056-4e7f-aa03-a5196b9f8b80","turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","state":"forwarded","content":"her","sender_type":"user","file_attachments":[{"uri":"/rest/team-runs/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agent-runs/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context-files/ctx_35fac1377a2b__notes.txt","file_type":"text","file_name":"ctx_35fac1377a2b__notes.txt"},{"uri":"/rest/team-runs/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agent-runs/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context-files/ctx_8a84589c4e49__diagram.png","file_type":"image","file_name":"ctx_8a84589c4e49__diagram.png"}]}],"recoverableBlock":null,"change_sequence":9,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":10,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":11,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"TOOL_EXECUTION_STARTED","payload":{"invocation_id":"agy-tool-b435f77a-a090-4402-91a0-ea21718f40ce-101","tool_name":"view_file","turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","arguments":{"AbsolutePath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/memory/agent_teams/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context_files/ctx_8a84589c4e49__diagram.png"},"change_sequence":12,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":13,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"TOOL_EXECUTION_SUCCEEDED","payload":{"invocation_id":"agy-tool-b435f77a-a090-4402-91a0-ea21718f40ce-101","tool_name":"view_file","turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","arguments":{"AbsolutePath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/memory/agent_teams/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context_files/ctx_8a84589c4e49__diagram.png"},"result":{"provider_state":"DONE","output":"sha256:bc09c2590d2502c8ffaf1a3c09aa89df222e03d186a8daa0c7fce6321fb6e928"},"change_sequence":14,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":15,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"TOOL_EXECUTION_STARTED","payload":{"invocation_id":"agy-tool-b435f77a-a090-4402-91a0-ea21718f40ce-102","tool_name":"view_file","turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","arguments":{"AbsolutePath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/memory/agent_teams/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context_files/ctx_35fac1377a2b__notes.txt"},"change_sequence":16,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":17,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"TOOL_EXECUTION_SUCCEEDED","payload":{"invocation_id":"agy-tool-b435f77a-a090-4402-91a0-ea21718f40ce-102","tool_name":"view_file","turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","arguments":{"AbsolutePath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-mUksO8/memory/agent_teams/agy_context_files_team_4ba4342c_e210_486e_96ea_2_dfa64501c727453b9d2cad803a05280e/agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422/context_files/ctx_35fac1377a2b__notes.txt"},"result":{"provider_state":"DONE","output":"sha256:b04f9549d7e87018bc95b03ea9f7a22e91c772db408f9a31de55b085c90e752b"},"change_sequence":18,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":19,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"SEGMENT_START","payload":{"segment_id":"agy-text-b435f77a-a090-4402-91a0-ea21718f40ce-100","turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","segment_type":"text","metadata":null,"change_sequence":20,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":21,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"SEGMENT_CONTENT_BATCH","payload":{"change_sequence":22,"change_sequence_through":23,"items":[{"segment_id":"agy-text-b435f77a-a090-4402-91a0-ea21718f40ce-100","turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","segment_type":"text","delta":"VIEWED:2","agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}]}},{"type":"SEGMENT_END","payload":{"segment_id":"agy-text-b435f77a-a090-4402-91a0-ea21718f40ce-100","turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","metadata":null,"interrupted":false,"reason":null,"failed":false,"error":null,"change_sequence":24,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"TURN_COMPLETED","payload":{"turn_id":"b435f77a-a090-4402-91a0-ea21718f40ce","reason":null,"change_sequence":25,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"idle","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":26,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"742dadfa-1ace-42cc-9474-155108ed7638","revision":5,"entries":[],"recoverableBlock":null,"change_sequence":27,"agent_run_id":"agy_context_files_4f375d12_e667_42ce_9749_772797_9bc2ccd816c046d6802cfc982a1c8422"}}]: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ Object.until tests/e2e/runtime/agy-context-files-transport.e2e.test.ts:93:51
+     91|       const deadline = Date.now() + ms;
+     92|       while (Date.now() < deadline && !predicate()) await wait(25);
+     93|       expect(predicate(), JSON.stringify(frames)).toBe(true);
+       |                                                   ^
+     94|     };
+     95|     return { socket, frames, until };
+ ❯ nextInput tests/e2e/runtime/agy-context-files-transport.e2e.test.ts:190:5
+ ❯ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts:320:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts > AGY interrupt followed by a new message through the app WebSocket > restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)
+AssertionError: [{"type":"CONNECTED","payload":{"session_id":"380cf93d-9ab0-4e99-b414-66d99692092e","root_team_run_id":"agy_interrupt_resend_team_189844d3_6572_41db_a3c_2c25c59c627941b8a81afc86cbc454eb"}},{"type":"TEAM_EXECUTION_VIEW_SNAPSHOT","payload":{"root_team_run_id":"agy_interrupt_resend_team_189844d3_6572_41db_a3c_2c25c59c627941b8a81afc86cbc454eb","base_change_sequence":0,"execution_tree":{"created_at":"2026-10-18T19:45:21.717Z","archived_at":null,"application_binding":null,"handoffs":[],"root_team":{"address":"/","team_definition_id":"agy-interrupt-resend-team-189844d3-6572-41db-a3ca-699e51d86b44","team_definition_name":"agy-interrupt-resend-team-189844d3-6572-41db-a3ca-699e51d86b44","team_run_id":"agy_interrupt_resend_team_189844d3_6572_41db_a3c_2c25c59c627941b8a81afc86cbc454eb","coordinator_address":"/alpha","default_launch_configuration":{"runtime_kind":"antigravity_cli","llm_model_identifier":"gemini-3.8-flash-low","llm_config":{},"auto_execute_tools":true,"workspace_root_path":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace"},"members":[{"kind":"configured_agent","address":"/alpha","agent_definition_id":"agy-interrupt-resend-9efda910-32c4-4c3a-9d51-fbb645f10015","role":null,"description":null,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1","platform_agent_run_id":null,"launch_configuration":{"runtime_kind":"antigravity_cli","llm_model_identifier":"gemini-3.8-flash-low","llm_config":{},"auto_execute_tools":true,"workspace_root_path":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-interrupt-resend-e2e-5LiPzv/workspace"}}],"task_executions":[]}},"closed_task_executions":[],"messages":[],"agent_statuses":[{"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1","member_address":"/alpha","status":"offline","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"recoverableBlock":null}],"agent_input_states":[]}},{"type":"TEAM_RUN_LIFECYCLE","payload":{"is_active":true}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"initializing","trigger":"member_command","tool_name":null,"error_message":null,"error_details":null,"change_sequence":1,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"c8d55e50-a4d9-44ac-8256-74d129d64dce","revision":1,"entries":[],"recoverableBlock":null,"change_sequence":2,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"initializing","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":3,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"c8d55e50-a4d9-44ac-8256-74d129d64dce","revision":2,"entries":[{"sequence":1,"message_id":"e2e-cfc58959-b9cd-417f-a103-b146f46677ff","dedupe_key":"agent_run_input:e2e:e2e-cfc58959-b9cd-417f-a103-b146f46677ff","turn_id":null,"state":"queued","content":"HOLD the long task","sender_type":"user","file_attachments":[]}],"recoverableBlock":null,"change_sequence":4,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"MEMBER_INPUT_MESSAGE","payload":{"change_sequence":5,"recipient_agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1","message_id":"e2e-cfc58959-b9cd-417f-a103-b146f46677ff","dedupe_key":"agent_run_input:e2e:e2e-cfc58959-b9cd-417f-a103-b146f46677ff","content":"HOLD the long task","input_origin":"user_message","received_at":"2026-10-18T19:45:21.900Z","context_file_paths":[],"sender_agent_run_id":null,"parent_communication_message_id":null}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":6,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"TURN_STARTED","payload":{"turn_id":"6f8b70c9-3865-4379-938f-f0d4858546a3","change_sequence":7,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"c8d55e50-a4d9-44ac-8256-74d129d64dce","revision":3,"entries":[{"sequence":1,"message_id":"e2e-cfc58959-b9cd-417f-a103-b146f46677ff","dedupe_key":"agent_run_input:e2e:e2e-cfc58959-b9cd-417f-a103-b146f46677ff","turn_id":"6f8b70c9-3865-4379-938f-f0d4858546a3","state":"queued","content":"HOLD the long task","sender_type":"user","file_attachments":[]}],"recoverableBlock":null,"change_sequence":8,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"c8d55e50-a4d9-44ac-8256-74d129d64dce","revision":4,"entries":[{"sequence":1,"message_id":"e2e-cfc58959-b9cd-417f-a103-b146f46677ff","dedupe_key":"agent_run_input:e2e:e2e-cfc58959-b9cd-417f-a103-b146f46677ff","turn_id":"6f8b70c9-3865-4379-938f-f0d4858546a3","state":"forwarded","content":"HOLD the long task","sender_type":"user","file_attachments":[]}],"recoverableBlock":null,"change_sequence":9,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":10,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":11,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"TOOL_EXECUTION_STARTED","payload":{"invocation_id":"agy-tool-6f8b70c9-3865-4379-938f-f0d4858546a3-10","tool_name":"run_command","turn_id":"6f8b70c9-3865-4379-938f-f0d4858546a3","arguments":{"CommandLine":"sleep 600"},"change_sequence":12,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"TURN_INTERRUPTED","payload":{"turn_id":"6f8b70c9-3865-4379-938f-f0d4858546a3","reason":null,"change_sequence":13,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"offline","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":14,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"c8d55e50-a4d9-44ac-8256-74d129d64dce","revision":5,"entries":[],"recoverableBlock":null,"change_sequence":15,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_COMMAND_ACK","payload":{"command_type":"INTERRUPT_GENERATION","command_id":"interrupt-62184419-1a31-43b1-82ee-927ccd29dbda","state":"accepted","agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"97281f6e-624e-4a4c-989a-2c67c1591ee9","revision":1,"entries":[],"recoverableBlock":null,"change_sequence":16,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"initializing","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":17,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"97281f6e-624e-4a4c-989a-2c67c1591ee9","revision":2,"entries":[{"sequence":1,"message_id":"e2e-3340b390-8605-4673-a52b-95b609626e4a","dedupe_key":"agent_run_input:e2e:e2e-3340b390-8605-4673-a52b-95b609626e4a","turn_id":null,"state":"queued","content":"work after interrupt","sender_type":"user","file_attachments":[]}],"recoverableBlock":null,"change_sequence":18,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"MEMBER_INPUT_MESSAGE","payload":{"change_sequence":19,"recipient_agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1","message_id":"e2e-3340b390-8605-4673-a52b-95b609626e4a","dedupe_key":"agent_run_input:e2e:e2e-3340b390-8605-4673-a52b-95b609626e4a","content":"work after interrupt","input_origin":"user_message","received_at":"2026-10-18T19:45:23.085Z","context_file_paths":[],"sender_agent_run_id":null,"parent_communication_message_id":null}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":20,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"TURN_STARTED","payload":{"turn_id":"5fed9b85-77f7-4841-8548-e5fb87999060","change_sequence":21,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"97281f6e-624e-4a4c-989a-2c67c1591ee9","revision":3,"entries":[{"sequence":1,"message_id":"e2e-3340b390-8605-4673-a52b-95b609626e4a","dedupe_key":"agent_run_input:e2e:e2e-3340b390-8605-4673-a52b-95b609626e4a","turn_id":"5fed9b85-77f7-4841-8548-e5fb87999060","state":"queued","content":"work after interrupt","sender_type":"user","file_attachments":[]}],"recoverableBlock":null,"change_sequence":22,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"97281f6e-624e-4a4c-989a-2c67c1591ee9","revision":4,"entries":[{"sequence":1,"message_id":"e2e-3340b390-8605-4673-a52b-95b609626e4a","dedupe_key":"agent_run_input:e2e:e2e-3340b390-8605-4673-a52b-95b609626e4a","turn_id":"5fed9b85-77f7-4841-8548-e5fb87999060","state":"forwarded","content":"work after interrupt","sender_type":"user","file_attachments":[]}],"recoverableBlock":null,"change_sequence":23,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":24,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":25,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"SEGMENT_START","payload":{"segment_id":"agy-text-5fed9b85-77f7-4841-8548-e5fb87999060-10","turn_id":"5fed9b85-77f7-4841-8548-e5fb87999060","segment_type":"text","metadata":null,"change_sequence":26,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"running","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":27,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"SEGMENT_CONTENT_BATCH","payload":{"change_sequence":28,"change_sequence_through":29,"items":[{"segment_id":"agy-text-5fed9b85-77f7-4841-8548-e5fb87999060-10","turn_id":"5fed9b85-77f7-4841-8548-e5fb87999060","segment_type":"text","delta":"REPLY:work after interrupt","agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}]}},{"type":"SEGMENT_END","payload":{"segment_id":"agy-text-5fed9b85-77f7-4841-8548-e5fb87999060-10","turn_id":"5fed9b85-77f7-4841-8548-e5fb87999060","metadata":null,"interrupted":false,"reason":null,"failed":false,"error":null,"change_sequence":30,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"TURN_COMPLETED","payload":{"turn_id":"5fed9b85-77f7-4841-8548-e5fb87999060","reason":null,"change_sequence":31,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"idle","trigger":null,"tool_name":null,"error_message":null,"error_details":null,"change_sequence":32,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}},{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"97281f6e-624e-4a4c-989a-2c67c1591ee9","revision":5,"entries":[],"recoverableBlock":null,"change_sequence":33,"agent_run_id":"agy_interrupt_resend_9efda910_32c4_4c3a_9d51_fbb_6fff4630f8ab4586b503a1e1668cafd1"}}]: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ until tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts:222:53
+    220|         const deadline = Date.now() + ms;
+    221|         while (Date.now() < deadline && !predicate()) await wait(25);
+    222|         expect(predicate(), JSON.stringify(frames)).toBe(true);
+       |                                                     ^
+    223|       };
+    224|       const ofAlpha = (type: string) => frames.filter((f) => f.type ==…
+ ❯ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts:246:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 5 passed (7)
+   Start at  21:44:44
+   Duration  63.03s (transform 6.53s, setup 36ms, import 12.11s, tests 50.23s, environment 0ms)
+

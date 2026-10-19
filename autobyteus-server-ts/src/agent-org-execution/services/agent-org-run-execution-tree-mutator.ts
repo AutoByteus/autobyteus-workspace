@@ -1,93 +1,39 @@
+import {
+  applyDelegatedLaunchSelectionsToTaskExecutions,
+  type DelegatedLaunchForest,
+  type DelegatedLaunchSelections,
+} from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+import { isConfiguredTeamExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type {
   CollaborationAgentNoConversationBindingReplacement,
   CollaborationAgentPlatformBinding,
 } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
-import type { TaskExecutionHostIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
-  CollaboratorEntry,
   ConfiguredExecutionNode,
-  ConfiguredTeamExecutionNode,
   TaskExecution,
-  TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import { mapCollaboratorEntries } from "../../run-history/domain/collaborator-entry-tree-mapping.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../run-history/store/agent-org-run-execution-tree-schema.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 
-type TeamWithTasks = ConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution;
-
-const mapTeam = (
-  team: TeamWithTasks,
-  targetTeamRunId: string,
-  change: (team: TeamWithTasks) => TeamWithTasks,
-): TeamWithTasks => {
-  if (team.teamRunId === targetTeamRunId) return change(team);
-  const members = team.members.map((member) => "agentRunId" in member
-    ? member
-    : mapTeam(member, targetTeamRunId, change) as TaskTeamNestedTeamExecution);
-  const taskExecutions = team.taskExecutions.map((task) => "agentRunId" in task
-    ? task
-    : mapTeam(task, targetTeamRunId, change) as TaskTeamExecution);
-  return { ...team, members, taskExecutions } as TeamWithTasks;
-};
-
-/** Appends new collaborator entries at the Org root; the schema re-checks address invariants. */
-export const addAgentOrgCollaborators = (input: {
-  tree: AgentOrgRunExecutionTreeSnapshot;
-  collaborators: readonly CollaboratorEntry[];
-}): AgentOrgRunExecutionTreeSnapshot => validateAgentOrgRunExecutionTreePayload({
-  ...input.tree,
-  rootOrg: { ...input.tree.rootOrg, collaborators: [...input.tree.rootOrg.collaborators, ...input.collaborators] },
-}, input.tree.rootOrg.orgRunId);
-
+/**
+ * Appends a new task execution as a link of the organization run's top level: every new task agent is
+ * hosted by the root (the adapter's `planActivation`); links of older ones under a configured team (C6)
+ * stay where they are, and a task Team never holds task executions (CM-7, U-5).
+ */
 export const addAgentOrgTaskExecution = (input: {
   tree: AgentOrgRunExecutionTreeSnapshot;
-  host: TaskExecutionHostIdentity;
   execution: TaskExecution;
 }): AgentOrgRunExecutionTreeSnapshot => {
-  if (input.host.root.rootSubjectKind !== "agent_org"
-    || input.host.root.rootRunId !== input.tree.rootOrg.orgRunId) {
-    throw new Error("Task host belongs to a different AgentOrg root.");
+  const rootOrg = input.tree.rootOrg;
+  const runId = "agentRunId" in input.execution ? input.execution.agentRunId : input.execution.teamRunId;
+  if (rootOrg.taskExecutions.some((task) => ("agentRunId" in task ? task.agentRunId : task.teamRunId) === runId)) {
+    throw new Error(`Task execution '${runId}' is already present in its host.`);
   }
-  const append = <T extends { taskExecutions: readonly TaskExecution[] }>(owner: T): T => {
-    const runId = "agentRunId" in input.execution ? input.execution.agentRunId : input.execution.teamRunId;
-    if (owner.taskExecutions.some((task) => ("agentRunId" in task ? task.agentRunId : task.teamRunId) === runId)) {
-      throw new Error(`Task execution '${runId}' is already present in its host.`);
-    }
-    return { ...owner, taskExecutions: [...owner.taskExecutions, input.execution] };
-  };
-  if (input.host.hostKind === "root") {
-    return validateAgentOrgRunExecutionTreePayload({
-      ...input.tree,
-      rootOrg: append(input.tree.rootOrg),
-    }, input.tree.rootOrg.orgRunId);
-  }
-  let found = false;
-  const change = (team: TeamWithTasks): TeamWithTasks => {
-    found = true;
-    return append(team);
-  };
-  const members = input.tree.rootOrg.members.map((member): ConfiguredExecutionNode =>
-    "agentRunId" in member ? member : mapTeam(member, input.host.hostRunId, change) as ConfiguredTeamExecutionNode);
-  const mapTask = (task: TaskExecution): TaskExecution =>
-    "agentRunId" in task ? task : mapTeam(task, input.host.hostRunId, change) as TaskTeamExecution;
-  const tasks = input.tree.rootOrg.taskExecutions.map(mapTask);
-  // A collaborator Team hosts its members' delegations like a configured Team.
-  const collaborators = input.tree.rootOrg.collaborators.map((entry) => {
-    if (entry.kind === "agent") return entry;
-    if (entry.teamRunId === input.host.hostRunId) {
-      found = true;
-      return append(entry);
-    }
-    return { ...entry, taskExecutions: entry.taskExecutions.map(mapTask) };
-  });
-  if (!found) throw new Error(`Task host TeamRun '${input.host.hostRunId}' was not found.`);
   return validateAgentOrgRunExecutionTreePayload({
     ...input.tree,
-    rootOrg: { ...input.tree.rootOrg, members, taskExecutions: tasks, collaborators },
-  }, input.tree.rootOrg.orgRunId);
+    rootOrg: { ...rootOrg, taskExecutions: [...rootOrg.taskExecutions, input.execution] },
+  }, rootOrg.orgRunId);
 };
 
 type AgentNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
@@ -109,14 +55,9 @@ export const adoptAgentOrgPlatformBinding = (input: {
     changed = true;
     return { ...value, platformAgentRunId: input.binding.platformAgentRunId };
   };
-  const taskMember = (value: TaskTeamMemberExecution): TaskTeamMemberExecution => "agentRunId" in value ? agent(value) : {
-    ...value,
-    members: value.members.map(taskMember),
-    taskExecutions: value.taskExecutions.map(task),
-  };
   const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? agent(value) : {
     ...value,
-    members: value.members.map(taskMember),
+    members: value.members.map(agent),
     taskExecutions: value.taskExecutions.map(task),
   };
   const configured = (value: ConfiguredExecutionNode): ConfiguredExecutionNode => "agentRunId" in value ? agent(value) : {
@@ -130,7 +71,6 @@ export const adoptAgentOrgPlatformBinding = (input: {
       ...input.tree.rootOrg,
       members: input.tree.rootOrg.members.map(configured),
       taskExecutions: input.tree.rootOrg.taskExecutions.map(task),
-      collaborators: mapCollaboratorEntries(input.tree.rootOrg.collaborators, { agent, task }),
     },
   };
   if (matches !== 1) throw new Error("Platform binding target was not found exactly once in AgentOrg tree.");
@@ -158,14 +98,9 @@ export const replaceAgentOrgPlatformBindingWithoutConversation = (input: {
     }
     return { ...value, platformAgentRunId: input.replacement.binding.platformAgentRunId };
   };
-  const taskMember = (value: TaskTeamMemberExecution): TaskTeamMemberExecution => "agentRunId" in value ? agent(value) : {
-    ...value,
-    members: value.members.map(taskMember),
-    taskExecutions: value.taskExecutions.map(task),
-  };
   const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? agent(value) : {
     ...value,
-    members: value.members.map(taskMember),
+    members: value.members.map(agent),
     taskExecutions: value.taskExecutions.map(task),
   };
   const configured = (value: ConfiguredExecutionNode): ConfiguredExecutionNode => "agentRunId" in value ? agent(value) : {
@@ -179,9 +114,31 @@ export const replaceAgentOrgPlatformBindingWithoutConversation = (input: {
       ...input.tree.rootOrg,
       members: input.tree.rootOrg.members.map(configured),
       taskExecutions: input.tree.rootOrg.taskExecutions.map(task),
-      collaborators: mapCollaboratorEntries(input.tree.rootOrg.collaborators, { agent, task }),
     },
   };
   if (matches !== 1) throw new Error("Platform binding replacement target was not found exactly once in AgentOrg tree.");
   return validateAgentOrgRunExecutionTreePayload(next, input.tree.rootOrg.orgRunId);
 };
+
+/** The tree's delegated copies, for the user model choice and Stop (DS-001, DS-002). */
+export const agentOrgDelegatedLaunchForest = (tree: AgentOrgRunExecutionTreeSnapshot): DelegatedLaunchForest => Object.freeze({
+  taskExecutionLists: taskExecutionListsOf({
+    taskExecutions: tree.rootOrg.taskExecutions,
+    teams: tree.rootOrg.members.filter(isConfiguredTeamExecution),
+  }),
+});
+
+/** Records user model choices on the tree's copies; started values are untouched. */
+export const applyAgentOrgDelegatedLaunchSelections = (
+  tree: AgentOrgRunExecutionTreeSnapshot,
+  selections: DelegatedLaunchSelections,
+): AgentOrgRunExecutionTreeSnapshot => validateAgentOrgRunExecutionTreePayload({
+  ...tree,
+  rootOrg: {
+    ...tree.rootOrg,
+    members: tree.rootOrg.members.map((member) => isConfiguredTeamExecution(member)
+      ? { ...member, taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(member.taskExecutions, selections) }
+      : member),
+    taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(tree.rootOrg.taskExecutions, selections),
+  },
+}, tree.rootOrg.orgRunId);

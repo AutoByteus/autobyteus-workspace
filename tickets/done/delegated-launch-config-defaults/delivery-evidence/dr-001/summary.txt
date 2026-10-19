@@ -1,0 +1,29 @@
+== ts-build: pnpm -C autobyteus-ts build
+   exit=0
+== server-prebuild: pnpm -C autobyteus-server-ts prebuild
+   exit=0
+== server-typecheck: pnpm -C autobyteus-server-ts typecheck
+   exit=0
+== contracts-team: pnpm -C autobyteus-team-stream-contracts test
+   exit=0
+== contracts-collab: pnpm -C autobyteus-collaboration-stream-contracts test
+   exit=0
+== server-unit: pnpm -C autobyteus-server-ts test:unit
+   exit=0
+== server-build: pnpm -C autobyteus-server-ts build
+   exit=0
+== server-e2e-ticket: env -i PATH=<shell PATH> HOME=<temp> TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ USER=normy RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts --no-watch
+   exit=0
+== web-nuxt: pnpm -C autobyteus-web test:nuxt --run
+   exit=0
+== web-guard-boundary: pnpm -C autobyteus-web guard:web-boundary
+   exit=0
+== web-guard-l10n: pnpm -C autobyteus-web guard:localization-boundary
+   exit=0
+== web-audit-l10n: pnpm -C autobyteus-web audit:localization-literals
+   exit=0
+== licensing: python3 scripts/check_licensing.py
+   exit=0
+== hygiene: python3 scripts/check_repository_artifact_hygiene.py
+   exit=0
+DONE

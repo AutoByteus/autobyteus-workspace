@@ -31,6 +31,13 @@ if (arg === '--version') {
   }
 } else if (arg === 'models') {
   if (mode === 'failed-models') { process.stderr.write('secret /private/credential-path token=abc'); process.exitCode = 8; }
+  // Real agy 1.3.3 output when the CLI has no sign-in (plus a secret-looking string that must never surface).
+  else if (mode === 'signin-models') { process.stderr.write('Error: Please sign in to view available models. Launch the CLI without arguments to sign in. token=abc /private/credential-path\\n'); process.exitCode = 1; }
+  else if (mode === 'signin-models-stdout') { process.stdout.write('You are not logged into Antigravity.\\n'); process.exitCode = 1; }
+  // Real agy output for a network failure: a failure, but not a sign-in problem.
+  else if (mode === 'network-models') { process.stderr.write('Error: Eligibility check failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": proxyconnect tcp: dial tcp 127.0.0.1:9: connect: connection refused\\n'); process.exitCode = 1; }
+  // Sign-in wording on a successful listing is not a failure.
+  else if (mode === 'signin-wording-success') { process.stderr.write('Please sign in again soon.\\n'); process.stdout.write('gemini-test\\tGemini Test\\n'); }
   else if (mode === 'hang-models') { setInterval(() => {}, 1000); }
   else if (mode === 'oversized-models') process.stdout.write('x'.repeat(1024 * 1024 + 1));
   else if (mode === 'oversized-models-stderr') process.stderr.write('x'.repeat(1024 * 1024 + 1));
@@ -61,7 +68,8 @@ describe("bounded AGY CLI discovery", () => {
     vi.resetModules();
     const { listAntigravityModels } = await import("../../../src/runtime-management/antigravity-cli-capability.js");
     const error = await listAntigravityModels().catch((value: unknown) => value);
-    expect(error).toMatchObject({ diagnostic: { code: "AGY_CLI_UNAVAILABLE" } });
+    expect(error).toMatchObject({ diagnostic: { code: "AGY_CLI_UNAVAILABLE",
+      message: "Antigravity CLI is not installed or not on this node's PATH. Install it, or set ANTIGRAVITY_CLI_COMMAND, then try again." } });
     expect(String(error)).not.toContain("private-token");
   });
 
@@ -107,10 +115,34 @@ describe("bounded AGY CLI discovery", () => {
     expect(availability.reason).not.toMatch(/secret|private|credential-path|token=abc|agy-fake/);
   });
 
+  it("reports a signed-out CLI as not signed in with the recovery step and no CLI output", async () => {
+    await capability("signin-models");
+    const { getRuntimeAvailabilityService } = await import("../../../src/runtime-management/runtime-availability-service.js");
+    const { RuntimeKind } = await import("../../../src/runtime-management/runtime-kind-enum.js");
+    const availability = await getRuntimeAvailabilityService().getRuntimeAvailability(RuntimeKind.ANTIGRAVITY_CLI);
+    expect(availability).toMatchObject({ enabled: false,
+      reason: "Not signed in on this node. Run `agy` to sign in." });
+    expect(availability.reason).not.toMatch(/secret|private|credential-path|token=abc|agy-fake|view available models/);
+  });
+
+  it("keeps a successful listing usable even when its output mentions signing in", async () => {
+    const { listAntigravityModels } = await capability("signin-wording-success");
+    await expect(listAntigravityModels()).resolves.toEqual([{ id: "gemini-test", name: "Gemini Test" }]);
+  });
+
+  it("names the update step for a CLI missing required options", async () => {
+    const { listAntigravityModels } = await capability("bad-flags");
+    await expect(listAntigravityModels()).rejects.toMatchObject({ message:
+      "Antigravity CLI is too old for AutoByteus (required options are missing). Run `agy update`, then try again." });
+  });
+
   it.each([
     ["bad-flags", "AGY_CLI_UNSUPPORTED"],
     ["invalid-models", "AGY_MODEL_CATALOG_INVALID"],
     ["failed-models", "AGY_MODEL_DISCOVERY_FAILED"],
+    ["signin-models", "AGY_SIGN_IN_REQUIRED"],
+    ["signin-models-stdout", "AGY_SIGN_IN_REQUIRED"],
+    ["network-models", "AGY_MODEL_DISCOVERY_FAILED"],
     ["empty-models", "AGY_MODEL_CATALOG_INVALID"],
     ["failed-help", "AGY_MODEL_DISCOVERY_FAILED"],
     ["oversized-help", "AGY_MODEL_DISCOVERY_FAILED"],
@@ -121,7 +153,7 @@ describe("bounded AGY CLI discovery", () => {
     const { listAntigravityModels } = await capability(mode);
     const error = await listAntigravityModels().catch((value: unknown) => value);
     expect(error).toMatchObject({ diagnostic: { code } });
-    expect(String(error)).not.toMatch(/secret|private|credential-path|token=abc|agy-fake|version/i);
+    expect(String(error)).not.toMatch(/secret|private|credential-path|token=abc|agy-fake|version|eligibility|proxyconnect/i);
     if (mode === "bad-flags") expect(await readFile(path.join(directory, "commands.log"), "utf8")).toBe("--help\n");
   });
 

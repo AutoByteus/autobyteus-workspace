@@ -1,0 +1,19 @@
+{
+  "before": {},
+  "afterReread": {},
+  "afterUpdate": {
+    "autobyteus_server": "265",
+    "copyq": "92",
+    "dbus": "85",
+    "fcitx": "88",
+    "socat": "102",
+    "tigervnc": "86",
+    "websockify": "107",
+    "xfce": "87"
+  },
+  "effectivePair": {
+    "PRISMA_QUERY_ENGINE_LIBRARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+    "PRISMA_SCHEMA_ENGINE_BINARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-3.0.x"
+  },
+  "port": 53109
+}

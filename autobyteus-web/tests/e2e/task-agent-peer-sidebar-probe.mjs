@@ -12,6 +12,7 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -148,6 +149,8 @@ const graphQlData = (operationName, query) => {
   }
   if (operationName === 'GetAllWorkspaces' || query.includes('workspaces')) return { workspaces: [] };
   if (operationName === 'GetServerSettings' || query.includes('serverSettings')) return { serverSettings: [] };
+  // The opened run's Files tab reads its file changes (added after this probe); the fixture runs have none.
+  if (operationName === 'GetRunFileChanges' || query.includes('getRunFileChanges')) return { getRunFileChanges: [] };
   return {};
 };
 
@@ -241,6 +244,10 @@ try {
     });
   });
 
+  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
+  await routeTaskWorkerBoundaries(page);
+  // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
+  await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="peer-sidebar-probe"]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => Boolean(window.__peerSidebarProbe));
@@ -307,10 +314,10 @@ try {
     await page.evaluate(() => window.__peerSidebarProbe.revealNested());
     await nested.waitFor({ state: 'visible' });
     const current = await state(page);
-    assert(current.ancestors.join('|') === 'team:peer-configured-research|team:peer-task-team', 'Wrong actual Team ancestry', current);
-    assert(await nested.getAttribute('aria-level') === '3', 'Nested task Agent escaped task-Team depth');
+    assert(current.ancestors.join('|') === 'team:peer-task-team', 'Wrong actual Team ancestry', current);
+    assert(await nested.getAttribute('aria-level') === '2', 'Nested task Agent escaped task-Team depth');
     const member = page.locator('[data-transient-kind="task_team_child"][data-member-address="/Research/Analyst"]');
-    assert(await member.getAttribute('aria-level') === '3' && await member.getAttribute('aria-expanded') === null, 'Task-Team member has phantom task child');
+    assert(await member.getAttribute('aria-level') === '2' && await member.getAttribute('aria-expanded') === null, 'Task-Team member has phantom task child');
     const teamRow = page.locator('[data-transient-kind="task_team"]');
     await teamRow.getByRole('button').click();
     assert(await afterLeave(async () => await nested.count() === 0), 'Task-Team collapse does not hide descendants');

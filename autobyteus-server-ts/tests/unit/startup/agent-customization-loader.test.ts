@@ -11,7 +11,6 @@ import { loadAgentCustomizations } from "../../../src/startup/agent-customizatio
 import { WorkspacePathSanitizationProcessor } from "../../../src/agent-customization/processors/security-processor/workspace-path-sanitization-processor.js";
 import { UserInputContextBuildingProcessor } from "../../../src/agent-customization/processors/prompt/user-input-context-building-processor.js";
 import { MediaUrlTransformerProcessor } from "../../../src/agent-customization/processors/response-customization/media-url-transformer-processor.js";
-import { MediaInputPathNormalizationPreprocessor } from "../../../src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.js";
 
 describe("loadAgentCustomizations", () => {
   let inputSnapshot: Record<string, AgentUserInputMessageProcessorDefinition>;
@@ -45,7 +44,7 @@ describe("loadAgentCustomizations", () => {
     });
   });
 
-  it("registers customization processors in all registries", () => {
+  it("registers the server's input and LLM response processors and no tool invocation preprocessor", () => {
     loadAgentCustomizations();
 
     expect(defaultInputProcessorRegistry.contains(WorkspacePathSanitizationProcessor.getName())).toBe(true);
@@ -54,8 +53,6 @@ describe("loadAgentCustomizations", () => {
     expect(defaultLlmResponseProcessorRegistry.contains("TokenUsagePersistenceProcessor")).toBe(false);
     expect(defaultLlmResponseProcessorRegistry.contains(MediaUrlTransformerProcessor.getName())).toBe(true);
 
-    expect(
-      defaultToolInvocationPreprocessorRegistry.contains(MediaInputPathNormalizationPreprocessor.getName()),
-    ).toBe(true);
+    expect(defaultToolInvocationPreprocessorRegistry.getAllDefinitions()).toEqual({});
   });
 });

@@ -1,0 +1,8 @@
+{
+  "upstreamArtifactChanges": [
+    "root-cause-summary.md"
+  ],
+  "allOthersRetained": true,
+  "authoritativeDocsChange": "Canonical startup initialization design doc + cause brief current status",
+  "productionAndTestsDeliveryDelta": "None"
+}

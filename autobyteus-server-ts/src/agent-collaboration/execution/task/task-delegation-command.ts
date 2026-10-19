@@ -11,17 +11,24 @@ export type SpawnTaskInput =
 /** `delegate_task` with a copy's own ID: assigns saved Task `taskId` to that existing copy in the sender's root. */
 export type AssignToExistingCopyInput = Readonly<{ copy: TaskExecutionReference; taskId: string }>;
 
+/**
+ * What dispatch reads from a root's placement: the launch notes of a fresh catalog admission (DS-003).
+ * Structural, so task execution never depends on catalog admission.
+ */
+export type TaskCopyPlacementLaunchNotes = Readonly<{ launchNotes?: readonly string[] }>;
+
 /** The copy a delegation reached, named for what it is: an Agent copy, or a Team copy and its coordinator. */
 export type DelegatedCopy =
   | Readonly<{ kind: "agent"; agentRunId: string }>
   | Readonly<{ kind: "team"; teamRunId: string; teamCoordinatorAgentRunId: string }>;
 /**
  * Internal result of both delegation commands. Success names the copy; `taskId` is present only when the
- * delegation created a Task with no Project. Failure means nothing was started (or, after an existing-copy
+ * delegation created a Task with no Project; `launchNotes` only when a new copy's freshly resolved launch
+ * skipped a configured layer (REQ-008). Failure means nothing was started (or, after an existing-copy
  * commit, that its work was not delivered) and carries the reason.
  */
 export type TaskDelegationOutcome =
-  | Readonly<{ delegated: true; copy: DelegatedCopy; taskId?: string }>
+  | Readonly<{ delegated: true; copy: DelegatedCopy; taskId?: string; launchNotes?: readonly string[] }>
   | Readonly<{ delegated: false; message: string }>;
 
 /** The copy at a target: its reference and ingress (the Agent itself, or the Team's coordinator). */
@@ -46,7 +53,11 @@ export type TaskDelegationErrorCode =
   | "TASK_EXECUTION_CONTEXT_UNAVAILABLE"
   | "TASK_EXECUTION_RESTORE_FAILED"
   | "TASK_REACTIVATION_STOP_PENDING"
+  | "TASK_EXECUTION_STOPPING"
   | "TASK_COPY_NOT_ASSIGNABLE";
+
+/** Refusal text when the root no longer accepts messages or delegations (wording §7.3). */
+export const ROOT_NOT_ACTIVE_MESSAGE = "This work is stopping or has stopped, so the message or delegation was not sent.";
 
 export class TaskDelegationError extends Error {
   constructor(readonly code: TaskDelegationErrorCode, message: string, options?: { cause?: unknown }) {

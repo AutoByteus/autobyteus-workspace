@@ -1,0 +1,17 @@
+Current implementation: SR-003 / IR-002; no E2E was executed by Implementation.
+production/contracts/child-fixture/global-policy diff: 0
+2	0	autobyteus-server-ts/package.json
+12	6	autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+3	0	pnpm-lock.yaml
+3d7a40b5bf62946dabe0d03e2d060ab7b04de36895c29a7a415850036d44ade9  autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+0c844d13a7790eb2dc2d558992c5add3bba45d55689614cae79e357c8bbe1923  autobyteus-server-ts/tsconfig.claude-interrupt-resume-e2e.json
+ M autobyteus-server-ts/package.json
+ M autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+ M pnpm-lock.yaml
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/tsconfig.claude-interrupt-resume-e2e.json
+?? tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/implementation/
+?? tickets/in-progress/claude-interrupt-resume-fixture-types/implementation-finding-report.md
+?? tickets/in-progress/claude-interrupt-resume-fixture-types/implementation-handoff.md
+?? tickets/in-progress/claude-interrupt-resume-fixture-types/implementation-revision-record.md

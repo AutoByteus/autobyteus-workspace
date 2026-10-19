@@ -1,6 +1,6 @@
 import { createCollaboratorAdmission } from "../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { ActiveCollaborationRootDirectory } from "../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { RootedAgentMemoryLocator } from "../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentRunManager } from "../../src/agent-execution/services/agent-run-manager.js";
 import type { StandaloneAgentRunLifecycleService } from "../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { FlatTeamExecutionFactory } from "../../src/agent-team-execution/local/flat-team-execution-factory.js";
@@ -20,7 +20,7 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
   metadataService?: Pick<AgentRunMetadataService, "readMetadata">;
 }>): StandaloneAgentRunRootManager => {
   const metadataService = input.metadataService ?? new AgentRunMetadataService(input.memoryDir);
-  const memoryLocator = new RootedAgentMemoryLocator({ memoryDir: input.memoryDir });
+  const memoryLocator = new AgentRunMemoryLocator({ memoryDir: input.memoryDir });
   return new StandaloneAgentRunRootManager({
     memoryDir: input.memoryDir,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),

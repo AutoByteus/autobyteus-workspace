@@ -152,6 +152,9 @@ describe('token usage provider-name snapshot backfill startup e2e', () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
+    // The shared e2e database may already record this migration: any earlier file that starts a Studio server
+    // runs the startup migrations on it. Start from a ledger without this file's migration records.
+    await deleteMigrationRecords();
     logsRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'token-usage-provider-name-backfill-e2e-'));
   });
 
@@ -264,6 +267,69 @@ describe('token usage provider-name snapshot backfill startup e2e', () => {
       'Historical Provider',
     ]);
     expect((await readRows(rowIds)).map(withoutProviderName)).toEqual(beforePreservedRows);
+  });
+
+  it('backfills rows recorded with the removed remote AutoByteus provider with its released display name through the real Prisma adapter', async () => {
+    // REQ-008 / AC-006: the released migration keeps its released output after
+    // LLMProvider.AUTOBYTEUS left the runtime enum (frozen display-name table).
+    const runId = `provider-name-removed-remote-${randomUUID()}`;
+    const rowIds = [
+      await createLedgerRow({
+        runId: `${runId}-empty`,
+        modelProvider: 'AUTOBYTEUS',
+        modelIdentifier: 'gpt-4o:autobyteus@remote-llm.example.invalid:8000',
+        modelValue: 'gpt-4o',
+      }),
+      await createLedgerRow({
+        runId: `${runId}-blank`,
+        modelProvider: 'AUTOBYTEUS',
+        providerName: '   ',
+        modelIdentifier: 'claude-sonnet:autobyteus@remote-llm.example.invalid:8000',
+        modelValue: 'claude-sonnet',
+      }),
+      await createLedgerRow({
+        runId: `${runId}-snapshot`,
+        modelProvider: 'AUTOBYTEUS',
+        providerName: 'AutoByteus',
+        modelIdentifier: 'gemini-pro:autobyteus@remote-llm.example.invalid:8000',
+        modelValue: 'gemini-pro',
+      }),
+      await createLedgerRow({
+        runId: `${runId}-builtin`,
+        modelProvider: 'ANTHROPIC',
+        modelIdentifier: 'claude-sonnet-4-5',
+        modelValue: 'claude-sonnet-4-5',
+      }),
+    ];
+    const beforeRows = await readRows(rowIds);
+    const siblingId = `provider-name-removed-remote-sibling-${randomUUID()}`;
+    createdMigrationIds.add(siblingId);
+    let siblingExecutions = 0;
+    const runner = makeRunner(
+      new PrismaTokenUsageProviderNameSnapshotBackfillDatabase(rootPrismaClient),
+      new Map(),
+      siblingId,
+      () => { siblingExecutions += 1; },
+    );
+
+    const results = await runner.runPending();
+    expect(results).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        migrationId: TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,
+        status: 'SUCCEEDED',
+      }),
+      expect.objectContaining({ migrationId: siblingId, status: 'SUCCEEDED' }),
+    ]));
+    expect(siblingExecutions).toBe(1);
+    const afterRows = await readRows(rowIds);
+    expect(afterRows.map((row) => row.providerName)).toEqual([
+      'AutoByteus',
+      'AutoByteus',
+      'AutoByteus',
+      'Anthropic',
+    ]);
+    expect(afterRows.map(withoutProviderName)).toEqual(beforeRows.map(withoutProviderName));
+    expect(afterRows.map((row) => row.modelProvider)).toEqual(['AUTOBYTEUS', 'AUTOBYTEUS', 'AUTOBYTEUS', 'ANTHROPIC']);
   });
 
   it('records a failed atomic provider-name batch, continues sibling startup work, and retries the whole batch', async () => {

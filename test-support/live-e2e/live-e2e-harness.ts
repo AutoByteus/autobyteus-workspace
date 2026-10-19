@@ -10,13 +10,11 @@ import {
   LLMFactory,
   LLMRuntime,
   MemoryType,
-  MultimediaRuntime,
 } from '../../autobyteus-ts/src/index.js';
-import { COMPACTION_SUMMARY_PROMPT } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-prompt.js';
+import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-prompt.js';
 import { parseCompactionSummary } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-parser.js';
 import { WorkingContextSnapshotStore } from '../../autobyteus-ts/src/memory/store/working-context-snapshot-store.js';
 import { WorkingContextSnapshotSerializer } from '../../autobyteus-ts/src/memory/working-context-snapshot-serializer.js';
-import { createCompactionLlm } from '../../autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.js';
 import type { BaseLLM } from '../../autobyteus-ts/src/index.js';
 import { LLMExtension } from '../../autobyteus-ts/src/llm/extensions/base-extension.js';
 import { LLMProvider } from '../../autobyteus-ts/src/llm/providers.js';
@@ -44,7 +42,6 @@ import {
   resetSecretVaultRuntimeForTests,
 } from '../../autobyteus-server-ts/src/secret-management/secret-vault-runtime.js';
 import type { SecretManagementService } from '../../autobyteus-server-ts/src/secret-management/services/secret-management-service.js';
-import { AutobyteusRemoteModelDiscoveryService } from '../../autobyteus-server-ts/src/llm-management/services/autobyteus-remote-model-discovery-service.js';
 import { createGeminiRuntimeResolver } from '../../autobyteus-server-ts/src/llm-management/services/gemini-runtime-resolver-adapter.js';
 import { getGeminiConfigurationService } from '../../autobyteus-server-ts/src/llm-management/services/gemini-configuration-service.js';
 import { ClaudeSdkClient } from '../../autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.js';
@@ -97,6 +94,21 @@ type LiveE2eAgentBackendFactory = {
   createBackend(config: AgentRunConfig, agentRunId: string): Promise<LiveE2eAgentBackend>;
 };
 
+/** Prepares a new product backend through the factory's public preparation contract (as run creation does). */
+const prepareNewProductBackend = async (
+  factory: AutoByteusAgentRunBackendFactory,
+  config: AgentRunConfig,
+  runId: string,
+): Promise<AgentRunBackend> => {
+  const preparation = factory.beginPreparation({ kind: 'new', config, runId });
+  try {
+    return await preparation.prepare();
+  } catch (error) {
+    await preparation.release().catch(() => undefined);
+    throw error;
+  }
+};
+
 export const wrapProductAgentBackendForLiveE2e = (
   backend: AgentRunBackend,
   environment: { appDataDir: string; memoryDir: string; baseUrl: string },
@@ -140,13 +152,15 @@ export type LiveE2eCompactionAgentFlowResult = {
   continuationTraceAbsent: true;
   exactRetainedArtifactVerified: true;
   summaryAndCurrentUserVerified: true;
-  directSummaryRequestCount: number;
+  summaryRequestCount: number;
+  summaryModes: Array<'cached' | 'transcript'>;
   summaryInvocationIds: string[];
   summaryModelIdentifiers: string[];
   completionStatuses: string[];
-  directSummaryTaskFramingVerified: true;
-  directSummarySourceToolTailVerified: true;
-  directSummaryProviderSafeUnicodeVerified: true;
+  summaryOnAgentModelVerified: true;
+  summaryRequestFramingVerified: true;
+  summarySourceToolTailVerified: true;
+  summaryProviderSafeUnicodeVerified: true;
   noCategoryArtifactsVerified: true;
   unicodeShieldSourceImmutableVerified: true;
   summaryPromptSha256: string;
@@ -207,7 +221,7 @@ const asString = (value: unknown): string | null =>
 const countOccurrences = (value: string, needle: string): number =>
   value.split(needle).length - 1;
 
-const hasDirectSummarySourceToolTail = (initialTask: string): boolean => {
+const hasTranscriptSourceToolTail = (initialTask: string): boolean => {
   const openTagStart = initialTask.indexOf(TARGET_HISTORY_OPEN_TAG);
   if (openTagStart < 0) return false;
   const historyStart = openTagStart + TARGET_HISTORY_OPEN_TAG.length;
@@ -232,9 +246,29 @@ const hasDirectSummarySourceToolTail = (initialTask: string): boolean => {
     .test(finalEntry);
 };
 
-export const inspectDirectSummaryRequest = (invocation: InvocationSnapshot): {
+/**
+ * Validates one compaction summary request on the agent's model. `cached`: the agent's conversation
+ * request plus the appended summary instruction. `transcript` (fallback): summary prompt + rendered history.
+ */
+export const inspectSummaryRequest = (invocation: Pick<InvocationSnapshot, 'messages'>): {
+  mode: 'cached' | 'transcript';
   sourceToolTailVerified: boolean;
 } => {
+  const last = invocation.messages.at(-1);
+  if (last?.role === MessageRole.USER && last.content === COMPACTION_SUMMARY_INSTRUCTION) {
+    if (invocation.messages.slice(0, -1).some(({ content }) => content === COMPACTION_SUMMARY_INSTRUCTION)
+        || invocation.messages[0]?.content === COMPACTION_SUMMARY_PROMPT) {
+      throw new Error('LIVE_E2E_SUMMARY_REQUEST_INVALID');
+    }
+    if (!providerSafeCompactionText.isProviderSafeText(last.content)) {
+      throw new Error('LIVE_E2E_SUMMARY_UNICODE_UNSAFE');
+    }
+    return {
+      mode: 'cached',
+      sourceToolTailVerified: invocation.messages.some(({ role, toolPayload }) =>
+        role === MessageRole.TOOL && (toolPayload as { toolName?: unknown } | null)?.toolName === 'read_file'),
+    };
+  }
   const [system, user] = invocation.messages;
   const task = user?.content ?? '';
   if (invocation.messages.length !== 2 || system?.role !== MessageRole.SYSTEM
@@ -245,13 +279,14 @@ export const inspectDirectSummaryRequest = (invocation: InvocationSnapshot): {
       || countOccurrences(task, TARGET_HISTORY_OPEN_TAG) !== 1
       || countOccurrences(task, TARGET_HISTORY_CLOSE_TAG) !== 1
       || !task.endsWith(COMPACTION_TASK_END_SEPARATOR)) {
-    throw new Error('LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID');
+    throw new Error('LIVE_E2E_SUMMARY_REQUEST_INVALID');
   }
   if (!providerSafeCompactionText.isProviderSafeText(task)) {
-    throw new Error('LIVE_E2E_DIRECT_SUMMARY_UNICODE_UNSAFE');
+    throw new Error('LIVE_E2E_SUMMARY_UNICODE_UNSAFE');
   }
   return {
-    sourceToolTailVerified: hasDirectSummarySourceToolTail(task),
+    mode: 'transcript',
+    sourceToolTailVerified: hasTranscriptSourceToolTail(task),
   };
 };
 
@@ -263,15 +298,28 @@ type InvocationMessageSnapshot = {
 };
 
 type InvocationSnapshot = {
+  /** `compaction_<operationId>_<attempt>` for compaction summary requests, otherwise the agent's id. */
+  conversationId: string | null;
   messages: InvocationMessageSnapshot[];
 };
 
+const isCompactionConversation = (conversationId: string | null): boolean =>
+  conversationId?.startsWith('compaction_') ?? false;
+
+/** Captures every call of the agent's LLM; compaction summary calls run on the same LLM. */
 class InvocationCaptureExtension extends LLMExtension {
   readonly invocations: InvocationSnapshot[] = [];
   readonly responses: CompleteResponse[] = [];
+  private readonly responseConversationIds: Array<string | null> = [];
 
-  async beforeInvoke(messages: Message[]): Promise<void> {
+  agentInvocations(): InvocationSnapshot[] { return this.invocations.filter(({ conversationId }) => !isCompactionConversation(conversationId)); }
+  summaryInvocations(): InvocationSnapshot[] { return this.invocations.filter(({ conversationId }) => isCompactionConversation(conversationId)); }
+  agentResponses(): CompleteResponse[] { return this.responses.filter((_, index) => !isCompactionConversation(this.responseConversationIds[index] ?? null)); }
+  summaryResponses(): CompleteResponse[] { return this.responses.filter((_, index) => isCompactionConversation(this.responseConversationIds[index] ?? null)); }
+
+  async beforeInvoke(messages: Message[], kwargs?: Record<string, unknown>): Promise<void> {
     this.invocations.push({
+      conversationId: asString(kwargs?.['logicalConversationId']),
       messages: messages.map((message) => ({
         role: message.role,
         content: message.content,
@@ -284,8 +332,11 @@ class InvocationCaptureExtension extends LLMExtension {
   async afterInvoke(
     _messages: Message[],
     response: CompleteResponse | null,
+    kwargs?: Record<string, unknown>,
   ): Promise<void> {
-    if (response) this.responses.push(response);
+    if (!response) return;
+    this.responses.push(response);
+    this.responseConversationIds.push(asString(kwargs?.['logicalConversationId']));
   }
 }
 
@@ -318,14 +369,6 @@ const waitForLiveCondition = async (
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   throw new Error('LIVE_E2E_COMPACTION_FLOW_TIMEOUT');
-};
-
-export const classifyAutoByteusDiscoveryUnavailable = (
-  error: unknown,
-  kind: 'llm' | 'audio' | 'image',
-): string | null => {
-  const expected = `AUTOBYTEUS_${kind.toUpperCase()}_DISCOVERY_FAILED`;
-  return error instanceof Error && error.message === expected ? expected : null;
 };
 
 export const runLiveE2eAgentFlow = async (input: {
@@ -470,7 +513,6 @@ export class LiveE2eScenarioExecution {
   private readonly llmResolver: SecretManagementProviderApiKeyResolver;
   private readonly audioResolver: SecretManagementProviderApiKeyResolver;
   private readonly imageResolver: SecretManagementProviderApiKeyResolver;
-  private readonly discovery: AutobyteusRemoteModelDiscoveryService;
 
   constructor(
     readonly scenarioId: string,
@@ -489,10 +531,6 @@ export class LiveE2eScenarioExecution {
     this.imageResolver = new SecretManagementProviderApiKeyResolver(
       { kind: 'media', mediaKind: 'image' },
       () => this.management,
-    );
-    this.discovery = new AutobyteusRemoteModelDiscoveryService(
-      () => this.management,
-      () => [...(this.scenario.hosts ?? [])],
     );
   }
 
@@ -536,7 +574,6 @@ export class LiveE2eScenarioExecution {
       ownershipScope: 'shared',
     });
     const definitionService = {
-      getFreshAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
       getAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
     } as unknown as AgentDefinitionService;
     const workspace = new FileSystemWorkspace({
@@ -555,7 +592,7 @@ export class LiveE2eScenarioExecution {
     });
     const backendFactory: LiveE2eAgentBackendFactory = {
       createBackend: async (config, runId) => wrapProductAgentBackendForLiveE2e(
-        await productBackendFactory.createBackend(config, runId),
+        await prepareNewProductBackend(productBackendFactory, config, runId),
         { appDataDir: ownedRoot, memoryDir: memoryDirectory, baseUrl: this.serverUrl },
       ),
     };
@@ -650,7 +687,6 @@ export class LiveE2eScenarioExecution {
       ownershipScope: 'shared',
     });
     const definitionService = {
-      getFreshAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
       getAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
     } as unknown as AgentDefinitionService;
     const workspace = new FileSystemWorkspace({
@@ -668,7 +704,6 @@ export class LiveE2eScenarioExecution {
       : {};
     let primaryLlm: BaseLLM | null = null;
     let invocationCapture: InvocationCaptureExtension | null = null;
-    const summaryCaptures: InvocationCaptureExtension[] = [];
     const productBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: definitionService,
       createLLM: async (modelIdentifier, configInput) => {
@@ -678,18 +713,11 @@ export class LiveE2eScenarioExecution {
         llm.registerExtension(invocationCapture);
         return llm;
       },
-      compactionLlmFactory: async (input) => {
-        const llm = await createCompactionLlm(input);
-        const capture = new InvocationCaptureExtension(llm);
-        summaryCaptures.push(capture);
-        llm.registerExtension(capture);
-        return llm;
-      },
       workspaceManager,
     });
     const backendFactory: LiveE2eAgentBackendFactory = {
       createBackend: async (config, id) => wrapProductAgentBackendForLiveE2e(
-        await productBackendFactory.createBackend(config, id),
+        await prepareNewProductBackend(productBackendFactory, config, id),
         { appDataDir: ownedRoot, memoryDir: memoryDirectory, baseUrl: this.serverUrl },
       ),
     };
@@ -793,11 +821,11 @@ export class LiveE2eScenarioExecution {
       // Retain synthetic-only provider evidence before file assertions can fail.
       const capturedParent = invocationCapture as InvocationCaptureExtension | null;
       process.stdout.write(`${JSON.stringify({ event: 'managed_compaction_continuation_probe',
-        parentResponses: capturedParent?.responses.map(({ content, reasoning, usage, completionStatus, completionReason }) =>
+        parentResponses: capturedParent?.agentResponses().map(({ content, reasoning, usage, completionStatus, completionReason }) =>
           ({ content, reasoningCharacters: reasoning?.length ?? 0, usage, completionStatus, completionReason })),
-        summaryResponses: summaryCaptures.flatMap(({ responses }) => responses.map(({ content, completionStatus, completionReason }) =>
-          ({ content, completionStatus, completionReason }))),
-        lastParentRequest: capturedParent?.invocations.at(-1),
+        summaryResponses: capturedParent?.summaryResponses().map(({ content, completionStatus, completionReason }) =>
+          ({ content, completionStatus, completionReason })),
+        lastParentRequest: capturedParent?.agentInvocations().at(-1),
       })}\n`);
       observationStage = 'final-artifact-read';
       const finalContent = await fs.readFile(finalArtifactPath, 'utf8');
@@ -880,24 +908,26 @@ export class LiveE2eScenarioExecution {
         .map(({ compaction_model_identifier }) => asString(compaction_model_identifier));
       const completionStatuses = completedCompactions
         .map(({ completion_status }) => asString(completion_status));
-      const summaryRequests = summaryCaptures.flatMap(({ invocations }) => invocations);
-      const summaryResponses = summaryCaptures.flatMap(({ responses }) => responses);
-      if (summaryCaptures.length !== completedCompactions.length
-          || summaryRequests.length !== completedCompactions.length
-          || summaryResponses.length !== completedCompactions.length
+      // Summary attempts (cached first, transcript fallback) run on the agent's own LLM.
+      const summaryCapture = invocationCapture as InvocationCaptureExtension | null;
+      const summaryRequests = summaryCapture?.summaryInvocations() ?? [];
+      const summaryResponses = summaryCapture?.summaryResponses() ?? [];
+      if (summaryRequests.length < completedCompactions.length
+          || summaryResponses.length !== summaryRequests.length
           || summaryInvocationIds.some((id) => !id)
           || new Set(summaryInvocationIds).size !== completedCompactions.length
-          || summaryModelIdentifiers.some((id) => !id)
+          || summaryRequests.at(-1)?.conversationId !== summaryInvocationIds.at(-1)
+          || summaryModelIdentifiers.some((id) => id !== observedPrimaryLlm.model.modelIdentifier)
           || completionStatuses.some((status) => status !== 'complete' && status !== 'unknown')) {
-        throw new Error('LIVE_E2E_DIRECT_SUMMARY_EXECUTION_METADATA_INVALID');
+        throw new Error('LIVE_E2E_SUMMARY_EXECUTION_METADATA_INVALID');
       }
-      const requestInspections = summaryRequests.map(inspectDirectSummaryRequest);
-      process.stdout.write(`${JSON.stringify({ event: 'managed_compaction_direct_source_probe',
+      const requestInspections = summaryRequests.map(inspectSummaryRequest);
+      process.stdout.write(`${JSON.stringify({ event: 'managed_compaction_summary_source_probe',
         requestInspections, summaryResponses: summaryResponses.map(({ content, completionStatus }) => ({ content, completionStatus })) })}\n`);
       if (!requestInspections.some(({ sourceToolTailVerified }) => sourceToolTailVerified)) {
-        throw new Error('LIVE_E2E_DIRECT_SUMMARY_SOURCE_EVIDENCE_MISSING');
+        throw new Error('LIVE_E2E_SUMMARY_SOURCE_EVIDENCE_MISSING');
       }
-      const acceptedSummary = parseCompactionSummary(summaryResponses[0]!.content);
+      const acceptedSummary = parseCompactionSummary(summaryResponses.at(-1)!.content);
       const summaryPromptSha256 = createHash('sha256').update(COMPACTION_SUMMARY_PROMPT).digest('hex');
 
       const successfulTools = events.filter(
@@ -960,13 +990,13 @@ export class LiveE2eScenarioExecution {
           || ['episodic.jsonl', 'semantic.jsonl', 'compaction_lineage.jsonl'].some((name) => persistedFileNames.includes(name))
           || memoryStore.list(MemoryType.EPISODIC).length !== 0
           || memoryStore.list(MemoryType.SEMANTIC).length !== 0) {
-        throw new Error('LIVE_E2E_DIRECT_SUMMARY_PERSISTENCE_INVALID');
+        throw new Error('LIVE_E2E_SUMMARY_PERSISTENCE_INVALID');
       }
       const snapshot = new WorkingContextSnapshotStore(memoryDirectory, runId, {
         agentRootSubdir: '',
       }).read(runId);
       if (!snapshot || !WorkingContextSnapshotSerializer.validate(snapshot)) {
-        throw new Error('LIVE_E2E_DIRECT_SUMMARY_SNAPSHOT_INVALID');
+        throw new Error('LIVE_E2E_SUMMARY_SNAPSHOT_INVALID');
       }
       const snapshotSummary = extractConstituent({ messages:
         WorkingContextSnapshotSerializer.deserialize(snapshot).workingContext.buildMessages()
@@ -974,10 +1004,10 @@ export class LiveE2eScenarioExecution {
             toolPayload: message.tool_payload, provenance: getWorkingContextMessageProvenance(message) })),
       }, 'compacted_memory');
       if (snapshotSummary !== acceptedSummary) {
-        throw new Error('LIVE_E2E_DIRECT_SUMMARY_SNAPSHOT_MISMATCH');
+        throw new Error('LIVE_E2E_SUMMARY_SNAPSHOT_MISMATCH');
       }
 
-      const capturedInvocations = (invocationCapture as InvocationCaptureExtension | null)?.invocations ?? [];
+      const capturedInvocations = (invocationCapture as InvocationCaptureExtension | null)?.agentInvocations() ?? [];
       const finalInvocation = [...capturedInvocations].reverse().find(({ messages }) =>
         messages.some(({ role, content }) =>
           role === MessageRole.USER && content?.includes(finalArtifactPath)));
@@ -1007,7 +1037,8 @@ export class LiveE2eScenarioExecution {
         summaryModelIdentifiers,
         completionStatuses,
         summaryPromptSha256,
-        directSummaryRequestCount: summaryRequests.length,
+        summaryRequestCount: summaryRequests.length,
+        summaryModes: requestInspections.map(({ mode }) => mode),
         snapshotSummary,
         nextRequestSummary,
         nextCurrentUserRegion,
@@ -1053,13 +1084,15 @@ export class LiveE2eScenarioExecution {
         continuationTraceAbsent: true,
         exactRetainedArtifactVerified: true,
         summaryAndCurrentUserVerified: true,
-        directSummaryRequestCount: summaryRequests.length,
+        summaryRequestCount: summaryRequests.length,
+        summaryModes: requestInspections.map(({ mode }) => mode),
         summaryInvocationIds: summaryInvocationIds as string[],
         summaryModelIdentifiers: summaryModelIdentifiers as string[],
         completionStatuses: completionStatuses as string[],
-        directSummaryTaskFramingVerified: true,
-        directSummarySourceToolTailVerified: true,
-        directSummaryProviderSafeUnicodeVerified: true,
+        summaryOnAgentModelVerified: true,
+        summaryRequestFramingVerified: true,
+        summarySourceToolTailVerified: true,
+        summaryProviderSafeUnicodeVerified: true,
         noCategoryArtifactsVerified: true,
         unicodeShieldSourceImmutableVerified: true,
         summaryPromptSha256,
@@ -1078,9 +1111,9 @@ export class LiveE2eScenarioExecution {
       const observation = {
         event: 'managed_compaction_all_exit', stage: observationStage, completedTurns,
         error: operationError ? describeLiveE2eError(operationError) : null,
-        parentRequests: capture?.invocations ?? [], parentResponses: safeResponses(capture?.responses ?? []),
-        summaryRequests: summaryCaptures.flatMap(({ invocations }) => invocations),
-        summaryResponses: summaryCaptures.flatMap(({ responses }) => safeResponses(responses)),
+        parentRequests: capture?.agentInvocations() ?? [], parentResponses: safeResponses(capture?.agentResponses() ?? []),
+        summaryRequests: capture?.summaryInvocations() ?? [],
+        summaryResponses: safeResponses(capture?.summaryResponses() ?? []),
         events: events.map(({ eventType, terminalError, payload }) => ({ eventType, terminalError,
           toolName: ['read_file', 'write_file'].includes(String(payload.tool_name)) ? payload.tool_name : null,
           phase: ['requested', 'started', 'completed', 'failed'].includes(String(payload.phase)) ? payload.phase : null })),
@@ -1111,21 +1144,6 @@ export class LiveE2eScenarioExecution {
       throw new Error('LIVE_E2E_LOCAL_MODEL_UNAVAILABLE');
     }
     return matches[0]!.model_identifier;
-  }
-
-  async discoverAutoByteus(kind: 'llm' | 'audio' | 'image'): Promise<number> {
-    if (!this.scenario.hosts?.length) throw new Error('LIVE_E2E_HOSTS_NOT_CONFIGURED');
-    return this.discovery.refresh(kind);
-  }
-
-  async listAutoByteusModels(kind: 'llm' | 'audio' | 'image') {
-    if (kind === 'llm') return LLMFactory.listModelsByRuntime(LLMRuntime.AUTOBYTEUS);
-    if (kind === 'audio') {
-      return AudioClientFactory.listModels()
-        .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
-    }
-    return ImageClientFactory.listModels()
-      .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
   }
 
   async createLlm(

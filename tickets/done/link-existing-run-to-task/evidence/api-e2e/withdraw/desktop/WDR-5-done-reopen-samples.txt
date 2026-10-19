@@ -1,0 +1,10 @@
+# WDR-5: sidebar and server after DONE, then after reopen plus the PM's message
+# Commit: 1005f9eaaf (code ffeea43dac); instance iso-65199-3241 (ENV-3); sidebar text read over CDP (`ui.sh sidebar`)
+# Date: 2026-10-18
+
+after DONE: workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|2m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in one sentence.|3m|L|lead|3m|M|mate|3m|Settings|
+closed after DONE: [{'agentRunId': 'ado_writer_a1b0693fa64c4ea29c16d4ec6cb33ea5'}]
+after reopen: workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|3m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in one sentence.|3m|L|lead|3m|M|mate|3m|Settings|
+19:24:37 message "Both steps worked.\n\n1. **update_task**: ado-desktop-project-3 is now IN_PROGRESS. `dependsOn` is still empty.\n2. **send_message_to**: the message was delivered to `ado_writer_a1b0693fa64c4ea29c16d
+19:24:38 inter_agent_message "You received a message from the agent with sender run id \"ado_writer_a1b0693fa64c4ea29c16d4ec6cb33ea5\".\nmessage:\nShorter motto for the tiny calendar app: \"Plan your days.\""
+19:24:39 message "The task agent `ado_writer_a1b0693fa64c4ea29c16d4ec6cb33ea5` sent a shorter motto for the tiny calendar app:\n\n\"Plan your days.\"\n\nIt's three words, so it meets the four-word limit. The agent did

@@ -1,0 +1,14 @@
+# IMP-12 server unit and integration after the merge (excerpts)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit; test:integration:prepare; test:integration
+# Commit: a130f4a86f (merge of origin/personal 04ec416617 into codex/withdraw-adoption)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T20:12Z
+
+## unit
+ Test Files  733 passed | 4 skipped (737)
+      Tests  5973 passed | 7 skipped (5980)
+   Duration  539.72s (transform 14.93s, setup 6.34s, import 271.10s, tests 192.60s, environment 981ms)
+## integration
+ Test Files  77 passed | 19 skipped (96)
+      Tests  415 passed | 70 skipped (485)
+   Duration  212.68s (transform 8.42s, setup 874ms, import 76.53s, tests 125.84s, environment 7ms)

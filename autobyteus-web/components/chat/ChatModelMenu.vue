@@ -174,21 +174,24 @@
               :aria-disabled="runtime.enabled ? undefined : 'true'"
               :data-runtime="runtime.runtimeKind"
               :data-test="`chat-runtime-${runtime.runtimeKind}`"
-              class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] focus:outline-none"
+              class="flex w-full gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] focus:outline-none"
               :class="[
-                runtime.enabled ? 'text-gray-900 hover:bg-gray-100 focus:bg-gray-100' : 'cursor-default text-gray-400',
+                runtime.enabled ? 'items-center text-gray-900 hover:bg-gray-100 focus:bg-gray-100' : 'cursor-default items-start text-gray-400',
                 submenuRuntime === runtime.runtimeKind ? 'bg-gray-100' : '',
               ]"
-              :title="runtime.enabled ? undefined : (runtime.reason || $t('chat.model.notInstalled'))"
+              :title="runtime.enabled ? undefined : (runtime.reason || undefined)"
               @click="runtime.enabled && openSubmenu(runtime.runtimeKind, true)"
             >
-              <span class="min-w-0 flex-1 truncate">{{ runtime.label }}</span>
-              <span v-if="runtime.runtimeKind === runtimeKind" class="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-600" :aria-label="$t('chat.model.currentRuntime')"></span>
+              <span class="min-w-0 flex-1">
+                <span class="block truncate">{{ runtime.label }}</span>
+                <span v-if="!runtime.enabled && runtime.reason" class="line-clamp-2 whitespace-normal text-xs text-gray-400" data-test="chat-runtime-reason">{{ runtime.reason }}</span>
+              </span>
+              <span v-if="runtime.runtimeKind === runtimeKind" class="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-600" :class="runtime.enabled ? '' : 'mt-[0.4375rem]'" :aria-label="$t('chat.model.currentRuntime')"></span>
               <template v-if="runtime.enabled">
                 <span v-if="catalog.catalogState(runtime.runtimeKind) === 'ready'" class="flex-shrink-0 text-xs tabular-nums text-gray-400">{{ catalog.modelCount(runtime.runtimeKind) }}</span>
                 <Icon icon="heroicons:chevron-right" class="h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-hidden="true" />
               </template>
-              <span v-else class="flex-shrink-0 text-xs text-gray-400" data-test="chat-runtime-not-installed">{{ $t('chat.model.notInstalled') }}</span>
+              <span v-else class="mt-0.5 flex-shrink-0 text-xs text-gray-400" data-test="chat-runtime-unavailable">{{ $t('chat.model.unavailable') }}</span>
             </button>
 
             <!-- Desktop side submenu -->

@@ -1,0 +1,306 @@
+{
+  "importedPackages": [
+    {
+      "packageId": "built-in:default",
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-nUvVMr",
+      "sourceKind": "BUILT_IN",
+      "agentTeamCount": 0,
+      "isDefault": true
+    },
+    {
+      "packageId": "local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Frpe-package-FU4Ilf%2Fautobyteus-agents",
+      "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-FU4Ilf/autobyteus-agents",
+      "sourceKind": "LOCAL_PATH",
+      "agentTeamCount": 2,
+      "isDefault": false
+    }
+  ],
+  "rpe001": {
+    "before": {
+      "id": "software-engineering-team",
+      "name": "RPE Software Engineering Team",
+      "description": "From the package",
+      "instructions": "RPE Software Engineering Team: follow the request.\n",
+      "category": "engineering",
+      "coordinatorMemberName": "lead",
+      "avatarUrl": null,
+      "revision": "e3bcd41e1c9673e8f7e980f4628ca7e7f63b406769c08058fbf3117ab872c835",
+      "ownerPackageId": null,
+      "nodes": [
+        {
+          "memberName": "lead",
+          "ref": "lead",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "engineer",
+          "ref": "engineer",
+          "refScope": "TEAM_LOCAL"
+        }
+      ],
+      "handoffs": [],
+      "defaultLaunchConfig": null
+    },
+    "saved": {
+      "id": "software-engineering-team",
+      "name": "RPE Software Engineering Team",
+      "description": "Edited in the app",
+      "instructions": "RPE Software Engineering Team: follow the request.\n",
+      "category": "engineering",
+      "coordinatorMemberName": "lead",
+      "avatarUrl": null,
+      "revision": "ac379252eb9fb13fb2406fa9cc66d6274e4df86d7e845369a14b28d90693248e",
+      "ownerPackageId": null,
+      "nodes": [
+        {
+          "memberName": "lead",
+          "ref": "lead",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "engineer",
+          "ref": "engineer",
+          "refScope": "TEAM_LOCAL"
+        }
+      ],
+      "handoffs": [],
+      "defaultLaunchConfig": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "rpe-saved-model",
+        "llmConfig": null
+      }
+    },
+    "reread": {
+      "id": "software-engineering-team",
+      "name": "RPE Software Engineering Team",
+      "description": "Edited in the app",
+      "instructions": "Ship software, edited twice.",
+      "category": "engineering",
+      "coordinatorMemberName": "lead",
+      "avatarUrl": null,
+      "revision": "e43955fd2786adc03b973c49e0088265afe6ede913daadc54dff6fcaab20eec0",
+      "ownerPackageId": null,
+      "nodes": [
+        {
+          "memberName": "lead",
+          "ref": "lead",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "engineer",
+          "ref": "engineer",
+          "refScope": "TEAM_LOCAL"
+        }
+      ],
+      "handoffs": [],
+      "defaultLaunchConfig": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "rpe-saved-model",
+        "llmConfig": null
+      }
+    },
+    "teamConfig": {
+      "coordinatorMemberName": "lead",
+      "members": [
+        {
+          "memberName": "lead",
+          "ref": "lead",
+          "refScope": "team_local"
+        },
+        {
+          "memberName": "engineer",
+          "ref": "engineer",
+          "refScope": "team_local"
+        }
+      ],
+      "handoffs": [],
+      "avatarUrl": null,
+      "defaultLaunchConfig": {
+        "llmModelIdentifier": "rpe-saved-model",
+        "runtimeKind": "antigravity_cli",
+        "llmConfig": null
+      }
+    }
+  },
+  "rpe002": [
+    {
+      "message": "Failed to update agent team definition: The Team definition changed after this draft was loaded. Refresh and apply the draft again.",
+      "locations": [
+        {
+          "line": 1,
+          "column": 50
+        }
+      ],
+      "path": [
+        "updateAgentTeamDefinition"
+      ],
+      "extensions": {
+        "code": "DEFINITION_REVISION_CONFLICT"
+      }
+    }
+  ],
+  "rpe003": {
+    "updateAgentOrgDefinition": {
+      "id": "studio",
+      "name": "RPE Studio",
+      "description": "Org edited in the app",
+      "instructions": "RPE Studio: follow the request.\n",
+      "category": "engineering",
+      "avatarUrl": null,
+      "revision": "d50263510693c1ceb6331b9f6ececa9211ea8bb9ce071a083dbd5db47846409f",
+      "members": [
+        {
+          "memberName": "group",
+          "ref": "agent-org-owned-team:studio:squad",
+          "refType": "AGENT_TEAM",
+          "refScope": "AGENT_ORG_OWNED"
+        }
+      ],
+      "handoffs": [],
+      "defaultLaunchConfig": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "rpe-saved-model",
+        "llmConfig": null
+      }
+    }
+  },
+  "rpe004": {
+    "update": [
+      {
+        "message": "Failed to update agent team definition: AgentOrg-owned Team definitions can only be changed through their atomic parent AgentOrg save.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 50
+          }
+        ],
+        "path": [
+          "updateAgentTeamDefinition"
+        ],
+        "extensions": {
+          "code": "AGENT_TEAM_DEFINITION_INVALID"
+        }
+      }
+    ],
+    "delete": {
+      "data": {
+        "deleteAgentTeamDefinition": {
+          "success": false,
+          "message": "Error: Deleting application-owned team definitions is not supported."
+        }
+      }
+    }
+  },
+  "rpe005": [
+    {
+      "message": "Failed to update agent team definition: Team definition 'software-engineering-team' is read-only at source path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-FU4Ilf/autobyteus-agents/agent-teams'.",
+      "locations": [
+        {
+          "line": 1,
+          "column": 50
+        }
+      ],
+      "path": [
+        "updateAgentTeamDefinition"
+      ],
+      "extensions": {
+        "code": "AGENT_TEAM_DEFINITION_INVALID"
+      }
+    }
+  ],
+  "rpe006": {
+    "first": {
+      "result": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "software_engineering_team_592040fa3654455b9dcef385e7cd2e2f",
+        "target_team_coordinator_agent_run_id": "lead_26e97ed720cd415dbd493b00416c5c5d",
+        "task_id": "ad_hoc_task_eb5547b7-0c4c-44c4-82df-cd90e6e06543"
+      },
+      "source": {
+        "kind": "agent_team",
+        "team_definition_id": "software-engineering-team",
+        "coordinator_address": "/rpe_software_engineering_team/lead",
+        "members": [
+          {
+            "address": "/rpe_software_engineering_team/lead",
+            "agent_definition_id": "team-local-agent:software-engineering-team:lead"
+          },
+          {
+            "address": "/rpe_software_engineering_team/engineer",
+            "agent_definition_id": "team-local-agent:software-engineering-team:engineer"
+          }
+        ],
+        "handoffs": [],
+        "default_launch_configuration": {
+          "runtime_kind": "antigravity_cli",
+          "llm_model_identifier": "rpe-saved-model",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-nUvVMr/workspace"
+        },
+        "default_launch_source": {
+          "origin": "team_default",
+          "fallbacks": []
+        }
+      },
+      "models": [
+        "rpe-saved-model"
+      ]
+    },
+    "second": {
+      "result": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "software_engineering_team_6afcf50ecd854ea287c72940a0ee2edb",
+        "target_team_coordinator_agent_run_id": "lead_e43125dfd7e9418d938c01ce1d2ece3c",
+        "task_id": "ad_hoc_task_09bbdbba-eb05-43d9-858a-878366f0605a"
+      },
+      "source": {
+        "kind": "agent_team",
+        "team_definition_id": "software-engineering-team",
+        "coordinator_address": "/rpe_software_engineering_team/lead",
+        "members": [
+          {
+            "address": "/rpe_software_engineering_team/lead",
+            "agent_definition_id": "team-local-agent:software-engineering-team:lead"
+          },
+          {
+            "address": "/rpe_software_engineering_team/engineer",
+            "agent_definition_id": "team-local-agent:software-engineering-team:engineer"
+          }
+        ],
+        "handoffs": [],
+        "default_launch_configuration": {
+          "runtime_kind": "antigravity_cli",
+          "llm_model_identifier": "rpe-edited-model",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-e2e-nUvVMr/workspace"
+        },
+        "default_launch_source": {
+          "origin": "team_default",
+          "fallbacks": []
+        }
+      },
+      "models": [
+        "rpe-edited-model"
+      ]
+    },
+    "managerModel": "gemini-3.8-flash-low"
+  },
+  "rpe007": {
+    "deleteAgentTeamDefinition": {
+      "success": true,
+      "message": "Agent team definition deleted successfully."
+    }
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "packageRemoved": true,
+    "homeRemoved": true,
+    "serverClosed": true,
+    "leftoverProcesses": "",
+    "errors": []
+  }
+}

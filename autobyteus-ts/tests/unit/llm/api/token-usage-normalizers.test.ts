@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
-import { createAutoByteusTokenUsageObservation } from '../../../../src/llm/api/autobyteus-token-usage-normalizer.js';
 import { createOpenAICompatibleTokenUsageObservation } from '../../../../src/llm/api/openai-compatible-token-usage-normalizer.js';
 import { createGeminiTokenUsageObservation } from '../../../../src/llm/api/gemini-token-usage-normalizer.js';
 import { createOllamaTokenUsageObservation } from '../../../../src/llm/api/ollama-llm.js';
@@ -22,15 +21,13 @@ const buildModel = (provider: LLMProvider, name = 'provider-test-model', provide
   });
 
 describe('provider token usage normalizers', () => {
-  it('propagates the AutoByteus provider-name snapshot through every shared normalizer', () => {
-    const autoByteusModel = buildModel(LLMProvider.OPENAI_COMPATIBLE, 'custom-model', 'Custom Provider');
+  it('propagates the provider-name snapshot through every shared normalizer', () => {
+    const customModel = buildModel(LLMProvider.OPENAI_COMPATIBLE, 'custom-model', 'Custom Provider');
     const anthropicModel = buildModel(LLMProvider.ANTHROPIC, 'claude-test', 'Anthropic Built-in');
     const geminiModel = buildModel(LLMProvider.GEMINI, 'gemini-test', 'Gemini Built-in');
     const ollamaModel = buildModel(LLMProvider.OLLAMA, 'llama-test', 'Ollama Built-in');
 
-    expect(createAutoByteusTokenUsageObservation({ prompt_tokens: 2, completion_tokens: 3, total_tokens: 5 }, autoByteusModel)?.provider_name)
-      .toBe('Custom Provider');
-    expect(createOpenAICompatibleTokenUsageObservation({ prompt_tokens: 2, completion_tokens: 3, total_tokens: 5 }, autoByteusModel)?.provider_name)
+    expect(createOpenAICompatibleTokenUsageObservation({ prompt_tokens: 2, completion_tokens: 3, total_tokens: 5 }, customModel)?.provider_name)
       .toBe('Custom Provider');
     expect(createAnthropicTokenUsageObservationFromAccumulator(
       foldAnthropicUsage(createAnthropicUsageAccumulator(), { input_tokens: 2, output_tokens: 3 }),

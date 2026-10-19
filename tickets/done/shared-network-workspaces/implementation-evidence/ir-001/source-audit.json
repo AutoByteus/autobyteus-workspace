@@ -1,0 +1,55 @@
+{
+  "kind": "read-only source inspection; not an executable product test",
+  "date": "2026-10-13",
+  "commit": "e642fd477d071e21d46a8d3b09c5370c5bbdba28",
+  "finding": "IMP-D001",
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/skills/services/skill-service.ts",
+      "sha256": "fab3cf74214f20ffd34eb1792d7b10b6c5114d244bdb83a67326674041222309"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/skills/services/skill-source-service.ts",
+      "sha256": "4bd0ba7adcd170fa11241ac33af8349102094aff6ce830a9e130b3c7c1693ccf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/skills/installers/github-skill-repository.ts",
+      "sha256": "169fd2f6b69d027c89790e64338e8b4e122da51046797b1a517372ab09583e46"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts",
+      "sha256": "a9fa041841be99cef9d34bfdd841cbf9f25090c0130d9b9dceb13821a9f3160e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-configured-skill-linker.ts",
+      "sha256": "a82620bea21cf9e818a0739572d12237dfc52adca66ca381b5895c3259f380dd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts",
+      "sha256": "2e7bd4e17251cf203155435f77f15e2ac2ecb760f78e44e5da56e3bc26d6c779"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/docs/modules/skills.md",
+      "sha256": "d642ebc6b2b93b37b0e9ab79c172e9455854ff1582e5a1cee1c61bd9c98bfdfe"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts",
+      "sha256": "3d4a576452d882ee2555a5ef306c810999695000ec8b1625f2d70e9aebcdc86a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/components/skills/SkillSourcesModal.vue",
+      "sha256": "3a21f272c3a37229ff1026eee151dcc336f112c455ec340f6a573bcf3a532c15"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/stores/skillSourcesStore.ts",
+      "sha256": "19d6ced803544c7a5c7f7c877130f1a3a84dc5fe367f8866161b11249519546b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/api/graphql/types/skills.ts",
+      "sha256": "fe994e555b384bb8da7a19c0ad3073f475e33a5c5f8b2ce249b380af0e1f189b"
+    }
+  ],
+  "product_source_changed": false,
+  "tests_run": false,
+  "live_resources_touched": false
+}

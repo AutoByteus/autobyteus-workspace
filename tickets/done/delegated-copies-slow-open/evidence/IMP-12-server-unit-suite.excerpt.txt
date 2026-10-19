@@ -1,0 +1,14 @@
+# Excerpt of IMP-12-server-unit-suite.log (full log next to this file)
+# Check: IMP-12-server-unit-suite
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open && pnpm -C autobyteus-server-ts test:unit)
+# Commit: 2cb21ab41e (test(web): copies load correctly under batched live content (DR-001))
+# Working tree: 0 tracked changes
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T14:15:33Z
+# ----
+# ---- result lines
+      Tests  5953 passed | 7 skipped (5960)
+   Duration  474.76s (transform 12.08s, setup 5.21s, import 220.99s, tests 188.85s, environment 622ms)
+   Start at  16:15:34
+ Test Files  728 passed | 4 skipped (732)
+# ---- exit code: 0

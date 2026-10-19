@@ -1,0 +1,37 @@
+D3/IR-002 source audit at d62e2eec7e41cf7bea8b8385fbe11ae14e627f6c against bootstrap 2756d7b298ca5b203ebd2310d172b37a5d381b5c
+PASS exact production-source delta: 11 deletions, 5 modifications including D3 test-only correction
+.gitignore
+README.md
+autobyteus-server-ts/docker/README.md
+docker/.gitignore
+docker/Dockerfile.allinone
+docker/Dockerfile.remote-server
+docker/README.md
+docker/allinone-start-server.sh
+docker/allinone-start-web.sh
+docker/compose.personal-test.yml
+docker/remote-server-entrypoint.sh
+docker/supervisor-allinone.conf
+scripts/personal-docker.sh
+scripts/seed-personal-test-fixtures.py
+scripts/tests/test_docker_build_context_sources.py
+scripts/tests/test_public_docker_launcher_shared_workspace.py
+PASS byte-identical recipe/helpers/Compose/release/public launcher/ignore/licenses/root manifests/lockfile; exact full source allowlist proves other app/contracts/manifests unchanged
+PASS historical supplements and original IR-001 evidence byte-unchanged
+PASS no tracked root docker assets remain, no directory sweep/state access
+PASS bounded retired-identifier audit on 7093 tracked active files (historical/absence-guard exemptions)
+PASS relative Docker-guide link: README.md -> autobyteus-server-ts/docker/README.md
+PASS relative Docker-guide link: autobyteus-server-ts/README.md -> docker/README.md
+Docker-guide links resolved: 2
+PASS no retained direct COPY dependency on retired assets; allowed guide docs may change broad COPY bytes, not executable build/runtime logic
+PASS test_retired_assets_are_absent
+PASS test_saved_state_exclusions_remain_effective
+PASS test_retirement_guard_rejects_reintroduced_asset_fixture
+PASS test_entrypath_guard_rejects_broken_build_fixture
+PASS test_ignore_guard_rejects_saved_state_protection_loss_fixtures
+PASS supported apostrophe installer fixture/assertions unchanged, known product issue remains open
+sha256 LICENSE 0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0
+sha256 LICENSING.md ff416568ab01c60e62b28a570f078ed83b61dbc154262fd2bc1f80c16a42fb1f
+sha256 NOTICE c781cf26b278b2dd15b79f96e210c200a195480464f0801888fc7026eccbdca2
+sha256 autobyteus-server-ts/docker/Dockerfile.monorepo 28ba38691af0ea7c328e1a048e031eff62f2f749d58852f170bee20c97863213
+Resource ledger: no live Docker/node/provider operation. Owner-created temporary fixtures only; no user data/listeners accessed or modified this round. Static/fake evidence is not fresh-image certification.

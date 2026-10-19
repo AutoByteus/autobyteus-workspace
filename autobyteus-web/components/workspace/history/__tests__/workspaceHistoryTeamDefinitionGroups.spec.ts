@@ -48,7 +48,8 @@ const historyGroup = (
 });
 
 describe('buildWorkspaceTeamDefinitionDisplayGroups', () => {
-  it('uses every displayed current node instead of representative or member status', () => {
+  // The group row's status comes from its runs (teamDefinitionGroupStatus); the group keeps every run.
+  it('keeps every displayed current node and picks the most recent as representative', () => {
     const activeOlderRun = teamNode({
       teamRunId: 'active-older',
       isActive: true,
@@ -74,16 +75,6 @@ describe('buildWorkspaceTeamDefinitionDisplayGroups', () => {
       'inactive-newer',
     ]);
     expect(group?.representativeRun.teamRunId).toBe('inactive-newer');
-    expect(group?.hasActiveRuns).toBe(true);
-
-    const [inactiveGroup] = buildWorkspaceTeamDefinitionDisplayGroups(
-      [],
-      [
-        { ...activeOlderRun, isActive: false },
-        inactiveRepresentative,
-      ],
-    );
-    expect(inactiveGroup?.hasActiveRuns).toBe(false);
   });
 
   it('derives history and leftover/current-node groups from their own final run collections', () => {
@@ -122,22 +113,9 @@ describe('buildWorkspaceTeamDefinitionDisplayGroups', () => {
       'history-inactive',
       'history-active',
     ]);
-    expect(groups[0]?.hasActiveRuns).toBe(true);
     expect(groups[1]?.runs.map((run) => run.teamRunId)).toEqual([
       'current-inactive',
       'current-active',
     ]);
-    expect(groups[1]?.hasActiveRuns).toBe(true);
-
-    const inactiveGroups = buildWorkspaceTeamDefinitionDisplayGroups(
-      [historyGroup('history-def', 'History Team', ['history-inactive', 'history-active'])],
-      [
-        historyInactive,
-        { ...historyActive, isActive: false },
-        leftoverInactive,
-        { ...leftoverActive, isActive: false },
-      ],
-    );
-    expect(inactiveGroups.map((group) => group.hasActiveRuns)).toEqual([false, false]);
   });
 });

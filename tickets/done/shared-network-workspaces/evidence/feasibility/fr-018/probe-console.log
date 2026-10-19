@@ -1,0 +1,10 @@
+PASS daemon mounts common export into UID10001 zero-capability client, not a privileged in-container mount
+PASS healthy mounted identity verified, RPC liveness alone not treated as storage proof
+PASS wrong expected storage UUID refused despite healthy correct NFS mount
+PASS unexpected export/source refused before network filesystem IO
+PASS ordinary local directory is not accepted as shared mount or written as fallback
+PASS fresh genuinely unreadable mapped-client identity distinguished from wrong storage/outage
+PASS paused NFS service yields bounded unavailable; local work continues and no repeated file workers spawned
+PASS network loss after liveness check cannot block parent; child slot retained until actual exit then recovery
+PASS local directory preserved and no unreaped probe child after recovery
+{"run": "ab-sf-fr018-6aec659d", "passes": 9, "fatal": null, "cleanup_ok": true}

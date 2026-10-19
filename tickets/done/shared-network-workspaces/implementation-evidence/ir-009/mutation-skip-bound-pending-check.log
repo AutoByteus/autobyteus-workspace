@@ -1,0 +1,8 @@
+--- FAIL: TestBoundPendingReuseAndReplacementRefusal (0.05s)
+    --- FAIL: TestBoundPendingReuseAndReplacementRefusal/false (0.03s)
+        source_binding_darwin_test.go:130: pending rebound replacement
+    --- FAIL: TestBoundPendingReuseAndReplacementRefusal/true (0.02s)
+        source_binding_darwin_test.go:130: pending rebound replacement
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	0.411s
+FAIL

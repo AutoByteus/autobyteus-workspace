@@ -1,0 +1,11 @@
+{
+  "authority": "Direct user instruction in this active conversation, 2026-10-15",
+  "directions": [
+    "Revise your test cases; shared-filesystem tests should use Linux commands in Docker.",
+    "You do not have to use our product to test.",
+    "You do not have to contact Solution Designer; test cases are designed by API/E2E.",
+    "If all the testing is okay, it is a pass."
+  ],
+  "implementationDisposition": "No production edit/removal; IR010 retained. Existing editor failures are separate; no historical failure relabelled.",
+  "action": "Revised own ledger to FS01\u2013FS17, stopped application orchestration and isolated desktop, executed actual command-only NFS checks and explicit scoped carry, then cleanup."
+}

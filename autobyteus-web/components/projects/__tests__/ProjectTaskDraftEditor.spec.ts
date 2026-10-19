@@ -5,13 +5,14 @@ import ProjectTaskDraftEditor from '../ProjectTaskDraftEditor.vue'
 import type { ProjectTask } from '~/types/project'
 
 let draft: any
-const push = vi.fn(), setSearch = vi.fn()
-vi.mock('vue-router', async (original) => ({...await original<typeof import('vue-router')>(), useRouter: () => ({push})}))
-vi.mock('~/composables/projects/useProjectTaskDraft', () => ({useProjectTaskDraft: () => draft}))
+const push = vi.fn(), setSearch = vi.fn(), route = {query: {} as Record<string, unknown>}
+const draftArgs = vi.fn()
+vi.mock('vue-router', async (original) => ({...await original<typeof import('vue-router')>(), useRouter: () => ({push}), useRoute: () => route}))
+vi.mock('~/composables/projects/useProjectTaskDraft', () => ({useProjectTaskDraft: (...args: unknown[]) => { draftArgs(...args); return draft }}))
 vi.mock('~/stores/voiceInputStore', () => ({useVoiceInputStore: () => ({transcriptTarget: null, latestResult: null, isRecording: false})}))
-vi.mock('~/stores/projectTaskStore', () => ({useProjectTaskStore: () => ({setSearch})}))
+vi.mock('~/stores/projectTaskStore', () => ({useProjectTaskStore: () => ({setSearch, getList: () => undefined, fetchTasks: vi.fn(async () => undefined), releaseRead: vi.fn()})}))
 
-const task = {taskId: 't1', description: 'Saved text', status: 'IN_PROGRESS', contextFiles: []} as unknown as ProjectTask
+const task = {taskId: 't1', taskKey: 'p1-1', description: 'Saved text', status: 'IN_PROGRESS', contextFiles: []} as unknown as ProjectTask
 function editor(saved?: ProjectTask) {
   draft.text.value = saved?.description ?? ''
   const host = document.createElement('div')
@@ -26,8 +27,9 @@ function editor(saved?: ProjectTask) {
 describe('ProjectTaskDraftEditor compact authoring', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    route.query = {}
     draft = {
-      text: ref(''), files: ref([]), client: {}, draftId: ref(), pending: ref(false),
+      text: ref(''), files: ref([]), dependsOn: ref([]), partOf: ref(null), client: {}, draftId: ref(), pending: ref(false),
       saving: ref(false), error: ref(''), blocked: ref(false),
       target: {key: 'draft', isCurrent: () => true, appendTranscript: vi.fn()},
       current: vi.fn(() => true), addFiles: vi.fn(), removeFile: vi.fn(),
@@ -54,7 +56,7 @@ describe('ProjectTaskDraftEditor compact authoring', () => {
     expect(wrapper.text()).toContain('Ctrl+Enter or ⌘+Enter to save')
     expect(wrapper.text()).not.toContain('Files are saved with this task')
     expect(wrapper.get('[data-testid="task-page-save"]').text()).toBe(saved ? 'Save changes' : 'Create task')
-    expect(wrapper.getComponent(RouterLinkStub).props('to')).toBe(saved ? '/projects/p1/tasks/t1' : '/projects/p1')
+    expect(wrapper.getComponent(RouterLinkStub).props('to')).toBe(saved ? '/projects/p1/tasks/p1-1' : '/projects/p1')
     expect(draft.save).not.toHaveBeenCalled()
     wrapper.unmount()
   })
@@ -82,7 +84,7 @@ describe('ProjectTaskDraftEditor compact authoring', () => {
     await wrapper.get('textarea').trigger('keydown', {key: 'Enter', ctrlKey: true})
     await flushPromises()
     expect(draft.save).toHaveBeenCalledOnce()
-    expect(push).toHaveBeenCalledWith({path: saved ? '/projects/p1/tasks/t1' : '/projects/p1', query: {notice: saved ? 'saved' : 'task-created'}})
+    expect(push).toHaveBeenCalledWith({path: saved ? '/projects/p1/tasks/p1-1' : '/projects/p1', query: {notice: saved ? 'saved' : 'task-created'}})
     expect(setSearch.mock.calls).toEqual(saved ? [] : [['p1', '']])
     wrapper.unmount()
   })
@@ -97,6 +99,17 @@ describe('ProjectTaskDraftEditor compact authoring', () => {
     expect((wrapper.get('textarea').element as HTMLTextAreaElement).value).toBe('Recoverable draft')
     expect(push).not.toHaveBeenCalled()
     wrapper.unmount()
+  })
+
+  it('"New part" (?partOf=<task ID>) starts New task with that parent; Edit task never takes it from the URL (REQ-018)', () => {
+    route.query = {partOf: 'parent-id'}
+    editor().unmount()
+    expect(draftArgs).toHaveBeenLastCalledWith('p1', undefined, 'parent-id')
+    editor(task).unmount()
+    expect(draftArgs).toHaveBeenLastCalledWith('p1', task, null)
+    route.query = {}
+    editor().unmount()
+    expect(draftArgs).toHaveBeenLastCalledWith('p1', undefined, null)
   })
 
   it('keeps pending save blocked', async () => {

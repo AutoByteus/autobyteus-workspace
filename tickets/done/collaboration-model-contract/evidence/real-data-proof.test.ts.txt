@@ -1,0 +1,78 @@
+import fs from "node:fs";
+import path from "node:path";
+import { createHash } from "node:crypto";
+import { expect, it } from "vitest";
+import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "../../src/app-data-migrations/migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
+import { createStoredCollaborationExecutionLocationService } from "../../src/agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import { StandaloneRootPackageStore } from "../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { TeamExecutionIndex } from "../../src/agent-team-execution/services/team-execution-index.js";
+import { StandaloneRootExecutionIndex } from "../../src/standalone-agent-run-root/services/standalone-root-execution-index.js";
+import { TeamRunExecutionTreeStore } from "../../src/run-history/store/team-run-execution-tree-store.js";
+
+const MEM = "/tmp/cmc-real-data/memory";
+const TREE = /(collaboration_tree|team_run_execution_tree)\.json$/;
+const walk = (d: string): string[] => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]);
+const dirsOf = (d: string): string[] => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? [path.join(d, e.name), ...dirsOf(path.join(d, e.name))] : []);
+const hash = (f: string) => createHash("sha256").update(fs.readFileSync(f)).digest("hex");
+
+it("real data proof (AC-007)", async () => {
+  const treeFiles = walk(MEM).filter((f) => TREE.test(f));
+  expect(treeFiles).toHaveLength(7);
+  const before = Object.fromEntries(walk(MEM).filter((f) => !TREE.test(f)).map((f) => [f, hash(f)]));
+  const dirsBefore = dirsOf(MEM);
+  const collaborators: { tree: string; kind: string; address: string; runIds: string[] }[] = [];
+  for (const file of treeFiles) {
+    const d = JSON.parse(fs.readFileSync(file, "utf8"));
+    const c: any[] = (d.rootTeam ?? d).collaborators ?? [];
+    for (const e of c) collaborators.push({ tree: file.endsWith("collaboration_tree.json") ? path.basename(path.dirname(path.dirname(file))) : path.basename(path.dirname(file)), kind: e.kind, address: e.address, runIds: e.kind === "agent" ? [e.agentRunId] : e.members.map((m: any) => m.agentRunId) });
+  }
+  expect(collaborators).toHaveLength(9);
+  const result = await new CollaboratorsToDelegatedRunsV1AppDataMigration(MEM).execute();
+  console.log("RESULT", JSON.stringify({ status: result.status, summary: { ...result.summary, details: result.summary.details.map((x) => [x.itemId.slice(0, 40), x.status, x.message?.slice(0, 90)]) } }, null, 1));
+  expect(result.status).toBe("SUCCEEDED");
+  expect(result.summary.migratedCount).toBe(7);
+  // Conversion adds nothing to memory: same files, same bytes, same folders.
+  const after = Object.fromEntries(walk(MEM).filter((f) => !TREE.test(f)).map((f) => [f, hash(f)]));
+  expect(after).toEqual(before);
+  expect(dirsOf(MEM)).toEqual(dirsBefore);
+  // Each converted run appears as a delegated run of its run and its folder is the collaborator's old folder.
+  const locations = createStoredCollaborationExecutionLocationService(MEM);
+  let withFolder = 0, noFolder = 0;
+  for (const file of treeFiles) {
+    const d = JSON.parse(fs.readFileSync(file, "utf8"));
+    expect((d.rootTeam ?? d).collaborators).toBeUndefined();
+  }
+  const teamStore = new TeamRunExecutionTreeStore(), agentStore = new StandaloneRootPackageStore();
+  for (const c of collaborators) {
+    const file = treeFiles.find((f) => f.includes(c.tree + "/"))!;
+    const dir = path.dirname(file);
+    const isTeamRoot = file.endsWith("team_run_execution_tree.json");
+    const tree: any = isTeamRoot ? await teamStore.read(dir, c.tree) : await agentStore.readTree(dir, c.tree);
+    const index: any = isTeamRoot ? new TeamExecutionIndex(tree) : new StandaloneRootExecutionIndex(tree);
+    for (const id of c.runIds) expect(index.getAgent?.(id) ?? index.listTaskExecutionChainForAgent(id).length, id).toBeTruthy();
+    const tasks = (isTeamRoot ? tree.rootTeam.taskExecutions : tree.taskExecutions) as any[];
+    const run = tasks.find((t) => t.address === c.address && (c.kind === "agent" ? c.runIds.includes(t.agentRunId) : t.members?.some((m: any) => c.runIds.includes(m.agentRunId))));
+    expect(run, `${c.tree} ${c.address}`).toBeTruthy();
+    expect(run.delegatorAgentRunId).toBeTruthy();
+    expect(run.source).toBeTruthy();
+    for (const id of c.runIds) {
+      const found = dirsOf(isTeamRoot ? dir : path.dirname(dir)).filter((d) => path.basename(d) === id);
+      const old = found[0] ?? path.join(dir, id);
+      const located = await locations.findAgent({ agentRunId: id });
+      const folderExists = found.length > 0;
+      if (folderExists) {
+        withFolder += 1;
+        expect(located, `${c.address} ${id}`).toBeTruthy();
+        expect(path.resolve((located as any).memoryDir), id).toBe(path.resolve(old));
+      } else {
+        noFolder += 1;
+        console.log("NO FOLDER (never started):", c.tree.slice(0, 45), c.address, id);
+      }
+    }
+  }
+  console.log("FOLDER EQUALITY", { withFolder, noFolder });
+  // Idempotent.
+  const again = await new CollaboratorsToDelegatedRunsV1AppDataMigration(MEM).execute();
+  expect(again.summary.migratedCount).toBe(0);
+  expect(again.summary.skippedCount).toBe(7);
+}, 120000);

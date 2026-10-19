@@ -1,0 +1,5 @@
+COMMAND ["pnpm", "-C", "autobyteus-web", "transpile-electron"]
+CLEAN_ENV keys=CI,COREPACK_ENABLE_DOWNLOAD_PROMPT,HOME,LANG,LC_ALL,PATH,TMPDIR
+
+> autobyteus@1.5.3-beta.2 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web
+> tsc -p electron/tsconfig.json

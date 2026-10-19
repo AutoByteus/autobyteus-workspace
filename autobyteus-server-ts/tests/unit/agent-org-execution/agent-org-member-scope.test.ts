@@ -2,7 +2,6 @@ import { testActivationManager } from "../../fixtures/agent-run-preparation-fixt
 import { describe, expect, it, vi } from "vitest";
 import { AgentOrgExecutionScopeBuilder } from "../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
 import { validateAgentOrgStatePackage } from "../../../src/agent-org-execution/services/agent-org-state-package-validator.js";
-import { validateAgentOrgCommunicationMessagesV1 } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-schema.js";
 import type { FlatTeamExecutionCallbacks } from "../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
 import type { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
@@ -24,7 +23,7 @@ const buildCallbacks = async () => {
   ] });
   const state = validateAgentOrgStatePackage({
     executionTree: { ...tree, handoffs: orgHandoffs },
-    communicationMessages: validateAgentOrgCommunicationMessagesV1({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: ORG, messages: [] }, ORG),
+    communicationMessages: Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: ORG, messages: [] }),
   });
   let callbacks: FlatTeamExecutionCallbacks | undefined;
   const materialize = vi.fn(async (input: Parameters<FlatTeamExecutionFactory["beginMaterialization"]>[0]) => {

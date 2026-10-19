@@ -5,14 +5,16 @@ import { afterEach, expect, it } from 'vitest';
 import type { AppConfig } from '../../../src/config/app-config.js';
 import { FileAgentOrgDefinitionProvider } from '../../../src/agent-org-definition/providers/file-agent-org-definition-provider.js';
 import { AgentOrgDefinition, AgentOrgDefinitionUpdate } from '../../../src/agent-org-definition/domain/agent-org-definition.js';
-import { AgentOrgDefinitionService } from '../../../src/agent-org-definition/services/agent-org-definition-service.js';
+import { createDiskDefinitionServices } from '../../helpers/agent-package-definitions-test-support.js';
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true }))); });
 const setup = async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'org-avatar-delete-')); roots.push(root);
   const config = (base: string, extra: string[] = []) => ({ getAgentOrgsDir: () => path.join(base, 'agent-orgs'), getAdditionalAgentPackageRoots: () => extra }) as AppConfig;
   const provider = new FileAgentOrgDefinitionProvider(config(root));
-  const service = new AgentOrgDefinitionService(provider, { getFreshAgentDefinitionById: async () => null }, { getFreshDefinitionById: async () => null });
+  const service = createDiskDefinitionServices({
+    getAgentsDir: () => path.join(root, 'agents'), getAgentTeamsDir: () => path.join(root, 'agent-teams'), getAgentOrgsDir: () => path.join(root, 'agent-orgs'),
+  }).orgs;
   const created = await service.createDefinition(new AgentOrgDefinition({ name: 'Disposable Org', description: 'Preserved description', instructions: 'Preserved instructions', category: 'Keep', avatarUrl: '/asset.png', members: [], handoffs: [] }));
   return { root, config, provider, service, created };
 };
@@ -37,12 +39,14 @@ it('deletes only the exact package including owned descendants, preserving share
   for (const file of protectedPaths) expect(await fs.readFile(path.join(root, file), 'utf8')).toBe(`Exact preserved ${file}`);
   expect(await service.deleteDefinition(created.id!)).toBe(false);
 });
-it('keeps external packages read-only for avatar edit and deletion', async () => {
+it('saves avatar edits and deletes in a registered package folder, like its Agents (SR-003)', async () => {
   const { root, config, provider, created } = await setup();
   const external = path.join(root, 'external'); await fs.mkdir(path.join(external, 'agent-orgs'), { recursive: true });
   await fs.rename(path.join(root, 'agent-orgs', created.id!), path.join(external, 'agent-orgs', created.id!));
   const reader = new FileAgentOrgDefinitionProvider(config(root, [external])); const loaded = await reader.getById(created.id!);
-  const sourceFile = path.join(external, 'agent-orgs', created.id!, 'org-config.json'); const before = await fs.readFile(sourceFile);
-  loaded!.avatarUrl = '/forbidden.png'; await expect(reader.update(loaded!)).rejects.toThrow(); await expect(reader.delete(created.id!)).rejects.toThrow();
-  expect(await fs.readFile(sourceFile)).toEqual(before); expect(await provider.getById(created.id!)).toBeNull();
+  const sourceFile = path.join(external, 'agent-orgs', created.id!, 'org-config.json');
+  loaded!.avatarUrl = '/package.png'; await expect(reader.update(loaded!)).resolves.toMatchObject({ avatarUrl: '/package.png' });
+  expect(JSON.parse(await fs.readFile(sourceFile, 'utf8')).avatarUrl).toBe('/package.png');
+  expect(await provider.getById(created.id!)).toBeNull();
+  await expect(reader.delete(created.id!)).resolves.toBe(true); await expect(fs.stat(path.dirname(sourceFile))).rejects.toMatchObject({ code: 'ENOENT' });
 });

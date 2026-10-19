@@ -1,0 +1,76 @@
+autobyteus-server-ts/docs/modules/llm_management.md:564:The remote AutoByteus LLM provider (formerly `AUTOBYTEUS_LLM_SERVER_HOSTS`) has
+autobyteus-server-ts/docs/modules/llm_management.md:568:`AUTOBYTEUS_LLM_SERVER_HOSTS` value in the server `.env` is listed as an ordinary
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts:271:    // LLMProvider.AUTOBYTEUS left the runtime enum (frozen display-name table).
+autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts:131:    service.notifySettingsChange('AUTOBYTEUS_LLM_SERVER_HOSTS');
+autobyteus-server-ts/tests/unit/secret-management/provider-credential-catalog.test.ts:31:    expect(catalog.isKnownSecretId('provider.autobyteus.api-key' as never)).toBe(false);
+autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts:305:    const leftoverKey = "AUTOBYTEUS_LLM_SERVER_HOSTS";
+autobyteus-server-ts/tickets/done/provider-wording-cleanup/investigation-notes.md:12:- Current source logic is provider-based and checks `LLMProvider.AUTOBYTEUS`.
+autobyteus-ts/tickets/code_quality_ticket/CODE_QUALITY_PROGRESS.md:74:- 2026-01-30: Re-ran `pnpm exec vitest tests/integration/agent/tool_approval_flow.test.ts` (passed; SSL cert warning due to missing `AUTOBYTEUS_SSL_CERT_FILE`).
+autobyteus-ts/tickets/code_quality_ticket/CODE_QUALITY_PROGRESS.md:143:- 2026-01-30: Ran `pnpm exec vitest tests/integration/llm/utils/llm_config.test.ts tests/integration/llm/llm_reloading.test.ts` (passed; warnings about missing `AUTOBYTEUS_SSL_CERT_FILE` and default token limit logs during discovery).
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/api-e2e-testing.md:18:  - Covered by `AutobyteusLLM` generationConfig test and `AutobyteusClient` send payload test.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/api-e2e-testing.md:20:  - Covered by `AutobyteusLLM` stream generationConfig test and `AutobyteusClient` stream payload test.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/api-e2e-testing.md:22:  - Covered by `AutobyteusModelProvider` mocked discovery test.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/code-review.md:13:- Data-flow spine: configuration flows from `LLMConfig.extraParams` -> `AutobyteusLLM` -> `AutobyteusClient` -> `generation_config` server payload.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/code-review.md:16:- Boundary clarity: server wire naming is isolated in `AutobyteusClient`; `AutobyteusLLM` keeps camelCase request contract.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/docs-sync.md:11:The Node.js LLM design doc already documents `AutobyteusLLM`, `AutobyteusModelProvider`, and model `config_schema`. It now records that Autobyteus RPA runtime models forward `LLMConfig.extraParams` as chat `generation_config` and preserve server `config_schema` for caller/UI discovery.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:7:1. Caller creates `AutobyteusLLM(model, new LLMConfig({ extraParams }))`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:9:3. `BaseLLM.sendMessages` executes before hooks and calls `AutobyteusLLM._sendMessagesToLLM`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:10:4. `AutobyteusLLM._sendMessagesToLLM` resolves `logicalConversationId`, renders the transcript payload, and calls:
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:12:5. `AutobyteusClient.sendMessage` normalizes media URLs to data URIs.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:13:6. `AutobyteusClient.sendMessage` posts `/send-message` with:
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:20:8. `AutobyteusLLM` converts the server response to `CompleteResponse`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:24:1. Caller creates `AutobyteusLLM(model, new LLMConfig({ extraParams }))`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:26:3. `BaseLLM.streamMessages` executes before hooks and calls `AutobyteusLLM._streamMessagesToLLM`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:27:4. `AutobyteusLLM._streamMessagesToLLM` resolves `logicalConversationId`, renders the transcript payload, and calls:
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:29:5. `AutobyteusClient.streamMessage` normalizes media URLs to data URIs.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:30:6. `AutobyteusClient.streamMessage` posts `/stream-message` with:
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:37:8. `AutobyteusLLM` converts chunks to `ChunkResponse`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:41:1. `AutobyteusModelProvider.getModels()` reads `AUTOBYTEUS_LLM_SERVER_HOSTS`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:42:2. For each host, it calls `AutobyteusClient.getAvailableLlmModelsSync()`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:44:4. `AutobyteusModelProvider` validates required fields and parses model `config`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:45:5. `AutobyteusModelProvider` parses `config_schema`:
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:48:6. `AutobyteusModelProvider` constructs `LLMModel` with `configSchema`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md:53:- Missing `generationConfig` from direct `AutobyteusClient` callers serializes as `{}`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/handoff-summary.md:9:- RPA `AutobyteusLLM` now forwards `LLMConfig.extraParams` as request `generationConfig`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/handoff-summary.md:10:- `AutobyteusClient` now serializes chat `generation_config` for `/send-message` and `/stream-message`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/handoff-summary.md:11:- `AutobyteusModelProvider` now parses server `config_schema` into `LLMModel.configSchema`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/implementation.md:10:2. `AutobyteusLLM` includes a shallow copy of `this.config.extraParams` as `generationConfig` when calling `AutobyteusClient.sendMessage` and `streamMessage`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/implementation.md:11:3. `AutobyteusClient` serializes the request body for `/send-message` and `/stream-message` with `generation_config: request.generationConfig ?? {}`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/implementation.md:13:5. During model discovery, `AutobyteusModelProvider` parses server `config_schema` and stores it on `LLMModel.configSchema`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/implementation.md:18:- `AutobyteusLLM`: owns LLM configuration bridging from `LLMConfig` to RPA client request contract.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/implementation.md:19:- `AutobyteusClient`: owns HTTP payload naming and server API contract serialization.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/implementation.md:20:- `AutobyteusModelProvider`: owns server model metadata validation/parsing.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/investigation-notes.md:19:- `AutobyteusLLM` now forwards `LLMInvocationOptions.signal` to `AutobyteusClient`, but it still calls `sendMessage`/`streamMessage` with only `conversationId`, `modelName`, and `payload`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/investigation-notes.md:21:- `AutobyteusClient.sendMessage` and `streamMessage` build request bodies without `generation_config`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/investigation-notes.md:22:- `AutobyteusModelProvider.getModels` still builds `LLMModel` without parsing `modelInfo.config_schema`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/investigation-notes.md:29:- Forward `AutobyteusLLM.config.extraParams` into `generationConfig` for non-streaming and streaming calls.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/requirements.md:18:- `AutobyteusLLM` owns conversion from `LLMConfig.extraParams` to the RPA request-level generation configuration.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/requirements.md:19:- `AutobyteusClient` owns HTTP wire-shape serialization and always sends a `generation_config` object for `/send-message` and `/stream-message`.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/requirements.md:34:- R1: `AutobyteusLLM` forwards `LLMConfig.extraParams` -> AC1, AC2.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/requirements.md:35:- R2: `AutobyteusClient` serializes `generation_config` -> AC1, AC2.
+autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/requirements.md:36:- R3: `AutobyteusModelProvider` parses `config_schema` -> AC3.
+autobyteus-ts/tickets/memory_migration_ticket/MEMORY_MIGRATION_PROGRESS.md:25:- 2026-02-03: Ran LM Studio-gated memory integration flows (`memory-llm-flow`, `memory-compaction-flow`, `memory-tool-call-flow`, `handler-memory-flow`, `full-tool-roundtrip-flow`) (passed). Warnings emitted about Ollama/LM Studio/Autobyteus connectivity and missing `AUTOBYTEUS_SSL_CERT_FILE`.
+autobyteus-ts/tickets/migrate_nodesjs_ticket/MIGRATION_PROGRESS.md:607:| `autobyteus/llm/api/autobyteus_llm.py` | `src/llm/api/autobyteus_llm.ts` | Completed | N/A | N/A | Created | 2026-01-27 Passed | AutobyteusClient | Autobyteus-hosted LLM wrapper |
+autobyteus-ts/tickets/migrate_nodesjs_ticket/MIGRATION_PROGRESS.md:611:| `autobyteus/llm/autobyteus_provider.py` | `src/llm/autobyteus_provider.ts` | Completed | N/A | N/A | Created | Failed (2026-01-28 timeout; requires live server) | AutobyteusClient | Autobyteus model discovery |
+autobyteus-ts/tickets/migrate_nodesjs_ticket/MIGRATION_PROGRESS.md:1215:| `autobyteus/multimedia/audio/api/autobyteus_audio_client.py` | `src/multimedia/audio/api/autobyteus_audio_client.ts` | Completed | Created | 2026-01-28 Passed | Deferred | 2026-01-27 Skipped | AutobyteusClient | Integration gated by AUTOBYTEUS_RUN_CLIENT_TESTS; server may return 500 |
+autobyteus-ts/tickets/migrate_nodesjs_ticket/MIGRATION_PROGRESS.md:1216:| `autobyteus/multimedia/audio/autobyteus_audio_provider.py` | `src/multimedia/audio/autobyteus_audio_provider.ts` | Completed | N/A | N/A | Created | 2026-01-27 Passed | AutobyteusClient | Integration tests hit Autobyteus model discovery |
+autobyteus-ts/tickets/migrate_nodesjs_ticket/MIGRATION_PROGRESS.md:1219:| `autobyteus/multimedia/image/api/autobyteus_image_client.py` | `src/multimedia/image/api/autobyteus_image_client.ts` | Completed | Created | 2026-01-28 Passed | Deferred | 2026-01-27 Skipped | AutobyteusClient | Integration gated by AUTOBYTEUS_RUN_CLIENT_TESTS; timeouts possible |
+autobyteus-ts/tickets/migrate_nodesjs_ticket/MIGRATION_PROGRESS.md:1220:| `autobyteus/multimedia/image/autobyteus_image_provider.py` | `src/multimedia/image/autobyteus_image_provider.ts` | Completed | N/A | N/A | Created | 2026-01-27 Passed | AutobyteusClient | Integration tests hit Autobyteus model discovery |
+autobyteus-ts/tickets/migrate_nodesjs_ticket/MIGRATION_STRATEGY.md:238:- 2026-01-26 — Added `MultimediaProvider.AUTOBYTEUS` to reflect provider values returned by Autobyteus model discovery endpoints.
+autobyteus-web/components/settings/__tests__/ServerSettingsEndpointCards.spec.ts:59:      endpointSetting('AUTOBYTEUS_LLM_SERVER_HOSTS', 'https://llm.example.com:443'),
+autobyteus-web/components/settings/__tests__/ServerSettingsEndpointCards.spec.ts:69:    expect(wrapper.find('[data-testid="quick-setting-card-AUTOBYTEUS_LLM_SERVER_HOSTS"]').exists()).toBe(false)
+autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts:212:        key: 'AUTOBYTEUS_LLM_SERVER_HOSTS',
+autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts:232:    const removeButton = wrapper.get('[data-testid="server-setting-remove-AUTOBYTEUS_LLM_SERVER_HOSTS"]')
+autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts:236:    expect(store.deleteServerSetting).toHaveBeenCalledWith('AUTOBYTEUS_LLM_SERVER_HOSTS')
+autobyteus-web/docs/settings.md:86:`AUTOBYTEUS_LLM_SERVER_HOSTS` value appears under Server Settings as an ordinary
+autobyteus-web/tests/stores/serverSettingsStore.test.ts:526:    ['AUTOBYTEUS_LLM_SERVER_HOSTS', 'https://leftover.example.invalid'],
+autobyteus-web/tickets/server-settings-ui-improvements/proposed-design.md:31:  - URL providers (`LMSTUDIO_HOSTS`, `OLLAMA_HOSTS`, `AUTOBYTEUS_LLM_SERVER_HOSTS`): protocol + host + port (+ optional path in state model).
+test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log:458:+provider.autobyteus.api-key MISSING CREATE
+test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log:640:+SECRET provider.autobyteus.api-key
+test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log:802:+provider.autobyteus.api-key MISSING CREATE
+test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log:985:+provider.autobyteus.api-key MISSING CREATE
+test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log:1167:+SECRET provider.autobyteus.api-key
+test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log:1774:+provider.autobyteus.api-key MISSING CREATE
+test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log:1956:+SECRET provider.autobyteus.api-key
+test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log:2122:+provider.autobyteus.api-key MISSING CREATE
+test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log:2304:+SECRET provider.autobyteus.api-key

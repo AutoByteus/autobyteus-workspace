@@ -1,0 +1,72 @@
+{
+  "startedAt": "2026-10-17T10:12:19.707Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-web/tests/e2e/fixtures/agent-org-task-team-disclosure.page.vue",
+  "scenarios": {
+    "API-TTRC-B01": {
+      "result": "Fail",
+      "description": "Default: delegated Team rows open, chevron down and aligned with the mounted Team chevron (AC-001, REQ-001/005)",
+      "startedAt": "2026-10-17T10:12:32.157Z",
+      "failure": {
+        "id": "API-TTRC-B01",
+        "description": "Default: delegated Team rows open, chevron down and aligned with the mounted Team chevron (AC-001, REQ-001/005)",
+        "message": "Unexpected default row order",
+        "details": {
+          "order": [
+            "agent-org-agent-row-teacher-run",
+            "agent-org-team-row-ssg-configured",
+            "agent-org-agent-row-ssg-configured-s1",
+            "agent-org-agent-row-ssg-configured-s2",
+            "agent-org-team-row-reviewers-configured"
+          ]
+        },
+        "stack": "Error: Unexpected default row order\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-web/tests/e2e/agent-org-task-team-disclosure-probe.mjs:72:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-web/tests/e2e/agent-org-task-team-disclosure-probe.mjs:258:5\n    at runNextTicks (node:internal/process/task_queues:64:5)\n    at process.processImmediate (node:internal/timers:452:9)\n    at process.callbackTrampoline (node:internal/async_hooks:130:17)\n    at async scenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-web/tests/e2e/agent-org-task-team-disclosure-probe.mjs:84:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-web/tests/e2e/agent-org-task-team-disclosure-probe.mjs:248:3"
+      }
+    }
+  },
+  "browserEvents": [],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 22602,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "API-TTRC-B01",
+      "description": "Default: delegated Team rows open, chevron down and aligned with the mounted Team chevron (AC-001, REQ-001/005)",
+      "message": "Unexpected default row order",
+      "details": {
+        "order": [
+          "agent-org-agent-row-teacher-run",
+          "agent-org-team-row-ssg-configured",
+          "agent-org-agent-row-ssg-configured-s1",
+          "agent-org-agent-row-ssg-configured-s2",
+          "agent-org-team-row-reviewers-configured"
+        ]
+      },
+      "stack": "Error: Unexpected default row order\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-web/tests/e2e/agent-org-task-team-disclosure-probe.mjs:72:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-web/tests/e2e/agent-org-task-team-disclosure-probe.mjs:258:5\n    at runNextTicks (node:internal/process/task_queues:64:5)\n    at process.processImmediate (node:internal/timers:452:9)\n    at process.callbackTrampoline (node:internal/async_hooks:130:17)\n    at async scenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-web/tests/e2e/agent-org-task-team-disclosure-probe.mjs:84:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-web/tests/e2e/agent-org-task-team-disclosure-probe.mjs:248:3"
+    }
+  ],
+  "port": 51305,
+  "baseUrl": "http://127.0.0.1:51305",
+  "browserVersion": "155.0.8059.84",
+  "failureDom": "Agent Org delegated Team disclosure probe\nORGS\nNested Classroom Test Org\n(1)\nClassroom run\n18d\nT\nTeacher\nStudentStudyGroup\nSO\nstudent one\nST\nstudent two\nReviewers\nStudentStudyGroup\nSO\nstudent one\nST\nstudent two\nReviewers\nC\nchair\nStudentStudyGroup\nSO\nstudent one\nST\nstudent two\nT\nTeacher",
+  "result": "Fail",
+  "finishedAt": "2026-10-17T10:12:32.824Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/probes-base/agent-org-task-team-disclosure/out/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/probes-base/agent-org-task-team-disclosure/out/nuxt.log",
+    "outputDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/probes-base/agent-org-task-team-disclosure/out"
+  }
+}

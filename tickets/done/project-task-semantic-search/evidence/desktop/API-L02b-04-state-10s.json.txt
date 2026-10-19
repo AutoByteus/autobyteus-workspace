@@ -1,0 +1,29 @@
+# API-L02b: output of the step named in the execution report Cases row for API-L02b; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "query": "the navigation panel on the left forgets that I folded it when I reopen the program",
+ "placeholder": "Describe the task you're looking for",
+ "status": "Preparing meaning search… 56 of 1000 Tasks",
+ "retry": false,
+ "noMatch": false,
+ "cancelledToggle": "Cancelled (94)",
+ "lanes": {
+  "TODO": {
+   "count": 1,
+   "tasks": [
+    {
+     "taskId": "project_task_87d1cab5-3b34-48ea-ba70-bc30346d3909",
+     "title": "Sidebar collapse state is lost after restart",
+     "located": false
+    }
+   ]
+  },
+  "IN_PROGRESS": {
+   "count": 0,
+   "tasks": []
+  },
+  "DONE": {
+   "count": 0,
+   "tasks": []
+  }
+ }
+}

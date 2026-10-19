@@ -5,6 +5,7 @@ import { chmod, copyFile, cp, mkdir, readFile, readdir, rm, stat, writeFile, lst
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolveWorkspacePackageRoot } from '../../scripts/workspace-package-roots.mjs'
+import { pruneOnnxruntimeWebDist, validateEmbeddingRuntime } from './onnxruntime-web-packaging.mjs'
 
 const COLORS = {
   green: '\x1b[32m',
@@ -504,10 +505,13 @@ async function stageRuntimeBundle() {
 
   warn('\nPruning node-pty prebuilds for host platform...')
   await pruneNativePrebuilds(path.join(stageDir, 'node_modules', 'node-pty', 'prebuilds'))
+  warn('\nPruning onnxruntime-web to its Node build...')
+  info(`Removed ${Math.round(await pruneOnnxruntimeWebDist(path.join(stageDir, 'node_modules')) / 1e6)} MB of browser builds`)
 
   await rm(localPackageDir, { recursive: true, force: true })
   await assertNoSymlinks(path.join(stageDir, 'node_modules'))
   await validateCriticalImports()
+  await validateEmbeddingRuntime(stageDir)
   await validateLinuxPrismaEngines(path.join(stageDir, 'node_modules'))
 }
 

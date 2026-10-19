@@ -1,0 +1,36 @@
+--- FAIL: TestGaneshaPolicyAndPersistentRecovery (0.00s)
+    backend_test.go:65: fresh source attributes require one EXPORT-level zero expiry NFS_CORE_PARAM {
+         Protocols = 4;
+         NFS_Port = 2049;
+         Enable_NLM = false;
+         Enable_RQUOTA = false;
+         Enable_UDP = false;
+        }
+        NFSv4 {
+         Minor_Versions = 1;
+         RecoveryBackend = fs;
+         RecoveryRoot = "/var/lib/ganesha";
+        }
+        EXPORT {
+         Export_Id = 1;
+         Path = "/export";
+         Pseudo = "/autobyteus/5544dadc-86b0-43ba-9799-74728b442227";
+         Protocols = 4;
+         Transports = TCP;
+         SecType = sys;
+         Access_Type = None;
+         Squash = All_Squash;
+         Anonymous_uid = 501;
+         Anonymous_gid = 20;
+         CLIENT {
+          Attr_Expiration_Time = 0;
+          Clients = 192.168.1.0/24, 10.0.0.3;
+          Access_Type = RW;
+          Squash = All_Squash;
+         }
+         FSAL { Name = VFS; }
+        }
+        
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.329s
+FAIL

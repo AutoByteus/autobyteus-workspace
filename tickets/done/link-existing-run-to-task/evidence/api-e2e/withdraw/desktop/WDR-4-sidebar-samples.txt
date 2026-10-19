@@ -1,0 +1,21 @@
+# WDR-4 open runs archived / deleted from outside this window (GraphQL, as another client calls it); sidebar sampled each second
+# Commit: 1005f9eaaf (code ffeea43dac), instance iso-65199-3241
+# Date: 2026-10-18T19:25:15Z
+before: workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|AW|ADO Writer|(1)|Hello, please introduce yourself in one sentence.|3m|TEAMS|ADO Review Team|(1)|Hello team, please introduce yourselves in one sentence.|4m|L|lead|4m|M|mate|4m|Settings|
+terminate writer: {"data": {"terminateAgentRun": {"success": true, "message": "Agent run terminated successfully."}}}
+archive writer: {"data": {"archiveStoredRun": {"success": true, "message": "Run 'ado_writer_e5253a1f2f3e46faae7bac154a547b35' archived."}}}
+terminate team: {"data": {"terminateAgentTeamRun": {"success": true, "message": "Agent team run terminated successfully."}}}
+delete team: {"data": {"deleteStoredTeamRun": {"success": true, "message": "Team run 'ado_review_team_c47c1ffb72f84c988515903ddffa6667' deleted permanently."}}}
+mutations done at 19:25:17
+t+1s 19:25:18 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+2s 19:25:20 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+3s 19:25:22 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+4s 19:25:25 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+5s 19:25:27 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+6s 19:25:29 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+7s 19:25:32 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+8s 19:25:34 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+9s 19:25:36 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+10s 19:25:39 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+11s 19:25:41 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|now|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|
+t+12s 19:25:43 workspace-wdr|AP|ADO Project Manager|(1)|<PM run>|1m|AW|ado writer|Write a one-line motto for a tiny calendar app and send it to the Project Manager.|Settings|

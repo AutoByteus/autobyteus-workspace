@@ -6,7 +6,8 @@ import {
   type InputTokenSemantic,
 } from "../../token-usage/domain/token-usage-component-basis.js";
 import type { TokenUsageUnitPrices } from "../../token-usage/domain/token-usage-unit-price-summary.js";
-import { isClaudeSdkResultIdentity, isClaudeSdkModelUsageArray, type ClaudeSdkModelUsage, type ClaudeSdkMainLoopUsage, type ClaudeSdkSelectedMatchState, type ClaudeSdkQueryKind } from "./claude-sdk-usage.js";
+import { acceptModelCallThroughput, type ModelCallThroughput } from "./model-call-throughput.js";
+import { isClaudeSdkResultIdentity, isClaudeSdkModelUsageArray, type ClaudeSdkModelUsage, type ClaudeSdkSelectedMatchState, type ClaudeSdkQueryKind } from "./claude-sdk-usage.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
 export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | "grok_build" | string;
@@ -14,6 +15,7 @@ export type TokenUsageIngestionKind =
   | "autobyteus_llm_phase"
   | "codex_thread_token_usage"
   | "claude_sdk_result"
+  | "claude_sdk_call"
   | "grok_acp_call"
   | string;
 export type TokenUsagePricingStatus = "trusted" | "missing" | "placeholder" | "local_no_api_bill";
@@ -62,12 +64,16 @@ export interface TokenUsageRunSummaryPayload {
   latest_prompt_tokens: number | null;
   effective_context_window_tokens: number | null;
   context_window_usage_percent: number | null;
+  context_compaction_threshold_tokens: number | null;
   latest_model_provider: string | null;
   latest_model_identifier: string | null;
   latest_runtime_kind: string | null;
   latest_selected_raw_model_id?: string | null;
   has_cache_write_rate_assumption?: boolean;
+  /** Model calls only (D-4); Claude SDK rows written before token-meter-accuracy counted turns. */
   usage_report_count: number;
+  /** Sum of the summarized records' revisions; the live freshness key (D-9). */
+  revision: number;
   updated_at: string | null;
 }
 
@@ -99,11 +105,12 @@ export interface TokenUsageUpdatedPayload {
   claude_sdk_model_usage?: ClaudeSdkModelUsage[];
   claude_sdk_session_id?: string | null;
   claude_sdk_query_kind?: ClaudeSdkQueryKind | null;
-  claude_sdk_main_loop_usage?: ClaudeSdkMainLoopUsage | null;
   /** First emitted observation of a Claude process generation opened with `resume` (SR-012). */
   claude_sdk_series_restart?: true;
   ingestion_kind: TokenUsageIngestionKind;
   usage_scope: TokenUsageScope;
+  /** True when this observation reports exactly one provider model call (D-4). */
+  reports_model_call: boolean;
   snapshot_series_key: string | null;
   previous_snapshot_event_id: string | null;
   input_token_semantic: InputTokenSemantic;
@@ -155,6 +162,9 @@ export interface TokenUsageUpdatedPayload {
   latest_prompt_tokens: number | null;
   effective_context_window_tokens: number | null;
   context_window_usage_percent: number | null;
+  context_compaction_threshold_tokens: number | null;
+  /** This model call's TPS as its adapter measured it, or null (not a model call, none reported, too small). */
+  output_throughput: ModelCallThroughput | null;
   raw_usage_json: Record<string, unknown> | null;
   raw_event_json: Record<string, unknown> | null;
   quality_flags: string[];
@@ -288,6 +298,7 @@ export const createTokenUsageUpdatedPayload = (input: {
   }
   const providerName = topLevelProviderName ?? nestedProviderName;
   const isSdk = runtimeKind === "claude_agent_sdk" && ingestionKind === "claude_sdk_result";
+  const isSdkCall = runtimeKind === "claude_agent_sdk" && ingestionKind === "claude_sdk_call";
   const sdkIdentityValid = isSdk && isClaudeSdkResultIdentity(source);
   if (isSdk && !sdkIdentityValid) qualityFlags.add("claude_sdk_identity_invalid");
   const sdkRows = sdkIdentityValid && isClaudeSdkModelUsageArray(source.claude_sdk_model_usage)
@@ -299,6 +310,7 @@ export const createTokenUsageUpdatedPayload = (input: {
   const sdkMatchedRow = sdkMatchState === "matched"
     ? sdkRows.find((row) => row.rawModelId === sdkResolvedRawId) : null;
   const sdkModelIdentifier = sdkMatchedRow ? sdkMatchedRow.canonicalModel ?? sdkMatchedRow.rawModelId : null;
+  const reportsModelCall = source.reports_model_call === true;
   return {
     usage_event_id: usageEventId,
     idempotency_key: idempotencyKey,
@@ -325,13 +337,13 @@ export const createTokenUsageUpdatedPayload = (input: {
     selected_model_value: isSdk ? asString(source.selected_model_value) : null,
     selected_resolved_raw_model_id: sdkResolvedRawId,
     claude_sdk_model_usage: sdkRows,
-    claude_sdk_session_id: isSdk ? asString(source.claude_sdk_session_id) : null,
+    claude_sdk_session_id: isSdk || isSdkCall ? asString(source.claude_sdk_session_id) : null,
     claude_sdk_query_kind: isSdk && (source.claude_sdk_query_kind === "create" || source.claude_sdk_query_kind === "resume")
       ? source.claude_sdk_query_kind : isSdk ? "unknown" : null,
-    claude_sdk_main_loop_usage: isSdk && sdkIdentityValid ? source.claude_sdk_main_loop_usage as ClaudeSdkMainLoopUsage : null,
     ...(isSdk && source.claude_sdk_series_restart === true ? { claude_sdk_series_restart: true as const } : {}),
     ingestion_kind: ingestionKind,
     usage_scope: usageScope,
+    reports_model_call: reportsModelCall,
     snapshot_series_key: asString(source.snapshot_series_key),
     previous_snapshot_event_id: asString(source.previous_snapshot_event_id),
     input_token_semantic: inputTokenSemantic,
@@ -383,8 +395,10 @@ export const createTokenUsageUpdatedPayload = (input: {
     latest_prompt_tokens: asNonNegativeInt(source.latest_prompt_tokens),
     effective_context_window_tokens: asNonNegativeInt(source.effective_context_window_tokens),
     context_window_usage_percent: asFiniteNumber(source.context_window_usage_percent),
+    context_compaction_threshold_tokens: asNonNegativeInt(source.context_compaction_threshold_tokens),
+    output_throughput: acceptModelCallThroughput({ reportsModelCall, value: source.output_throughput }),
     raw_usage_json: isSdk ? null : asJsonRecord(source.raw_usage_json) ?? asJsonRecord(usage?.raw_usage_json),
-    raw_event_json: isSdk ? null : asJsonRecord(source.raw_event_json) ?? asJsonRecord(source),
+    raw_event_json: isSdk || isSdkCall ? null : asJsonRecord(source.raw_event_json) ?? asJsonRecord(source),
     quality_flags: Array.from(qualityFlags),
   };
 };

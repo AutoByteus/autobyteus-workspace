@@ -1,0 +1,196 @@
+{
+  "files": {
+    "project_14b75dca-5eb9-4bc4-a687-9321702d9639/project.json": {
+      "added": [
+        "taskKeys"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_14b75dca-5eb9-4bc4-a687-9321702d9639/tasks/project_task_211f5295-d80d-4b3a-8dd3-3787390b408c/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_14b75dca-5eb9-4bc4-a687-9321702d9639/tasks/project_task_21c4cc33-dc3a-499e-83fa-0ba3fcb9cef5/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_14b75dca-5eb9-4bc4-a687-9321702d9639/tasks/project_task_2bfb8ec9-b773-4262-a630-bece2b047236/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_14b75dca-5eb9-4bc4-a687-9321702d9639/tasks/project_task_2eaa36fc-783d-440f-889c-9a456261fcc8/context/ctx_82e8384505fe__tkd-api-outline.md": "bytes unchanged",
+    "project_14b75dca-5eb9-4bc4-a687-9321702d9639/tasks/project_task_2eaa36fc-783d-440f-889c-9a456261fcc8/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_14b75dca-5eb9-4bc4-a687-9321702d9639/tasks/project_task_527300af-4dff-4545-bcd6-a806a6075549/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_14b75dca-5eb9-4bc4-a687-9321702d9639/tasks/project_task_9e63d05f-0f68-4a0c-94d5-e6a6b52579e2/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_74b3521e-d9cc-46ea-a7d1-a2f3052cf687/project.json": {
+      "added": [
+        "taskKeys"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_74b3521e-d9cc-46ea-a7d1-a2f3052cf687/tasks/project_task_6b0d10ee-bf38-4c41-b27a-11a40357be58/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_7d38dd21-b5b7-42b4-896e-3bc7e627a560/project.json": {
+      "added": [
+        "taskKeys"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_7d38dd21-b5b7-42b4-896e-3bc7e627a560/tasks/project_task_31f0e518-c668-4eaa-a4eb-8700cb2b63e6/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_ee803414-012f-499e-8dc1-2990cd0369eb/project.json": {
+      "added": [
+        "taskKeys"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_ee803414-012f-499e-8dc1-2990cd0369eb/tasks/project_task_03c1bfff-26c7-4990-9d56-269462d8dd8c/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_ee803414-012f-499e-8dc1-2990cd0369eb/tasks/project_task_04caddd0-df71-41d9-aec5-4d67f1fe6d56/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "project_ee803414-012f-499e-8dc1-2990cd0369eb/tasks/project_task_ca2b4728-da86-4512-a735-a9dcaef90c76/task.json": {
+      "added": [
+        "taskKey"
+      ],
+      "removed": [],
+      "changed": []
+    }
+  },
+  "keys": {
+    "AutoByteus": {
+      "Set up the repository layout": "autobyteus-1",
+      "Design the Task board schema": "autobyteus-2",
+      "Ship the board UI": "autobyteus-3",
+      "Prototype the old sync service": "autobyteus-4",
+      "Write the API reference": "autobyteus-5",
+      "Prepare the beta release notes": "autobyteus-6"
+    },
+    "Customer Onboarding Experience Redesign": {
+      "Map the onboarding journey": "customer-onboarding-experience-redesign-1",
+      "Redesign the welcome screens": "customer-onboarding-experience-redesign-2",
+      "Usability test with five customers": "customer-onboarding-experience-redesign-3"
+    },
+    "AutoByteus!": {
+      "Collision check Task": "autobyteus-2-1"
+    },
+    "Café Ops": {
+      "Order the espresso beans": "cafe-ops-1"
+    }
+  },
+  "prefixes": {
+    "AutoByteus": {
+      "prefix": "autobyteus",
+      "lastNumber": 6
+    },
+    "Customer Onboarding Experience Redesign": {
+      "prefix": "customer-onboarding-experience-redesign",
+      "lastNumber": 3
+    },
+    "AutoByteus!": {
+      "prefix": "autobyteus-2",
+      "lastNumber": 1
+    },
+    "Café Ops": {
+      "prefix": "cafe-ops",
+      "lastNumber": 1
+    }
+  },
+  "ledger": [
+    {
+      "migrationId": "20260701_team_communication_projection_addresses",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20261005_projects_per_folder_v1",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20261017_project_task_keys_v1",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    },
+    {
+      "migrationId": "20261006_remove_built_in_project_task_manager",
+      "status": "SUCCEEDED",
+      "attempts": 1
+    }
+  ],
+  "failures": [],
+  "newFiles": [],
+  "graphql": [
+    {
+      "projectId": "project_14b75dca-5eb9-4bc4-a687-9321702d9639",
+      "name": "AutoByteus",
+      "taskCount": 6
+    },
+    {
+      "projectId": "project_7d38dd21-b5b7-42b4-896e-3bc7e627a560",
+      "name": "AutoByteus!",
+      "taskCount": 1
+    },
+    {
+      "projectId": "project_74b3521e-d9cc-46ea-a7d1-a2f3052cf687",
+      "name": "Café Ops",
+      "taskCount": 1
+    },
+    {
+      "projectId": "project_ee803414-012f-499e-8dc1-2990cd0369eb",
+      "name": "Customer Onboarding Experience Redesign",
+      "taskCount": 3
+    }
+  ],
+  "result": "Pass"
+}

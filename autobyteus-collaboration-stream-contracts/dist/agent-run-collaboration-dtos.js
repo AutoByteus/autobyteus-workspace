@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { agentAddressSchema, agentInputStateSchema, agentPresentationMessageSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
-import { agentOrgAgentStatusDtoSchema, agentOrgCommunicationMessageDtoSchema, closedTaskExecutionsDtoSchema, collaboratorEntryDtoSchema, taskExecutionDtoSchema, taskExecutionsClosedEventDtoSchema, taskExecutionsReopenedEventDtoSchema, } from "./agent-org-execution-dtos.js";
+import { agentOrgAgentStatusDtoSchema, agentPresentationBatchEventDtoSchema, agentOrgCommunicationMessageDtoSchema, closedTaskExecutionsDtoSchema, taskExecutionDtoSchema, taskExecutionsClosedEventDtoSchema, delegatedLaunchSelectionsChangedEventDtoSchema, taskExecutionsReopenedEventDtoSchema, } from "./agent-org-execution-dtos.js";
 const timestamp = nonEmptyStringSchema;
 /**
  * The collaboration package of one standalone Agent run (root kind `agent`): its host
- * Agent, the collaborators brought in with `@`, and their task executions.
+ * Agent and its delegated copies (task executions).
  */
 export const agentRunCollaborationTreeDtoSchema = z.object({
     subjectKind: z.literal("agent"),
@@ -14,7 +14,6 @@ export const agentRunCollaborationTreeDtoSchema = z.object({
         agentRunId: nonEmptyStringSchema,
         agentDefinitionId: nonEmptyStringSchema,
     }).strict(),
-    collaborators: z.array(collaboratorEntryDtoSchema),
     taskExecutions: z.array(taskExecutionDtoSchema),
 }).strict();
 export const agentRunCollaborationCommunicationMessagesDtoSchema = z.object({
@@ -35,13 +34,14 @@ export const agentRunCollaborationViewDtoSchema = z.object({
 }).strict();
 export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
+    agentPresentationBatchEventDtoSchema,
     z.object({
         kind: z.literal("task_execution_started"),
         host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecutionDtoSchema,
     }).strict(),
     z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
-    z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
     taskExecutionsClosedEventDtoSchema,
     taskExecutionsReopenedEventDtoSchema,
+    delegatedLaunchSelectionsChangedEventDtoSchema,
 ]);
 //# sourceMappingURL=agent-run-collaboration-dtos.js.map

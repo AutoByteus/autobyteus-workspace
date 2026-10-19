@@ -24,10 +24,9 @@ const tree = (): TeamRunExecutionTreeDto => ({
   application_binding: null,
   handoffs: [],
   root_team: {
-    collaborators: [],
     address: '/',
     team_definition_id: 'root-def',
-    team_definition_name: 'Nested Classroom',
+    team_definition_name: 'Classroom',
     team_run_id: 'root-run',
     coordinator_address: '/teacher',
     default_launch_configuration: launch(),
@@ -43,39 +42,20 @@ const tree = (): TeamRunExecutionTreeDto => ({
         launch_configuration: launch(),
       },
       {
-        kind: 'configured_team',
-        address: '/StudentStudyGroup',
-        team_definition_id: 'study-def',
-        role: 'Students',
+        kind: 'configured_agent',
+        address: '/student_one',
+        agent_definition_id: 'student-one-def',
+        role: 'Student',
         description: null,
-        team_run_id: 'study-run',
-        coordinator_address: '/StudentStudyGroup/student_one',
-        default_launch_configuration: launch({
+        agent_run_id: 'student-one-run',
+        platform_agent_run_id: null,
+        launch_configuration: launch({
           runtime_kind: 'claude_agent_sdk',
-          llm_model_identifier: 'claude-sonnet',
-          llm_config: null,
+          llm_model_identifier: 'claude-opus',
+          llm_config: { temperature: 0.2 },
           auto_execute_tools: true,
-          workspace_root_path: '/workspace/study',
+          workspace_root_path: '/workspace/student-one',
         }),
-        members: [
-          {
-            kind: 'configured_agent',
-            address: '/StudentStudyGroup/student_one',
-            agent_definition_id: 'student-one-def',
-            role: null,
-            description: null,
-            agent_run_id: 'student-one-run',
-            platform_agent_run_id: null,
-            launch_configuration: launch({
-              runtime_kind: 'claude_agent_sdk',
-              llm_model_identifier: 'claude-opus',
-              llm_config: { temperature: 0.2 },
-              auto_execute_tools: true,
-              workspace_root_path: '/workspace/student-one',
-            }),
-          },
-        ],
-        task_executions: [],
       },
     ],
     task_executions: [],
@@ -94,8 +74,7 @@ const metadata = (
 
 const workspaceMetadataByAddress = (): ReadonlyMap<AgentTeamAddress, WorkspaceMetadata> => new Map([
   ['/', metadata('root-ws', '/workspace/root')],
-  ['/StudentStudyGroup', metadata('study-ws', '/workspace/study')],
-  ['/StudentStudyGroup/student_one', metadata('student-ws', '/workspace/student-one')],
+  ['/student_one', metadata('student-ws', '/workspace/student-one')],
 ])
 
 describe('teamExecutionContextFactory stored V2 projection', () => {
@@ -112,36 +91,27 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
     expect(view.coordinatorAddress).toBe('/teacher')
     expect(view.memberNodes.map((member) => [member.kind, member.address])).toEqual([
       ['agent', '/teacher'],
-      ['agent_team', '/StudentStudyGroup'],
+      ['agent', '/student_one'],
     ])
-    expect(view.memberNodes[1]).toEqual(expect.objectContaining({
-      kind: 'agent_team',
-      coordinatorAddress: '/StudentStudyGroup/student_one',
-      children: [expect.objectContaining({ address: '/StudentStudyGroup/student_one' })],
-    }))
     expect(view.root.effectiveConfig).toEqual(expect.objectContaining({
       runtimeKind: 'codex_app_server',
       workspaceRootPath: '/workspace/root',
     }))
-    expect(view.teamsByAddress['/StudentStudyGroup']).toEqual(expect.objectContaining({
-      parentAddress: '/',
-      isCustomized: true,
+    expect(Object.keys(view.teamsByAddress)).toEqual(['/'])
+    expect(view.agentsByAddress['/student_one']).toEqual(expect.objectContaining({
+      containingTeamAddress: '/',
       effectiveConfig: expect.objectContaining({
         runtimeKind: 'claude_agent_sdk',
-        workspaceRootPath: '/workspace/study',
-        llmConfig: null,
+        llmModelIdentifier: 'claude-opus',
+        workspaceRootPath: '/workspace/student-one',
+        llmConfig: { temperature: 0.2 },
       }),
-    }))
-    expect(view.agentsByAddress['/StudentStudyGroup/student_one'].effectiveConfig).toEqual(expect.objectContaining({
-      llmModelIdentifier: 'claude-opus',
-      workspaceRootPath: '/workspace/student-one',
-      llmConfig: { temperature: 0.2 },
     }))
     expect(Object.isFrozen(view)).toBe(true)
     expect(Object.isFrozen(view.memberNodes)).toBe(true)
     expect(Object.isFrozen(view.memberNodes[1])).toBe(true)
     expect(Object.isFrozen(view.teamsByAddress)).toBe(true)
-    expect(Object.isFrozen(view.agentsByAddress['/StudentStudyGroup/student_one'].effectiveConfig.llmConfig)).toBe(true)
+    expect(Object.isFrozen(view.agentsByAddress['/student_one'].effectiveConfig.llmConfig)).toBe(true)
     expect(source).toEqual(original)
   })
 
@@ -157,40 +127,31 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
         runtimeKind: 'codex_app_server',
         workspace: expect.objectContaining({ workspaceId: 'root-ws' }),
       }),
-      teamOverrides: {
-        '/StudentStudyGroup': {
-          runtimeKind: 'claude_agent_sdk',
-          workspace: expect.objectContaining({
-            workspaceId: 'study-ws',
-            workspaceMetadata: expect.objectContaining({ workspaceRootPath: '/workspace/study' }),
-          }),
-          llmModelIdentifier: 'claude-sonnet',
-          llmConfig: null,
-          autoExecuteTools: true,
-        },
-      },
+      teamOverrides: {},
       agentOverrides: {
-        '/StudentStudyGroup/student_one': {
+        '/student_one': expect.objectContaining({
+          runtimeKind: 'claude_agent_sdk',
           llmModelIdentifier: 'claude-opus',
           llmConfig: { temperature: 0.2 },
-        },
+          autoExecuteTools: true,
+        }),
       },
       isLocked: false,
     }))
-    expect(seed.agentOverrides['/StudentStudyGroup/student_one']).not.toHaveProperty('workspace')
+    expect(seed.agentOverrides['/student_one']).not.toHaveProperty('workspace')
 
-    ;(seed.agentOverrides['/StudentStudyGroup/student_one'].llmConfig as { temperature: number }).temperature = 0.9
-    expect(view.agentsByAddress['/StudentStudyGroup/student_one'].effectiveConfig.llmConfig).toEqual({ temperature: 0.2 })
+    ;(seed.agentOverrides['/student_one'].llmConfig as { temperature: number }).temperature = 0.9
+    expect(view.agentsByAddress['/student_one'].effectiveConfig.llmConfig).toEqual({ temperature: 0.2 })
   })
 
   it('creates one locked Agent context from the exact configured Agent snapshot', () => {
     const source = tree()
-    expect(teamAgentSourceAt(source, '/StudentStudyGroup/student_one')?.agent_definition_id).toBeTruthy()
+    expect(teamAgentSourceAt(source, '/student_one')?.agent_definition_id).toBeTruthy()
 
     const context = createTeamAgentContext({
       tree: source,
       agentRunId: 'student-one-run',
-      address: '/StudentStudyGroup/student_one',
+      address: '/student_one',
       workspaceMetadata: metadata('student-ws', '/workspace/student-one'),
     })
 

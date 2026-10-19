@@ -1,0 +1,102 @@
+{
+  "observedAt": "2026-10-13T14:56:22.325103+00:00",
+  "purpose": "User-authorized READ-ONLY recurrence diagnosis, no repair/migration/install/test/model action",
+  "target": {
+    "Id": "4a0c3f3ae959c9bcdb766860de31c7fb303137df019bbc905684c3e636d474c1",
+    "Image": "sha256:1779a6e136a2fcd48a3045687a88ded45628e306471f5fd9d3eb4321017b21fa",
+    "Created": "2026-10-13T14:32:52.285127586Z"
+  },
+  "startedAt": "2026-10-13T14:32:52.398938836Z",
+  "mounts": [
+    {
+      "Type": "volume",
+      "Name": "autobyteus-server-2-workspace",
+      "Source": "/var/lib/docker/volumes/autobyteus-server-2-workspace/_data",
+      "Destination": "/app/autobyteus-server-ts/workspace",
+      "RW": true
+    },
+    {
+      "Type": "volume",
+      "Name": "autobyteus-server-2-data",
+      "Source": "/var/lib/docker/volumes/autobyteus-server-2-data/_data",
+      "Destination": "/home/autobyteus/data",
+      "RW": true
+    },
+    {
+      "Type": "volume",
+      "Name": "autobyteus-server-2-root-home",
+      "Source": "/var/lib/docker/volumes/autobyteus-server-2-root-home/_data",
+      "Destination": "/root",
+      "RW": true
+    },
+    {
+      "Type": "volume",
+      "Name": "autobyteus-server-2-chromium-profile",
+      "Source": "/var/lib/docker/volumes/autobyteus-server-2-chromium-profile/_data",
+      "Destination": "/home/vncuser/.config/chromium",
+      "RW": true
+    },
+    {
+      "Type": "bind",
+      "Name": null,
+      "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-2",
+      "Destination": "/home/autobyteus/workspace",
+      "RW": true
+    },
+    {
+      "Type": "bind",
+      "Name": null,
+      "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/shared",
+      "Destination": "/home/autobyteus/shared",
+      "RW": true
+    }
+  ],
+  "exit": 0,
+  "facts": {
+    "cli": {
+      "realPath": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/index.js",
+      "version": "5.22.0"
+    },
+    "engines": {
+      "path": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/package.json",
+      "version": "5.22.0",
+      "revision": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+      "files": [
+        "libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+        "schema-engine-linux-arm64-openssl-3.0.x"
+      ]
+    },
+    "supervisor": {
+      "path": "/etc/supervisor/conf.d/supervisor-autobyteus-server.conf",
+      "sha256": "5ba101a84e2b1b181750d80a554a3c2cbdb12d0eb11eadd337c04d52fe91f95f",
+      "uid": 0,
+      "gid": 0,
+      "mode": 420,
+      "hasQueryPin": false,
+      "hasSchemaPin": false
+    },
+    "logs": {
+      "/var/log/supervisor/autobyteus_server.log": {
+        "engineSources": [
+          "Using Prisma engine overrides from cache: /root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x"
+        ],
+        "hasRpcMethodNotFound": false,
+        "hasMigrationFatal": false,
+        "migrationSuccess": false
+      },
+      "/var/log/supervisor/autobyteus_server.err.log": {
+        "engineSources": [],
+        "hasRpcMethodNotFound": true,
+        "hasMigrationFatal": true,
+        "migrationSuccess": false
+      }
+    },
+    "resolver": {
+      "queryEngineLibrary": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery-engine",
+      "schemaEngineBinary": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine",
+      "source": "cache",
+      "sourcePath": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x"
+    }
+  },
+  "stderr": ""
+}

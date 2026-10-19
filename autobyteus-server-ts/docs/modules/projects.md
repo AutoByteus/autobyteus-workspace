@@ -2,6 +2,8 @@
 
 ## Scope And Ownership
 
+The rules are defined in the [Collaboration Model](../design/collaboration_model.md) (CM-6, CM-7); this document describes the mechanics.
+
 Projects are durable, node-local work containers. Each has a unique name, an
 optional string description, and described links to absolute folder paths on the
 node. It also holds Project Tasks, each with a description, a business status and optional Task-owned context files. Manual authoring and four
@@ -29,7 +31,7 @@ an explicit `DONE` or `CANCELLED` closes every open agent run resource of the Ta
 then asks the runtime to stop exactly those runs. Neither is engineering
 acceptance nor proof that the stop succeeded. Other status writes do not start
 work, and any explicit status may follow any other. Only agents change a Task's
-status (through `create_or_update_task`); the app only displays it. The run that
+status (through `update_task`); the app only displays it. The run that
 assigned closed work can later reactivate it after the Task is reopened (see
 [Reactivation](#reactivation)).
 
@@ -37,8 +39,9 @@ The server ships no Project manager agent. Any Agent whose definition selects
 the Project tools can manage Projects through the existing Chat or `@`, for
 example the agent repository's **Project Task Manager** (`project-task-manager`,
 with its `project-task-management` skill) when that repository is configured as
-an agent package root. A managing Agent typically selects the four Project/Task
-tools plus `list_available_agents`, `delegate_task` and `send_message_to`. It
+an agent package root. A managing Agent typically selects the Project/Task
+tools (`list_projects`, `list_project_tasks`, `search_project_tasks`, `create_project`,
+`update_project`, `create_task`, `update_task`) plus `list_available_agents`, `delegate_task` and `send_message_to`. It
 is not a Project-page panel or a scheduler. This feature does not guarantee
 worker completion reports, automatic DONE, scheduling, or a worker self-update
 convention.
@@ -51,8 +54,11 @@ Projects is always on (projects-always-on): there is no Projects capability
 query, mutation or predefined setting. A value of the retired per-node web
 visibility flag stored by an earlier release is not read; it lists as an
 ordinary, deletable custom setting. Nothing migrates or deletes it. Tools must
-be selected explicitly in the agent definition, except `create_or_update_task`,
-which every agent with `delegate_task` gets automatically.
+be selected explicitly in the agent definition; no task tool is added
+automatically, not even to an agent with `delegate_task`. A definition that still
+lists the removed `create_or_update_task` gets no task tool from that name.
+Neither `create_project` nor `update_project` is added automatically either
+(see [Project And Task Agent Tools](#project-and-task-agent-tools)).
 
 ## Main Owners
 
@@ -63,6 +69,8 @@ which every agent with `delegate_task` gets automatically.
   (the live change feed; see [Live Change Feed](#live-change-feed-and-task-roots))
 - `src/projects/runtime/task-execution-resource-release.ts` (DONE's stop request)
 - `src/projects/context/project-task-context-store.ts`
+- `src/projects/search/project-task-search-service.ts`: Project Task search (see
+  [Project Task Search](#project-task-search)) over the [embedding layer](./embeddings.md)
 - `src/compositions/project-task-execution-resource-composition.ts`: the **single**
   place where Projects and the collaboration runtime are bound
 - `src/agent-collaboration/execution/task/`: the root-neutral dispatch, fence
@@ -70,7 +78,7 @@ which every agent with `delegate_task` gets automatically.
 - `src/app-data-migrations/migrations/projects-per-folder-v1/`
 - `src/agent-tools/project-tasks/` (shared contract, manifest, native tools)
 - `src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.ts`
-- `src/api/graphql/types/{projects,project-tasks}.ts`
+- `src/api/graphql/types/{projects,project-tasks,project-task-search}.ts`
 - `src/api/rest/project-task-context-files.ts`
 - `src/api/websocket/projects.ts` (`/ws/projects`)
 
@@ -99,11 +107,13 @@ which every agent with `delegate_task` gets automatically.
 - **Optional files.** A missing `agent_run_resources.json` means no agent runs
   were started for the Task. A missing `context/` means the Task has no files.
 
-`project.json` holds the released Project fields minus `tasks`:
-`projectId, name, description, createdAt, updatedAt, workspaces[]`.
+`project.json` holds the released Project fields minus `tasks`, plus the Task
+key allocation state:
+`projectId, name, description, createdAt, updatedAt, workspaces[], taskKeys{prefix, lastNumber}`.
 
-`task.json` holds the released Task fields plus `projectId`:
-`taskId, projectId, description, status, createdAt, updatedAt, contextFiles[]`.
+`task.json` holds the released Task fields plus `projectId`, its key, its
+dependencies and its parent:
+`taskId, projectId, taskKey, description, status, dependsOnTaskIds[], partOfTaskId, createdAt, updatedAt, contextFiles[]`.
 
 Tasks with no Project live outside the Projects root, so no Project scan or the
 Projects migration gate ever sees them. `AdHocTasksLayout` owns
@@ -125,7 +135,12 @@ additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
 - **Reading is tolerant.** `readProjectFile` and `readTaskFile` in
   `project-store.ts` keep recognized fields only. A file whose IDs do not match
   its folders is not a Project or Task. Malformed optional context metadata
-  never discards an otherwise valid Task.
+  never discards an otherwise valid Task. A Project needs valid `taskKeys` and a
+  Task needs a `taskKey` (both supplied by `project-task-keys-v1` for released
+  data); an absent `dependsOnTaskIds` means no dependencies, and an absent
+  `partOfTaskId` (every file written before "part of") means no parent. The
+  writer always writes `partOfTaskId` (`null` when none), so an existing file
+  gains it at its next ordinary save; nothing is migrated.
 - **Writing is exact and one file at a time.** Writes use the existing per-file
   lock and atomic temp-file-plus-rename. Project create, update and delete
   serialize on one catalog lock, so name uniqueness is checked against the
@@ -135,6 +150,83 @@ additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
   releasing its lock fails afterwards, the committed Task is returned with a
   warning. This is bounded in-memory commit proof. It is not a durable journal,
   an fsync or power-loss promise, or a rollback protocol.
+
+### Task keys, "depends on" and "part of"
+
+- **Key.** Every Project Task has a permanent readable key `<prefix>-<number>`
+  (`autobyteus-42`), stored as `taskKey` and never changed (`ProjectStore`
+  keeps it on every update). The long `taskId` stays the stored identity (Task
+  files, GraphQL arguments, change-feed scope, agent run resources); the key is
+  the agent-facing Task ID and the Task page URL ID (see below and the web docs).
+- **Prefix.** `ProjectService` reserves a Project's prefix once, in the catalog-
+  locked create callback: `taskKeyPrefixOf(name)` (lower case, diacritics removed
+  from Latin letters only, each run of non-letter/digit characters → "-",
+  trimmed, `project` when empty; `domain/task-keys.ts`), then the smallest free
+  `-2`, `-3`, … suffix against every current Project's prefix and every retired
+  one. A rename never changes it: `ProjectStore.updateProject` always keeps the
+  stored `taskKeys`. Deleting a Project first appends its prefix to
+  `<appData>/projects/retired-task-key-prefixes.json` (`{"prefixes": [...]}`,
+  under the catalog lock, before `project.json` is removed), so an old key never
+  reaches another Task. A missing file means none: Projects deleted before keys
+  existed had no keys.
+- **Number.** `ProjectStore.createTask` allocates the next number after the
+  context step succeeds, under the catalog lock shared by every `project.json`
+  writer: it raises `taskKeys.lastNumber` (the highest number ever assigned in
+  the Project) and writes the key in the Task's first write. Numbers are never
+  reused (deletes leave gaps). Allocation is not a Project edit: the Project's
+  `updatedAt` stays and nothing is published for the Project.
+- **Depends on.** `dependsOnTaskIds` is the one stored relationship (same-Project
+  `taskId`s, set on the later Task). Create and update (`dependsOnTaskIds`
+  supplied = replace, `[]` = clear, omitted = keep) are validated against the
+  Project's current Tasks before any context step or write, through
+  `TaskRelationWrites` and `domain/task-dependencies.ts`: an ID that is the
+  Task itself, is not a current Task of the Project, or would close a loop
+  (directly or through other Tasks) is rejected with `TASK_DEPENDENCY_INVALID`
+  and nothing is written. Relation writes are serialized per Project (the
+  in-process `.task-relations` path lock, `ProjectStore.withTaskRelations`), so
+  concurrent edits cannot close a loop. Deleting a Task drops it from every
+  dependent, keeping their `updatedAt`, and republishes them; a failing cleanup
+  is logged (`TASK_RELATION_CLEANUP_FAILED`) and never fails the delete. Readers
+  ignore an ID that names no current Task. "Blocked by", "Dependency cancelled"
+  and "Required by" are derived by clients and never stored. Dependencies only
+  inform: no status, delegation or reopen path checks them.
+- **Part of.** `partOfTaskId` is a Task's optional parent: another current Task
+  of the same Project, of any status, stored on the part (`null` = none). A
+  parent's parts are derived by readers and never stored. Create sets it; update
+  replaces it (an ID), clears it (`null`) or keeps it (omitted, decided by value).
+  `TaskRelationWrites` validates it with `domain/task-parts.ts` under the same
+  per-Project lock as dependencies: the Task itself, a Task that is not a current
+  Task of the Project (unknown, another Project's, a Task with no Project), a
+  parent that is itself a part, or a parent for a Task that has parts is
+  rejected with `TASK_PARENT_INVALID` and nothing is written (one level only;
+  that also rules out loops). Clearing always passes. A parent whose own
+  `partOfTaskId` names no current Task counts as having no parent. `part of` and
+  `depends on` are independent. Create with dependencies or a parent takes the
+  lock; one with neither does not. Deleting a Task also clears `partOfTaskId` on
+  each of its parts in the same cleanup pass (only when it still names the
+  deleted Task), keeping their `updatedAt`. "Part of" never blocks work, and a
+  part's status never changes its parent. Its one effect: when an update changes
+  a parent's status to DONE or CANCELLED, `ProjectTaskService` then sets each of
+  its parts that is TODO or IN_PROGRESS to the same status through its own
+  update (closing and releasing their agent runs as for any such change), one at
+  a time in key order (`TaskPartClosure`). A part that fails is logged as
+  `TASK_PART_CLOSE_FAILED` (project, parent and part IDs) and skipped; the
+  parent's result never fails because of a part. A same-status write, a reopen
+  and a part's own close never cascade; a part attached to a closed parent keeps
+  its status.
+- **The agent-facing Task ID.** For a Project Task, agents see and use the key:
+  tool results carry it as `taskId`, dependencies as `dependsOn` keys, the
+  parent as `partOf` and parts as `parts` keys, and
+  agent-facing texts (refusals, the existing-copy assignment message, the
+  undelivered-work text) name Tasks by key, or "a deleted Task" when the Task no
+  longer exists. Every Task-ID input (`update_task task_id`, `delegate_task
+  task_id`, `depends_on`, `part_of`) accepts a key in any letter case or the long ID.
+  `TaskReferences` (owned by `ProjectTaskService`) resolves them: the long ID
+  exactly, else the key through `ProjectStore.findTaskByKey` (the Project owning
+  the prefix, then its Task). After resolution only the long ID travels inward;
+  run resources, assignments and the feed stay keyed by it. Saved context data
+  (`storedFilename`, `locator`, `localPath`, delegated reference-file paths)
+  keeps its stored form. A Task with no Project keeps its ID.
 
 ### What is never persisted
 
@@ -182,7 +274,9 @@ locking owner is introduced.
   Task's `task.json` and `context/`, and keeps every `agent_run_resources.json`.
 
 Keeping these files preserves closure and history (a deleted Task's work cannot be reactivated). Delete adds no stop
-and no guard: still-open work continues under the normal runtime lifecycle. New
+and no guard: still-open work continues under the normal runtime lifecycle. After the commit, both deletes tell
+Project Task search to forget the Task's (or the whole Project's) search-index entries. That call never fails the
+delete and never waits for indexing. New
 Tasks get fresh UUIDs, so they never reuse a deleted Task's ID.
 
 ## One-Time Migration And The Projects Gate
@@ -203,8 +297,8 @@ How the migration behaves:
 - **Frozen Project readers.** It reads the source only through
   `released-projects-array-v1.ts`. Project target classification, equality and
   post-write validation use `released-project-folder-v1.ts`, retaining the
-  released four-field workspace entries. Task output still uses the unchanged
-  current `readTaskFile` before the source is retired.
+  released four-field workspace entries. Task targets use the frozen
+  `readReleasedTaskFileV1` in the same file.
 - **Skips.** Invalid rows or Tasks, a duplicate `projectId`, and conflicting
   existing targets are `SKIPPED` with a warning and preserved. The unshipped
   dev `{taskLifetimes}` row is skipped silently as known residue.
@@ -221,12 +315,42 @@ to finish. Other features keep working."). Chat, agents and everything else
 keep working. Un-migrated data is never shown as an empty Project list. Current
 code checks only that `projects.json` **exists**; it never reads the old shape.
 
-**Maintenance obligation (data_migration_guideline §4).** The Project target
-reader is already frozen inside the migration; do not reconnect it to the
-current tolerant `readProjectFile`. The migration still imports current
-`ProjectsLayout` and `readTaskFile`. Before changing either imported contract,
-freeze its released behavior inside `projects-per-folder-v1`. Keep historical
-classifiers/fixtures unchanged and rerun migration/startup coverage.
+**Maintenance obligation (data_migration_guideline §4).** The Project and Task
+target readers are frozen inside the migration; do not reconnect them to the
+current tolerant readers. The migration still imports current `ProjectsLayout`.
+Before changing it, freeze its released behavior inside `projects-per-folder-v1`.
+Keep historical classifiers/fixtures unchanged and rerun migration/startup coverage.
+
+### Task keys for released data (`project-task-keys-v1`)
+
+The STARTUP_ONLY migration `20261017_project_task_keys_v1` (`requiredOnStartup`,
+prerequisite `20261005_projects_per_folder_v1`) gives released per-folder data
+its keys once:
+
+- **Plan.** Projects already holding valid `taskKeys` reserve their prefixes
+  first. Unkeyed valid Projects follow in creation order (`createdAt`, then
+  `projectId`), each taking the frozen prefix rule plus the smallest free
+  suffix, so the older Project keeps the plain prefix. Each Project's valid Tasks
+  are numbered from 1 in creation order (`createdAt`, then `taskId`).
+- **Frozen shapes.** Candidates are classified only through
+  `released-project-files-v2.ts` (the readers at `c600028072`); the prefix rule
+  is frozen in `task-key-prefix-v1.ts`. Current `readProjectFile` /
+  `readTaskFile` are imported only to validate the output.
+- **Writes.** Each write adds `taskKey` (Tasks first) or `taskKeys` (the
+  Project's marker, last) to the parsed file, keeps every other key and value,
+  and replaces the file atomically. No backups or journal.
+- **Dispositions.** An invalid `project.json` or `task.json` is preserved and
+  skipped with a warning (it was already not shown); a folder without
+  `project.json` or `task.json` is not a candidate. A Task already holding a
+  different key fails that Project before anything of it is written.
+- **No lockout.** A Project that cannot be keyed keeps no marker, stays
+  preserved and hidden (the current reader requires `taskKeys`), and the rest of
+  Projects and all new work keep working. A restart retries; Tasks already
+  carrying their planned key are recognized, so an interrupted attempt finishes
+  with the same keys. A second start after success changes nothing.
+- **References (guideline checklist item 8).** `dependsOnTaskIds`, `partOfTaskId` and agent run
+  resources reference `taskId`, which the migration never changes; keys are not
+  referenced by any stored data.
 
 ## Agent Run Resources
 
@@ -252,7 +376,7 @@ only `task-execution-resource-schema.ts` maps them; no migration is involved.
 
 | Field | Meaning |
 | --- | --- |
-| `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`, or, for a Task with no Project, the described `delegate_task` that created it. `delegated`: an open owned run's `delegate_task` without a task_id. `broughtIn`: an open owned run's `send_message_to` that started a new copy. |
+| `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`, or, for a Task with no Project, the described `delegate_task` that created it. `delegated`: an open owned run's `delegate_task` without a task_id. `broughtIn`: legacy only: an open owned run's `send_message_to` that started a new copy before messaging stopped creating runs. Stored entries stay readable; nothing writes new ones. |
 | `assignedBy` | Present only on `assigned`: the run that made the assignment. |
 | `recipientAddress` | Optional, only on `assigned`: the exact `recipient_address` the work was delegated to. Written for assignments made since project-manager-ux; older entries have none (their root shows its kind). Readers accept both, so existing files are used as they are, with no migration. |
 | `hostRoot` | The top-level run the user started, which hosts this agent run. |
@@ -301,6 +425,31 @@ every ownership question reads it:
 Two open entries for one copy can only come from damaged data: the latest is
 used and `TASK_AGENT_RESOURCE_CONFLICT` is logged.
 
+### Current Task of a Task worker
+
+A **Task worker** is a copy that is its current Task's
+[root](#task-roots) (that Task's latest `assigned` entry). Sub-work copies
+(`delegated`, legacy `broughtIn`) and converted unowned runs are no Task's root.
+`TaskExecutionResourceService.rootTaskLocationOf(execution)` answers a copy's
+current Task location only when the copy is that Task's root, from the
+in-memory index (no scan of Task files); otherwise null. It never throws.
+
+`ProjectTaskService.currentTasksOfTaskWorkers(workers)` is the only Projects
+read built on it (delegated-copy-task-locator). It waits for `load()`, then for
+each `{agentRunId}` or `{teamRunId}` reads the Task's change view and answers
+`{execution, task: {taskId, projectId, description, status} | null}`
+(`TaskWorkerTaskResult` / `TaskWorkerTaskView` in `domain/models.ts`;
+`projectId` null means a Task with no Project). `task` is null when the copy is
+no Task's root, or when its Task or that Task's Project no longer exists. A
+closed (DONE or CANCELLED) current Task is still answered. One worker never
+fails the batch: an unexpected read error is logged as
+`TASK_WORKER_TASK_READ_FAILED` and that worker answers null. The read never
+writes, wakes or starts anything. GraphQL exposes it as
+[`taskWorkerTasks`](#graphql-and-rest); clients keep the answer live from the
+[change feed](#live-change-feed-and-task-roots) (a `task_upserted` whose `root`
+names the worker, or any change to the cached Task or its Project, means
+re-read), so no new feed message exists for it.
+
 ### Damaged file (Q-3)
 
 A damaged file is one that is unreadable, invalid, or whose `taskId` does not
@@ -322,20 +471,26 @@ names the file and says to fix or restore it and restart:
 Recovery: there is no self-repair and no automatic reload. Fix or restore the
 file and restart.
 
-## Exactly Four Agent Tools
+## Project And Task Agent Tools
 
 Inputs use snake_case; result fields use camelCase. Native tools and Agent
-Tools MCP share the parser, manifest, services and error projection.
+Tools MCP share the parsers, manifest, services and error projection. Each tool
+is selected per agent definition; none is added automatically.
 
 | Tool | Exact input / behavior | Result object |
 | --- | --- | --- |
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}` |
-| `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
-| `create_or_update_task` | Two strict modes. Create: `{project_id, description, context_files?}` (**omit status**, no `task_id`). Update: `{task_id, description?, status?, context_files?}` with **no `project_id`**; the Task ID alone identifies a Project Task or a Task with no Project | `{task: {...}}` |
+| `search_project_tasks` | Required `project_id` and `query` (a sentence or a few words); optional `limit` 1–30 (default 10). Searches by meaning and by exact text (see [Project Task Search](#project-task-search)) | `{projectId, tasks: [{taskId, status, partOf, parts, summary, match}], meaningSearch: {state, note?}}` |
+| `create_project` | `{name, description?, workspaces?}` (no `project_id`); creates a Project | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
+| `update_project` | `{project_id, name?, description?, workspaces?}`; patches a known Project, at least one change | `{project: {...}}` (same shape) |
+| `create_task` | `{project_id, description, context_files?, depends_on?, part_of?}` (**omit status**, no `task_id`); creates a TODO Project Task with the Project's next key | `{task: {...}}` |
+| `update_task` | `{task_id, description?, status?, context_files?, depends_on?, part_of?}` with **no `project_id`**; the Task ID alone (a Project Task's key or long ID, or a Task with no Project's ID) identifies the Task. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
 
-`create_or_update_project` preserves omitted fields on patch. A blank Project
-description clears it; unknown IDs never create. Names are trimmed, nonblank
+`update_project` preserves omitted fields. A blank Project
+description clears it; unknown IDs never create. `create_project` rejects
+`project_id` as an unsupported argument; `update_project` without `project_id`
+returns `PROJECT_TOOL_ARGUMENT_INVALID`. Names are trimmed, nonblank
 and unique case-insensitively. Creation defaults to blank description/no links.
 `workspaces?: [{workspace_path, description?}]` is a **complete replacement list**,
 not append; omission preserves all links and `[]` unlinks without deleting
@@ -345,13 +500,16 @@ Retained links preserve omitted descriptions; blank description clears it. New
 links default to blank description. Registration is not a prerequisite, and a
 Project save never registers or creates the referenced folders. Null/wrong types,
 old ID rows, unknown row/top-level keys and canonical duplicate paths fail before
-mutation; an empty patch returns `PROJECT_PATCH_REQUIRED`. The acknowledgement
+mutation; a create without a name returns `PROJECT_NAME_REQUIRED` and an empty
+patch returns `PROJECT_PATCH_REQUIRED`. The acknowledgement
 contains committed metadata and path/description links, not Task counts,
 availability or a work assessment.
 
 `list_project_tasks` stays global: it returns every Task in the Project, with
-an optional `status` filter. Each Task has `projectId`, `taskId`, the full
-`description`, `status` and `contextFiles`, plus **one** of:
+an optional `status` filter. Each Task has `projectId`, `taskId` (its key), the
+full `description`, `status`, `dependsOn` (the keys of the Tasks it depends on
+that still exist), `partOf` (its parent's key, or `null`), `parts` (the keys of
+its parts, in key number order) and `contextFiles`, plus **one** of:
 - `assignments` and `closedAssignments`: the Task's open `role: assigned`
   entries (`closedAt: null`), from any Manager, and every closed one (one per
   earlier assignment period, in link order). Each names the copy for what it
@@ -371,15 +529,33 @@ give the copy that did a DONE Task a follow-up Task with `delegate_task` and its
 `teamRunId` / `agentRunId` (see [Follow-up Task to an existing
 copy](#follow-up-task-to-an-existing-copy)).
 
-`create_or_update_task` returns `{task: {projectId, taskId, status}}`, with
-`projectId: null` for a Task with no Project. When the call attached context
-files, `task` also has `attachedContextFiles: [{storedFilename, displayName}]`:
-exactly the files this call attached, in argument order. Calls that attach no
-files return the three fields only. It is a recorded-business
+`create_task` and `update_task` return `{task: {projectId, taskId, status, dependsOn, partOf}}`
+(`taskId` is the key; `dependsOn` lists keys; `partOf` is the parent's key or `null`), and
+`{task: {projectId: null, taskId, status}}` for a Task with no Project (its ID; no `dependsOn`
+or `partOf`). When the call attached context files, `task` also has
+`attachedContextFiles: [{storedFilename, displayName}]`: exactly the files this call attached,
+in argument order. When an `update_task` that set a parent to DONE or CANCELLED also closed
+its open parts, `task` has `closedParts`: the keys of the parts it closed (absent when none).
+
+`depends_on` (create and update) is an array of Task references (keys or long
+IDs) of the same Project; on update it replaces the saved list (`[]` clears,
+omitted keeps; a `depends_on`-only patch is valid). Each reference is resolved
+to its stored ID, then the Projects dependency rules apply (no self, no loop,
+updates serialized per Project). A reference that names no current Task of this
+Project (unknown, another Project's, a Task with no Project) and `depends_on` on
+a Task with no Project fail with `TASK_DEPENDENCY_INVALID`, and nothing is
+written. Dependencies only inform: no tool refuses or delays work because of them.
+
+`part_of` (create and update) is one Task reference (a key in any letter case or
+the long ID) of the same Project; on update it replaces the parent, `""` clears
+it, and omitted keeps it (a `part_of`-only patch is valid). `create_task
+part_of=""` is an argument error. The reference is resolved to its stored ID and
+the "part of" rules apply; a refusal, and `part_of` on a Task with no Project,
+fail with `TASK_PARENT_INVALID` and nothing is written. It is a recorded-business
 acknowledgement, not an assessment or proof of a stop. Update resolves the Task
-by ID through `ProjectTaskService.updateTaskById`: first a direct read of
+through `ProjectTaskService.updateTaskById`: first a direct read of
 `ad-hoc-tasks/<taskId>/task.json` (no scan, no Projects gate), otherwise the
-Project Task found across Projects. Create goes through
+Project Task with that long ID found across Projects, otherwise by key. Create goes through
 `ProjectTaskService.createTaskWithLocalContextFiles`. The Projects page's
 `createTask` / `updateTask({projectId, taskId, ...})` stay the draft-based,
 Project-only boundary; local paths never travel on those GraphQL commands.
@@ -433,9 +609,12 @@ Task input validation (Project rules are above):
   removal/edit tool, or implicit Project binding.
 
 Exposure:
-- The tool names are opt-in in both native and session MCP exposure, except
-  `create_or_update_task`: `automaticCollaborationToolNames` adds it wherever
-  `delegate_task` is (every member context, on every runtime).
+- The tool names are opt-in in both native and session MCP exposure: no task
+  tool is in `automaticCollaborationToolNames`, so an agent has `create_task`
+  and/or `update_task` only when its definition lists them (every runtime).
+  Collaboration texts (`delegate_task`, `send_message_to`, the `@` note,
+  reactivation errors) name no task tool; closing and reopening guidance lives
+  in `update_task`'s own description.
 - They need no collaboration-member context.
 - Their first-party names are protected against configured MCP collisions.
 - Selecting one does not expose the others. Unselected tools stay absent or
@@ -453,6 +632,29 @@ Errors:
   proof of rollback.
 
 See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and access.
+
+### Project Task Search
+
+`search_project_tasks` and the board search (GraphQL `searchProjectTasks`) share `ProjectTaskSearchService`. It reads
+the Project's current Tasks from `ProjectTaskService` on every search, so deleted Tasks never appear and statuses are
+current, and returns matches best-first in two tiers:
+
+1. **Exact:** every Task whose description contains the trimmed query, case-insensitively (the board's earlier rule).
+   They are ordered by meaning score when meaning search is ready, then latest update first.
+2. **Meaning:** the Tasks the [embedding layer](./embeddings.md) finds nearly as relevant as the best one (at most 20,
+   and none when even the best one is not clearly relevant), over all of the Project's Tasks, Cancelled ones included.
+
+Only the description is indexed (open Tasks first, then the most recently updated). The first search of a Project, or
+the first after a model change, indexes its Tasks in the background; meanwhile, and whenever meaning search is
+unavailable, the exact tier still answers. Once the model is on disk, a created or edited Task's Project is also
+indexed in the background about 3 s after the write, with no search (see [embeddings.md](./embeddings.md)). An edited Task is found by its new text at once by exact match and by
+meaning when it is indexed again (a second or two for the default model); it is never matched by its old text.
+
+The tool returns at most `limit` Tasks: `taskId` is the Task's key, `status` its current status, `summary` the
+description's first line (at most 160 characters) and `match` `exact` or `meaning`. On first use it waits up to 30 s for
+meaning search to be ready. `meaningSearch` is `{state: "ready"}`, or `preparing`/`unavailable` with a `note` saying
+why and which results are exact text matches only. A blank `query`, unknown arguments and a `limit` outside 1–30 fail
+with `PROJECT_TOOL_ARGUMENT_INVALID`; an unknown Project fails with `PROJECT_NOT_FOUND`.
 
 ## Saved-ID Delegation And Agent Run Resources
 
@@ -508,18 +710,18 @@ Task goes to the copy by `target_team_run_id` / `target_agent_run_id`.
 ### Ownership
 
 - **Owned runs.** A Task owns its assigned copies, their configured Team
-  members, and the copies its open owned runs create: `delegated` sub-work and
-  `broughtIn` helpers, even when a helper is physically hosted as a sibling in
-  the enclosing root.
+  members, and the copies its open owned runs create: `delegated` sub-work (and
+  stored legacy `broughtIn` helpers), even when a copy is physically hosted as a
+  sibling in the enclosing root.
 - **Hosting.** All runs of an assignment are hosted in one root: the top-level
   run the user started. Two Tasks in the same root stay fully separate.
 - **Workers cannot assign.** A Task-owned run may not call `delegate_task` with
   any `task_id` (`TASK_AGENT_RESOURCE_OWNED_SENDER`). Workers delegate sub-work
   without a task_id.
-- **Address messaging order:** the sender's own Team instance; then the Task's
-  open helper at that address; then an existing unowned run in the root; then a
-  new `broughtIn` copy.
-- **Borrowed, not adopted.** Existing unowned advisers and collaborators are
+- **Address messaging order:** the sender's own Team instance, then run-wide
+  placements; any other address is not found. Messaging never creates a copy
+  (CM-4).
+- **Borrowed, not adopted.** Existing unowned agents are
   borrowed, never adopted. Unowned agents are never checked
   against Task data. Another Task's run is never a shared helper
   (`TASK_AGENT_RESOURCE_CONFLICT`). Definition or address equality is not
@@ -571,7 +773,7 @@ Task status is the agent's responsibility; the software never changes it. To
 continue with the same worker after DONE or CANCELLED:
 
 1. The agent moves the Task back to TODO or IN_PROGRESS with
-   `create_or_update_task` (this alone reopens and starts nothing).
+   `update_task` (this alone reopens and starts nothing).
 2. The run that assigned the work (the entry's `assignedBy`) sends
    `send_message_to(target_agent_run_id=<the copy's agent run ID>)`: the Agent
    copy's `target_agent_run_id`, or a Team copy's
@@ -601,7 +803,7 @@ The sender's root reactivates exactly that `assigned` entry
 - The message then follows the normal wake / restore / deliver path. The
   accepted result's `message` ends with "<run ID> was reactivated."
 
-Helper entries (`delegated`, `broughtIn`) and the Task's other assignments stay
+Helper entries (`delegated`, legacy `broughtIn`) and the Task's other assignments stay
 closed; the reactivated worker may start new helpers. Refusals change nothing:
 
 | Case | Code | Message says |
@@ -634,7 +836,7 @@ stays DONE; the delegator creates Task B and gives it to the same copy:
 ```text
 delegate_task({recipient_address: "/review_team", task_id: "A"})
   → {delegated: true, target_kind: "team", target_team_run_id: "team_9f…", target_team_coordinator_agent_run_id: "lead_1a…"}
-create_or_update_task({task_id: "A", status: "DONE"})
+update_task({task_id: "A", status: "DONE"})
 delegate_task({target_team_run_id: "team_9f…", task_id: "B"})   // an Agent copy: target_agent_run_id
   → {delegated: true, target_kind: "team", target_team_run_id: "team_9f…", target_team_coordinator_agent_run_id: "lead_1a…"}
 ```
@@ -684,7 +886,7 @@ Task (see the reactivation table).
 | The copy's current Task is still open | It still works on Task A (status); mark it DONE or CANCELLED first, or delegate Task B to a new copy with `recipient_address` |
 | The sender did not make the copy's most recent assignment | Only that run can give it a new Task |
 | A sub-work or helper copy | Only an assigned copy can be given a new Task |
-| A Team coordinator passed as `target_agent_run_id` | It is the coordinator of Team copy X; use `target_team_run_id` "X" |
+| A Team coordinator passed as `target_agent_run_id` | It is the coordinator of task agent team X; use `target_team_run_id` "X" |
 | A team run ID as `target_agent_run_id`, an Agent copy as `target_team_run_id` | The field to use |
 | A Team member | The Team copy's `target_team_run_id` to use |
 | Unknown, or a copy of another root | Not a delegated copy in this run |
@@ -715,11 +917,11 @@ A Task with no Project makes a description-only delegation closable. The user's
    `{delegated: true, target_kind, <the copy's IDs>, task_id}`. A call rejected before the link creates no
    Task; a dispatch failure after the link returns no `task_id` and leaves the
    Task with a `failed` assignment until its run is deleted.
-   `create_or_update_task` never creates one.
+   `create_task` never creates one.
 2. **Owned like Project Task work.** The copy, its Team members and its
-   `delegated`/`broughtIn` sub-work belong to that Task (the message-scope rules
+   `delegated` sub-work (and stored legacy `broughtIn` helpers) belong to that Task (the message-scope rules
    above apply). Every entry has the delegator's host root.
-3. **DONE or CANCELLED.** `create_or_update_task({task_id, status: "DONE"})` (or
+3. **DONE or CANCELLED.** `update_task({task_id, status: "DONE"})` (or
    `"CANCELLED"`, when the work turned out not to be needed) runs the same
    closure as a Project Task: close every open entry, write the status, ask the
    host root to stop exactly those runs; the run tree hides them live and after
@@ -753,7 +955,7 @@ The Projects pages follow changes live through one per-node WebSocket,
 | --- | --- |
 | `project_upserted {project}` | A Project was created or updated, or one of its Tasks changed (fresh counts). Same fields as GraphQL `Project`. |
 | `project_removed {projectId}` | A Project was deleted. |
-| `task_upserted {scope, task}` | A Task was created or changed, or its assignments changed. `scope` is `{kind: "project", projectId}` or `{kind: "no_project"}`; `task` is the GraphQL view of that scope. |
+| `task_upserted {scope, task}` | A Task was created or changed, or its assignments changed (also each dependent cleaned after a delete). `scope` is `{kind: "project", projectId}` or `{kind: "no_project"}`; `task` is the GraphQL view of that scope (a Project Task includes `taskKey`, `dependsOnTaskIds` and `partOfTaskId`). |
 | `task_removed {scope, taskId}` | A Task was deleted (a Temp task with its run's deletion). |
 | `task_worker_status {scope, taskId, status}` | The root's worker status changed. |
 
@@ -787,8 +989,9 @@ running), the one the left panel shows:
 - Otherwise the hosting root answers through
   `ActiveRootMessageBoundary.taskExecutionStatus`: the agent's status snapshot,
   or for a team the shared fold of its members
-  (`foldTeamAggregateStatus` in `@autobyteus/collaboration-stream-contracts`,
-  the same rule as the web). A root that is not active, not admitting, or does
+  (`foldTeamAggregateStatus` in `@autobyteus/collaboration-stream-contracts`).
+  The web's Workspaces-tree Team rows build on the same fold but show a
+  starting member as busy. Here a starting team stays `initializing`. A root that is not active, not admitting, or does
   not know the run answers `offline`. Reading never wakes or starts anything.
 - `RootTaskExecutionLifecycle` forwards every agent status change inside a task
   execution to `TaskExecutionResourcePort.taskExecutionsStatusChanged` (also after
@@ -858,7 +1061,7 @@ A successful Task metadata Save is the only publication boundary.
 - New immutable copies are prepared and validated before the metadata commit.
   Old saved bytes are not deleted before a successful commit.
 
-Agent-attached files (`create_or_update_task` `context_files`) use the same
+Agent-attached files (`create_task` / `update_task` `context_files`) use the same
 publication boundary without a draft. `ProjectTaskContextStore.importLocalFiles`
 first validates every source (path, regular readable file, policy type by
 extension through `contextFileMimeTypeForPath`, size), writing nothing on
@@ -889,17 +1092,32 @@ Project queries and mutations keep their names; there is no Projects capability 
 `workspaces`.
 
 - `projectTasks(projectId)` returns full ProjectTask records with
-  `contextFiles` and `root` (see [Task roots](#task-roots)). GraphQL Task reads
+  `taskKey`, `dependsOnTaskIds`, `partOfTaskId` (nullable), `contextFiles` and `root` (see [Task roots](#task-roots)). GraphQL Task reads
   do not list the other assignments.
 - `tasksWithoutProject` returns the Tasks with no Project (Temp tasks), latest
   change first: `taskId, description, status, referenceFiles, createdAt,
   updatedAt, root`. There is no mutation for them.
-- `createProjectTask({projectId, description, contextDraft?})` creates a TODO
-  Task.
-- `updateProjectTask({projectId, taskId, description, contextChanges?})` edits
-  text and context, preserving status. **There is no GraphQL or manual UI
+- `taskWorkerTasks(agentRunIds: [String!]!, teamRunIds: [String!]!)` returns
+  `[TaskWorkerTask!]!`, one per listed run (agents first, then teams):
+  `workerKind` (`agent` | `team`), `workerRunId` and a nullable `task`
+  `{taskId, projectId, description, status}`. It is the batched
+  [current Task of a Task worker](#current-task-of-a-task-worker) read used by
+  the web app's Workspaces tree; an ID that is no Task's root answers
+  `task: null`.
+- `createProjectTask({projectId, description, contextDraft?, dependsOnTaskIds?, partOfTaskId?})` creates a TODO
+  Task with the Project's next key.
+- `updateProjectTask({projectId, taskId, description, contextChanges?, dependsOnTaskIds?, partOfTaskId?})` edits
+  text, context, dependencies (supplied = replace, `[]` = clear, omitted = keep) and the parent
+  (an ID = replace, `null` = clear, omitted = keep), preserving status.
+  Invalid dependencies fail with `TASK_DEPENDENCY_INVALID`, an invalid parent with `TASK_PARENT_INVALID`. **There is no GraphQL or manual UI
   status mutation.**
 - `deleteProjectTask({projectId, taskId})` returns a Boolean.
+- `searchProjectTasks(projectId, query)` returns `{matches: [{taskId, match: EXACT | MEANING}],
+  meaningSearch: {state: READY | PREPARING | UNAVAILABLE, phase: DOWNLOADING | LOADING | INDEXING, done, total,
+  reason}}` (see [Project Task Search](#project-task-search)); it never waits for meaning search. A blank query fails
+  with `TASK_SEARCH_QUERY_REQUIRED`.
+- `retryEmbeddingModel` (mutation) clears an unavailable embedding model and prepares it again at once; it returns
+  whether there was one to retry.
 - GraphQL context metadata includes the locator, not the native tool's
   `localPath`.
 - `ProjectError` maps to `GraphQLError extensions.code` (see
@@ -932,12 +1150,17 @@ Read [workspace TESTING.md](../../../TESTING.md) first.
 
 Coverage:
 - `tests/unit/projects`: per-folder store, services, Task agent run resources,
-  change publication (`project-change-{publisher,publication,hub}.test.ts`) and
-  Task roots (`task-root-view.test.ts`).
+  change publication (`project-change-{publisher,publication,hub}.test.ts`),
+  Task roots (`task-root-view.test.ts`) and the current Task of Task workers
+  (`task-worker-current-tasks.test.ts`).
+- `tests/unit/api/graphql/project-tasks-schema.test.ts`: the GraphQL Task
+  schema, including `taskWorkerTasks`.
 - `tests/unit/agent-collaboration/task-execution-status.test.ts`: the live
   status of task executions in actual Agent, Team and Org roots.
 - `tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts`
-- `tests/unit/agent-tools/project-tasks`
+- `tests/unit/agent-tools/project-tasks` (including `search_project_tasks`)
+- `tests/unit/projects/project-task-search.test.ts` and `tests/e2e/projects/project-task-search.e2e.test.ts`: Task search,
+  its delete cleanup and its GraphQL/MCP transports, with a deterministic stand-in model.
 - `tests/unit/context-files` (preserved)
 - `tests/architecture/projects-boundaries.test.ts`
 - `tests/e2e/projects/{projects-graphql,project-task-boundaries,project-mutation-node-locality,projects-startup-migration}.e2e.test.ts`.
@@ -949,8 +1172,8 @@ Real temporary byte fixtures and HTTP, default MCP and native tests are
 distinct from injected fault contracts. Run
 `pnpm -C autobyteus-server-ts prepare:shared` before source-level server checks.
 The node-locality suite requires current server `prebuild` and `build` as well;
-see [Project mutation regressions](../../../TESTING.md#project-mutation-regressions)
-for commands, fixture ownership and evidence limits.
+see the header of [project-mutation-node-locality.e2e.test.ts](../../tests/e2e/projects/project-mutation-node-locality.e2e.test.ts)
+for commands and fixture ownership.
 
 - [Frontend Projects](../../../autobyteus-web/docs/projects.md)
 - [Workspaces](workspaces.md)

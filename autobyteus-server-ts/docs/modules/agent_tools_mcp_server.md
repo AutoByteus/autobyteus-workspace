@@ -126,7 +126,10 @@ run, its run-session, and its attached resources active so the operation can be
 retried. An accepted finish does not return success until the exact run is
 inactive, `AgentRunActivationRegistry.removeIfCurrent(...)` removes that same
 object, and resource release has deactivated the run-session and detached the
-file-change, artifact-relay, and memory observers.
+file-change, artifact-relay, and memory observers. The same release also starts
+closing the external MCP server instances (stdio processes, HTTP sessions) that
+the run's tool calls opened; that close runs in the background and is not
+awaited (see [MCP Server Management](./mcp_server_management.md#server-instance-lifetime)).
 
 `MixedAgentMemberHandle` delegates to that manager boundary and disposes its
 local handle only after accepted managed finish. It does not own a second Agent
@@ -198,7 +201,7 @@ Registry definitions with `ToolOrigin.MCP` and `metadata.mcp_server_id` are
 eligible only when the registered tool name is selected by the agent definition.
 Name-overlap behavior is adapter-policy driven: protected first-party
 platform/control adapters such as `send_message_to`, `get_handoff_rules` and
-the four Project/Task tools reserve their names and block configured MCP collisions, while browser static adapters prefer the
+the Project/Task tools reserve their names and block configured MCP collisions, while browser static adapters prefer the
 selected configured MCP-origin route. That lets a Docker/remote BrowserServer
 MCP tool such as `open_tab` route through its configured MCP source even though
 an embedded Electron browser adapter with the same name exists in code. The
@@ -249,8 +252,8 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - media tools from `src/agent-tools/media`
 - `delegate_task` from `src/agent-tools/task-delegation`
 - `publish_artifacts`
-- `list_projects`, `list_project_tasks`, `create_or_update_project`,
-  `create_or_update_task` from
+- `list_projects`, `list_project_tasks`, `search_project_tasks`, `create_project`, `update_project`,
+  `create_task`, `update_task` from
   `src/agent-tools/project-tasks`
 
 The catalog filters by the session's resolved effective tool names. That set is
@@ -302,46 +305,65 @@ manifests:
 ### Project Task Data Tools
 
 `ProjectTaskToolsMcpAdapterProvider` calls the same manifest/parser and
-ProjectService/ProjectTaskService as the native tools; business behavior is not
+ProjectService/ProjectTaskService/ProjectTaskSearchService as the native tools; business behavior is not
 implemented in MCP dispatch. Each canonical name must be explicitly selected;
 these adapters require no MemberTeamContext and do not depend on the Projects UI,
 which is always available on desktop (there is no visibility flag). An active run-session and normal
 local admission are still required. One selected name cannot expose the rest.
-All four use protect_static_adapter collision policy; retired task tools and
+All of them use protect_static_adapter collision policy; retired task tools and
 category-wide native task exposure are not restored.
 
 - `list_projects({})` → `{projects: [{projectId, name, description}]}` for all
   current-node Projects, sorted by name/ID. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
   Project is required; status must be exact TODO, IN_PROGRESS, DONE or CANCELLED (CANCELLED = dropped as not needed).
-- `create_or_update_project({project_id?, name?, description?, workspaces?})` → `{project}`.
-  Omit project_id to create with required nonblank name; supply known project_id
-  to patch at least one field. Omitted fields persist; blank description clears.
+- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, partOf, parts, summary, match}],
+  meaningSearch: {state, note?}}`: the Project's best-matching Tasks first, by exact text and by meaning (at most
+  `limit`, 1–30, default 10). `taskId` is the Task's key; `partOf` is the parent's key or `null`, `parts` the
+  parts' keys in key number order. See [Project Task Search](./projects.md#project-task-search).
+- `create_project({name, description?, workspaces?})` → `{project}`: creates with a
+  required nonblank name; `project_id` is rejected as an unsupported argument.
+- `update_project({project_id, name?, description?, workspaces?})` → `{project}`:
+  patches a known Project, at least one field. Omitted fields persist; blank description clears.
   Workspaces are `[{workspace_path, description?}]`: absolute node-local paths;
   supplied list fully replaces, [] unlinks only, omission preserves. Retained links
   preserve omitted description; blank clears. Canonical duplicates reject the
   entire change. Registration/existence are not required; Save never registers or
   creates folders. Old workspace_id rows are rejected, not translated.
   Result is saved projectId/name/description and workspaceRootPath/description only.
-- `create_or_update_task` → `{task}`, two strict modes. Create
-  `{project_id, description, context_files?}`: required nonempty description,
-  **omit status** (new TODO). Update `{task_id, description?, status?,
-  context_files?}` with **no project_id**: the unique Task ID patches text
-  and/or status of a Project Task or a Task with no Project (`projectId: null`
-  in the result). Unknown IDs fail, never upsert.
+- `create_task` → `{task}`. `{project_id, description, context_files?, depends_on?, part_of?}`:
+  required nonempty description, **omit status** and `task_id` (new TODO with
+  the Project's next key).
+- `update_task` → `{task}`. `{task_id, description?, status?,
+  context_files?, depends_on?, part_of?}` with **no project_id**: the Task ID (a Project
+  Task's key in any letter case or its long ID, or a Task with no Project's ID)
+  patches text, status, dependencies and/or parent of a Project Task, or text
+  and status of a Task with no Project (`projectId: null` in the result).
+  Unknown IDs fail, never upsert.
+  `depends_on` lists same-Project Task references (`[]` clears, omitted keeps);
+  an invalid list fails with `TASK_DEPENDENCY_INVALID` and writes nothing.
+  `part_of` is one same-Project Task reference, the Task's parent (`""` clears on
+  update and is an argument error on create, omitted keeps); one level only, and
+  an invalid parent, or `part_of` on a Task with no Project, fails with
+  `TASK_PARENT_INVALID` and writes nothing. An `update_task` that sets a parent
+  to DONE or CANCELLED sets its TODO and IN_PROGRESS parts the same way, closing
+  their task agents too, and lists them in the result's `closedParts`. See
+  [Task keys, "depends on" and "part of"](projects.md#task-keys-depends-on-and-part-of).
   Null/blank IDs are invalid, not omitted; hidden input keys (including
   `project_id` with `task_id`) fail. Omitted fields/context are preserved
-  through a locked current-record patch. Added automatically wherever
-  `delegate_task` is.
+  through a locked current-record patch. Neither task tool is added
+  automatically: an agent has them only when its definition selects them.
   `context_files` (array of absolute node-local file paths, Project Tasks only)
   copies each file into the Task's saved context. A patch appends and never
   removes. The app's file types and 25 MiB limit apply, and any invalid entry
   fails the whole call with no change. When files were attached, the result's
   `task` also lists them as `attachedContextFiles: [{storedFilename,
-  displayName}]`. See [Projects](projects.md#exactly-four-agent-tools).
+  displayName}]`. See [Projects](projects.md#project-and-task-agent-tools).
 
-Task projections include projectId/taskId, description/status and saved
-contextFiles (metadata/HTTP locator plus validated server-local localPath when
+Task projections include projectId/taskId (a Project Task's key, see
+[Task keys](projects.md#task-keys-depends-on-and-part-of)), description/status,
+`dependsOn` keys, `partOf` (the parent's key or `null`) and, in lists, `parts` keys
+for Project Tasks, and saved contextFiles (metadata/HTTP locator plus validated server-local localPath when
 bytes are available), not timestamps. Missing bytes do not fabricate paths.
 No workspace discovery/registration, Task attachment removal, batch, delegation, automatic
 status/linkage/quality assessment or resource-stopping operation is provided.
@@ -351,7 +373,7 @@ Known domain errors preserve `{error:{code,message}}`; unexpected execution
 errors redact to PROJECT_OPERATION_FAILED. Tool errors set isError:true; text
 and structuredContent represent the same JSON object. Native projection is
 shared, while inactive-session/unselected-tool/local-admission rejection remains
-with the existing host/session boundary. See [Projects](projects.md#exactly-four-agent-tools)
+with the existing host/session boundary. See [Projects](projects.md#project-and-task-agent-tools)
 for exact masks/errors, persisted continuity and context-byte ownership.
 
 Server-owned structured-JSON adapters validate their operation result first,

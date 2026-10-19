@@ -1,28 +1,25 @@
-import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import type { AppConfig } from "../../config/app-config.js";
 import { readJsonFile } from "../../persistence/file/store-utils.js";
-import { AgentTeamDefinition, TeamMember } from "../domain/agent-team-definition.js";
-import { TeamMdParseError, parseTeamMd, serializeTeamMd } from "../utils/team-md-parser.js";
+import { AgentTeamDefinition } from "../domain/agent-team-definition.js";
+import { parseTeamMd, serializeTeamMd } from "../utils/team-md-parser.js";
 import {
   ApplicationBundleService,
   getGeneralProcessApplicationBundleService,
 } from "../../application-bundles/services/application-bundle-service.js";
 import {
-  AgentTeamDefinitionConfigParseError,
   buildAgentTeamDefinitionConfig,
   parseAgentTeamDefinitionConfig,
-  readAgentTeamDefinitionConfig,
 } from "./agent-team-definition-config.js";
 import {
+  buildApplicationOwnedTeamSourcePaths,
   ensureWritableTeamSourcePaths,
   findTeamSourcePaths,
-  getCanonicalTeamDefinitionIdFromSourcePaths,
   type ResolvedTeamSourcePaths,
 } from "./team-definition-source-paths.js";
-import { listAllTeamSourcePaths } from "./agent-team-definition-source-discovery.js";
+import { buildAgentTeamDefinitionFromFiles } from "./agent-team-definition-node-reader.js";
 import {
   createDefinitionSourceDescriptor,
   assertDefinitionSourceWritableByRuntime,
@@ -32,17 +29,10 @@ import { DefinitionPackageTransaction } from "../../collaboration-definition-adm
 import { findAgentOrgOwnedDefinitionSource } from "../../agent-org-definition/providers/agent-org-owned-definition-source-index.js";
 
 const logger = { warn: (...args: unknown[]) => console.warn(...args) };
-const FILES = ["team.md", "team-config.json"] as const;
 
 const slugify = (value: string): string => value.toLowerCase().trim()
   .replace(/[_\s]+/g, "-").replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-")
   .replace(/^-+|-+$/g, "") || "team";
-
-const revisionFor = (files: Readonly<Record<string, string>>): string => {
-  const hash = createHash("sha256");
-  for (const name of [...FILES].sort()) hash.update(name).update("\0").update(files[name]!).update("\0");
-  return hash.digest("hex");
-};
 
 export class FileAgentTeamDefinitionProvider {
   private readonly transaction = new DefinitionPackageTransaction();
@@ -73,7 +63,7 @@ export class FileAgentTeamDefinitionProvider {
       return resolvedRoot === candidate || resolvedRoot.startsWith(`${candidate}${path.sep}`);
     });
     return createDefinitionSourceDescriptor({
-      sourceClass: serverRoots.has(resolvedRoot) ? "server_data" : external ? "external_read_only" : "implementation_repository",
+      sourceClass: serverRoots.has(resolvedRoot) ? "server_data" : external ? "registered_package" : "implementation_repository",
       packageRoot: source.rootPath,
       definitionPath: source.teamDir,
     });
@@ -88,28 +78,8 @@ export class FileAgentTeamDefinitionProvider {
     try {
       const mdContent = await fs.readFile(source.mdPath, "utf8");
       const configContent = await fs.readFile(source.configPath, "utf8");
-      const parsed = parseTeamMd(mdContent, source.mdPath);
-      const config = readAgentTeamDefinitionConfig(JSON.parse(configContent));
-      return new AgentTeamDefinition({
-        id: getCanonicalTeamDefinitionIdFromSourcePaths(source),
-        name: parsed.name,
-        description: parsed.description,
-        instructions: parsed.instructions,
-        category: parsed.category,
-        nodes: config.members.map((item) => new TeamMember(item)),
-        coordinatorMemberName: config.coordinatorMemberName,
-        handoffs: config.handoffs,
-        avatarUrl: config.avatarUrl,
-        defaultLaunchConfig: config.defaultLaunchConfig,
-        ownershipScope: source.kind === "application_owned" ? "application_owned" : source.kind === "agent_org_owned" ? "agent_org_owned" : "shared",
-        ownerOrgId: source.kind === "agent_org_owned" ? source.orgDefinitionId : null,
-        ownerOrgName: source.kind === "agent_org_owned" ? source.orgDefinitionName : null,
-        ownerApplicationId: source.kind === "application_owned" ? source.applicationId : null,
-        ownerApplicationName: source.kind === "application_owned" ? source.applicationName : null,
-        ownerPackageId: source.kind === "application_owned" ? source.packageId : null,
-        ownerLocalApplicationId: source.kind === "application_owned" ? source.localApplicationId : null,
-        revision: revisionFor({ "team.md": mdContent, "team-config.json": configContent }),
-        source: this.sourceDescriptor(source),
+      return buildAgentTeamDefinitionFromFiles({
+        source, mdContent, configContent, descriptor: this.sourceDescriptor(source),
       });
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
@@ -149,6 +119,10 @@ export class FileAgentTeamDefinitionProvider {
     return created;
   }
 
+  /**
+   * Exact disk read used for write results, application-owned Teams and startup data migrations.
+   * Runtime readers of registered agent packages go through the agent package definitions.
+   */
   async getById(id: string): Promise<AgentTeamDefinition | null> {
     if (id.startsWith("_")) return null;
     const source = await findTeamSourcePaths(
@@ -157,28 +131,28 @@ export class FileAgentTeamDefinitionProvider {
     return source ? this.readDefinition(source) : null;
   }
 
-  async getAll(): Promise<AgentTeamDefinition[]> {
-    const definitions: AgentTeamDefinition[] = [];
-    const seen = new Set<string>();
-    const sources = await listAllTeamSourcePaths({
-      sharedTeamRoots: this.getReadTeamRoots(),
-      applicationOwnedTeamSources: await this.applicationBundleService.listApplicationOwnedTeamSources(),
-    });
+  /**
+   * Application-package Teams, read on demand (they are not agent package definitions). Each Team
+   * is isolated: one that cannot be read is logged and skipped, never failing the list.
+   */
+  async listApplicationOwnedTeams(): Promise<AgentTeamDefinition[]> {
+    let sources: Awaited<ReturnType<ApplicationBundleService["listApplicationOwnedTeamSources"]>>;
+    try {
+      sources = await this.applicationBundleService.listApplicationOwnedTeamSources();
+    } catch (error) {
+      logger.warn("APPLICATION_PACKAGE_SOURCES_UNAVAILABLE:agent_team", error);
+      return [];
+    }
+    const output: AgentTeamDefinition[] = [];
     for (const source of sources) {
-      const id = getCanonicalTeamDefinitionIdFromSourcePaths(source);
-      if (id.startsWith("_") || seen.has(id)) continue;
       try {
-        const definition = await this.readDefinition(source);
-        if (definition?.id) { definitions.push(definition); seen.add(definition.id); }
+        const definition = await this.readDefinition(buildApplicationOwnedTeamSourcePaths(source));
+        if (definition) output.push(definition);
       } catch (error) {
-        if (error instanceof TeamMdParseError || error instanceof AgentTeamDefinitionConfigParseError || error instanceof SyntaxError) {
-          logger.warn(`DEFINITION_CONTRACT_INVALID: skipped Team '${id}' at '${source.configPath}'; expected current Team Definition Config: ${(error as Error).message}`);
-          continue;
-        }
-        throw error;
+        logger.warn(`APPLICATION_PACKAGE_TEAM_SKIPPED:${source.definitionId}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
-    return definitions;
+    return output;
   }
 
   async getTemplates(): Promise<AgentTeamDefinition[]> {

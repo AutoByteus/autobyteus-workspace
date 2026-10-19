@@ -16,6 +16,8 @@ import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/store
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
+import { CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
+import { ClaudeSessionBootstrapper } from "../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
 import { WorkspaceSkillMaterializer, type MaterializedWorkspaceSkill } from "../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import type { CodexWorkspaceResolver } from "../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
@@ -24,6 +26,7 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
+import type { ProviderPreparationGuard } from "../../../src/agent-execution/backends/provider-preparation-guard.js";
 import type { AgentToolMcpRunSessionActivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 const createAgentMd = (name: string, description: string, instructions: string): string =>
@@ -60,7 +63,7 @@ const createTestRootSettingsStore = (defaultRoot: string): AgentPackageRootSetti
   new AgentPackageRootSettingsStore(
     {
       getAppDataDir: () => defaultRoot,
-      getAdditionalAgentPackageRoots: () => parseAdditionalRoots(),
+      getRegisteredAgentPackageRoots: () => parseAdditionalRoots(),
       get: (key: string, defaultValue?: string) => process.env[key] ?? defaultValue,
     },
     {
@@ -260,11 +263,12 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
   const workspaceResolver = {
     resolveWorkingDirectory: vi.fn(async () => workingDirectory),
   } as unknown as CodexWorkspaceResolver;
+  // Codex discovers no skills natively here, so every configured skill is exposed in the workspace.
   const clientManager = {
-    acquireClient: vi.fn(async () => ({
-      request: vi.fn(async () => ({ data: [] })),
+    beginAcquire: vi.fn(() => ({
+      acquire: vi.fn(async () => ({ request: vi.fn(async () => ({ data: [] })) })),
+      release: vi.fn(async () => undefined),
     })),
-    releaseClient: vi.fn(async () => undefined),
   } as unknown as CodexAppServerClientManager;
   const agentToolMcpRunSessions = {
     activateForRun: vi.fn(() => ({ kind: "not_exposed" as const })),
@@ -278,6 +282,13 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
     clientManager,
   );
 };
+
+/** The enclosing factory owns acquired resources; this probe accepts every acquisition and keeps none. */
+const acceptingPreparationGuard = {
+  assertAccepting: () => undefined,
+  ownSkill: () => undefined,
+  ownCodexClient: () => undefined,
+} satisfies ProviderPreparationGuard;
 
 const expectMaterializedSkillSymlink = async (input: {
   materialized: MaterializedWorkspaceSkill | undefined;
@@ -339,7 +350,6 @@ const createAutoByteusRuntimeProbe = (workspaceRoot: string): {
       listActiveAgentIds: vi.fn(() => Array.from(activeAgents.keys())),
     } as any,
     waitForIdle: vi.fn(async () => undefined),
-    compactionLlmFactory: vi.fn(async () => { throw new Error("Unexpected compaction in config probe"); }),
   });
 
   return { factory, capturedConfigs };
@@ -396,8 +406,8 @@ describe("Agent package private skills GraphQL e2e", () => {
     delete process.env.AUTOBYTEUS_SKILLS_PATHS;
     AgentPackageService.resetInstance();
     SkillService.resetInstance();
-    await AgentDefinitionService.getInstance().refreshCache();
-    await AgentTeamDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
+    await AgentTeamDefinitionService.getInstance().reloadAgentPackageDefinitions();
   });
 
   const execGraphql = async <T>(
@@ -486,7 +496,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.sharedAgentCount).toBe(2);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     const bootstrapper = createCodexBootstrapper(workspaceRoot);
@@ -496,6 +506,7 @@ describe("Agent package private skills GraphQL e2e", () => {
         agentDefinitionId: singleAgentId,
         workspaceId: "runtime_ws_private_skills",
       }),
+      acceptingPreparationGuard,
     );
     expect(singleRunContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
     const singleMaterializedByName = new Map(
@@ -514,6 +525,7 @@ describe("Agent package private skills GraphQL e2e", () => {
         agentDefinitionId: multiAgentId,
         workspaceId: "runtime_ws_private_skills",
       }),
+      acceptingPreparationGuard,
     );
     expect(multiRunContext.runtimeContext.materializedConfiguredSkills).toHaveLength(2);
     expect(multiRunContext.runtimeContext.materializedConfiguredSkills.map((skill) => skill.name)).toEqual([
@@ -539,6 +551,59 @@ describe("Agent package private skills GraphQL e2e", () => {
       expect.arrayContaining([singleSkillName, toneSkillName, outlineSkillName]),
     );
   });
+
+  it.each(["without", "with"] as const)(
+    "starts a brand-new Claude and Codex run of an imported agent with a configured skill, %s same-skill workspace links (REQ-105)", async (links) => {
+      const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+      const { externalRoot } = await bootstrapPackageService(unique);
+      const workspaceRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), `new-run-skills-workspace-${unique}-`)));
+      cleanupPaths.add(workspaceRoot);
+      const memoryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "new-run-memory-"));
+      cleanupPaths.add(memoryRoot);
+      const agentId = `new-run-agent-${unique}`;
+      const skillName = `new_run_skill_${unique}`;
+      const agentDir = await writeAgentDefinition(externalRoot, agentId, {
+        name: "New Run Skill Agent", description: "Configured skill", instructions: "Use the skill.", skillNames: [skillName],
+      });
+      const catalogSkillDir = await writeSkillDirectory(path.join(agentDir, "skills", skillName), skillName,
+        "New run skill", "New run skill content");
+      const skillDir = await fs.realpath(catalogSkillDir);
+      if (links === "with") {
+        // The user's setup: absolute links to the package skill in both runtime skill folders.
+        for (const runtime of ["claude", "codex"]) {
+          await fs.mkdir(path.join(workspaceRoot, `.${runtime}`, "skills"), { recursive: true });
+          await fs.symlink(skillDir, path.join(workspaceRoot, `.${runtime}`, "skills", skillName));
+        }
+      }
+      await importLocalPackage(execGraphql, externalRoot);
+      await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
+      SkillService.resetInstance();
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+      const claudeMaterializer = new WorkspaceSkillMaterializer(CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
+      const claude = new ClaudeSessionBootstrapper({ resolveWorkingDirectory: vi.fn(async () => workspaceRoot) } as never,
+        claudeMaterializer, AgentDefinitionService.getInstance(), SkillService.getInstance());
+      const codex = createCodexBootstrapper(workspaceRoot);
+      for (const runtime of ["claude", "codex"] as const) {
+        // A brand-new team member: the team folder exists, the member's own memory folder does not yet.
+        await fs.mkdir(path.join(memoryRoot, "agent_teams", `team-${runtime}`), { recursive: true });
+        const memoryDir = path.join(memoryRoot, "agent_teams", `team-${runtime}`, `member-${runtime}`);
+        const context = new AgentRunContext({
+          runId: `new-run-${runtime}-${unique}`, runtimeContext: null,
+          config: createRuntimeRunConfig({ agentDefinitionId: agentId, workspaceId: "runtime_ws_private_skills", memoryDir,
+            runtimeKind: runtime === "claude" ? RuntimeKind.CLAUDE_AGENT_SDK : RuntimeKind.CODEX_APP_SERVER }),
+        });
+        const materialized = runtime === "claude"
+          ? (await claude.bootstrapForCreate(context, acceptingPreparationGuard)).runtimeContext.materializedConfiguredSkills
+          : (await codex.bootstrapForCreate(context, acceptingPreparationGuard)).runtimeContext.materializedConfiguredSkills;
+        const workspaceEntry = path.join(workspaceRoot, `.${runtime}`, "skills", skillName);
+        expect(await fs.realpath(workspaceEntry)).toBe(skillDir);
+        await expectMaterializedSkillSymlink({ materialized: materialized[0], expectedName: skillName,
+          expectedSourceRootPath: catalogSkillDir, expectedContent: "New run skill content" });
+        expect(materialized[0]!.materializedRootPath).toBe(workspaceEntry);
+        if (runtime === "claude") await claudeMaterializer.cleanupMaterializedWorkspaceSkills(materialized);
+      }
+    });
 
   it("passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -588,36 +653,38 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.sharedAgentCount).toBe(2);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     const { factory, capturedConfigs } = createAutoByteusRuntimeProbe(workspaceRoot);
     const workspaceId = "runtime_ws_private_skills";
 
     const singleRunId = `autobyteus-single-run-${unique}`;
-    const singleBackend = await factory.createBackend(
-      createRuntimeRunConfig({
+    const singleBackend = await factory.beginPreparation({
+      kind: "new",
+      runId: singleRunId,
+      config: createRuntimeRunConfig({
         agentDefinitionId: singleAgentId,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         workspaceId,
         memoryDir: path.join(memoryRoot, singleRunId),
       }),
-      singleRunId,
-    );
+    }).prepare();
     expect(capturedConfigs.get(singleRunId)?.skills).toEqual([path.resolve(singleSkillDir)]);
     expect(singleBackend.getContext().config.workspaceId).toBe(workspaceId);
     await singleBackend.terminate();
 
     const multiRunId = `autobyteus-multi-run-${unique}`;
-    const multiBackend = await factory.createBackend(
-      createRuntimeRunConfig({
+    const multiBackend = await factory.beginPreparation({
+      kind: "new",
+      runId: multiRunId,
+      config: createRuntimeRunConfig({
         agentDefinitionId: multiAgentId,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         workspaceId,
         memoryDir: path.join(memoryRoot, multiRunId),
       }),
-      multiRunId,
-    );
+    }).prepare();
     expect(capturedConfigs.get(multiRunId)?.skills).toEqual([
       path.resolve(toneSkillDir),
       path.resolve(outlineSkillDir),
@@ -685,7 +752,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.sharedAgentCount).toBe(3);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     await expect(resolveAgentSkillDescriptions(singleAgentId)).resolves.toEqual([
@@ -896,7 +963,7 @@ describe("Agent package private skills GraphQL e2e", () => {
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.agentTeamCount).toBe(1);
     expect(imported.teamLocalAgentCount).toBe(5);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     const singleDefinitionId = buildTeamLocalAgentDefinitionId(teamId, singleLocalAgentId);

@@ -1,0 +1,63 @@
+
+> autobyteus@1.5.3-beta.1 test:nuxt /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/fileExplorerStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts composables/__tests__/useWorkspaceFileExplorer.spec.ts components/fileExplorer/__tests__ --run
+
+▲ [WARNING] Cannot find base config file "./.nuxt/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:13:
+      2 │   "extends": "./.nuxt/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/fileExplorerNodeRouting.spec.ts [ stores/__tests__/fileExplorerNodeRouting.spec.ts ]
+ FAIL  stores/__tests__/fileExplorerStore.spec.ts [ stores/__tests__/fileExplorerStore.spec.ts ]
+ FAIL  components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts [ components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts ]
+ FAIL  components/fileExplorer/__tests__/FileExplorer.spec.ts [ components/fileExplorer/__tests__/FileExplorer.spec.ts ]
+ FAIL  components/fileExplorer/__tests__/FileExplorerLayout.spec.ts [ components/fileExplorer/__tests__/FileExplorerLayout.spec.ts ]
+ FAIL  components/fileExplorer/__tests__/FileExplorerTabs.spec.ts [ components/fileExplorer/__tests__/FileExplorerTabs.spec.ts ]
+ FAIL  components/fileExplorer/__tests__/FileItem.spec.ts [ components/fileExplorer/__tests__/FileItem.spec.ts ]
+ FAIL  components/fileExplorer/__tests__/FileViewer.spec.ts [ components/fileExplorer/__tests__/FileViewer.spec.ts ]
+ FAIL  components/fileExplorer/__tests__/MonacoEditor.spec.ts [ components/fileExplorer/__tests__/MonacoEditor.spec.ts ]
+TSConfckParseError: failed to resolve "extends":"./.nuxt/tsconfig.json" in /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tsconfig.json
+  Plugin: vite:esbuild
+  File: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/setup/websocket.ts
+ ❯ resolveExtends ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5809:8
+ ❯ parseExtends ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5775:71
+ ❯ parse$13 ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5677:23
+ ❯ loadTsconfigJsonForFile ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6286:37
+ ❯ transformWithEsbuild ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6086:55
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6172:20
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+Caused by: Error: Cannot find module './.nuxt/tsconfig.json'
+Require stack:
+- /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tsconfig.json
+ ❯ resolveExtends ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5800:16
+ ❯ parseExtends ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5775:71
+ ❯ parse$13 ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5677:23
+ ❯ loadTsconfigJsonForFile ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6286:37
+ ❯ transformWithEsbuild ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6086:55
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6172:20
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+
+ Test Files  9 failed (9)
+      Tests  no tests
+   Start at  16:21:35
+   Duration  2.95s (transform 70ms, setup 0ms, collect 0ms, tests 0ms, environment 17.01s, prepare 5.96s)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -74,7 +74,8 @@ export const buildRunHistoryTeamExecutionRows = (
     const depth = execution.depth - 1;
     const hasChildren = execution.expandable || parentRowKeys.has(execution.key);
     const stable = stableByKey.get(execution.key);
-    if (execution.kind === 'configured_agent' || execution.kind === 'configured_team') {
+    // Below the root, the only configured rows are the root Team's Agents (Teams are flat).
+    if (execution.kind === 'configured_agent') {
       if (!stable) {
         throw new Error(`Configured Team history row '${execution.key}' is absent from root '${rootTeamRunId}'.`);
       }
@@ -102,7 +103,6 @@ export const buildRunHistoryTeamExecutionRows = (
       displayName: execution.displayName,
       currentStatus: execution.currentStatus,
       delegatedBy: execution.delegatedBy,
-      ...(execution.opensOnAppear ? { opensOnAppear: true } : {}),
       depth,
       hasChildren,
     };

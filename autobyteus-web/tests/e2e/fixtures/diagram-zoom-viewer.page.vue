@@ -47,7 +47,7 @@
         Production ArtifactContentViewer nested overlay
       </h2>
       <div class="min-h-0 flex-1">
-        <ArtifactContentViewer :artifact="nestedArtifact" />
+        <ArtifactContentViewer :artifact="nestedArtifact" :read-subject="null" />
       </div>
     </section>
 

@@ -2,7 +2,10 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { TaskDelegationRecordsV1Store } from "../legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
-import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+import {
+  validateTeamCommunicationMessagesPayload,
+  type TeamCommunicationMessagesFile,
+} from "../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import type { ValidatedTeamRunStatePackage } from "./team-run-execution-tree-v1/team-run-state-package-v1-validator.js";
 import { validateTeamRunStatePackage } from "./team-run-execution-tree-v1/team-run-state-package-v1-validator.js";
 import { TeamRunExecutionTreeV1Store } from "./team-run-execution-tree-v1/team-run-execution-tree-v1-store.js";
@@ -41,6 +44,20 @@ export type TeamRunMigrationState =
 
 const missing = (error: unknown): boolean =>
   (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
+
+/** The released team message log read directly (the message schema is shared with current code). */
+const readCommunicationMessages = async (
+  rootDir: string,
+  rootTeamRunId: string,
+): Promise<TeamCommunicationMessagesFile | null> => {
+  try {
+    const payload = JSON.parse(await fs.readFile(path.join(rootDir, COMMUNICATION_FILE), "utf-8")) as unknown;
+    return validateTeamCommunicationMessagesPayload(payload, rootTeamRunId);
+  } catch (error) {
+    if (missing(error)) return null;
+    throw error;
+  }
+};
 
 const message = (error: unknown): string =>
   error instanceof Error ? error.message : String(error);
@@ -105,7 +122,7 @@ const validateHistoricalManifest = (raw: unknown, rootTeamRunId: string): void =
 export class TeamRunMigrationStateClassifier {
   private readonly layout: AgentMemoryLayout;
 
-  constructor(private readonly memoryDir: string) {
+  constructor(memoryDir: string) {
     this.layout = new AgentMemoryLayout(memoryDir);
   }
 
@@ -182,7 +199,7 @@ export class TeamRunMigrationStateClassifier {
         const [executionTree, taskRecords, communicationMessages] = await Promise.all([
           new TeamRunExecutionTreeV1Store().read(rootDir, rootTeamRunId),
           new TaskDelegationRecordsV1Store().read(rootDir, rootTeamRunId),
-          new TeamCommunicationV1Store().read(rootDir, rootTeamRunId),
+          readCommunicationMessages(rootDir, rootTeamRunId),
         ]);
         if (!executionTree || !taskRecords || !communicationMessages) {
           throw new Error("TeamRun V1 package reader returned an incomplete package.");

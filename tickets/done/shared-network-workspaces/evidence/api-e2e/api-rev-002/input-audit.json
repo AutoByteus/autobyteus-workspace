@@ -1,0 +1,15 @@
+{
+  "timestampUTC": "2026-10-14T04:11:20Z",
+  "head": "82dd5d9d53e2e4f5e022ff3f6f0e196ebd3602d8",
+  "sourceFix": "174e480bd0cfaee29f22fd46b1922afbb274e56b",
+  "priorAPIResult": "API-REV-001 Fail / 57.14%",
+  "changedSourcePaths": {
+    "autobyteus-nfs/internal/backend/apple_apply.go": "2a3bcf1766e843976abe42141d45c37e484f8b67eae295e1f86df85bfddd6083",
+    "autobyteus-nfs/internal/backend/apple_startup.go": "4ff72fb0c2975d1bb68d32cc54829996f1875de4593cd1a8fb07477f9525190f",
+    "autobyteus-nfs/internal/backend/apple_startup_test.go": "d4005397139099380cb2406794759d8e919426cb12afb234ff577fe9838f9f1c",
+    "autobyteus-nfs/internal/setup/apply.go": "43d15c534647735f5b2fcdcf7b0d6161a2e222faac846e512079233693bb0b53",
+    "autobyteus-nfs/internal/setup/lifecycle.go": "cebe724c9f4df8f0bd9fa95ddb1db4384a4723dd382950985319aaadf9b587c1"
+  },
+  "status": "?? applications/brief-studio/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-devkit/dist/\n?? autobyteus-application-frontend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/\n",
+  "scratch": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv"
+}

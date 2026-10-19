@@ -1,0 +1,437 @@
+{
+  "node": "ab-sf-fr014-c4570f6f-app-b",
+  "prompt": "Use native Read to freshly open /home/autobyteus/shared/project/native-private-roundtrip.txt and report exact contents. No contents are supplied here.",
+  "receipt": {
+    "event": "TURN_COMPLETED",
+    "label": "b-read",
+    "events": [
+      {
+        "type": "system",
+        "subtype": "init",
+        "cwd": "/home/autobyteus/shared/project",
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "tools": [
+          "Edit",
+          "Read",
+          "Skill",
+          "Write",
+          "mcp__claude_ai_Claude_Docs__batch",
+          "mcp__claude_ai_Claude_Docs__create",
+          "mcp__claude_ai_Claude_Docs__delete",
+          "mcp__claude_ai_Claude_Docs__export",
+          "mcp__claude_ai_Claude_Docs__guide",
+          "mcp__claude_ai_Claude_Docs__query",
+          "mcp__claude_ai_Claude_Docs__read",
+          "mcp__claude_ai_Claude_Docs__update"
+        ],
+        "mcp_servers": [
+          {
+            "name": "claude.ai Claude Docs",
+            "status": "connected",
+            "source": "claudeai"
+          }
+        ],
+        "model": "claude-haiku-5-5",
+        "permissionMode": "default",
+        "slash_commands": [
+          "workspace-owned",
+          "deep-research",
+          "autobyteus-fixture:read-proof",
+          "design",
+          "design-sync",
+          "dataviz",
+          "update-config",
+          "verify",
+          "debug",
+          "code-review",
+          "simplify",
+          "batch",
+          "fewer-permission-prompts",
+          "doctor",
+          "loop",
+          "schedule",
+          "claude-api",
+          "workflow-authoring",
+          "run",
+          "run-skill-generator",
+          "plugin-authoring",
+          "advisor",
+          "agents",
+          "auto-mode-setup",
+          "autocompact",
+          "clear",
+          "color",
+          "compact",
+          "config",
+          "output-style",
+          "context",
+          "effort",
+          "fast",
+          "focus",
+          "heapdump",
+          "init",
+          "mcp",
+          "import",
+          "model",
+          "__remote-workflow",
+          "workflow-launch-exec",
+          "reload-plugins",
+          "reload-skills",
+          "rename",
+          "ultrareview",
+          "security-review",
+          "usage-credits",
+          "extra-usage",
+          "usage",
+          "insights",
+          "recap",
+          "skill-doctor",
+          "goal",
+          "design-consent",
+          "design-revoke",
+          "list-agents",
+          "team-onboarding",
+          "anthropic-skills:built-in-browser",
+          "anthropic-skills:chrome-browser",
+          "anthropic-skills:computer-use",
+          "anthropic-skills:deep-research",
+          "anthropic-skills:docs",
+          "anthropic-skills:docx",
+          "anthropic-skills:google-workspace",
+          "anthropic-skills:import-memory",
+          "anthropic-skills:morning",
+          "anthropic-skills:pdf",
+          "anthropic-skills:pptx",
+          "anthropic-skills:skill-creator",
+          "anthropic-skills:xlsx"
+        ],
+        "terminal_slash_commands": [
+          "doctor",
+          "color",
+          "focus",
+          "reload-plugins"
+        ],
+        "apiKeySource": "none",
+        "claude_code_version": "2.1.296",
+        "output_style": "default",
+        "agents": [
+          "claude",
+          "Explore",
+          "general-purpose",
+          "Plan",
+          "statusline-setup"
+        ],
+        "skills": [
+          "workspace-owned",
+          "deep-research",
+          "autobyteus-fixture:read-proof",
+          "design",
+          "design-sync",
+          "dataviz",
+          "update-config",
+          "verify",
+          "debug",
+          "code-review",
+          "simplify",
+          "batch",
+          "fewer-permission-prompts",
+          "doctor",
+          "loop",
+          "schedule",
+          "claude-api",
+          "workflow-authoring",
+          "run",
+          "run-skill-generator",
+          "plugin-authoring",
+          "anthropic-skills:built-in-browser",
+          "anthropic-skills:chrome-browser",
+          "anthropic-skills:computer-use",
+          "anthropic-skills:deep-research",
+          "anthropic-skills:docs",
+          "anthropic-skills:docx",
+          "anthropic-skills:google-workspace",
+          "anthropic-skills:import-memory",
+          "anthropic-skills:morning",
+          "anthropic-skills:pdf",
+          "anthropic-skills:pptx",
+          "anthropic-skills:skill-creator",
+          "anthropic-skills:xlsx"
+        ],
+        "plugins": [
+          {
+            "name": "autobyteus-fixture",
+            "path": "/root/.claude/task-fixtures/b",
+            "source": "autobyteus-fixture@inline",
+            "version": "0.0.1"
+          },
+          {
+            "name": "cc-plugin-agents-md",
+            "path": "builtin",
+            "source": "cc-plugin-agents-md@builtin"
+          },
+          {
+            "name": "cc-plugin-telemetry",
+            "path": "builtin",
+            "source": "cc-plugin-telemetry@builtin"
+          },
+          {
+            "name": "cc-plugin-plugin-authoring",
+            "path": "builtin",
+            "source": "cc-plugin-plugin-authoring@builtin"
+          }
+        ],
+        "capabilities": [
+          "interrupt_receipt_v1",
+          "interrupt_cancel_queued_v1",
+          "interrupt_send_now_v1",
+          "msg_lifecycle_v1",
+          "request_marker_lists_v1",
+          "sdk_mcp_tools_list_changed",
+          "sdk_mcp_manifests",
+          "mcp_read_resource_v1",
+          "mcp_tool_ui_meta_v1",
+          "ui_surface_v1"
+        ],
+        "analytics_disabled": false,
+        "product_feedback_disabled": false,
+        "uuid": "07f63a89-3391-4fc2-aa48-1ec4689fd500",
+        "memory_paths": {
+          "auto": "/root/.claude/projects/-home-autobyteus-shared-project/memory/"
+        },
+        "messaging_socket_path": "/tmp/cc-socks-0/704.sock",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "per_turn_effort_active": true,
+        "view_mode": "default"
+      },
+      {
+        "type": "assistant",
+        "message": {
+          "model": "claude-haiku-5-5",
+          "id": "msg_011CfyitCMQa3Y4jWHuALijv",
+          "type": "message",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "toolu_01SVzdKLPaNngyzVPvqowVND",
+              "name": "Read",
+              "input": {
+                "file_path": "/home/autobyteus/shared/project/native-private-roundtrip.txt"
+              },
+              "caller": {
+                "type": "direct"
+              }
+            }
+          ],
+          "container": null,
+          "stop_reason": null,
+          "stop_sequence": null,
+          "stop_details": null,
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 6969,
+            "cache_read_input_tokens": 4627,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 6969
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "input_transformations": [],
+          "diagnostics": null,
+          "context_management": null
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "7941ac16-99e8-4355-a540-3c4bdee8a057",
+        "timestamp": "2026-10-13T05:57:57.074Z",
+        "request_id": "req_011CfyitC6HFQDPcyHrhvf8L",
+        "wire_tool_inputs": {
+          "toolu_01SVzdKLPaNngyzVPvqowVND": {
+            "file_path": "/home/autobyteus/shared/project/native-private-roundtrip.txt"
+          }
+        }
+      },
+      {
+        "type": "user",
+        "message": {
+          "role": "user",
+          "content": [
+            {
+              "tool_use_id": "toolu_01SVzdKLPaNngyzVPvqowVND",
+              "type": "tool_result",
+              "content": "1\tPRIVATE_ab-sf-fr014-c4570f6f-app-a_0d754717da5e463aa5b2b4b736993c63\n2\t"
+            }
+          ]
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "4b762310-bc3a-43cc-9c4f-bedc374df351",
+        "timestamp": "2026-10-13T05:57:57.184Z",
+        "tool_use_result": {
+          "type": "text",
+          "file": {
+            "filePath": "/home/autobyteus/shared/project/native-private-roundtrip.txt",
+            "content": "PRIVATE_ab-sf-fr014-c4570f6f-app-a_0d754717da5e463aa5b2b4b736993c63\n",
+            "numLines": 2,
+            "startLine": 1,
+            "totalLines": 2
+          }
+        },
+        "tool_result_meta": [
+          {
+            "id": "toolu_01SVzdKLPaNngyzVPvqowVND",
+            "permission_decision": {
+              "decision": "accept",
+              "source": "config",
+              "reason_type": "mode"
+            }
+          }
+        ]
+      },
+      {
+        "type": "assistant",
+        "message": {
+          "model": "claude-haiku-5-5",
+          "id": "msg_011CfyitJENX9zDAqsYTnU8B",
+          "type": "message",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "The file `/home/autobyteus/shared/project/native-private-roundtrip.txt` was freshly read with the native Read tool. It contains one line, followed by an empty line 2:\n\n```\nPRIVATE_ab-sf-fr014-c4570f6f-app-a_0d754717da5e463aa5b2b4b736993c63\n```"
+            }
+          ],
+          "container": null,
+          "stop_reason": null,
+          "stop_sequence": null,
+          "stop_details": null,
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 155,
+            "cache_read_input_tokens": 11596,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 155
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "input_transformations": [],
+          "diagnostics": null,
+          "context_management": null
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "4ffc2c79-1b6a-48af-83d9-34ac17d5a425",
+        "timestamp": "2026-10-13T05:57:58.416Z",
+        "request_id": "req_011CfyitHx19S1H5qwSzYiUZ"
+      },
+      {
+        "duration_api_ms": 3367,
+        "stop_reason": "end_turn",
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "total_cost_usd": 0.00181553,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 7124,
+          "cache_read_input_tokens": 16223,
+          "output_tokens": 187,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 7124,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 114,
+              "cache_read_input_tokens": 11596,
+              "cache_creation_input_tokens": 155,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 0,
+                "ephemeral_1h_input_tokens": 155
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard",
+          "fallback_credit": null
+        },
+        "modelUsage": {
+          "claude-haiku-5-5": {
+            "inputTokens": 1220,
+            "outputTokens": 213,
+            "cacheReadInputTokens": 16223,
+            "cacheCreationInputTokens": 7124,
+            "webSearchRequests": 0,
+            "costUSD": 0.00181553,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 128000,
+            "thinkingTokens": 0,
+            "canonicalModel": "claude-haiku-5-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "safety_stops": 0,
+        "is_error": false,
+        "num_turns": 2,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "The file `/home/autobyteus/shared/project/native-private-roundtrip.txt` was freshly read with the native Read tool. It contains one line, followed by an empty line 2:\n\n```\nPRIVATE_ab-sf-fr014-c4570f6f-app-a_0d754717da5e463aa5b2b4b736993c63\n```",
+        "ttft_ms": 1307,
+        "type": "result",
+        "duration_ms": 2669,
+        "uuid": "1b1eca5c-d0c0-498b-8d84-0c1560592871",
+        "ttft_stream_ms": 1169,
+        "time_to_request_ms": 45,
+        "first_content_frame_ms": 1169,
+        "queued_turn_count": 0,
+        "result_index": 0
+      }
+    ],
+    "permissions": "default with task-owned allow callback",
+    "resultError": false
+  }
+}

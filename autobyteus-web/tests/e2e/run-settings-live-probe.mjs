@@ -10,17 +10,19 @@
 //          member config has those values and the other members inherit (AC-004, AC-006, AC-019)
 //   S1 R11 Chat nav and the "new chat" pencil open a fresh plain New chat (DI-001)
 //   S5 R09 Agent Run → New chat with Codex + Thinking Low + Fast; Fast and Thinking are independent; the run's
-//          llmConfig is {reasoning_effort: low, service_tier: fast}; a first-send `@` collaborator is admitted (AC-019)
+//          llmConfig is {reasoning_effort: low, service_tier: fast}; a first-send `@` mention steers the agent to delegate a copy (AC-019)
 //   S6 R12 New chat footer with a long Codex model name, Thinking and Fast: no overlapping controls (VIS-020/021)
 //   S6 (in R01/R02/R07) settings-card geometry with a long Codex model: drawer rows, Org card, saved-run cards (running
 //          and stopped) — no overlapping controls, nothing outside the card, at 880/804/390
 //   S6 R13 Start-surface tools open (VIS-017), Org card Fast mode row (VIS-023/028), Org unavailable (VIS-014)
-//   S1 R04 Agent "+" from the host run and from its `@` collaborator view → New chat for the agent on screen,
+//   S1 R04 Agent "+" from the host run and from its delegated copy view → New chat for the agent on screen,
 //          prefilled with its settings (AC-008, SR-009)
 //   S1 R05 Team "+" → New chat prefilled with the member overrides (AC-008)
 //   S2 R02 Org Run → Org launch page; a member override (Codex + Ask first) and a placed-team folder workspace →
 //          the active Org run's config matches (AC-003)
-//   S2 R03 Org launch rejected by the server → "Couldn't start this Agent Org. Try again.", values kept (AC-003)
+//   S2 R03 Org launch rejected by the server → "Couldn't start this Agent Org. Try again.", values kept (AC-003);
+//          the rejection is the server's failure result injected on the launch request only, because the
+//          page's readiness check now blocks Run before any cause the client can see reaches the server
 //   S2 R06 Org "+" → Org launch page prefilled with the overrides and the placed-team workspace (AC-008)
 //   S3 R07 Saved Team run: running locks (incl. Fast) → Terminate team → locked-runtime model menu → change →
 //          Cancel → change again → Save → readback → resume keeps the saved config (AC-009..011, AC-019)
@@ -435,11 +437,11 @@ defineCase('R09', 'S5 AC-019: Agent Run → New chat with Codex, Thinking Low an
   await shot(page, 'VIS-021-new-chat-codex-fast-on-804', 804)
   await shot(page, 'VIS-027-new-chat-fast-on-390', 390)
   const input = composerInput(page)
-  await input.click(); await page.keyboard.type('please greet @')
+  await input.click(); await page.keyboard.type('please delegate to @')
   await page.locator(sel('run-mention-menu')).waitFor({ timeout: 30000 })
   await shot(page, 'VIS-030-new-chat-at-menu-804', 804)
   await page.keyboard.type('scout'); await page.locator(sel(`run-mention-option-${ids.scout}`)).click()
-  await page.keyboard.type('in one short sentence.')
+  await page.keyboard.type('a one-sentence greeting for me, using the delegate_task tool.')
   await page.locator(sel('chat-primary-action')).click()
   await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
   state.agentRunId = r.runId = new URL(page.url()).searchParams.get('id')
@@ -447,9 +449,19 @@ defineCase('R09', 'S5 AC-019: Agent Run → New chat with Codex, Thinking Low an
   r.metadata = cfg.metadataConfig
   assert(r.metadata.runtimeKind === FAST.runtime && r.metadata.llmModelIdentifier === FAST.model, 'agent run model', r.metadata)
   assert(r.metadata.llmConfig?.service_tier === 'fast' && r.metadata.llmConfig?.reasoning_effort === 'low', 'agent run llmConfig must keep both Thinking Low and Fast', r.metadata)
-  const view = await waitFor('Scout admitted', async () => { const v = await agentRootView(state.agentRunId); return (v?.execution_tree?.collaborators ?? []).length ? v : null }, 120000)
-  r.collaborator = view.execution_tree.collaborators.map((c) => ({ kind: c.kind, address: c.address, runId: c.agentRunId, launch: c.launchConfiguration }))
-  state.scoutRunId = r.collaborator[0].runId
+  // collaboration-model-contract: `@scout` admits nothing; the mention note steers the agent to delegate, which starts a copy.
+  const scoutCopy = await waitFor('Scout delegated', async () => {
+    const v = await agentRootView(state.agentRunId)
+    const nodes = []
+    const visit = (value) => { if (Array.isArray(value)) value.forEach(visit); else if (value && typeof value === 'object') { if ((value.startedAt ?? value.started_at) && (value.agentRunId ?? value.agent_run_id)) nodes.push(value); Object.values(value).forEach(visit) } }
+    visit(v?.execution_tree)
+    return nodes.find((n) => /scout/i.test(n.address ?? '')) ?? null
+  }, 240000).catch(() => null)
+  // Whether the real model follows the note and delegates is its own choice (not asserted here; the delegation itself is proven by
+  // cross-scope-agent-mentions-live-probe); R04 uses the copy only when it exists.
+  r.scoutDelegated = Boolean(scoutCopy)
+  r.collaborator = scoutCopy ? [{ kind: 'agent', address: scoutCopy.address, runId: scoutCopy.agentRunId ?? scoutCopy.agent_run_id, launch: (scoutCopy.source ?? {}).launchConfiguration ?? null }] : []
+  state.scoutRunId = r.collaborator[0]?.runId ?? null
   return r
 })
 
@@ -504,7 +516,7 @@ defineCase('R13', 'S6 AC-017 / UIS-004 / REQ-022 (VIS-017, VIS-023, VIS-014): st
   return r
 })
 
-defineCase('R04', 'S1 AC-008 / SR-009: Agent "+" from the host run and from its `@` collaborator view → New chat for the agent on screen, prefilled', async (page) => {
+defineCase('R04', 'S1 AC-008 / SR-009: Agent "+" from the host run and from its delegated copy view → New chat for the agent on screen, prefilled', async (page) => {
   const r = {}
   await page.goto(`${frontUrl}/chat?id=${state.agentRunId}`, { waitUntil: 'domcontentloaded' })
   await page.locator('[data-testid="agent-workspace-surface"]').waitFor({ timeout: 120000 }); await settle(page, 2000)
@@ -535,31 +547,35 @@ defineCase('R04', 'S1 AC-008 / SR-009: Agent "+" from the host run and from its 
   r.copyRunId = new URL(page.url()).searchParams.get('id')
   r.copyRunConfig = (await agentConfig(r.copyRunId)).metadataConfig
   if (!(r.copyRunConfig.runtimeKind === FAST.runtime && r.copyRunConfig.llmModelIdentifier === FAST.model && r.copyRunConfig.llmConfig?.service_tier === 'fast' && r.copyRunConfig.llmConfig?.reasoning_effort === 'low')) findings.push('host "+": the launched copy does not carry the model config (Thinking low + Fast)')
-  // The `@` collaborator (Scout) view in the host run.
-  await page.goto(`${frontUrl}/chat?id=${state.agentRunId}`, { waitUntil: 'domcontentloaded' })
-  await page.locator('[data-testid="agent-workspace-surface"]').waitFor({ timeout: 120000 }); await settle(page, 2000)
-  const childRow = page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${state.agentRunId}"] ~ ${sel('workspace-agent-run-task-tree')} ${sel('workspace-team-transient-execution-row')}`).filter({ hasText: /scout/i }).first()
-  await waitFor('collaborator row', async () => {
-    if (await childRow.isVisible().catch(() => false)) return true
-    const agentRow = page.locator(`${sel('workspace-agent-row')}[data-agent-definition-id="${ids.planner}"]`).first()
-    if (await agentRow.isVisible().catch(() => false) && await agentRow.getAttribute('aria-expanded') !== 'true') await agentRow.click()
-    else await expandWorkspaces(page)
-    return false
-  }, 60000, 1500)
-  await childRow.click(); await settle(page, 2500)
-  r.childTitle = await page.locator(sel('agent-workspace-title')).innerText()
-  assert(/scout/i.test(r.childTitle), 'collaborator view not open', r.childTitle)
-  await page.locator(sel('workspace-header-new-run')).click()
-  await page.locator(sel('chat-new')).waitFor({ timeout: 60000 }); await settle(page, 1500)
-  r.collaborator = {
-    heading: await page.locator(sel('run-target-name')).innerText(),
-    model: await composer.locator(sel('chat-model-trigger')).innerText(),
-    fast: (await composer.locator(sel('chat-model-option-service_tier')).count()) ? await fastChip(composer).getAttribute('aria-pressed') : null,
+  if (!state.scoutRunId) {
+    r.copyViewSkipped = 'the real model did not delegate to Scout in R09, so there is no delegated copy view to open'
+  } else {
+    // The delegated Scout copy view in the host run.
+    await page.goto(`${frontUrl}/chat?id=${state.agentRunId}`, { waitUntil: 'domcontentloaded' })
+    await page.locator('[data-testid="agent-workspace-surface"]').waitFor({ timeout: 120000 }); await settle(page, 2000)
+    const childRow = page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${state.agentRunId}"] ~ ${sel('workspace-agent-run-task-tree')} ${sel('workspace-team-transient-execution-row')}`).filter({ hasText: /scout/i }).first()
+    await waitFor('delegated copy row', async () => {
+      if (await childRow.isVisible().catch(() => false)) return true
+      const agentRow = page.locator(`${sel('workspace-agent-row')}[data-agent-definition-id="${ids.planner}"]`).first()
+      if (await agentRow.isVisible().catch(() => false) && await agentRow.getAttribute('aria-expanded') !== 'true') await agentRow.click()
+      else await expandWorkspaces(page)
+      return false
+    }, 60000, 1500)
+    await childRow.click(); await settle(page, 2500)
+    r.childTitle = await page.locator(sel('agent-workspace-title')).innerText()
+    assert(/scout/i.test(r.childTitle), 'delegated copy view not open', r.childTitle)
+    await page.locator(sel('workspace-header-new-run')).click()
+    await page.locator(sel('chat-new')).waitFor({ timeout: 60000 }); await settle(page, 1500)
+    r.collaborator = {
+      heading: await page.locator(sel('run-target-name')).innerText(),
+      model: await composer.locator(sel('chat-model-trigger')).innerText(),
+      fast: (await composer.locator(sel('chat-model-option-service_tier')).count()) ? await fastChip(composer).getAttribute('aria-pressed') : null,
+    }
+    await shot(page, 'R04-collaborator-copy-804', 804)
+    const scoutCfg = (await agentConfig(state.scoutRunId).catch(() => null))?.metadataConfig ?? null
+    r.scoutServerConfig = scoutCfg
+    if (!(r.collaborator.heading === 'Scout' && /Codex/.test(r.collaborator.model))) findings.push('delegated copy "+" did not open New chat for the agent on screen')
   }
-  await shot(page, 'R04-collaborator-copy-804', 804)
-  const scoutCfg = (await agentConfig(state.scoutRunId).catch(() => null))?.metadataConfig ?? null
-  r.scoutServerConfig = scoutCfg
-  if (!(r.collaborator.heading === 'Scout' && /Codex/.test(r.collaborator.model))) findings.push('collaborator "+" did not open New chat for the agent on screen')
   r.findings = findings
   assert(findings.length === 0, findings.join('; '), r)
   return r
@@ -646,7 +662,7 @@ defineCase('R02', 'S2 AC-003: Org Run → Org launch page; Scout customized (Cod
   return r
 })
 
-defineCase('R03', 'S2 AC-003: the server rejects the Org launch (its member definition was deleted meanwhile) → "Couldn\'t start this Agent Org. Try again.", values kept, Run enabled, no run created', async (page) => {
+defineCase('R03', 'S2 AC-003: the server rejects the Org launch → "Couldn\'t start this Agent Org. Try again.", values kept, Run enabled, no run created', async (page) => {
   const r = {}
   await page.goto(`${frontUrl}/agent-orgs`, { waitUntil: 'domcontentloaded' }); await settle(page, 1500)
   await page.locator(sel(`org-card-${ids.fragileOrg}`)).getByRole('button', { name: 'Run', exact: true }).click()
@@ -656,10 +672,29 @@ defineCase('R03', 'S2 AC-003: the server rejects the Org launch (its member defi
   await card.locator(sel('chat-approval-toggle')).click(); await delay(300)
   r.before = { model: await card.locator(sel('chat-model-trigger')).innerText(), approval: await card.locator(sel('chat-approval-toggle')).innerText() }
   const orgRunsBefore = JSON.stringify(await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { workspaceRootPath } }')).length
-  await gql('mutation($id:String!){deleteAgentDefinition(id:$id){success message}}', { id: ids.fragile })
-  await page.locator(sel('org-launch-run')).click()
-  r.status = await waitFor('failure copy', async () => { const t = await page.locator(sel('org-launch-status')).innerText().catch(() => ''); return /Couldn.t start this Agent Org/.test(t) ? t : null }, 60000)
-  r.after = { model: await card.locator(sel('chat-model-trigger')).innerText(), approval: await card.locator(sel('chat-approval-toggle')).innerText(), url: page.url(), runDisabled: await page.locator(sel('org-launch-run')).isDisabled() }
+  // The subject is the page's failure presentation. A cause the client can see (e.g. deleting the member's
+  // definition) now disables Run first (client readiness, DI-004), so the launch request alone receives the
+  // server's failure result (createAgentOrgRun: success false, no run id); every other request reaches the server.
+  r.launchRequests = []
+  const rejectLaunch = async (route) => {
+    const body = route.request().postDataJSON?.() ?? null
+    if (body?.operationName !== 'CreateAgentOrgRun') return route.fallback()
+    r.launchRequests.push(body.variables?.input?.agentOrgDefinitionId ?? null)
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: { createAgentOrgRun: {
+      __typename: 'AgentOrgRunMutationResult', success: false, message: 'R03 injected server rejection.', agentOrgRunId: null,
+    } } }) })
+  }
+  await page.route('**/graphql', rejectLaunch)
+  try {
+    r.runEnabledBefore = !(await page.locator(sel('org-launch-run')).isDisabled())
+    assert(r.runEnabledBefore, 'Run disabled before the launch', r)
+    await page.locator(sel('org-launch-run')).click()
+    r.status = await waitFor('failure copy', async () => { const t = await page.locator(sel('org-launch-status')).innerText().catch(() => ''); return /Couldn.t start this Agent Org/.test(t) ? t : null }, 60000)
+    r.after = { model: await card.locator(sel('chat-model-trigger')).innerText(), approval: await card.locator(sel('chat-approval-toggle')).innerText(), url: page.url(), runDisabled: await page.locator(sel('org-launch-run')).isDisabled() }
+  } finally {
+    await page.unroute('**/graphql', rejectLaunch)
+  }
+  assert(r.launchRequests.length === 1 && r.launchRequests[0] === ids.fragileOrg, 'exactly one Org launch request reached the boundary', r)
   assert(r.status.trim() === "Couldn't start this Agent Org. Try again.", 'failure copy', r.status)
   assert(r.after.model === r.before.model && r.after.approval === r.before.approval && /mode=configuration/.test(r.after.url) && !r.after.runDisabled, 'values not kept or Run disabled after the failure', r)
   r.historyUnchanged = JSON.stringify(await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { workspaceRootPath } }')).length === orgRunsBefore

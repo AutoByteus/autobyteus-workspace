@@ -1,11 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount, RouterLinkStub } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
+
+const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
+
 import ProjectTaskBoard from '../ProjectTaskBoard.vue'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { ProjectTask } from '~/types/project'
+import { afterSearchDebounce, createProjectTaskSearchServer } from '~/test-support/projectTaskSearchServer'
 
 let store: ReturnType<typeof useProjectTaskStore>
+let seeded: ProjectTask[] = []
+let searchServer: ReturnType<typeof createProjectTaskSearchServer>
 
 const task = (taskId: string, description: string, updatedAt: string, status: ProjectTask['status'] = 'TODO'): ProjectTask => ({
   root: null,
@@ -20,6 +28,7 @@ const task = (taskId: string, description: string, updatedAt: string, status: Pr
 
 // The store keeps lists newest-updated first; seed them that way.
 const seed = (tasks: ProjectTask[]) => {
+  seeded = tasks
   store.fetchTasks = vi.fn(async (projectId: string) => {
     store.listsByProjectId = { ...store.listsByProjectId, [projectId]: {status: 'ready', tasks, hasLoaded: true, initialPending: false, refreshPending: false, error: null} }
     return tasks
@@ -46,7 +55,16 @@ describe('ProjectTaskBoard', () => {
     vi.clearAllMocks()
     setActivePinia(createPinia())
     store = useProjectTaskStore()
+    searchServer = createProjectTaskSearchServer(() => seeded)
+    io.query.mockImplementation((options) => searchServer.respond(options))
+    io.mutate.mockResolvedValue({ data: { retryEmbeddingModel: true } })
+    vi.spyOn(useWindowNodeContextStore(), 'waitForBoundBackendReady').mockResolvedValue(true)
   })
+  const typeSearch = async (wrapper: ReturnType<typeof mountBoard>, text: string) => {
+    await wrapper.get('[data-testid="project-tasks-search-input"]').setValue(text)
+    await afterSearchDebounce()
+    await flushPromises()
+  }
 
   it('loads the Project\'s Tasks into three columns in order with counts, newest first', async () => {
     seed([
@@ -88,26 +106,119 @@ describe('ProjectTaskBoard', () => {
     const wrapper = mountBoard()
     await flushPromises()
 
-    await wrapper.get('[data-testid="project-tasks-search-input"]').setValue('release')
+    await typeSearch(wrapper, 'release')
+    expect(searchServer.requests).toEqual([{ projectId: 'p1', query: 'release' }])
     expect(cardIds(wrapper, 'TODO')).toEqual(['t3'])
     expect(cardIds(wrapper, 'IN_PROGRESS')).toEqual(['t2'])
     expect(heading(wrapper, 'TODO')).toBe('To Do 1')
     expect(heading(wrapper, 'DONE')).toBe('Done 0')
+    expect(wrapper.find('[data-testid="project-tasks-meaning-status"]').exists()).toBe(false)
 
-    await wrapper.get('[data-testid="project-tasks-search-input"]').setValue('nothing matches')
+    await typeSearch(wrapper, 'nothing matches')
     expect(wrapper.find('[data-testid="project-task-columns"]').exists()).toBe(false)
     const noMatch = wrapper.get('[data-testid="project-tasks-no-match"]')
     expect(noMatch.attributes('role')).toBe('status')
     await wrapper.get('[data-testid="project-tasks-clear-search"]').trigger('click')
     expect(cardIds(wrapper, 'TODO')).toEqual(['t3', 't1'])
+    expect(searchServer.requests).toHaveLength(2)
   })
 
-  it('links a contiguous row to the Task detail page', async () => {
-    seed([task('t1', 'a', '2026-09-27T01:00:00.000Z')])
+  it('invites a sentence, debounces typing into one request, and lists matches best-first in their lanes', async () => {
+    seed([
+      task('t3', 'Sidebar collapse state is lost', '2026-09-27T03:00:00.000Z', 'TODO'),
+      task('t2', 'Docker image fails on ARM', '2026-09-27T02:00:00.000Z', 'IN_PROGRESS'),
+      task('t1', 'Remember the folded navigation panel', '2026-09-27T01:00:00.000Z', 'TODO'),
+    ])
+    searchServer.meaning['the left menu forgets that I folded it'] = ['t1', 't3']
+    const wrapper = mountBoard()
+    await flushPromises()
+    expect(wrapper.get('[data-testid="project-tasks-search-input"]').attributes('placeholder')).toBe("Describe the task you're looking for")
+
+    const input = wrapper.get('[data-testid="project-tasks-search-input"]')
+    await input.setValue('the left')
+    await input.setValue('the left menu forgets that I folded it')
+    await afterSearchDebounce()
+    await flushPromises()
+    expect(searchServer.requests).toEqual([{ projectId: 'p1', query: 'the left menu forgets that I folded it' }])
+    // Best-first from the server, not by last update; lanes keep their status order and count matches.
+    expect(cardIds(wrapper, 'TODO')).toEqual(['t1', 't3'])
+    expect(cardIds(wrapper, 'IN_PROGRESS')).toEqual([])
+    expect(heading(wrapper, 'TODO')).toBe('To Do 2')
+  })
+
+  it('shows exact matches while meaning search prepares, says how far it is, and updates without retyping', async () => {
+    seed([task('t2', 'Docker image fails on ARM', '2026-09-27T02:00:00.000Z'), task('t1', 'Publish a container for arm64', '2026-09-27T01:00:00.000Z')])
+    searchServer.meaningSearch = { state: 'PREPARING', phase: 'INDEXING', done: 40, total: 170, reason: null }
+    const wrapper = mountBoard()
+    await flushPromises()
+    await typeSearch(wrapper, 'docker')
+    expect(cardIds(wrapper, 'TODO')).toEqual(['t2'])
+    const status = wrapper.get('[data-testid="project-tasks-meaning-status"]')
+    expect(status.text()).toBe('Preparing meaning search… 40 of 170 Tasks')
+    expect(status.attributes('role')).toBe('status')
+
+    searchServer.meaningSearch = { state: 'READY', phase: null, done: null, total: null, reason: null }
+    searchServer.meaning.docker = ['t1']
+    await new Promise((resolve) => setTimeout(resolve, 2100))
+    await flushPromises()
+    expect(searchServer.requests).toHaveLength(2)
+    expect(cardIds(wrapper, 'TODO')).toEqual(['t2', 't1'])
+    expect(wrapper.find('[data-testid="project-tasks-meaning-status"]').exists()).toBe(false)
+  })
+
+  it('explains an unavailable model with Retry, and Retry asks the server to try again before searching again', async () => {
+    seed([task('t1', 'Docker image fails on ARM', '2026-09-27T01:00:00.000Z')])
+    searchServer.meaningSearch = { state: 'UNAVAILABLE', phase: null, done: null, total: null, reason: 'Could not reach huggingface.co' }
+    const wrapper = mountBoard()
+    await flushPromises()
+    await typeSearch(wrapper, 'docker')
+    expect(cardIds(wrapper, 'TODO')).toEqual(['t1'])
+    const status = wrapper.get('[data-testid="project-tasks-meaning-status"]')
+    expect(status.text()).toContain('Meaning search is unavailable: Could not reach huggingface.co. Exact matches still work.')
+    expect(status.attributes('role')).toBe('alert')
+
+    searchServer.meaningSearch = { state: 'PREPARING', phase: 'DOWNLOADING', done: 5_000_000, total: 23_900_000, reason: null }
+    await wrapper.get('[data-testid="project-tasks-meaning-retry"]').trigger('click')
+    await flushPromises()
+    expect(io.mutate).toHaveBeenCalledTimes(1)
+    expect(searchServer.requests).toHaveLength(2)
+    expect(wrapper.get('[data-testid="project-tasks-meaning-status"]').text()).toBe('Preparing meaning search: downloading the model (5 of 24 MB)…')
+  })
+
+  it('shows a failed search request with Retry, keeping the board', async () => {
+    seed([task('t1', 'Docker image fails on ARM', '2026-09-27T01:00:00.000Z')])
+    io.query.mockRejectedValueOnce(new Error('Network down'))
+    const wrapper = mountBoard()
+    await flushPromises()
+    await typeSearch(wrapper, 'docker')
+    expect(wrapper.get('[data-testid="project-tasks-meaning-status"]').text()).toContain('Search failed: Network down')
+    await wrapper.get('[data-testid="project-tasks-meaning-retry"]').trigger('click')
+    await flushPromises()
+    expect(io.mutate).not.toHaveBeenCalled()
+    expect(cardIds(wrapper, 'TODO')).toEqual(['t1'])
+    expect(wrapper.find('[data-testid="project-tasks-meaning-status"]').exists()).toBe(false)
+  })
+
+  it('keeps only the latest request: a slow answer for an earlier query never replaces a newer one', async () => {
+    seed([task('t2', 'Release notes', '2026-09-27T02:00:00.000Z'), task('t1', 'Docker image', '2026-09-27T01:00:00.000Z')])
+    let releaseSlow: () => void = () => undefined
+    io.query.mockImplementationOnce((options) => new Promise((resolve) => { releaseSlow = () => resolve(searchServer.respond(options)) }))
+    const wrapper = mountBoard()
+    await flushPromises()
+    await typeSearch(wrapper, 'release')
+    await typeSearch(wrapper, 'docker')
+    expect(cardIds(wrapper, 'TODO')).toEqual(['t1'])
+    releaseSlow()
+    await flushPromises()
+    expect(cardIds(wrapper, 'TODO')).toEqual(['t1'])
+  })
+
+  it('links a contiguous row to the Task detail page by its key (REQ-022)', async () => {
+    seed([{...task('t1', 'a', '2026-09-27T01:00:00.000Z'), taskKey: 'p1-1', dependsOnTaskIds: []}])
     const wrapper = mountBoard()
     await flushPromises()
 
-    expect(wrapper.get('[data-testid="project-task-row-t1"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/p1/tasks/t1')
+    expect(wrapper.get('[data-testid="project-task-row-t1"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/p1/tasks/p1-1')
   })
 
   it('offers no drag, move or status controls (REQ-003)', async () => {
@@ -168,16 +279,19 @@ describe('ProjectTaskBoard', () => {
 
     setActivePinia(createPinia())
     store = useProjectTaskStore()
+    vi.spyOn(useWindowNodeContextStore(), 'waitForBoundBackendReady').mockResolvedValue(true)
     seed([task('t2', 'Dropped release', '2026-09-27T02:00:00.000Z', 'CANCELLED'), task('t1', 'Write docs', '2026-09-27T01:00:00.000Z', 'TODO')])
     const wrapper = mountBoard()
     await flushPromises()
-    await wrapper.get('[data-testid="project-tasks-search-input"]').setValue('release')
+    await typeSearch(wrapper, 'release')
     // The only match is hidden: no match, with the toggle still offered beside the search.
     expect(wrapper.find('[data-testid="project-tasks-no-match"]').exists()).toBe(true)
     await wrapper.get('[data-testid="project-tasks-cancelled-toggle"]').trigger('click')
     expect(wrapper.find('[data-testid="project-tasks-no-match"]').exists()).toBe(false)
     expect(cardIds(wrapper, 'CANCELLED')).toEqual(['t2'])
     expect(heading(wrapper, 'TODO')).toBe('To Do 0')
+    // Showing Cancelled only changes the lanes: the server searched all of the Project's Tasks already.
+    expect(searchServer.requests).toHaveLength(1)
   })
 
   it('a compact board (right panel) has the same Cancelled toggle and lane', async () => {
@@ -200,7 +314,7 @@ describe('ProjectTaskBoard', () => {
     expect(wrapper.get('[data-testid="project-task-board"]').classes()).toContain('project-task-board')
   })
 
-  it('filters 150 Tasks quickly (REQ-014, QR-002)', async () => {
+  it('shows the results for 150 Tasks within half a second after typing stops (QR-001)', async () => {
     const many = Array.from({ length: 150 }, (_, index) => task(
       `t${index}`,
       index % 10 === 0 ? `Prepare release ${index}` : `Routine work ${index}`,
@@ -211,10 +325,14 @@ describe('ProjectTaskBoard', () => {
     await flushPromises()
     expect(cardIds(wrapper, 'TODO')).toHaveLength(150)
 
-    const started = performance.now()
     await wrapper.get('[data-testid="project-tasks-search-input"]').setValue('release')
-    expect(performance.now() - started).toBeLessThan(500)
+    const started = performance.now()
+    while (cardIds(wrapper, 'TODO').length !== 15 && performance.now() - started < 2000) {
+      await new Promise((resolve) => setTimeout(resolve, 10))
+      await flushPromises()
+    }
     expect(cardIds(wrapper, 'TODO')).toHaveLength(15)
+    expect(performance.now() - started).toBeLessThan(500)
   })
 
   it('shows a retryable load error', async () => {

@@ -20,7 +20,7 @@ export const GetCollaboratorMentionCandidates = gql`
   }
 `
 
-/** The stored or active Agent-root view of a standalone run; null when it has no collaborators. */
+/** The stored or active Agent-root view of a standalone run; null when it has no delegated copies. */
 export const GetAgentRunCollaboration = gql`
   query GetAgentRunCollaboration($runId: String!) {
     agentRunCollaboration(runId: $runId)
@@ -37,6 +37,24 @@ export const GetAgentRunCollaborationMemberProjection = gql`
       summary
       lastActivityAt
       hasEarlierActiveTraceEvents
+    }
+  }
+`
+
+/** One delegated copy's artifact list, located inside its hub only (live while the hub runs). */
+export const GetAgentRunCollaborationMemberFileChanges = gql`
+  query GetAgentRunCollaborationMemberFileChanges($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+    agentRunCollaborationMemberFileChanges(hostRunId: $hostRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+      id
+      runId
+      path
+      type
+      status
+      sourceTool
+      sourceInvocationId
+      content
+      createdAt
+      updatedAt
     }
   }
 `

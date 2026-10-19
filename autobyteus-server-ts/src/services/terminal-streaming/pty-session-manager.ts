@@ -61,6 +61,7 @@ export class PtySessionManager {
     options.signal?.addEventListener("abort", abortListener, { once: true });
 
     try {
+      if (options.signal?.aborted) throw new TerminalSessionStartupAbortedError(sessionId);
       await session.start(cwd);
       if (
         options.signal?.aborted ||

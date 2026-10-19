@@ -88,7 +88,7 @@ describe('CollaborationMemoryDetail', () => {
     expect(wrapper.findAll('article button').map((button) => button.attributes('data-execution-kind'))).toEqual(['CONFIGURED', 'CONFIGURED']);
   });
 
-  it('keeps people-group identity for configured, task and nested Teams with existing role decorations (restore-team-group-icon AC-002/003)', () => {
+  it('keeps people-group identity for configured, task and delegated-inside-task Teams with existing role decorations (restore-team-group-icon AC-002/003)', () => {
     const wrapper = mountDetail({ rows: [orgRow()] });
     const headers = wrapper.findAll('[data-test="memory-member-group-header"]');
     expect(headers).toHaveLength(3);

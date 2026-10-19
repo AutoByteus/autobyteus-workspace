@@ -1,0 +1,24 @@
+{
+  "inputHead": "d963097b6e3d0cf80e3bf4e86d900173b671fd26",
+  "trackedCount": 63095,
+  "trackedChanged": [
+    "tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md"
+  ],
+  "incomingCount": 1122,
+  "incomingChanged": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md"
+  ],
+  "unexpectedTracked": [],
+  "unexpectedIncoming": [],
+  "jsonCount": 58,
+  "revisionPrefixPreserved": true,
+  "retainedAllUnchanged": true,
+  "priorDistChanged": [],
+  "result": "Pass"
+}

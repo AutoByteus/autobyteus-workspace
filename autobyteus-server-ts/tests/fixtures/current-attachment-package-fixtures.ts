@@ -1,12 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
+import { writeMessageLogFixtureSync } from "./message-log-fixtures.js";
 
-/** Minimal strict communication sidecar for attachment fixtures; task-records files are not part of a current package. */
-export function writeAttachmentSidecars(directory: string, family: "team" | "org", id: string): void {
-  fs.mkdirSync(directory, { recursive: true });
-  const identity = family === "team" ? { rootTeamRunId: id } : { subjectKind: "agent_org", orgRunId: id };
-  fs.writeFileSync(path.join(directory, family === "team" ? "team_communication_messages.json" : "agent_org_communication_messages.json"),
-    JSON.stringify({ schemaVersion: 1, ...identity, messages: [] }));
+/** Minimal (empty) message log for attachment fixtures; task-records files are not part of a current package. */
+export function writeAttachmentSidecars(directory: string, family: "team" | "org"): void {
+  writeMessageLogFixtureSync(directory, family === "team" ? "team_communication_messages" : "agent_org_communication_messages");
 }
 
 export function writeAttachmentAgentMetadata(memoryDir: string, runId: string): void {

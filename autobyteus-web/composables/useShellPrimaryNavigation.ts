@@ -1,6 +1,13 @@
 import { computed, type ComputedRef } from 'vue';
-import { useRoute, type RouteLocationRaw } from 'vue-router';
+import { useRoute, type LocationQuery, type RouteLocationRaw } from 'vue-router';
+import { useAgentContextsStore } from '~/stores/agentContextsStore';
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore';
+import {
+  chatRouteRunId,
+  isAgentOrgLaunchRoute,
+  isAgentOrgRunRoute,
+} from '~/services/workspace/workspaceNavigationService';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 
 export type ShellPrimaryNavKey =
@@ -57,10 +64,16 @@ export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocation
   }
 }
 
-export function isShellPrimaryRouteActive(key: ShellPrimaryNavKey, path: string): boolean {
+export interface ShellRouteLocation {
+  path: string;
+  query: LocationQuery;
+}
+
+export function isShellPrimaryRouteActive(key: ShellPrimaryNavKey, { path, query }: ShellRouteLocation): boolean {
   switch (key) {
     case 'chat':
-      return path.startsWith('/chat');
+      // Chat means New chat: an open run (`/chat?id=…`) lights Workspaces instead.
+      return path.startsWith('/chat') && chatRouteRunId(query) === null;
     case 'agents':
       return path.startsWith('/agents');
     case 'agentTeams':
@@ -84,10 +97,26 @@ export function useShellPrimaryNavigation(): {
   primaryNavItems: ComputedRef<readonly ShellPrimaryNavItem[]>;
   resolvePrimaryRoute: (key: ShellPrimaryNavKey) => RouteLocationRaw;
   isPrimaryNavActive: (key: ShellPrimaryNavKey) => boolean;
+  isWorkspacesActive: ComputedRef<boolean>;
   ensurePrimaryNavigationReady: () => Promise<unknown>;
 } {
   const route = useRoute();
   const applicationsCapabilityStore = useApplicationsCapabilityStore();
+  const agentContextsStore = useAgentContextsStore();
+  const selectionStore = useAgentSelectionStore();
+
+  // Workspaces is lit while the center shows a run (DEC-005): a registered Agent run on `/chat`,
+  // or an Org run or selected Team run on `/workspace`. Not New chat, the Org launch page, an empty
+  // `/workspace`, or a run that is still opening.
+  const isWorkspacesActive = computed(() => {
+    if (route.path.startsWith('/chat')) {
+      const runId = chatRouteRunId(route.query);
+      return Boolean(runId && agentContextsStore.getRun(runId));
+    }
+    if (!route.path.startsWith('/workspace') || isAgentOrgLaunchRoute(route.query)) return false;
+    return isAgentOrgRunRoute(route.query)
+      || (selectionStore.selectedType === 'team' && Boolean(selectionStore.selectedRunId));
+  });
 
   const primaryNavItems = computed(() => {
     return allShellPrimaryNavItems.filter((item) => {
@@ -107,7 +136,8 @@ export function useShellPrimaryNavigation(): {
   return {
     primaryNavItems,
     resolvePrimaryRoute: resolveShellPrimaryRoute,
-    isPrimaryNavActive: (key: ShellPrimaryNavKey) => isShellPrimaryRouteActive(key, route.path),
+    isPrimaryNavActive: (key: ShellPrimaryNavKey) => isShellPrimaryRouteActive(key, route),
+    isWorkspacesActive,
     ensurePrimaryNavigationReady: () => Promise.allSettled([
       applicationsCapabilityStore.ensureResolved(),
     ]),

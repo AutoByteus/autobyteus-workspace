@@ -1,0 +1,207 @@
+{
+  "phase": "delegate",
+  "childRunId": "tma_worker_bcbecd53_c36ad3ed4fd84bb694731b2c144919ab",
+  "startedAt": 2203,
+  "startedPayloadKeys": [
+    "change_sequence",
+    "parent_team_run_id",
+    "execution"
+  ],
+  "idleAt": 9506,
+  "usage": [
+    {
+      "t": 4762,
+      "kind": "claude_sdk_call",
+      "call": true,
+      "model": "claude-haiku-5-5",
+      "input": 2,
+      "cacheRead": 11727,
+      "cacheCreation": 9650,
+      "output": 72,
+      "total": 21451,
+      "prompt": 21379,
+      "window": 1000000,
+      "threshold": 967000,
+      "summaryCount": 1,
+      "summaryRevision": 1,
+      "summaryPrompt": 21379
+    },
+    {
+      "t": 7114,
+      "kind": "claude_sdk_call",
+      "call": true,
+      "model": "claude-haiku-5-5",
+      "input": 2,
+      "cacheRead": 21377,
+      "cacheCreation": 102,
+      "output": 72,
+      "total": 21553,
+      "prompt": 21481,
+      "window": 1000000,
+      "threshold": 967000,
+      "summaryCount": 2,
+      "summaryRevision": 2,
+      "summaryPrompt": 21481
+    },
+    {
+      "t": 8474,
+      "kind": "claude_sdk_call",
+      "call": true,
+      "model": "claude-haiku-5-5",
+      "input": 2,
+      "cacheRead": 21479,
+      "cacheCreation": 102,
+      "output": 72,
+      "total": 21655,
+      "prompt": 21583,
+      "window": 1000000,
+      "threshold": 967000,
+      "summaryCount": 3,
+      "summaryRevision": 3,
+      "summaryPrompt": 21583
+    },
+    {
+      "t": 9498,
+      "kind": "claude_sdk_call",
+      "call": true,
+      "model": "claude-haiku-5-5",
+      "input": 2,
+      "cacheRead": 21581,
+      "cacheCreation": 102,
+      "output": 16,
+      "total": 21701,
+      "prompt": 21685,
+      "window": 1000000,
+      "threshold": 967000,
+      "summaryCount": 4,
+      "summaryRevision": 4,
+      "summaryPrompt": 21685
+    },
+    {
+      "t": 9505,
+      "kind": "claude_sdk_result",
+      "call": false,
+      "model": "claude-haiku-5-5",
+      "input": 1312,
+      "cacheRead": 0,
+      "cacheCreation": 0,
+      "output": 21,
+      "total": 1333,
+      "prompt": null,
+      "window": null,
+      "threshold": null,
+      "summaryCount": 4,
+      "summaryRevision": 5,
+      "summaryPrompt": 21685
+    }
+  ],
+  "samples": [
+    {
+      "t": 2224,
+      "getAgentRunTokenUsageSummary": {
+        "runId": "tma_worker_bcbecd53_c36ad3ed4fd84bb694731b2c144919ab",
+        "usageReportCount": 0,
+        "revision": 0,
+        "totalTokens": 0,
+        "latestPromptTokens": null,
+        "effectiveContextWindowTokens": null,
+        "contextWindowUsagePercent": null,
+        "contextCompactionThresholdTokens": null,
+        "latestModelIdentifier": null,
+        "latestRuntimeKind": null
+      }
+    },
+    {
+      "t": 3456,
+      "getAgentRunTokenUsageSummary": {
+        "runId": "tma_worker_bcbecd53_c36ad3ed4fd84bb694731b2c144919ab",
+        "usageReportCount": 0,
+        "revision": 0,
+        "totalTokens": 0,
+        "latestPromptTokens": null,
+        "effectiveContextWindowTokens": null,
+        "contextWindowUsagePercent": null,
+        "contextCompactionThresholdTokens": null,
+        "latestModelIdentifier": null,
+        "latestRuntimeKind": null
+      }
+    },
+    {
+      "t": 4660,
+      "getAgentRunTokenUsageSummary": {
+        "runId": "tma_worker_bcbecd53_c36ad3ed4fd84bb694731b2c144919ab",
+        "usageReportCount": 0,
+        "revision": 0,
+        "totalTokens": 0,
+        "latestPromptTokens": null,
+        "effectiveContextWindowTokens": null,
+        "contextWindowUsagePercent": null,
+        "contextCompactionThresholdTokens": null,
+        "latestModelIdentifier": null,
+        "latestRuntimeKind": null
+      }
+    },
+    {
+      "t": 5865,
+      "getAgentRunTokenUsageSummary": {
+        "runId": "tma_worker_bcbecd53_c36ad3ed4fd84bb694731b2c144919ab",
+        "usageReportCount": 1,
+        "revision": 1,
+        "totalTokens": 21451,
+        "latestPromptTokens": 21379,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.1379,
+        "contextCompactionThresholdTokens": 967000,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "t": 7070,
+      "getAgentRunTokenUsageSummary": {
+        "runId": "tma_worker_bcbecd53_c36ad3ed4fd84bb694731b2c144919ab",
+        "usageReportCount": 1,
+        "revision": 1,
+        "totalTokens": 21451,
+        "latestPromptTokens": 21379,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.1379,
+        "contextCompactionThresholdTokens": 967000,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "t": 8276,
+      "getAgentRunTokenUsageSummary": {
+        "runId": "tma_worker_bcbecd53_c36ad3ed4fd84bb694731b2c144919ab",
+        "usageReportCount": 2,
+        "revision": 2,
+        "totalTokens": 43004,
+        "latestPromptTokens": 21481,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.1481,
+        "contextCompactionThresholdTokens": 967000,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "t": 9481,
+      "getAgentRunTokenUsageSummary": {
+        "runId": "tma_worker_bcbecd53_c36ad3ed4fd84bb694731b2c144919ab",
+        "usageReportCount": 3,
+        "revision": 3,
+        "totalTokens": 64659,
+        "latestPromptTokens": 21583,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.1583,
+        "contextCompactionThresholdTokens": 967000,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk"
+      }
+    }
+  ],
+  "contractFailures": [],
+  "tokenFramesChecked": 8
+}

@@ -32,6 +32,8 @@ export class ProjectsLayout {
 
   /** The released single-file source; current code only tests that it exists (migration gate). */
   releasedProjectsFile(): string { return path.join(this.root, "projects.json"); }
+  /** The Task key prefixes of deleted Projects, kept reserved so an old key never reaches another Task. */
+  retiredTaskKeyPrefixesFile(): string { return path.join(this.root, "retired-task-key-prefixes.json"); }
 
   projectDir(projectId: string): string { return path.join(this.root, segment(projectId)); }
   projectFile(projectId: string): string { return path.join(this.projectDir(projectId), "project.json"); }

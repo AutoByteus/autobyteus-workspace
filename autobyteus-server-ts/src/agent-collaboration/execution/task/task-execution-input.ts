@@ -28,34 +28,50 @@ export const validateTaskReferenceFiles = async (values: readonly string[]): Pro
   return Object.freeze(result);
 };
 
-/** The delegated work: who delegated it (address and run ID), the description and any reference files. */
+/** The task itself: its description and any reference files. */
+const taskBodyLines = (description: string, referenceFiles: readonly string[]): string[] => [
+  "Description:", description,
+  ...(referenceFiles.length ? ["", "Reference files:", ...referenceFiles.map((file) => `- ${file}`)] : []),
+];
+
+/**
+ * The delegated work as the task agent's first message (wording §7.1, SR-015): who gave it, described only
+ * by the handles send_message_to takes (its sender address when that address reaches it, design T-5, and
+ * its sender run id; never a name), the reply instruction, the description and any reference files.
+ */
 export const buildTaskWorkText = (input: {
   delegator: CollaborationMemberExecutionIdentity;
+  /** The delegator's address when it reaches the delegator run-wide (T-5); null otherwise. */
+  delegatorAddress: string | null;
   description: string;
   referenceFiles: readonly string[];
-}): string => [
-  `Task delegator address: ${input.delegator.memberAddress}`,
-  `Task delegator AgentRun ID: ${input.delegator.agentRunId}`,
-  "", "Description:", input.description,
-  ...(input.referenceFiles.length ? ["", "Reference files:", ...input.referenceFiles.map((file) => `- ${file}`)] : []),
-].join("\n");
+}): string => {
+  const runId = input.delegator.agentRunId;
+  const [from, reply] = input.delegatorAddress
+    ? [`You have a new task from the agent with sender address "${input.delegatorAddress}" and sender run id "${runId}".`,
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both)."]
+    : [`You have a new task from the agent with sender run id "${runId}".`,
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id."];
+  return [from, reply, "", ...taskBodyLines(input.description, input.referenceFiles)].join("\n");
+};
 
 /** The child's first message: the delegated work as a system Task notification. */
 export const buildTaskAssigneeWorkPacket = (input: Parameters<typeof buildTaskWorkText>[0]): AgentInputUserMessage =>
   new AgentInputUserMessage(buildTaskWorkText(input), SenderType.SYSTEM, null, markTaskDelegationSystemTaskNotificationMetadata({}));
 
 /**
- * An existing copy's new Task, delivered as a message from the delegator into its conversation. The
- * reference files travel as the message's reference files (listed by the delivery, not repeated here).
+ * A saved Task given to an existing task agent, delivered as a message from the delegator (so its
+ * header already names the sender and gives the ID). The reference files travel as the message's
+ * reference files (listed by the delivery, not repeated here).
  */
 export const buildExistingCopyTaskMessage = (input: {
-  taskId: string;
-  delegator: CollaborationMemberExecutionIdentity;
+  /** The Task's agent-facing ID (a Project Task's key). */
+  taskReference: string;
   description: string;
 }): string => [
-  `New Task assigned to you: ${input.taskId}. Your previous Task is closed; this is the work to do now.`,
+  `New Task assigned to you: ${input.taskReference}. Your previous Task is closed; this is the work to do now.`,
   "",
-  buildTaskWorkText({ delegator: input.delegator, description: input.description, referenceFiles: [] }),
+  ...taskBodyLines(input.description, []),
 ].join("\n");
 
 export const TASK_ASSIGNMENT_MESSAGE_TYPE = "task_assignment";

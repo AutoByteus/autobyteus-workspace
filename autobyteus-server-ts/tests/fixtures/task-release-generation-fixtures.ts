@@ -48,11 +48,11 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
     getActiveRun: (id: string) => active.get(id), releaseExactRun: stop,
     tryPrepareAgentRunTerminationIfQuiescent: async (run: any) => termination(run), prepareAgentRunTermination: async (run: any) => termination(run) });
   const callbacks = { assertExecutionInputAllowed: () => undefined, publishAgentEvent: vi.fn(), commitPlatformBindingChange: async () => undefined,
-    buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true,
+    buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true, collaborationRole: "team_member",
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
       tasks: { root: identity.root, delegateToNewCopy: async () => { throw Error('Not a business dispatch witness.'); }, assignToExistingCopy: async () => { throw Error('Not a business dispatch witness.'); } } as never }) };
   const dependencies = { agentRunManager: manager as never, activityInspector: { inspect: () => ({ kind: 'present' }) } as never,
-    memoryLocator: { getLocation: (_scope: unknown, id: string) => ({ memoryDir: `/tmp/test-unused-${id}` }) } as never };
+    memoryLocator: { getMemoryDir: (_placement: unknown, id: string) => `/tmp/test-unused-${id}` } as never };
   const factory = new FlatTeamExecutionFactory(dependencies);
   const teams = new RootTeamExecutionDirectory(factory);
   const rootAgents = new RootAgentExecutionRegistry({ root, callbacks, ...dependencies });
@@ -88,7 +88,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
   let rootTeam: any = null, resolver: TeamRunResolver | null = null;
   if (kind === 'agent_team') {
     const rootNode = testAgentTeamNode({ address: '/', teamRunId: 'root', coordinatorAddress: '/Manager', children: [managerNode] });
-    const prepared = await f.factory.beginMaterialization({ physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [] }),
+    const prepared = await f.factory.beginMaterialization({ teamKind: 'configured', physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [] }),
       teamNode: rootNode, handoffs: [], activationMode: 'fresh', callbacks: f.callbacks }).prepare();
     prepared.commitAfterDurability(); rootTeam = prepared.teamRun;
     await activateTeamMembers(rootTeam, ['manager']);
@@ -144,7 +144,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
       const base = testAgentOrgExecutionTree({ orgRunId: 'root', members: [testOrgAgentNode('/Manager', 'manager')] });
       tree = { ...base, rootOrg: { ...base.rootOrg, taskExecutions: tasks } }; index = new AgentOrgExecutionIndex(tree);
     } else {
-      tree = { subjectKind: 'agent', createdAt: now, host: { address: '/Manager', agentRunId: 'root', agentDefinitionId: 'manager' }, collaborators: [], taskExecutions: tasks };
+      tree = { subjectKind: 'agent', createdAt: now, host: { address: '/Manager', agentRunId: 'root', agentDefinitionId: 'manager' }, taskExecutions: tasks };
       index = new StandaloneRootExecutionIndex(tree);
     }
     const options = { root: f.root, rootAgents: f.rootAgents, teams: f.teams, callbacks: f.callbacks, getTree: () => tree, getIndex: () => index, tokenUsageReadiness: {}, publishTaskExecutionsClosed: vi.fn(), publishTaskExecutionsReopened: vi.fn(), activityInspector: presentConversation };
@@ -163,7 +163,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
   for (const agentRun of [{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }, { agentRunId: 'A-grand' }]) {
     await resources.linkNewTaskExecution({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, execution: agentRun });
   }
-  await resources.linkNewTaskExecution({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-helper' } });
+  await resources.linkNewTaskExecution({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-helper' } });
   await resources.linkNewTaskExecution({ ...assigned, taskId: 'B', execution: { agentRunId: 'B-worker' } });
   const quiet = rootTeam ? await rootTeam.tryShutDownDirectTaskExecutionIfQuiet({ teamRunId: 'A-team' })
     : await f.teams.tryShutDownRootTaskTeamIfQuiet('A-team');

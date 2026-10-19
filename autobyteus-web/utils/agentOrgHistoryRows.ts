@@ -1,5 +1,5 @@
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
-import { projectAgentOrgTeamBranchStatus } from '~/services/agentOrgExecution/agentOrgTeamBranchStatus'
+import { projectAgentOrgTaskTeamStatus, projectAgentOrgTeamBranchStatus } from '~/services/agentOrgExecution/agentOrgTeamBranchStatus'
 import type { AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import {
@@ -8,12 +8,10 @@ import {
   type AgentOrgTaskExecutionNode,
   type AgentOrgTaskTeamMember,
 } from '~/types/collaboration/agentOrgExecution'
-import { foldTeamAggregateStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
+import { foldTeamAggregateStatus, type TeamStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
 import {
   catalogTeamSourceAt,
   collaborationTaskExecutionLists,
-  collaboratorExecutionNodes,
-  collaboratorTeamSourceAt,
 } from '~/services/collaborators/agentSourceSelectors'
 import { collaborationTreeWalk, collectClosedSubtrees, type CollaborationTreeNode } from '~/utils/collaboration/taskExecutionClosure'
 
@@ -21,7 +19,7 @@ export type AgentOrgHistoryAgentRow = Readonly<{
   key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; depth: number
 }>
 export type AgentOrgHistoryTeamRow = Readonly<{
-  key: string; kind: 'team'; address: string; teamRunId: string; status: AgentStatus; depth: number
+  key: string; kind: 'team'; address: string; teamRunId: string; status: TeamStatus; depth: number
 }>
 /**
  * Delegated rows carry who started them (REQ-013): the delegator's address when it resolves
@@ -33,7 +31,8 @@ export type AgentOrgHistoryTaskAgentRow = Readonly<{
   agentRunId: string; status: AgentStatus; depth: number; delegatedBy: AgentOrgHistoryDelegator | null
 }>
 export type AgentOrgHistoryTaskTeamRow = Readonly<{
-  key: string; kind: 'task_team'; address: string; teamRunId: string; depth: number; coordinatorAgentRunId: string; coordinatorAddress: string
+  key: string; kind: 'task_team'; address: string; teamRunId: string; status: TeamStatus; depth: number
+  coordinatorAgentRunId: string; coordinatorAddress: string
   delegatedBy: AgentOrgHistoryDelegator | null
   /** Disclosure state: descendants are emitted only while expanded. */
   hasChildren: boolean; expanded: boolean
@@ -50,7 +49,8 @@ export type AgentOrgHistoryDisplayRow = Readonly<{
 }>
 
 type TaskBranchNode = AgentOrgTaskExecutionNode | AgentOrgTaskTeamMember
-type TaskTeamNode = Exclude<TaskBranchNode, { agentRunId: string }>
+/** A delegated Team copy; Teams are flat, so its members are Agents. */
+type TaskTeamNode = Extract<AgentOrgTaskExecutionNode, { teamRunId: string }>
 type StatusSource = Readonly<{
   authority: TeamStatusAuthority
   coordinatorFor(team: TaskTeamNode): Readonly<{ agentRunId: string; address: string }>
@@ -62,24 +62,19 @@ type StatusSource = Readonly<{
   isListed(node: TaskBranchNode): boolean
 }>
 
-/** Root-level delegated children as the tree shows them: collaborators first, then extra copies. */
-const rootTaskExecutions = (rootOrg: AgentOrgRunHistoryItem['executionTree']['rootOrg']): readonly AgentOrgTaskExecutionNode[] => [
-  ...collaboratorExecutionNodes(rootOrg.collaborators ?? []) as AgentOrgTaskExecutionNode[],
-  ...rootOrg.taskExecutions,
-]
+/** Root-level delegated children as the tree shows them. */
+const rootTaskExecutions = (rootOrg: AgentOrgRunHistoryItem['executionTree']['rootOrg']): readonly AgentOrgTaskExecutionNode[] =>
+  rootOrg.taskExecutions
 
 const collectAgentAddresses = (tree: AgentOrgRunHistoryItem['executionTree']): ReadonlyMap<string, string> => {
   const addresses = new Map<string, string>()
-  const visitTaskMembers = (members: readonly AgentOrgTaskTeamMember[]) => {
-    for (const member of members) {
-      if ('agentRunId' in member) addresses.set(member.agentRunId, member.address)
-      else { visitTaskMembers(member.members); visitTasks(member.taskExecutions) }
-    }
-  }
   const visitTasks = (tasks: readonly AgentOrgTaskExecutionNode[]) => {
     for (const task of tasks) {
       if ('agentRunId' in task) addresses.set(task.agentRunId, task.address)
-      else { visitTaskMembers(task.members); visitTasks(task.taskExecutions) }
+      else {
+        task.members.forEach((member) => addresses.set(member.agentRunId, member.address))
+        visitTasks(task.taskExecutions)
+      }
     }
   }
   for (const member of tree.rootOrg.members) {
@@ -121,15 +116,11 @@ const statusSource = (
     coordinatorFor: (team) => {
       const rootOrg = (context?.executionTree ?? run.executionTree).rootOrg
       const configured = rootOrg.members.find((member) => 'teamRunId' in member && member.address === team.address)
-      // A task Team at a collaborator address takes its layout from the collaborator entry.
       const source = configured && 'teamRunId' in configured
         ? configured
-        : collaboratorTeamSourceAt(rootOrg.collaborators ?? [], team.address)
-          ?? catalogTeamSourceAt(collaborationTaskExecutionLists(rootOrg), team.address)
+        : catalogTeamSourceAt(collaborationTaskExecutionLists(rootOrg), team.address)
       if (!source) throw new Error(`Missing captured Team source '${team.address}'.`)
-      const findMembers = (node: TaskTeamNode): { agentRunId: string; address: string }[] => node.members.flatMap((member) =>
-        'agentRunId' in member ? [member] : findMembers(member))
-      const matches = findMembers(team).filter((member) => member.address === source.coordinatorAddress)
+      const matches = team.members.filter((member) => member.address === source.coordinatorAddress)
       if (matches.length !== 1) throw new Error(`Missing exact task coordinator '${team.teamRunId}'.`)
       return matches[0]!
     },
@@ -142,6 +133,14 @@ const statusSource = (
 const exactAgentStatus = (source: StatusSource, agentRunId: string): AgentStatus =>
   foldTeamAggregateStatus([source.statusForAgentRunId(agentRunId)], source.authority)
 
+/** The Team status inputs: the Org run is alive only while its statuses are live. */
+const teamStatusInput = <TTeam>(source: StatusSource, team: TTeam) => ({
+  team,
+  runAlive: source.authority === 'live',
+  isListed: source.isListed,
+  statusForAgentRunId: source.statusForAgentRunId,
+})
+
 const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource): AgentOrgHistoryRow[] => {
   const coordinator = source.coordinatorFor(team)
   const members = team.members.filter((member) => source.isListed(member))
@@ -153,27 +152,25 @@ const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource
     kind: 'task_team',
     address: team.address,
     teamRunId: team.teamRunId,
+    status: projectAgentOrgTaskTeamStatus(teamStatusInput(source, team)),
     coordinatorAgentRunId: coordinator.agentRunId, coordinatorAddress: coordinator.address,
     depth,
-    // A nested Team inside a task Team is not itself delegated; only the outer task Team row names its starter.
-    delegatedBy: 'delegatorAgentRunId' in team ? source.delegatorFor(team.delegatorAgentRunId) : null,
+    delegatedBy: source.delegatorFor(team.delegatorAgentRunId),
     hasChildren,
     expanded,
   }]
   if (hasChildren && !expanded) return rows
   for (const member of members) {
-    if (isAgentOrgTaskAgentNode(member)) {
-      rows.push({
-        key: `task-team-agent:${member.agentRunId}`,
-        kind: 'task_agent',
-        taskKind: 'team_member',
-        address: member.address,
-        agentRunId: member.agentRunId,
-        status: exactAgentStatus(source, member.agentRunId),
-        depth: depth + 1,
-        delegatedBy: null,
-      })
-    } else rows.push(...flattenTaskTeam(member, depth + 1, source))
+    rows.push({
+      key: `task-team-agent:${member.agentRunId}`,
+      kind: 'task_agent',
+      taskKind: 'team_member',
+      address: member.address,
+      agentRunId: member.agentRunId,
+      status: exactAgentStatus(source, member.agentRunId),
+      depth: depth + 1,
+      delegatedBy: null,
+    })
   }
   for (const task of tasks) rows.push(...flattenTask(task, depth + 1, source))
   return rows
@@ -223,7 +220,7 @@ export const projectAgentOrgHistoryRows = (input: Readonly<{
       kind: 'team',
       address: member.address,
       teamRunId: member.teamRunId,
-      status: projectAgentOrgTeamBranchStatus({ team: member, ...source }),
+      status: projectAgentOrgTeamBranchStatus(teamStatusInput(source, member)),
       depth: 0,
     })
     if (!input.isTeamExpanded(member.address)) continue

@@ -1,0 +1,488 @@
+# IMP-06 (edited-test-files)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts tests/integration/agent-execution/agent-run-manager.integration.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts tests/integration/agent/agent-status-websocket.integration.test.ts --no-watch
+# Commit: a3c4982721
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T14:15:28Z
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-input-state-cleanup/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-input-state-cleanup/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-autobyteus
+Created agent session 9f7ce3b4-dadd-4b7e-8dd0-d3322df110aa for run run-autobyteus
+Agent WebSocket connected: session=9f7ce3b4-dadd-4b7e-8dd0-d3322df110aa, run=run-autobyteus
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-input-state-cleanup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-input-state-cleanup/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-autobyteus
+Created agent session 4a8304f9-3e3f-44e2-a10a-26f51b3f2aad for run run-autobyteus
+Agent WebSocket connected: session=4a8304f9-3e3f-44e2-a10a-26f51b3f2aad, run=run-autobyteus
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 4a8304f9-3e3f-44e2-a10a-26f51b3f2aad
+Agent WebSocket disconnected: 4a8304f9-3e3f-44e2-a10a-26f51b3f2aad
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 9f7ce3b4-dadd-4b7e-8dd0-d3322df110aa
+Agent WebSocket disconnected: 9f7ce3b4-dadd-4b7e-8dd0-d3322df110aa
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-codex_app_server
+Created agent session 43b77ea2-9646-43bd-b9b2-9b5445e6e244 for run run-codex_app_server
+Agent WebSocket connected: session=43b77ea2-9646-43bd-b9b2-9b5445e6e244, run=run-codex_app_server
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-codex_app_server
+Created agent session 39b87d40-10ad-4ce4-8f7f-a970c6897dd2 for run run-codex_app_server
+Agent WebSocket connected: session=39b87d40-10ad-4ce4-8f7f-a970c6897dd2, run=run-codex_app_server
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 39b87d40-10ad-4ce4-8f7f-a970c6897dd2
+Agent WebSocket disconnected: 39b87d40-10ad-4ce4-8f7f-a970c6897dd2
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 43b77ea2-9646-43bd-b9b2-9b5445e6e244
+Agent WebSocket disconnected: 43b77ea2-9646-43bd-b9b2-9b5445e6e244
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-claude_agent_sdk
+Created agent session 1b465481-5fbd-4a0b-a1a7-d6681db35cee for run run-claude_agent_sdk
+Agent WebSocket connected: session=1b465481-5fbd-4a0b-a1a7-d6681db35cee, run=run-claude_agent_sdk
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-claude_agent_sdk
+Created agent session 93f2be08-be8c-423f-8168-2f2d2f5c7baf for run run-claude_agent_sdk
+Agent WebSocket connected: session=93f2be08-be8c-423f-8168-2f2d2f5c7baf, run=run-claude_agent_sdk
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 93f2be08-be8c-423f-8168-2f2d2f5c7baf
+Agent WebSocket disconnected: 93f2be08-be8c-423f-8168-2f2d2f5c7baf
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mcoalesces a representative fine-grained canonical stream into one default-window content frame
+[22m[39mClosed agent session 1b465481-5fbd-4a0b-a1a7-d6681db35cee
+Agent WebSocket disconnected: 1b465481-5fbd-4a0b-a1a7-d6681db35cee
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mcoalesces a representative fine-grained canonical stream into one default-window content frame
+[22m[39mAgent websocket attached for run run-default-window-rate
+Created agent session ae71def8-f31f-4d75-80fe-1ee6e07a850e for run run-default-window-rate
+Agent WebSocket connected: session=ae71def8-f31f-4d75-80fe-1ee6e07a850e, run=run-default-window-rate
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2muses a changed interval only for the active socket's next newly opened window
+[22m[39mClosed agent session ae71def8-f31f-4d75-80fe-1ee6e07a850e
+Agent WebSocket disconnected: ae71def8-f31f-4d75-80fe-1ee6e07a850e
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2muses a changed interval only for the active socket's next newly opened window
+[22m[39mAgent websocket attached for run run-live-interval-change
+Created agent session 25e6900b-6b85-433a-a4be-ee9331d6b4b2 for run run-live-interval-change
+Agent WebSocket connected: session=25e6900b-6b85-433a-a4be-ee9331d6b4b2, run=run-live-interval-change
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2msends no repeated input state during a content window and a queued message's new revision right after the pending content
+[22m[39mClosed agent session 25e6900b-6b85-433a-a4be-ee9331d6b4b2
+Agent WebSocket disconnected: 25e6900b-6b85-433a-a4be-ee9331d6b4b2
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2msends no repeated input state during a content window and a queued message's new revision right after the pending content
+[22m[39mAgent websocket attached for run run-input-state-window
+Created agent session 5a720023-5bb1-4381-bdeb-5c6947565e5f for run run-input-state-window
+Agent WebSocket connected: session=5a720023-5bb1-4381-bdeb-5c6947565e5f, run=run-input-state-window
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mClosed agent session 5a720023-5bb1-4381-bdeb-5c6947565e5f
+Agent WebSocket disconnected: 5a720023-5bb1-4381-bdeb-5c6947565e5f
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mAgent websocket attached for run run-retired-turn-ordering
+Created agent session 13ae7aa9-ffb8-413a-afd5-f0aadf3c3f99 for run run-retired-turn-ordering
+Agent WebSocket connected: session=13ae7aa9-ffb8-413a-afd5-f0aadf3c3f99, run=run-retired-turn-ordering
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mAgent websocket attached for run run-retired-turn-ordering
+Created agent session 7918e778-41b4-4dc7-9786-74f70201696e for run run-retired-turn-ordering
+Agent WebSocket connected: session=7918e778-41b4-4dc7-9786-74f70201696e, run=run-retired-turn-ordering
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mClosed agent session 7918e778-41b4-4dc7-9786-74f70201696e
+Agent WebSocket disconnected: 7918e778-41b4-4dc7-9786-74f70201696e
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mAgent websocket attached for run run-retired-turn-ordering
+Created agent session b4aeec15-56f9-475f-92b7-9207007a42bb for run run-retired-turn-ordering
+Agent WebSocket connected: session=b4aeec15-56f9-475f-92b7-9207007a42bb, run=run-retired-turn-ordering
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mClosed agent session b4aeec15-56f9-475f-92b7-9207007a42bb
+Agent WebSocket disconnected: b4aeec15-56f9-475f-92b7-9207007a42bb
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mkeeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+[22m[39mClosed agent session 13ae7aa9-ffb8-413a-afd5-f0aadf3c3f99
+Agent WebSocket disconnected: 13ae7aa9-ffb8-413a-afd5-f0aadf3c3f99
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mkeeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+[22m[39mAgent websocket attached for run run-error-contract
+Created agent session e8b4aaf0-a0ba-42b3-8ff1-a271981b5ea9 for run run-error-contract
+Agent WebSocket connected: session=e8b4aaf0-a0ba-42b3-8ff1-a271981b5ea9, run=run-error-contract
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts
+[22m[39mClosed agent session e8b4aaf0-a0ba-42b3-8ff1-a271981b5ea9
+Agent WebSocket disconnected: e8b4aaf0-a0ba-42b3-8ff1-a271981b5ea9
+
+ [32m✓[39m tests/integration/agent/agent-status-websocket.integration.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 3429[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces a representative fine-grained canonical stream into one default-window content frame [33m 659[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the active socket's next newly opened window [33m 1807[2mms[22m[39m
+     [33m[2m✓[22m[39m sends no repeated input state during a content window and a queued message's new revision right after the pending content [33m 815[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts [2m([22m[2m28 tests[22m[2m)[22m[33m 327[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mkeeps a new run private until synchronous candidate publication
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mtells the lifecycle observer about a run only once it is published, with its activation kind
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mclaims the run id before the first backend await and rejects overlapping preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mallows retry only after candidate abort confirms inactivity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines an uncertain candidate cleanup and rejects same-process replacement
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores codex_app_server from the exact provider identity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores claude_agent_sdk from the exact provider identity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2maborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mrolls back already-attached run resources when a later attachment fails
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates exactly once when a post-activation backend identity mismatch fails before attachment
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines attachment rollback when exact-run session deactivation fails
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates pre-attachment sessions after a post-activation create failure
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates pre-attachment sessions after a post-activation restore failure
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines with primary then deactivation cleanup evidence
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mrejects another candidate after publication without replacing the active run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdetaches run resources and invokes exact-run MCP cleanup after accepted termination
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mallows only one non-waiting quiescence preparation attempt per exact run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcancels through the exact run without releasing it and permits a fresh preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretries only after a rejected finish and releases once after acceptance
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcoalesces one committed finish attempt and caches successful finalization
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretains accepted-but-active failure without removing the exact run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretries exact retained component cleanup after physical release without stopping twice
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal not_found as terminal without resource cleanup
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal identity_mismatch as terminal without resource cleanup
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mrejects a missing or different exact instance before lower-level preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mdoes nothing for an unknown id or a live published run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mexact-releases a run that went offline so its replacement can be claimed (AC-003)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mkeeps the release owed and retryable when the previous runtime's stop throws (AC-008)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mkeeps the release owed and retryable when the previous runtime's stop is not accepted (AC-008)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mjoins an in-flight release instead of stopping the previous runtime twice (AC-005)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mroutes stop-all active runs through the managed prepared boundary
+[22m[39mAgentRunManager initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-manager.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to a run identity and sends CONNECTED plus projected status without restoring runtime
+[22m[39mCreated agent session 5276054e-f56b-4542-8e3c-8f2ab1346349 for run agent-123
+Agent WebSocket connected: session=5276054e-f56b-4542-8e3c-8f2ab1346349, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to run events through the AgentRun subject for active runtime-managed runs
+[22m[39mCreated agent session 6dcd19a4-db20-4781-87ed-82516db78164 for run runtime-run-1
+Agent WebSocket connected: session=6dcd19a4-db20-4781-87ed-82516db78164, run=runtime-run-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps Codex AgentRunEvents directly to websocket messages for single-agent runs
+[22m[39mCreated agent session 655a33db-4d58-4f57-a1cb-40b28cfd0f0c for run runtime-run-2
+Agent WebSocket connected: session=655a33db-4d58-4f57-a1cb-40b28cfd0f0c, run=runtime-run-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps turn lifecycle AgentRunEvents directly to websocket messages
+[22m[39mCreated agent session 71161426-9865-402d-97ec-c95e0758052f for run runtime-run-3
+Agent WebSocket connected: session=71161426-9865-402d-97ec-c95e0758052f, run=runtime-run-3
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mregisters the websocket connection for run-scoped live message broadcasts
+[22m[39mCreated agent session 87f06abd-570c-44f7-828a-f24b9435113c for run agent-123
+Agent WebSocket connected: session=87f06abd-570c-44f7-828a-f24b9435113c, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mpublishes terminal offline status to an already-connected websocket when a run terminates
+[22m[39mCreated agent session 3ee78aa4-0625-423e-a176-211003de5fed for run run-terminate-1
+Agent WebSocket connected: session=3ee78aa4-0625-423e-a176-211003de5fed, run=run-terminate-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles SEND_MESSAGE through the command coordinator and returns an ACK
+[22m[39mCreated agent session ab2f8eb1-36c8-4948-b3d4-7d50f31bd5ad for run agent-123
+Agent WebSocket connected: session=ab2f8eb1-36c8-4948-b3d4-7d50f31bd5ad, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mdefers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+[22m[39mCreated agent session 21add287-57c9-40ca-bc4a-6061b3e617ed for run agent-123
+Agent WebSocket connected: session=21add287-57c9-40ca-bc4a-6061b3e617ed, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mCreated agent session e8f81ef5-41d7-4be8-8ce7-4660f90b990e for run agent-123
+Agent WebSocket connected: session=e8f81ef5-41d7-4be8-8ce7-4660f90b990e, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mINTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mCreated agent session 8df07351-ea4d-4885-a3ff-d9f50d2b9e38 for run agent-123
+Agent WebSocket connected: session=8df07351-ea4d-4885-a3ff-d9f50d2b9e38, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mAgent websocket session '8df07351-ea4d-4885-a3ff-d9f50d2b9e38' lost its active run subscription for run 'agent-123'.
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps tool approval active-only: an offline host is not started (AR-002)
+[22m[39mAgent websocket session '8df07351-ea4d-4885-a3ff-d9f50d2b9e38' lost its active run subscription for run 'agent-123'.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mreturns exactly one same-socket acknowledgement for an accepted interrupt
+[22m[39mCreated agent session 6d931a8d-3fd7-489a-a46e-3e1849b958d7 for run agent-123
+Agent WebSocket connected: session=6d931a8d-3fd7-489a-a46e-3e1849b958d7, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mrejects an empty interrupt command id before runtime execution
+[22m[39mCreated agent session 4998a1e2-fe59-4353-9d25-b7f144910922 for run agent-123
+Agent WebSocket connected: session=4998a1e2-fe59-4353-9d25-b7f144910922, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mCreated agent session 3b9ec6d8-4710-4248-ad96-c0cf541bfd6c for run agent-123
+Agent WebSocket connected: session=3b9ec6d8-4710-4248-ad96-c0cf541bfd6c, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mINTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles tool approvals for active sessions
+[22m[39mCreated agent session 8d88f257-ad42-41a9-b00f-299f20000922 for run agent-123
+Agent WebSocket connected: session=8d88f257-ad42-41a9-b00f-299f20000922, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mignores messages for unknown sessions
+[22m[39mMessage for unknown session: missing
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active autobyteus run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active codex_app_server run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active codex_app_server run through the matching backend factory
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-codex' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active claude_agent_sdk run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active claude_agent_sdk run through the matching backend factory
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-claude' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a autobyteus run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a codex_app_server run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a codex_app_server run through the matching backend factory
+[22m[39m[AgentRunMemoryRecorder] skipping run 'restored-codex_app_server' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a claude_agent_sdk run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a claude_agent_sdk run through the matching backend factory
+[22m[39m[AgentRunMemoryRecorder] skipping run 'restored-claude_agent_sdk' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores Claude platform state with auto approval separate from provider permission mode
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores Claude platform state with auto approval separate from provider permission mode
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-restore-claude-platform' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mevicts inactive runs when queried or listed
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mterminates and unregisters active runs on accepted termination
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mterminates and unregisters active runs on accepted termination
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-terminate-ok' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mreturns false for missing runs and for unaccepted termination without unregistering
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mreturns false for missing runs and for unaccepted termination without unregistering
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-terminate-no' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mwraps termination failures in AgentTerminationError
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mwraps termination failures in AgentTerminationError
+[22m[39mFailed to terminate agent run 'run-terminate-error': Error: boom
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrejects unsupported runtime kinds for create and restore
+[22m[39mAgentRunManager initialized.
+
+ [32m✓[39m tests/integration/agent-execution/agent-run-manager.integration.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22m[2msupported Team Agent Tools MCP lifecycle integration[2m > [22m[2mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-input-state-cleanup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-input-state-cleanup/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22m[2msupported Team Agent Tools MCP lifecycle integration[2m > [22m[2mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[22m[39mAgentRunManager initialized.
+
+ [32m✓[39m tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 107[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[32m99 passed[39m[22m[90m (99)[39m
+[2m   Start at [22m 16:15:29
+[2m   Duration [22m 12.86s[2m (transform 2.91s, setup 58ms, import 7.99s, tests 3.92s, environment 0ms)[22m
+
+# exit: 0

@@ -58,6 +58,9 @@ RUN apt-get update \
 
 # Keep provider setup writes out of the persisted runtime home. Verify native
 # payloads explicitly: both upstream installers can report success after failures.
+# The Antigravity installer is served with Content-Encoding: gzip even without
+# Accept-Encoding, so curl must decode it (--compressed) and the saved file must
+# be the shell script before it runs.
 RUN echo "CLI install cache buster: ${CLI_INSTALL_CACHE_BUSTER}" \
   && npm install -g \
   "@openai/codex@${CODEX_CLI_VERSION}" \
@@ -65,7 +68,8 @@ RUN echo "CLI install cache buster: ${CLI_INSTALL_CACHE_BUSTER}" \
   && cli_scratch="$(mktemp -d)" \
   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin" \
   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest" \
-  && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh" \
+  && curl -fsSL --compressed https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh" \
+  && test "$(head -c 2 "${cli_scratch}/agy-install.sh")" = '#!' \
   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin" \
   && test -x "${cli_scratch}/agy-bin/agy" \
   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)" \

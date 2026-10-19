@@ -1,0 +1,2 @@
+{"wall":1792323502403,"level":"warning","text":"Segment not found for end event: segment_2111ab6311b54e0488f52a17a037d917:reasoning_8c43c7541eed48998c6f465907067433"}
+{"wall":1792323590552,"level":"log:warning","text":"WebSocket connection to 'ws://127.0.0.1:53151/ws/agent-org/desk_org_8233cbd221a447389df370233098e3af' failed: WebSocket is closed before the connection is established."}

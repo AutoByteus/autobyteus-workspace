@@ -1,0 +1,560 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51863
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51863
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/db/test.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.22                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:36143) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T05:17:35.100Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-10-10T05:17:35.213Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-10T05:17:35.213Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1791609455219,"pid":36143,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51892"}
+{"level":30,"time":1791609455243,"pid":36143,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51863"}
+[2026-10-10T05:17:35.243Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51863
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Creating on-demand SkillWorkspace for: web-writer
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/d6606800-0d3a-44a6-a34c-3ee272f161d7/repository/writer.
+Initialized SkillWorkspace for skill 'web-writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/d6606800-0d3a-44a6-a34c-3ee272f161d7/repository/writer
+Created WorkspaceFileExplorer for skill_ws_web-writer (file-explorer-websocket).
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/d6606800-0d3a-44a6-a34c-3ee272f161d7/repository/writer' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/d6606800-0d3a-44a6-a34c-3ee272f161d7/repository/writer
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/d6606800-0d3a-44a6-a34c-3ee272f161d7/repository/writer (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 5a7d78ee-2cef-4a3a-9e31-d2b50bf10955 for workspace skill_ws_web-writer
+Created file explorer session 5a7d78ee-2cef-4a3a-9e31-d2b50bf10955 for workspace skill_ws_web-writer. Active sessions: 1
+File explorer WebSocket connected: 5a7d78ee-2cef-4a3a-9e31-d2b50bf10955 for workspace skill_ws_web-writer
+File explorer websocket attached for workspace skill_ws_web-writer
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/d6606800-0d3a-44a6-a34c-3ee272f161d7/repository/writer (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/d6606800-0d3a-44a6-a34c-3ee272f161d7/repository/writer
+FileExplorerSession closed: 5a7d78ee-2cef-4a3a-9e31-d2b50bf10955
+Closed file explorer session 5a7d78ee-2cef-4a3a-9e31-d2b50bf10955. Active sessions: 0
+File explorer WebSocket disconnected: 5a7d78ee-2cef-4a3a-9e31-d2b50bf10955
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace.
+Created and registered workspace ID: agent_ws_c4a4926b2d5a9c9df5fb1d7f3627f65b3e989055e223057e5f208df422236747
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace.
+Reusing registered workspace ID: agent_ws_c4a4926b2d5a9c9df5fb1d7f3627f65b3e989055e223057e5f208df422236747
+Agent websocket attached for run daily_assistant_e44478fec1f9488eaf81113e11fbdf77
+Created agent session 7297c4fb-5a97-4cde-95a1-79e040433d33 for run daily_assistant_e44478fec1f9488eaf81113e11fbdf77
+Agent WebSocket connected: session=7297c4fb-5a97-4cde-95a1-79e040433d33, run=daily_assistant_e44478fec1f9488eaf81113e11fbdf77
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace.
+Reusing registered workspace ID: agent_ws_c4a4926b2d5a9c9df5fb1d7f3627f65b3e989055e223057e5f208df422236747
+Closed agent session 7297c4fb-5a97-4cde-95a1-79e040433d33
+Agent WebSocket disconnected: 7297c4fb-5a97-4cde-95a1-79e040433d33
+Agent websocket attached for run daily_assistant_e44478fec1f9488eaf81113e11fbdf77
+Created agent session 6a1f0ace-0636-433d-9f32-25b8826a309a for run daily_assistant_e44478fec1f9488eaf81113e11fbdf77
+Agent WebSocket connected: session=6a1f0ace-0636-433d-9f32-25b8826a309a, run=daily_assistant_e44478fec1f9488eaf81113e11fbdf77
+{"level":30,"time":1791609468021,"pid":36143,"hostname":"MacBookPro","reqId":"req-2t","err":{"type":"GraphQLError","message":"Fixture GitHub temporarily unavailable","stack":"Error: Fixture GitHub temporarily unavailable\n    at globalThis.fetch (file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-web/tests/e2e/fixtures/github-skill-upstream.mjs:13:27)\n    at publicGitHubRequest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/dist/integrations/github/public-github-request.js:9:32)\n    at GitHubRepositoryClient.fetchRepositoryMetadata (file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/dist/integrations/github/github-repository-client.js:27:32)\n    at GitHubRepositoryClient.fetchRepositoryRevisionMetadata (file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/dist/integrations/github/github-repository-client.js:11:37)\n    at SkillSourceService.metadata (file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/dist/skills/services/skill-source-service.js:261:44)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/dist/skills/services/skill-source-service.js:164:45\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","path":["updateGitHubSkillSource"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Fixture GitHub temporarily unavailable"}
+Closing FileSystemWorkspace skill_ws_web-writer
+Creating on-demand SkillWorkspace for: web-writer
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/e4b57d63-6fa0-4cf4-92f1-ea8bf5db8602/repository/writer.
+Initialized SkillWorkspace for skill 'web-writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/e4b57d63-6fa0-4cf4-92f1-ea8bf5db8602/repository/writer
+Created WorkspaceFileExplorer for skill_ws_web-writer (file-explorer-websocket).
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/e4b57d63-6fa0-4cf4-92f1-ea8bf5db8602/repository/writer' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/e4b57d63-6fa0-4cf4-92f1-ea8bf5db8602/repository/writer
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/e4b57d63-6fa0-4cf4-92f1-ea8bf5db8602/repository/writer (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 5801f70e-48db-48bb-9588-f5f864882428 for workspace skill_ws_web-writer
+Created file explorer session 5801f70e-48db-48bb-9588-f5f864882428 for workspace skill_ws_web-writer. Active sessions: 1
+File explorer WebSocket connected: 5801f70e-48db-48bb-9588-f5f864882428 for workspace skill_ws_web-writer
+File explorer websocket attached for workspace skill_ws_web-writer
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/e4b57d63-6fa0-4cf4-92f1-ea8bf5db8602/repository/writer (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations/e4b57d63-6fa0-4cf4-92f1-ea8bf5db8602/repository/writer
+FileExplorerSession closed: 5801f70e-48db-48bb-9588-f5f864882428
+Closed file explorer session 5801f70e-48db-48bb-9588-f5f864882428. Active sessions: 0
+File explorer WebSocket disconnected: 5801f70e-48db-48bb-9588-f5f864882428
+Closed agent session 6a1f0ace-0636-433d-9f32-25b8826a309a
+Agent WebSocket disconnected: 6a1f0ace-0636-433d-9f32-25b8826a309a
+Agent websocket attached for run daily_assistant_e44478fec1f9488eaf81113e11fbdf77
+Created agent session 9b2b0d92-d05f-47ff-bc83-aa681c29e877 for run daily_assistant_e44478fec1f9488eaf81113e11fbdf77
+Agent WebSocket connected: session=9b2b0d92-d05f-47ff-bc83-aa681c29e877, run=daily_assistant_e44478fec1f9488eaf81113e11fbdf77
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace.
+Reusing registered workspace ID: agent_ws_c4a4926b2d5a9c9df5fb1d7f3627f65b3e989055e223057e5f208df422236747
+Agent websocket attached for run daily_assistant_503ff1ff49a94ba8bf5db6dd948aa4e0
+Created agent session 485a01b1-934e-457b-a58e-2a983f38ac82 for run daily_assistant_503ff1ff49a94ba8bf5db6dd948aa4e0
+Agent WebSocket connected: session=485a01b1-934e-457b-a58e-2a983f38ac82, run=daily_assistant_503ff1ff49a94ba8bf5db6dd948aa4e0
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace.
+Reusing registered workspace ID: agent_ws_c4a4926b2d5a9c9df5fb1d7f3627f65b3e989055e223057e5f208df422236747
+Closed agent session 485a01b1-934e-457b-a58e-2a983f38ac82
+Agent WebSocket disconnected: 485a01b1-934e-457b-a58e-2a983f38ac82
+Closed agent session 9b2b0d92-d05f-47ff-bc83-aa681c29e877
+Agent WebSocket disconnected: 9b2b0d92-d05f-47ff-bc83-aa681c29e877
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51863
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51863
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/db/test.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:36301) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T05:17:52.600Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-10-10T05:17:52.733Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-10T05:17:52.734Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1791609472739,"pid":36301,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52015"}
+{"level":30,"time":1791609472765,"pid":36301,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51863"}
+[2026-10-10T05:17:52.765Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51863
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace.
+[2026-10-10T05:17:53.135Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-10T05:17:53.142Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51863
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51863
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/db/test.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:36316) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T05:17:54.532Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-10-10T05:17:54.651Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-10T05:17:54.652Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1791609474657,"pid":36316,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52042"}
+{"level":30,"time":1791609474682,"pid":36316,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51863"}
+[2026-10-10T05:17:54.682Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51863
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace.
+{"level":30,"time":1791609475271,"pid":36316,"hostname":"MacBookPro","reqId":"req-q","err":{"type":"GraphQLError","message":"EACCES: permission denied, rmdir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations'","stack":"Error: EACCES: permission denied, rmdir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations'","path":["removeGitHubSkillSource"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"EACCES: permission denied, rmdir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/skill-sources/github/d8eb8455-c3d6-4a3e-8d10-8e38463f97f2/generations'"}
+[2026-10-10T05:17:55.330Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-10T05:17:55.338Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51863
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51863
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/db/test.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:36324) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T05:17:56.758Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/data/workspaces with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-10-10T05:17:56.881Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-10T05:17:56.881Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1791609476887,"pid":36324,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52071"}
+{"level":30,"time":1791609476911,"pid":36324,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51863"}
+[2026-10-10T05:17:56.911Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51863
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-skills-web-RUHxwH/chat-workspace.
+[2026-10-10T05:17:59.261Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-10T05:17:59.269Z] [INFO] [server.runtime] Server closed cleanly.

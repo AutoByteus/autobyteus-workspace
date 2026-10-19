@@ -267,6 +267,16 @@ export const fileExplorerContentActions = {
     }
   },
 
+  updateEditorDraft(this: any, workspaceId: string, filePath: string, content: string) {
+    const wsState = this._getWorkspaceState(workspaceId)
+    const file = wsState?.openFiles.find((entry: OpenFileState) => entry.path === filePath)
+    if (!file || file.type !== 'Text' || file.mode !== 'edit' || file.accessIntent?.readOnly) return
+    // While a Save is pending, committed content is about to change, so input that matches
+    // it now is not clean. The draft is settled against the resulting content when Save ends.
+    const savePending = !!wsState.saveContentLoading[filePath]
+    file.editorDraft = !savePending && content === file.content ? undefined : { content }
+  },
+
   invalidateFileContent(this: any, filePath: string, workspaceId: string) {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     const file = wsState.openFiles.find((entry: OpenFileState) => entry.path === filePath)
@@ -327,6 +337,10 @@ export const fileExplorerContentActions = {
       wsState.saveContentError[filePath] = error instanceof Error ? error.message : 'An unknown error occurred'
       throw error
     } finally {
+      // Later input made while Save was in flight belongs to the user: keep it unless it
+      // equals the committed content now in effect (saved bytes on success, unchanged on failure).
+      const file = wsState.openFiles.find((entry: OpenFileState) => entry.path === filePath)
+      if (file?.editorDraft && file.editorDraft.content === file.content) file.editorDraft = undefined
       wsState.saveContentLoading[filePath] = false
     }
   },

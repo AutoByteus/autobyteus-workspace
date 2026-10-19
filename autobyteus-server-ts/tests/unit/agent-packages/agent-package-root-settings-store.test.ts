@@ -30,7 +30,7 @@ describe("AgentPackageRootSettingsStore", () => {
       {
         getAppDataDir: () => appDataRoot,
         getAppRootDir: () => serverRoot,
-        getAdditionalAgentPackageRoots: () => [builtInSourceRoot, extraRoot],
+        getRegisteredAgentPackageRoots: () => [builtInSourceRoot, extraRoot],
         get: (_key: string, defaultValue?: string) => defaultValue,
       },
       {
@@ -41,13 +41,30 @@ describe("AgentPackageRootSettingsStore", () => {
     expect(store.listAdditionalRootPaths()).toEqual([path.resolve(extraRoot)]);
   });
 
+  it("keeps a registered root listed while its folder is missing, so Settings can report it", () => {
+    const missingRoot = path.join(tempRoot, "moved-away-package");
+    const store = new AgentPackageRootSettingsStore(
+      {
+        getAppDataDir: () => appDataRoot,
+        getAppRootDir: () => serverRoot,
+        getRegisteredAgentPackageRoots: () => [missingRoot],
+        get: (_key: string, defaultValue?: string) => defaultValue,
+      },
+      {
+        updateSetting: () => [true, "updated"],
+      },
+    );
+
+    expect(store.listAdditionalRootPaths()).toEqual([path.resolve(missingRoot)]);
+  });
+
   it("rejects registering the built-in applications root as an additional package root", () => {
     const writes: Array<{ key: string; value: string }> = [];
     const store = new AgentPackageRootSettingsStore(
       {
         getAppDataDir: () => appDataRoot,
         getAppRootDir: () => serverRoot,
-        getAdditionalAgentPackageRoots: () => [],
+        getRegisteredAgentPackageRoots: () => [],
         get: (_key: string, defaultValue?: string) => defaultValue,
       },
       {

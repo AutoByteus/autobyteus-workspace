@@ -1,0 +1,2 @@
+ M agent-teams/software-engineering-team/team-config.json
+ M agent-teams/software-engineering-team/team.md

@@ -96,6 +96,53 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls through the backend active-runtime approval command; it is not a restore or turn-starting operation.
   - `closeAgent()`: Cleans up local state and unsubscribes.
 
+### `agentRunCollaborationStore.ts` (Standalone Agent-run children)
+
+This store owns collaboration contexts, exact child selection and ephemeral
+Team disclosure beneath standalone Agent runs. Disclosure is keyed by
+`hostRunId` and `teamRunId`, not a displayed name or shared logical address.
+An absent choice means collapsed. Stored inspection and stream publication never open member lists; explicit
+toggles retain their choices across same-session refresh/reselection. Fresh
+frontend sessions start collapsed again. There is no automatic-opening helper,
+suppression Set or policy callback.
+
+`AgentRunTaskRows` uses the existing exact disclosure/selection actions;
+`useTaskRootNavigation` deliberately reveals only its target Team and selects
+its coordinator. Status, closure recovery, conversations and execution remain
+separate from disclosure. Agent Team and Agent Org roots keep their own policies.
+
+Disclosure and loading are separate. A stored inspection or stream snapshot
+publishes the context from the run's collaboration view alone
+(`buildAgentRunCollaborationContext`): the tree, one Offline child context per
+child, and statuses and input states from the view. No child's conversation,
+activities or artifacts are fetched to draw the rows, so their cost does not grow
+with the number of copies.
+
+A child's stored details load on demand (`agentRunCollaborationChildHydration.ts`):
+
+- **When.** When it is selected (row click, Task locate), and again for the
+  selected child after every publication, including the snapshot that follows a
+  new delegation or a settings Save. Unopened children are never loaded;
+  previously opened ones load again when selected again.
+- **What.** One member projection request and one hub-scoped artifact request
+  (`agentRunCollaborationMemberFileChanges`, never the run-id `getRunFileChanges`).
+- **Ownership.** The store is the only owner of in-flight loads, keyed by
+  (published context, child). A load whose context is no longer published, because
+  it was republished or the host is stopping, ends `superseded` and writes nothing.
+  A live event (single or an `agent_presentation_batch`) or a shown local message during
+  the fetch retries the load within the same context, at most three attempts. Live
+  presentation reaches every child's context, loaded or not. A failure is logged with the host and child
+  and leaves the child unloaded, so selecting it again retries.
+- **Shown content.** A republication carries a loaded child's shown conversation into
+  the new context (not its loaded mark), so the opened copy does not flash empty.
+  Until a copy loads, the center view shows its empty or previous conversation; there
+  is no separate loading state. Held or queued input the view or the stream showed
+  stays shown when the stored conversation arrives.
+
+Host selection, collaboration publication and child readiness are distinct
+boundaries. See [Projects](./projects.md#delegated-team-disclosure-under-agent-runs)
+for the user interaction contract.
+
 ### `agentTeamRunStore.ts` (Agent Teams)
 
 - **Role**: Owns Team launch, restore, exact execution focus, Team stream
@@ -402,35 +449,73 @@ member is `running` or `initializing`; members keep their own scoped status or
 default to `offline/canInterrupt=false` until an exact `AGENT_STATUS` arrives.
 Frontend reconciliation must never fan root activity out to member rows.
 
-Workspace presentation may render that binary root fact without restoring a
-team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
-accessible copy. Each exact history or running team-run row passes only that
-run's authoritative `isActive`: active is a solid blue dot, inactive is a solid
-gray dot, and neither state pulses or encodes a five-state lifecycle. A rendered
-team-definition group derives a presentation-only `hasActiveRuns` value from
-`runs.some(run => run.isActive)` over the exact child runs it displays. That
-any-active cue remains visible while the group is collapsed, reacts when the
-last active child becomes inactive, and is not a persisted/transported
-definition field. Representative ordering, leaf-agent status, socket
-subscription, and Stop/pending state must not influence either the exact-run
-cue or the group projection.
+Every Team row in the Workspaces tree shows one universal, presentation-only
+Team status. A Team reads like one big Agent: it shows the highest state among
+the Agents it counts, ranked
 
-A direct mounted-Team row inside one AgentOrg may render a presentation-only
-five-state summary in `WorkspaceAgentOrgHistoryCollection`. The summary folds exact Agent
-statuses in that mounted Team branch with precedence `running > initializing >
-error > idle > offline`. Direct Team Agents plus task Agents and task-Team
-Agents beneath that mounted placement contribute; the Team container itself,
-direct Org Agents, sibling Teams, and other branches do not. Missing or empty
-input normalizes to `offline`. The dot remains visible when the Team is
-collapsed and reacts to the existing Org execution context without requesting
-or polling.
+```text
+busy (running or initializing) > error > idle > offline
+```
 
-This mounted-Team summary does not change status authority. It is neither a
-Team-root lifecycle nor a replacement for exact leaf `AGENT_STATUS` or the
-AgentOrg root lifecycle. It is not persisted or transported and cannot affect
-focus, readiness, command admission, interrupt/Stop, archive, delete, or
-lifecycle decisions. Standalone TeamRun rows retain their binary activity cue;
-task-Team rows do not gain the configured mounted-Team aggregate.
+with the Agent status colours: busy is a pulsing blue dot, error red, idle
+green, offline gray. Missing or unknown statuses count as offline. When the run
+that contains the Team is not alive, the Team is offline whatever its Agents
+last reported. A Team row counts every Agent row shown under it (its members,
+and Agents and Teams its members delegated, at any depth), whether the
+row is expanded or collapsed. It never counts closed (DONE/CANCELLED) task work
+hidden from the tree, or Agents outside its subtree. Each Agent counts with the
+status its own row shows.
+
+One web owner holds the rule:
+`resolveTeamStatus(agentStatuses, runAlive): TeamStatus` in
+`utils/workspaceTeamAggregateStatus.ts`. It returns `offline` when the run is not
+alive. Otherwise it applies the shared contract fold (`foldTeamAggregateStatus`,
+authority `live`) and maps `initializing` to `running`. `TeamStatus` therefore
+has four values (`running | error | idle | offline`). Agent rows keep their own
+five-state dot, so a starting Agent row stays amber while its Team reads busy.
+No Team row calls the shared fold directly. Each root keeps its own counting
+and passes the counted statuses and its liveness to the rule:
+
+- Team runs (`workspaceHistoryTeamBranchStatus.ts`): `teamBranchStatus` counts
+  every Agent row beneath an `agent_team` row by depth; in a Team run those are
+  the delegated task-Team rows (Teams are flat, so configured rows are Agents). `teamRunStatus` counts all Agent rows of a run, gated by
+  `TeamTreeNode.isActive`. `teamDefinitionGroupStatus` gives a TEAMS group row the
+  highest status among its listed runs. `WorkspaceTeamExecutionTree` derives
+  these at render time from `executionRows`, so navigation patches stay current.
+- Agent runs (`AgentRunCollaborationContext.listTaskRows`): the walk visits
+  every listed node, collapsed ones included, skips closed subtrees, and sets
+  `AgentRunTaskTreeRow.teamStatus` on Team rows, gated by the host run's
+  `isActive`.
+- Org runs (`agentOrgTeamBranchStatus.ts`): one listed-Agent collector serves a
+  configured mounted Team (`projectAgentOrgTeamBranchStatus`) and a delegated
+  task Team (`projectAgentOrgTaskTeamStatus`). The Org counts as alive
+  only while its status authority is `live`. The Org root row is an Org, not a
+  Team, and keeps its own dot.
+
+`TeamAggregateStatusDot` draws the status before the unchanged slate
+people-group icon on stable rows (`WorkspaceStableExecutionRow`), transient task
+rows (`WorkspaceTransientExecutionRow`, `team-status` prop), Org Team rows and
+the TEAMS run and group rows. The dot is non-interactive. Each row's accessible
+label and tooltip state the status in words. A restored Team run that is alive
+but has no started member reads gray while its Stop button remains. Stop,
+archive and delete availability is still driven by the run being alive, not by
+the Team status.
+
+The Team status does not change status authority. It is neither a Team-root
+lifecycle nor a replacement for exact leaf `AGENT_STATUS`, `TEAM_RUN_LIFECYCLE`
+or the AgentOrg root lifecycle. It is not persisted or transported, adds no
+request or polling, and cannot affect focus, readiness, command admission,
+interrupt/Stop, archive, delete or lifecycle decisions. A Team dot is only as
+fresh as the Agent statuses it is built from. Standalone TeamRuns and Teams
+inside them are live. Delegated Teams under an Agent run are live once that run
+has been selected in the session, and show a one-time snapshot before that.
+Teams inside an Org are live once the Org has been opened, and read gray before
+that. The server's Project Task worker status keeps the shared fold unchanged,
+so a starting delegated Team still reads `initializing` there.
+
+The unmounted `components/workspace/running/*` surface still uses the binary
+`TeamActivityDot.vue` (`isActive` only). It is not part of the Workspaces tree
+and is scheduled for removal.
 
 Delegated task executions are task-scoped execution projections rather than
 structural topology. Every Team Agent event carries one `agent_execution`
@@ -442,6 +527,13 @@ address. The strict contract contains no task instance ids, execution-kind
 aliases, member/source path or route-key fallbacks, represented-Team compatibility fields,
 or generated-run-id inference. Complete snapshots and live events reconcile
 through the same execution model and exact serialized address.
+
+A run that left the server's history is not a top-level row, even when this session still holds its context (it
+was deleted or archived from another window or client). `runHistoryRetiredRuns` holds the retired run ids, and the
+navigation projection builds top-level rows without them (`withoutRetiredRuns`): a run a history read listed is
+retired when a later read no longer lists it although it would have (agent history lists only the newest runs per
+agent, so a run that merely fell out of that window stays). A run listed again is shown again; runs no read has listed
+yet (drafts, runs created this session) keep their local rows.
 
 Delegated children are shown only in the global Workspaces/run-history tree,
 as ordinary rows. That tree composes stable history rows with pure
@@ -455,7 +547,7 @@ ordinary tree-row style: no border or tint at rest, `gray-50` hover, a 2px
 `indigo-500` `:focus-visible` ring, and the same selected treatment as a member
 row. A transient task-Team row uses an unboxed 16px `slate-500` filled
 people-group icon (`heroicons:user-group-20-solid`) and a semibold name. Team
-identity uses this group glyph regardless of configured, collaborator or delegated
+identity uses this group glyph regardless of configured or delegated
 role; existing image-first Team avatars remain unchanged. Project/Temp Task Team
 workers and Memory Team groups use the same glyph, retaining their existing sizes
 and Memory task-role boxes/colors. Unrelated capability icons, including the model
@@ -467,6 +559,23 @@ direct delegated task-Agent or task-Team row ("Started by <delegator>",
 resolved through the tree) is kept in its aria-label only; a child without a
 recorded `delegatorAgentRunId` (created before the resource lifecycle) has no
 starter. Branch lines run straight through member and task rows.
+
+A delegated task-Agent or task-Team row in a live run has a small stop icon
+(`DelegatedStopButton`) while the copy runs. All actionable sidebar Stops—Agent,
+Team and Org roots as well as Agent and whole-Team copies—are red at rest
+(`text-red-500`, `#ef4444`), darker red on a pale-red background on hover
+(`hover:text-red-600 hover:bg-red-50`), and red again on pointer leave.
+Disabled/pending sidebar Stops are muted (`text-gray-400`, project `#999999`)
+with their existing reduced opacity and cursor; even on hover they remain gray
+on a transparent background. Each control keeps its existing transition and
+native button semantics: roots retain native focus, copies their focus-visible
+ring, pending pulse and reduced-motion override. This applies under Agent,
+Team and Org roots (`WorkspaceTransientExecutionRow`,
+`WorkspaceAgentOrgHistoryCollection`). It stops only that copy and the copies it
+started (`delegatedLaunchDraftStore.stop` → `stopDelegatedExecution`). The copy
+stays restorable and the run keeps running. Task-Team child rows have no icon,
+because a Team copy is stopped as a whole. Its Settings row has the same action.
+See [Settings → Existing Run Configuration](./settings.md#existing-run-configuration).
 
 In the AgentOrg Workspaces rows, a delegated task-Team row with children has the
 mounted-Team chevron and `aria-expanded`. It starts expanded, and a row click
@@ -480,6 +589,9 @@ the depth-first execution projection and derives sibling continuation metadata.
 `WorkspaceHierarchyBranches.vue` renders continuous ancestor rails and a
 right-only current elbow from that metadata; the current vertical continues to
 the next sibling or stops at the current row midpoint for the last sibling.
+A two-line Task-worker row (with its [Task summary](./projects.md#task-summaries-in-the-workspaces-tree))
+uses `anchor="name-line"`: the elbow, and a last sibling's vertical, meet the
+name line instead of the row midpoint.
 These branches are presentation-only and do not create or rewrite topology.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member inspection path. `TeamExecutionViewState` is the sole authority for
@@ -1086,10 +1198,10 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
-5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus canonical `agentRunId`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible canonical reactive local message before runtime send. The submission handle retains that same proxy so the mounted chip observes the update.
+5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus canonical `agentRunId`) rather than assuming the root TeamRun owns every member it shows (a delegated Team copy's members belong to that copy's TeamRun); the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible canonical reactive local message before runtime send. The submission handle retains that same proxy so the mounted chip observes the update.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
 7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
-8. Removal follows one rule for every run kind: standalone, New chat, Team and sub-Team member, Org member, delegated Agent copy and delegated Team-copy member. `ContextFileUploadStore.deleteDraftAttachment(attachment)` sends `DELETE` to the attachment's own draft locator. It resolves the locator with `utils/contextFiles/contextAttachmentUrl.ts` and sends the request through `authorizedFetch`, and it throws the server `detail` on a non-2xx response. No client code rebuilds a draft URL from an owner; the per-kind endpoint builder was removed.
+8. Removal follows one rule for every run kind: standalone, New chat, Team member, Org member, delegated Agent copy and delegated Team-copy member. `ContextFileUploadStore.deleteDraftAttachment(attachment)` sends `DELETE` to the attachment's own draft locator. It resolves the locator with `utils/contextFiles/contextAttachmentUrl.ts` and sends the request through `authorizedFetch`, and it throws the server `detail` on a non-2xx response. No client code rebuilds a draft URL from an owner; the per-kind endpoint builder was removed.
    - The composer (`useContextAttachmentComposer`) deletes the server copy only when the attachment's locator owner equals the target's `draftOwner`.
    - A draft from another composer, or any draft in a composer without an upload owner, leaves the list without a server call. That file is reclaimed by the 24 h draft TTL.
    - Path attachments never call the server.
@@ -1172,7 +1284,7 @@ Org-root/addressed-member and saved-config owners retain draft, registration,
 locking and explicit Send/Run/Save policy. Saved roots do not become editable.
 This replaces the shared form's text-only presentation, not its owners or the
 retired configuration-form stack. See [workspace settings](./settings.md#run-workspace-choice-on-start-surfaces)
-and the [native-picker regression runbook](../../TESTING.md#native-workspace-folder-picker-regression)
+and the [native-picker regression probe](../tests/e2e/workspace-folder-picker-probe.mjs)
 for user behavior and the separate native/controlled test boundaries.
 
 The Existing workspace picker used elsewhere is the shared
@@ -1198,6 +1310,24 @@ intents. `existingRunConfigStore.discardChanges()` backs Cancel, and
 (`useRunStopAction`, the same per-kind terminate action as the workspace tree). Cached
 history lifecycle state may conservatively relock the current target but cannot
 unlock it or supersede the Settings-owned read.
+
+For a stopped standalone Agent, `readAgentCanonical` reads resume metadata and
+`readAgentRunCollaboration` through the existing read-only network client. The
+Settings draft retains only `execution_tree` and `closed_task_executions` as its
+`delegatedSnapshot`; it does not hydrate child conversations or attach a runtime.
+`ExistingRunConfigEditor` builds stopped delegated rows from that snapshot,
+not the cached live collaboration view. Active Agent rows retain their live-view
+owner; Team/Org rows retain their existing canonical tree path. Root-only Agent
+results preserve the same-root snapshot, never another run's snapshot.
+
+Delegated Save waits for `reloadCanonical(true)` before announcing success.
+The save lock covers mutation and readback, and same-target refresh preserves
+the mounted editor/disclosures. Failed writes retain edits; accepted writes
+with failed readback clear committed drafts but require read-only Refresh before
+more editing. Retry uses the same complete canonical read, including when the
+initial draft is unavailable. Request IDs and window-node binding revisions
+reject stale completions after root/node changes. No persistence format,
+launch-default policy, conversation identity or stop/resume contract changes.
 
 Existing-run editing is intentionally narrow. Runtime kind,
 workspace, automatic-tool policy, definition/provider identity, concrete run
@@ -1363,7 +1493,7 @@ other); choosing another model resets both. Thinking semantics stay in
 `llmThinkingConfigAdapter`; `service_tier` is not a thinking key.
 
 `ModelConfigSection` / `RuntimeModelConfigFields` remain only for mobile run
-setup, definition launch preferences and compaction model settings.
+setup and definition launch preferences.
 
 
 ### Skill Improvement Manual Composer Action
@@ -1389,7 +1519,7 @@ manual start calls. Run-history rows do not expose Skill Improvement controls.
 Starting Skill Improvement from the composer CTA calls `startAgentRunSkillImprovement`
 or `startTeamMemberSkillImprovement` without run-time overrides. The backend uses
 current global Skill Improvement settings, current target state, and current
-configured writable skill roots; it first ensures work trace files are current
+configured writable skill roots; it first ensures the target's Work Journal files are current
 for the selected target, then activates or reuses a visible target-scoped
 improver `AgentRun`. The returned record summary is stored only internally and
 the UI may show at most a short transient toast/status after start. It must not
@@ -1412,7 +1542,7 @@ the UI must not imply improver completion proves downstream improvement.
 
 **+** on a run starts another run like it, through `useRunStart`:
 
-- **Agent** (the Chat run view, including an `@` collaborator child's view):
+- **Agent** (the Chat run view, including a delegated child's view):
   `copyAgentFromConfig(displayed config)` opens New chat for the agent on
   screen, prefilled with its workspace (temp when it has none), runtime, model,
   `llmConfig` (thinking and other model settings) and tool approval.
@@ -1453,11 +1583,14 @@ The service layer bridges the gap between the WebSocket transport and the applic
       task/member identity and required task-navigation mutation first, then
       uses the same projector for the resolved context.
   4.  Applies each `SEGMENT_CONTENT` message once and immediately because the
-      server has already shaped the transport cadence.
+      server has already shaped the transport cadence. On the sequenced Team,
+      Org and delegated-agent streams, content arrives as a content batch, and
+      each of its items is applied as one `SEGMENT_CONTENT` (see below).
 
 ### Server-Owned Stream-Content Cadence And Immediate Frontend Projection
 
-Standalone and team WebSocket sessions use the same server-side
+Every chat WebSocket session (standalone Agent, AgentTeam, AgentOrg and the
+delegated agents of a standalone run) uses the same server-side
 `AgentStreamWebSocketEgress`. Runtime and provider adapters still publish every
 fine-grained canonical event; only the client-bound WebSocket content lane is
 shaped. The policy does not select a different path for AutoByteus, Codex,
@@ -1492,8 +1625,22 @@ Claude, a particular provider, or a particular model.
 - Team routing still resolves structural members and transient task-agent or
   task-team children before applying the message. The server egress preserves
   the mapped identity and does not guess frontend context.
+- The Team, Org and delegated-agent streams are sequenced: the client needs
+  every root `change_sequence` after its snapshot exactly once and in order, and
+  reopens on a gap. Their reply text therefore arrives only as a content batch
+  (`SEGMENT_CONTENT_BATCH` on Team; a `ROOT_EXECUTION_EVENT` whose event is
+  `agent_presentation_batch` on Org and delegated agents). One batch covers the
+  contiguous sequences `[change_sequence, change_sequence_through]`, including
+  absorbed identical status repeats, and may hold items of several agents in
+  order. `sequencedStreamRange.ts` (`advanceSequencedStream`) accepts a frame
+  only when its first sequence is the next expected one and continues after its
+  last; the Team view state, `agentOrgExecutionContext` and
+  `agentRunCollaborationContext` then apply each item as one `SEGMENT_CONTENT`
+  through the normal handler. Every other frame covers its one sequence. The
+  server rules are in `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
+  (Client-Bound Content Cadence).
 
-The WebSocket payload type and final content remain unchanged. Raw runtime
+The standalone payload type and the final content remain unchanged. Raw runtime
 events, internal subscribers, raw traces, working-context snapshots, run
 history, and other persisted data remain fine-grained/unchanged and require no
 migration. A physically lost/closed socket still has no replay guarantee; the
@@ -1570,7 +1717,7 @@ Incoming events are routed based on their `type`:
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
 | `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
 | `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
-| `MEMBER_INPUT_MESSAGE`    | `memberInputMessageHandler.handleMemberInputMessage` | Inserts or updates an accepted team/member input row by backend `message_id` / `dedupe_key`, including local team sends and parent-to-task-Team delivery prompts in the target leaf transcript before assistant output. Deduped local submissions preserve existing non-empty `contextFilePaths` when a lower-fidelity echo omits attachments, while incoming non-empty context-file locators update the row. |
+| `MEMBER_INPUT_MESSAGE`    | `memberInputMessageHandler.handleMemberInputMessage` | Inserts or updates an accepted team/member input row by backend `message_id` / `dedupe_key`, including local team sends and agent-to-agent deliveries (shown as "From <Sender>:") in the target member's transcript before assistant output. Deduped local submissions preserve existing non-empty `contextFilePaths` when a lower-fidelity echo omits attachments, while incoming non-empty context-file locators update the row. |
 | `SYSTEM_TASK_NOTIFICATION` | `systemTaskNotificationHandler.handleSystemTaskNotification` | Appends backend-provided system-task notification content as a `system_task_notification` AI message segment without rewriting the display text. |
 | `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
 | `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
@@ -1637,6 +1784,7 @@ for that evidence-free case.
 
 - **`handleSystemTaskNotification`**: Preserves backend-authored `SYSTEM_TASK_NOTIFICATION` payload content and sender identity by appending a `system_task_notification` segment to the current AI message. The frontend must not rewrite task-delegation display copy or convert these notifications into user/member input rows.
 - `AIMessage.vue` delegates `system_task_notification` segments to `SystemTaskNotificationSegment.vue`. That component renders the content through the normal markdown message renderer while retaining semantic hooks (`system-task-notification`, test id, `role="note"`, and an accessible label). The default presentation should read like ordinary chat content rather than a prominent alert card.
+- **Skill update notices** use the same segment. When the sender is `system.skill_update_notifier`, or the content starts with `[Platform notice — skill updated]` (replayed history), the segment shows the label and aria-label **Skill updated**. The key is `workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated` (en "Skill updated", zh-CN "技能已更新"). The user's message that carried the notice still renders as typed. See the server's [Skill Update Notices](../../autobyteus-server-ts/docs/modules/skill_update_notices.md).
 
 #### `toolLifecycleHandler.ts`
 
@@ -1669,7 +1817,7 @@ for that evidence-free case.
 A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
 
 1.  **Run File Changes (`RunFileChangesStore`)**:
-    - Listens to `FILE_CHANGE` plus reopen hydration from `getRunFileChanges(runId)`.
+    - Listens to `FILE_CHANGE` plus reopen hydration from the run owner's list query (`fetchRunFileChanges(subject)`: `getRunFileChanges(runId)` for a standalone run, the team-, org- or copy-scoped query for a member).
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
@@ -1718,22 +1866,25 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 4.  **Token Usage Meter (`TokenUsageMeterStore`)**:
     - Listens to live `TOKEN_USAGE_UPDATED` events through the standalone/team handlers and hydrates reopened/focused subjects through current-run-record GraphQL summary queries. An individual live update becomes display-ready only from the strict post-persist `run_summary_after_event` cumulative snapshot; raw meter deltas are not treated as durable hydration.
     - The server summary builder narrows the broader statistics aggregate to the exact public cumulative-summary contract before either transport branches. Statistics-only `observed_*` diagnostics must never leak into standalone or Team events; strict transport parsing remains fail-closed rather than loosening the DTO to admit internal aggregate fields.
-    - Maintains record-backed standalone summaries by exact AgentRun id and Team-member summaries by the compound TeamRun/AgentRun identity. Missing, malformed, unsafe, or identity-mismatched cumulative snapshots are not admitted, so a partial live event cannot suppress the GraphQL fallback. Higher-only `usageReportCount` admission prevents an equal or older GraphQL/live result from replacing a newer cumulative summary.
+    - Maintains record-backed standalone summaries by exact AgentRun id and Team-member summaries by the compound TeamRun/AgentRun identity. Missing, malformed, unsafe, or identity-mismatched cumulative snapshots are not admitted, so a partial live event cannot suppress the GraphQL fallback. Higher-only `revision` admission for exact-run and Team-member summaries prevents an equal or older GraphQL/live result from replacing a newer cumulative summary; model-call count alone cannot order context-only updates.
     - Team aggregates use explicit `live_partial`, `refresh_required`, and `record_backed` states. Persisted Team events may extend a provisional aggregate before hydration; after a record-backed aggregate exists, a later event marks it refresh-required instead of blindly adding a delta to a result that may already include that event. The store permits at most one aggregate request at a time and repeats the GraphQL refresh sequentially until no Team event arrived during the request; only the stable response marks the Team total hydrated.
     - Preserves gross input, standard/uncached input, cache-read/cache-write input, cache state, cache hit rates, output/reasoning/billable output, nullable component costs, server-provided component `unitPrices`, `apiCostStatus` (`estimated`, `price_missing`, `partial_price_missing`, `local_no_api_bill`, or `mixed`), missing price dimensions, latest prompt/context-window fields, latest model/runtime, and `usageReportCount`.
     - Missing price data is rendered as price missing/partial rather than `$0`; local runtime rows are rendered as `Local / no API bill`; mixed-currency/provider aggregates keep token totals but no fake aggregate monetary total.
     - Powers the right-side `Token` tab (`TokenUsageMeterPanel.vue`). The internal tab id may remain `usage`; the user-visible label is token-oriented. Workspace headers intentionally do not render token/cost chips; token usage detail belongs in the Token tab rather than the agent/team top header.
-    - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces resolve the selected agent run as the primary summary; team workspaces resolve the focused leaf member's agent run as the primary summary. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
-    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`) and never imports provider pricing metadata or recalculates model prices.
+    - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces display the selected host's standalone usage/cost roll-up, which may include its delegated copies; team workspaces resolve the focused leaf member's agent run as the primary summary. TPS uses the exact selected run separately, never that roll-up. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
+    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the `TPS` card independently of totals availability, followed by the existing hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`). It never imports provider pricing metadata or recalculates model prices.
+    - TPS is a real-time fact of each model call, not accounting or a Team aggregate. The runtime integration measures the call and its usage event carries `output_throughput` (method, output tokens, integer duration ms), already accepted or nulled on the server. `tokenUsageThroughput.ts`, private to the meter, keeps the newest TPS per run: both live intakes record it right after the seen-key de-duplication (so Team's two effects record one value), independent of the summary. `getRunTps` and the scope composable use the selected target's exact `context.state.runId`, even where the cost summary rolls up other agents. The card shows "TPS", the value, the call's reported model and, for end-to-end readings only, "incl. time to first token"; with no received value (including after reload and for history) it shows "—". See [TPS](token_meter.md) for the methods per runtime. The unchanged empty Team summary builder lives in `tokenUsageTeamAggregate.ts`.
     - For Claude Agent SDK runs, the server's selected-model-only canonical and raw identity, configured API-equivalent estimate, and cache-write-rate assumption flow through the strict cumulative DTO into `TokenUsageMeterStore`. The panel labels this as a configured estimate rather than a subscription charge, shows the selected raw model, and visibly marks any cache writes priced at the assumed 1-hour rate. Auxiliary-model usage is not silently merged into the selected run meter; the browser does not recompute the price or infer the cache duration.
     - `TeamTokenUsageSummary.vue` renders the subordinate team comparison as one semantic grouped-metric table for team workspaces. The table keeps `Member`, `Gross input`, `Output`, and `Total` columns available at all widths; each metric cell pairs the token count with its matching API cost subline, the Team subtitle explains once that costs are estimated and that Total cost is input plus output cost, horizontal scrolling is scoped to the Team table region when the right-side panel is too narrow, visible focused-member state is preserved, and the explicitly labeled `Team total` aggregate remains the final row when available.
     - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the latest prompt progress bar.
     - `Input breakdown` renders server-owned uncached/full-price input, cache hits/discounted input, cache writes, input cache rate, and component costs only when meaningful; zero/unknown rows remain hidden instead of fabricated.
     - `Calculation details` is the explicit unit-price disclosure. It shows component rows with tokens, server-provided unit price, cost, and the formula `tokens ÷ 1,000,000 × unit price`; mixed, missing, partial-missing, and local/no-bill unit-price states render as labels such as `varies by call`, `unpriced`, `partially missing`, or `Local / no API bill` instead of a frontend price table or blended rate.
-    - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
+    - After a completed compaction on the native runtime or the Claude Agent SDK (whose new context size arrives only with the next model call), the `Latest prompt` value and bar stay at the previous reading, greyed, with the note `Compacted — updates on the next model call`. The mark is live-session state in `tokenUsageCompactionMarks.ts` (owned by `tokenUsageMeterStore`), set by `agentStatusHandler` on a newly completed `COMPACTION_STATUS` (failed or stopped compactions never mark). Only that run's next live token-usage event with `reports_model_call` clears it; fetched or hydrated summaries and reading-only events (Codex post-compaction size, Claude turn-end remainder) do not. Codex shows no note because it reports its post-compaction size directly. A native compaction summary call counts as a model call with tokens and cost but carries no reading, so it never changes the displayed reading.
+    - `Usage reports` in pricing details is `usageReportCount`, the number of model calls (reading-only updates such as a Codex post-compaction size and Claude SDK turn-end reconciliation do not count). It is not user messages, chat rows, or a raw primary `events` label.
     - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost; calculation details show the reasoning unit price as the output price / included in output cost so users do not double-count thinking.
-    - The `Latest prompt` block renders when latest-prompt tokens are present. Known context capacity shows percentage/progress; unknown capacity shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
-    - For a Claude SDK result, the server derives the full latest prompt from base input plus both cache buckets and uses only the selected raw model's positive reported context window. It supplies exact percentage/progress (`100 × prompt ÷ capacity`) to the strict stream/GraphQL summary; an older valid same-record prompt/capacity with null stored percentage is read-derived without SQL mutation. The panel's existing one-decimal label and exact progress width render that server value (for example, `22,135 / 1,000,000` displays `2.2%` with `2.2135%` progress). Missing/zero/unsafe capacity remains unavailable; no `[1m]` model-name assumption, cross-record stitching, or frontend price/context recomputation is allowed.
+    - The `Latest prompt` block renders when latest-prompt tokens are present. It is the runtime's own count of tokens in context for its latest model call, measured against the window that runtime uses (server-owned `latestPromptTokens`, `effectiveContextWindowTokens`, `contextWindowUsagePercent`); it drops after a compaction. Known context capacity shows percentage/progress; unknown capacity (AGY, Grok) shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
+    - When the runtime reports its auto-compaction threshold (`contextCompactionThresholdTokens`: Claude Agent SDK, and the native runtime when automatic compaction is enabled), the bar shows a marker at threshold ÷ window and an `Auto-compacts at <tokens>` label. A runtime's own reading can exceed its window (Codex just before it compacts, the Claude SDK after a failed compaction): the percentage shows the true value, the bar stays clamped at 100 % in amber, and `Over the runtime's window` is shown. See `autobyteus-server-ts/docs/modules/token_usage.md` for each runtime's source.
+    - For Claude Agent SDK runs, the server publishes every main-loop model call live during the turn with the SDK's own context reading (`getContextUsage()`: tokens in context, raw window, auto-compaction threshold) and supplies the exact percentage (`100 × prompt ÷ window`) in the strict stream/GraphQL summary; the turn-end result only reconciles totals. The panel's one-decimal label and exact progress width render that server value (for example, `22,135 / 1,000,000` displays `2.2%` with `2.2135%` progress). Readings of Claude SDK rows written before the token-meter-accuracy change were cleared once (they summed every call of a turn) and show as unavailable until the next call. Missing/zero/unsafe capacity remains unavailable; no `[1m]` model-name assumption, cross-record stitching, or frontend price/context recomputation is allowed.
     - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, unit-price calculation details, reasoning-token included-in-output copy, model/runtime, usage-report, and latest-prompt display where present.
     - Live store coverage must preserve the complete strict cumulative snapshot from server events, including Codex-style cache/reasoning tokens/cost, component unit prices, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the Token Meter. Post-persist event snapshots and hydrated GraphQL summaries converge to the same display shape and generation rules. The durable Team transport regression must construct its snapshot through the production observation/fold/record/aggregate/public-summary builders and parse the final strict stream message, proving both complete field preservation and absence of aggregate-only diagnostics.
     - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, runtime field names, unit-price hydration across run/team/member/statistics summaries, and built-process restart reads of existing current records. Frontend store/component tests cover null/partial live events before reopen hydration, exact Team/member identity, higher-only individual generations, stable single-flight Team refresh, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, calculation details, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.
@@ -1852,7 +2003,7 @@ turn.
 
 ## Related Documentation
 
-- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, shared work-trace package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
+- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, Work Journal evidence package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

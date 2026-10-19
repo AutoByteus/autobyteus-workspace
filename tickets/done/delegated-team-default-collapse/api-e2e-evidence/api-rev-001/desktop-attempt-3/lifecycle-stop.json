@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-41393-128e",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/tmp/delegated-team-desktop.YhySpw/tmp/autobyteus-isolated-root-R6BVCA",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}

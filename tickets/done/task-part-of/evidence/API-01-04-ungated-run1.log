@@ -1,0 +1,39 @@
+# Case: API-01..API-04 (run 1)
+# Command: pnpm exec vitest run project-task-boundaries projects-graphql project-task-search --no-watch
+# Commit: code 179ddb9f77 (HEAD 399303d039) + the API/E2E test edits of this round (uncommitted at run time; committed with this evidence)
+# Environment: macOS darwin arm64, Node via corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR
+# Date: 2026-10-19
+
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (14 tests) 12269ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  473ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  435ms
+     ✓ CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011)  326ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  1779ms
+     ✓ CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012)  461ms
+     ✓ TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)  3707ms
+     ✓ POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018)  3616ms
+ ❯ tests/e2e/projects/projects-graphql.e2e.test.ts (12 tests | 1 failed) 1535ms
+     ✓ API-001: Projects is always on: no capability API, and a stored retired flag (false) is not read (projects-always-on AC-002/003) 34ms
+     ✓ API-002: creates, lists, edits and rejects invalid or duplicate Project names 72ms
+     ✓ API-003: links paths with registry availability and rejects relative and duplicate links 85ms
+     ✓ PATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic 136ms
+     ✓ API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration 76ms
+     ✓ API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged 83ms
+     ✓ API-006: a restarted Projects subsystem reads the same persisted Projects 54ms
+     ✓ API-007: creates, lists, edits and deletes Tasks through the real store without touching the Project or offering a status mutation 123ms
+     ✓ API-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged 178ms
+     ✓ API-010: Task keys and depends on: keys in creation order, never reused, kept on rename; dependencies validated, replaced, cleared and dropped on delete 235ms
+     × API-011: part of: set at create, omitted keeps, null clears, an ID replaces; refusals write nothing; one level under concurrency; a deleted parent's parts stay; a step-1 task.json reads with no parent (task-part-of AC-001..005, 007, 016) 331ms
+     ✓ API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value 78ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (3 tests) 748ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-011: part of: set at create, omitted keeps, null clears, an ID replaces; refusals write nothing; one level under concurrency; a deleted parent's parts stay; a step-1 task.json reads with no parent (task-part-of AC-001..005, 007, 016)
+GraphQLError: This Task cannot depend on parts-3: parts-3 already depends on this Task, directly or through other Tasks.
+ ❯ withProjectErrors src/api/graphql/types/projects.ts:154:13
+    154|       throw new GraphQLError(error.message, { extensions: { code: erro…
+ ❯ execOk tests/e2e/projects/projects-graphql.e2e.test.ts:166:20
+ ❯ update tests/e2e/projects/projects-graphql.e2e.test.ts:631:8
+ ❯ tests/e2e/projects/projects-graphql.e2e.test.ts:688:27
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 28 passed (29)
+exit=1

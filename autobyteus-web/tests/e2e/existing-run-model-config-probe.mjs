@@ -180,7 +180,6 @@ const teamTree = {
   application_binding: null,
   handoffs: [],
   root_team: {
-    collaborators: [],
     address: '/',
     team_definition_id: 'team-definition-browser-1',
     team_definition_name: 'Browser Probe Team',
@@ -248,6 +247,7 @@ const catalogSnapshot = {
     maxInputTokens: 120000,
     maxOutputTokens: 8000,
     metadataProvenance: null,
+    selectionPresentation: null,
   }],
   audioModels: [],
   imageModels: [],
@@ -300,6 +300,7 @@ const operationResponse = async (operationName, variables) => {
       teamRunId: 'team-run-browser-1',
       isActive: false,
       executionTree: clone(state.teamTree),
+      closedTaskExecutions: [],
       modelConfigEditability: { editable: true, reason: null },
     } } }
   }
@@ -322,6 +323,9 @@ const operationResponse = async (operationName, variables) => {
       return { ...options(config.llm_model_identifier), __typename: 'TeamScopeModelOptionsObject', scopeAddress,
         scopeKind: scopeAddress === '/' ? 'CONFIGURED_TEAM' : 'CONFIGURED_AGENT' }
     }) } }
+  // The fixture runs have no delegated copies: no copy model options and no Agent-root collaboration view.
+  if (operationName === 'DelegatedLaunchModelOptions') return { data: { delegatedLaunchModelOptions: [] } }
+  if (operationName === 'GetAgentRunCollaboration') return { data: { agentRunCollaboration: null } }
   if (operationName === 'GetProviderModelCatalogSnapshots') return { data: { providerModelCatalogSnapshots: [catalogSnapshot] } }
   if (operationName === 'GetRuntimeAvailabilityKinds') return { data: { runtimeAvailabilityKinds: ['autobyteus'] } }
   if (operationName === 'GetRuntimeAvailability') return { data: { runtimeAvailability: { runtimeKind: variables.runtimeKind, enabled: true, reason: null } } }
@@ -467,6 +471,9 @@ try {
   page.on('console', (message) => evidence.browserEvents.push({ type: `console:${message.type()}`, text: message.text() }))
   page.on('pageerror', (error) => evidence.browserEvents.push({ type: 'pageerror', text: error.message }))
   page.on('requestfailed', (request) => evidence.browserEvents.push({ type: 'requestfailed', text: `${request.method()} ${request.url()} ${request.failure()?.errorText || ''}` }))
+  // The probe owns every boundary the page reaches: health, the definition change feed, and GraphQL.
+  await page.route('**/rest/health', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '{"status":"ok"}' }))
+  await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })))
   await page.route('**/graphql', async (route) => {
     const request = route.request()
     if (request.method() === 'OPTIONS') {
@@ -718,8 +725,8 @@ try {
     return { mutation: state.teamMutations.at(-1), verificationReads: state.teamResumeReads - beforeReads }
   })
 
-  const pageErrors = evidence.browserEvents.filter((event) => event.type === 'pageerror')
-  if (pageErrors.length) evidence.failures.push({ id: 'BROWSER-PAGE-ERRORS', message: 'Unexpected browser page errors', details: pageErrors })
+  const pageErrors = evidence.browserEvents.filter((event) => event.type === 'pageerror' || event.type === 'console:error')
+  if (pageErrors.length) evidence.failures.push({ id: 'BROWSER-PAGE-ERRORS', message: 'Unexpected browser page or console errors', details: pageErrors })
 } catch (error) {
   evidence.failures.push({ id: 'HARNESS', message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
 } finally {

@@ -50,7 +50,7 @@ type TestServerSetting = {
 const mountComponent = async (
   initialSettings: TestServerSetting[] = [],
   options: {
-    sectionMode?: 'quick' | 'advanced' | 'migrations'
+    sectionMode?: 'quick' | 'embedding' | 'advanced' | 'migrations'
     fetchError?: string
     keepFetchPending?: boolean
   } = {},
@@ -107,6 +107,9 @@ const mountComponent = async (
         },
         ServerMigrationsManager: {
           template: '<div data-testid="server-migrations-manager-stub">Migrations Panel Stub</div>',
+        },
+        EmbeddingSettingsPanel: {
+          template: '<div data-testid="embedding-settings-panel-stub">Embedding Panel Stub</div>',
         },
       },
     },
@@ -172,6 +175,13 @@ describe('ServerSettingsManager', () => {
   })
 
 
+  it('routes Embedding mode to its own panel without waiting for the raw settings', async () => {
+    const { wrapper } = await mountComponent([], { sectionMode: 'embedding', keepFetchPending: true })
+    expect(wrapper.find('[data-testid="embedding-settings-panel-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="server-settings-initial-loading"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="server-settings-basics-panel-stub"]').exists()).toBe(false)
+  })
+
   it('routes Migrations mode to the migrations panel shell', async () => {
     const { wrapper } = await mountComponent([], { sectionMode: 'migrations' })
 
@@ -209,8 +219,8 @@ describe('ServerSettingsManager', () => {
   it('removes custom server settings from advanced table', async () => {
     const { wrapper, store } = await mountComponent([
       {
-        key: 'AUTOBYTEUS_LLM_SERVER_URL',
-        value: 'https://legacy-host',
+        key: 'AUTOBYTEUS_LLM_SERVER_HOSTS',
+        value: 'https://leftover-remote-llm-host',
         description: 'Custom user-defined setting',
         isEditable: true,
         isDeletable: true,
@@ -229,11 +239,11 @@ describe('ServerSettingsManager', () => {
     await wrapper.vm.$nextTick()
     await flushPromises()
 
-    const removeButton = wrapper.get('[data-testid="server-setting-remove-AUTOBYTEUS_LLM_SERVER_URL"]')
+    const removeButton = wrapper.get('[data-testid="server-setting-remove-AUTOBYTEUS_LLM_SERVER_HOSTS"]')
     await removeButton.trigger('click')
     await flushPromises()
 
-    expect(store.deleteServerSetting).toHaveBeenCalledWith('AUTOBYTEUS_LLM_SERVER_URL')
+    expect(store.deleteServerSetting).toHaveBeenCalledWith('AUTOBYTEUS_LLM_SERVER_HOSTS')
     expect(wrapper.find('[data-testid="server-setting-remove-AUTOBYTEUS_SERVER_HOST"]').exists()).toBe(false)
   })
 

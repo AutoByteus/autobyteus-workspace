@@ -38,6 +38,8 @@ const runningSnapshot = (turnId: string): AgentRuntimeLifecycleSnapshot => ({
 
 class SegmentSourceBackend implements AgentRunBackend {
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
+  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
+  readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly context = new AgentRunContext({
     runId,
     config: new AgentRunConfig({
@@ -553,7 +555,9 @@ describe("AgentRun-owned Team segment lifecycle", () => {
       }),
     ]);
 
-    expect(diagnosticEvents(observed)).toHaveLength(1);
+    // The ended turn's late content stays undisplayed; it is not the current turn, so no notice.
+    expect(diagnosticEvents(observed)).toHaveLength(0);
+    expect(segmentEvents(observed).map((event) => event.payload.turn_id)).toEqual(["turn-1", "turn-2", "turn-2"]);
     expect(segmentEvents(observed).at(-1)?.payload).toEqual({
       id: "segment-turn-2",
       turn_id: "turn-2",

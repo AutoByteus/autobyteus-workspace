@@ -1,0 +1,3 @@
+Full web suite on 0604a9586 (merge of origin/personal d28c56d5d), run after install/nuxt prepare/server build completed:
+ Test Files  593 passed | 2 skipped (595)
+      Tests  4062 passed | 5 skipped (4067)

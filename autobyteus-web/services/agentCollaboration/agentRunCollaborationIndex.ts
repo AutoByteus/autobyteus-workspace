@@ -4,9 +4,7 @@ import {
   catalogAgentSourceAt,
   catalogTeamSourceAt,
   collaborationTaskExecutionLists,
-  collaboratorAgentSourceAt,
-  collaboratorExecutionNodes,
-  collaboratorTeamSourceAt,
+  collaborationInstanceSource,
   type CollaborationAgentSource,
 } from '~/services/collaborators/agentSourceSelectors'
 
@@ -37,9 +35,8 @@ export type AgentRootChildTeam = Readonly<{
 }>
 
 /**
- * Children of an Agent root, indexed by run ID: the collaborators (one hosted instance each,
- * shown as delegated rows) and the extra copies. Every source comes from a collaborator entry;
- * the host is not indexed.
+ * Children of an Agent root, indexed by run ID: its delegated copies (converted collaborators
+ * included). Every source is a copy's recorded catalog source; the host is not indexed.
  */
 export class AgentRunCollaborationIndex {
   readonly agents = new Map<string, AgentRootChildAgent>()
@@ -50,9 +47,7 @@ export class AgentRunCollaborationIndex {
   constructor(readonly tree: Tree) {
     this.hostRunId = tree.host.agentRunId
     this.hostAddress = parseAgentTeamAddress(tree.host.address)
-    // Collaborators (hosted by the root) first, then extra copies and other delegated children.
-    ;[...collaboratorExecutionNodes(tree.collaborators) as TaskExecution[], ...tree.taskExecutions]
-      .forEach((task) => this.addTask(task, null))
+    tree.taskExecutions.forEach((task) => this.addTask(task, null))
     for (const identity of [...this.agents.values(), ...this.teams.values()]) {
       const delegator = identity.delegatorAgentRunId
       if (delegator && delegator !== this.hostRunId && !this.agents.has(delegator)) {
@@ -95,29 +90,23 @@ export class AgentRunCollaborationIndex {
     teamRunId: string | null, delegatorAgentRunId: string | null): void {
     this.register(agentRunId)
     // A catalog copy (or its member) carries its own source (REQ-011).
-    const source = collaboratorAgentSourceAt(this.tree.collaborators, address)
-      ?? catalogAgentSourceAt(collaborationTaskExecutionLists(this.tree), address)
-    if (!source) throw new Error(`No collaborator or catalog source at '${address}'.`)
+    const source = catalogAgentSourceAt(collaborationTaskExecutionLists(this.tree), address)
+    if (!source) throw new Error(`No catalog source at '${address}'.`)
+    // What this agent runs with: its user choice, else its Team's when it follows, else the started source (DS-003).
+    const own = collaborationInstanceSource({ taskExecutions: collaborationTaskExecutionLists(this.tree) }, agentRunId, source)
     this.agents.set(agentRunId, Object.freeze({
-      agentRunId, address: parseAgentTeamAddress(address), kind, source, teamRunId, delegatorAgentRunId,
+      agentRunId, address: parseAgentTeamAddress(address), kind, source: own, teamRunId, delegatorAgentRunId,
     }))
   }
 
   private addTeam(team: AgentRootChildTeam['execution'], delegatorAgentRunId: string | null): void {
     this.register(team.teamRunId)
-    const source = collaboratorTeamSourceAt(this.tree.collaborators, team.address)
-      ?? catalogTeamSourceAt(collaborationTaskExecutionLists(this.tree), team.address)
-    // A nested Team inside a task Team takes its coordinator from its first member.
-    const coordinatorAddress = source?.coordinatorAddress
-      ?? team.members.find((member) => 'agentRunId' in member)?.address
-      ?? team.address
+    const source = catalogTeamSourceAt(collaborationTaskExecutionLists(this.tree), team.address)
+    const coordinatorAddress = source?.coordinatorAddress ?? team.members[0]?.address ?? team.address
     this.teams.set(team.teamRunId, Object.freeze({
       teamRunId: team.teamRunId, address: parseAgentTeamAddress(team.address), coordinatorAddress, delegatorAgentRunId, execution: team,
     }))
-    for (const member of team.members) {
-      if ('agentRunId' in member) this.addAgent(member.agentRunId, member.address, 'task_team_member', team.teamRunId, null)
-      else this.addTeam(member, null)
-    }
+    for (const member of team.members) this.addAgent(member.agentRunId, member.address, 'task_team_member', team.teamRunId, null)
     team.taskExecutions.forEach((task) => this.addTask(task, team.teamRunId))
   }
 

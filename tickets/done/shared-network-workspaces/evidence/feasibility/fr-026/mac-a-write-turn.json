@@ -1,0 +1,1996 @@
+{
+  "node": {
+    "name": "ab-sf-fr026-macos",
+    "host": "192.168.64.2",
+    "port": 54205,
+    "platform": "darwin",
+    "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+  },
+  "actorRunId": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+  "runtime": "codex_app_server",
+  "receipt": {
+    "url": "ws://192.168.64.2:54205/ws/agent/ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+    "commandId": "ab-sf-fr026-6af2e9d4-mac-a-write",
+    "prompt": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+    "seconds": 13.687,
+    "tools": 1,
+    "succeeded": 1,
+    "events": [
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 1,
+          "entries": [],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "initializing",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 2,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": null,
+              "state": "queued",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+        "payload": {
+          "trace_id": "rt_1791882600617_486d502d-dc80-4927-9bcd-3537ffa78363",
+          "content": "## Agent Identity\n\n- Name: ab-sf-fr026-6af2e9d4-codex_app_server-95601\n- Description: Owned cross-OS native filesystem feasibility\n\n### Responsibilities and Boundaries\n\nUse real native terminal/Bash/read/write tools for the requested ordinary project file. Never simulate. Work only in selected workspace, never read home/config/credentials or environment, never call network/delegation or MCP filesystem/sharing tools. Print pwd and actual file contents when requested.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.\n\nYou can work with other agents and agent teams: the ones the user brings into this run, and any available agent or team.\n\n- A user message may end with a `[Mentioned collaborators]` note that lists each mentioned Agent or Agent Team with its address. Each one is already in the run.\n- `send_message_to` with an exact address as `recipient_address` reaches the one instance at that address; an available agent or team that is not yet in the run is brought in on first use and keeps its conversation. A message to an Agent Team goes to its coordinator.\n- `delegate_task` with an address spawns a new, separate copy with your work description as its first message; copies can work in parallel. It returns the copy's IDs: `target_agent_run_id` for an Agent copy, or `target_team_run_id` and `target_team_coordinator_agent_run_id` for a Team copy. Message a copy with `send_message_to` and its agent run ID (a Team copy's coordinator). To give a copy a follow-up Task once its current Task is DONE or CANCELLED, call `delegate_task` with its `target_team_run_id` or `target_agent_run_id` and the new `task_id`.\n- If you have `list_available_agents`, it lists the available agents and teams with their addresses.\n- Do not claim that a message or delegation succeeded unless the tool confirms it.\n\nYour address in this run is `/ab_sf_fr026_6af2e9d4_codex_app_server_95601`.",
+          "ts": 1791882600.617
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 2,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": null,
+              "state": "queued",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "SEND_MESSAGE",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+          "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+          "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+          "state": "accepted",
+          "accepted": true,
+          "duplicate": false,
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TURN_STARTED",
+        "payload": {
+          "turnId": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "reasoning-block:6d76a846-ff26-4755-adc3-778dba02421a:1",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "reasoning",
+          "metadata": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "reasoning-block:6d76a846-ff26-4755-adc3-778dba02421a:1",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "reasoning",
+          "delta": "**Planning file creation with fsync and close**"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "reasoning-block:6d76a846-ff26-4755-adc3-778dba02421a:1",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "exec-358abf9b-be8e-40bf-a345-7ab42c3ba96c",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "run_bash",
+          "metadata": {
+            "tool_name": "run_bash",
+            "command": "/bin/zsh -lc \"pwd\npython3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\ndata = b'MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\\\\n'\nfd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)\ntry:\n    os.write(fd, data)\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\""
+          }
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "item": {
+            "type": "commandExecution",
+            "id": "exec-358abf9b-be8e-40bf-a345-7ab42c3ba96c",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/zsh -lc \"pwd\npython3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\ndata = b'MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\\\\n'\nfd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)\ntry:\n    os.write(fd, data)\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\"",
+            "cwd": "/Volumes/autobyteus-shared/project",
+            "processId": "28412",
+            "source": "unifiedExecStartup",
+            "status": "inProgress",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "pwd\npython3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\ndata = b'MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\\n'\nfd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)\ntry:\n    os.write(fd, data)\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY"
+              }
+            ],
+            "aggregatedOutput": null,
+            "exitCode": null,
+            "durationMs": null
+          },
+          "threadId": "01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+          "turnId": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "startedAtMs": 1791882612087,
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "invocation_id": "exec-358abf9b-be8e-40bf-a345-7ab42c3ba96c",
+          "tool_name": "run_bash",
+          "arguments": {
+            "command": "/bin/zsh -lc \"pwd\npython3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\ndata = b'MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\\\\n'\nfd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)\ntry:\n    os.write(fd, data)\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\"",
+            "cwd": "/Volumes/autobyteus-shared/project"
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "item": {
+            "type": "commandExecution",
+            "id": "exec-358abf9b-be8e-40bf-a345-7ab42c3ba96c",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/zsh -lc \"pwd\npython3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\ndata = b'MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\\\\n'\nfd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)\ntry:\n    os.write(fd, data)\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\"",
+            "cwd": "/Volumes/autobyteus-shared/project",
+            "processId": "28412",
+            "source": "unifiedExecStartup",
+            "status": "completed",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "pwd\npython3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\ndata = b'MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\\n'\nfd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)\ntry:\n    os.write(fd, data)\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY"
+              }
+            ],
+            "aggregatedOutput": "/Volumes/autobyteus-shared/project\n",
+            "exitCode": 0,
+            "durationMs": 0
+          },
+          "threadId": "01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+          "turnId": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "completedAtMs": 1791882612088,
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "invocation_id": "exec-358abf9b-be8e-40bf-a345-7ab42c3ba96c",
+          "tool_name": "run_bash",
+          "arguments": {
+            "command": "/bin/zsh -lc \"pwd\npython3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\ndata = b'MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\\\\n'\nfd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)\ntry:\n    os.write(fd, data)\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\"",
+            "cwd": "/Volumes/autobyteus-shared/project"
+          },
+          "result": "/Volumes/autobyteus-shared/project\n"
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "exec-358abf9b-be8e-40bf-a345-7ab42c3ba96c",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "metadata": {
+            "tool_name": "run_bash",
+            "command": "/bin/zsh -lc \"pwd\npython3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\ndata = b'MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\\\\n'\nfd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)\ntry:\n    os.write(fd, data)\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\""
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "6bd18988-7c41-48e9-823d-32537424f380",
+          "idempotency_key": "codex_token_usage:ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737:01a13486-a0d2-7082-ae1e-a472e1f6b7cb:01a13486-aa71-7f01-a53e-4ddb04744a20:cumulative_snapshot:8564:5888:253:87:8817:8817",
+          "observed_at": "2026-10-13T09:10:12.110Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+          "root_team_run_id": null,
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-codex_app_server-95601",
+          "run_summary": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected work...",
+          "run_created_at": "2026-10-13T09:10:00.380Z",
+          "member_display_name": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "provider_name": null,
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "cumulative_snapshot",
+          "reports_model_call": true,
+          "snapshot_series_key": "codex_thread:01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 8564,
+          "reported_output_tokens": 253,
+          "reported_total_tokens": 8817,
+          "accounting_input_tokens": 8564,
+          "accounting_output_tokens": 253,
+          "accounting_total_tokens": 8817,
+          "standard_input_tokens": 2676,
+          "cache_miss_input_tokens": 2676,
+          "cache_read_input_tokens": 5888,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 87,
+          "billable_input_tokens": 8564,
+          "billable_output_tokens": 253,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "canonical_name": "gpt-5.6-luna",
+            "currency": "USD",
+            "input_price_per_million": 0.2,
+            "output_price_per_million": 1.2,
+            "cached_input_read_price_per_million": 0.02,
+            "cached_input_write_price_per_million": 0.25,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [
+              {
+                "tier_id": "standard_le_272k",
+                "max_input_tokens": 272000,
+                "input_price_per_million": 0.2,
+                "output_price_per_million": 1.2,
+                "cached_input_read_price_per_million": 0.02,
+                "cached_input_write_price_per_million": 0.25,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              },
+              {
+                "tier_id": "long_context_gt_272k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.4,
+                "output_price_per_million": 1.8,
+                "cached_input_read_price_per_million": 0.04,
+                "cached_input_write_price_per_million": 0.5,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": true,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "standard_le_272k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.00065296,
+          "estimated_api_standard_input_cost": 0.0005352,
+          "estimated_api_cache_read_input_cost": 0.00011776,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0003036,
+          "estimated_api_reasoning_output_cost": 0.0001044,
+          "estimated_api_total_cost": 0.00095656,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 8564,
+          "meter_delta_output_tokens": 253,
+          "meter_delta_total_tokens": 8817,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 8564,
+            "standard_input_tokens": 2676,
+            "cache_miss_input_tokens": 2676,
+            "cache_read_input_tokens": 5888,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 253,
+            "reasoning_output_tokens": 87,
+            "billable_output_tokens": 253,
+            "total_tokens": 8817,
+            "cache_read_input_token_rate": 0.6875291919663709,
+            "standard_input_token_rate": 0.31247080803362914,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00065296,
+            "estimated_api_standard_input_cost": 0.0005352,
+            "estimated_api_cache_read_input_cost": 0.00011776,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0003036,
+            "estimated_api_reasoning_output_cost": 0.0001044,
+            "estimated_api_total_cost": 0.00095656,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "usage_report_count": 1,
+            "revision": 1,
+            "updated_at": "2026-10-13T09:10:12.110Z",
+            "latest_prompt_tokens": 8817,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 3.412151702786378,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_runtime_kind": "codex_app_server",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 8817,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 3.4121517027863777,
+          "context_compaction_threshold_tokens": null,
+          "raw_usage_json": {
+            "totalTokens": 8817,
+            "inputTokens": 8564,
+            "cachedInputTokens": 5888,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 253,
+            "reasoningOutputTokens": 87
+          },
+          "raw_event_json": {
+            "threadId": "01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+            "turnId": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 8817,
+                "inputTokens": 8564,
+                "cachedInputTokens": 5888,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 253,
+                "reasoningOutputTokens": 87
+              },
+              "last": {
+                "totalTokens": 8817,
+                "inputTokens": 8564,
+                "cachedInputTokens": 5888,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 253,
+                "reasoningOutputTokens": 87
+              },
+              "modelContextWindow": 258400
+            },
+            "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+              "reported_input_tokens": 8564,
+              "reported_output_tokens": 253,
+              "reported_total_tokens": 8817,
+              "accounting_input_tokens": null,
+              "accounting_output_tokens": null,
+              "accounting_total_tokens": null,
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 5888,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 87,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null
+            },
+            "autobyteus_cumulative_snapshot_source_tokens": {
+              "reported_input_tokens": 8564,
+              "reported_output_tokens": 253,
+              "reported_total_tokens": 8817,
+              "accounting_input_tokens": 8564,
+              "accounting_output_tokens": 253,
+              "accounting_total_tokens": 8817,
+              "standard_input_tokens": 2676,
+              "cache_miss_input_tokens": 2676,
+              "cache_read_input_tokens": 5888,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 87,
+              "billable_input_tokens": 8564,
+              "billable_output_tokens": 253
+            }
+          },
+          "quality_flags": [
+            "first_cumulative_snapshot_baselined_from_provider_delta"
+          ]
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "metadata": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "/"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "Volumes"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "/aut"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "oby"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "te"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "us"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "-sh"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "ared"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "/project"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "\n\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "Created"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": " `"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "mac"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "-linux"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "-ag"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "ents"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "-a"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "aca"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "0"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "a"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "6"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": ".txt"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "`"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": " with"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": " the"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": " exact"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": " requested"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": " content"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "segment_type": "text",
+          "delta": "."
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf577aee487d289f6051a6e999755",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "610a8bb8-e38f-4296-bd93-5a7042c46358",
+          "idempotency_key": "codex_token_usage:ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737:01a13486-a0d2-7082-ae1e-a472e1f6b7cb:01a13486-aa71-7f01-a53e-4ddb04744a20:cumulative_snapshot:17626:13824:325:123:17951:9134",
+          "observed_at": "2026-10-13T09:10:16.175Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+          "root_team_run_id": null,
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-codex_app_server-95601",
+          "run_summary": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected work...",
+          "run_created_at": "2026-10-13T09:10:00.380Z",
+          "member_display_name": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "provider_name": null,
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "cumulative_snapshot",
+          "reports_model_call": true,
+          "snapshot_series_key": "codex_thread:01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 9062,
+          "reported_output_tokens": 72,
+          "reported_total_tokens": 9134,
+          "accounting_input_tokens": 9062,
+          "accounting_output_tokens": 72,
+          "accounting_total_tokens": 9134,
+          "standard_input_tokens": 1126,
+          "cache_miss_input_tokens": 1126,
+          "cache_read_input_tokens": 7936,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 36,
+          "billable_input_tokens": 9062,
+          "billable_output_tokens": 72,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "canonical_name": "gpt-5.6-luna",
+            "currency": "USD",
+            "input_price_per_million": 0.2,
+            "output_price_per_million": 1.2,
+            "cached_input_read_price_per_million": 0.02,
+            "cached_input_write_price_per_million": 0.25,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [
+              {
+                "tier_id": "standard_le_272k",
+                "max_input_tokens": 272000,
+                "input_price_per_million": 0.2,
+                "output_price_per_million": 1.2,
+                "cached_input_read_price_per_million": 0.02,
+                "cached_input_write_price_per_million": 0.25,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              },
+              {
+                "tier_id": "long_context_gt_272k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.4,
+                "output_price_per_million": 1.8,
+                "cached_input_read_price_per_million": 0.04,
+                "cached_input_write_price_per_million": 0.5,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": true,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "standard_le_272k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.00038392000000000005,
+          "estimated_api_standard_input_cost": 0.00022520000000000003,
+          "estimated_api_cache_read_input_cost": 0.00015872,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 8.64e-05,
+          "estimated_api_reasoning_output_cost": 4.32e-05,
+          "estimated_api_total_cost": 0.00047032000000000004,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 9062,
+          "meter_delta_output_tokens": 72,
+          "meter_delta_total_tokens": 9134,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 17626,
+            "standard_input_tokens": 3802,
+            "cache_miss_input_tokens": 3802,
+            "cache_read_input_tokens": 13824,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 325,
+            "reasoning_output_tokens": 123,
+            "billable_output_tokens": 325,
+            "total_tokens": 17951,
+            "cache_read_input_token_rate": 0.7842959264722569,
+            "standard_input_token_rate": 0.2157040735277431,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00103688,
+            "estimated_api_standard_input_cost": 0.0007604,
+            "estimated_api_cache_read_input_cost": 0.00027648,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.00039,
+            "estimated_api_reasoning_output_cost": 0.0001476,
+            "estimated_api_total_cost": 0.00142688,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "usage_report_count": 2,
+            "revision": 2,
+            "updated_at": "2026-10-13T09:10:16.175Z",
+            "latest_prompt_tokens": 9134,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 3.534829721362229,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_runtime_kind": "codex_app_server",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 9134,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 3.5348297213622293,
+          "context_compaction_threshold_tokens": null,
+          "raw_usage_json": {
+            "totalTokens": 17951,
+            "inputTokens": 17626,
+            "cachedInputTokens": 13824,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 325,
+            "reasoningOutputTokens": 123
+          },
+          "raw_event_json": {
+            "threadId": "01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+            "turnId": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 17951,
+                "inputTokens": 17626,
+                "cachedInputTokens": 13824,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 325,
+                "reasoningOutputTokens": 123
+              },
+              "last": {
+                "totalTokens": 9134,
+                "inputTokens": 9062,
+                "cachedInputTokens": 7936,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 72,
+                "reasoningOutputTokens": 36
+              },
+              "modelContextWindow": 258400
+            },
+            "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+              "reported_input_tokens": 9062,
+              "reported_output_tokens": 72,
+              "reported_total_tokens": 9134,
+              "accounting_input_tokens": null,
+              "accounting_output_tokens": null,
+              "accounting_total_tokens": null,
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 7936,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 36,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null
+            },
+            "autobyteus_cumulative_snapshot_source_tokens": {
+              "reported_input_tokens": 17626,
+              "reported_output_tokens": 325,
+              "reported_total_tokens": 17951,
+              "accounting_input_tokens": 17626,
+              "accounting_output_tokens": 325,
+              "accounting_total_tokens": 17951,
+              "standard_input_tokens": 3802,
+              "cache_miss_input_tokens": 3802,
+              "cache_read_input_tokens": 13824,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 123,
+              "billable_input_tokens": 17626,
+              "billable_output_tokens": 325
+            }
+          },
+          "quality_flags": []
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-write",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-write",
+              "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+              "state": "forwarded",
+              "content": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected workspace containing exactly MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9 followed by one LF newline. Use ordinary filesystem commands, fsync and close before completion; no special sharing/MCP API. Touch no other file.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turnId": "01a13486-aa71-7f01-a53e-4ddb04744a20",
+          "turn_id": "01a13486-aa71-7f01-a53e-4ddb04744a20"
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 4,
+          "entries": [],
+          "recoverableBlock": null
+        }
+      }
+    ],
+    "error": null
+  }
+}

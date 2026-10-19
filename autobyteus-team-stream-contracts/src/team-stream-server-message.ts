@@ -4,6 +4,7 @@ import {
   teamAgentErrorPayloadSchema,
   teamAgentPayloadSchemas,
   teamInterruptCommandAckPayloadSchema,
+  teamSegmentContentBatchPayloadSchema,
   type TeamAgentMessageType,
 } from "./team-agent-message-dtos.js";
 import {
@@ -12,7 +13,7 @@ import {
 } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
 import {
-  teamCollaboratorAddedPayloadSchema,
+  teamDelegatedLaunchSelectionsChangedPayloadSchema,
   teamTaskExecutionReferenceDtoSchema,
   teamTaskExecutionStartedPayloadSchema,
   teamTaskExecutionsClosedPayloadSchema,
@@ -46,6 +47,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   message("SEGMENT_START", teamAgentPayloadSchemas.SEGMENT_START),
   message("SEGMENT_CONTENT", teamAgentPayloadSchemas.SEGMENT_CONTENT),
   message("SEGMENT_END", teamAgentPayloadSchemas.SEGMENT_END),
+  message("SEGMENT_CONTENT_BATCH", teamSegmentContentBatchPayloadSchema),
   message("AGENT_STATUS", teamAgentPayloadSchemas.AGENT_STATUS),
   message("COMPACTION_STATUS", teamAgentPayloadSchemas.COMPACTION_STATUS),
   message("COMPACTION_BLOCKED", teamAgentPayloadSchemas.COMPACTION_BLOCKED),
@@ -72,7 +74,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("TASK_EXECUTION_STARTED"), payload: teamTaskExecutionStartedPayloadSchema }).strict(),
   z.object({ type: z.literal("TASK_EXECUTIONS_CLOSED"), payload: teamTaskExecutionsClosedPayloadSchema }).strict(),
   z.object({ type: z.literal("TASK_EXECUTIONS_REOPENED"), payload: teamTaskExecutionsReopenedPayloadSchema }).strict(),
-  z.object({ type: z.literal("COLLABORATOR_ADDED"), payload: teamCollaboratorAddedPayloadSchema }).strict(),
+  z.object({ type: z.literal("DELEGATED_LAUNCH_SELECTIONS_CHANGED"), payload: teamDelegatedLaunchSelectionsChangedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),
@@ -87,6 +89,7 @@ type TeamAgentServerMessage = {
 
 export type TeamStreamServerMessage =
   | TeamAgentServerMessage
+  | Readonly<{ type: "SEGMENT_CONTENT_BATCH"; payload: Readonly<z.infer<typeof teamSegmentContentBatchPayloadSchema>> }>
   | Readonly<{ type: "CONNECTED"; payload: z.infer<typeof teamConnectedPayloadSchema> }>
   | Readonly<{ type: "TEAM_RUN_LIFECYCLE"; payload: z.infer<typeof teamRunLifecyclePayloadSchema> }>
   | Readonly<{ type: "TEAM_EXECUTION_VIEW_SNAPSHOT"; payload: z.infer<typeof teamExecutionViewSnapshotPayloadSchema> }>
@@ -94,7 +97,7 @@ export type TeamStreamServerMessage =
   | Readonly<{ type: "TASK_EXECUTION_STARTED"; payload: z.infer<typeof teamTaskExecutionStartedPayloadSchema> }>
   | Readonly<{ type: "TASK_EXECUTIONS_CLOSED"; payload: z.infer<typeof teamTaskExecutionsClosedPayloadSchema> }>
   | Readonly<{ type: "TASK_EXECUTIONS_REOPENED"; payload: z.infer<typeof teamTaskExecutionsReopenedPayloadSchema> }>
-  | Readonly<{ type: "COLLABORATOR_ADDED"; payload: z.infer<typeof teamCollaboratorAddedPayloadSchema> }>
+  | Readonly<{ type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED"; payload: z.infer<typeof teamDelegatedLaunchSelectionsChangedPayloadSchema> }>
   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>
   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>
   | Readonly<{ type: "ERROR"; payload: z.infer<typeof teamAgentErrorPayloadSchema> }>;

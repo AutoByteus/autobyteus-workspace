@@ -15,12 +15,14 @@ import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agen
 import { getAtomicRunPackageFileCommitWriter, type AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
 import { getTaskDelegationRecordsV1Path } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import { getTeamCommunicationMessagesV1Path } from "../../../services/team-communication/team-communication-v1-store.js";
-import { validateTeamCommunicationMessagesV1Payload } from "../../../services/team-communication/team-communication-v1-schema.js";
 import { getAgentOrgTaskDelegationRecordsV1Path } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
 import { validateAgentOrgTaskDelegationRecordsV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-schema.js";
-import { getAgentOrgCommunicationMessagesV1Path } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
-import { validateAgentOrgCommunicationMessagesV1 } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1-schema.js";
+import {
+  getAgentOrgCommunicationMessagesPath,
+  getTeamCommunicationMessagesPath,
+  validateAgentOrgCommunicationMessages,
+  validateTeamCommunicationMessagesPayload,
+} from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../run-history/store/agent-org-run-history-index-store.js";
 
@@ -157,17 +159,17 @@ export class AgentOrgFlatTeamFamiliesV1AppDataMigration implements AppDataMigrat
     if (await migrationPathExists(targetDir)) throw new Error("AgentOrg run destination already exists.");
     const teamTasks = validateTaskDelegationRecordsV1Payload(
       JSON.parse(await fs.readFile(getTaskDelegationRecordsV1Path(source), "utf8")), id);
-    const teamMessages = validateTeamCommunicationMessagesV1Payload(
-      JSON.parse(await fs.readFile(getTeamCommunicationMessagesV1Path(source), "utf8")), id);
+    const teamMessages = validateTeamCommunicationMessagesPayload(
+      JSON.parse(await fs.readFile(getTeamCommunicationMessagesPath(source), "utf8")), id);
     const orgTasks = validateAgentOrgTaskDelegationRecordsV1({
       schemaVersion: 1, subjectKind: "agent_org", orgRunId: id, records: teamTasks.records,
     }, id);
-    const orgMessages = validateAgentOrgCommunicationMessagesV1({
+    const orgMessages = validateAgentOrgCommunicationMessages({
       schemaVersion: 1, subjectKind: "agent_org", orgRunId: id, messages: teamMessages.messages,
     }, id);
     await this.writeJson(getAgentOrgRunExecutionTreePath(source), plan.index.tree, "execution_tree");
     await this.writeJson(getAgentOrgTaskDelegationRecordsV1Path(source), orgTasks, "org_task_records");
-    await this.writeJson(getAgentOrgCommunicationMessagesV1Path(source), orgMessages, "org_communication_messages");
+    await this.writeJson(getAgentOrgCommunicationMessagesPath(source), orgMessages, "org_communication_messages");
     await this.validateCompleteOrgRunPackage(source, plan);
     await fs.mkdir(this.layout.getOrgRootDirPath(), { recursive: true });
     await fs.rename(source, targetDir);
@@ -185,8 +187,8 @@ export class AgentOrgFlatTeamFamiliesV1AppDataMigration implements AppDataMigrat
       JSON.parse(await fs.readFile(getAgentOrgTaskDelegationRecordsV1Path(dir), "utf8")),
       orgRunId,
     );
-    const communicationMessages = validateAgentOrgCommunicationMessagesV1(
-      JSON.parse(await fs.readFile(getAgentOrgCommunicationMessagesV1Path(dir), "utf8")),
+    const communicationMessages = validateAgentOrgCommunicationMessages(
+      JSON.parse(await fs.readFile(getAgentOrgCommunicationMessagesPath(dir), "utf8")),
       orgRunId,
     );
     validateAgentOrgStatePackage({ executionTree, taskRecords, communicationMessages });

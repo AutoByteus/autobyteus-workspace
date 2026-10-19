@@ -512,10 +512,10 @@ export class TeamRunHistoryIndexV2AppDataMigration implements AppDataMigrationDe
   }
 
   private async loadTeamDefinitionService(): Promise<TeamDefinitionLookup> {
-    const { AgentTeamDefinitionPersistenceProvider } = await import(
-      "../../agent-team-definition/providers/agent-team-definition-persistence-provider.js"
+    const { FileAgentTeamDefinitionProvider } = await import(
+      "../../agent-team-definition/providers/file-agent-team-definition-provider.js"
     );
-    const provider = new AgentTeamDefinitionPersistenceProvider();
+    const provider = new FileAgentTeamDefinitionProvider();
     return {
       getDefinitionById: (teamDefinitionId) =>
         provider.getById(teamDefinitionId),

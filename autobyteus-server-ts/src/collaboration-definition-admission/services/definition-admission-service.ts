@@ -1,19 +1,45 @@
 import fs from "node:fs/promises";
+import path from "node:path";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { CollaborationHandoffCompiler } from "../../agent-collaboration/definition/collaboration-handoff-compiler.js";
 import type { AgentOrgDefinition } from "../../agent-org-definition/domain/agent-org-definition.js";
-import { readAgentOrgDefinitionConfig } from "../../agent-org-definition/providers/agent-org-definition-config.js";
 import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
 import { AgentOrgDefinitionResolver } from "../../agent-org-definition/services/agent-org-definition-resolver.js";
 import type { AgentTeamDefinition } from "../../agent-team-definition/domain/agent-team-definition.js";
-import { readAgentTeamDefinitionConfig } from "../../agent-team-definition/providers/agent-team-definition-config.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { assertValidFlatTeamDefinition } from "../../agent-team-definition/services/flat-team-definition-validator.js";
-import type { AvailableDefinitionAdmissionResult, DefinitionAdmissionResult, RootSubjectKind, UnavailableDefinitionAdmissionResult } from "../domain/definition-admission-result.js";
-import type { RegisteredDefinitionSource } from "../providers/definition-source-registry.js";
-import { DefinitionSourceRegistry } from "../providers/definition-source-registry.js";
+import type { DefinitionLoadIssue } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
+import type { DefinitionSourceClass } from "../domain/definition-source-descriptor.js";
+import type {
+  AvailableDefinitionAdmissionResult,
+  DefinitionAdmissionDiagnosticCode,
+  DefinitionAdmissionResult,
+  RootSubjectKind,
+  UnavailableDefinitionAdmissionResult,
+} from "../domain/definition-admission-result.js";
+import type { DefinitionSourceRegistry, RegisteredDefinitionSource } from "../providers/definition-source-registry.js";
 
-/** Exact target-only admission and dependency availability owner for new-work surfaces. */
+/** One admission subject: its location and its current definition (last good) or why it has none. */
+type AdmissionSource = Readonly<{
+  subjectKind: RootSubjectKind;
+  definitionId: string;
+  definitionPath: string;
+  packageRoot: string;
+  sourceClass: DefinitionSourceClass;
+  definition: AgentTeamDefinition | AgentOrgDefinition | null;
+  failure: Readonly<{ code: DefinitionAdmissionDiagnosticCode; reason: string }> | null;
+}>;
+
+type PreliminaryResult = AvailableDefinitionAdmissionResult | UnavailableDefinitionAdmissionResult;
+
+const failureOf = (issue: DefinitionLoadIssue | null): AdmissionSource["failure"] =>
+  issue ? { code: issue.code, reason: issue.reason } : { code: "DEFINITION_CONTRACT_INVALID", reason: "The definition could not be loaded." };
+
+/**
+ * Exact target-only admission and dependency availability owner for new-work surfaces. Teams and
+ * Orgs from registered agent packages are listed through the definition services (the agent
+ * package definitions, last good honored); application-owned Teams come from the source registry.
+ */
 export class DefinitionAdmissionService {
   private static instance: DefinitionAdmissionService | null = null;
   static getInstance(): DefinitionAdmissionService {
@@ -30,55 +56,34 @@ export class DefinitionAdmissionService {
 
   constructor(private readonly dependencies: Readonly<{
     registry: DefinitionSourceRegistry;
-    teams: Pick<AgentTeamDefinitionService, "getFreshDefinitionById">;
-    orgs: Pick<AgentOrgDefinitionService, "getDefinitionById">;
-    agents: Pick<AgentDefinitionService, "getFreshAgentDefinitionById">;
+    teams: Pick<AgentTeamDefinitionService, "getDefinitionById" | "listAdmissionEntries">;
+    orgs: Pick<AgentOrgDefinitionService, "listAdmissionEntries">;
+    agents: Pick<AgentDefinitionService, "getAgentDefinitionById">;
   }>) {}
 
   async scan(): Promise<readonly DefinitionAdmissionResult[]> {
-    const sources = await this.dependencies.registry.scan();
-    const preliminary = new Map<string, AvailableDefinitionAdmissionResult | UnavailableDefinitionAdmissionResult>();
-    const groups = new Map<string, RegisteredDefinitionSource[]>();
+    const sources = await this.listSources();
+    const preliminary = new Map<string, PreliminaryResult>();
     for (const source of sources) {
-      const sourceKey = key(source.subjectKind, source.definitionId);
-      const group = groups.get(sourceKey) ?? [];
-      group.push(source);
-      groups.set(sourceKey, group);
-    }
-    for (const [sourceKey, group] of groups) {
-      const source = group[0]!;
-      preliminary.set(sourceKey, group.length === 1
-        ? await this.decode(source)
-        : this.unavailable(
-            source,
-            "DEFINITION_CONTRACT_INVALID",
-            `Definition identity '${sourceKey}' is registered by multiple packages: ${group.map((item) => item.descriptor.definitionPath).join(", ")}.`,
-          ));
+      preliminary.set(key(source.subjectKind, source.definitionId), source.definition
+        ? Object.freeze({ status: "available", subjectKind: source.subjectKind, definitionId: source.definitionId, definition: source.definition })
+        : this.unavailable(source, source.failure!.code, source.failure!.reason));
     }
     const output: DefinitionAdmissionResult[] = [];
     for (const source of sources) {
-      const group = groups.get(key(source.subjectKind, source.definitionId))!;
-      if (group.length > 1) {
-        output.push(this.unavailable(
-          source,
-          "DEFINITION_CONTRACT_INVALID",
-          `Definition identity '${key(source.subjectKind, source.definitionId)}' is registered by multiple packages: ${group.map((item) => item.descriptor.definitionPath).join(", ")}.`,
-        ));
-        continue;
-      }
       const result = preliminary.get(key(source.subjectKind, source.definitionId))!;
       if (result.status === "unavailable") { output.push(result); continue; }
       try {
         if (result.subjectKind === "agent_team") {
           await assertValidFlatTeamDefinition({
             rootDefinition: result.definition as AgentTeamDefinition,
-            lookup: { getAgentById: (id) => this.dependencies.agents.getFreshAgentDefinitionById(id) },
+            lookup: { getAgentById: (id) => this.dependencies.agents.getAgentDefinitionById(id) },
           });
         } else {
           const topology = await new AgentOrgDefinitionResolver().resolve({
             definition: result.definition as AgentOrgDefinition,
             lookup: {
-              getAgentById: (id) => this.dependencies.agents.getFreshAgentDefinitionById(id),
+              getAgentById: (id) => this.dependencies.agents.getAgentDefinitionById(id),
               getTeamById: async (id) => {
                 const admitted = preliminary.get(key("agent_team", id));
                 return admitted?.status === "available" ? admitted.definition as AgentTeamDefinition : null;
@@ -97,7 +102,7 @@ export class DefinitionAdmissionService {
           dependentUnavailable ? "DEFINITION_DEPENDENCY_UNAVAILABLE" : "DEFINITION_REFERENCE_UNRESOLVED",
           message(error),
           dependentUnavailable
-            ? [`agent_org:${source.definitionId}@${source.descriptor.definitionPath}`, dependentUnavailable]
+            ? [`agent_org:${source.definitionId}@${source.definitionPath}`, dependentUnavailable]
             : [],
         ));
       }
@@ -114,31 +119,55 @@ export class DefinitionAdmissionService {
     return result;
   }
 
-  private async decode(source: RegisteredDefinitionSource): Promise<AvailableDefinitionAdmissionResult | UnavailableDefinitionAdmissionResult> {
+  /**
+   * Shared Teams, org-owned Teams (their owning Orgs resolve them through these results),
+   * application-owned Teams and AgentOrgs, in a stable order.
+   */
+  private async listSources(): Promise<AdmissionSource[]> {
+    const sources: AdmissionSource[] = [];
+    for (const entry of await this.dependencies.teams.listAdmissionEntries()) {
+      sources.push({ subjectKind: "agent_team", ...entry, failure: entry.definition ? null : failureOf(entry.issue) });
+    }
+    for (const registered of await this.dependencies.registry.scan()) {
+      sources.push(await this.decodeApplicationOwnedTeam(registered));
+    }
+    for (const entry of await this.dependencies.orgs.listAdmissionEntries()) {
+      sources.push({ subjectKind: "agent_org", ...entry, failure: entry.definition ? null : failureOf(entry.issue) });
+    }
+    return sources.sort((left, right) =>
+      left.subjectKind.localeCompare(right.subjectKind)
+      || left.definitionId.localeCompare(right.definitionId)
+      || left.definitionPath.localeCompare(right.definitionPath));
+  }
+
+  private async decodeApplicationOwnedTeam(source: RegisteredDefinitionSource): Promise<AdmissionSource> {
+    const base = {
+      subjectKind: "agent_team" as const,
+      definitionId: source.definitionId,
+      definitionPath: source.descriptor.definitionPath,
+      packageRoot: source.descriptor.packageRoot,
+      sourceClass: source.descriptor.sourceClass,
+    };
     try {
-      const raw = JSON.parse(await fs.readFile(source.configPath, "utf8")) as unknown;
-      if (source.subjectKind === "agent_team") readAgentTeamDefinitionConfig(raw);
-      else readAgentOrgDefinitionConfig(raw);
-      await fs.access(source.markdownPath);
-      const definition = source.subjectKind === "agent_team"
-        ? await this.dependencies.teams.getFreshDefinitionById(source.definitionId)
-        : await this.dependencies.orgs.getDefinitionById(source.definitionId);
-      if (!definition) return this.unavailable(source, "DEFINITION_CONTRACT_INVALID", "The exact target package could not be loaded after decoding.");
-      return Object.freeze({ status: "available", subjectKind: source.subjectKind, definitionId: source.definitionId, definition });
+      const definition = await this.dependencies.teams.getDefinitionById(source.definitionId);
+      if (definition) return { ...base, definition, failure: null };
+      const familyMismatch = await fs.access(path.join(source.descriptor.definitionPath, "org-config.json"))
+        .then(() => true).catch(() => false);
+      return {
+        ...base,
+        definition: null,
+        failure: familyMismatch
+          ? { code: "DEFINITION_FAMILY_MISMATCH", reason: "The Team folder holds an AgentOrg definition." }
+          : { code: "DEFINITION_CONTRACT_INVALID", reason: "The exact target package could not be loaded after decoding." },
+      };
     } catch (error) {
-      const siblingFamilyFile = source.subjectKind === "agent_team"
-        ? source.configPath.replace(/team-config\.json$/, "org-config.json")
-        : source.configPath.replace(/org-config\.json$/, "team-config.json");
-      const familyMismatch = (error as NodeJS.ErrnoException | null)?.code === "ENOENT"
-        && await fs.access(siblingFamilyFile).then(() => true).catch(() => false);
-      const code = familyMismatch ? "DEFINITION_FAMILY_MISMATCH" : "DEFINITION_CONTRACT_INVALID";
-      return this.unavailable(source, code, message(error));
+      return { ...base, definition: null, failure: { code: "DEFINITION_CONTRACT_INVALID", reason: message(error) } };
     }
   }
 
   private unavailableDependency(
     org: AgentOrgDefinition,
-    results: ReadonlyMap<string, AvailableDefinitionAdmissionResult | UnavailableDefinitionAdmissionResult>,
+    results: ReadonlyMap<string, PreliminaryResult>,
   ): string | null {
     const member = org.members.find((candidate) => candidate.refType === "agent_team"
       && results.get(key("agent_team", candidate.ref))?.status === "unavailable");
@@ -150,25 +179,25 @@ export class DefinitionAdmissionService {
   }
 
   private unavailable(
-    source: RegisteredDefinitionSource,
+    source: AdmissionSource,
     code: UnavailableDefinitionAdmissionResult["code"],
     reason: string,
     dependencyChain: readonly string[] = [],
   ): UnavailableDefinitionAdmissionResult {
     return Object.freeze({
       status: "unavailable",
-      sourceClass: source.descriptor.sourceClass,
-      packageRoot: source.descriptor.packageRoot,
-      definitionPath: source.descriptor.definitionPath,
+      sourceClass: source.sourceClass,
+      packageRoot: source.packageRoot,
+      definitionPath: source.definitionPath,
       definitionId: source.definitionId,
       subjectKind: source.subjectKind,
       expectedFamily: source.subjectKind === "agent_team" ? "agent_team" : "agent_org",
       code,
       reason,
       dependencyChain: Object.freeze([...dependencyChain]),
-      ownerAction: source.descriptor.sourceClass === "external_read_only"
-        ? "Update this package in its owning external project to the current definition format."
-        : "Correct the owned package to the current definition format and restart the server.",
+      ownerAction: source.sourceClass === "registered_package"
+        ? "Update this registered package (its folder or source repository) to the current definition format."
+        : "Correct the owned package to the current definition format.",
     });
   }
 }

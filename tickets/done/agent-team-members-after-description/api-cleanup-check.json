@@ -1,0 +1,7 @@
+{
+  "rendererPortClosed": true,
+  "backendPortClosed": true,
+  "groupAbsent": true,
+  "fixtureAbsent": true,
+  "screenshotsInspected": "width-1440.png / width-600.png via view_image: intact header/actions, count/coordinator and contained two-/one-column cards; roster immediately after Description, no in-scope defect. Handoffs below visible viewport proved via DOM/geometry, not screenshot alone."
+}

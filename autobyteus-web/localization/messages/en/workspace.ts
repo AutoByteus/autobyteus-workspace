@@ -2,6 +2,7 @@ import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "Skill updated",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
   "workspace.teamCopy.loading": "Reading saved Team configuration…",
   "workspace.runModelConfig.modelRequired": "Select a model before launch.",
@@ -56,7 +57,7 @@ const messages = {
   "workspace.agentOrg.history.stopLabel": "Stop Agent Org",
   "workspace.agentOrg.history.archiveLabel": "Archive Agent Org history",
   "workspace.agentOrg.history.deleteLabel": "Delete Agent Org history permanently",
-  "workspace.agentOrg.history.deleteConfirmation": "Delete this Agent Org history permanently? This removes only this run and cannot be undone.",
+  "workspace.agentOrg.history.deleteConfirmation": "Delete this Agent Org history permanently? This removes only this run and cannot be undone; its task agents' memory is kept.",
   "workspace.agentOrg.history.archived": "Agent Org history archived.",
   "workspace.agentOrg.history.archiveFailed": "Failed to archive Agent Org history. Please try again.",
   "workspace.agentOrg.history.deleted": "Agent Org history deleted permanently.",
@@ -197,14 +198,10 @@ const messages = {
     "Maximize view",
   "workspace.components.workspace.team.TeamCommunicationPanel.restore_view":
     "Restore view",
-  "workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam":
-    "Represents",
   "workspace.components.workspace.team.TeamCommunicationPanel.reference_count_label":
     "{{count}} reference files",
   "workspace.components.workspace.team.TeamCommunicationPanel.show_all_references":
     "Show all {{count}} files",
-  "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
-    "Focused subteam",
   "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
     "No activity yet.",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
@@ -223,8 +220,6 @@ const messages = {
     "Temporary task execution",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running":
     "Team status: Running",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_initializing":
-    "Team status: Initializing",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_error":
     "Team status: Error",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_idle":
@@ -232,8 +227,9 @@ const messages = {
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_offline":
     "Team status: Offline",
   "workspace.history.hierarchy.tree_label": "{{name}} organization tree",
-  "workspace.history.hierarchy.role.agent_team": "Agent team",
   "workspace.history.hierarchy.role.agent": "Agent",
+  "workspace.history.copyTask.locate": "Show Task in Projects: {{title}}",
+  "workspace.history.copyTask.accessible": "Task: {{title}}",
   "workspace.history.hierarchy.role.temporary_task_team": "Temporary task team",
   "workspace.history.hierarchy.role.temporary_task_agent": "Temporary task agent",
   "workspace.history.hierarchy.identity": "{{role}} · {{name}} · {{address}}",
@@ -250,10 +246,6 @@ const messages = {
   "workspace.task_monitor.load_error": "Couldn't load activity.",
   "workspace.task_monitor.retry": "Retry",
   "workspace.task_monitor.retry_accessible": "Retry loading activity",
-  "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
-    "Send a message to this subteam",
-  "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
-    "Send to subteam",
   "workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet":
     "Content not available yet",
   "workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable":

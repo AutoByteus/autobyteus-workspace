@@ -1,0 +1,252 @@
+{
+  "scope": "Static preservation only, not runtime proof",
+  "candidate": "5d95381a6637b7fa7eb5a703e8c161064bb05d69",
+  "target": "7170fd755d0dd5e806371dd4594eb4a9bf3e2682",
+  "probeSha256": "8ab8bc0d76eddf396ceac68dd10c781e645ac95becd96318c7989f3f25f3256d",
+  "checks": [
+    {
+      "check": "Incoming complete Stop helper block preserved except documented hash route adaptation",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming DCP-001 preserved including new root termination",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming expanded DCP-003 preserved with existing hash URL parser",
+      "result": "Pass"
+    },
+    {
+      "check": "Prior exact identity / Settings / desktop runner preserved:   // Earlier SSR cases retain stopped copies",
+      "result": "Pass"
+    },
+    {
+      "check": "Prior exact identity / Settings / desktop runner preserved: defineCase('DCP-004'",
+      "result": "Pass"
+    },
+    {
+      "check": "Prior exact identity / Settings / desktop runner preserved: // Focused stopped-parent regression",
+      "result": "Pass"
+    },
+    {
+      "check": "Shared named Team root Stop from incoming retained",
+      "result": "Pass"
+    },
+    {
+      "check": "Prior file preserved: autobyteus-web/tests/e2e/settings-saved-model-refresh-cases.mjs",
+      "result": "Pass"
+    },
+    {
+      "check": "Prior file preserved: autobyteus-web/tests/e2e/fixtures/settings-refresh-desktop.mjs",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/components/run-settings/ExistingRunSettings.vue",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/localization/messages/en/runSettings.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/localization/messages/zh-CN/runSettings.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/stores/__tests__/delegatedLaunchDraftStore.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/stores/__tests__/existingRunConfigStore.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/stores/delegatedLaunchDraftStore.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/stores/existingRunConfigEditActions.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/stores/existingRunConfigResultActions.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/stores/existingRunConfigStore.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Original Settings implementation preserved: autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-server-ts/docs/modules/token_usage.md",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-server-ts/package.json",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-server-ts/src/startup/migrations.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-server-ts/tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-server-ts/tests/fixtures/agy-tps-cli.mjs",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-server-ts/tests/unit/startup/migrations-command.test.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-server-ts/tests/unit/startup/migrations-prisma-engine-env.test.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/README.md",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/components/workspace/history/DelegatedStopButton.vue",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/components/workspace/history/__tests__/DelegatedStopButton.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/components/workspace/usage/TokenUsageMeterPanel.vue",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/components/workspace/usage/TokenUsageThroughputCard.vue",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/components/workspace/usage/__tests__/TokenUsageThroughputCard.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/composables/__tests__/useTokenUsageWorkspaceScope.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/composables/__tests__/useWorkspaceHistoryMutations.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/composables/useTokenUsageWorkspaceScope.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/docs/agent_execution_architecture.md",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/docs/settings.md",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/docs/token_meter.md",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/localization/messages/en/shell.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/localization/messages/zh-CN/shell.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/stores/__tests__/tokenUsageMeterStore.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/stores/__tests__/tokenUsageThroughput.spec.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/stores/tokenUsageMeterStore.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/stores/tokenUsageTeamAggregate.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/stores/tokenUsageThroughput.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/tests/e2e/fixtures/token-meter-tps.page.vue",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/tests/e2e/token-meter-tps-probe.mjs",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming file byte-preserved: autobyteus-web/types/tokenUsageMeter.ts",
+      "result": "Pass"
+    },
+    {
+      "check": "Package scripts union preserves Settings and incoming TPS",
+      "result": "Pass"
+    },
+    {
+      "check": "One ledger start and completion",
+      "result": "Pass"
+    },
+    {
+      "check": "No conflict markers",
+      "result": "Pass"
+    },
+    {
+      "check": "No gray-enabled rest assertion retained",
+      "result": "Pass"
+    }
+  ]
+}

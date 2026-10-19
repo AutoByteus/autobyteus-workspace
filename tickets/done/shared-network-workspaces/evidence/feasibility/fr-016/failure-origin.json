@@ -1,0 +1,7 @@
+{
+  "origin": "mount-inspector prototype assumption",
+  "cause": "Docker local NFS volume preserves device=:/export in mount source; actual server IP is in addr= superblock options, not necessarily in source prefix",
+  "observation": "healthy owned mount rejected as WRONG_MOUNT_SOURCE before any network filesystem child started",
+  "fixForNextRound": "check both export device representation and actual addr superblock option; do not weaken server identity to path-only check",
+  "overallPass": false
+}

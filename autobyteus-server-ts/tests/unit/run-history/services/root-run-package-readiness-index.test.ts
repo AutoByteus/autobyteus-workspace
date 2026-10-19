@@ -6,9 +6,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentMemoryLayout } from '../../../../src/agent-memory/store/agent-memory-layout.js';
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../../src/run-history/services/root-run-package-readiness-index.js';
 import { TeamRunExecutionTreeStore } from '../../../../src/run-history/store/team-run-execution-tree-store.js';
-import { TeamCommunicationV1Store } from '../../../../src/services/team-communication/team-communication-v1-store.js';
+import { TeamCommunicationStore } from '../../../../src/services/team-communication/team-communication-store.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../../src/run-history/store/agent-org-run-execution-tree-store.js';
-import { AgentOrgCommunicationMessagesV1Store } from '../../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
+import { AgentOrgCommunicationMessagesStore } from '../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { testAgentNode, testExecutionTree } from '../../../fixtures/current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../../fixtures/current-agent-org-run-fixtures.js';
 
@@ -35,7 +35,7 @@ const writeTeam = async (memoryDir: string, id: string): Promise<string> => {
     coordinatorAddress: '/coordinator',
     children: [testAgentNode('/coordinator', { agentRunId: `${id}-agent` })],
   }));
-  await new TeamCommunicationV1Store().write(packagePath, { schemaVersion: 1, rootTeamRunId: id, messages: [] });
+  await new TeamCommunicationStore().write(packagePath, { schemaVersion: 1, rootTeamRunId: id, messages: [] });
   return packagePath;
 };
 
@@ -46,7 +46,7 @@ const writeOrg = async (memoryDir: string, id: string): Promise<string> => {
     orgRunId: id,
     members: [testOrgAgentNode('/direct', `${id}-agent`)],
   }));
-  await new AgentOrgCommunicationMessagesV1Store().write(packagePath, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] });
+  await new AgentOrgCommunicationMessagesStore().write(packagePath, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] });
   return packagePath;
 };
 
@@ -152,16 +152,44 @@ describe('RootRunPackageReadinessIndex', () => {
     expect(index.listDiagnostics('agent_team')[0]).toMatchObject({ code: 'ROOT_RUN_PACKAGE_MANIFEST_INVALID' });
   });
 
-  it('rejects strict sidecar correlation mismatch without trying another family', async () => {
+  it('rejects a log with an invalid message line without trying another family', async () => {
     const memoryDir = await temporaryMemory();
     const packagePath = await writeOrg(memoryDir, 'org-mismatch');
-    await fs.writeFile(path.join(packagePath, 'agent_org_communication_messages.json'), JSON.stringify({
-      schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'other', messages: [],
-    }));
+    await fs.writeFile(path.join(packagePath, 'agent_org_communication_messages_active.jsonl'), `${JSON.stringify({
+      messageId: 'm1', senderAgentRunId: 'org-mismatch-agent', receiverAgentRunId: 'org-mismatch-agent', content: 'hi',
+      messageType: 'agent_message', referenceFiles: ['relative/path.md'], createdAt: '2026-10-18T00:00:00.000Z',
+    })}\n`);
     const index = new RootRunPackageReadinessIndex(memoryDir);
     await index.rebuild();
     expect(index.isAdmitted('agent_org', 'org-mismatch')).toBe(false);
     expect(index.listDiagnostics('agent_org')[0]).toMatchObject({ code: 'ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED' });
+  });
+
+  it('admits a log in the append-only layout whether it has an active file or only sealed files', async () => {
+    const memoryDir = await temporaryMemory();
+    const teamPackage = await writeTeam(memoryDir, 'team-sealed-only');
+    await fs.rename(path.join(teamPackage, 'team_communication_messages_active.jsonl'), path.join(teamPackage, 'team_communication_messages_000001.jsonl'));
+    await writeOrg(memoryDir, 'org-active');
+    const index = new RootRunPackageReadinessIndex(memoryDir);
+    await index.rebuild();
+    expect(index.listAdmitted('agent_team')).toEqual(['team-sealed-only']);
+    expect(index.listAdmitted('agent_org')).toEqual(['org-active']);
+  });
+
+  it('rejects a package without a message log, and one that still holds a JSON message log (unconverted residue)', async () => {
+    const memoryDir = await temporaryMemory();
+    const missing = await writeTeam(memoryDir, 'team-no-log');
+    await fs.rm(path.join(missing, 'team_communication_messages_active.jsonl'));
+    const residue = await writeOrg(memoryDir, 'org-json-residue');
+    await fs.writeFile(path.join(residue, 'agent_org_communication_messages.json'), '{}');
+    const index = new RootRunPackageReadinessIndex(memoryDir);
+    await index.rebuild();
+    expect(index.listAdmitted('agent_team')).toEqual([]);
+    expect(index.listAdmitted('agent_org')).toEqual([]);
+    expect(index.listDiagnostics('agent_team')[0]).toMatchObject({ code: 'ROOT_RUN_PACKAGE_MANIFEST_INVALID',
+      reason: 'Current package is missing required authorities: team_communication_messages.' });
+    expect(index.listDiagnostics('agent_org')[0]).toMatchObject({ code: 'ROOT_RUN_PACKAGE_MANIFEST_INVALID',
+      reason: 'Current package still contains retired root authorities: agent_org_communication_messages.json.' });
   });
 
   it('admits current packages that still carry a retained released records file without reading or touching it', async () => {
@@ -193,7 +221,7 @@ describe('RootRunPackageReadinessIndex', () => {
 });
 
 const authoritySnapshot = async (packagePath: string) => Object.fromEntries(await Promise.all([
-  'team_run_execution_tree.json', 'team_communication_messages.json',
+  'team_run_execution_tree.json', 'team_communication_messages_active.jsonl',
 ].map(async (name) => {
   const filePath = path.join(packagePath, name);
   const [bytes, stats] = await Promise.all([fs.readFile(filePath, 'base64'), fs.stat(filePath)]);

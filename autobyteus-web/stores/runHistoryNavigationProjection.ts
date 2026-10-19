@@ -125,7 +125,7 @@ const equalTeamExecution = (a: RunHistoryTeamExecutionRow, b: RunHistoryTeamExec
   if (a.kind === 'stable_member' && b.kind === 'stable_member') return equalTeamMember(a.row, b.row);
   return a.kind === 'transient_execution' && b.kind === 'transient_execution'
     && a.transientKind === b.transientKind && a.currentStatus === b.currentStatus
-    && a.delegatedBy === b.delegatedBy && a.opensOnAppear === b.opensOnAppear;
+    && a.delegatedBy === b.delegatedBy;
 };
 
 const equalTeam = (a: TeamTreeNode, b: TeamTreeNode): boolean =>

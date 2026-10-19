@@ -1,0 +1,61 @@
+# DR-001 post-integration check on merge f9de3d57d7 (origin/personal fc93276e6f into codex/search-model-settings); Mon Oct 19 16:19:39 CEST 2026
+ ↓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:14576) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/project-task-parts-live.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:15665) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:16988) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/hand-started-run-refusal.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:16991) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test | 1 skipped)
+stdout | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:18035) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests | 2 skipped)
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:19409) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests | 7 skipped)
+stdout | tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:19420) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test | 1 skipped)
+stdout | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:19436) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:19740) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test | 1 skipped)
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:21414) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 9 skipped)
+stdout | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:21862) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 7 skipped)
+ Test Files  7 passed | 18 skipped (25)
+      Tests  44 passed | 70 skipped (114)
+   Start at  16:17:13
+   Duration  95.59s (transform 8.21s, setup 209ms, import 44.66s, tests 48.06s, environment 2ms)

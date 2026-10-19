@@ -1,0 +1,7 @@
+# IMP-11 server build typecheck after the merge
+# Command: pnpm install; pnpm -C autobyteus-server-ts prebuild; pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+# Commit: a130f4a86f (merge of origin/personal 04ec416617 into codex/withdraw-adoption)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T20:12Z
+
+error TS count: 0

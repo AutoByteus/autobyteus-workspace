@@ -1,0 +1,12 @@
+
+> autobyteus@1.5.3-beta.3 test:e2e:delegated-team-default-collapse /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/autobyteus-web
+> node tests/e2e/delegated-team-default-collapse-probe.mjs --output-dir /tmp/dcm-dr2/probe-collapse
+
+Seeding representative Task 1/7
+Seeding representative Task 2/7
+Seeding representative Task 3/7
+Seeding representative Task 4/7
+Seeding representative Task 5/7
+Seeding representative Task 6/7
+Seeding representative Task 7/7
+{"result":"Pass","cases":["B-001","P-001","B-002","B-003","B-004","B-006","B-005"],"errors":[],"cleanup":{"browserClosed":true,"frontend":{"pid":99595,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":99566,"status":"terminated","exit":0},"dataRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/tmp/dcm-dr2/probe-collapse/evidence.json"}

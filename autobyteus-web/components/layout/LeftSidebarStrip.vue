@@ -7,7 +7,8 @@
     :data-strip-activation="props.stripActivation"
     :class="stripClasses"
   >
-    <div class="flex flex-col space-y-2">
+    <!-- On short windows the icons sit closer so Settings still fits (REQ-010). -->
+    <div class="flex flex-col space-y-2 [@media(max-height:540px)]:space-y-1">
       <button
         v-for="item in primaryNavItems"
         :key="item.key"
@@ -44,6 +45,31 @@
           {{ t(item.labelKey) }}
         </div>
       </button>
+
+      <!-- The Workspaces tree's place in the strip, after the pages as in the panel. Lit while a run is
+           shown; opens the panel on that run and never navigates (REQ-001, REQ-002, REQ-008). -->
+      <div
+        class="mx-auto h-px w-6 bg-gray-100 [@media(max-height:540px)]:hidden"
+        aria-hidden="true"
+        data-test="workspace-left-strip-workspaces-divider"
+      ></div>
+      <button
+        type="button"
+        data-test="workspace-left-strip-workspaces"
+        data-nav-key="workspaces"
+        class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
+        :class="isWorkspacesActive ? 'bg-gray-100 text-gray-900' : ''"
+        :title="t('shell.navigation.workspaces')"
+        :aria-label="t('shell.navigation.workspaces')"
+        :aria-current="isWorkspacesActive ? 'location' : undefined"
+        @click="handleWorkspacesClick($event)"
+      >
+        <Icon icon="ph:tree-view" class="h-5 w-5" />
+
+        <div class="absolute left-full ml-2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible z-50">
+          {{ t('shell.navigation.workspaces') }}
+        </div>
+      </button>
     </div>
 
     <div v-if="showSettingsNavigation" class="mt-auto">
@@ -68,7 +94,7 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { computed, onMounted } from 'vue';
+import { computed, nextTick, onMounted } from 'vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
 import { rememberDrawerTrigger } from '~/composables/useAccessibleDrawer';
@@ -81,6 +107,7 @@ const {
   primaryNavItems,
   resolvePrimaryRoute,
   isPrimaryNavActive,
+  isWorkspacesActive,
   ensurePrimaryNavigationReady,
 } = useShellPrimaryNavigation();
 
@@ -129,6 +156,18 @@ const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
   } catch (error) {
     console.error('LeftSidebarStrip navigation error:', error);
   }
+};
+
+// Shows the panel (docked, or the drawer when there is no room) and changes nothing else: no route,
+// run, draft or right-panel change. Docking unmounts the strip, so focus moves to the panel's
+// Workspaces section; the tree then moves it onto the open run's row.
+const handleWorkspacesClick = (event: MouseEvent): void => {
+  const docks = props.stripActivation === 'redock-panel';
+  activateStrip(event);
+  if (!docks) return;
+  void nextTick(() => {
+    document.querySelector<HTMLElement>('[data-test="app-left-panel-run-history"]')?.focus({ preventScroll: true });
+  });
 };
 
 const handlePrimaryClick = async (key: ShellPrimaryNavKey, event: MouseEvent): Promise<void> => {

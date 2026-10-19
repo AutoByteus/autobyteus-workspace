@@ -1,6 +1,7 @@
 import path from "node:path";
 import type {
   LocatedExecutionGroup,
+  LocatedTeamExecutionKind,
   LocatedExecutionKind,
 } from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import type {
@@ -41,21 +42,15 @@ type LocatedAgentExecution = Readonly<{
   memoryDir: string;
 }>;
 
-// Collaborators are hosted like configured members (one instance, started on first message).
 const MEMBER_EXECUTION_KIND: Record<LocatedExecutionKind, CollaborationMemberExecutionKind> = {
   configured: "CONFIGURED",
   task: "TASK_AGENT",
   task_team_member: "TASK_TEAM_MEMBER",
-  collaborator: "CONFIGURED",
-  collaborator_team_member: "CONFIGURED",
 };
 
-const GROUP_KIND: Record<LocatedExecutionKind, CollaborationMemoryGroupKind> = {
+const GROUP_KIND: Record<LocatedTeamExecutionKind, CollaborationMemoryGroupKind> = {
   configured: "CONFIGURED_TEAM",
   task: "TASK_TEAM",
-  task_team_member: "TASK_TEAM",
-  collaborator: "CONFIGURED_TEAM",
-  collaborator_team_member: "CONFIGURED_TEAM",
 };
 
 /** Projects one located execution; `toDisplayName` is the family's label rule (team basename, org address path). */
@@ -110,14 +105,14 @@ const compareAgents = (a: CollaborationMemberMemoryTarget, b: CollaborationMembe
   (a.startedAt ?? "").localeCompare(b.startedAt ?? "");
 
 /**
- * Configured teams keep tree order; task teams follow, nested teams without a start time first (they precede
- * delegated tasks in tree order), then delegated task teams by start time. `Array.sort` is stable.
+ * Configured teams (an organization's teams) keep tree order; task agent teams follow by start time.
+ * `Array.sort` is stable.
  */
 const compareChildGroups = (a: StructureNode, b: StructureNode): number => {
-  const rank = (node: StructureNode) => node.group?.kind === "CONFIGURED_TEAM" ? 0 : node.group?.startedAt ? 2 : 1;
+  const rank = (node: StructureNode) => node.group?.kind === "CONFIGURED_TEAM" ? 0 : 1;
   const rankCompare = rank(a) - rank(b);
-  if (rankCompare !== 0 || rank(a) !== 2) return rankCompare;
-  return a.group!.startedAt!.localeCompare(b.group!.startedAt!);
+  if (rankCompare !== 0 || rank(a) === 0) return rankCompare;
+  return (a.group!.startedAt ?? "").localeCompare(b.group!.startedAt ?? "");
 };
 
 /**

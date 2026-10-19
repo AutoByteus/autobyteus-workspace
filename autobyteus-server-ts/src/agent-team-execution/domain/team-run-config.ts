@@ -35,6 +35,7 @@ export type TeamRunAgentNode = Readonly<{
   workspaceRootPath: string | null;
 }>;
 
+/** A team of a run. Teams are flat: its children are agents. */
 export type TeamRunAgentTeamNode = Readonly<{
   kind: "agent_team";
   address: AgentTeamAddress;
@@ -44,7 +45,7 @@ export type TeamRunAgentTeamNode = Readonly<{
   defaultLaunchConfiguration: AgentLaunchConfiguration;
   role?: string | null;
   description?: string | null;
-  children: readonly TeamRunNode[];
+  children: readonly TeamRunAgentNode[];
 }>;
 
 export type TeamRunNode = TeamRunAgentNode | TeamRunAgentTeamNode;
@@ -95,31 +96,31 @@ export const cloneAgentLaunchConfiguration = (
   workspaceRootPath: optional(value.workspaceRootPath),
 });
 
-export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+const cloneTeamRunAgentNode = (node: TeamRunAgentNode): TeamRunAgentNode => {
   const address = assertAgentTeamAddress(node.address);
-  if (node.kind === "agent") {
-    if (address === "/") throw new Error("The root TeamRun node must be an AgentTeam.");
-    return Object.freeze({
-      kind: "agent",
-      address,
-      agentDefinitionId: required(node.agentDefinitionId, `agentDefinitionId at '${address}'`),
-      agentRunId: required(node.agentRunId, `agentRunId at '${address}'`),
-      platformAgentRunId: optional(node.platformAgentRunId),
-      role: node.role ?? null,
-      description: node.description ?? null,
-      runtimeKind: node.runtimeKind,
-      llmModelIdentifier: required(node.llmModelIdentifier, `llmModelIdentifier at '${address}'`),
-      llmConfig: freezeRecord(node.llmConfig as Record<string, unknown> | null),
-      autoExecuteTools: Boolean(node.autoExecuteTools),
-      workspaceRootPath: optional(node.workspaceRootPath),
-    });
-  }
-  const children = Object.freeze(node.children.map(cloneTeamRunNode));
+  if (address === "/") throw new Error("The root TeamRun node must be an AgentTeam.");
+  return Object.freeze({
+    kind: "agent",
+    address,
+    agentDefinitionId: required(node.agentDefinitionId, `agentDefinitionId at '${address}'`),
+    agentRunId: required(node.agentRunId, `agentRunId at '${address}'`),
+    platformAgentRunId: optional(node.platformAgentRunId),
+    role: node.role ?? null,
+    description: node.description ?? null,
+    runtimeKind: node.runtimeKind,
+    llmModelIdentifier: required(node.llmModelIdentifier, `llmModelIdentifier at '${address}'`),
+    llmConfig: freezeRecord(node.llmConfig as Record<string, unknown> | null),
+    autoExecuteTools: Boolean(node.autoExecuteTools),
+    workspaceRootPath: optional(node.workspaceRootPath),
+  });
+};
+
+/** A validated, frozen copy of a team node; its children are agents (teams are flat). */
+export const cloneTeamRunAgentTeamNode = (node: TeamRunAgentTeamNode): TeamRunAgentTeamNode => {
+  const address = assertAgentTeamAddress(node.address);
+  const children = Object.freeze(node.children.map(cloneTeamRunAgentNode));
   const coordinatorAddress = assertAgentTeamAddress(node.coordinatorAddress);
-  const directCoordinator = children.filter((child) =>
-    child.kind === "agent" && child.address === coordinatorAddress,
-  );
-  if (directCoordinator.length !== 1) {
+  if (children.filter((child) => child.address === coordinatorAddress).length !== 1) {
     throw new Error(`AgentTeam '${address}' must have exactly one direct Agent coordinator '${coordinatorAddress}'.`);
   }
   const seen = new Set<string>();
@@ -155,15 +156,7 @@ export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
   });
 };
 
-export const collectTeamRunAgentNodes = (rootTeam: TeamRunAgentTeamNode): TeamRunAgentNode[] => {
-  const output: TeamRunAgentNode[] = [];
-  const visit = (node: TeamRunNode): void => {
-    if (node.kind === "agent") output.push(node);
-    else node.children.forEach(visit);
-  };
-  rootTeam.children.forEach(visit);
-  return output;
-};
+export const collectTeamRunAgentNodes = (rootTeam: TeamRunAgentTeamNode): TeamRunAgentNode[] => [...rootTeam.children];
 
 export const projectAgentLaunchSettings = (
   rootTeam: TeamRunAgentTeamNode,
@@ -191,7 +184,7 @@ export class TeamRunConfig {
     applicationBinding?: TeamRunApplicationBinding | null;
   }) {
     this.teamBackendKind = input.teamBackendKind;
-    this.rootTeam = cloneTeamRunNode(input.rootTeam) as TeamRunAgentTeamNode;
+    this.rootTeam = cloneTeamRunAgentTeamNode(input.rootTeam);
     if (this.rootTeam.address !== "/") throw new Error("Root AgentTeam address must be '/'.");
     this.handoffs = Object.freeze(cloneCollaborationHandoffs(input.handoffs ?? []));
     this.applicationBinding = input.applicationBinding

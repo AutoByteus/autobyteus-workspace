@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-AUTOBYTEUS_DOCKER_BASH_MODULES=(core.sh docker-runtime.sh commands.sh)
+AUTOBYTEUS_DOCKER_BASH_MODULES=(core.sh container-config.sh docker-runtime.sh commands.sh)
 AUTOBYTEUS_DOCKER_PUBLIC_SOURCE_BASE_DEFAULT="https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker"
 AUTOBYTEUS_DOCKER_BASH_ENTRY_NAME="autobyteus-docker.sh"
 AUTOBYTEUS_DOCKER_BASH_INSTALL_NAME="autobyteus-docker"
@@ -48,8 +48,14 @@ entry_path_has_dir() {
 }
 
 entry_shell_quote() {
-  local value="$1"
-  printf "'%s'" "${value//\'/\'\\\'\'}"
+  local value="$1" prefix
+  printf "'"
+  while [[ "$value" == *"'"* ]]; do
+    prefix="${value%%\'*}"
+    printf '%s%s' "$prefix" "'\\''"
+    value="${value#*\'}"
+  done
+  printf "%s'" "$value"
 }
 
 entry_profile_path() {

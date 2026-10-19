@@ -5,7 +5,7 @@ import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog'
 import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useMobileWorkStore } from '~/stores/mobileWorkStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
@@ -14,6 +14,10 @@ import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 import type { MobileLaunchMode, MobileLaunchPickerItem } from '~/types/mobileLaunch'
 import type { MobileRunSetupIntent, MobileWorkContext, MobileWorkListItem } from '~/types/mobileWork'
+import { normalizeDefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
+import { startModelCatalog } from '~/services/runSettings/startModelCatalog'
+import { seedMemberLaunchDefaults } from '~/utils/runSettings/memberLaunchDefaults'
+import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
 
 interface MobileRunSetupControllerOptions {
   context: Ref<MobileWorkContext | null>
@@ -254,8 +258,30 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     }
     if (teamRunConfigStore.config?.teamDefinitionId !== selectedTeamId.value) {
       teamRunConfigStore.setTemplate(definition)
+      void seedTeamMembers(definition)
     }
     updateActiveWorkspaceConfig()
+  }
+
+  /**
+   * DS-006 (mobile): after the synchronous template, members with a usable own default get it. Applied
+   * only while the same team is still selected, so a quick switch never receives another team's seeds.
+   */
+  async function seedTeamMembers(definition: AgentTeamDefinition): Promise<void> {
+    const draftId = teamRunConfigStore.selectedDraft?.draftId
+    if (!draftId) return
+    try {
+      const seed = await seedMemberLaunchDefaults({
+        members: resolveLeafTeamMembers(definition),
+        getAgentDefault: (id) => normalizeDefaultLaunchConfig(agentDefinitionStore.getAgentDefinitionById(id)?.defaultLaunchConfig),
+        catalog: startModelCatalog(),
+        modelConfigFor: (choice) => choice.llmConfig,
+      })
+      if (mode.value !== 'team' || selectedTeamId.value !== definition.id) return
+      teamRunConfigStore.applySeededMemberDefaults(draftId, seed)
+    } catch (seedError) {
+      console.warn('Failed to seed the team members\' defaults:', seedError)
+    }
   }
 
   function setMode(nextMode: MobileLaunchMode): void {

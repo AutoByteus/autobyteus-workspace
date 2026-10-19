@@ -1,0 +1,6 @@
+{
+  "classification": "Incorrect harness privilege assumption",
+  "observed": "Native mount -t nfs as guestUID501 returned0 for its own private directory, contrary to asserted mandatory denial. Not the old host NetFS NoUI API.",
+  "cleanupLimit": "Main mount explicitly detached, VM stopped; side mount not explicitly detached because assertion interrupted the pre-finally phase. Entire credential-free VM clone then deleted before FR-031 (receipt there). No host mount or user data affected.",
+  "next": "Fresh baseline FR-031 measures actual owned-directory capability plus separately denied administrator identity; no real user OS password/dialog claim."
+}

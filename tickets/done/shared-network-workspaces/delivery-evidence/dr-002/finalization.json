@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-15T16:59:15.315921+00:00",
+  "ticketCommit": "21b118f36bd0cde834ddc7e83231d9ecf23e90da",
+  "ticketPush": "Completed, origin/codex/shared-network-workspaces",
+  "baseBeforeMergeAndPush": "5096011674c7db6ec0e92e522ea37f32f8f4ea40",
+  "targetMerge": "f69ee786260715e0ec461cc4d7d49a8df7409be8",
+  "method": "git checkout -b finalize/shared-network-workspaces origin/personal; git merge --no-ff codex/shared-network-workspaces; git push origin HEAD:personal",
+  "targetPush": "Completed",
+  "remoteObservation": [
+    "21b118f36bd0cde834ddc7e83231d9ecf23e90da\trefs/heads/codex/shared-network-workspaces",
+    "f69ee786260715e0ec461cc4d7d49a8df7409be8\trefs/heads/personal"
+  ],
+  "mergeTreeMatchesVerifiedTicket": true,
+  "checks": {
+    "artifactHygiene": "Pass before archive, archived index and merged tree",
+    "licensing": "Pass candidate and merged tree",
+    "deliveryStagedWhitespace": "Pass; raw upstream evidence unchanged"
+  },
+  "release": "No release \u2014 guide default",
+  "versionTagPublicationDeploymentRollout": "Not required / not executed",
+  "localTicketAndFinalizeBranches": "Deleted safely after detach",
+  "ticketWorktree": "Retained detached to preserve preexisting unowned data; removal not required/unsafe",
+  "remoteTicketBranch": "Retained \u2014 deletion not required",
+  "mainCheckout": "Not modified",
+  "result": "Delivery Completed",
+  "verification": "Sufficient from evidence, no user-executed check claimed",
+  "receiptNote": "This record identifies completed product/docs merge and cleanup. The subsequent docs-only receipt commit carries this record; its exact commit/push receipt is in the terminal handoff, avoiding a self-referential hash."
+}

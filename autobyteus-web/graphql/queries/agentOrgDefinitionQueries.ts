@@ -6,6 +6,7 @@ export const GetAgentOrgDefinitions = gql`
       handoffs { from to rules }
       members { memberName ref refType refScope }
       defaultLaunchConfig { llmModelIdentifier runtimeKind llmConfig }
+      loadIssues { kind definitionId name code reason definitionPath packageRoot usingLastGood }
     }
   }
 `
@@ -21,7 +22,10 @@ export const GetAgentOrgEndpointCatalog = gql`
 // Exact reads include owned definitions which are deliberately absent from lists.
 export const GetAgentOrgReferencedAgent = gql`
   query GetAgentOrgReferencedAgent($id: String!) {
-    agentDefinition(id: $id) { id name description ownershipScope ownerOrgId ownerTeamId }
+    agentDefinition(id: $id) {
+      id name description ownershipScope ownerOrgId ownerTeamId
+      defaultLaunchConfig { llmModelIdentifier runtimeKind llmConfig }
+    }
   }
 `
 export const GetAgentOrgReferencedTeam = gql`

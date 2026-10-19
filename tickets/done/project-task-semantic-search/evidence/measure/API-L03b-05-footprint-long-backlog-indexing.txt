@@ -1,0 +1,4 @@
+# API-L03b: output of the step named in the execution report Cases row for API-L03b; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+footprint after idle stop (before this indexing): 206 MB
+peak footprint during worker restart + indexing 1,000 long Tasks: 562 MB (+356 MB over the idle footprint)
+latest: 545 MB

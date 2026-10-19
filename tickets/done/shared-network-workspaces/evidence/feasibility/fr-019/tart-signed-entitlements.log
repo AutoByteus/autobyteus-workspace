@@ -1,0 +1,8 @@
+Executable=/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart
+[Dict]
+	[Key] com.apple.security.virtualization
+	[Value]
+		[Bool] true
+	[Key] com.apple.vm.networking
+	[Value]
+		[Bool] true

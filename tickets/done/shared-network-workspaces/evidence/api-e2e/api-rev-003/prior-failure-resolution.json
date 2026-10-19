@@ -1,0 +1,70 @@
+{
+  "time": "2026-10-14T07:01:37Z",
+  "priorFailure": "API-F002/CR003",
+  "resolution": "Resolved at fresh public nativeUbuntu create/reconnect scope, defaultY/no manual preinstall/probe bypass",
+  "result": "Pass",
+  "currentCLI": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api003-cc7rp5vo/autobyteus-nfs-linux-arm64",
+    "sha256": "0f7d6a37e8d418f3fd16ae83e16ef4ca45fd75311a93cb40237665afca4db2b4",
+    "size": 11033781
+  },
+  "sourceHash": "5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc",
+  "vm": "ab-nfs-api003-linux-b7497a85",
+  "connection": {
+    "storageId": "83da2722-274d-493d-a360-ddb5bfe11c10",
+    "endpoint": "192.168.64.7",
+    "export": "/autobyteus/83da2722-274d-493d-a360-ddb5bfe11c10",
+    "protocol": "4.1",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "cases": [
+    {
+      "name": "fresh reference preflight and nonempty original source",
+      "status": "Pass",
+      "seconds": 0.114
+    },
+    {
+      "name": "one public bundled create under077 exact nonroot identity",
+      "status": "Pass",
+      "seconds": 16.778
+    },
+    {
+      "name": "original source identity and mounted bytes UUID defaultY",
+      "status": "Pass",
+      "seconds": 0.597
+    },
+    {
+      "name": "installed exact engine private modes mask staging cleanup managed jobs",
+      "status": "Pass",
+      "seconds": 0.112
+    },
+    {
+      "name": "public reconnect 1",
+      "status": "Pass",
+      "seconds": 0.508
+    },
+    {
+      "name": "public reconnect 2",
+      "status": "Pass",
+      "seconds": 0.605
+    },
+    {
+      "name": "post reconnect original source and mounted identity preserved",
+      "status": "Pass",
+      "seconds": 0.307
+    }
+  ],
+  "retainedPriorAttempts": [
+    {
+      "file": "linux-public-result.json",
+      "create": "Pass",
+      "overall": "HarnessFail wrong nfs sysfs path; reconnect not reached"
+    },
+    {
+      "file": "linux-public-confirm-result.json",
+      "create": "Pass",
+      "reconnect1": "Pass",
+      "overall": "HarnessFail expected wrapped reconnect JSON instead of Status"
+    }
+  ]
+}

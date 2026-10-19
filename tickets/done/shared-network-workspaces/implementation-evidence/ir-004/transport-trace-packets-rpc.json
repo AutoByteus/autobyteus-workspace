@@ -1,0 +1,17 @@
+{
+  "source": "transport-trace-packets.log",
+  "limits": "Evidence-only decoder of complete, single-record IPv4 TCP RPC payloads in\nowned guest tcpdump -X text. Not a stream reassembler; skipped/incomplete payloads\nare not evidence of absence. No network access or product use.\n",
+  "records": [
+    {
+      "line": 25,
+      "time": "2026-10-13 20:03:55.595953",
+      "flow": "192.168.128.2.1023 > 192.168.128.2.111: Flags [P.], seq 1:61, ack 1, win 6380, options [nop,nop,TS val 515879350 ecr 50852664], length 60",
+      "xid": "0x2f9cbf6c",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 3,
+      "argumentsHex": "000186a3000000030000000600000000"
+    }
+  ]
+}

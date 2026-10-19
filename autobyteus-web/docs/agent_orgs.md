@@ -11,6 +11,23 @@ independently launchable and keep their own coordinator and Team-local handoffs.
 
 `AgentOrgExperience.vue` provides list, detail, create, and edit views.
 
+- Catalog cards render through `AgentOrgCatalogCard.vue`. Each card shows
+  `DefinitionLoadIssueBadge.vue` for `org.loadIssues`. The list covers the
+  Org and every nested definition it owns: Org-owned Agents, Org-owned Teams
+  and their Team-local Agents, because none of these has a card of its own.
+  The badge text is "Using last working version" when every entry still has a
+  working version and "Some members couldn't be loaded" when any entry has
+  none. Expanding it lists each entry's name or folder, file and reason. An Org
+  whose nested definition breaks stays usable on the last working version.
+- The list shows `DefinitionProblemsNotice.vue` for `AGENT_ORG` ("N org
+  definition(s) are not available", with reasons and "Depends on: …"). This
+  includes an Org whose ID exists in more than one package.
+- The Orgs list refreshes live from `/ws/agent-package-definitions` (the
+  `agent_orgs` list, which agent and Team changes also name). **Reload** runs the
+  `reloadAgentPackageDefinitions` mutation (a full server reload of every agent
+  package) before re-reading the list. See
+  [Agent Management](./agent_management.md#live-agent-package-definition-refresh).
+
 - Catalog member chips use the readable Org-local `memberName` role (or localized
   type fallback) as their only label source. They do not read referenced Agent or
   Team definitions, and Reload updates a role label only when the refreshed Org
@@ -33,10 +50,24 @@ independently launchable and keep their own coordinator and Team-local handoffs.
   identities. Long labels wrap and narrow direction cards stack; unavailable
   endpoints remain readable, while malformed addresses use the localized generic
   endpoint label.
-- Save is atomic and retains a failed draft for correction.
+- Save is atomic and retains a failed draft for correction. Orgs from a
+  registered agent package are saved into their package folder, like that
+  package's Agents and Teams.
 - Mutation members contain only `memberName`, `ref`, `refType`, and `refScope`;
   Apollo response metadata such as `__typename` is not echoed into input.
   An omitted optional update remains omitted rather than resetting stored intent.
+
+### Mutation Response And Catalog Cache Contract
+
+Create and update share `AgentOrgDefinitionFields`. It selects the catalog's
+`loadIssues` entries with `kind`, `definitionId`, `name`, `code`, `reason`,
+`definitionPath`, `packageRoot`, and `usingLastGood`. The existing store can
+therefore publish complete mutation responses into the full catalog cache;
+an older normalized row is not a substitute for a complete update response.
+Healthy saves return the server's explicit empty list. Diagnostic values are
+preserved rather than replaced with synthetic defaults or hidden, without
+changing warning generation, expected revisions, input omission, members,
+handoffs, save navigation, or cache ownership.
 
 Canonical `org-config.json` and `team-config.json` output has no `schemaVersion`.
 Org input validation remains strict. Referenced Team inputs use the supported-field
@@ -168,20 +199,31 @@ direct Agent: Agent override -> Org root
 Team Agent:   Agent override -> Team override -> Org root
 ```
 
-Referenced Agent/Team definition defaults remain standalone defaults and do not
-silently override Org choices.
+Referenced Agent/Team definition defaults never change Org choices silently.
+On a fresh **Run** they seed visible, editable member rows instead (below).
 
 Initial settings follow one rule for every start page:
 
 - **Run:** the Org's default launch config; if it has no usable model, the last
   model used in chat, then the default runtime's first model. Workspace is the
   temp workspace. Tool approval defaults to **Auto-approve**, as for Agents and
-  Teams (the Antigravity lock still applies).
+  Teams (the Antigravity lock still applies). Each placed team is then seeded
+  from its Team default, and each agent (direct or inside a placed team) from
+  its agent default, when that default is usable (`orgMemberSeedTargets` and
+  `seedMemberLaunchDefaults` in `utils/runSettings/memberLaunchDefaults.ts`). The
+  effective order is agent default → its placed team → Org → the root seed. A
+  seeded row is customized and pinned like a Team member row; an unusable
+  default leaves the row following its parent, with a note. See
+  [Member Launch Defaults](./agent_teams.md#member-launch-defaults).
 - **+:** the source run's settings and member overrides. A placed team keeps its
   workspace only where it differs from the Org's. If the run cannot be read or
-  copied, the Org defaults are used.
+  copied, the Org defaults are used. A copied start is not seeded.
 - **Heading switcher:** the carried workspace, approval and model config; member
-  overrides reset.
+  overrides reset. Then the placed teams and agents are seeded and pinned exactly
+  as on **Run** (`agentOrgLaunchDraftStore.prepare`: a carried model on a start
+  that is not copied runs `seedMembers`). Switching from this page to a Team seeds
+  that Team's members the same way (see
+  [Member Launch Defaults](./agent_teams.md#member-launch-defaults)).
 
 Copied and carried settings are kept as they are; their runtimes' availability
 and model catalogs (the Org card's and every override's) load before Run is
@@ -332,7 +374,7 @@ resource lifecycle) have no starter, and task-Team members have none. Shut-down 
 the standard `offline` status. Participant links open the exact AgentRun,
 never the configured source at the same address.
 
-A delegated task-Team row (including a nested Team inside a task Team) that has
+A delegated task-Team row (including a task Team delegated inside another task Team) that has
 members or nested task executions shows the same chevron as a mounted Team row
 and starts expanded. Activating the row by pointer or Enter/Space toggles its
 descendants and inspects its coordinator, as the mounted Team row does. The row
@@ -453,32 +495,32 @@ reactivating the task, or replacing it with a same-address execution.
 
 ## Status And Hierarchy
 
-Each Agent row shows its exact runtime status. Every direct mounted Team row also
-shows a presentation-only aggregate over the Agent rows in that Team branch:
+Each Agent row shows its exact runtime status. Every Team row inside the Org (a
+direct mounted Team, and a delegated task Team, also one delegated inside
+another) also shows the
+presentation-only universal Team status over the listed Agent rows in its
+branch:
 
 ```text
-running > initializing > error > idle > offline
+busy (running or initializing) > error > idle > offline
 ```
 
-Configured and task-scoped descendant Agents contribute. Direct Org Agents,
-sibling Teams, ancestors, and the Team container itself do not. Empty/unknown
-input is offline. The aggregate remains visible while the Team is collapsed and
-does not own polling, lifecycle, focus, readiness, or command authority.
+Configured and task-scoped descendant Agents contribute; closed task work does
+not. Direct Org Agents, sibling Teams, ancestors, and the Team container itself
+do not. Empty/unknown input is offline. The Org counts as alive only while its
+status authority is `live`; otherwise every Team row in it is offline (gray).
+The Org root row is not a Team and keeps its own dot. The Team status remains
+visible while the Team is collapsed and does not own polling, lifecycle, focus,
+readiness, or command authority. The rule owner is described in
+[Agent Execution Architecture](agent_execution_architecture.md).
 
 Task Agents and task Teams are transient execution projections. They can be
 nested by task delegation without changing the fixed configured Org topology.
 A task Agent row shows the member marker (solid status dot and initials); the
-starter is kept in the accessible label, not as a visible line. Collaborators
-(shared Agents and Agent Teams brought in by an agent's first message to a
-listed address, or with `@` in runs saved by earlier releases; `@` itself adds
-nothing) are one hosted instance per
-entry in `rootOrg.collaborators`. `AgentOrgExecutionViewIndex` lists them with
-the task-row look (`collaboratorExecutionNodes`), Offline until their first
-message, ahead of the delegated children, and resolves their source from the
-entry. The Org context applies `collaborator_added` in place (no checkpoint
-reload), adds the new contexts and invalidates the `@` candidates. An extra copy that `delegate_task`
-starts at a collaborator address is an ordinary task row. A catalog copy
-(`delegate_task` to a listed catalog Agent or Team) carries `source` on its task
+starter is kept in the accessible label, not as a visible line. The Org context has no
+collaborator concept: runs that earlier releases recorded as collaborators were converted at
+startup into ordinary task rows. A catalog copy (`delegate_task` to a listed catalog Agent or Team;
+`send_message_to` never creates one) carries `source` on its task
 DTO; `AgentOrgExecutionViewIndex` and the Org history rows resolve it with
 `catalogAgentSourceAt` / `catalogTeamSourceAt`.
 
@@ -652,7 +694,7 @@ report for the exact acceptance scope.
 - `services/agentOrgExecution/agentOrgCommunicationPerspective.ts`: root-owned
   Messages facet.
 - `utils/agentOrgHistoryRows.ts`: Org Workspaces rows, including delegated rows
-  with their delegator (for the accessible label), collaborator rows, and
+  with their delegator (for the accessible label), and
   per-`teamRunId` task-Team disclosure
   (`hasChildren`/`expanded`; descendants are emitted only while expanded).
 - `composables/useWorkspaceHistoryTreeState.ts`: local Org run, mounted-Team
@@ -660,7 +702,8 @@ report for the exact acceptance scope.
 - `services/agentOrgExecution/agentOrgStreamingService.ts`: stream protocol.
 - `services/agentOrgExecution/agentOrgContextHydration.ts`: initial/reopen
   hydration. Each member's projection and its recorded Agent Artifacts
-  (`getRunFileChanges`) are fetched and committed together through
+  (`getAgentOrgMemberFileChanges(orgRunId, memberAddress, agentRunId)`, read
+  inside that org run only) are fetched and committed together through
   `services/runHydration/memberRunStateHydration.ts`. This includes members of
   nested Teams, so member Artifacts lists are complete after a reload and on
   historical runs. An artifact fetch failure fails the Org open, as a

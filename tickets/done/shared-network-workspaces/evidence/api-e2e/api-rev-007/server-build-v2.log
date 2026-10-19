@@ -1,0 +1,237 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 8.34kB 0.0s done
+#1 DONE 0.1s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 1.4s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#4 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#5 ...
+
+#6 [auth] library/node:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/library/node:22-bookworm
+#8 DONE 0.9s
+
+#5 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#5 DONE 1.0s
+
+#9 [internal] load .dockerignore
+#9 transferring context: 282B done
+#9 DONE 0.0s
+
+#10 [runtime  1/33] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+#10 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4 0.0s done
+#10 DONE 0.0s
+
+#11 [builder  1/28] FROM docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+#11 resolve docker.io/library/node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8 0.0s done
+#11 DONE 0.0s
+
+#12 [internal] load build context
+#12 transferring context: 54.97MB 1.3s done
+#12 DONE 1.3s
+
+#13 [builder 18/28] COPY autobyteus-agent-presentation-contracts ./autobyteus-agent-presentation-contracts
+#13 CACHED
+
+#14 [runtime 19/33] COPY --from=builder /app/autobyteus-team-stream-contracts/node_modules ./autobyteus-team-stream-contracts/node_modules
+#14 CACHED
+
+#15 [runtime 13/33] COPY --from=builder /app/autobyteus-agent-presentation-contracts/node_modules ./autobyteus-agent-presentation-contracts/node_modules
+#15 CACHED
+
+#16 [builder 21/28] COPY autobyteus-server-ts ./autobyteus-server-ts
+#16 CACHED
+
+#17 [runtime  6/33] RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+#17 CACHED
+
+#18 [runtime 21/33] COPY --from=builder /app/autobyteus-team-stream-contracts/package.json ./autobyteus-team-stream-contracts/package.json
+#18 CACHED
+
+#19 [builder  9/28] COPY autobyteus-agent-presentation-contracts/package.json autobyteus-agent-presentation-contracts/tsconfig.build.json autobyteus-agent-presentation-contracts/tsconfig.json ./autobyteus-agent-presentation-contracts/
+#19 CACHED
+
+#20 [builder 19/28] COPY autobyteus-collaboration-stream-contracts ./autobyteus-collaboration-stream-contracts
+#20 CACHED
+
+#21 [builder  7/28] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#21 CACHED
+
+#22 [runtime 32/33] COPY autobyteus-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open
+#22 CACHED
+
+#23 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#23 CACHED
+
+#24 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#24 CACHED
+
+#25 [builder 25/28] RUN pnpm -C autobyteus-team-stream-contracts build
+#25 CACHED
+
+#26 [builder 17/28] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#26 CACHED
+
+#27 [runtime 22/33] COPY --from=builder /app/autobyteus-server-ts/node_modules ./autobyteus-server-ts/node_modules
+#27 CACHED
+
+#28 [runtime 15/33] COPY --from=builder /app/autobyteus-agent-presentation-contracts/package.json ./autobyteus-agent-presentation-contracts/package.json
+#28 CACHED
+
+#29 [runtime 17/33] COPY --from=builder /app/autobyteus-collaboration-stream-contracts/dist ./autobyteus-collaboration-stream-contracts/dist
+#29 CACHED
+
+#30 [builder  8/28] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#30 CACHED
+
+#31 [runtime 25/33] COPY --from=builder /app/autobyteus-server-ts/package.json ./autobyteus-server-ts/package.json
+#31 CACHED
+
+#32 [builder 15/28] COPY autobyteus-ts ./autobyteus-ts
+#32 CACHED
+
+#33 [runtime 28/33] COPY autobyteus-server-ts/docker/bootstrap.sh /usr/local/bin/autobyteus-bootstrap.sh
+#33 CACHED
+
+#34 [runtime  9/33] COPY --from=builder /app/autobyteus-ts/dist ./autobyteus-ts/dist
+#34 CACHED
+
+#35 [runtime 12/33] COPY --from=builder /app/autobyteus-application-sdk-contracts/package.json ./autobyteus-application-sdk-contracts/package.json
+#35 CACHED
+
+#36 [builder 26/28] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#36 CACHED
+
+#37 [runtime  3/33] COPY LICENSE LICENSING.md NOTICE /app/
+#37 CACHED
+
+#38 [builder 16/28] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#38 CACHED
+
+#39 [builder 20/28] COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
+#39 CACHED
+
+#40 [runtime  5/33] RUN echo "CLI install cache buster: 0"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL --compressed https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && test "$(head -c 2 "${cli_scratch}/agy-install.sh")" = '#!'   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#40 CACHED
+
+#41 [runtime 26/33] COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+#41 CACHED
+
+#42 [runtime  4/33] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#42 CACHED
+
+#43 [runtime 14/33] COPY --from=builder /app/autobyteus-agent-presentation-contracts/dist ./autobyteus-agent-presentation-contracts/dist
+#43 CACHED
+
+#44 [runtime 31/33] COPY autobyteus-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open
+#44 CACHED
+
+#45 [runtime 10/33] COPY --from=builder /app/autobyteus-ts/package.json ./autobyteus-ts/package.json
+#45 CACHED
+
+#46 [builder  4/28] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#46 CACHED
+
+#47 [builder  5/28] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#47 CACHED
+
+#48 [builder 12/28] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#48 CACHED
+
+#49 [builder 24/28] RUN pnpm -C autobyteus-collaboration-stream-contracts build
+#49 CACHED
+
+#50 [runtime 29/33] COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+#50 CACHED
+
+#51 [builder 22/28] COPY autobyteus-web ./autobyteus-web
+#51 CACHED
+
+#52 [runtime 24/33] COPY --from=builder /app/autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
+#52 CACHED
+
+#53 [builder  3/28] RUN corepack enable
+#53 CACHED
+
+#54 [runtime 11/33] COPY --from=builder /app/autobyteus-application-sdk-contracts/dist ./autobyteus-application-sdk-contracts/dist
+#54 CACHED
+
+#55 [runtime 27/33] COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
+#55 CACHED
+
+#56 [runtime 30/33] COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
+#56 CACHED
+
+#57 [builder 23/28] RUN pnpm -C autobyteus-agent-presentation-contracts build
+#57 CACHED
+
+#58 [runtime 16/33] COPY --from=builder /app/autobyteus-collaboration-stream-contracts/node_modules ./autobyteus-collaboration-stream-contracts/node_modules
+#58 CACHED
+
+#59 [builder  2/28] WORKDIR /app
+#59 CACHED
+
+#60 [runtime 20/33] COPY --from=builder /app/autobyteus-team-stream-contracts/dist ./autobyteus-team-stream-contracts/dist
+#60 CACHED
+
+#61 [builder  6/28] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#61 CACHED
+
+#62 [runtime  8/33] COPY --from=builder /app/autobyteus-ts/node_modules ./autobyteus-ts/node_modules
+#62 CACHED
+
+#63 [builder 11/28] COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
+#63 CACHED
+
+#64 [runtime 18/33] COPY --from=builder /app/autobyteus-collaboration-stream-contracts/package.json ./autobyteus-collaboration-stream-contracts/package.json
+#64 CACHED
+
+#65 [builder 28/28] RUN pnpm -C autobyteus-web build:mobile-web
+#65 CACHED
+
+#66 [runtime  2/33] WORKDIR /app
+#66 CACHED
+
+#67 [runtime  7/33] COPY --from=builder /app/node_modules ./node_modules
+#67 CACHED
+
+#68 [runtime 23/33] COPY --from=builder /app/autobyteus-server-ts/dist ./autobyteus-server-ts/dist
+#68 CACHED
+
+#69 [builder 13/28] COPY autobyteus-web/package.json ./autobyteus-web/
+#69 CACHED
+
+#70 [builder 10/28] COPY autobyteus-collaboration-stream-contracts/package.json autobyteus-collaboration-stream-contracts/tsconfig.build.json autobyteus-collaboration-stream-contracts/tsconfig.json ./autobyteus-collaboration-stream-contracts/
+#70 CACHED
+
+#71 [runtime 33/33] RUN chmod +x   /usr/local/bin/autobyteus-bootstrap.sh   /usr/local/bin/entrypoint.sh   /usr/local/bin/open-vnc-browser-url.sh   /usr/local/bin/xdg-open   /usr/local/bin/exo-open
+#71 CACHED
+
+#72 exporting to image
+#72 exporting layers 0.0s done
+#72 exporting manifest sha256:106c01b3b8eeb9351c4d127ce3f8fdf422e2993b53088e40e520c13b178bc1e7 done
+#72 exporting config sha256:6a2593eeeddfaa9a9a45a6fd340b97107dfb1a913da9137d1c7f0d6e09e4c582 done
+#72 exporting attestation manifest sha256:b9eacb7d558a228b71acd63779e7c6ab6e3733129c5c1df227987c23f0ded8d3 0.0s done
+#72 exporting manifest list sha256:a790be37c80041d93f510dff82552b4272965aaa570bd7937f225d0bfa3d91d2 done
+#72 naming to docker.io/library/ab-nfs-api007-server:current done
+#72 unpacking to docker.io/library/ab-nfs-api007-server:current
+#72 unpacking to docker.io/library/ab-nfs-api007-server:current 23.2s done
+#72 DONE 23.3s

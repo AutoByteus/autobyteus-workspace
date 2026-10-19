@@ -1,102 +1,40 @@
+import {
+  applyDelegatedLaunchSelectionsToTaskExecutions,
+  type DelegatedLaunchForest,
+  type DelegatedLaunchSelections,
+} from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type {
-  CollaboratorEntry,
-  RootConfiguredTeamExecutionNode,
   TaskExecution,
   TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
   TeamRunExecutionTreeSnapshot,
 } from "../domain/team-run-execution-tree.js";
-import { mapCollaboratorEntries } from "../../run-history/domain/collaborator-entry-tree-mapping.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
 import type { TeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
 import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
 
-type TeamWithTasks =
-  | RootConfiguredTeamExecutionNode
-  | TaskTeamNestedTeamExecution
-  | Extract<TaskExecution, { teamRunId: string }>;
-
-const mapTaskTeamMember = (
-  member: TaskTeamMemberExecution,
-  targetTeamRunId: string,
-  change: (team: TeamWithTasks) => TeamWithTasks,
-): TaskTeamMemberExecution => {
-  if (!("teamRunId" in member)) return member;
-  return mapTeam(member, targetTeamRunId, change) as TaskTeamNestedTeamExecution;
-};
-
-const mapTask = (
-  task: TaskExecution,
-  targetTeamRunId: string,
-  change: (team: TeamWithTasks) => TeamWithTasks,
-): TaskExecution => {
-  if (!("teamRunId" in task)) return task;
-  return mapTeam(task, targetTeamRunId, change) as Extract<TaskExecution, { teamRunId: string }>;
-};
-
-const mapTeam = (
-  team: TeamWithTasks,
-  targetTeamRunId: string,
-  change: (team: TeamWithTasks) => TeamWithTasks,
-): TeamWithTasks => {
-  if (team.teamRunId === targetTeamRunId) return change(team);
-  const members = "teamDefinitionName" in team
-    ? team.members
-    : team.members.map((member) => mapTaskTeamMember(member, targetTeamRunId, change));
-  const taskExecutions = team.taskExecutions.map((task) => mapTask(task, targetTeamRunId, change));
-  return { ...team, members, taskExecutions } as TeamWithTasks;
-};
-
 /**
- * Applies `change` to the owner TeamRun: the root, a task Team, or a collaborator Team (which
- * hosts its members' delegations like any Team).
+ * Appends a new task execution as a link of the coordinating run's top level. Every new task agent is
+ * hosted by the root TeamRun (the team adapter's `planActivation`: CM-1 refuses targets inside the
+ * delegator's own Team), and task agents created by task-team members are linked by the coordinating
+ * run (CM-7, U-5); a task Team never holds task executions.
  */
-const replaceRoot = (
-  tree: TeamRunExecutionTreeSnapshot,
-  targetTeamRunId: string,
-  change: <T extends { taskExecutions: readonly TaskExecution[] }>(team: T) => T,
-): TeamRunExecutionTreeSnapshot => {
-  const rootTeam = mapTeam(tree.rootTeam, targetTeamRunId, change) as RootConfiguredTeamExecutionNode;
-  return validateTeamRunExecutionTreePayload({
-    ...tree,
-    rootTeam: {
-      ...rootTeam,
-      collaborators: tree.rootTeam.collaborators.map((entry) => {
-        if (entry.kind === "agent") return entry;
-        if (entry.teamRunId === targetTeamRunId) return change(entry);
-        return { ...entry, taskExecutions: entry.taskExecutions.map((task) => mapTask(task, targetTeamRunId, change)) };
-      }),
-    },
-  }, tree.rootTeam.teamRunId);
-};
-
 export const addTaskExecutionToTree = (input: {
   tree: TeamRunExecutionTreeSnapshot;
-  ownerTeamRunId: string;
   execution: TaskExecution;
-}): TeamRunExecutionTreeSnapshot => replaceRoot(
-  input.tree,
-  input.ownerTeamRunId,
-  <T extends { taskExecutions: readonly TaskExecution[] }>(team: T): T => {
-    if (team.taskExecutions.some((task) =>
-      "agentRunId" in task
-        ? "agentRunId" in input.execution && task.agentRunId === input.execution.agentRunId
-        : "teamRunId" in input.execution && task.teamRunId === input.execution.teamRunId)) {
-      throw new Error("Task execution is already present in the owner TeamRun.");
-    }
-    return { ...team, taskExecutions: [...team.taskExecutions, input.execution] };
-  },
-);
-
-/** Appends new collaborator entries at the root; the schema re-checks address invariants. */
-export const addCollaboratorsToTree = (input: {
-  tree: TeamRunExecutionTreeSnapshot;
-  collaborators: readonly CollaboratorEntry[];
-}): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
-  ...input.tree,
-  rootTeam: { ...input.tree.rootTeam, collaborators: [...input.tree.rootTeam.collaborators, ...input.collaborators] },
-}, input.tree.rootTeam.teamRunId);
+}): TeamRunExecutionTreeSnapshot => {
+  const rootTeam = input.tree.rootTeam;
+  if (rootTeam.taskExecutions.some((task) =>
+    "agentRunId" in task
+      ? "agentRunId" in input.execution && task.agentRunId === input.execution.agentRunId
+      : "teamRunId" in input.execution && task.teamRunId === input.execution.teamRunId)) {
+    throw new Error("Task execution is already present in the owner TeamRun.");
+  }
+  return validateTeamRunExecutionTreePayload({
+    ...input.tree,
+    rootTeam: { ...rootTeam, taskExecutions: [...rootTeam.taskExecutions, input.execution] },
+  }, rootTeam.teamRunId);
+};
 
 type AgentExecutionNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
 
@@ -140,16 +78,10 @@ export const adoptAgentPlatformBindingInTree = (input: {
     changed = true;
     return { ...agent, platformAgentRunId: input.binding.platformAgentRunId };
   };
-  const mapTaskMember = (member: TaskTeamMemberExecution): TaskTeamMemberExecution =>
-    "agentRunId" in member ? mapAgent(member) : {
-      ...member,
-      members: member.members.map(mapTaskMember),
-      taskExecutions: member.taskExecutions.map(mapTask),
-    };
   const mapTask = (task: TaskExecution): TaskExecution =>
     "agentRunId" in task ? mapAgent(task) : {
       ...task,
-      members: task.members.map(mapTaskMember),
+      members: task.members.map(mapAgent),
       taskExecutions: task.taskExecutions.map(mapTask),
     } as TaskTeamExecution;
   const next = {
@@ -158,7 +90,6 @@ export const adoptAgentPlatformBindingInTree = (input: {
       ...input.tree.rootTeam,
       members: input.tree.rootTeam.members.map(mapAgent),
       taskExecutions: input.tree.rootTeam.taskExecutions.map(mapTask),
-      collaborators: mapCollaboratorEntries(input.tree.rootTeam.collaborators, { agent: mapAgent, task: mapTask }),
     },
   };
   if (matches !== 1) {
@@ -200,15 +131,9 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
     }
     return { ...agent, platformAgentRunId: input.replacement.binding.platformAgentRunId };
   };
-  const mapTaskMember = (member: TaskTeamMemberExecution): TaskTeamMemberExecution =>
-    "agentRunId" in member ? mapAgent(member) : {
-      ...member,
-      members: member.members.map(mapTaskMember),
-      taskExecutions: member.taskExecutions.map(mapTask),
-    };
   const mapTask = (task: TaskExecution): TaskExecution => "agentRunId" in task ? mapAgent(task) : {
     ...task,
-    members: task.members.map(mapTaskMember),
+    members: task.members.map(mapAgent),
     taskExecutions: task.taskExecutions.map(mapTask),
   } as TaskTeamExecution;
   const next = {
@@ -217,7 +142,6 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
       ...input.tree.rootTeam,
       members: input.tree.rootTeam.members.map(mapAgent),
       taskExecutions: input.tree.rootTeam.taskExecutions.map(mapTask),
-      collaborators: mapCollaboratorEntries(input.tree.rootTeam.collaborators, { agent: mapAgent, task: mapTask }),
     },
   };
   if (matches !== 1) {
@@ -228,3 +152,20 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
   }
   return validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId);
 };
+
+/** The tree's delegated copies, for the user model choice and Stop (DS-001, DS-002). */
+export const teamDelegatedLaunchForest = (tree: TeamRunExecutionTreeSnapshot): DelegatedLaunchForest => Object.freeze({
+  taskExecutionLists: taskExecutionListsOf({ taskExecutions: tree.rootTeam.taskExecutions }),
+});
+
+/** Records user model choices on the tree's copies; started values are untouched. */
+export const applyTeamDelegatedLaunchSelections = (
+  tree: TeamRunExecutionTreeSnapshot,
+  selections: DelegatedLaunchSelections,
+): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
+  ...tree,
+  rootTeam: {
+    ...tree.rootTeam,
+    taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(tree.rootTeam.taskExecutions, selections),
+  },
+}, tree.rootTeam.teamRunId);

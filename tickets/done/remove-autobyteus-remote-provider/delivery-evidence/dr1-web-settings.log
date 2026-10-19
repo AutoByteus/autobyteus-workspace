@@ -1,0 +1,44 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider/autobyteus-web
+
+stderr | components/settings/__tests__/ServerSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsEndpointCards.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/serverSettingsStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/stores/serverSettingsStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsEndpointCards.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | tests/stores/serverSettingsStore.test.ts > serverSettings store > fails deterministically when the bound backend is not ready
+Failed to fetch server settings: Error: backend readiness timed out
+    at ensureBoundBackendReady [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider/autobyteus-web/[39mstores/serverSettings.ts:172:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+    at Proxy.fetchServerSettings [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/remove-autobyteus-remote-provider/autobyteus-web/[39mstores/serverSettings.ts:219:40[90m)[39m
+
+ ✓ components/settings/__tests__/ServerSettingsEndpointCards.spec.ts (5 tests) 72ms
+ ✓ tests/stores/serverSettingsStore.test.ts (16 tests) 169ms
+ ✓ components/settings/__tests__/ServerSettingsManager.spec.ts (8 tests) 64ms
+
+ Test Files  3 passed (3)
+      Tests  29 passed (29)
+   Start at  07:49:02
+   Duration  7.04s (transform 4.01s, setup 17.85s, collect 550ms, tests 305ms, environment 763ms, prepare 461ms)
+

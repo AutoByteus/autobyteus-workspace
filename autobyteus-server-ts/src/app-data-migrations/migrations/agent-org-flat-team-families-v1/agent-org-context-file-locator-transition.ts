@@ -11,9 +11,8 @@ import type { AtomicRunPackageFileCommitWriter } from "../../../run-history/stor
 import { assertStoredFilename, buildFinalContextFileLocator } from "../../../context-files/domain/context-file-owner-types.js";
 import { listContextFileRecordSources, transformContextFileRecordLocators, type ContextFileRecordSource } from "../../../context-files/services/context-file-record-locators.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import { validateTeamCommunicationMessagesV1Payload } from "../../../services/team-communication/team-communication-v1-schema.js";
+import { validateAgentOrgCommunicationMessages, validateTeamCommunicationMessagesPayload } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { validateAgentOrgTaskDelegationRecordsV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-schema.js";
-import { validateAgentOrgCommunicationMessagesV1 } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1-schema.js";
 
 type RootPlan = { id: string; source: string; index: AgentOrgExecutionIndex };
 type FilePlan = { source: ContextFileRecordSource; hash: string; targetHash: string; dependencies: Set<string> };
@@ -124,8 +123,8 @@ export class AgentOrgContextFileLocatorTransition {
       if (org) validateAgentOrgTaskDelegationRecordsV1(value, id);
       else validateTaskDelegationRecordsV1Payload(value, id);
     } else {
-      if (org) validateAgentOrgCommunicationMessagesV1(value, id);
-      else validateTeamCommunicationMessagesV1Payload(value, id);
+      if (org) validateAgentOrgCommunicationMessages(value, id);
+      else validateTeamCommunicationMessagesPayload(value, id);
     }
   }
 
@@ -135,9 +134,9 @@ export class AgentOrgContextFileLocatorTransition {
     const taskRecords = org ? validateAgentOrgTaskDelegationRecordsV1(rawTasks, plan.id)
       : validateAgentOrgTaskDelegationRecordsV1({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: plan.id,
         records: validateTaskDelegationRecordsV1Payload(rawTasks, plan.id).records }, plan.id);
-    const communicationMessages = org ? validateAgentOrgCommunicationMessagesV1(rawMessages, plan.id)
-      : validateAgentOrgCommunicationMessagesV1({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: plan.id,
-        messages: validateTeamCommunicationMessagesV1Payload(rawMessages, plan.id).messages }, plan.id);
+    const communicationMessages = org ? validateAgentOrgCommunicationMessages(rawMessages, plan.id)
+      : validateAgentOrgCommunicationMessages({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: plan.id,
+        messages: validateTeamCommunicationMessagesPayload(rawMessages, plan.id).messages }, plan.id);
     validateAgentOrgStatePackage({ executionTree: plan.index.tree, taskRecords, communicationMessages });
     this.roots.set(plan.id, plan);
     this.agentDirectories.push(...plan.index.listAgents().map((agent) => this.agentDirectory(plan, agent.agentRunId)));

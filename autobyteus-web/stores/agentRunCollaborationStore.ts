@@ -8,7 +8,8 @@ import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWo
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
 import { AgentRunCollaborationContext, type AgentRunTaskTreeRow } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { AgentRunCollaborationStreamingService } from '~/services/agentCollaboration/agentRunCollaborationStreamingService'
-import { readAgentRunCollaboration, stageAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
+import { readAgentRunCollaboration, buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
+import { hydrateAgentRunCollaborationChild } from '~/services/agentCollaboration/agentRunCollaborationChildHydration'
 import {
   acceptLocalSubmission,
   beginLocalUserSubmission,
@@ -30,6 +31,10 @@ import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collab
  * Reading never restores a host: a stored view comes from `agentRunCollaboration`. The live
  * stream is attached only while the host runs, or when the user sends to a child (connecting
  * makes the root command-ready, restoring the host).
+ *
+ * A published context carries the tree and statuses only. A child's stored conversation,
+ * activities and artifacts are loaded when it is selected, and again for the selected child after
+ * every publication; this store is the only owner of those in-flight loads.
  */
 export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration', () => {
   const contexts = shallowRef<Record<string, AgentRunCollaborationContext>>({})
@@ -38,8 +43,9 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const errors = shallowReactive<Record<string, string | null>>({})
   const services = new Map<string, AgentRunCollaborationStreamingService>()
   const inspections = new Map<string, Promise<void>>()
-  const autoExpanded = new Set<string>()
   const terminations = new Map<string, object>()
+  // In-flight child loads keyed by (published context, child): a key never spans a republication.
+  const childLoads = new WeakMap<AgentRunCollaborationContext, Map<string, Promise<void>>>()
   const binding = useWindowNodeContextStore()
   const activities = useAgentActivityStore()
   const assertNotTerminating = (id: string) => {
@@ -53,26 +59,35 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     contexts.value = next
   }
 
-  /** A task Team opens once when it first appears, so its members are visible. */
-  const openNewTaskTeams = (hostRunId: string, context: AgentRunCollaborationContext) => {
-    const opened = [...(expandedTeams[hostRunId] ?? [])]
-    for (const teamRunId of context.index.teams.keys()) {
-      if (autoExpanded.has(teamRunId)) continue
-      autoExpanded.add(teamRunId)
-      if (!opened.includes(teamRunId)) opened.push(teamRunId)
-    }
-    expandedTeams[hostRunId] = Object.freeze(opened)
-  }
-
-  const publish = (hostRunId: string, context: AgentRunCollaborationContext, commit: () => void) => {
+  const publish = (hostRunId: string, context: AgentRunCollaborationContext) => {
     const previous = contexts.value[hostRunId]
     const adopt = previous ? context.prepareLocalContextAdoption(previous) : () => undefined
-    commit()
     adopt()
     setContext(hostRunId, context)
     errors[hostRunId] = null
-    openNewTaskTeams(hostRunId, context)
     returnToHostWhenUnlisted(hostRunId, context)
+    ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
+  }
+
+  /**
+   * Starts loading one child's stored details into the published context, unless it is loaded or
+   * loading there already. A load whose context is no longer published ends without writing; a
+   * failed load leaves the child not loaded, so selecting it again retries.
+   */
+  const ensureChildHydrated = (hostRunId: string, agentRunId: string | null) => {
+    const context = contexts.value[hostRunId]
+    if (!agentRunId || !context?.getChild(agentRunId) || context.isChildHydrated(agentRunId)) return
+    const loads = childLoads.get(context) ?? new Map<string, Promise<void>>()
+    childLoads.set(context, loads)
+    if (loads.has(agentRunId)) return
+    const load = hydrateAgentRunCollaborationChild({
+      hostRunId, collaboration: context, agentRunId,
+      isPublished: () => contexts.value[hostRunId] === context && !terminations.has(hostRunId),
+      liveToolAuthority: () => context.isActive && services.get(hostRunId)?.isReady() === true,
+    }).then(() => undefined, (cause) => {
+      console.warn(`[agentRunCollaboration] Could not load '${agentRunId}' of '${hostRunId}'.`, cause)
+    }).finally(() => loads.delete(agentRunId))
+    loads.set(agentRunId, load)
   }
 
   /** A selected child that left the listing (absent, or its Task is DONE) returns the view to the run's own agent. */
@@ -91,13 +106,12 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       && binding.bindingRevision === revision && !terminations.has(hostRunId)
     const service = new AgentRunCollaborationStreamingService({
       hostRunId, isCurrent,
-      publish: (context, commit) => {
+      publish: (context) => {
         if (!isCurrent()) throw new Error('Agent collaboration stream ownership released.')
-        publish(hostRunId, context, commit)
+        publish(hostRunId, context)
       },
       onInactive: () => { if (isCurrent()) services.delete(hostRunId) },
       reportError: (message) => { if (isCurrent()) errors[hostRunId] = message },
-      onCollaboratorAdded: (context) => { if (isCurrent()) openNewTaskTeams(hostRunId, context) },
       onTaskExecutionsClosed: (context) => { if (isCurrent()) returnToHostWhenUnlisted(hostRunId, context) },
     })
     services.set(hostRunId, service)
@@ -117,8 +131,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     const pending = inspections.get(hostRunId)
     if (pending) return pending
     const revision = binding.bindingRevision
-    const activityRevisions = new Map(contexts.value[hostRunId]?.listAgentContextEntries()
-      .map(entry => [entry.agentRunId, activities.getActivityContentRevision(entry.agentRunId)]))
     const isCurrent = () => inspections.get(hostRunId) === attempt
       && binding.bindingRevision === revision && !services.has(hostRunId) && !terminations.has(hostRunId)
     const attempt = (async () => {
@@ -126,8 +138,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
         const view = await readAgentRunCollaboration(hostRunId)
         if (!isCurrent()) return
         if (!view) { setContext(hostRunId, null); return }
-        const staged = await stageAgentRunCollaborationContext({ hostRunId, view, isCurrent, activityRevisions })
-        if (isCurrent()) publish(hostRunId, staged.context, staged.commit)
+        const context = await buildAgentRunCollaborationContext({ hostRunId, view })
+        if (isCurrent()) publish(hostRunId, context)
       } catch (cause) {
         if (isCurrent()) errors[hostRunId] = cause instanceof Error ? cause.message : String(cause)
       }
@@ -203,11 +215,14 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   const contextFor = (hostRunId: string): AgentRunCollaborationContext | null => contexts.value[hostRunId] ?? null
 
+  /** Selects a child (null: the run's own agent) and starts loading its details if needed. */
   const selectChild = (hostRunId: string, agentRunId: string | null) => {
     selection[hostRunId] = agentRunId && contextFor(hostRunId)?.isListed(agentRunId) ? agentRunId : null
+    ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
   }
   const selectedChild = (hostRunId: string): string | null => selection[hostRunId] ?? null
 
+  // Publication never changes disclosure: new Teams are closed until explicitly revealed.
   const isTaskTeamExpanded = (hostRunId: string, teamRunId: string) => (expandedTeams[hostRunId] ?? []).includes(teamRunId)
   const toggleTaskTeam = (hostRunId: string, teamRunId: string) => {
     const current = expandedTeams[hostRunId] ?? []
@@ -303,7 +318,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   watch(() => binding.bindingRevision, () => {
     const ids = new Set([...Object.keys(contexts.value), ...services.keys(), ...inspections.keys(), ...terminations.keys()])
     ids.forEach(release)
-    autoExpanded.clear()
   }, { flush: 'sync' })
 
   return {

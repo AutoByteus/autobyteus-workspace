@@ -1,0 +1,78 @@
+{
+  "base": "http://127.0.0.1:61478",
+  "workspaceId": "agent_ws_acd2adb3f1ecb577c2c71043e0e315aafdf71d10dd6921d0788c219f19036c1d",
+  "commands": [
+    {
+      "url": "http://127.0.0.1:61478/rest/workspaces/agent_ws_acd2adb3f1ecb577c2c71043e0e315aafdf71d10dd6921d0788c219f19036c1d/content?path=README.md",
+      "requestHeaders": {},
+      "status": 200,
+      "headers": {
+        "vary": "Origin",
+        "content-type": "text/markdown",
+        "Date": "Thu, 15 Oct 2026 08:14:10 GMT",
+        "Connection": "close",
+        "Transfer-Encoding": "chunked"
+      },
+      "bytes": 72,
+      "sha256": "9ef512b1637eaac19aece53a33908d51945a6048b459969be03935fe8095ced7"
+    },
+    {
+      "url": "http://127.0.0.1:61478/rest/workspaces/agent_ws_acd2adb3f1ecb577c2c71043e0e315aafdf71d10dd6921d0788c219f19036c1d/content?path=clip.mp4",
+      "requestHeaders": {},
+      "status": 200,
+      "headers": {
+        "vary": "Origin",
+        "content-type": "video/mp4",
+        "Date": "Thu, 15 Oct 2026 08:14:10 GMT",
+        "Connection": "close",
+        "Transfer-Encoding": "chunked"
+      },
+      "bytes": 2701,
+      "sha256": "9cc6636df5992c255e9a37078e9fe9f9876748fdb1e3ad54f1433ebbd7870232"
+    },
+    {
+      "url": "http://127.0.0.1:61478/rest/workspaces/agent_ws_acd2adb3f1ecb577c2c71043e0e315aafdf71d10dd6921d0788c219f19036c1d/content?path=document.pdf",
+      "requestHeaders": {},
+      "status": 200,
+      "headers": {
+        "vary": "Origin",
+        "content-type": "application/pdf",
+        "Date": "Thu, 15 Oct 2026 08:14:10 GMT",
+        "Connection": "close",
+        "Transfer-Encoding": "chunked"
+      },
+      "bytes": 593,
+      "sha256": "9a167ddb58b64f69ed8ce11e818850be885e0b4b6ec82725c25b4d26a5d42d90"
+    },
+    {
+      "url": "http://127.0.0.1:61478/rest/workspaces/agent_ws_acd2adb3f1ecb577c2c71043e0e315aafdf71d10dd6921d0788c219f19036c1d/content?path=image.png",
+      "requestHeaders": {},
+      "status": 200,
+      "headers": {
+        "vary": "Origin",
+        "content-type": "image/png",
+        "Date": "Thu, 15 Oct 2026 08:14:10 GMT",
+        "Connection": "close",
+        "Transfer-Encoding": "chunked"
+      },
+      "bytes": 135,
+      "sha256": "88830f1d5e91c7ea514d2fad4c949d46b0adedd3ba20185935d4134812188919"
+    },
+    {
+      "url": "http://127.0.0.1:61478/rest/workspaces/agent_ws_acd2adb3f1ecb577c2c71043e0e315aafdf71d10dd6921d0788c219f19036c1d/content?path=index.html",
+      "requestHeaders": {},
+      "status": 200,
+      "headers": {
+        "vary": "Origin",
+        "content-type": "text/html",
+        "Date": "Thu, 15 Oct 2026 08:14:10 GMT",
+        "Connection": "close",
+        "Transfer-Encoding": "chunked"
+      },
+      "bytes": 164,
+      "sha256": "b2a5e56f8f4e067c2b75ccfa4146a4d45e926804aa23190ec731bfbf7a7ae8f5"
+    }
+  ],
+  "result": "Fail",
+  "error": "AssertionError()"
+}

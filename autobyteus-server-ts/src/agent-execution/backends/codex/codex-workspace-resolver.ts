@@ -25,7 +25,9 @@ export class CodexWorkspaceResolver {
         if (workspacePath) {
           return workspacePath;
         }
-      } catch {
+      } catch (error) {
+        const registeredRoot = await this.workspaceManager.getRegisteredWorkspaceRootPath(normalizedWorkspaceId);
+        if (registeredRoot) throw error;
         // fallback below
       }
     }

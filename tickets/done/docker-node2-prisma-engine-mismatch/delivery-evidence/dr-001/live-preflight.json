@@ -1,0 +1,536 @@
+{
+  "privateBackupDir": "/Users/normy/autobyteus_org/autobyteus-private-backups/docker-node2-prisma-o1-_p9x5ye3",
+  "node2": {
+    "id": "7317070ee17555232f70a573c231b5716c0c8b67fd6b2a1c36e340346c14dcb1",
+    "name": "/autobyteus-server-2",
+    "image": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+    "started": "2026-10-13T12:13:31.136860216Z",
+    "running": true,
+    "mounts": [
+      {
+        "Destination": "/app/autobyteus-server-ts/workspace",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "autobyteus-server-2-workspace",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/autobyteus-server-2-workspace/_data",
+        "Type": "volume"
+      },
+      {
+        "Destination": "/home/autobyteus/data",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "autobyteus-server-2-data",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/autobyteus-server-2-data/_data",
+        "Type": "volume"
+      },
+      {
+        "Destination": "/home/autobyteus/shared",
+        "Mode": "",
+        "Propagation": "rprivate",
+        "RW": true,
+        "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/shared",
+        "Type": "bind"
+      },
+      {
+        "Destination": "/home/autobyteus/workspace",
+        "Mode": "",
+        "Propagation": "rprivate",
+        "RW": true,
+        "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-2",
+        "Type": "bind"
+      },
+      {
+        "Destination": "/home/vncuser/.config/chromium",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "autobyteus-server-2-chromium-profile",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/autobyteus-server-2-chromium-profile/_data",
+        "Type": "volume"
+      },
+      {
+        "Destination": "/root",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "autobyteus-server-2-root-home",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/autobyteus-server-2-root-home/_data",
+        "Type": "volume"
+      }
+    ],
+    "ports": {
+      "5900/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "5910"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "5910"
+        }
+      ],
+      "6080/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "6082"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "6082"
+        }
+      ],
+      "8000/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "8003"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "8003"
+        }
+      ],
+      "9223/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "9230"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "9230"
+        }
+      ]
+    }
+  },
+  "controls": {
+    "autobyteus-server-2": {
+      "id": "7317070ee17555232f70a573c231b5716c0c8b67fd6b2a1c36e340346c14dcb1",
+      "name": "/autobyteus-server-2",
+      "image": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+      "started": "2026-10-13T12:13:31.136860216Z",
+      "running": true,
+      "mounts": [
+        {
+          "Destination": "/app/autobyteus-server-ts/workspace",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-2-workspace",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-2-workspace/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/home/autobyteus/data",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-2-data",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-2-data/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/home/autobyteus/shared",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/shared",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/home/autobyteus/workspace",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-2",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/home/vncuser/.config/chromium",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-2-chromium-profile",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-2-chromium-profile/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/root",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-2-root-home",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-2-root-home/_data",
+          "Type": "volume"
+        }
+      ],
+      "ports": {
+        "5900/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5910"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "5910"
+          }
+        ],
+        "6080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "6082"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "6082"
+          }
+        ],
+        "8000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8003"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "8003"
+          }
+        ],
+        "9223/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9230"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "9230"
+          }
+        ]
+      }
+    },
+    "autobyteus-server-0": {
+      "id": "ccc8477d16d13e0ef8fa8167e4c663fd2716eadc50b3f82629d5b42a04d248eb",
+      "name": "/autobyteus-server-0",
+      "image": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+      "started": "2026-10-13T11:44:41.031329137Z",
+      "running": true,
+      "mounts": [
+        {
+          "Destination": "/app/autobyteus-server-ts/workspace",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-0-workspace",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-0-workspace/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/home/autobyteus/data",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-0-data",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-0-data/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/home/autobyteus/shared",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/shared",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/home/autobyteus/workspace",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-0",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/home/vncuser/.config/chromium",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-0-chromium-profile",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-0-chromium-profile/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/root",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-0-root-home",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-0-root-home/_data",
+          "Type": "volume"
+        }
+      ],
+      "ports": {
+        "5900/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5908"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "5908"
+          }
+        ],
+        "6080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "64611"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "64611"
+          }
+        ],
+        "8000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8001"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "8001"
+          }
+        ],
+        "9223/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9228"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "9228"
+          }
+        ]
+      }
+    },
+    "autobyteus-server-1": {
+      "id": "3c37d2a613a825c4542ca05dc2c47832e8627149cfedc61c747abea5f2732744",
+      "name": "/autobyteus-server-1",
+      "image": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+      "started": "2026-10-13T11:44:44.329230166Z",
+      "running": true,
+      "mounts": [
+        {
+          "Destination": "/app/autobyteus-server-ts/workspace",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-1-workspace",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-1-workspace/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/home/autobyteus/data",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-1-data",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-1-data/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/home/autobyteus/shared",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/shared",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/home/autobyteus/workspace",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/Users/normy/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-1",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/home/vncuser/.config/chromium",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-1-chromium-profile",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-1-chromium-profile/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/root",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "autobyteus-server-1-root-home",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/autobyteus-server-1-root-home/_data",
+          "Type": "volume"
+        }
+      ],
+      "ports": {
+        "5900/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "50435"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "50435"
+          }
+        ],
+        "6080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "50436"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "50436"
+          }
+        ],
+        "8000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "50433"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "50433"
+          }
+        ],
+        "9223/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "50437"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "50437"
+          }
+        ]
+      }
+    },
+    "buildx_buildkit_multi-platform-builder0": {
+      "id": "f2ce6963d4861433b76e1ce606b40fd2f015965a11642e1f6a9b410c619807c7",
+      "name": "/buildx_buildkit_multi-platform-builder0",
+      "image": "sha256:de10faf919fc71ba4eb1dd7bd6449566d012b0c9436b1c61bfee21d621b009aa",
+      "started": "2026-10-08T03:05:12.024649834Z",
+      "running": true,
+      "mounts": [
+        {
+          "Destination": "/var/lib/buildkit",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "buildx_buildkit_multi-platform-builder0_state",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/buildx_buildkit_multi-platform-builder0_state/_data",
+          "Type": "volume"
+        }
+      ],
+      "ports": {}
+    }
+  },
+  "supervisorBefore": {
+    "autobyteus-server-2": {
+      "exit": 3,
+      "output": "autobyteus_server                FATAL     Exited too quickly (process log may have details)\nchrome                           RUNNING   pid 49, uptime 1:16:52\ncopyq                            RUNNING   pid 43, uptime 1:16:52\ndbus                             RUNNING   pid 34, uptime 1:16:52\ndisable_screensaver              EXITED    Oct 13 12:13 PM\nfcitx                            RUNNING   pid 37, uptime 1:16:52\nsocat                            RUNNING   pid 51, uptime 1:16:52\ntigervnc                         RUNNING   pid 35, uptime 1:16:52\nwebsockify                       RUNNING   pid 54, uptime 1:16:52\nxfce                             RUNNING   pid 36, uptime 1:16:52\n"
+    },
+    "autobyteus-server-0": {
+      "exit": 3,
+      "output": "autobyteus_server                RUNNING   pid 53, uptime 1:45:42\nchrome                           RUNNING   pid 45, uptime 1:45:42\ncopyq                            RUNNING   pid 42, uptime 1:45:42\ndbus                             RUNNING   pid 33, uptime 1:45:42\ndisable_screensaver              EXITED    Oct 13 11:44 AM\nfcitx                            RUNNING   pid 36, uptime 1:45:42\nsocat                            RUNNING   pid 48, uptime 1:45:42\ntigervnc                         RUNNING   pid 34, uptime 1:45:42\nwebsockify                       RUNNING   pid 51, uptime 1:45:42\nxfce                             RUNNING   pid 35, uptime 1:45:42\n"
+    },
+    "autobyteus-server-1": {
+      "exit": 3,
+      "output": "autobyteus_server                RUNNING   pid 68, uptime 1:45:39\nchrome                           RUNNING   pid 49, uptime 1:45:39\ncopyq                            RUNNING   pid 43, uptime 1:45:39\ndbus                             RUNNING   pid 34, uptime 1:45:39\ndisable_screensaver              EXITED    Oct 13 11:44 AM\nfcitx                            RUNNING   pid 37, uptime 1:45:39\nsocat                            RUNNING   pid 56, uptime 1:45:39\ntigervnc                         RUNNING   pid 35, uptime 1:45:39\nwebsockify                       RUNNING   pid 65, uptime 1:45:39\nxfce                             RUNNING   pid 36, uptime 1:45:39\n"
+    }
+  },
+  "paths": {
+    "dataDir": "/home/autobyteus/data",
+    "configPath": "/home/autobyteus/data/.env",
+    "appRoot": "/app/autobyteus-server-ts",
+    "selected": {
+      "DATABASE_URL": "file:/home/autobyteus/data/db/production.db",
+      "DB_TYPE": "sqlite",
+      "APP_ENV": "production",
+      "AUTOBYTEUS_DATA_DIR": "/home/autobyteus/data",
+      "AUTOBYTEUS_MEMORY_DIR": "/home/autobyteus/data/memory",
+      "AUTOBYTEUS_TEMP_WORKSPACE_DIR": "/home/autobyteus/workspace",
+      "AUTOBYTEUS_AGENT_PACKAGE_ROOTS": "/home/autobyteus/workspace/autobyteus-agents"
+    },
+    "dbPath": "/home/autobyteus/data/db/production.db",
+    "rootKeyPath": "/home/autobyteus/data/db/production.db.secret.key",
+    "memoryPath": "/home/autobyteus/data/memory",
+    "configStat": {
+      "mode": 420,
+      "uid": 0,
+      "gid": 0
+    },
+    "configSha256": "5ba101a84e2b1b181750d80a554a3c2cbdb12d0eb11eadd337c04d52fe91f95f",
+    "environmentNames": [
+      "HOME",
+      "USER",
+      "NODE_ENV",
+      "BROWSER"
+    ],
+    "commandMatchesReviewedContract": true,
+    "backendPids": [],
+    "databaseWriteFds": [],
+    "protected": {
+      "/home/autobyteus/data/.env": {
+        "sha256": "5e34f6b68d992eec6c97eba0c4a86bea2ad8b0f68bb1967ae0a40f2326c9adc5",
+        "bytes": 679,
+        "uid": 0,
+        "gid": 0,
+        "mode": "0o644"
+      },
+      "/home/autobyteus/data/db/production.db.secret.key": {
+        "sha256": "aa235acb080babb33ded905be00bf7e40d51b53c7f9646744c2d50abb3e7eef2",
+        "bytes": 32,
+        "uid": 0,
+        "gid": 0,
+        "mode": "0o600"
+      }
+    }
+  },
+  "pair": {
+    "PRISMA_QUERY_ENGINE_LIBRARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+    "PRISMA_SCHEMA_ENGINE_BINARY": "/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-3.0.x"
+  },
+  "schemaVersion": "schema-engine-cli 605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+  "queryVersion": {
+    "commit": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+    "version": "0.1.0"
+  },
+  "health8001": {
+    "status": "ok",
+    "message": "Server is running"
+  },
+  "originalConfigPrivate": "original-supervisor.conf",
+  "integration": {
+    "candidateBefore": "f1bd242b7c3e9b7f4fcd84956c2f59049c4b2eac",
+    "base": "a609de982a22925299d550bea4084e578cc5cd60",
+    "latest": "d9bccf2550b918ab138e30486ef4dbf1d5e9d1ff",
+    "integrated": "5508a275704ed5465ab731f4b0cebfa7d8751991",
+    "O1StartupConfigDockerDiff": "empty"
+  }
+}

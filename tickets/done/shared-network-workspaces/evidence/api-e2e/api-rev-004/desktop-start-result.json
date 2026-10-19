@@ -1,0 +1,43 @@
+{
+  "argv": [
+    "pnpm",
+    "--silent",
+    "isolated-app",
+    "start",
+    "--build"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+  "environment": {
+    "PATH": "/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.codex/packages/standalone/releases/0.162.1-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0gYa2vy:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin",
+    "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/desktop-home",
+    "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/desktop-tmp/",
+    "LANG": "en_US.UTF-8",
+    "CODEX_HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/desktop-home/.codex",
+    "CSC_IDENTITY_AUTO_DISCOVERY": "false",
+    "CI": "1"
+  },
+  "inputHead": "902638e584d8e669b632cf81bcc0a95074892403",
+  "result": "Ready",
+  "rc": 0,
+  "seconds": 384.703,
+  "response": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "start",
+    "result": {
+      "instanceId": "iso-61321-5c48",
+      "pid": 32055,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:61322",
+      "graphqlUrl": "http://127.0.0.1:61322/graphql",
+      "controlEndpoint": "http://127.0.0.1:61321",
+      "controlPort": 61321,
+      "serverPort": 61322,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/desktop-tmp/autobyteus-isolated-root-cX2WkW",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/desktop-tmp/autobyteus-isolated-root-cX2WkW/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/desktop-tmp/autobyteus-isolated-app/iso-61321-5c48.log"
+    }
+  }
+}

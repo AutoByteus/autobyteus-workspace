@@ -1,5 +1,3 @@
-import { DirectLlmCompressionStrategy, type CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js';
-import { createCompactionLlm } from '../../compaction/compaction-llm-factory.js';
 import fs from "node:fs/promises";
 import {
   AgentConfig,
@@ -98,7 +96,6 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
   skillService?: SkillService;
   registries?: Partial<ProcessorRegistries>;
   waitForIdle?: AutoByteusAgentIdleWaiter;
-  compactionLlmFactory?: CompactionLlmFactory;
   applicationAgentTools?: ApplicationAgentToolCapability | null;
 };
 
@@ -113,7 +110,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
   private readonly skillService: SkillService;
   private readonly registries: ProcessorRegistries;
   private readonly waitForIdle: (agent: Agent, timeout?: number) => Promise<void>;
-  private readonly compactionLlmFactory: CompactionLlmFactory;
   private readonly applicationAgentTools: ApplicationAgentToolCapability | null;
 
   constructor(options: AutoByteusAgentRunBackendFactoryOptions = {}) {
@@ -135,8 +131,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       lifecycle: options.registries?.lifecycle ?? defaultLifecycleEventProcessorRegistry,
     };
     this.waitForIdle = options.waitForIdle ?? waitForAgentToBeIdle;
-    this.compactionLlmFactory =
-      options.compactionLlmFactory ?? createCompactionLlm;
     this.applicationAgentTools = options.applicationAgentTools ?? null;
   }
 
@@ -290,15 +284,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
 
     let agentDef: AgentDefinition | null = null;
     try {
-      const getFreshAgentDefinitionById = (
-        this.agentDefinitionService as AgentDefinitionService & {
-          getFreshAgentDefinitionById?: (definitionId: string) => Promise<AgentDefinition | null>;
-        }
-      ).getFreshAgentDefinitionById;
-      agentDef =
-        typeof getFreshAgentDefinitionById === "function"
-          ? await getFreshAgentDefinitionById.call(this.agentDefinitionService, agentDefinitionId)
-          : await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
+      agentDef = await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
     } catch (error) {
       logger.error(
         `Failed to fetch agent definition '${agentDefinitionId}': ${String(error)}`,
@@ -314,6 +300,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     let workspaceInstance = workspaceId
       ? this.workspaceManager.getWorkspaceById(workspaceId)
       : undefined;
+    if (workspaceId && !workspaceInstance && await this.workspaceManager.getRegisteredWorkspaceRootPath(workspaceId)) {
+      workspaceInstance = await this.workspaceManager.getOrCreateWorkspace(workspaceId);
+    }
     if (workspaceId && !workspaceInstance) {
       logger.warn(
         `Workspace with ID ${workspaceId} not found. Falling back to temp workspace.`,
@@ -455,9 +444,8 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         : {}),
     };
 
-    const memoryCompaction = createEnabledMemoryCompactionConfiguration(
-      new CompactionPolicy(), (execution) => new DirectLlmCompressionStrategy(this.compactionLlmFactory, execution),
-    );
+    // Compaction always summarizes on the agent's own model (core-owned summarizer).
+    const memoryCompaction = createEnabledMemoryCompactionConfiguration(new CompactionPolicy());
 
     return {
       resolvedRunConfig: new AgentRunConfig({

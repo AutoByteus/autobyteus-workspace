@@ -1,0 +1,8 @@
+LD L07 Pass; LD-files-result.json / streamed evidence
+LD L08 Pass; LD-files-result.json / streamed evidence
+LD L09 Pass; LD-files-result.json / streamed evidence
+LD L10 Fail; LD-files-result.json / streamed evidence
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-filesystem-cases.py", line 18, in <module>
+    assert p.returncode==0 and r['result']=='Pass'
+AssertionError

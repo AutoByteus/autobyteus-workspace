@@ -1,0 +1,325 @@
+{
+  "run": "ab-sf-fr037-a54f2fa1",
+  "scope": "native Mac kernel NFSv3 server selected APFS source and two real Linux kernel Docker-client mounts on one physical Mac; component capability only, not final service/source/UI/LAN/agents",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-sf-fr037-macos",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.02,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "seconds": 0.015,
+      "stdout": "",
+      "stderr": "VM \"ab-sf-fr037-macos\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 4.994,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "ip",
+        "ab-sf-fr037-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.021,
+      "stdout": "192.168.128.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/ipconfig getifaddr en0"
+      ],
+      "rc": 0,
+      "seconds": 7.095,
+      "stdout": "192.168.128.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/route",
+        "-n",
+        "get",
+        "192.168.128.2"
+      ],
+      "rc": 0,
+      "stdout": "   route to: 192.168.128.2\ndestination: 192.168.128.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1169 \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/ifconfig",
+        "bridge100"
+      ],
+      "rc": 0,
+      "stdout": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.128.1 netmask 0xffffff00 broadcast 192.168.128.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd88:b29f:b1ba:498e:1c46:41e:af05:ac07 prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20003<LEARNING,DISCOVER,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1198 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "uname -sm; id; sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 1.013,
+      "stdout": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "test ! -e /etc/exports; test ! -e /Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1; mkdir /Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1; mkdir /Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1/project /Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1/.owned-identity"
+      ],
+      "rc": 0,
+      "seconds": 0.089,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/python3",
+        "-c",
+        "import json;open('/Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1/.owned-identity/storage.json','w').write('{\"storageId\": \"6f47f1c453d24533a96533bfdda5e0ad\"}');open('/Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1/project/preexisting.txt','w').write('KEEP_NATIVE_SOURCE')"
+      ],
+      "rc": 0,
+      "seconds": 0.723,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "/sbin/nfsd",
+        "checkexports"
+      ],
+      "rc": 0,
+      "seconds": 0.054,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "/sbin/nfsd",
+        "enable"
+      ],
+      "rc": 0,
+      "seconds": 0.098,
+      "stdout": "The nfsd service is already enabled.\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "/sbin/nfsd",
+        "status"
+      ],
+      "rc": 0,
+      "seconds": 0.051,
+      "stdout": "nfsd service is enabled\nnfsd is running (pid 688, 8 threads)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/rpcinfo -p 127.0.0.1"
+      ],
+      "rc": 1,
+      "seconds": 12.039,
+      "stdout": "",
+      "stderr": "rpcinfo: can't contact portmapper: rpcinfo: RPC: Timed out\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr037-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "/sbin/nfsd",
+        "disable"
+      ],
+      "rc": 0,
+      "seconds": 1.982,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-sf-fr037-macos",
+        "--timeout",
+        "10"
+      ],
+      "rc": 0,
+      "seconds": 0.328,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "fresh native macOS nfsd serves a selected nonempty local APFS folder with exact peer allowlist",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr037-macos",
+        "sourceFolder": "/Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1",
+        "storageId": "6f47f1c453d24533a96533bfdda5e0ad",
+        "protocol": 3,
+        "export": "/Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1 -mapall=501:20 192.168.128.1 127.0.0.1\n",
+        "configuration": "nfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\nnfs.lockd.port=32803\nnfs.lockd.send_using_tcp=1\n",
+        "mapAll": "501:20",
+        "allowedPeers": [
+          "192.168.128.1",
+          "127.0.0.1"
+        ],
+        "mountReservedPortCheckDisabledForDockerDesktopProxy": true,
+        "notFinalSecurityPolicy": true,
+        "status": "nfsd service is enabled\nnfsd is running (pid 688, 8 threads)\n",
+        "hostMacServiceUntouched": true
+      },
+      "seconds": 1.699
+    },
+    {
+      "name": "native Mac mounts its selected APFS source through actual NFSv3 before Linux-client negotiation",
+      "status": "FAIL",
+      "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr037-macos', '/usr/bin/sudo'): rpcinfo: can't contact portmapper: rpcinfo: RPC: Timed out\\n\")",
+      "seconds": 12.041
+    }
+  ],
+  "cleanup": [
+    {
+      "guestNfsdDisableRc": 0
+    },
+    {
+      "exactVmStopRc": 0
+    },
+    {
+      "exactOwnedVmProcessExited": true
+    }
+  ],
+  "nativeMacVm": {
+    "node": "ab-sf-fr037-macos",
+    "hostUid": 501,
+    "runArgv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "run",
+      "ab-sf-fr037-macos",
+      "--no-graphics",
+      "--no-audio",
+      "--no-clipboard",
+      "--no-usb-accessories",
+      "--net-host"
+    ],
+    "hostProcessPid": 27829,
+    "hostShares": false,
+    "guestProviderCredentials": false,
+    "ip": "192.168.128.2",
+    "gateway": "192.168.128.1",
+    "identity": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n"
+  },
+  "vmHostOnlyRoute": {
+    "ownedGuestIp": "192.168.128.2",
+    "hostInterface": "bridge100",
+    "hostAddress": "192.168.128.1",
+    "noDefaultGatewayRequired": true,
+    "hostRoute": "   route to: 192.168.128.2\ndestination: 192.168.128.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1169 \n",
+    "hostInterfaceInfo": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.128.1 netmask 0xffffff00 broadcast 192.168.128.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd88:b29f:b1ba:498e:1c46:41e:af05:ac07 prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20003<LEARNING,DISCOVER,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1198 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n"
+  },
+  "nativeMacServer": {
+    "node": "ab-sf-fr037-macos",
+    "sourceFolder": "/Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1",
+    "storageId": "6f47f1c453d24533a96533bfdda5e0ad",
+    "protocol": 3,
+    "export": "/Users/admin/.ab-sf-native-source-ab-sf-fr037-a54f2fa1 -mapall=501:20 192.168.128.1 127.0.0.1\n",
+    "configuration": "nfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\nnfs.lockd.port=32803\nnfs.lockd.send_using_tcp=1\n",
+    "mapAll": "501:20",
+    "allowedPeers": [
+      "192.168.128.1",
+      "127.0.0.1"
+    ],
+    "mountReservedPortCheckDisabledForDockerDesktopProxy": true,
+    "notFinalSecurityPolicy": true
+  },
+  "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr037-macos', '/usr/bin/sudo'): rpcinfo: can't contact portmapper: rpcinfo: RPC: Timed out\\n\")",
+  "retainedStoppedCredentialFreeVm": "ab-sf-fr037-macos"
+}

@@ -1,0 +1,30 @@
+{
+  "result": "Pass",
+  "instance": {
+    "instanceId": "iso-64733-d776",
+    "pid": 42743,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:64734",
+    "graphqlUrl": "http://127.0.0.1:64734/graphql",
+    "controlEndpoint": "http://127.0.0.1:64733",
+    "controlPort": 64733,
+    "serverPort": 64734,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/desktop-tmp/autobyteus-isolated-root-7XNnUY",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/desktop-tmp/autobyteus-isolated-root-7XNnUY/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/desktop-tmp/autobyteus-isolated-app/iso-64733-d776.log"
+  },
+  "inputHead": "c01dbfdcb6032a26177a2f92bb487aa95c39d422",
+  "packagedAsarSHA256": "ef9010cd08136abed595f945b5d32331181e7a2afeba7c462f8467388b24498f",
+  "containsEditorDraftMarker": true,
+  "uiObservation": "CUA bound exact worktree app; own embedded backend64734/data root from lifecycle receipt; Nodes then NFS Guide",
+  "guide": {
+    "adjacentToDockerGuide": true,
+    "copyMacAndLinuxDisabled": true,
+    "commandNotYetAvailable": true,
+    "noVerifiedRelease": true,
+    "unencryptedHostTrustAndNoOfflineFallbackDisclosed": true,
+    "MacDockerStorageNotSupportedClientsDistinct": true
+  }
+}

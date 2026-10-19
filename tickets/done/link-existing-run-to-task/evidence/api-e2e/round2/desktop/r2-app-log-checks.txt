@@ -1,0 +1,10 @@
+# usage rejections / listener failures / fail-stop in the whole session:
+0
+# adopted-run removals (adoption release, DONE stops) and interrupts:
+[2026-10-18T08:38:24.364Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_review_lead_f1769d22b72a4f5b8ec544535685cecc'. Attempting graceful shutdown.
+[2026-10-18T08:38:24.731Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_writer_b2d683f22cc54afe952f70d20dfca5f0'. Attempting graceful shutdown.
+[2026-10-18T08:41:49.916Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_writer_b2d683f22cc54afe952f70d20dfca5f0'. Attempting graceful shutdown.
+[2026-10-18T08:43:27.668Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_review_lead_f1769d22b72a4f5b8ec544535685cecc'. Attempting graceful shutdown.
+[2026-10-18T08:43:47.902Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_writer_b2d683f22cc54afe952f70d20dfca5f0'. Attempting graceful shutdown.
+[2026-10-18T08:45:57.532Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_writer_30ae3d051e5c421b83abe9ff2c677f95'. Attempting graceful shutdown.
+[2026-10-18T08:45:57.813Z] [INFO] [electron.embedded-server.stdout] Removing agent 'ado_review_lead_c7960d3615c84bbf80b19e7c0134e3cd'. Attempting graceful shutdown.

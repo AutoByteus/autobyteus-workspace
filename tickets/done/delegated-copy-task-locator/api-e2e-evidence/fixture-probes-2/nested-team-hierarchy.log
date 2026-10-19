@@ -1,0 +1,6 @@
+Error: Unexpected browser runtime errors occurred
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs:91:19)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs:719:7
+    at runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs:182:27)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs:713:9
+Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes-2/nested-team-hierarchy/evidence.json

@@ -1,0 +1,16 @@
+Started fresh owned nonempty APFS source
+fresh owned nonempty APFS source: Pass
+Started public current nativeMac create under077
+public current nativeMac create under077: Pass
+Started initial real nonroot mounted RW private/job/exports
+initial real nonroot mounted RW private/job/exports: Pass
+Started ordinary automatic whole-host boot 1
+ordinary automatic whole-host boot 1: Pass
+Started ordinary automatic whole-host boot 2
+ordinary automatic whole-host boot 2: Pass
+Started separately labelled explicit public reconnect
+separately labelled explicit public reconnect: Pass
+Started explicit reconnect mounted RW
+explicit reconnect mounted RW: Pass
+API-F005 automatic first gate Pass with actual raw device change; replacement controls and broader matrix pending
+{"result": "Pass", "fatal": null}

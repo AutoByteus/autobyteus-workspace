@@ -1,4 +1,5 @@
 import { ProjectsPerFolderV1AppDataMigration } from "../../../src/app-data-migrations/migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
+import { ProjectTaskKeysV1AppDataMigration } from "../../../src/app-data-migrations/migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
 import "reflect-metadata";
 import fs from "node:fs";
 import os from "node:os";
@@ -531,12 +532,16 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect((await listProjects()).find((item) => item.projectId === other.projectId)?.openTaskCount).toBe(0);
 
     // REQ-003: there is no status-changing operation, and Task types never reuse delegated-task names.
+    // The meaning-search index mutations (search-model-settings REQ-006) maintain the search index and never
+    // change a Task, so they are the only other mutations whose names mention Project Tasks.
     const mutationFields = Object.keys(schema.getMutationType()?.getFields() ?? {});
-    expect(mutationFields.filter((name) => /projecttask/i.test(name)).sort()).toEqual(
+    const indexMutations = ["indexAllProjectTasks", "indexProjectTasks", "rebuildProjectTaskIndex"];
+    expect(mutationFields.filter((name) => /projecttask/i.test(name) && !indexMutations.includes(name)).sort()).toEqual(
       ["createProjectTask", "deleteProjectTask", "updateProjectTask"],
     );
+    expect(indexMutations.every((name) => mutationFields.includes(name))).toBe(true);
     const updateInputFields = Object.keys((schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> }).getFields());
-    expect(updateInputFields.sort()).toEqual(["contextChanges", "description", "projectId", "taskId"]);
+    expect(updateInputFields.sort()).toEqual(["contextChanges", "dependsOnTaskIds", "description", "partOfTaskId", "projectId", "taskId"]);
     expect(schema.getType("Task")).toBeUndefined();
     expect(schema.getType("TaskStatus")).toBeUndefined();
   });
@@ -566,7 +571,190 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(readWorkspacesJson()).toBe(workspacesBefore);
   });
 
-  it("API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released field", async () => {
+  it("API-010: Task keys and depends on: keys in creation order, never reused, kept on rename; dependencies validated, replaced, cleared and dropped on delete", async () => {
+    const FIELDS = "taskId taskKey status dependsOnTaskIds updatedAt";
+    type KeyedTask = { taskId: string; taskKey: string; status: string; dependsOnTaskIds: string[]; updatedAt: string };
+    const create = async (projectId: string, description: string, dependsOnTaskIds?: string[]) => (await execOk<{ createProjectTask: KeyedTask }>(
+      `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${FIELDS} } }`,
+      { input: { projectId, description, ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) } })).createProjectTask;
+    const UPDATE = `mutation($input: UpdateProjectTaskInput!) { updateProjectTask(input: $input) { ${FIELDS} } }`;
+    const update = async (projectId: string, taskId: string, dependsOnTaskIds?: string[]) =>
+      (await execOk<{ updateProjectTask: KeyedTask }>(UPDATE, { input: { projectId, taskId, description: "edited", ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) } })).updateProjectTask;
+    const keyed = async (projectId: string) => (await execOk<{ projectTasks: KeyedTask[] }>(
+      `query($projectId: String!) { projectTasks(projectId: $projectId) { ${FIELDS} } }`, { projectId })).projectTasks;
+
+    const project = await createProject("AutoByteus");
+    const a = await create(project.projectId, "A");
+    const b = await create(project.projectId, "B", [a.taskId]);
+    expect([a.taskKey, b.taskKey]).toEqual(["autobyteus-1", "autobyteus-2"]);
+    expect(b.dependsOnTaskIds).toEqual([a.taskId]);
+
+    // Rename keeps the prefix; a new Project taking the old name gets a suffixed prefix.
+    await execOk(`mutation($input:UpdateProjectInput!){updateProject(input:$input){projectId}}`, { input: { projectId: project.projectId, name: "AutoByteus Core" } });
+    const c = await create(project.projectId, "C");
+    expect(c.taskKey).toBe("autobyteus-3");
+    const sameName = await createProject("AutoByteus");
+    const foreign = await create(sameName.projectId, "Foreign");
+    expect(foreign.taskKey).toBe("autobyteus-2-1");
+
+    // Invalid dependencies are rejected with nothing written.
+    const before = snapshotProjectsDir();
+    // Itself, an unknown Task, another Project's Task, and a loop (B already depends on A).
+    for (const dependsOnTaskIds of [[a.taskId], ["project_task_missing"], [foreign.taskId], [b.taskId]]) {
+      await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: a.taskId, description: "x", dependsOnTaskIds } }, "TASK_DEPENDENCY_INVALID");
+    }
+    await expectErrorCode(`mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { taskId } }`,
+      { input: { projectId: project.projectId, description: "D", dependsOnTaskIds: [foreign.taskId] } }, "TASK_DEPENDENCY_INVALID");
+    expect(snapshotProjectsDir()).toEqual(before);
+
+    // Omitted keeps, a list replaces, [] clears.
+    expect((await update(project.projectId, b.taskId)).dependsOnTaskIds).toEqual([a.taskId]);
+    expect((await update(project.projectId, c.taskId, [b.taskId, a.taskId])).dependsOnTaskIds).toEqual([b.taskId, a.taskId]);
+    expect((await update(project.projectId, b.taskId, [])).dependsOnTaskIds).toEqual([]);
+
+    // Deleting a Task drops it from its dependents (their updatedAt kept) and its number is never reused.
+    const cBefore = (await keyed(project.projectId)).find((t) => t.taskId === c.taskId)!;
+    await execOk(`mutation($input: DeleteProjectTaskInput!) { deleteProjectTask(input: $input) }`, { input: { projectId: project.projectId, taskId: a.taskId } });
+    const cAfter = (await keyed(project.projectId)).find((t) => t.taskId === c.taskId)!;
+    expect(cAfter).toEqual({ ...cBefore, dependsOnTaskIds: [b.taskId] });
+    expect((await create(project.projectId, "E")).taskKey).toBe("autobyteus-4");
+    // Key allocation state never leaves the server.
+    expect(Object.keys((schema.getType("Project") as { getFields(): Record<string, unknown> }).getFields())).not.toContain("taskKeys");
+  });
+
+  // task-part-of: a Task's parent ("part of") through the GraphQL boundary the app uses (New / Edit task Save).
+  it("API-011: part of: set at create, omitted keeps, null clears, an ID replaces; refusals write nothing; one level under concurrency; a deleted parent's parts stay; a step-1 task.json reads with no parent (task-part-of AC-001..005, 007, 016)", async () => {
+    const FIELDS = "taskId taskKey status dependsOnTaskIds partOfTaskId updatedAt";
+    type PartTask = { taskId: string; taskKey: string; status: string; dependsOnTaskIds: string[]; partOfTaskId: string | null; updatedAt: string };
+    const CREATE = `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${FIELDS} } }`;
+    const UPDATE = `mutation($input: UpdateProjectTaskInput!) { updateProjectTask(input: $input) { ${FIELDS} } }`;
+    const create = async (projectId: string, description: string, extra: Record<string, unknown> = {}) =>
+      (await execOk<{ createProjectTask: PartTask }>(CREATE, { input: { projectId, description, ...extra } })).createProjectTask;
+    // As the app's Edit task Save sends it: the description plus the relation fields it changes.
+    const update = async (projectId: string, taskId: string, extra: Record<string, unknown> = {}) =>
+      (await execOk<{ updateProjectTask: PartTask }>(UPDATE, { input: { projectId, taskId, description: "edited", ...extra } })).updateProjectTask;
+    const listed = async (projectId: string) => (await execOk<{ projectTasks: PartTask[] }>(
+      `query($projectId: String!) { projectTasks(projectId: $projectId) { ${FIELDS} } }`, { projectId })).projectTasks;
+    const one = async (projectId: string, taskId: string) => (await listed(projectId)).find((task) => task.taskId === taskId)!;
+    const partsOf = async (projectId: string, parentId: string) => (await listed(projectId)).filter((task) => task.partOfTaskId === parentId).map((task) => task.taskKey).sort();
+    const pause = () => new Promise((resolve) => setTimeout(resolve, 5));
+
+    // The schema: a nullable String on the Task and on both inputs.
+    for (const typeName of ["CreateProjectTaskInput", "UpdateProjectTaskInput"]) {
+      const field = (schema.getType(typeName) as { getFields(): Record<string, { type: { toString(): string } }> }).getFields().partOfTaskId;
+      expect(field?.type.toString(), typeName).toBe("String");
+    }
+    expect((schema.getType("ProjectTask") as { getFields(): Record<string, { type: { toString(): string } }> }).getFields().partOfTaskId?.type.toString()).toBe("String");
+
+    const project = await createProject("Parts");
+    const other = await createProject("Parts Other");
+    const p = project.projectId;
+    const parent = await create(p, "Parent: cross-node collaboration");
+    const second = await create(p, "Second parent");
+    // AC-001: a new Task with a parent; the parent's parts are derived from the list.
+    const part = await create(p, "Part: discovery", { partOfTaskId: parent.taskId });
+    expect(part).toMatchObject({ taskKey: "parts-3", partOfTaskId: parent.taskId, status: "TODO" });
+    expect(parent.partOfTaskId).toBeNull();
+    expect(await partsOf(p, parent.taskId)).toEqual(["parts-3"]);
+    // Omitted or null at create is no parent.
+    const loose = await create(p, "Loose", { partOfTaskId: null });
+    expect(loose.partOfTaskId).toBeNull();
+    expect((await create(p, "Also loose")).partOfTaskId).toBeNull();
+
+    // REQ-002 / RU-001: an update without the field keeps the parent (also as an inline literal, not a variable).
+    await pause();
+    const kept = await update(p, part.taskId);
+    expect(kept.partOfTaskId).toBe(parent.taskId);
+    const inline = await execOk<{ updateProjectTask: PartTask }>(
+      `mutation { updateProjectTask(input: { projectId: "${p}", taskId: "${part.taskId}", description: "inline" }) { ${FIELDS} } }`);
+    expect(inline.updateProjectTask.partOfTaskId).toBe(parent.taskId);
+    // AC-002: an ID replaces; both parents' parts follow; the change bumps updatedAt.
+    await pause();
+    const moved = await update(p, part.taskId, { partOfTaskId: second.taskId });
+    expect(moved.partOfTaskId).toBe(second.taskId);
+    expect(Date.parse(moved.updatedAt)).toBeGreaterThan(Date.parse(kept.updatedAt));
+    expect(await partsOf(p, parent.taskId)).toEqual([]);
+    expect(await partsOf(p, second.taskId)).toEqual(["parts-3"]);
+    // null clears (variable and inline literal).
+    expect((await update(p, part.taskId, { partOfTaskId: null })).partOfTaskId).toBeNull();
+    expect(await partsOf(p, second.taskId)).toEqual([]);
+    await update(p, part.taskId, { partOfTaskId: parent.taskId });
+    const inlineNull = await execOk<{ updateProjectTask: PartTask }>(
+      `mutation { updateProjectTask(input: { projectId: "${p}", taskId: "${part.taskId}", description: "inline", partOfTaskId: null }) { ${FIELDS} } }`);
+    expect(inlineNull.updateProjectTask.partOfTaskId).toBeNull();
+    // AC-004 (last): re-saving the same parent succeeds.
+    await update(p, part.taskId, { partOfTaskId: parent.taskId });
+    expect((await update(p, part.taskId, { partOfTaskId: parent.taskId })).partOfTaskId).toBe(parent.taskId);
+
+    // AC-005: a part that depends on its parent, and a parent that depends on its part: both relations stored independently.
+    // (One direction at a time: both at once would be a dependency loop, which the dependency rule refuses as before.)
+    const parentDepends = await update(p, parent.taskId, { dependsOnTaskIds: [part.taskId] });
+    expect(parentDepends).toMatchObject({ partOfTaskId: null, dependsOnTaskIds: [part.taskId] });
+    expect(await partsOf(p, parent.taskId)).toEqual(["parts-3"]);
+    await update(p, parent.taskId, { dependsOnTaskIds: [] });
+    const dependent = await update(p, part.taskId, { dependsOnTaskIds: [parent.taskId] });
+    expect(dependent).toMatchObject({ partOfTaskId: parent.taskId, dependsOnTaskIds: [parent.taskId] });
+    expect(await partsOf(p, parent.taskId)).toEqual(["parts-3"]);
+
+    // AC-003 / AC-004: every invalid parent is TASK_PARENT_INVALID with nothing written.
+    const foreign = await create(other.projectId, "Foreign");
+    const before = snapshotProjectsDir();
+    const refusals: Array<[string, Record<string, unknown>, string]> = [
+      [UPDATE, { projectId: p, taskId: part.taskId, description: "x", partOfTaskId: part.taskId }, "A Task cannot be part of itself."],
+      [UPDATE, { projectId: p, taskId: part.taskId, description: "x", partOfTaskId: "project_task_missing" }, "Task 'project_task_missing' is not a current Task of this Project."],
+      [UPDATE, { projectId: p, taskId: part.taskId, description: "x", partOfTaskId: foreign.taskId }, `Task '${foreign.taskId}' is not a current Task of this Project.`],
+      // C part of B, where B is part of A.
+      [UPDATE, { projectId: p, taskId: loose.taskId, description: "x", partOfTaskId: part.taskId }, "parts-3 is itself part of parts-1; a part can't have parts of its own."],
+      // A (has parts) part of D.
+      [UPDATE, { projectId: p, taskId: parent.taskId, description: "x", partOfTaskId: second.taskId }, "This Task has parts, so it can't be part of another Task."],
+      [CREATE, { projectId: p, description: "never created", partOfTaskId: foreign.taskId }, `Task '${foreign.taskId}' is not a current Task of this Project.`],
+      [CREATE, { projectId: p, description: "never created", partOfTaskId: part.taskId }, "parts-3 is itself part of parts-1; a part can't have parts of its own."],
+    ];
+    for (const [source, input, message] of refusals) {
+      const result = await exec(source, { input });
+      expect(result.errors?.[0]?.extensions?.code, JSON.stringify(input)).toBe("TASK_PARENT_INVALID");
+      expect(result.errors?.[0]?.message).toBe(message);
+    }
+    expect(snapshotProjectsDir()).toEqual(before);
+    // Rejected creates spent no key number.
+    const next = await create(p, "Next");
+    expect(next.taskKey).toBe("parts-6");
+
+    // AC-004 / QR-001: concurrent "X part of Y" and "Y part of X" cannot both succeed.
+    const [x, y] = [loose, next];
+    const raced = await Promise.all([
+      exec(UPDATE, { input: { projectId: p, taskId: x.taskId, description: "race", partOfTaskId: y.taskId } }),
+      exec(UPDATE, { input: { projectId: p, taskId: y.taskId, description: "race", partOfTaskId: x.taskId } }),
+    ]);
+    expect(raced.filter((result) => !result.errors?.length)).toHaveLength(1);
+    expect(raced.filter((result) => result.errors?.[0]?.extensions?.code === "TASK_PARENT_INVALID")).toHaveLength(1);
+    const [xAfter, yAfter] = [await one(p, x.taskId), await one(p, y.taskId)];
+    expect([xAfter.partOfTaskId === y.taskId, yAfter.partOfTaskId === x.taskId].filter(Boolean)).toHaveLength(1);
+
+    // AC-007: deleting a parent leaves its part in place, without its parent (and the dependency on it), updatedAt kept.
+    const partBefore = await one(p, part.taskId);
+    expect((await execOk<{ deleteProjectTask: boolean }>(`mutation($input: DeleteProjectTaskInput!) { deleteProjectTask(input: $input) }`,
+      { input: { projectId: p, taskId: parent.taskId } })).deleteProjectTask).toBe(true);
+    expect(await one(p, part.taskId)).toEqual({ ...partBefore, partOfTaskId: null, dependsOnTaskIds: [] });
+    const taskFile = (taskId: string) => path.join(appDataDir, "projects", p, "tasks", taskId, "task.json");
+    expect(Object.keys(JSON.parse(fs.readFileSync(taskFile(part.taskId), "utf8")))).toEqual(
+      ["taskId", "projectId", "taskKey", "description", "status", "dependsOnTaskIds", "partOfTaskId", "createdAt", "updatedAt", "contextFiles"]);
+
+    // AC-016: a Task file in the step-1 shape (no partOfTaskId) reads with no parent and is not rewritten until its next save.
+    const oldTask = await create(p, "Step-1 Task");
+    const { partOfTaskId: _dropped, ...released } = JSON.parse(fs.readFileSync(taskFile(oldTask.taskId), "utf8"));
+    const releasedBytes = `${JSON.stringify(released, null, 2)}\n`;
+    fs.writeFileSync(taskFile(oldTask.taskId), releasedBytes, "utf8");
+    resetProjectsSingletons();
+    expect(await one(p, oldTask.taskId)).toMatchObject({ taskKey: oldTask.taskKey, partOfTaskId: null });
+    await update(p, second.taskId, { description: "another Task's save" });
+    expect(fs.readFileSync(taskFile(oldTask.taskId), "utf8")).toBe(releasedBytes);
+    const saved = await update(p, oldTask.taskId, { description: "ordinary save" });
+    expect(saved.partOfTaskId).toBeNull();
+    expect(JSON.parse(fs.readFileSync(taskFile(oldTask.taskId), "utf8"))).toEqual({ ...released, description: "ordinary save", updatedAt: saved.updatedAt, partOfTaskId: null });
+  });
+
+  it("API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value", async () => {
     const prototype = await registerWorkspace("autobyteus-web-prototype");
     const releasedRow = {
       projectId: "project_3f0c9a52-1b7e-4d1e-9d4f-0a6b2c1d7e11",
@@ -591,6 +779,8 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(fs.readFileSync(filePath, "utf-8")).toBe(releasedContent);
 
     expect((await new ProjectsPerFolderV1AppDataMigration(appDataDir).execute()).status).toBe("SUCCEEDED");
+    // The next startup migration gives the released Project its Task key state.
+    expect((await new ProjectTaskKeysV1AppDataMigration(appDataDir).execute()).status).toBe("SUCCEEDED");
     expect(fs.readFileSync(path.join(appDataDir, "projects", "projects.pre-folders.json"), "utf-8")).toBe(releasedContent);
     expect(await listProjects()).toEqual([
       expect.objectContaining({
@@ -608,7 +798,11 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
 
     const task = await createTask(releasedRow.projectId, "First task on a released Project");
     const [persisted] = readProjectsJson() as Array<Record<string, unknown>>;
-    expect(persisted).toEqual({ ...releasedRow, tasks: [expect.objectContaining({ taskId: task.taskId, projectId: releasedRow.projectId, status: "TODO" })] });
+    // The first Task's key allocation is an exact current-shape save of project.json: every released value stays,
+    // the next number is recorded, and obsolete link extras (workspaceId, addedAt) drop as on any save.
+    expect(persisted).toEqual({ ...releasedRow, taskKeys: { prefix: "autobyteus", lastNumber: 1 },
+      workspaces: [{ workspaceRootPath: prototype.workspaceRootPath, description: "UI prototype workspace" }],
+      tasks: [expect.objectContaining({ taskId: task.taskId, projectId: releasedRow.projectId, taskKey: "autobyteus-1", status: "TODO" })] });
     const taskPath = path.join(appDataDir, "projects", releasedRow.projectId, "tasks", task.taskId, "task.json");
     const taskBytes = fs.readFileSync(taskPath, "utf8");
     await execOk(`mutation($input:UpdateProjectInput!){updateProject(input:$input){${PROJECT_FIELDS}}}`, {

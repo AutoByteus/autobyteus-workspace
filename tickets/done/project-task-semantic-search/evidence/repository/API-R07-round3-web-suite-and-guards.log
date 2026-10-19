@@ -1,0 +1,22 @@
+# API-R07 (round 3): pnpm -C autobyteus-web test:nuxt --run; commit 600d079b9c; ENV-1; Sun Oct 18 21:44:17 CEST 2026
+# Excerpt
+ Test Files  636 passed | 2 skipped (638)
+      Tests  4519 passed | 3 skipped (4522)
+exit=0
+
+# API-R07 (round 3): guard:web-boundary, guard:localization-boundary, audit:localization-literals
+== guard:web-boundary
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+exit=0
+== guard:localization-boundary
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+exit=0
+== audit:localization-literals
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+exit=0

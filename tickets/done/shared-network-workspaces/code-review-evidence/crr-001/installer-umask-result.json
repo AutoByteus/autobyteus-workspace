@@ -1,0 +1,24 @@
+{
+  "scope": "Review diagnostic, not a product test or real installation.\nRuns current installer with task-only fake HTTPS assets/binary, retaining its real\numask/extraction/install/invocation behavior. No sudo/OS paths/Docker/providers.\nThe fake binary observes inherited umask and the same mkdir(0755) syscall mode\nsemantics used by Go os.Mkdir; root ownership/elevation are source-reviewed only.\n",
+  "cases": [
+    {
+      "stage": "verify-release",
+      "inheritedUmask": "0o77",
+      "requestedMkdirMode": "0o755",
+      "actualMkdirMode": "0o700"
+    },
+    {
+      "stage": "create",
+      "inheritedUmask": "0o77",
+      "requestedMkdirMode": "0o755",
+      "actualMkdirMode": "0o700"
+    }
+  ],
+  "temporaryRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/crr001-installer-x1369u3p",
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "downloadScratchAbsent": true,
+  "temporaryRootRemoved": true,
+  "interpretation": "Installer delivers umask 077 to its child. Default sudo union preserves it; InstallRoot and Run do not reset it. RootDirectory passes 0755 to os.Mkdir without chmod, producing 0700 on newly-created public/libexec directories. Actual root/nonroot access failure is established by source/permission contracts, NOT a privileged reproduction here."
+}

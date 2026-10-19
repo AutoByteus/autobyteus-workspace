@@ -1,0 +1,29 @@
+Started control only: hold owned attachment completion job for serial failed-start inspection
+control only: hold owned attachment completion job for serial failed-start inspection: Pass
+Started explicit user Start of normally stopped node to prepare distinct policy control
+explicit user Start of normally stopped node to prepare distinct policy control: Pass
+Started control starts from genuinely running healthy selected node
+control starts from genuinely running healthy selected node: Pass
+Started ordinary reboot with attachment job held for serial operator inspection
+ordinary reboot with attachment job held for serial operator inspection: Pass
+Captured real ordinary Docker NFS pre-process connection-refused start; job held, no synthetic state
+Started raw Stop on already-failed node is a Docker no-op
+raw Stop on already-failed node is a Docker no-op: Pass
+Started current launcher reports no-op/policy guidance, not cancellation promise
+current launcher reports no-op/policy guidance, not cancellation promise: Pass
+Started operator explicitly selects current restart=no durable veto
+operator explicitly selects current restart=no durable veto: Pass
+Started restore original owned attachment service with existing configuration
+restore original owned attachment service with existing configuration: Pass
+Started policy=no suppresses automatic completion while host becomes ready
+policy=no suppresses automatic completion while host becomes ready: Pass
+Started confirmed public reconnect cannot override current policy=no
+confirmed public reconnect cannot override current policy=no: Pass
+Started policy veto exact stopped-state preservation after explicit reconnect
+policy veto exact stopped-state preservation after explicit reconnect: Pass
+Started ordinary reboot after durable veto with original attachment job enabled
+ordinary reboot after durable veto with original attachment job enabled: Pass
+Started policy=no remains veto across reboot and service ticks
+policy=no remains veto across reboot and service ticks: Pass
+Captured failed-start raw Stop no-op/guidance and current restart=no automatic/explicit/reboot veto PASS
+{"result": "Pass", "fatal": null}

@@ -1,0 +1,63 @@
+# API-L02c: output of the step named in the execution report Cases row for API-L02c; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "task": {
+  "id": "d012",
+  "taskId": "project_task_9b1505f0-7591-4b5b-885d-38e4ad3116af",
+  "status": "CANCELLED"
+ },
+ "beforeLocate": {
+  "t": 1792318846717,
+  "query": "docker",
+  "status": "Preparing meaning search… 0 of 1000 Tasks",
+  "lanes": [
+   "TODO:0",
+   "empty:",
+   "IN_PROGRESS:0",
+   "empty:",
+   "DONE:1"
+  ],
+  "rowPresent": false,
+  "located": false
+ },
+ "afterRefresh": {
+  "t": 1792318849218,
+  "query": "docker",
+  "status": "Preparing meaning search… 8 of 1000 Tasks",
+  "lanes": [
+   "TODO:1",
+   "IN_PROGRESS:0",
+   "empty:",
+   "DONE:1"
+  ],
+  "rowPresent": false,
+  "located": false
+ },
+ "locatedAfterMs": 131,
+ "atLocate": {
+  "t": 1792318849350,
+  "query": "",
+  "status": null,
+  "lanes": [
+   "TODO:338",
+   "IN_PROGRESS:139",
+   "DONE:429",
+   "CANCELLED:94"
+  ],
+  "rowPresent": true,
+  "located": true
+ },
+ "timeline": [
+  {
+   "ms": 0,
+   "query": "docker",
+   "status": "Preparing meaning search… 8 of 1000 Tasks",
+   "located": false
+  },
+  {
+   "ms": 131,
+   "query": "",
+   "status": null,
+   "located": true
+  }
+ ]
+}

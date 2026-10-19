@@ -1,0 +1,7 @@
+{
+  "rawAttempt": "LD-files-result.json retains Pass L07-L09 and Fail L10 client numeric-owner oracle.",
+  "observed": "Client stat1001:109:755, original source stat1000:109:755; link/bytes/execute already succeeded. Public attachmentuserUid1000/Gid109.",
+  "approvedContract": "design-spec mapping: all writes use selected source identity; no uniform stat numeric UID across NFSv4 client/server name databases promised. Keep actual client IDs, assert exact backing source UID/GID/mode.",
+  "correction": "Fresh -v2 fixture namespace, both directions metadata+source ownership. Child Git process safe.directory ONLY selected verified project per design; no global trust/config, real application PTY test separately verifies product environment.",
+  "result": "Harness correction, not production change or identity repair"
+}

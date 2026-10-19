@@ -1,0 +1,336 @@
+{
+  "vm": "ab-nfs-api003-linux-b7497a85",
+  "source": "/home/admin/ab-nfs-api003-linux-b7497a85-docker-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api003-cc7rp5vo/autobyteus-nfs-docker-linux-arm64",
+    "sha256": "532b98169d7434cd76d9e279397fc6a03a00f9dabb1fcf951dfdad75471169ff",
+    "size": 11033749
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "127.0.0.1:5000/ab-nfs-api003@sha256:22f64bbfec2bbdd1ba49516e35b43436826b006fb1274435631586252a5875b6",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "cat /proc/sys/kernel/random/boot_id; findmnt -n -o FSTYPE /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.24,
+      "stdout": "8651d4b6-4245-4de3-b502-ac4c88bfd2b8\nnfs4\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c '/home/admin/ab-nfs-api003-linux-b7497a85-binary status --yes --json'"
+      ],
+      "rc": 0,
+      "seconds": 0.133,
+      "stdout": "{\n  \"storageId\": \"71887d49-17ec-4e6f-a734-03ebd3abaafd\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\",\n  \"hostReady\": true,\n  \"nodes\": {},\n  \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n}\n",
+      "stderr": "Checking actual host and selected-node readiness; this may wait for storage.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import os,json,hashlib,stat\nfrom pathlib import Path\np=Path('\"'\"'\"'\"'\"'\"'\"'\"'/home/admin/ab-nfs-api003-linux-b7497a85-docker-source'\"'\"'\"'\"'\"'\"'\"'\"');s=p.stat()\ndef h(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nr={'\"'\"'\"'\"'\"'\"'\"'\"'sourceIdentity'\"'\"'\"'\"'\"'\"'\"'\"':[s.st_dev,s.st_ino,s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode)],'\"'\"'\"'\"'\"'\"'\"'\"'sourceHash'\"'\"'\"'\"'\"'\"'\"'\"':h(p/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'sourceMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((p/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'mountedHash'\"'\"'\"'\"'\"'\"'\"'\"':h(Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'mountedMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'directoryDelegations'\"'\"'\"'\"'\"'\"'\"'\"':Path('\"'\"'\"'\"'\"'\"'\"'\"'/sys/module/nfsv4/parameters/directory_delegations'\"'\"'\"'\"'\"'\"'\"'\"').read_text().strip(),'\"'\"'\"'\"'\"'\"'\"'\"'uid'\"'\"'\"'\"'\"'\"'\"'\"':os.getuid(),'\"'\"'\"'\"'\"'\"'\"'\"'gid'\"'\"'\"'\"'\"'\"'\"'\"':os.getgid(),'\"'\"'\"'\"'\"'\"'\"'\"'groups'\"'\"'\"'\"'\"'\"'\"'\"':os.getgroups()};print(json.dumps(r))\n'\"'\"''"
+      ],
+      "rc": 0,
+      "seconds": 0.095,
+      "stdout": "{\"sourceIdentity\": [64769, 787680, 1000, 109, 493], \"sourceHash\": \"f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da\", \"sourceMarker\": {\"storageId\": \"71887d49-17ec-4e6f-a734-03ebd3abaafd\"}, \"mountedHash\": \"f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da\", \"mountedMarker\": {\"storageId\": \"71887d49-17ec-4e6f-a734-03ebd3abaafd\"}, \"directoryDelegations\": \"Y\", \"uid\": 1000, \"gid\": 109, \"groups\": []}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n sha256sum /var/lib/autobyteus-nfs/attachment.json /var/lib/autobyteus-nfs/hosted-filesystem.json; dpkg-query -W nfs-common nfs-ganesha nfs-ganesha-vfs; cat /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/project/relative.txt; cat /Volumes/autobyteus-shared/project/relative.txt; sudo -n systemctl is-active autobyteus-nfs.service; sudo -n docker ps --filter label=com.autobyteus.nfs.storageId=71887d49-17ec-4e6f-a734-03ebd3abaafd --format \"{{.ID}} {{.Image}}\""
+      ],
+      "rc": 0,
+      "seconds": 0.1,
+      "stdout": "e043f47b90bebad505045c12bb9a117151b749400d8317c84eec9ac4c7eb97fd  /var/lib/autobyteus-nfs/attachment.json\n2f6724d5b06f9401d5b9f3cb3f8938638281d0a14b9a4418898f681d983de042  /var/lib/autobyteus-nfs/hosted-filesystem.json\nnfs-common\t1:2.6.4-3ubuntu5.1\nnfs-ganesha\t4.3-8ubuntu1+autobyteus1\nnfs-ganesha-vfs:arm64\t4.3-8ubuntu1+autobyteus1\nAPI003_DOCKER_FSYNCAPI003_DOCKER_FSYNCactive\n29cbe1bb51a0 127.0.0.1:5000/ab-nfs-api003\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c '/home/admin/ab-nfs-api003-linux-b7497a85-binary detach --yes --drained --json'"
+      ],
+      "rc": 0,
+      "seconds": 0.466,
+      "stdout": "",
+      "stderr": "Detached; source, marker, named volumes and private receipts preserved.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; ! findmnt -n -t nfs,nfs4 /Volumes/autobyteus-shared; test ! -e /etc/autobyteus-nfs/attachment.json; test ! -e /etc/systemd/system/autobyteus-nfs.service; test ! -e /etc/systemd/system/autobyteus-nfs-ganesha.service; ! systemctl is-active --quiet autobyteus-nfs-ganesha.service; sudo -n test -d /var/lib/autobyteus-nfs/ganesha/recovery; cat /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/.autobyteus-nfs/storage.json; sha256sum /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/project/preexisting.txt; cat /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/project/relative.txt; stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api003-linux-b7497a85-docker-source"
+      ],
+      "rc": 0,
+      "seconds": 0.234,
+      "stdout": "{\"storageId\":\"71887d49-17ec-4e6f-a734-03ebd3abaafd\"}\nf3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da  /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/project/preexisting.txt\nAPI003_DOCKER_FSYNC64769:787680:1000:109:755\n",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "post normal reboot same managed attachment without manual reconnect",
+      "evidence": {
+        "bootMount": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api003-linux-b7497a85",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "cat /proc/sys/kernel/random/boot_id; findmnt -n -o FSTYPE /Volumes/autobyteus-shared"
+          ],
+          "rc": 0,
+          "seconds": 0.24,
+          "stdout": "8651d4b6-4245-4de3-b502-ac4c88bfd2b8\nnfs4\n",
+          "stderr": ""
+        },
+        "status": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api003-linux-b7497a85",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c '/home/admin/ab-nfs-api003-linux-b7497a85-binary status --yes --json'"
+          ],
+          "rc": 0,
+          "seconds": 0.133,
+          "stdout": "{\n  \"storageId\": \"71887d49-17ec-4e6f-a734-03ebd3abaafd\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\",\n  \"hostReady\": true,\n  \"nodes\": {},\n  \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n}\n",
+          "stderr": "Checking actual host and selected-node readiness; this may wait for storage.\n"
+        },
+        "identity": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api003-linux-b7497a85",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import os,json,hashlib,stat\nfrom pathlib import Path\np=Path('\"'\"'\"'\"'\"'\"'\"'\"'/home/admin/ab-nfs-api003-linux-b7497a85-docker-source'\"'\"'\"'\"'\"'\"'\"'\"');s=p.stat()\ndef h(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nr={'\"'\"'\"'\"'\"'\"'\"'\"'sourceIdentity'\"'\"'\"'\"'\"'\"'\"'\"':[s.st_dev,s.st_ino,s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode)],'\"'\"'\"'\"'\"'\"'\"'\"'sourceHash'\"'\"'\"'\"'\"'\"'\"'\"':h(p/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'sourceMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((p/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'mountedHash'\"'\"'\"'\"'\"'\"'\"'\"':h(Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'mountedMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'directoryDelegations'\"'\"'\"'\"'\"'\"'\"'\"':Path('\"'\"'\"'\"'\"'\"'\"'\"'/sys/module/nfsv4/parameters/directory_delegations'\"'\"'\"'\"'\"'\"'\"'\"').read_text().strip(),'\"'\"'\"'\"'\"'\"'\"'\"'uid'\"'\"'\"'\"'\"'\"'\"'\"':os.getuid(),'\"'\"'\"'\"'\"'\"'\"'\"'gid'\"'\"'\"'\"'\"'\"'\"'\"':os.getgid(),'\"'\"'\"'\"'\"'\"'\"'\"'groups'\"'\"'\"'\"'\"'\"'\"'\"':os.getgroups()};print(json.dumps(r))\n'\"'\"''"
+          ],
+          "rc": 0,
+          "seconds": 0.095,
+          "stdout": "{\"sourceIdentity\": [64769, 787680, 1000, 109, 493], \"sourceHash\": \"f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da\", \"sourceMarker\": {\"storageId\": \"71887d49-17ec-4e6f-a734-03ebd3abaafd\"}, \"mountedHash\": \"f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da\", \"mountedMarker\": {\"storageId\": \"71887d49-17ec-4e6f-a734-03ebd3abaafd\"}, \"directoryDelegations\": \"Y\", \"uid\": 1000, \"gid\": 109, \"groups\": []}\n",
+          "stderr": ""
+        },
+        "after": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api003-linux-b7497a85",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n sha256sum /var/lib/autobyteus-nfs/attachment.json /var/lib/autobyteus-nfs/hosted-filesystem.json; dpkg-query -W nfs-common nfs-ganesha nfs-ganesha-vfs; cat /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/project/relative.txt; cat /Volumes/autobyteus-shared/project/relative.txt; sudo -n systemctl is-active autobyteus-nfs.service; sudo -n docker ps --filter label=com.autobyteus.nfs.storageId=71887d49-17ec-4e6f-a734-03ebd3abaafd --format \"{{.ID}} {{.Image}}\""
+          ],
+          "rc": 0,
+          "seconds": 0.1,
+          "stdout": "e043f47b90bebad505045c12bb9a117151b749400d8317c84eec9ac4c7eb97fd  /var/lib/autobyteus-nfs/attachment.json\n2f6724d5b06f9401d5b9f3cb3f8938638281d0a14b9a4418898f681d983de042  /var/lib/autobyteus-nfs/hosted-filesystem.json\nnfs-common\t1:2.6.4-3ubuntu5.1\nnfs-ganesha\t4.3-8ubuntu1+autobyteus1\nnfs-ganesha-vfs:arm64\t4.3-8ubuntu1+autobyteus1\nAPI003_DOCKER_FSYNCAPI003_DOCKER_FSYNCactive\n29cbe1bb51a0 127.0.0.1:5000/ab-nfs-api003\n",
+          "stderr": ""
+        }
+      },
+      "status": "Pass",
+      "seconds": 0.572
+    },
+    {
+      "name": "public drained detach",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api003-linux-b7497a85",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c '/home/admin/ab-nfs-api003-linux-b7497a85-binary detach --yes --drained --json'"
+        ],
+        "rc": 0,
+        "seconds": 0.466,
+        "stdout": "",
+        "stderr": "Detached; source, marker, named volumes and private receipts preserved.\n"
+      },
+      "status": "Pass",
+      "seconds": 0.467
+    },
+    {
+      "name": "detach preserves original source marker bytes and recovery",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api003-linux-b7497a85",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; ! findmnt -n -t nfs,nfs4 /Volumes/autobyteus-shared; test ! -e /etc/autobyteus-nfs/attachment.json; test ! -e /etc/systemd/system/autobyteus-nfs.service; test ! -e /etc/systemd/system/autobyteus-nfs-ganesha.service; ! systemctl is-active --quiet autobyteus-nfs-ganesha.service; sudo -n test -d /var/lib/autobyteus-nfs/ganesha/recovery; cat /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/.autobyteus-nfs/storage.json; sha256sum /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/project/preexisting.txt; cat /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/project/relative.txt; stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api003-linux-b7497a85-docker-source"
+        ],
+        "rc": 0,
+        "seconds": 0.234,
+        "stdout": "{\"storageId\":\"71887d49-17ec-4e6f-a734-03ebd3abaafd\"}\nf3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da  /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/project/preexisting.txt\nAPI003_DOCKER_FSYNC64769:787680:1000:109:755\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.235
+    }
+  ],
+  "result": "Pass",
+  "connection": {
+    "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+    "endpoint": "192.168.64.7",
+    "export": "/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd",
+    "protocol": "4.1",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "sourceIdentityBefore": "64769:787680:1000:109:755"
+}

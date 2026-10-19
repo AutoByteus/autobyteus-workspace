@@ -13,7 +13,17 @@ import {
   extractTurnId,
 } from "./runtime-memory-event-payload.js";
 import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
-import { CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID } from "../../agent-execution/domain/system-task-notification-senders.js";
+import {
+  CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
+  SKILL_UPDATE_NOTICE_SENDER_ID,
+} from "../../agent-execution/domain/system-task-notification-senders.js";
+import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
+
+/** Producers whose system notices are recorded (other producers keep their history behavior). */
+const RECORDED_SYSTEM_NOTICE_SENDER_IDS: ReadonlySet<string> = new Set([
+  CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
+  SKILL_UPDATE_NOTICE_SENDER_ID,
+]);
 
 type SegmentState = {
   id: string;
@@ -52,6 +62,9 @@ export class RuntimeMemoryEventAccumulator {
   recordForwardedUserMessage(payload: AgentRunUserMessageForwardedPayload): void {
     const turnId = asString(payload.result.turnId);
     if (!turnId) return;
+    // A message that is only a platform notice is recorded once, as the system notice the run
+    // publishes for it, never as a user message.
+    if (readPlatformInputPreface(payload.message.metadata)?.originalContent === null) return;
     const { media, fileAttachments } = extractForwardedMessageAttachments(payload.message);
     this.input.writer.appendRawTrace({
       traceType: "user",
@@ -234,11 +247,11 @@ export class RuntimeMemoryEventAccumulator {
     }
   }
 
-  /** Only Claude background-task notices are recorded; other producers keep their history behavior. */
+  /** Only the allow-listed producers' notices are recorded; other producers keep their history behavior. */
   private recordSystemTaskNotification(event: AgentRunEvent): void {
     const senderId = asString(event.payload.sender_id);
     const content = typeof event.payload.content === "string" ? event.payload.content : null;
-    if (senderId !== CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID || !content?.trim()) return;
+    if (!senderId || !RECORDED_SYSTEM_NOTICE_SENDER_IDS.has(senderId) || !content?.trim()) return;
     const turnId = extractTurnId(event.payload) ?? this.activeTurnId;
     if (!turnId) return;
     this.input.writer.appendRawTrace({

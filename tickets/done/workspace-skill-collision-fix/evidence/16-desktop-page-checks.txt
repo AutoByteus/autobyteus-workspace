@@ -1,0 +1,55 @@
+# Evidence E16p: 16-desktop-page-checks.txt
+# Case: API-13 (isolated desktop instance journey) | AC: AC-101, AC-102
+# Step: browser-automation run-script page checks against instance iso-60176-ff92 (control port 60176), worktree build of c59da62e70
+# Date: 2026-10-18
+# Proves: in the packaged app, a new run on each runtime answers from the linked skill, and after an app restart "continue"
+#         on each run answers from the skill folder; the workspace links point at the package skill.
+# Provenance: the checks were run live during API-13; this file was written afterwards (2026-10-18) by transcribing the
+#             JSON results the automation returned in that session. The instance has since been stopped and its data
+#             root removed, so the checks cannot be re-run against it. Screenshots E16-01..08 show the same page states.
+#
+# Fixture (test-owned, removed after the run):
+#   package:   /private/tmp/skill-links-desktop/package/agents/desktop-skill-agent (skillNames: [desktop-link-probe])
+#   skill:     .../skills/desktop-link-probe/SKILL.md  -> "The new-run link probe code is DESKTOP-NEW-7Q4." ; continue-code.md -> DESKTOP-CONT-9K2
+#   workspace: /private/tmp/skill-links-desktop/workspace/{.claude,.codex,.grok}/skills/desktop-link-probe -> absolute link to the skill folder
+
+## C1 package import (Settings > Agent Packages > Import Package, path typed in the UI)
+check: page text after import
+result: "Agent package imported." ... "package | Local Path | Shared Agents: 1 ... /private/tmp/skill-links-desktop/package"
+
+## C2 workspace registration
+step: the sidebar "Add workspace" opens the macOS folder picker (closed via accessibility Cancel on the instance's own process);
+      the workspace was registered through the instance GraphQL instead:
+      createWorkspace(input:{rootPath:"/private/tmp/skill-links-desktop/workspace"})
+result: {"workspaceId":"agent_ws_d89c6271…","name":"workspace","absolutePath":"/private/tmp/skill-links-desktop/workspace"}
+check after restart: composer workspace button aria-label = "Workspace: workspace. Change workspace"
+
+## C3 Claude new run (model button aria-label "Model: claude-haiku-5-5 on Claude Agent SDK. Change model")
+sent: "What is the new-run link probe code? Use your desktop-link-probe skill. Reply with only the code."
+page check: text after the prompt contains DESKTOP-NEW-7Q4 -> FOUND (first poll, <5 s)
+run: #/chat?id=desktop_skill_agent_87a8959017a340d0ba520535e5910e61
+page tail: "...Desktop Skill Agent / Skill / DESKTOP-NEW-7Q4"
+fs check: .claude/skills/desktop-link-probe -> /private/tmp/skill-links-desktop/package/agents/desktop-skill-agent/skills/desktop-link-probe
+
+## C4 Codex new run ("Model: GPT-5.6-Luna (default reasoning: medium) on Codex App Server")
+page check: FOUND (second poll)
+run: desktop_skill_agent_58c3ca3e5d5b44bcbfca5abacdf0bc51
+page tail: "run_bash · /bin/bash -lc 'cat /private/tmp/skill-links-desktop/workspace/.codex/skills/desktop-link-probe/SKILL.md' / DESKTOP-NEW-7Q4"
+fs check: .codex/skills/desktop-link-probe -> same package skill folder (unchanged)
+
+## C5 Grok new run ("Model: Grok 4.7 on Grok Build")
+page check: FOUND (third poll)
+run: desktop_skill_agent_f0a8ce2bb40543bfbd4f8b11cfd7d684
+page tail: "grep / list_dir / run_bash · find … -iname '*desktop-link-probe*' … / read_file / read_file / DESKTOP-NEW-7Q4"
+note: Grok found the skill by searching (follow-up F7)
+
+## C6 app restart (pnpm --silent isolated-app restart iso-60176-ff92), runs Offline
+fs check after restart: .claude/skills/ empty (beta.1 quirk F2: adopted same-skill link removed at run end, DEC-103);
+                        .codex/skills and .grok/skills links still present
+page check (Claude run opened from history): status "Offline", earlier answer DESKTOP-NEW-7Q4 shown
+
+## C7 continue on each run (sent: "continue: what is the continue link probe code? Use your desktop-link-probe skill. Reply with only the code.")
+Claude: FOUND DESKTOP-CONT-9K2 (first poll); page tail "Read · desktop-link-probe/continue-code.md / DESKTOP-CONT-9K2";
+        fs check: .claude/skills/desktop-link-probe recreated -> same package skill folder
+Codex:  FOUND (first poll); page tail "run_bash · … cat …/.codex/skills/desktop-link-probe/continue-code.md / DESKTOP-CONT-9K2"
+Grok:   FOUND (second poll); page tail "read_file / DESKTOP-CONT-9K2"

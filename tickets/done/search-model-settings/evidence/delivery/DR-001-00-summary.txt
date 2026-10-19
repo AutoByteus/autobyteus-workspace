@@ -1,0 +1,9 @@
+# DR-001 post-integration check on merge f9de3d57d7 (origin/personal fc93276e6f into codex/search-model-settings); Mon Oct 19 16:19:39 CEST 2026
+install exit=0
+prebuild exit=0
+nuxt prepare exit=0
+typecheck exit=0
+server unit exit=0
+build exit=0
+e2e projects exit=0
+web exit=0

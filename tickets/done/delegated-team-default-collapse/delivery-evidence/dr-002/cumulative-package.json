@@ -1,0 +1,127 @@
+{
+  "recordedAt": "2026-10-13T12:40:34.035285+00:00",
+  "package": "delegated-team-default-collapse",
+  "task": "project_task_394f7ced-6597-41e8-824a-e2140c35b743",
+  "sourceMerge": "e3a6772951a3c0ccf54cfb5ef92350cccf16f2d2",
+  "releaseDecision": "No release",
+  "currentArtifacts": [
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/requirements-doc.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/requirements-doc.md",
+      "sha256": "86ae9f05cea3a7a8e86cc06add2395b825624b90f7b79c359fd0356f39438172"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/investigation-notes.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/investigation-notes.md",
+      "sha256": "73d738e7fd07eb703492dec7eab1bd3559604266fd56e66f0c811a4a8b343f3d"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/design-spec.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/design-spec.md",
+      "sha256": "7e621c48dca2fa87a991c98e095e4d240ca8c3010ae8ec43ed6ced7b7bae6c93"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/solution-revision-record.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/solution-revision-record.md",
+      "sha256": "5fe1cfb4c7ec5f1f4f0d2ef2aeb61af8f5c6d42018e580db02422e0ebe278fc3"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/solution-handoff.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/solution-handoff.md",
+      "sha256": "8589fe0591c5f177c2febcdf33e260e90372e4ba86342927ed7b90651e1c4777"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/implementation-handoff.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/implementation-handoff.md",
+      "sha256": "6994032400d4b0b86c61d12e8197bdd5ec82946123d21976cca6f621bdb39eb7"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/implementation-revision-record.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/implementation-revision-record.md",
+      "sha256": "965d699ea7ad172e0ca6781a09f5133b5d3a64dabee3640f9dd497c27f7bb1a0"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/implementation-local-checks.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/implementation-local-checks.md",
+      "sha256": "8c944be9c2fa1b5b0e4b7a6d0da65114be70d29164ec701d522b79e945761ecb"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/code-review-report.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/code-review-report.md",
+      "sha256": "f178d59f8c8d20724a9cfcfc400029e534b679e4d6aaa8a9c4609dee24eac264"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/code-review-revision-record.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/code-review-revision-record.md",
+      "sha256": "4a7e40874516008abba499513875e338f6c917387b3161485f2b39a8a42b75ac"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/api-e2e-coverage-investigation.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/api-e2e-coverage-investigation.md",
+      "sha256": "44007e4e09b9732c73458dc858f48704e24163bc6b2264065113675e756f6fbd"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/api-e2e-execution-coverage-report.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/api-e2e-execution-coverage-report.md",
+      "sha256": "c4300a87cca8421825b8b8db7095976615a21df0271cab7e8c1cb6cedb806aed"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/api-e2e-revision-record.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/api-e2e-revision-record.md",
+      "sha256": "9c9c367411161ea319087f18b34cc4260289b40901f2716177adf2cdead9c323"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/api-e2e-test-case-ledger.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/api-e2e-test-case-ledger.md",
+      "sha256": "9f3474097336122354b0b32afbd4e03e9f0f9bef2c5b8bd8740cf34ec9eb336f"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/api-e2e-test-review-report.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/api-e2e-test-review-report.md",
+      "sha256": "31688e585feb7c9146922e512e6894acdb45a683d8c8eae70c68461f9a4d06c3"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/docs-sync-report.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/docs-sync-report.md",
+      "sha256": "a251e459831c429abaa9c3b4016d1e2ea7e6dde2ddb1fbd917c9097336839983"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/handoff-summary.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/handoff-summary.md",
+      "sha256": "edb439676f92bc6d6a9033752c04ca6be8bf138fc2f5300fa6079d8b30c0e494"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/release-deployment-report.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/release-deployment-report.md",
+      "sha256": "82ed623a0fc612cd1b7912a25341e37a0b696b8593d418e19245eadddf0ea597"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/delivery-revision-record.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/delivery-revision-record.md",
+      "sha256": "50b68b5dd09f4344d04feb473cd27059771f7e49d237b03f569c4de9018ebb70"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/verification-record.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/verification-record.md",
+      "sha256": "6adcf3bfaaf3708dbbc45633c63aa493b655f7f13c76f3b4fef603873f945d41"
+    },
+    {
+      "repositoryPath": "tickets/done/delegated-team-default-collapse/release-notes.md",
+      "absolutePath": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/release-notes.md",
+      "sha256": "4477451c407760f4552f572004e80e5282783d77d0be88701790ef8122fb5c1c"
+    }
+  ],
+  "evidenceRoots": [
+    "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/implementation-evidence/ir-001",
+    "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/code-review-evidence/crr-001",
+    "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/api-e2e-evidence/api-rev-001",
+    "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/api-e2e-evidence/api-rev-002",
+    "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/delivery-evidence/dr-001",
+    "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse/tickets/done/delegated-team-default-collapse/delivery-evidence/dr-002"
+  ],
+  "independentInitialArchitectureSourceReview": "N/A \u2014 configured Direct Low-Risk",
+  "successfulDurableTestReview": "CRR-002 Pass",
+  "snapshotIsNotWorktree": true,
+  "originalPathsAreHistorical": true,
+  "terminalRoutingIssue": "Unclear \u2014 returned condition still mandatory explicit user verification; updated skill/user direction permits evidence judgement"
+}

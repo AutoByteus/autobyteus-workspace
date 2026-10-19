@@ -1,0 +1,30 @@
+# Check: IMP-11
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal && bash -c git grep -n -i -E "work.?trace" -- autobyteus-server-ts/src autobyteus-server-ts/docs autobyteus-web ":!autobyteus-web/node_modules" ; echo "matches: $(git grep -i -E "work.?trace" -- autobyteus-server-ts/src autobyteus-server-ts/docs autobyteus-web | wc -l | tr -d " ")"; echo "files: $(git grep -l -i -E "work.?trace" -- autobyteus-server-ts/src autobyteus-server-ts/docs autobyteus-web | tr "\n" " ")")
+# Commit: ea867f9708 (branch codex/work-journal)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T03:56:05Z
+
+autobyteus-server-ts/docs/modules/agent_work_journal.md:138:- The startup migration `20261019_remove_work_trace_exports` deleted the retired
+autobyteus-server-ts/docs/modules/agent_work_journal.md:139:  `work_traces/` export folders; current code does not know their layout.
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts:32:import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports-migration.js";
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts:98:      // Deletes the retired work-trace export folders once run folders are in their current place.
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts:99:      new RemoveWorkTraceExportsMigration(appConfigProvider.config.getMemoryDir()),
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:12:const MIGRATION_ID = "20261019_remove_work_trace_exports";
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:15: * Frozen names of the retired export (`<run>/work_traces/`, `<run>/self_evolution/work_traces/`,
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:16: * `<run>/skill_improvement/work_traces/`). Only this migration knows them; the Work Journal replaced
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:19:const RETIRED_EXPORT_DIR_NAME = "work_traces";
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:20:const RETIRED_EXPORT_MANIFEST_FILE_NAME = "work_traces_manifest.json";
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:46: * Deletes the retired work-trace export folders under the memory folder (DS-005). Recognition is
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:47: * structural: a directory named `work_traces` that holds `work_traces_manifest.json`. A folder
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:50:export class RemoveWorkTraceExportsMigration implements AppDataMigrationDefinition {
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:52:  readonly displayName = "Remove work-trace export folders";
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:54:    "Deletes the retired work_traces export folders from run memory folders; the Work Journal is rendered from raw traces instead.";
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:69:        ? `${summary.failedCount} work-trace folder${summary.failedCount === 1 ? "" : "s"} could not be removed; they are unused and can be deleted by hand.`
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:103:      return this.detail(dirPath, "SKIPPED", `Kept: a folder named ${RETIRED_EXPORT_DIR_NAME} without ${RETIRED_EXPORT_MANIFEST_FILE_NAME} is not a work-trace export.`);
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:107:      return this.detail(dirPath, "MIGRATED", "Removed the work-trace export folder.");
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:110:        ? this.detail(dirPath, "SKIPPED", "The work-trace export folder was already absent.")
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:111:        : this.detail(dirPath, "FAILED", `Could not remove the work-trace export folder: ${messageFromError(error)}`);
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts:120:export const REMOVE_WORK_TRACE_EXPORTS_MIGRATION_ID = MIGRATION_ID;
+matches: 21
+files: autobyteus-server-ts/docs/modules/agent_work_journal.md autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts autobyteus-server-ts/src/app-data-migrations/migrations/remove-work-trace-exports-migration.ts 
+# Exit status: 0

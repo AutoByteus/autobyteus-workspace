@@ -4,35 +4,47 @@ import {
   TeamMember,
   type TeamMemberRefScope,
 } from "../domain/agent-team-definition.js";
-import { AgentTeamDefinitionPersistenceProvider } from "../providers/agent-team-definition-persistence-provider.js";
-import { CachedAgentTeamDefinitionProvider } from "../providers/cached-agent-team-definition-provider.js";
+import { FileAgentTeamDefinitionProvider } from "../providers/file-agent-team-definition-provider.js";
 import { normalizeDefaultLaunchConfigInput } from "../../launch-preferences/default-launch-config.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { assertValidFlatTeamDefinition } from "./flat-team-definition-validator.js";
 import { FlatTeamDefinitionResolver } from "./flat-team-definition-resolver.js";
 import { DefinitionEndpointCatalog, type DefinitionEndpointCatalogProjection } from "../../agent-collaboration/definition/definition-endpoint-catalog.js";
+import { parseCanonicalApplicationOwnedTeamId } from "../../application-bundles/utils/application-bundle-identity.js";
+import {
+  getProcessAgentPackageDefinitions,
+  type AgentPackageDefinitions,
+} from "../../agent-package-definitions/services/agent-package-definitions.js";
+import type { DefinitionLoadIssue, DefinitionLoadIssueEntry } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-type AgentTeamDefinitionProvider = {
-  create: (definition: AgentTeamDefinition) => Promise<AgentTeamDefinition>;
-  getById: (id: string) => Promise<AgentTeamDefinition | null>;
-  getAll: () => Promise<AgentTeamDefinition[]>;
-  getTemplates: () => Promise<AgentTeamDefinition[]>;
-  update: (definition: AgentTeamDefinition) => Promise<AgentTeamDefinition>;
-  delete: (id: string) => Promise<boolean>;
-  refresh?: () => Promise<void>;
-};
+/** File writes, templates and application-package reads (agent package definitions are store reads). */
+export type AgentTeamDefinitionFileStore = Pick<
+  FileAgentTeamDefinitionProvider,
+  "create" | "getById" | "getTemplates" | "update" | "delete" | "listApplicationOwnedTeams"
+>;
 
-type AgentTeamDefinitionFreshProvider = Pick<AgentTeamDefinitionPersistenceProvider, "getById">;
+/**
+ * One Team admission entry from the agent package definitions: a shared Team or an org-owned Team.
+ * `definition` is the last good version (null when it never read as valid).
+ */
+export type AgentTeamAdmissionEntry = Readonly<{
+  definitionId: string;
+  definition: AgentTeamDefinition | null;
+  issue: DefinitionLoadIssue | null;
+  definitionPath: string;
+  packageRoot: string;
+  sourceClass: "server_data" | "implementation_repository" | "registered_package";
+}>;
 
 type AgentTeamDefinitionServiceOptions = {
-  provider?: AgentTeamDefinitionProvider;
-  persistenceProvider?: AgentTeamDefinitionPersistenceProvider;
-  agentDefinitionService?: Pick<AgentDefinitionService, "getAgentDefinitionById" | "getFreshAgentDefinitionById">;
+  fileStore?: AgentTeamDefinitionFileStore;
+  packageDefinitions?: AgentPackageDefinitions;
+  agentDefinitionService?: Pick<AgentDefinitionService, "getAgentDefinitionById">;
 };
 
 const normalizeOptionalString = (value: unknown): string | null => {
@@ -144,15 +156,13 @@ export class AgentTeamDefinitionService {
     }
   }
 
-  readonly provider: AgentTeamDefinitionProvider;
-  private readonly freshProvider: AgentTeamDefinitionFreshProvider;
-  private readonly agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById" | "getFreshAgentDefinitionById">;
+  private readonly fileStore: AgentTeamDefinitionFileStore;
+  private readonly packageDefinitions: AgentPackageDefinitions;
+  private readonly agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById">;
 
   constructor(options: AgentTeamDefinitionServiceOptions = {}) {
-    const persistenceProvider =
-      options.persistenceProvider ?? new AgentTeamDefinitionPersistenceProvider();
-    this.provider = options.provider ?? new CachedAgentTeamDefinitionProvider(persistenceProvider);
-    this.freshProvider = options.persistenceProvider ?? persistenceProvider;
+    this.fileStore = options.fileStore ?? new FileAgentTeamDefinitionProvider();
+    this.packageDefinitions = options.packageDefinitions ?? getProcessAgentPackageDefinitions();
     this.agentDefinitionService = options.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
 
@@ -173,35 +183,97 @@ export class AgentTeamDefinitionService {
     });
     await assertValidFlatTeamDefinition({
       rootDefinition: validationCandidate,
-      lookup: { getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id) },
+      lookup: { getAgentById: async (id) => this.agentDefinitionService.getAgentDefinitionById(id) },
     });
-    const created = await this.provider.create(definition);
+    const created = await this.fileStore.create(definition);
+    if (created.id) await this.packageDefinitions.reloader.reloadFoldersNow("agent_team", [created.id]);
     logger.info(`Agent Team Definition created successfully with ID: ${created.id}`);
     return created;
   }
 
+  /** Shared and org-owned Team IDs are store reads (last good honored); application-package IDs read their package. */
   async getDefinitionById(definitionId: string): Promise<AgentTeamDefinition | null> {
-    return this.provider.getById(definitionId);
+    if (parseCanonicalApplicationOwnedTeamId(definitionId)) return this.fileStore.getById(definitionId);
+    await this.packageDefinitions.reloader.applyPendingChanges();
+    return this.packageDefinitions.store.getDefinition("agent_team", definitionId);
   }
 
-  async getFreshDefinitionById(definitionId: string): Promise<AgentTeamDefinition | null> {
-    return this.freshProvider.getById(definitionId);
-  }
-
+  /**
+   * Shared Teams plus application-package Teams, read on demand for IDs not already listed. A
+   * duplicated Team identity is not listed; a malformed application-package Team is skipped.
+   */
   async getAllDefinitions(): Promise<AgentTeamDefinition[]> {
-    return this.provider.getAll();
+    await this.packageDefinitions.reloader.applyPendingChanges();
+    const definitions = this.packageDefinitions.store.listFolderRoots("agent_team")
+      .flatMap((entry) => entry.definition ? [entry.definition] : []);
+    const seenIds = new Set(definitions.map((definition) => definition.id));
+    for (const definition of await this.fileStore.listApplicationOwnedTeams()) {
+      if (seenIds.has(definition.id)) continue;
+      seenIds.add(definition.id);
+      definitions.push(definition);
+    }
+    return definitions;
+  }
+
+  /** Team admission entries from the agent package definitions: shared Teams and org-owned Teams. */
+  async listAdmissionEntries(): Promise<AgentTeamAdmissionEntry[]> {
+    await this.packageDefinitions.reloader.applyPendingChanges();
+    const store = this.packageDefinitions.store;
+    const entries = [
+      ...store.listFolderRoots("agent_team"),
+      ...store.listNestedDefinitions("agent_org", "agent_team"),
+    ];
+    return entries.map((entry) => Object.freeze({
+      definitionId: entry.id,
+      definition: entry.definition,
+      issue: entry.issue,
+      definitionPath: entry.definition?.source?.definitionPath ?? entry.issue?.definitionPath ?? entry.location.folderDir,
+      packageRoot: entry.location.packageRoot,
+      sourceClass: entry.location.sourceClass,
+    }));
+  }
+
+  /** Load issues of Team definitions (shared and org-owned), last good or not. */
+  async listLoadIssues(): Promise<Array<Readonly<{ definitionId: string; issue: DefinitionLoadIssue; usingLastGood: boolean }>>> {
+    await this.packageDefinitions.reloader.applyPendingChanges();
+    return this.packageDefinitions.store.listLoadIssueEntries("agent_team").map((entry) => Object.freeze({
+      definitionId: entry.id,
+      issue: entry.issue!,
+      usingLastGood: entry.definition !== null,
+    }));
+  }
+
+  /** Every load issue of each shared Team folder (the Team plus its team-local agents), keyed by Team ID. */
+  async listFolderLoadIssues(): Promise<Map<string, DefinitionLoadIssueEntry[]>> {
+    await this.packageDefinitions.reloader.applyPendingChanges();
+    return this.packageDefinitions.store.listFolderLoadIssues("agent_team");
+  }
+
+  /**
+   * The load issues shown on one Team's card: the whole Team folder for a shared Team; for an
+   * org-owned Team (nested in its Org's folder, whose card carries the rest) only its own issue.
+   */
+  async getFolderLoadIssues(definitionId: string): Promise<DefinitionLoadIssueEntry[]> {
+    await this.packageDefinitions.reloader.applyPendingChanges();
+    const store = this.packageDefinitions.store;
+    const folder = store.folderOf("agent_team", definitionId);
+    if (!folder) return [];
+    const issues = store.getFolderLoadIssues(folder.kind, folder.folderId);
+    return folder.kind === "agent_team"
+      ? issues
+      : issues.filter((entry) => entry.kind === "agent_team" && entry.definitionId === definitionId);
   }
 
   async getTemplateDefinitions(): Promise<AgentTeamDefinition[]> {
-    return this.provider.getTemplates();
+    return this.fileStore.getTemplates();
   }
 
   async getEndpointCatalog(definitionId: string): Promise<DefinitionEndpointCatalogProjection> {
-    const definition = await this.provider.getById(definitionId);
+    const definition = await this.getDefinitionById(definitionId);
     if (!definition) throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     const topology = await new FlatTeamDefinitionResolver().resolve({
       rootDefinition: definition,
-      lookup: { getAgentById: (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id) },
+      lookup: { getAgentById: (id) => this.agentDefinitionService.getAgentDefinitionById(id) },
     });
     return new DefinitionEndpointCatalog().projectTeam(topology);
   }
@@ -210,7 +282,7 @@ export class AgentTeamDefinitionService {
     definitionId: string,
     updateData: AgentTeamDefinitionUpdate,
   ): Promise<AgentTeamDefinition> {
-    const existing = await this.provider.getById(definitionId);
+    const existing = await this.getDefinitionById(definitionId);
     if (!existing) {
       throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     }
@@ -228,24 +300,26 @@ export class AgentTeamDefinitionService {
     await assertValidFlatTeamDefinition({
       rootDefinition: candidate,
       lookup: {
-        getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id),
+        getAgentById: async (id) => this.agentDefinitionService.getAgentDefinitionById(id),
       },
     });
 
-    const updated = await this.provider.update(candidate);
+    const updated = await this.fileStore.update(candidate);
+    await this.reloadOwningFolder(definitionId);
     logger.info(`Agent Team Definition with ID ${definitionId} updated successfully.`);
     return updated;
   }
 
   async deleteDefinition(definitionId: string): Promise<boolean> {
-    const existing = await this.provider.getById(definitionId);
+    const existing = await this.getDefinitionById(definitionId);
     if (!existing) {
       throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     }
     if ((existing.ownershipScope ?? "shared") !== "shared") {
       throw new Error("Deleting application-owned team definitions is not supported.");
     }
-    const success = await this.provider.delete(definitionId);
+    const success = await this.fileStore.delete(definitionId);
+    await this.reloadOwningFolder(definitionId);
     if (success) {
       logger.info(`Agent Team Definition with ID ${definitionId} deleted successfully.`);
     } else {
@@ -254,10 +328,17 @@ export class AgentTeamDefinitionService {
     return success;
   }
 
-  async refreshCache(): Promise<void> {
-    if (typeof this.provider.refresh === "function") {
-      await this.provider.refresh();
-    }
+  /** Full reload of every registered agent package (manual Reload and package changes). */
+  async reloadAgentPackageDefinitions(): Promise<void> {
+    await this.packageDefinitions.reloader.reloadAllPackages();
   }
 
+  /** An in-app write reloads the definition folder that holds the Team (its Org folder for an org-owned Team). */
+  private async reloadOwningFolder(definitionId: string): Promise<void> {
+    // Application-package Teams are not agent package definitions; their lists are read on demand.
+    if (parseCanonicalApplicationOwnedTeamId(definitionId)) return;
+    const folder = this.packageDefinitions.store.folderOf("agent_team", definitionId)
+      ?? { kind: "agent_team" as const, folderId: definitionId };
+    await this.packageDefinitions.reloader.reloadFoldersNow(folder.kind, [folder.folderId]);
+  }
 }

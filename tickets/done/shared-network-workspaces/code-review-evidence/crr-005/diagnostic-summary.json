@@ -1,0 +1,128 @@
+{
+  "kind": "runtime compatibility diagnosis, not API pass or product fix",
+  "finalDiagnostic": "Diagnostic Complete, not product Pass",
+  "defaultAndRestoredFailurePattern": {
+    "original": {
+      "parameter": "Y",
+      "rows": [
+        {
+          "attempt": 0,
+          "step": "first directory open",
+          "result": "Fail",
+          "errno": 121,
+          "error": "[Errno 121] Remote I/O error: '.autobyteus-nfs'"
+        },
+        {
+          "attempt": 1,
+          "step": "second directory open",
+          "result": "Fail",
+          "errno": 121,
+          "error": "[Errno 121] Remote I/O error: '.autobyteus-nfs'"
+        },
+        {
+          "attempt": 2,
+          "step": "read marker",
+          "bytes": "{\"storageId\": \"ee59805f-ae92-45b5-a49d-f0e24045ed53\"}\n",
+          "result": "Pass"
+        }
+      ],
+      "fails": 2,
+      "passes": 1
+    },
+    "diagnostic_disabled": {
+      "parameter": "N",
+      "rows": [
+        {
+          "attempt": 0,
+          "step": "read marker",
+          "bytes": "{\"storageId\": \"ee59805f-ae92-45b5-a49d-f0e24045ed53\"}\n",
+          "result": "Pass"
+        },
+        {
+          "attempt": 1,
+          "step": "read marker",
+          "bytes": "{\"storageId\": \"ee59805f-ae92-45b5-a49d-f0e24045ed53\"}\n",
+          "result": "Pass"
+        },
+        {
+          "attempt": 2,
+          "step": "read marker",
+          "bytes": "{\"storageId\": \"ee59805f-ae92-45b5-a49d-f0e24045ed53\"}\n",
+          "result": "Pass"
+        }
+      ],
+      "fails": 0,
+      "passes": 3
+    },
+    "restored": {
+      "parameter": "Y",
+      "rows": [
+        {
+          "attempt": 0,
+          "step": "first directory open",
+          "result": "Fail",
+          "errno": 121,
+          "error": "[Errno 121] Remote I/O error: '.autobyteus-nfs'"
+        },
+        {
+          "attempt": 1,
+          "step": "second directory open",
+          "result": "Fail",
+          "errno": 121,
+          "error": "[Errno 121] Remote I/O error: '.autobyteus-nfs'"
+        },
+        {
+          "attempt": 2,
+          "step": "read marker",
+          "bytes": "{\"storageId\": \"ee59805f-ae92-45b5-a49d-f0e24045ed53\"}\n",
+          "result": "Pass"
+        }
+      ],
+      "fails": 2,
+      "passes": 1
+    }
+  },
+  "sourceControl": [
+    {
+      "attempt": 0,
+      "step": "read marker",
+      "bytes": "{\"storageId\": \"ee59805f-ae92-45b5-a49d-f0e24045ed53\"}\n",
+      "result": "Pass"
+    },
+    {
+      "attempt": 1,
+      "step": "read marker",
+      "bytes": "{\"storageId\": \"ee59805f-ae92-45b5-a49d-f0e24045ed53\"}\n",
+      "result": "Pass"
+    },
+    {
+      "attempt": 2,
+      "step": "read marker",
+      "bytes": "{\"storageId\": \"ee59805f-ae92-45b5-a49d-f0e24045ed53\"}\n",
+      "result": "Pass"
+    }
+  ],
+  "packages": "nfs-common\t1:2.6.4-3ubuntu5.1\nnfs-ganesha\t4.3-8ubuntu1\nnfs-ganesha-vfs:arm64\t4.3-8ubuntu1\n7.0.0-38-generic\n",
+  "configTemplateSHA256": "f2f6b81f73a03788f32f39296ff3d16e6217a33f77a0f1c0d4ae63f258a84e45",
+  "packetCapture": "Empty packet data (header only); no wire/XID/opcode proof. Capture stop rc5 retained after SIGINT. Exact RPC cause inferred from primary sources, not observed on this wire.",
+  "scope": "manual extracted-config setup and Python syscall replay; not new public create nor Go/native-runtime/physical proof",
+  "cleanupVerified": [
+    {
+      "attempt": "attempt-1",
+      "vm": "ab-nfs-crr005-d5103a0c",
+      "vmPid": 9796,
+      "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr005-1rpx2kaj",
+      "scratchAbsentNow": true,
+      "pidAbsentNow": true
+    },
+    {
+      "attempt": "crr-005",
+      "vm": "ab-nfs-crr005-f046d4e6",
+      "vmPid": 19354,
+      "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr005-isx4yyva",
+      "scratchAbsentNow": true,
+      "pidAbsentNow": true
+    }
+  ],
+  "noProductOrDurableTestChanges": true
+}

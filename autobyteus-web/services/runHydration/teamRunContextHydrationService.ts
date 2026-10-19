@@ -30,6 +30,7 @@ import {
   type MemberRunState,
   type MemberRunStateCommit,
 } from './memberRunStateHydration';
+import { fetchRunFileChanges } from './runFileChangeHydrationService';
 import { createTeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
 import {
   createTeamAgentContext,
@@ -37,7 +38,6 @@ import {
 } from '~/services/teamExecution/teamExecutionContextFactory';
 import {
   collectConfiguredAgents,
-  collectConfiguredTeams,
   collectAgentExecutionLocations,
   findConfiguredAgentByAddress,
 } from '~/services/teamExecution/teamExecutionTreeSelectors';
@@ -105,23 +105,27 @@ export const fetchExactTeamMemberProjection = async (
 
 type TeamMemberRunState = MemberRunState<TeamMemberRunProjectionPayload>;
 
+type TeamMember = Readonly<{ agentRunId: string; memberAddress: string }>;
+
 const fetchExactTeamMemberRunState = (
   teamRunId: string,
-  agentRunId: string,
+  member: TeamMember,
 ): Promise<TeamMemberRunState> => fetchMemberRunState({
-  runId: agentRunId,
-  fetchProjection: () => fetchExactTeamMemberProjection(teamRunId, agentRunId),
+  fetchProjection: () => fetchExactTeamMemberProjection(teamRunId, member.agentRunId),
+  fetchFileChanges: () => fetchRunFileChanges({
+    kind: 'teamMember', teamRunId, memberAddress: member.memberAddress, agentRunId: member.agentRunId,
+  }),
 });
 
 /** A member whose projection or artifacts cannot be loaded is left unhydrated (null) as a whole. */
 const fetchBestEffortTeamMemberRunState = async (
   teamRunId: string,
-  agentRunId: string,
+  member: TeamMember,
 ): Promise<TeamMemberRunState | null> => {
   try {
-    return await fetchExactTeamMemberRunState(teamRunId, agentRunId);
+    return await fetchExactTeamMemberRunState(teamRunId, member);
   } catch (error) {
-    console.warn(`[teamRunContextHydration] Failed to fetch AgentRun state '${agentRunId}'.`, error);
+    console.warn(`[teamRunContextHydration] Failed to fetch AgentRun state '${member.agentRunId}'.`, error);
     return null;
   }
 };
@@ -150,10 +154,7 @@ const resolveWorkspaces = async (input: {
 }): Promise<ReadonlyMap<AgentTeamAddress, WorkspaceMetadata>> => {
   const result = new Map<AgentTeamAddress, WorkspaceMetadata>();
   const placements = [
-    ...collectConfiguredTeams(input.tree).map((team) => ({
-      address: team === input.tree.root_team ? '/' : team.address,
-      rootPath: team.default_launch_configuration.workspace_root_path,
-    })),
+    { address: '/' as AgentTeamAddress, rootPath: input.tree.root_team.default_launch_configuration.workspace_root_path },
     ...collectConfiguredAgents(input.tree).map((agent) => ({
       address: agent.address,
       rootPath: agent.launch_configuration.workspace_root_path,
@@ -192,8 +193,8 @@ const stageProjection = (input: {
 }): MemberRunStateCommit | null => {
   if (!input.state) return null;
   const { projection } = input.state;
-  const configured = teamAgentSourceAt(input.tree, input.address);
-  if (!configured) throw new Error(`AgentRun '${input.agentRunId}' has no configured or collaborator placement.`);
+  const configured = teamAgentSourceAt(input.tree, input.address, input.agentRunId);
+  if (!configured) throw new Error(`AgentRun '${input.agentRunId}' has no configured placement.`);
   input.context.state.conversation = buildConversationFromProjection(
     input.agentRunId,
     projection.conversation ?? [],
@@ -277,8 +278,8 @@ const hydrateCurrentTeamRunContext = async (
   const stateByAgentRunId = new Map<string, TeamMemberRunState | null>();
   await Promise.all(locations.map(async (agent) => {
     const state = projectionPolicy === 'exact' || agent.agentRunId === initialFocusedAgentRunId
-      ? await fetchExactTeamMemberRunState(input.teamRunId, agent.agentRunId)
-      : await fetchBestEffortTeamMemberRunState(input.teamRunId, agent.agentRunId);
+      ? await fetchExactTeamMemberRunState(input.teamRunId, agent)
+      : await fetchBestEffortTeamMemberRunState(input.teamRunId, agent);
     stateByAgentRunId.set(agent.agentRunId, state);
   }));
   // A member whose state could not be loaded keeps a null projection: it is not marked authoritative,

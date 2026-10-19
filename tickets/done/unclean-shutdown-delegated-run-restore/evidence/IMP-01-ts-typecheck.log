@@ -1,0 +1,7 @@
+# Check: IMP-01
+# Command: pnpm -C autobyteus-ts exec tsc --noEmit -p tsconfig.build.json
+# Commit: a9b5230505
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T15:01:41Z
+
+tsc exit=0

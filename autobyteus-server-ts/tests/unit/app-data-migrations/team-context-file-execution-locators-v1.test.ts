@@ -3,6 +3,12 @@ import { TeamContextFileLocatorTransition } from "../../../src/app-data-migratio
 import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
+import { convertMessageLogsAsOnStartup } from "../../helpers/append-only-message-log-startup.js";
+import { InMemoryMigrationLedger, runStart } from "../../helpers/migration-start-harness.js";
+import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, AppendOnlyMessageLogsV1AppDataMigration } from "../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
+import { RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/raw-trace-rotation-layout-migration.js";
+import { MessageLog } from "../../../src/run-history/store/message-log.js";
+
 import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import { ContextFileOwnerResolver } from "../../../src/context-files/services/context-file-owner-resolver.js";
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
@@ -258,7 +264,14 @@ const addStandalone = async (memory: string, id: string, uri?: string) => {
   if (uri) await put(path.join(dir, "raw_traces_active.jsonl"), trace(uri));
   return dir;
 };
-const readiness = (memory: string) => new RootRunPackageReadinessIndex(memory);
+/**
+ * Current admission as a real start reaches it: the append-only message log conversion, registered after
+ * this migration, converts the JSON logs on the same start before the runtime admits runs.
+ */
+const readiness = async (memory: string) => {
+  await convertMessageLogsAsOnStartup(memory);
+  return new RootRunPackageReadinessIndex(memory);
+};
 
 describe("scoped recovery and independent current admission", () => {
   it("preserves empty/nonempty missing-tree roots with warnings while converting an independent current package", async () => {
@@ -272,7 +285,7 @@ describe("scoped recovery and independent current admission", () => {
     expect(result.summary.details.find(d => d.itemId === "PRESERVED_MISSING_TREE")?.message).toContain("2 item(s)");
     expect(await fs.readFile(residue, "utf8")).toBe("unchanged incomplete bytes — not a current trace");
     expect((await fs.stat(residue)).mtimeMs).toBe(before.mtimeMs);
-    const index = readiness(f.memory); await index.rebuild();
+    const index = await readiness(f.memory); await index.rebuild();
     expect(index.listAdmitted("agent_team")).toEqual(["team"]);
     expect(await f.migrate()).toMatchObject({status: "SUCCEEDED_WITH_WARNINGS"});
     await index.rebuild(); expect(index.listAdmitted("agent_team")).toEqual(["team"]);
@@ -288,7 +301,7 @@ describe("scoped recovery and independent current admission", () => {
     expect(await f.migrate()).toMatchObject({status: "SUCCEEDED_WITH_WARNINGS", summary: {failedCount: 0, migratedCount: 2}});
     expect(await fs.readFile(a.source, "utf8")).toBe(trace(current("B-agent", "B")));
     expect(await fs.readFile(b.source, "utf8")).toBe(trace(unavailable));
-    const index = readiness(f.memory); await index.rebuild();
+    const index = await readiness(f.memory); await index.rebuild();
     expect(index.listAdmitted("agent_team")).toEqual(["A", "B", "team"]);
     expect(index.listAdmitted("agent")).toEqual(["solo"]);
     await index.admitCurrent("agent_team", "A");
@@ -305,7 +318,7 @@ describe("scoped recovery and independent current admission", () => {
     await addTeam(f.memory, "A", old("B")); await addTeam(f.memory, "B", old("A"));
     await addStandalone(f.memory, "fresh");
     expect(await f.migrate()).toMatchObject({status: "SUCCEEDED"});
-    const index = readiness(f.memory); await index.rebuild();
+    const index = await readiness(f.memory); await index.rebuild();
     expect(index.listAdmitted("agent_team")).toEqual(["A", "B", "team"]);
     expect(index.listAdmitted("agent")).toEqual(["fresh"]);
     // References are operation-scoped; structural admission never scans trace payloads.
@@ -326,7 +339,7 @@ describe("scoped recovery and independent current admission", () => {
       ? {outcome: "not_renamed", stage: "rename", file: input.file, cause: new Error("test attempt failure")}
       : write(input));
     expect(await f.migrate(writer)).toMatchObject({status: "FAILED", summary: {migratedCount: 1, failedCount: 1}});
-    const index = readiness(f.memory); await index.rebuild();
+    const index = await readiness(f.memory); await index.rebuild();
     expect(index.listAdmitted("agent_team")).toEqual(["A", "team"]);
     expect(await fs.readFile(a.source, "utf8")).toBe(trace(old("A")));
     expect(await f.migrate()).toMatchObject({status: "SUCCEEDED"});
@@ -355,7 +368,7 @@ it("completes warnings with ALL historical runs excluded and still publishes new
   await put(path.join(memory, "agents", "no-metadata", "raw_traces_active.jsonl"), trace(old()));
   const migration = new TeamContextFileExecutionLocatorsV1AppDataMigration(memory, () => "http://localhost:8000");
   expect(await migration.execute()).toMatchObject({status: "SUCCEEDED_WITH_WARNINGS", summary: {failedCount: 0, migratedCount: 0}});
-  const index = readiness(memory); await index.rebuild();
+  const index = await readiness(memory); await index.rebuild();
   expect(index.listAdmitted("agent_team")).toEqual([]); expect(index.listAdmitted("agent")).toEqual([]);
   // New-work persistence/publication uses the production catalog, not a history-admission override.
   const template = await addStandalone(memory, "metadata-template");
@@ -383,4 +396,46 @@ it("preserves an invalid sidecar and bounds missing-package diagnostics without 
   expect(missing.message.match(/agent_team:missing-/g)).toHaveLength(5);
   expect(await fs.readFile(f.source, "utf8")).toBe(trace(old()));
   expect(await fs.readFile(path.join(f.team, "team_communication_messages.json"), "utf8")).toBe("invalid-json");
+});
+
+/**
+ * Same-ID repairs R-A, R-B, R-C (design ARCH-F-001, DEC-008), in real runner order across two starts:
+ * locators-v1 is blocked by a failed prerequisite in start 1 while the append-only conversion converts
+ * the team's log (one message in a sealed file, one in the active file); in start 2 it admits the package
+ * by its append-only log, reads its messages and converts the locators in both files, and the run stays
+ * admitted by current readiness.
+ */
+it("converts message locators in a converted log's sealed and active files when it runs after the conversion (F-LOCATORS-AFTER-OURS)", async () => {
+  const f = await setup();
+  await fs.rm(path.join(f.task, "context_files", filename));
+  const big = {...message(old()), messageId: "m-big", senderAgentRunId: "configured", receiverAgentRunId: "task", content: "x".repeat(4 * 1024 * 1024 + 10)};
+  const small = {...message(old()), messageId: "m-small", senderAgentRunId: "task", receiverAgentRunId: "configured", createdAt: "2026-09-01T00:00:01.000Z"};
+  await put(path.join(f.team, "team_communication_messages.json"), {schemaVersion: 1, rootTeamRunId: "team", messages: [big, small]});
+  const ledger = new InMemoryMigrationLedger();
+  const real = () => [
+    new TeamContextFileExecutionLocatorsV1AppDataMigration(f.memory, () => "https://node.example:8000"),
+    new AppendOnlyMessageLogsV1AppDataMigration(f.memory, { ledger }),
+  ];
+  const first = await runStart({ ledger, logsDir: path.join(f.root, "logs"), real: real(), stubs: { [RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID]: "FAILED" } });
+  expect(first[ID]).toBe("NOT_RUN");
+  expect(first[APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID]).toBe("FAILED");
+  const sealed = path.join(f.team, "team_communication_messages_000001.jsonl");
+  const active = path.join(f.team, "team_communication_messages_active.jsonl");
+  expect((await fs.readdir(f.team)).filter((name) => name.startsWith("team_communication")).sort())
+    .toEqual(["team_communication_messages_000001.jsonl", "team_communication_messages_active.jsonl"]);
+  const sealedBefore = await fs.readFile(sealed, "utf8");
+  expect(JSON.parse(sealedBefore).referenceFiles).toEqual([old()]);
+
+  const second = await runStart({ ledger, logsDir: path.join(f.root, "logs"), real: real() });
+  expect(second[ID]).toMatch(/^SUCCEEDED/);
+  expect(second[APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID]).toBe("SUCCEEDED");
+  // Only the locator changed, in the sealed file (the one bounded rewrite, DEC-008) and in the active file.
+  const sealedAfter = await fs.readFile(sealed, "utf8");
+  expect(sealedAfter).toBe(sealedBefore.replace(JSON.stringify(old()), JSON.stringify(current())));
+  expect(JSON.parse(await fs.readFile(active, "utf8")).referenceFiles).toEqual([current()]);
+  const index = new RootRunPackageReadinessIndex(f.memory); await index.rebuild();
+  expect(index.listAdmitted("agent_team")).toContain("team");
+  // The current reader reads both messages with the converted locator.
+  expect((await new MessageLog(f.team, "team_communication_messages").read())?.map((entry) => [entry.messageId, entry.referenceFiles]))
+    .toEqual([["m-big", [current()]], ["m-small", [current()]]]);
 });

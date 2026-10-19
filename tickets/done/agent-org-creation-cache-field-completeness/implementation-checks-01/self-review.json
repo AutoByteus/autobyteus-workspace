@@ -1,0 +1,23 @@
+{
+  "historicalContextVerifiedCount": 18,
+  "allContextBytesMatchInventory": true,
+  "preservedRefStillExact": "d8bac598606001b702e300eeaeefe06c3caf0d3d",
+  "sourceCandidateMatches": true,
+  "files": {
+    "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts": {
+      "blob": "c655d8e3cdf76f04be74100196abafef302883f7",
+      "nonEmptyLines": 59,
+      "productionDeltaLines": 1
+    },
+    "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts": {
+      "blob": "2817cb65d523a03c9a97d96b38415b5808d6e30f",
+      "nonEmptyLines": 25,
+      "productionDeltaLines": 1
+    }
+  },
+  "noNewSchemaStoreCachePolicyUIOrTeamProductionChange": true,
+  "newCases": "4 preserved create/edit + 4 exact populated selection cases + 2 real-cache diagnostic catalog cases; raw response, existing rows and omitted-input preservation strengthened",
+  "scopeGuardrail": "R1 confirmed; process Task/closed UI/old Fail immutable; no pass inherited",
+  "resourcesStarted": "No desktop, browser, backend, providers, model or persistent dev server started; commands are preparation and Nuxt unit/guard checks only",
+  "currentAppProof": "Pending API/E2E NEW source-current isolated UI create/edit and cleanup, not substituted by old asar or historical logs"
+}

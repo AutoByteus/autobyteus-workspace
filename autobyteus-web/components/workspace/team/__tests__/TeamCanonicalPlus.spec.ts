@@ -59,8 +59,8 @@ beforeEach(async () => {
     if (name === 'GetTeamRunResumeConfig') return resume(variables.teamRunId === 'new-team' ? createdTree : canonical)
     if (name === 'TeamRunModelOptions') return { data: { teamRunModelOptions: ['/', '/lead'].map(scopeAddress => ({ scopeAddress, currentModelIdentifier: 'model', currentModel: choice('model'), replacements: [choice('replacement-model')], unavailableReason: null })) } }
     if (name === 'RuntimeCurrentModelDescriptors') return { data: { runtimeCurrentModelDescriptors: variables.identifiers.map((identifier: string) => ({ identifier, model: { modelIdentifier: identifier, name: identifier, canonicalName: identifier, providerName: 'OpenAI', description: null, configSchema: null } })) } }
+    if (name === 'GetTeamMemberFileChanges') return { data: { getTeamMemberFileChanges: [] } }
     if (variables.agentRunId) return { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
-    if (name === 'GetRunFileChanges') return { data: { getRunFileChanges: [] } }
     throw new Error('Unexpected query: ' + name)
   })
   io.mutate.mockImplementation(async ({ mutation, variables: { input } }) => {

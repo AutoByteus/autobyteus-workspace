@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-mounted-apis.py", line 4, in <module>
+    assert json.loads((E/(MODE+'-files-result.json')).read_text())['result']=='Pass'
+AssertionError

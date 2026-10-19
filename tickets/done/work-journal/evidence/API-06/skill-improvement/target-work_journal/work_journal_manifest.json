@@ -1,0 +1,14 @@
+{
+  "run_id": "journal_skill_target_8db4d0b3_40f5_4caf_a411_b76_9b6a877478e04f3aa9a4e032ddab53cc",
+  "runtime_kind": "autobyteus",
+  "renderer_revision": 1,
+  "files": [
+    {
+      "journal_file": "work_journal_active.md",
+      "source_file": "raw_traces_active.jsonl",
+      "source_record_count": 8,
+      "state": "open",
+      "content_sha256": "5f278c6a079854d9dcc68149ec4297092e3fa235dfbd37000fea6ddd71ab34e8"
+    }
+  ]
+}

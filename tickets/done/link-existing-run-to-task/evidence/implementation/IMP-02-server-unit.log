@@ -1,0 +1,9 @@
+# IMP-02 server unit suite (excerpt; full log not kept, 11k lines of passing output)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit
+# Commit: ffeea43dac (worktree content identical when run)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T19:04Z
+
+ Test Files  727 passed | 4 skipped (731)
+      Tests  5933 passed | 7 skipped (5940)
+   Duration  541.08s (transform 15.26s, setup 6.30s, import 274.59s, tests 193.33s, environment 777ms)

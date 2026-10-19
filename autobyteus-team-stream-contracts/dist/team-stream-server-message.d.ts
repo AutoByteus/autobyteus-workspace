@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, type TeamAgentMessageType } from "./team-agent-message-dtos.js";
+import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, teamSegmentContentBatchPayloadSchema, type TeamAgentMessageType } from "./team-agent-message-dtos.js";
 import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
-import { teamCollaboratorAddedPayloadSchema, teamTaskExecutionStartedPayloadSchema, teamTaskExecutionsClosedPayloadSchema, teamTaskExecutionsReopenedPayloadSchema } from "./team-task-execution-message-dtos.js";
+import { teamDelegatedLaunchSelectionsChangedPayloadSchema, teamTaskExecutionStartedPayloadSchema, teamTaskExecutionsClosedPayloadSchema, teamTaskExecutionsReopenedPayloadSchema } from "./team-task-execution-message-dtos.js";
 export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
     root_team_run_id: z.ZodString;
     base_change_sequence: z.ZodNumber;
@@ -25,8 +25,7 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             team_run_id: string;
             coordinator_address: string;
             default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
-            members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
-            collaborators: readonly import("./team-execution-view-dtos.js").CollaboratorEntryDto[];
+            members: readonly import("./team-execution-view-dtos.js").ConfiguredAgentExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         }>;
     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
@@ -48,8 +47,7 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             team_run_id: string;
             coordinator_address: string;
             default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
-            members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
-            collaborators: readonly import("./team-execution-view-dtos.js").CollaboratorEntryDto[];
+            members: readonly import("./team-execution-view-dtos.js").ConfiguredAgentExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         }>;
     }>, unknown>>;
@@ -243,6 +241,27 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         error: z.ZodNullable<z.ZodString>;
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
+    }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"SEGMENT_CONTENT_BATCH">;
+    payload: z.ZodObject<{
+        change_sequence: z.ZodNumber;
+        change_sequence_through: z.ZodNumber;
+        items: z.ZodArray<z.ZodObject<{
+            segment_id: z.ZodString;
+            turn_id: z.ZodString;
+            segment_type: z.ZodEnum<{
+                text: "text";
+                tool_call: "tool_call";
+                write_file: "write_file";
+                edit_file: "edit_file";
+                run_bash: "run_bash";
+                reasoning: "reasoning";
+                media: "media";
+            }>;
+            delta: z.ZodString;
+            agent_run_id: z.ZodString;
+        }, z.core.$strict>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"AGENT_STATUS">;
@@ -485,6 +504,16 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         latest_prompt_tokens: z.ZodNullable<z.ZodNumber>;
         effective_context_window_tokens: z.ZodNullable<z.ZodNumber>;
         context_window_usage_percent: z.ZodNullable<z.ZodNumber>;
+        context_compaction_threshold_tokens: z.ZodNullable<z.ZodNumber>;
+        reports_model_call: z.ZodBoolean;
+        output_throughput: z.ZodNullable<z.ZodObject<{
+            method: z.ZodEnum<{
+                generation: "generation";
+                end_to_end: "end_to_end";
+            }>;
+            output_tokens: z.ZodNumber;
+            duration_ms: z.ZodNumber;
+        }, z.core.$strict>>;
         quality_flags: z.ZodArray<z.ZodString>;
         run_summary_after_event: z.ZodNullable<z.ZodObject<{
             run_id: z.ZodString;
@@ -614,12 +643,14 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             latest_prompt_tokens: z.ZodNullable<z.ZodNumber>;
             effective_context_window_tokens: z.ZodNullable<z.ZodNumber>;
             context_window_usage_percent: z.ZodNullable<z.ZodNumber>;
+            context_compaction_threshold_tokens: z.ZodNullable<z.ZodNumber>;
             latest_model_provider: z.ZodNullable<z.ZodString>;
             latest_model_identifier: z.ZodNullable<z.ZodString>;
             latest_selected_raw_model_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             has_cache_write_rate_assumption: z.ZodOptional<z.ZodBoolean>;
             latest_runtime_kind: z.ZodNullable<z.ZodString>;
             usage_report_count: z.ZodNumber;
+            revision: z.ZodNumber;
             updated_at: z.ZodNullable<z.ZodString>;
         }, z.core.$strict>>;
         change_sequence: z.ZodNumber;
@@ -826,8 +857,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 team_run_id: string;
                 coordinator_address: string;
                 default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
-                members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
-                collaborators: readonly import("./team-execution-view-dtos.js").CollaboratorEntryDto[];
+                members: readonly import("./team-execution-view-dtos.js").ConfiguredAgentExecutionDto[];
                 task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             }>;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
@@ -849,8 +879,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 team_run_id: string;
                 coordinator_address: string;
                 default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
-                members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
-                collaborators: readonly import("./team-execution-view-dtos.js").CollaboratorEntryDto[];
+                members: readonly import("./team-execution-view-dtos.js").ConfiguredAgentExecutionDto[];
                 task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             }>;
         }>, unknown>>;
@@ -995,6 +1024,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             delegator_agent_run_id: string | null;
             started_at: string;
             source?: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_agent";
             address: string;
@@ -1003,24 +1033,27 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             delegator_agent_run_id: string | null;
             started_at: string;
             source?: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown>>, z.ZodType<Readonly<{
             kind: "task_team";
             address: string;
             team_run_id: string;
-            members: readonly import("./team-execution-view-dtos.js").TaskTeamMemberExecutionDto[];
+            members: readonly import("./team-execution-view-dtos.js").TaskTeamAgentExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             delegator_agent_run_id: string | null;
             started_at: string;
             source?: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_team";
             address: string;
             team_run_id: string;
-            members: readonly import("./team-execution-view-dtos.js").TaskTeamMemberExecutionDto[];
+            members: readonly import("./team-execution-view-dtos.js").TaskTeamAgentExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             delegator_agent_run_id: string | null;
             started_at: string;
             source?: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown>>]>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
@@ -1044,10 +1077,32 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         }, z.core.$strict>]>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
-    type: z.ZodLiteral<"COLLABORATOR_ADDED">;
+    type: z.ZodLiteral<"DELEGATED_LAUNCH_SELECTIONS_CHANGED">;
     payload: z.ZodObject<{
         change_sequence: z.ZodNumber;
-        collaborator: z.ZodType<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown, z.core.$ZodTypeInternals<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown>>;
+        selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+            agent_run_id: z.ZodString;
+            selection: z.ZodType<Readonly<{
+                llm_model_identifier: string;
+                llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+                selected_at: string;
+            }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+                llm_model_identifier: string;
+                llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+                selected_at: string;
+            }>, unknown>>;
+        }, z.core.$strict>, z.ZodObject<{
+            team_run_id: z.ZodString;
+            selection: z.ZodType<Readonly<{
+                llm_model_identifier: string;
+                llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+                selected_at: string;
+            }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+                llm_model_identifier: string;
+                llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
+                selected_at: string;
+            }>, unknown>>;
+        }, z.core.$strict>]>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TEAM_COMMUNICATION_MESSAGE">;
@@ -1151,6 +1206,9 @@ type TeamAgentServerMessage = {
     }>;
 }[TeamAgentMessageType];
 export type TeamStreamServerMessage = TeamAgentServerMessage | Readonly<{
+    type: "SEGMENT_CONTENT_BATCH";
+    payload: Readonly<z.infer<typeof teamSegmentContentBatchPayloadSchema>>;
+}> | Readonly<{
     type: "CONNECTED";
     payload: z.infer<typeof teamConnectedPayloadSchema>;
 }> | Readonly<{
@@ -1172,8 +1230,8 @@ export type TeamStreamServerMessage = TeamAgentServerMessage | Readonly<{
     type: "TASK_EXECUTIONS_REOPENED";
     payload: z.infer<typeof teamTaskExecutionsReopenedPayloadSchema>;
 }> | Readonly<{
-    type: "COLLABORATOR_ADDED";
-    payload: z.infer<typeof teamCollaboratorAddedPayloadSchema>;
+    type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED";
+    payload: z.infer<typeof teamDelegatedLaunchSelectionsChangedPayloadSchema>;
 }> | Readonly<{
     type: "TEAM_COMMUNICATION_MESSAGE";
     payload: z.infer<typeof teamCommunicationMessagePayloadSchema>;

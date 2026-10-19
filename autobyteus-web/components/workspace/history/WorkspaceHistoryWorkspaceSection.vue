@@ -123,6 +123,7 @@
             type="button"
             data-test="workspace-agent-run-row"
             :data-run-id="run.runId"
+            :aria-current="state.selectedRunId === run.runId && !collaboration.selectedChild(run.runId) ? 'true' : undefined"
             class="group/run-row flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors"
             :class="state.selectedRunId === run.runId && !collaboration.selectedChild(run.runId)
               ? 'bg-indigo-50 text-indigo-900'
@@ -141,7 +142,7 @@
                 type="button"
                 data-test="terminate-agent-run"
                 :data-run-id="run.runId"
-                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50"
                 :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_run')"
                 :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_run')"
                 :disabled="state.isRunTerminating(run.runId)"
@@ -191,6 +192,7 @@
             :run-selected="state.selectedRunId === run.runId"
             :has-collaboration="run.hasCollaboration === true"
             @select-run="actions.onSelectRun(run)"
+            @open-run="selectAgentRun(run)"
           />
           </template>
         </div>
@@ -221,12 +223,9 @@
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
               :class="state.isTeamDefinitionExpanded(workspacePresentationId, group.key) ? 'rotate-0' : '-rotate-90'"
             />
-            <TeamActivityDot
+            <TeamAggregateStatusDot
               class="mr-1.5"
-              :is-active="group.hasActiveRuns"
-              :label="$t(group.hasActiveRuns
-                ? 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_runs'
-                : 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_active_team_runs')"
+              :status="teamDefinitionGroupStatus(group.runs)"
             />
             <span
               class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
@@ -278,12 +277,9 @@
                     :class="state.isTeamExpanded(team.teamRunId) ? 'rotate-0' : '-rotate-90'"
                     data-test="workspace-team-run-disclosure"
                   />
-                  <TeamActivityDot
+                  <TeamAggregateStatusDot
                     class="mr-1.5"
-                    :is-active="team.isActive"
-                    :label="$t(team.isActive
-                      ? 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_run'
-                      : 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.inactive_team_run')"
+                    :status="teamRunStatus(team)"
                   />
                   <span class="truncate font-medium">{{ formatTeamRunLabel(team) }}</span>
                 </button>
@@ -292,7 +288,7 @@
                   <button
                     v-if="team.isActive"
                     type="button"
-                    class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                    class="inline-flex h-5 w-5 items-center justify-center rounded text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
                     :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
                     :disabled="state.isTeamTerminating(team.teamRunId)"
@@ -337,6 +333,7 @@
                 :format-relative-time="formatRelativeTime"
                 @select="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => selectTeamDisplayRow(team, row)"
                 @toggle="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => toggleTeamDisplayRow(team, row)"
+                @open-run="actions.onOpenTeamRun(team, workspaceNode.workspaceId)"
               />
             </div>
           </div>
@@ -358,7 +355,8 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
-import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
+import TeamAggregateStatusDot from '~/components/workspace/history/TeamAggregateStatusDot.vue';
+import { teamDefinitionGroupStatus, teamRunStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
 import WorkspaceTeamExecutionTree from '~/components/workspace/history/WorkspaceTeamExecutionTree.vue';
 import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue';
 import AgentRunTaskRows from '~/components/workspace/history/AgentRunTaskRows.vue';
@@ -431,11 +429,6 @@ onBeforeUnmount(() => {
   if (relativeTimeTimer !== null) clearInterval(relativeTimeTimer);
 });
 
-const opensOnAppear = (team: TeamTreeNode, rowKey: string): boolean => {
-  const row = team.executionRows.find((candidate) => candidate.rowKey === rowKey);
-  return row?.kind === 'transient_execution' && row.opensOnAppear === true;
-};
-
 const isTeamDisplayRowExpanded = (
   team: TeamTreeNode,
   rowKey: string,
@@ -443,7 +436,6 @@ const isTeamDisplayRowExpanded = (
   workspacePresentationId.value,
   team.teamRunId,
   rowKey,
-  opensOnAppear(team, rowKey),
 );
 
 const toggleTeamDisplayRow = (
@@ -453,7 +445,6 @@ const toggleTeamDisplayRow = (
   workspacePresentationId.value,
   team.teamRunId,
   row.rowKey,
-  opensOnAppear(team, row.rowKey),
 );
 
 const selectTeamDisplayRow = (

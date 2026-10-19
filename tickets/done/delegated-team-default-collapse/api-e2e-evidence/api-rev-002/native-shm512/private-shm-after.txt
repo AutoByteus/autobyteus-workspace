@@ -1,0 +1,2 @@
+Filesystem     1B-blocks  Used Available Use% Mounted on
+apirev002-shm  536870912     0 536870912   0% /dev/shm

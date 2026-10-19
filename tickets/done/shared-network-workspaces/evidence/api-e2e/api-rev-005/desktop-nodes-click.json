@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "FD474C3349B05032A029E599008E6BDE",
+    "--script",
+    "async()=>await __abDemo.click({text:\"Nodes\"})"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"FD474C3349B05032A029E599008E6BDE\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes\",\"output_mode\":\"inline\",\"result\":{\"ok\":true,\"action\":\"click\",\"target\":{\"text\":\"Nodes\"}}}}\n",
+  "stderr": ""
+}

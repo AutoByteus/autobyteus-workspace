@@ -18,7 +18,6 @@ vi.mock('~/composables/useLocalization', () => ({
         'agentTeams.components.agentTeams.AgentTeamCard.no_members_defined': 'No members defined',
         'agentTeams.components.agentTeams.AgentTeamCard.coordinator': 'Coordinator',
         'agentTeams.components.agentTeams.AgentTeamCard.members': 'Members',
-        'agentTeams.components.agentTeams.AgentTeamCard.nested_teams': 'Nested Teams',
         'agentTeams.components.agentTeams.AgentTeamCard.notAssigned': 'Not assigned',
         'agentTeams.components.agentTeams.AgentTeamCard.noDescription': 'No description',
       };
@@ -63,7 +62,6 @@ describe('AgentTeamCard', () => {
               'agentTeams.components.agentTeams.AgentTeamCard.no_members_defined': 'No members defined',
               'agentTeams.components.agentTeams.AgentTeamCard.coordinator': 'Coordinator',
               'agentTeams.components.agentTeams.AgentTeamCard.members': 'Members',
-              'agentTeams.components.agentTeams.AgentTeamCard.nested_teams': 'Nested Teams',
             };
 
             return translations[key] ?? key;

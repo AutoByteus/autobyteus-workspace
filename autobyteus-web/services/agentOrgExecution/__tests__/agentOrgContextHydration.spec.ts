@@ -29,7 +29,7 @@ vi.mock('~/stores/runHistoryStore', () => ({
 import { stageAgentOrgExecutionContext } from '../agentOrgContextHydration'
 
 import { taskBearingView } from './taskBearingOrgFixture'
-import { GetAgentOrgMemberRunProjection, GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
+import { GetAgentOrgMemberFileChanges, GetAgentOrgMemberRunProjection, GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 
 const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem => ({
   stableKey: 'agent_org:org-run',
@@ -83,7 +83,11 @@ describe('staged AgentOrg context hydration and publication', () => {
     })
     const queried = (document: unknown) => mocks.query.mock.calls.filter(([options]) => options.query === document)
     expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(7)
-    expect(queried(GetRunFileChanges)).toHaveLength(7)
+    expect(queried(GetAgentOrgMemberFileChanges)).toHaveLength(7)
+    expect(queried(GetAgentOrgMemberFileChanges).map(([options]) => options.variables)).toContainEqual({
+      orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
+    })
+    expect(queried(GetRunFileChanges)).toHaveLength(0)
     expect(mocks.query).toHaveBeenCalledWith(expect.objectContaining({
       variables: {
         orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
@@ -123,10 +127,12 @@ describe('staged AgentOrg context hydration and publication', () => {
       createdAt: '2026-10-06T10:00:00.000Z', updatedAt: '2026-10-06T10:00:00.000Z',
     })
     const serve = (failingArtifactsFor?: string) => mocks.query.mockImplementation(async ({ query, variables }) => {
-      if (query === GetRunFileChanges) {
-        return variables.runId === failingArtifactsFor
-          ? { data: null, errors: [{ message: `artifacts unavailable for ${variables.runId}` }] }
-          : { data: { getRunFileChanges: [artifact(variables.runId, '1.png'), artifact(variables.runId, '2.png')] } }
+      if (query === GetRunFileChanges) throw new Error('org member artifacts are read through the org, not by run id')
+      if (query === GetAgentOrgMemberFileChanges) {
+        expect(variables.orgRunId).toBe('org-run')
+        return variables.agentRunId === failingArtifactsFor
+          ? { data: null, errors: [{ message: `artifacts unavailable for ${variables.agentRunId}` }] }
+          : { data: { getAgentOrgMemberFileChanges: [artifact(variables.agentRunId, '1.png'), artifact(variables.agentRunId, '2.png')] } }
       }
       return { data: { getAgentOrgMemberRunProjection: {
         agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
@@ -248,25 +254,6 @@ describe('staged AgentOrg context hydration and publication', () => {
     expect(context.getAgentContext('agent-task-worker')!.state.currentStatus).toBe(AgentStatus.Offline)
     expect(context.phase).toBe('live')
     expect(context.error).toBeNull()
-  })
-
-  it('hosts a collaborator Team in place on collaborator_added: Offline contexts and an opened Team row (no reload)', async () => {
-    const view = taskBearingView()
-    const context = await hydrateAgentOrgExecutionContext({ orgRunId: 'org-run', view })
-    const launch = view.execution_tree.rootOrg.defaultLaunchConfiguration
-    expect(context.applyEvent(9, { kind: 'collaborator_added', collaborator: {
-      kind: 'agent_team', address: '/product_team', teamDefinitionId: 'product-team', teamRunId: 'product-run',
-      coordinatorAddress: '/product_team/product_prototyper',
-      members: [{ address: '/product_team/product_prototyper', agentDefinitionId: 'prototyper', agentRunId: 'pp-run', platformAgentRunId: null }],
-      handoffs: [], defaultLaunchConfiguration: launch, taskExecutions: [], addedAt: view.execution_tree.createdAt, addedViaAgentRunId: 'agent-director',
-    } } as AgentOrgExecutionEventDto)).toBe('applied')
-    expect(context.phase).toBe('live')
-    expect(context.getAgentContext('pp-run')).toMatchObject({ config: { agentDefinitionId: 'prototyper', agentDefinitionName: 'product prototyper' } })
-    expect(context.getAgentContext('pp-run')!.state.currentStatus).toBe(AgentStatus.Offline)
-    const rows = projectAgentOrgHistoryRows({ run: liveHistoryRun({ ...view, execution_tree: context.executionTree } as never), context, isTeamExpanded: () => true })
-      .map((item) => item.row)
-    expect(rows.find((row) => row.kind === 'task_team' && row.teamRunId === 'product-run')).toBeTruthy()
-    expect(rows.find((row) => 'agentRunId' in row && row.agentRunId === 'pp-run')).toBeTruthy()
   })
 })
 

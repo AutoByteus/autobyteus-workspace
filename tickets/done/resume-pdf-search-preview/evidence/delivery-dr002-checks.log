@@ -1,0 +1,22 @@
+DR-002 final current candidate/docs/static checks 2026-10-13T04:19:43.095524+00:00
+$ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 61628
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit=0
+$ python3 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 6514
+exit=0
+$ git diff --check
+exit=0
+$ git diff --check origin/personal..HEAD -- . :!tickets/** :!test-support/file-explorer/resume-preview.pdf
+exit=0
+$ git diff --exit-code 32cab9e3 HEAD -- . :!tickets/** :!autobyteus-server-ts/docs/modules/file_explorer.md
+exit=0
+$ git merge-base --is-ancestor origin/personal HEAD
+exit=0
+Prior DR001 entry unchanged; designer receipt/blocker unchanged;878-byte validatedPDF unchanged. No staged files or source/test/harness modifications.
+185current absolute cumulative references checked; docs links/script/preserved global policies verified; tracked+explicit current candidate and hypothetical archived artifact hygienePass. No archive/staging performed.
+Full raw-log/PDF whitespace intentionally not claimed clean. Current native byte/render/security/restart proof inspected, strict renderer errors0. User acceptance/host authority/target outcome/finalization/final cleanup remain absent.

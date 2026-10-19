@@ -1,4 +1,3 @@
-import type { StandaloneRootCollaborators } from "../../../src/standalone-agent-run-root/services/standalone-root-collaborators.js";
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -7,7 +6,7 @@ import { AgentDefinition } from '../../../src/agent-definition/domain/models.js'
 import { AgentTeamDefinition, TeamMember } from '../../../src/agent-team-definition/domain/agent-team-definition.js';
 import { createCollaboratorAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js';
 import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
-import { RootedAgentMemoryLocator } from '../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js';
+import { AgentRunMemoryLocator } from '../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js';
 import { StandaloneAgentRunRootManager } from '../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js';
 import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
 import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
@@ -15,6 +14,11 @@ import { AgentCollaborationStreamHandler } from '../../../src/services/agent-str
 import { CollaborationStreamServerMessageSchema } from '@autobyteus/collaboration-stream-contracts';
 import { testActivationManager } from '../../fixtures/agent-run-preparation-fixtures.js';
 import type { AgentRun } from '../../../src/agent-execution/domain/agent-run.js';
+import { StandaloneRootPackageStore } from '../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js';
+import { emptyStandaloneRootMessages, emptyStandaloneRootTree } from '../../../src/standalone-agent-run-root/domain/standalone-root-tree.js';
+import { AgentMemoryLayout } from '../../../src/agent-memory/store/agent-memory-layout.js';
+import { InMemoryTaskExecutionResources } from '../../fixtures/task-execution-resource-fixtures.js';
+import type { TaskExecution } from '../../../src/run-history/domain/run-execution-tree-shared-records.js';
 import { createRecoveryFixture } from '../../unit/agent-execution/recovery-native-fixture.js';
 
 export const HOST = 'native-compaction-host';
@@ -69,6 +73,7 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
     });
     const runManager = testActivationManager({
       newPreparation: prepare,
+      restorePreparation: prepare,
       getActiveRun: (id: string) => active.get(id) ?? null,
       prepareAgentRunTermination: (run: AgentRun) => run.prepareTermination(),
       releaseExactRun: async (run: AgentRun) => {
@@ -81,7 +86,7 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
         return result;
       },
     });
-    const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+    const memoryLocator = new AgentRunMemoryLocator({ memoryDir });
     const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
     const metadata = {
       runId: HOST, agentDefinitionId: 'host', memoryDir: path.join(memoryDir, 'agents', HOST),
@@ -91,8 +96,29 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
     };
     const restoreHost = vi.fn(async () => ({ run: hostRun as unknown as AgentRun, metadata: metadata as never }));
     const terminateHost = vi.fn(async () => ({ outcome: 'not_active' as const, runtimeKind: null }));
+    // A previously delegated copy that was stopped: the stored package holds it, nothing is live, so the
+    // root lists it Offline and restores it only when its run ID is next addressed.
+    const startedAt = '2026-10-01T00:00:01.000Z';
+    const launch = { runtimeKind: 'autobyteus' as never, llmModelIdentifier: 'parent', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null };
+    const delegated: TaskExecution = kind === 'agent'
+      ? { address: '/reviewer' as never, agentRunId: native.run.runId, platformAgentRunId: null, delegatorAgentRunId: HOST, startedAt,
+          source: { kind: 'agent', agentDefinitionId: 'reviewer', launchConfiguration: launch } }
+      : { address: '/team' as never, teamRunId: 'dormant-team', delegatorAgentRunId: HOST, startedAt, taskExecutions: [],
+          members: [
+            { address: '/team/lead' as never, agentRunId: native.run.runId, platformAgentRunId: null },
+            { address: '/team/peer' as never, agentRunId: 'dormant-peer', platformAgentRunId: null },
+          ],
+          source: { kind: 'agent_team', teamDefinitionId: 'team', coordinatorAddress: '/team/lead' as never, handoffs: [],
+            members: [{ address: '/team/lead' as never, agentDefinitionId: 'lead' }, { address: '/team/peer' as never, agentDefinitionId: 'peer' }],
+            defaultLaunchConfiguration: launch } };
+    const store = new StandaloneRootPackageStore();
+    const collaborationDir = new AgentMemoryLayout(memoryDir).getAgentRunCollaborationDirPath(HOST);
+    const seeded = emptyStandaloneRootTree({ host: { address: '/host' as never, agentRunId: HOST, agentDefinitionId: 'host' }, createdAt: startedAt });
+    expect((await store.writeTree(collaborationDir, { ...seeded, taskExecutions: [delegated] })).outcome).toBe('committed');
+    expect((await store.writeMessages(collaborationDir, emptyStandaloneRootMessages(HOST))).outcome).toBe('committed');
+    const taskExecutionResources = new InMemoryTaskExecutionResources();
     manager = new StandaloneAgentRunRootManager({
-      memoryDir, activeRootDirectory: new ActiveCollaborationRootDirectory(),
+      memoryDir, taskExecutionResources, activeRootDirectory: new ActiveCollaborationRootDirectory(),
       definitions: { getAgentDefinitionById: catalog.getAgentDefinition },
       host: {
         getActiveRun: () => hostRun as unknown as AgentRun,
@@ -102,6 +128,9 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
         recordCollaborationPackageCreated: async () => {},
       },
       rootDependencies: {
+        taskExecutionResources,
+        // The stopped copy's saved conversation is the native fixture's own run.
+        activityInspector: { inspect: () => ({ kind: 'present' as const }) } as never,
         agentRunManager: runManager as never,
         memoryLocator,
         flatTeamExecutionFactory: new FlatTeamExecutionFactory({ agentRunManager: runManager as never, memoryLocator }),
@@ -118,14 +147,6 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
       },
     });
     const root = (await manager.resolveRoot(HOST))!;
-    // The collaborator is hosted Offline: the bring-in step of the host's first send_message_to its catalog
-    // address, without delivering that message (`@` only resolves the address).
-    const resolved = await root.resolveCollaboratorMentions({
-      focusedAgentRunId: HOST, mentions: [{ kind, definitionId: kind === 'agent' ? 'reviewer' : 'team' }],
-    });
-    if (!resolved.admitted) throw new Error(resolved.message);
-    const collaborators = (root as unknown as { collaborators: StandaloneRootCollaborators }).collaborators;
-    expect((await collaborators.bringInAt({ address: resolved.collaborators[0]!.address, senderRunId: HOST }))?.admitted).toBe(true);
     handler = new AgentCollaborationStreamHandler(manager);
     const streamHandler = handler;
     const rootManager = manager;

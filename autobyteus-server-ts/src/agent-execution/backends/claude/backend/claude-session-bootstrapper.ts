@@ -75,18 +75,17 @@ export class ClaudeSessionBootstrapper {
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
-    const preparedSkills =
-      await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
-        runId: runContext.runId,
-        onAcquired: guard.ownSkill, assertAccepting: guard.assertAccepting,
-        workingDirectory,
-        requests: configuredSkillBindings.map((binding) =>
-          binding.kind === "resolved"
-            ? { kind: "expose-resolved", skill: binding.skill }
-            : { kind: "reconcile-unresolved", name: binding.name }
-        ),
-        workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
-      });
+    const preparedSkills = await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
+      runId: runContext.runId,
+      onAcquired: guard.ownSkill, assertAccepting: guard.assertAccepting,
+      workingDirectory,
+      requests: configuredSkillBindings.map((binding) =>
+        binding.kind === "resolved"
+          ? { kind: "expose-resolved", skill: binding.skill }
+          : { kind: "reconcile-unresolved", name: binding.name }
+      ),
+      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
+    });
     guard.assertAccepting();
     const materializedConfiguredSkills = preparedSkills.materializedSkills;
     const configuredSkills = preparedSkills.effectiveRequests.flatMap((request) =>

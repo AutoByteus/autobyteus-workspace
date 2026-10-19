@@ -1,0 +1,69 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 7.268,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 62996,
+      "ppid": 62949,
+      "pgid": 62996,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch"
+    },
+    {
+      "pid": 63584,
+      "ppid": 62996,
+      "pgid": 62996,
+      "command": "node ./node_modules/.bin/../../../node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/vitest.mjs run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch"
+    },
+    {
+      "pid": 63592,
+      "ppid": 63584,
+      "pgid": 62996,
+      "command": "(esbuild)"
+    },
+    {
+      "pid": 63595,
+      "ppid": 63584,
+      "pgid": 62996,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/node_modules/prisma/build/index.js migrate reset --force --skip-generate"
+    },
+    {
+      "pid": 63602,
+      "ppid": 63584,
+      "pgid": 62996,
+      "command": "(node)"
+    },
+    {
+      "pid": 63721,
+      "ppid": 63602,
+      "pgid": 62996,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 63814,
+      "ppid": 63602,
+      "pgid": 62996,
+      "command": "(node)"
+    },
+    {
+      "pid": 63974,
+      "ppid": 63602,
+      "pgid": 62996,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs"
+    },
+    {
+      "pid": 64148,
+      "ppid": 63602,
+      "pgid": 62996,
+      "command": "(node)"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delivery-fixture-types-qjy3998p",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

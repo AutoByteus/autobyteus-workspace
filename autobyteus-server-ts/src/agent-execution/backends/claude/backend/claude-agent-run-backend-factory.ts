@@ -3,8 +3,7 @@ import type { AgentRunBackendPreparationRequest } from "../../agent-run-backend-
 import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
 import type { ClaudeRunContext } from "./claude-agent-run-context.js";
 import type { ClaudeSession } from "../session/claude-session.js";
-import { AgentRunConfig } from "../../../domain/agent-run-config.js";
-import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
+import { AgentRunContext } from "../../../domain/agent-run-context.js";
 import type { ClaudeSessionManager } from "../session/claude-session-manager.js";
 import type { ClaudeSessionBootstrapper } from "./claude-session-bootstrapper.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";

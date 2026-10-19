@@ -27,16 +27,33 @@ export class ListProjectTasksTool extends ProjectTaskNativeTool {
   static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.list_project_tasks; }
   static getArgumentSchema() { return buildProjectTaskToolSchema("list_project_tasks"); }
 }
-export class CreateOrUpdateProjectTool extends ProjectTaskNativeTool {
-  static getName() { return "create_or_update_project"; }
-  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_or_update_project; }
-  static getArgumentSchema() { return buildProjectTaskToolSchema("create_or_update_project"); }
+export class SearchProjectTasksTool extends ProjectTaskNativeTool {
+  static getName() { return "search_project_tasks"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.search_project_tasks; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("search_project_tasks"); }
 }
-export class CreateOrUpdateTaskTool extends ProjectTaskNativeTool {
-  static getName() { return "create_or_update_task"; }
-  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_or_update_task; }
-  static getArgumentSchema() { return buildProjectTaskToolSchema("create_or_update_task"); }
+export class CreateProjectTool extends ProjectTaskNativeTool {
+  static getName() { return "create_project"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_project; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("create_project"); }
+}
+export class UpdateProjectTool extends ProjectTaskNativeTool {
+  static getName() { return "update_project"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.update_project; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("update_project"); }
+}
+export class CreateTaskTool extends ProjectTaskNativeTool {
+  static getName() { return "create_task"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_task; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("create_task"); }
+}
+export class UpdateTaskTool extends ProjectTaskNativeTool {
+  static getName() { return "update_task"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.update_task; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("update_task"); }
 }
 export function registerProjectTaskTools(): void {
-  registerToolClass(ListProjectsTool); registerToolClass(ListProjectTasksTool); registerToolClass(CreateOrUpdateProjectTool); registerToolClass(CreateOrUpdateTaskTool);
+  registerToolClass(ListProjectsTool); registerToolClass(ListProjectTasksTool); registerToolClass(SearchProjectTasksTool);
+  registerToolClass(CreateProjectTool); registerToolClass(UpdateProjectTool);
+  registerToolClass(CreateTaskTool); registerToolClass(UpdateTaskTool);
 }

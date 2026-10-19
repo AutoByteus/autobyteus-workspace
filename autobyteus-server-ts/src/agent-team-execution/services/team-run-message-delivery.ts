@@ -1,5 +1,5 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import {
   createCollaborationMemberExecutionIdentity,
@@ -29,16 +29,15 @@ export type ExactTeamAgentMessageInput = Readonly<{
 }>;
 
 /**
- * The Team root's message and delegation addressing (DS-002, DS-003). Every method runs
- * inside the root's materialization gate, held by the caller, so a catalog bring-in never
- * re-enters it.
+ * The Team root's message and delegation addressing (DS-001, DS-002). Every method runs
+ * inside the root's materialization gate, held by the caller. Messaging only resolves; it never
+ * creates a run.
  */
 export class TeamRunMessageDelivery {
   private readonly recipients = new TeamRecipientResolver();
 
   constructor(private readonly options: Readonly<{
     rootTeamRunId: string;
-    taskScope(sender: CollaborationMemberExecutionIdentity): NonNullable<Parameters<typeof resolveMessageRecipient>[0]["taskScope"]>;
     getIndex(): TeamExecutionIndex;
     collaborators: TeamRunCollaborators;
     communication: TeamCommunicationService;
@@ -48,27 +47,23 @@ export class TeamRunMessageDelivery {
     withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult>;
   }>) {}
 
-  /** `send_message_to(address)`: sender instance, run-wide, then a catalog bring-in. */
+  /** `send_message_to(address)`: the sender's own instance, then run-wide standing instances; else not found. */
   async deliverToAddress(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
     if (intent.rootTeamRunId !== this.options.rootTeamRunId) {
       return { accepted: false, code: "COLLABORATION_ROOT_MISMATCH", message: "Message root does not match the selected RootTeamRun." };
     }
     const sender = intent.sender.participant.identity;
     this.options.authorizeIdentity(sender);
-    const resolution = await resolveMessageRecipient({
-      taskScope: this.options.taskScope(sender),
+    const target = resolveMessageRecipient({
       port: () => this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address: this.recipients.requireNonRootAddress(intent.recipientAddress),
-      catalog: { bringIn: (address) => this.options.collaborators.bringInAt({ address, senderRunId: sender.agentRunId }) },
-      notFoundMessage: (address) => `Collaboration target '${address}' was not found.`,
-    });
-    if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
-    const target = resolution.placement.receiver;
+    }).receiver;
     return this.options.withLiveLease(target.agentRunId, () => this.options.communication.deliver({
       intent,
       receiverIdentity: this.identityFor(target.address, target.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(target.address) ?? target.agentRunId,
+      senderAddress: reachingAddressOf(this.options.getIndex(), target.agentRunId, sender),
     }));
   }
 
@@ -91,10 +86,11 @@ export class TeamRunMessageDelivery {
       },
       receiverIdentity: receiver,
       receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
+      senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.sender.identity),
     }));
   }
 
-  /** `delegate_task(address)`: a catalog teammate, a configured Agent, a collaborator, then the catalog. */
+  /** `delegate_task(address)`: refuses the sender's own Team (CM-1), then a configured Agent, then the catalog. */
   resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, recipientAddress: string): Promise<TeamDelegationPlacement> {
     const address = this.recipients.requireNonRootAddress(recipientAddress);
     return resolveDelegationPlacement({

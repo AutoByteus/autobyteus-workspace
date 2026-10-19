@@ -1,0 +1,18 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli",
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts",
+    "tests/unit/agent-execution/backends/claude/session/claude-session.test.ts",
+    "tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts",
+    "tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts",
+    "--no-watch"
+  ],
+  "environment": "PATH + new HOME/private TMPDIR + TEST_API_* reporter fields; AGY_ERROR_EVIDENCE_DIR for target only",
+  "gate": "RUN_CLAUDE_E2E absent"
+}

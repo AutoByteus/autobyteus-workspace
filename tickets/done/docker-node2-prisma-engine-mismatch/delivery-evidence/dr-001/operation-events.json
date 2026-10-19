@@ -1,0 +1,48 @@
+[
+  {
+    "utc": "2026-10-13T13:36:44.485585+00:00",
+    "stage": "Writer quiescence confirmed",
+    "backendPids": [],
+    "databaseWriteFds": []
+  },
+  {
+    "utc": "2026-10-13T13:36:44.939526+00:00",
+    "stage": "Private affected-state backup verified",
+    "archiveBytes": 25487360,
+    "snapshotQuickCheck": [
+      "ok"
+    ],
+    "privateDirectory": "/Users/normy/autobyteus_org/autobyteus-private-backups/docker-node2-prisma-o1-_p9x5ye3"
+  },
+  {
+    "utc": "2026-10-13T13:36:45.021986+00:00",
+    "stage": "ONLY backend two-value pin applied",
+    "oldSha256": "5ba101a84e2b1b181750d80a554a3c2cbdb12d0eb11eadd337c04d52fe91f95f",
+    "newSha256": "430383692923193b4e4192809e3182859b727e544b39ea32cb70d3cfb4325af6",
+    "mode": 420,
+    "uid": 0,
+    "gid": 0,
+    "onlyTwoEnvironmentValuesAdded": true,
+    "atomicSameDirectory": true
+  },
+  {
+    "utc": "2026-10-13T13:36:45.136750+00:00",
+    "stage": "Supervisor reread",
+    "output": "autobyteus_server: changed"
+  },
+  {
+    "utc": "2026-10-13T13:36:45.259407+00:00",
+    "stage": "ONLY named backend update",
+    "output": "autobyteus_server: stopped\nautobyteus_server: updated process group",
+    "duplicateRestart": false
+  },
+  {
+    "utc": "2026-10-13T13:36:52.193454+00:00",
+    "stage": "Actual node2 readiness and preservation verified",
+    "http200Count": 3,
+    "backendPid": "2002",
+    "otherNodesUntouched": true,
+    "backupKept": "/Users/normy/autobyteus_org/autobyteus-private-backups/docker-node2-prisma-o1-_p9x5ye3",
+    "next": "Explicit user usability verification; O1 receipt to Solution Designer, O2 remains open"
+  }
+]

@@ -1,4 +1,5 @@
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
@@ -8,7 +9,7 @@ import { RootEventPublisher } from "../../agent-collaboration/execution/services
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
@@ -20,7 +21,6 @@ import type { ValidatedAgentOrgStatePackage } from "./agent-org-state-package-va
 import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "./agent-org-runtime-config-projector.js";
-import { prepareCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
 import type { ConfiguredAgentActivationMode } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import {
@@ -40,7 +40,7 @@ export class AgentOrgExecutionScopeBuilder {
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
     teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
     agentRunManager?: AgentRunManager;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
   }>) {}
@@ -64,7 +64,7 @@ export class AgentOrgExecutionScopeBuilder {
       delegateToNewCopy: (caller, command) => this.requireActive(run).delegateToNewCopy({ identity: caller }, command),
       assignToExistingCopy: (caller, command) => this.requireActive(run).assignToExistingCopy({ identity: caller }, command),
     });
-    // Collaborators join after launch, so member contexts read the live tree.
+    // Delegated copies join after launch, so member contexts read the live tree.
     const liveTree = (): AgentOrgRunExecutionTreeSnapshot => run?.getExecutionTreeSnapshot() ?? input.state.executionTree;
     const buildMemberContext = async (
       identity: CollaborationMemberExecutionIdentity,
@@ -75,9 +75,14 @@ export class AgentOrgExecutionScopeBuilder {
       // CR-001: the one owner decides the member's handoffs and enclosing instruction.
       const scope = resolveMemberCollaborationScope({
         memberAddress: identity.memberAddress,
+        agentRunId: identity.agentRunId,
         hostTeam,
         root: {
-          configuredRootAddresses: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.address] : []),
+          configured: {
+            addresses: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.address] : []),
+            agentRunIds: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.agentRunId] : []),
+            role: "org_agent",
+          },
           handoffs: tree.handoffs,
           definition: { kind: "agent_org", definitionId: tree.rootOrg.orgDefinitionId },
         },
@@ -85,6 +90,7 @@ export class AgentOrgExecutionScopeBuilder {
       return new MemberExecutionContext({
         identity,
         teamScoped: true,
+        collaborationRole: scope.role,
         authoredEnclosingScopeInstruction: mode === "fresh" ? await this.resolveInstruction(scope.instructionDefinition) : null,
         collaboration: new MemberCollaborationContext({
           outgoingHandoffs: scope.outgoingHandoffs,
@@ -142,11 +148,6 @@ export class AgentOrgExecutionScopeBuilder {
       workspaceManager: this.dependencies.workspaceManager,
     });
     const teams = new RootTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory);
-    const prepareCollaborators = (entries: Parameters<typeof prepareCollaboratorHandles>[0]["entries"], mode: ConfiguredAgentActivationMode) =>
-      prepareCollaboratorHandles({
-        root, rootAgents, teams, entries, mode,
-        teamCallbacks: Object.freeze({ ...callbacks, buildMemberExecutionContext: ({ identity, hostTeam }) => buildMemberContext(identity, mode, hostTeam) }),
-      });
     const plans: Array<Readonly<{
       commitAfterDurability(): void;
       abort(): Promise<void>;
@@ -171,8 +172,6 @@ export class AgentOrgExecutionScopeBuilder {
           }));
         }
       }
-      // Collaborators are restored with the root, without preparing a runtime.
-      plans.push(await prepareCollaborators(input.state.executionTree.rootOrg.collaborators, input.activationMode));
       const state = input.state;
       const tree = state.executionTree;
       if (input.persistInitialPackage) {
@@ -191,7 +190,6 @@ export class AgentOrgExecutionScopeBuilder {
         taskExecutionResources: this.dependencies.taskExecutionResources,
         memoryLocator: this.dependencies.memoryLocator,
         activityInspector: this.dependencies.activityInspector,
-        prepareCollaboratorHandles: (entries) => prepareCollaborators(entries, "fresh"),
         onTerminated: input.onTerminated,
       });
       for (const plan of plans) plan.commitAfterDurability();
@@ -207,13 +205,12 @@ export class AgentOrgExecutionScopeBuilder {
   }
 
   private requireActive(run: AgentOrgRun | null): AgentOrgRun {
-    if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "AgentOrg is not active.");
+    if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     return run;
   }
   /**
    * The authored instruction of the enclosing scope on a fresh start: the Org for a direct
-   * Agent, the Team definition for a member of a configured or collaborator Team. A
-   * collaborator Agent (and an extra copy at its address) gets none.
+   * Agent, the Team definition for a member of a configured Team.
    */
   /** The authored instruction of a member's enclosing Org or Team definition (read fresh). */
   private async resolveInstruction(definition: MemberInstructionDefinition | null): Promise<string | null> {

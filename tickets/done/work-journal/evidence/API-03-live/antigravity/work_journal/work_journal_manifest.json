@@ -1,0 +1,14 @@
+{
+  "run_id": "work_journal_antigravity_8c53ea43_4167_4cf9_816c_a7675af1351f4942934bc50e55c13390",
+  "runtime_kind": "antigravity_cli",
+  "renderer_revision": 1,
+  "files": [
+    {
+      "journal_file": "work_journal_active.md",
+      "source_file": "raw_traces_active.jsonl",
+      "source_record_count": 10,
+      "state": "open",
+      "content_sha256": "cbe385592814ac548b9ca25bb3098e32f1f28754fabfa4f4e410fba1fe593447"
+    }
+  ]
+}

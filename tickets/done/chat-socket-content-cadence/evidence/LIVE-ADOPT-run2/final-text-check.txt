@@ -1,0 +1,11 @@
+# Case: LIVE-ADOPT run2 — final text: socket S1 vs persisted member projection (equality, tail-aligned: the adopted run's pre-adoption entries are reported as skipped)
+# Command: node evidence/check-final-text.mjs evidence/LIVE-ADOPT-run2 --align-tail; Commit: 335f065cd1; Env: ENV-2
+# frames: LIVE-ADOPT-run2/frames-S1.jsonl; projections: LIVE-ADOPT-run2/projections.json
+abt139_essay_worker_4fb16c5a34fa48b3ae49ab6ee9e32e2e: 4 projection entries, 2 streamed segments
+  (skipped 2 earlier projection entries from before this socket: reasoning, message/assistant)
+  #1 projection reasoning (2271 chars) vs streamed reasoning (2271 chars): EQUAL
+  #2 projection message/assistant (1839 chars) vs streamed text (1839 chars): EQUAL
+abt139_essay_worker_9aca6fd5cb9c47df99e0de60c9417bd0: 2 projection entries, 2 streamed segments
+  #1 projection reasoning (293 chars) vs streamed reasoning (293 chars): EQUAL
+  #2 projection message/assistant (1732 chars) vs streamed text (1732 chars): EQUAL
+RESULT: ALL EQUAL

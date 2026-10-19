@@ -1,0 +1,524 @@
+[
+  {
+    "case": "CCR-E2E-003",
+    "name": "CCR-E2E-003: Gemini compacts through the same summarizer, continues, and meters the call",
+    "state": "fail",
+    "errors": [
+      "CCR-E2E-003: agent request 6 after compaction carries the summary instruction (recorded in the note): expected true to be false // Object.is equality"
+    ],
+    "details": {
+      "modes": [
+        "cached"
+      ],
+      "summaryCalls": [
+        {
+          "index": 5,
+          "phase": "CCR3-T5",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1081,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 40472,
+            "cacheRead": 36395,
+            "cacheWrite": 0,
+            "output": 1081
+          },
+          "strictInjected": false,
+          "cacheShare": 0.8992636884759834,
+          "mode": "cached",
+          "systemInstruction": "## Agent Identity\n\n- Name: compaction-cache-chat-50e9d687\n- Description: Live native-runtime validation agent.\n\n### Resp"
+        }
+      ],
+      "agentSystemInstructions": [
+        "## Agent Identity\n\n- Name: compaction-cache-chat-50e9d687\n- Description: Live native-runtime validation agent.\n\n### Responsibilities and Boundaries\n\nYou are a helpful assistant. Answer the user's requ"
+      ],
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "phase": "requested",
+          "turn_id": "turn_0005",
+          "compaction_operation_id": "compaction_operation_mv3hkad5_1",
+          "requested_turn_id": "turn_0005"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0005",
+          "compaction_operation_id": "compaction_operation_mv3hkad5_1",
+          "requested_turn_id": "turn_0005",
+          "execution_turn_id": "turn_0005",
+          "selected_block_count": 7,
+          "raw_trace_count": 7,
+          "phase": "started"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0005",
+          "compaction_operation_id": "compaction_operation_mv3hkad5_1",
+          "requested_turn_id": "turn_0005",
+          "execution_turn_id": "turn_0005",
+          "selected_block_count": 7,
+          "raw_trace_count": 7,
+          "compaction_model_identifier": "gemini-3.8-flash",
+          "summarizer_provider": "GEMINI",
+          "compaction_invocation_id": "compaction_compaction_operation_mv3hkad5_1_1",
+          "completion_status": "complete",
+          "completion_reason": "STOP",
+          "summary_char_count": 2828,
+          "summary_token_count": 721,
+          "phase": "completed",
+          "compacted_block_count": 7
+        }
+      ],
+      "meterFrames": [
+        {
+          "usage_event_id": "a2c42328-7aa7-4ced-8426-06cba043e92a",
+          "idempotency_key": "compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e:turn_0005:compaction:compaction_operation_mv3hkad5_1:1",
+          "observed_at": "2026-10-11T07:12:48.882Z",
+          "run_id": "compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e",
+          "root_team_run_id": null,
+          "turn_id": "turn_0005",
+          "llm_call_id": "turn_0005:compaction:compaction_operation_mv3hkad5_1:1",
+          "call_sequence": null,
+          "agent_definition_id": "compaction-cache-chat-50e9d687",
+          "workspace_id": "agent_ws_b5308fa2deb6fcc13115e0d1b8058d57b4eef41a86bb1feaa5d57fa942143a40",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "compaction-cache-chat-50e9d687",
+          "run_summary": "Note 1: warehouse bin 1 holds 7 units of part P-1001. Note 2: warehouse bin 2 holds 14 units of p...",
+          "run_created_at": "2026-10-11T07:12:30.974Z",
+          "member_display_name": null,
+          "runtime_kind": "autobyteus",
+          "model_provider": "GEMINI",
+          "provider_name": "Gemini",
+          "model_identifier": "gemini-3.8-flash",
+          "model_value": "gemini-3.8-flash",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "claude_sdk_main_loop_usage": null,
+          "ingestion_kind": "autobyteus_compaction",
+          "usage_scope": "per_call",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 40472,
+          "reported_output_tokens": 1081,
+          "reported_total_tokens": 41553,
+          "accounting_input_tokens": 40472,
+          "accounting_output_tokens": 1081,
+          "accounting_total_tokens": 41553,
+          "standard_input_tokens": 4077,
+          "cache_miss_input_tokens": 4077,
+          "cache_read_input_tokens": 36395,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": null,
+          "billable_input_tokens": 40472,
+          "billable_output_tokens": 1081,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.75,
+          "output_price_per_million": 3.75,
+          "cached_input_read_price_per_million": 0.075,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash:gemini-3-8-flash-introductory-2026-09-02:introductory",
+            "price_config_id": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash",
+            "model_provider": "GEMINI",
+            "model_identifier": "gemini-3.8-flash",
+            "model_value": "gemini-3.8-flash",
+            "canonical_name": "gemini-3.8-flash",
+            "currency": "USD",
+            "input_price_per_million": 0.75,
+            "output_price_per_million": 3.75,
+            "cached_input_read_price_per_million": 0.075,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": "gemini-3-8-flash-introductory-2026-09-02",
+            "pricing_schedule_period_id": "introductory",
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash:gemini-3-8-flash-introductory-2026-09-02:introductory",
+          "selected_pricing_tier_id": null,
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.005787374999999999,
+          "estimated_api_standard_input_cost": 0.0030577499999999997,
+          "estimated_api_cache_read_input_cost": 0.002729625,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.00405375,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.009841125,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 40472,
+          "meter_delta_output_tokens": 1081,
+          "meter_delta_total_tokens": 41553,
+          "run_summary_after_event": {
+            "run_id": "compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e",
+            "root_team_run_id": null,
+            "agent_definition_id": "compaction-cache-chat-50e9d687",
+            "workspace_id": "agent_ws_b5308fa2deb6fcc13115e0d1b8058d57b4eef41a86bb1feaa5d57fa942143a40",
+            "gross_input_tokens": 185524,
+            "standard_input_tokens": 72397,
+            "cache_miss_input_tokens": 72397,
+            "cache_read_input_tokens": 113127,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 1086,
+            "reasoning_output_tokens": 0,
+            "billable_output_tokens": 1086,
+            "total_tokens": 186610,
+            "cache_read_input_token_rate": 0.6097701645070179,
+            "standard_input_token_rate": 0.390229835492982,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.062782275,
+            "estimated_api_standard_input_cost": 0.05429775,
+            "estimated_api_cache_read_input_cost": 0.008484525,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0040725,
+            "estimated_api_reasoning_output_cost": null,
+            "estimated_api_total_cost": 0.066854775,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash:gemini-3-8-flash-introductory-2026-09-02:introductory",
+            "selected_pricing_tier_id": null,
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.75
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.075
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 3.75
+              },
+              "reasoning_output": {
+                "status": "not_applicable",
+                "price_per_million": null
+              }
+            },
+            "usage_report_count": 6,
+            "updated_at": "2026-10-11T07:12:48.882Z",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 224612,
+            "context_window_usage_percent": null,
+            "latest_model_provider": "GEMINI",
+            "latest_model_identifier": "gemini-3.8-flash",
+            "latest_runtime_kind": "autobyteus",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": null,
+          "effective_context_window_tokens": 224612,
+          "context_window_usage_percent": null,
+          "raw_usage_json": {
+            "promptTokenCount": 40472,
+            "candidatesTokenCount": 1081,
+            "totalTokenCount": 41553,
+            "cachedContentTokenCount": 36395,
+            "trafficType": "ON_DEMAND",
+            "promptTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 40472
+              }
+            ],
+            "cacheTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 36395
+              }
+            ],
+            "candidatesTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 1081
+              }
+            ]
+          },
+          "raw_event_json": {
+            "usage": {
+              "input_tokens": 40472,
+              "output_tokens": 1081,
+              "total_tokens": 41553,
+              "usage_scope": "per_call",
+              "model_provider": "GEMINI",
+              "provider_name": "Gemini",
+              "model_identifier": "gemini-3.8-flash",
+              "model_value": "gemini-3.8-flash",
+              "input_token_semantic": "gross_includes_cache",
+              "cache_state": "positive",
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 36395,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "billable_input_tokens": null,
+              "billable_output_tokens": 1081,
+              "raw_usage_json": {
+                "promptTokenCount": 40472,
+                "candidatesTokenCount": 1081,
+                "totalTokenCount": 41553,
+                "cachedContentTokenCount": 36395,
+                "trafficType": "ON_DEMAND",
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 40472
+                  }
+                ],
+                "cacheTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 36395
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1081
+                  }
+                ]
+              },
+              "quality_flags": []
+            },
+            "turn_id": "turn_0005",
+            "llm_call_id": "turn_0005:compaction:compaction_operation_mv3hkad5_1:1",
+            "runtime_kind": "autobyteus",
+            "ingestion_kind": "autobyteus_compaction",
+            "idempotency_key": "compaction_cache_chat_50e9d687_f5ca15fd20f9463ea01c3c2c0235b27e:turn_0005:compaction:compaction_operation_mv3hkad5_1:1",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 224612,
+            "context_window_usage_percent": null,
+            "observed_at": "2026-10-11T07:12:48.882Z"
+          },
+          "quality_flags": []
+        }
+      ],
+      "agentCalls": [
+        {
+          "index": 0,
+          "phase": "CCR3-T1",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 13164,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 1,
+          "phase": "CCR3-T2",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 21877,
+            "cacheRead": 12023,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 2,
+          "phase": "CCR3-T3",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 30590,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 3,
+          "phase": "CCR3-T4",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 39705,
+            "cacheRead": 28314,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 4,
+          "phase": "CCR3-T5",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 39716,
+            "cacheRead": 36395,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 6,
+          "phase": "CCR3-T6",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 4,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 5922,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "output": 4
+          },
+          "strictInjected": false
+        }
+      ],
+      "answer": "4900"
+    },
+    "at": "2026-10-11T07:12:50.683Z"
+  }
+]

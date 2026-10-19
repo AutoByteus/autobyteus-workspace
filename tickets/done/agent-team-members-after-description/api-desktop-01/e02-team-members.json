@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-10-13T03:59:05.975Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-create"
+    }
+  ],
+  "result": "Fail",
+  "failure": {
+    "message": "Expected values to be strictly equal:\n\n7 !== 6\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n7 !== 6\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/[eval1]:8:9\n    at async run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-desktop-01/desktop-session.mjs:37:24)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/[eval1]:2:1"
+  },
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-create",
+  "finishedAt": "2026-10-13T03:59:06.711Z"
+}

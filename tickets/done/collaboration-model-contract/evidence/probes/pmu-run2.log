@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.4 test:e2e:project-manager-ux /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web
+> node tests/e2e/project-manager-ux-probe.mjs --cases PMU-003,PMU-007,PMU-010,PMU-016,PMU-020 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/tickets/in-progress/collaboration-model-contract/evidence/probes/pmu-run2
+
+Project manager UX probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/tickets/in-progress/collaboration-model-contract/evidence/probes/pmu-run2/evidence.json

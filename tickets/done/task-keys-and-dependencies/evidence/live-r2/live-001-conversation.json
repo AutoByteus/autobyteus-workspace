@@ -1,0 +1,125 @@
+[
+  {
+    "kind": "message",
+    "role": "user",
+    "content": "In the Project with project_id \"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\":\n1. List its Tasks.\n2. Set the Task about the database schema to IN_PROGRESS.\n3. Record that the REST API Task depends on the database schema Task.\n4. Create a new Task \"Publish the API documentation\" that depends on the REST API Task.\n5. Delegate the REST API Task to /live_key_worker_b7fc.\n6. Rename the Project to \"Live Keys Renamed\".\n7. Then create a new Task \"Announce the release\" in the same Project.\nFinally, reply with the Task IDs you used for each step.",
+    "media": null,
+    "ts": 1792245986.77
+  },
+  {
+    "kind": "tool_call",
+    "invocationId": "toolu_01VYesagvMKw8RJbWbXseASY",
+    "role": null,
+    "content": "",
+    "toolName": "list_project_tasks",
+    "toolArgs": {
+      "project_id": "project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad"
+    },
+    "toolResult": "{\"projectId\":\"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\",\"tasks\":[{\"projectId\":\"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\",\"taskId\":\"live-keys-3\",\"description\":\"Write the release notes\",\"status\":\"TODO\",\"dependsOn\":[],\"contextFiles\":[],\"assignments\":[],\"closedAssignments\":[]},{\"projectId\":\"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\",\"taskId\":\"live-keys-2\",\"description\":\"Build the REST API\",\"status\":\"TODO\",\"dependsOn\":[],\"contextFiles\":[],\"assignments\":[],\"closedAssignments\":[]},{\"projectId\":\"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\",\"taskId\":\"live-keys-1\",\"description\":\"Design the database schema\",\"status\":\"TODO\",\"dependsOn\":[],\"contextFiles\":[],\"assignments\":[],\"closedAssignments\":[]}]}",
+    "toolError": null,
+    "media": null,
+    "ts": 1792245989.566
+  },
+  {
+    "kind": "tool_call",
+    "invocationId": "toolu_01HSLwxvBNxmSWCDu1EbNkiz",
+    "role": null,
+    "content": "",
+    "toolName": "update_task",
+    "toolArgs": {
+      "task_id": "live-keys-1",
+      "status": "IN_PROGRESS"
+    },
+    "toolResult": "{\"task\":{\"projectId\":\"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\",\"taskId\":\"live-keys-1\",\"status\":\"IN_PROGRESS\",\"dependsOn\":[]}}",
+    "toolError": null,
+    "media": null,
+    "ts": 1792245992.49
+  },
+  {
+    "kind": "tool_call",
+    "invocationId": "toolu_01CbB6xYoSQ26C8L9Bx3QJXE",
+    "role": null,
+    "content": "",
+    "toolName": "update_task",
+    "toolArgs": {
+      "task_id": "live-keys-2",
+      "depends_on": [
+        "live-keys-1"
+      ]
+    },
+    "toolResult": "{\"task\":{\"projectId\":\"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\",\"taskId\":\"live-keys-2\",\"status\":\"TODO\",\"dependsOn\":[\"live-keys-1\"]}}",
+    "toolError": null,
+    "media": null,
+    "ts": 1792245992.7
+  },
+  {
+    "kind": "tool_call",
+    "invocationId": "toolu_01WKMpdZ1FUfgFf67S97cRKW",
+    "role": null,
+    "content": "",
+    "toolName": "create_task",
+    "toolArgs": {
+      "project_id": "project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad",
+      "description": "Publish the API documentation",
+      "depends_on": [
+        "live-keys-2"
+      ]
+    },
+    "toolResult": "{\"task\":{\"projectId\":\"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\",\"taskId\":\"live-keys-4\",\"status\":\"TODO\",\"dependsOn\":[\"live-keys-2\"]}}",
+    "toolError": null,
+    "media": null,
+    "ts": 1792245994.524
+  },
+  {
+    "kind": "tool_call",
+    "invocationId": "toolu_01Vuk4nHrb3B5T5MCpR6TgfW",
+    "role": null,
+    "content": "",
+    "toolName": "delegate_task",
+    "toolArgs": {
+      "recipient_address": "/live_key_worker_b7fc",
+      "task_id": "live-keys-2"
+    },
+    "toolResult": "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"live_key_worker_b7fc_60a22876fbb0461b8f543ce1e464564f\"}",
+    "toolError": null,
+    "media": null,
+    "ts": 1792245995.929
+  },
+  {
+    "kind": "tool_call",
+    "invocationId": "toolu_01KK16FohCRfS7d9hEk6cYga",
+    "role": null,
+    "content": "",
+    "toolName": "update_project",
+    "toolArgs": {
+      "project_id": "project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad",
+      "name": "Live Keys Renamed"
+    },
+    "toolResult": "{\"project\":{\"projectId\":\"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\",\"name\":\"Live Keys Renamed\",\"description\":\"\",\"workspaces\":[]}}",
+    "toolError": null,
+    "media": null,
+    "ts": 1792245995.967
+  },
+  {
+    "kind": "tool_call",
+    "invocationId": "toolu_01MoL1BMwMLuUZALW8HKVG1j",
+    "role": null,
+    "content": "",
+    "toolName": "create_task",
+    "toolArgs": {
+      "project_id": "project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad",
+      "description": "Announce the release"
+    },
+    "toolResult": "{\"task\":{\"projectId\":\"project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad\",\"taskId\":\"live-keys-5\",\"status\":\"TODO\",\"dependsOn\":[]}}",
+    "toolError": null,
+    "media": null,
+    "ts": 1792245997.421
+  },
+  {
+    "kind": "message",
+    "role": "assistant",
+    "content": "All seven steps are done in Project `project_c03894ad-d8aa-4ff9-a2c1-a68f3acc6cad`.\n\n1. Listed Tasks: `live-keys-1` (Design the database schema), `live-keys-2` (Build the REST API), `live-keys-3` (Write the release notes).\n2. Database schema Task set to IN_PROGRESS: `live-keys-1`.\n3. REST API Task now depends on the schema Task: `live-keys-2`.\n4. Created \"Publish the API documentation\" depending on `live-keys-2`: `live-keys-4`.\n5. Delegated `live-keys-2` to `/live_key_worker_b7fc` (run ID `live_key_worker_b7fc_60a22876fbb0461b8f543ce1e464564f`).\n6. Renamed the Project to \"Live Keys Renamed\".\n7. Created \"Announce the release\": `live-keys-5`.",
+    "media": null,
+    "ts": 1792245999.486
+  }
+]

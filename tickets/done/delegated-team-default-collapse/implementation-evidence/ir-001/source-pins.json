@@ -1,0 +1,8 @@
+{
+  "baseline": "3230db73f172690c4c8eb08f1cc5891c62ffcdbd",
+  "implementation": "b9cbb749182d95a63750f70369ec08956018c5e8",
+  "files": {
+    "autobyteus-web/stores/agentRunCollaborationStore.ts": "f2cf4d68dd2d4641d3a379d314753a527edd7d07369d800f61f50c2efc2696d0",
+    "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts": "c6942f27487b87fec87062ce4f9a866d3a32633bf875b4daea9608a6cb8bccd6"
+  }
+}

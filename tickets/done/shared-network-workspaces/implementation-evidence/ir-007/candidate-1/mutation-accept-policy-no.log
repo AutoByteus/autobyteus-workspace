@@ -1,0 +1,6 @@
+--- FAIL: TestFailedStartRefusalsNeverProbeOrStart (0.04s)
+    --- FAIL: TestFailedStartRefusalsNeverProbeOrStart/policy_no (0.04s)
+        start_recovery_test.go:247: {recovered actual API/shared binding ready} 1 1
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker	0.407s
+FAIL

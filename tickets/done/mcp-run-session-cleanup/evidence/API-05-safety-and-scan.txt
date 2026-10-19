@@ -1,0 +1,23 @@
+# Case: API-05 safety and scan
+# Commit: 7fa2819630 (fix a8b849af79; later commits are ticket files only)
+# Date: 2026-10-19
+
+== worktree git status --short --ignored, start vs end of the round ==
+Differences: Electron packaging outputs (autobyteus-web/build/icons/*, autobyteus-web/resources/, electron-dist, dist), plus two items that were removed after inspection:
+- autobyteus-server-ts/workspaces.json (16:39:44, written by another server e2e test during the full suite; lists file-explorer temp workspaces)
+- autobyteus-server-ts/autobyteus-web/resources/server/node_modules (16:41:24, written by the Electron build server packaging)
+Neither comes from this ticket's tests (see report observations O-2, O-3).
+
+== user autobyteus_mcps (git status + HEAD) before and after ==
+identical
+
+== dummy values in run logs ==
+api01.log                    test-dummy=0
+api02a.log                   test-dummy=0
+api02b.log                   test-dummy=0
+api03.log                    test-dummy=0
+api04-harness.log            test-dummy=0
+app-build.log                test-dummy=0
+core-build.log               test-dummy=0
+server-build.log             test-dummy=0
+uv-sync.log                  test-dummy=0

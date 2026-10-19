@@ -34,7 +34,7 @@ export function fixture() {
   const chainOf = (agentRunId: string) => (chains[agentRunId] ?? []).filter(inTree);
   const adapter: RootTaskExecutionAdapter<string> = {
     root, isOpen: () => true, authorize: () => undefined, assertCurrentSchemaReady: () => undefined,
-    planActivation: vi.fn(), beginActivation: vi.fn(), registrationFor: () => null, taskExecutionAt: () => null,
+    planActivation: vi.fn(), beginActivation: vi.fn(), registrationFor: () => null,
     ownershipChainFor: chainOf,
     taskExecutionChainFor: chainOf,
     listTaskExecutions: () => [worker, team, helper],
@@ -53,6 +53,7 @@ export function fixture() {
       if (authority.get(key(reference)) === "fenced") authority.delete(key(reference));
     }),
     taskExecutionTargetOf: reference => inTree(reference) ? { root, execution: reference, ingressAgentRunId: ingress[key(reference)]! } : null,
+    reachingAddressOf: () => null,
     taskExecutionWithIngress: agentRunId => {
       const innermost = chainOf(agentRunId)[0];
       return innermost && ingress[key(innermost)] === agentRunId ? innermost : null;

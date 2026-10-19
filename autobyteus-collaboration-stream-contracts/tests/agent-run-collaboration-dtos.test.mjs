@@ -6,23 +6,22 @@ import {
   RootExecutionEventDtoSchema,
   RootExecutionViewDtoSchema,
   agentOrgExecutionTreeDtoSchema,
-  collaboratorEntryDtoSchema,
 } from "../dist/index.js";
 
 const launchConfiguration = {
   runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5.6-sol", llmConfig: null,
   autoExecuteTools: false, workspaceRootPath: "/work",
 };
-const agentEntry = {
-  kind: "agent", address: "/code_reviewer", agentDefinitionId: "reviewer-def",
-  agentRunId: "reviewer-run", platformAgentRunId: null, launchConfiguration, addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "host-run",
+const agentSource = { kind: "agent", agentDefinitionId: "reviewer-def", launchConfiguration };
+const reviewerRun = {
+  address: "/code_reviewer", agentRunId: "reviewer-run", platformAgentRunId: null, delegatorAgentRunId: "host-run",
+  startedAt: "2026-09-30T00:00:00.000Z", source: agentSource,
 };
-const teamEntry = {
-  kind: "agent_team", address: "/product_team", teamDefinitionId: "product-team-def", teamRunId: "product-team-run",
-  coordinatorAddress: "/product_team/lead",
-  members: [{ address: "/product_team/lead", agentDefinitionId: "lead-def", agentRunId: "lead-run", platformAgentRunId: null }],
-  handoffs: [], defaultLaunchConfiguration: launchConfiguration, taskExecutions: [],
-  addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "host-run",
+const productTeamRun = {
+  address: "/product_team", teamRunId: "product-team-run", delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:00.000Z",
+  members: [{ address: "/product_team/lead", agentRunId: "lead-run", platformAgentRunId: null }], taskExecutions: [],
+  source: { kind: "agent_team", teamDefinitionId: "product-team-def", coordinatorAddress: "/product_team/lead", handoffs: [],
+    members: [{ address: "/product_team/lead", agentDefinitionId: "lead-def" }], defaultLaunchConfiguration: launchConfiguration },
 };
 
 const agentView = (overrides = {}) => ({
@@ -34,9 +33,9 @@ const agentView = (overrides = {}) => ({
     execution_tree: {
       subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
       host: { address: "/research_assistant", agentRunId: "host-run", agentDefinitionId: "research-def" },
-      collaborators: [agentEntry, teamEntry],
       taskExecutions: [
-        { address: "/code_reviewer", agentRunId: "reviewer-copy-run", platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:01.000Z" },
+        reviewerRun, productTeamRun,
+        { address: "/code_reviewer", agentRunId: "reviewer-copy-run", platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:01.000Z", source: agentSource },
       ],
     },
     closed_task_executions: [],
@@ -57,12 +56,12 @@ const agentView = (overrides = {}) => ({
   },
 });
 
-test("collaborator entries carry their single instance's run identities", () => {
-  assert.equal(collaboratorEntryDtoSchema.parse(agentEntry).kind, "agent");
-  assert.equal(collaboratorEntryDtoSchema.parse(teamEntry).kind, "agent_team");
-  const { agentRunId: _omit, ...withoutRun } = agentEntry;
-  assert.throws(() => collaboratorEntryDtoSchema.parse(withoutRun));
-  assert.throws(() => collaboratorEntryDtoSchema.parse({ ...teamEntry, members: [] }));
+test("an Agent root tree has no collaborators; delegated runs carry their run identities", () => {
+  const view = agentView();
+  assert.equal(RootExecutionViewDtoSchema.parse(view).root_subject_kind, "agent");
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ execution_tree: { ...view.root_agent.execution_tree, collaborators: [] } })));
+  const { agentRunId: _omit, ...withoutRun } = reviewerRun;
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ execution_tree: { ...view.root_agent.execution_tree, taskExecutions: [withoutRun] } })));
 });
 
 test("an Agent root view correlates host, children, messages and statuses", () => {
@@ -77,8 +76,12 @@ test("an Agent root view correlates host, children, messages and statuses", () =
 test("Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions", () => {
   assert.equal(RootExecutionEventDtoSchema.parse({
     root_subject_kind: "agent", root_run_id: "host-run", change_sequence: 4,
-    event: { kind: "collaborator_added", collaborator: teamEntry },
-  }).event.kind, "collaborator_added");
+    event: { kind: "task_execution_started", host_kind: "root", host_run_id: "host-run", execution: reviewerRun },
+  }).event.kind, "task_execution_started");
+  assert.throws(() => RootExecutionEventDtoSchema.parse({
+    root_subject_kind: "agent", root_run_id: "host-run", change_sequence: 5,
+    event: { kind: "collaborator_added", collaborator: productTeamRun },
+  }));
   assert.equal(CollaborationStreamServerMessageSchema.parse({
     type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: "host-run", is_active: false },
   }).type, "ROOT_LIFECYCLE");
@@ -97,19 +100,17 @@ test("Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESS
   }));
 });
 
-test("Org trees require the collaborators list", () => {
+test("Org trees have no collaborators list", () => {
   const tree = {
     subjectKind: "agent_org", createdAt: "2026-09-01T00:00:00.000Z", archivedAt: null, applicationBinding: null, handoffs: [],
     rootOrg: {
       address: "/", orgDefinitionId: "org-def", orgDefinitionName: "Org", orgRunId: "org-run",
-      defaultLaunchConfiguration: launchConfiguration, members: [], collaborators: [teamEntry], taskExecutions: [],
+      defaultLaunchConfiguration: launchConfiguration, members: [], taskExecutions: [productTeamRun],
     },
   };
-  assert.equal(agentOrgExecutionTreeDtoSchema.parse(tree).rootOrg.collaborators.length, 1);
-  const { collaborators: _omitted, ...withoutCollaborators } = tree.rootOrg;
-  assert.throws(() => agentOrgExecutionTreeDtoSchema.parse({ ...tree, rootOrg: withoutCollaborators }));
+  assert.equal(agentOrgExecutionTreeDtoSchema.parse(tree).rootOrg.taskExecutions.length, 1);
+  assert.throws(() => agentOrgExecutionTreeDtoSchema.parse({ ...tree, rootOrg: { ...tree.rootOrg, collaborators: [] } }));
 });
-
 
 test("Agent-root live input projection is required and carries held/queued recovery facts", () => {
   const view = agentView();

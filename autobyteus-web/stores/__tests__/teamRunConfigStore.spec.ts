@@ -236,3 +236,35 @@ describe('teamRunConfigStore flat Team launch intent', () => {
     expect(store.config?.teamDefinitionId).toBe('root-def')
   })
 })
+
+describe('teamRunConfigStore mobile member defaults (DS-006 mobile, AC-011)', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    useAgentTeamDefinitionStore().agentTeamDefinitions = [definition()]
+  })
+  const seed = {
+    agentOverrides: { '/worker': { runtimeKind: 'claude_agent_sdk' as const, llmModelIdentifier: 'claude-sonnet', llmConfig: null } },
+    teamOverrides: {}, notes: {},
+  }
+
+  it('applies seeded members to the exact draft, keeps a member the user already set, and a root change does not move them', () => {
+    const store = useTeamRunConfigStore()
+    store.setTemplate(definition())
+    const draftId = store.selectedDraft!.draftId
+    store.applyConfigEdit({ kind: 'set_agent_override', agentAddress: '/reviewer', override: { llmModelIdentifier: 'gpt-5.4' } })
+    store.applySeededMemberDefaults(draftId, { ...seed, agentOverrides: { ...seed.agentOverrides, '/reviewer': { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet' } } })
+    expect(store.config?.agentOverrides['/worker']).toEqual({ runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet', llmConfig: null })
+    expect(store.config?.agentOverrides['/reviewer']?.runtimeKind).not.toBe('claude_agent_sdk')
+    store.applyConfigEdit({ kind: 'set_root_model', llmModelIdentifier: 'gpt-5.4' })
+    expect(store.config?.agentOverrides['/worker']).toMatchObject({ runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet' })
+  })
+
+  it('a seed for a draft that is no longer selected (the user switched teams) is dropped', () => {
+    const store = useTeamRunConfigStore()
+    store.setTemplate(definition())
+    const stale = store.selectedDraft!.draftId
+    store.setTemplate(definition())
+    store.applySeededMemberDefaults(stale, seed)
+    expect(store.config?.agentOverrides).toEqual({})
+  })
+})

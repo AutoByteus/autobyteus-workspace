@@ -159,7 +159,9 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     expect(await fs.readFile(path.join(projectsDir(), "projects.pre-folders.json"))).toEqual(sourceBytes);
     expect(await exists(path.join(projectsDir(), "task_context_files"))).toBe(false);
     expect(await exists(path.join(projectsDir(), "task_context_drafts"))).toBe(false);
-    expect(await fs.readFile(path.join(projectsDir(), "project_plain/project.json"))).toEqual(conflictBytes);
+    // The conflicting target was not overwritten; the next startup migration only added its Task key state.
+    expect(JSON.parse(await fs.readFile(path.join(projectsDir(), "project_plain/project.json"), "utf8")))
+      .toEqual({ ...JSON.parse(conflictBytes.toString("utf8")), taskKeys: { prefix: "already-here", lastNumber: 0 } });
     expect(JSON.parse(await fs.readFile(path.join(projectsDir(), "project_ctx/tasks/project_task_ctx/task.json"), "utf8")))
       .toMatchObject({ taskId: "project_task_ctx", projectId: "project_ctx", status: "IN_PROGRESS" });
 
@@ -292,7 +294,7 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     expect(await fs.readFile(path.join(projectsDir(), "projects.pre-folders.json"))).toEqual(sourceBytes);
     expect(JSON.parse(await fs.readFile(path.join(projectsDir(), pid, "tasks", tid, "task.json"), "utf8")))
       .toEqual({ taskId: tid, projectId: pid, description: "Saved task from HEAD writer", status: "TODO",
-        createdAt: "2026-10-02T00:00:00.000Z", updatedAt: "2026-10-02T00:00:00.000Z", contextFiles: [] });
+        createdAt: "2026-10-02T00:00:00.000Z", updatedAt: "2026-10-02T00:00:00.000Z", contextFiles: [], taskKey: "released-array-witness-1" });
     expect(await fs.readFile(path.join(projectsDir(), pid, "drafts", draft.draftId, draft.storedFilename), "utf8")).toBe("standalone draft");
     expect(await exists(path.join(projectsDir(), "task_context_drafts"))).toBe(false);
 
@@ -307,6 +309,62 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     expect(JSON.parse(await fs.readFile(path.join(projectsDir(), pid, "tasks", tid, "task.json"), "utf8")).description).toBe("Ordinary first metadata write");
     expect(await fs.readFile(path.join(projectsDir(), "projects.pre-folders.json"))).toEqual(sourceBytes);
   }, 180_000);
+  it("Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lockout until a restart finishes it", async () => {
+    await fs.access(path.resolve("dist/app.js"));
+    root = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-keys-startup-"));
+    await fs.mkdir(projectsDir()); await fs.mkdir(path.join(root, "home"));
+    await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
+    // Synthesized released (per-folder, c600028072) shapes: no taskKeys / taskKey anywhere.
+    const writeJson = async (file: string, value: unknown) => { await fs.mkdir(path.dirname(file), { recursive: true }); await fs.writeFile(file, `${JSON.stringify(value, null, 2)}\n`); };
+    const project = (projectId: string, name: string, createdAt: string) => ({ projectId, name, description: "", createdAt, updatedAt: createdAt, workspaces: [] });
+    const task = (projectId: string, taskId: string, createdAt: string, status = "TODO", extra = {}) =>
+      ({ taskId, projectId, description: `Task ${taskId}`, status, createdAt, updatedAt: createdAt, contextFiles: [], ...extra });
+    await writeJson(path.join(projectsDir(), "project_main/project.json"), project("project_main", "AutoByteus", "2026-10-01T00:00:00.000Z"));
+    await writeJson(path.join(projectsDir(), "project_agents/project.json"), project("project_agents", "AutoByteus Agents", "2026-10-02T00:00:00.000Z"));
+    await writeJson(path.join(projectsDir(), "project_blocked/project.json"), project("project_blocked", "Blocked", "2026-10-03T00:00:00.000Z"));
+    await writeJson(path.join(projectsDir(), "project_main/tasks/task_late/task.json"), task("project_main", "task_late", "2026-10-01T03:00:00.000Z", "DONE"));
+    await writeJson(path.join(projectsDir(), "project_main/tasks/task_early/task.json"), task("project_main", "task_early", "2026-10-01T01:00:00.000Z", "CANCELLED"));
+    await writeJson(path.join(projectsDir(), "project_agents/tasks/task_agent/task.json"), task("project_agents", "task_agent", "2026-10-02T01:00:00.000Z"));
+    // A Task already holding a different key: this Project cannot be keyed and must be preserved untouched.
+    const blockedTask = path.join(projectsDir(), "project_blocked/tasks/task_blocked/task.json");
+    await writeJson(blockedTask, task("project_blocked", "task_blocked", "2026-10-03T01:00:00.000Z", "TODO", { taskKey: "other-9" }));
+    const blockedBytes = await fs.readFile(blockedTask, "utf8");
+    const KEYS = "20261017_project_task_keys_v1";
+    const keysRecord = async (app: Awaited<ReturnType<typeof studio>>) => (await app.gql("{getAppDataMigrations{migrationId status attempts}}"))
+      .getAppDataMigrations.find((m: { migrationId: string }) => m.migrationId === KEYS);
+    const keyed = async (app: Awaited<ReturnType<typeof studio>>, id: string) => (await app.gql(
+      "query($id:String!){projectTasks(projectId:$id){taskId taskKey dependsOnTaskIds}}", { id })).projectTasks
+      .map((t: { taskId: string; taskKey: string }) => [t.taskId, t.taskKey]).sort();
+
+    const first = await studio();
+    expect(await keysRecord(first)).toMatchObject({ status: "FAILED", attempts: 1 });
+    // No lockout: other Projects and new work keep working; the unkeyable Project is hidden and its files untouched.
+    expect((await first.gql("{projects{projectId}}")).projects.map((p: { projectId: string }) => p.projectId).sort()).toEqual(["project_agents", "project_main"]);
+    expect(await fs.readFile(blockedTask, "utf8")).toBe(blockedBytes);
+    expect(JSON.parse(await fs.readFile(path.join(projectsDir(), "project_blocked/project.json"), "utf8"))).not.toHaveProperty("taskKeys");
+    expect(await keyed(first, "project_main")).toEqual([["task_early", "autobyteus-1"], ["task_late", "autobyteus-2"]]);
+    expect(await keyed(first, "project_agents")).toEqual([["task_agent", "autobyteus-agents-1"]]);
+    const created = (await first.gql("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey dependsOnTaskIds}}",
+      { i: { projectId: "project_main", description: "After the upgrade", dependsOnTaskIds: ["task_early"] } })).createProjectTask;
+    expect(created).toMatchObject({ taskKey: "autobyteus-3", dependsOnTaskIds: ["task_early"] });
+    expect((await fetch(`${first.origin}/rest/health`)).status).toBe(200);
+    await stop(first.child);
+
+    // A restart retries only the unfinished Project.
+    await writeJson(blockedTask, task("project_blocked", "task_blocked", "2026-10-03T01:00:00.000Z"));
+    const second = await studio();
+    expect(await keysRecord(second)).toMatchObject({ status: "SUCCEEDED", attempts: 2 });
+    expect(await keyed(second, "project_blocked")).toEqual([["task_blocked", "blocked-1"]]);
+    expect(await keyed(second, "project_main")).toEqual([[created.taskId, "autobyteus-3"], ["task_early", "autobyteus-1"], ["task_late", "autobyteus-2"]].sort());
+    await stop(second.child);
+
+    // A further start changes nothing.
+    const before = await snapshot(projectsDir());
+    const third = await studio();
+    expect(await keysRecord(third)).toMatchObject({ status: "SUCCEEDED", attempts: 2 });
+    expect(await snapshot(projectsDir())).toEqual(before);
+  }, 180_000);
+
   it.each(["Studio", "Standalone"])("%s: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras", async entry => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-current-startup-"));
     await fs.mkdir(projectsDir()); await fs.mkdir(path.join(root, "home"));
@@ -314,16 +372,23 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     const {tasks: _tasks, ...historical} = JSON.parse(await fs.readFile(fixture("projects-per-folder-v1/released-with-context-drafts-and-residue.json"), "utf8"))[0];
     const file = path.join(projectsDir(), historical.projectId, "project.json");
     await fs.mkdir(path.dirname(file));
-    const original = JSON.stringify(historical, null, 2) + "\n";
-    await fs.writeFile(file, original);
-    const before = await snapshot(projectsDir());
+    await fs.writeFile(file, JSON.stringify(historical, null, 2) + "\n");
+    // The first start keys the Project (project-task-keys-v1 adds only `taskKeys`, keeping the link extras);
+    // from then on, starts and reads never rewrite it.
+    const keyed = { ...historical, taskKeys: { prefix: "with-files", lastNumber: 0 } };
+    let original = "", before: Record<string, string> = {};
     if (entry === "Standalone") {
       expect(await standaloneEntry("current.mjs", `const host=await startStandaloneApplicationHost(options);
         if((await fetch(host.url+'/_autobyteus/health')).status!==200)throw Error('Health failed');
         await host.close();console.log('CURRENT_CLOSED');`)).toContain("CURRENT_CLOSED");
-      expect(await snapshot(projectsDir())).toEqual(before);
+      expect(JSON.parse(original = await fs.readFile(file, "utf8"))).toEqual(keyed);
+      before = await snapshot(projectsDir());
     }
     const first = await studio();
+    if (entry === "Studio") {
+      expect(JSON.parse(original = await fs.readFile(file, "utf8"))).toEqual(keyed);
+      before = await snapshot(projectsDir());
+    }
     const query = 'query($id:String!){project(projectId:$id){projectId workspaces{workspaceRootPath description availability}}}';
     const expected = {projectId: historical.projectId, workspaces: [{workspaceRootPath: "/work/site", description: "repo", availability: "UNREGISTERED"}]};
     expect((await first.gql(query, {id: historical.projectId})).project).toEqual(expected);

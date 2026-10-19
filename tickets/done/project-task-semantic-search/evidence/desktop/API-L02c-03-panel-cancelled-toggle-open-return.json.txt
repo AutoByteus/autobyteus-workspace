@@ -1,0 +1,74 @@
+# API-L02c: output of the step named in the execution report Cases row for API-L02c; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "withCancelled": {
+  "lanes": {
+   "TODO": "151",
+   "IN_PROGRESS": "59",
+   "DONE": "194",
+   "CANCELLED": "39"
+  },
+  "status": "Preparing meaning search… 64 of 1000 Tasks",
+  "toggle": "Cancelled (94)"
+ },
+ "cancelledHidden": {
+  "lanes": {
+   "TODO": "151",
+   "IN_PROGRESS": "59",
+   "DONE": "194"
+  },
+  "status": "Preparing meaning search… 64 of 1000 Tasks",
+  "query": "agent"
+ },
+ "cancelledShownAgain": {
+  "lanes": {
+   "TODO": "151",
+   "IN_PROGRESS": "59",
+   "DONE": "194",
+   "CANCELLED": "39"
+  },
+  "query": "agent"
+ },
+ "openedTitle": "Explain why an agent definition is invalidWhen an agent defi",
+ "openView": {
+  "boardShown": true,
+  "testids": [
+   "projects-panel-picker",
+   "projects-panel-picker-select",
+   "projects-panel-picker-temp",
+   "projects-panel-task",
+   "projects-panel-task-back",
+   "projects-panel-task-open-page",
+   "task-key-chip",
+   "task-key",
+   "task-key-copy",
+   "projects-panel-task-status",
+   "projects-panel-task-description",
+   "task-dependencies",
+   "task-dependencies-depends-on",
+   "task-dependencies-none",
+   "task-dependencies-required-by",
+   "task-page-assigned",
+   "task-page-not-assigned",
+   "projects-panel-board",
+   "project-task-board",
+   "project-tasks-search-input",
+   "project-tasks-cancelled-toggle",
+   "project-tasks-refresh",
+   "project-tasks-meaning-status",
+   "project-task-columns",
+   "project-task-column-TODO"
+  ]
+ },
+ "backLabel": "Back to board / projects-panel-task-back",
+ "returned": {
+  "boardShown": true,
+  "query": "agent",
+  "lanes": {
+   "TODO": "151",
+   "IN_PROGRESS": "59",
+   "DONE": "194",
+   "CANCELLED": "39"
+  },
+  "status": "Preparing meaning search… 80 of 1000 Tasks"
+ }
+}

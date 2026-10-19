@@ -31,7 +31,7 @@
     "@anthropic-ai/sdk": "0.132.1",
     "@google/genai": "^2.24.0",
     "@mistralai/mistralai": "^1.13.0",
-    "@modelcontextprotocol/sdk": "1.30.0",
+    "@modelcontextprotocol/sdk": "1.32.1",
     "axios": "^1.13.2",
     "cheerio": "^1.2.0",
     "hono": "^4.0.0",

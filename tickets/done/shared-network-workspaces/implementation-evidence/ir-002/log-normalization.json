@@ -1,0 +1,125 @@
+{
+  "operation": "Strip trailing horizontal whitespace and redundant blank EOF only for durable text logs; results/failures and ANSI bytes retained. No outcome filtering.",
+  "files": [
+    {
+      "path": "web-unit-final.log",
+      "originalSha256": "d043049cd498e9b6d1b132df5b2790743ad53f415f9f4ecdeddcd53b68683867",
+      "normalizedSha256": "dcb7c13f24572f4022a6d2d9c8593e47db7d718040a5ef41505f0c040b41416e"
+    },
+    {
+      "path": "profile-unit.log",
+      "originalSha256": "30447fa18ceb5e598beab16f0994633be95fa8d848f941084c1c3e5bbe97f22c",
+      "normalizedSha256": "935e95b4db47ec4654b70b955199d28a84671491dc1a9fee69fe5ea7b34226b9"
+    },
+    {
+      "path": "server-prebuild.log",
+      "originalSha256": "6afb3127e6f66059edd25006ac76d456b75088a2c812f33c7e3aec2a6edee63e",
+      "normalizedSha256": "d040a4335d1766e5f5e7664a612729ed2617897b5c104b9123528aa8be75013b"
+    },
+    {
+      "path": "core-unit-all.log",
+      "originalSha256": "70e67c7a28154052cd0bf410051fccbc39de50b8def4463e1097a34108eb44a7",
+      "normalizedSha256": "a70efc51ce4c205f89f4c28b6481eb7b2ffecfc982d78b932776bf807c5b323a"
+    },
+    {
+      "path": "healthy-preview-unit.log",
+      "originalSha256": "4370a89b822ca10a31864aa3990c415cc74ba62a19e5d9e60f5cf1966eba85e0",
+      "normalizedSha256": "d633ae409d5cb26413b251c1825d6a1457b20a8dbecc0e799d7bdd1a02b5996a"
+    },
+    {
+      "path": "server-unit-stable.log",
+      "originalSha256": "6a88f240677a938418870b81c8878547fea522283f2ae20bf5d323db71b56ee1",
+      "normalizedSha256": "3aa8cd7b4ae32f5dd36726e1f212c7e98c101320e3960784ba839ea9161681f5"
+    },
+    {
+      "path": "web-unit.log",
+      "originalSha256": "a37a70ce8c584aaffa7649d2068f7d99d9207559b9c996f90e55b73ba44a33d0",
+      "normalizedSha256": "f8aa405e7495066fae6e567079bcad047bae24065753cc321e8efdf9480b76e4"
+    },
+    {
+      "path": "binding-unit.log",
+      "originalSha256": "604c2c4f140ca51f37db98378a6495d6abd59f18c7435c4943fc4ef37512563f",
+      "normalizedSha256": "191b05e1c7c980f18c696d3f4f3981cb3c9e796dce454db8767025e20fb55b24"
+    },
+    {
+      "path": "core-terminal-unit.log",
+      "originalSha256": "4ca668bec4b03ee848849cd01bdc0b8709289a068ce3801c4caa2519fd15cb1f",
+      "normalizedSha256": "73103e49edb8b87edbf06c92c2ed7083e7499011c964c5bab9b522cda441397c"
+    },
+    {
+      "path": "electron-typecheck.log",
+      "originalSha256": "85de9a90b7bdbd44a5c5623c9ad9a199b04e3bcf26cb5a8fdb9a5283f122f5d4",
+      "normalizedSha256": "73bfb3786ff11deaf95d56111aa006fee67673828cc49185e0f84a5f52433c8b"
+    },
+    {
+      "path": "typecheck-command-final.log",
+      "originalSha256": "6d3860437bec3ee4c158eae2006f76b9a9696dd4d60cec7e67b73a6a023c9b3e",
+      "normalizedSha256": "f70506c0ef661917ec7406005d8b76ebc40cf8fb4582952966597c33dc62e7e6"
+    },
+    {
+      "path": "web-unit-all.log",
+      "originalSha256": "b0d247085ccc48b6347f3ebb27114c2dc479d28148635d34be6b0475b91c256e",
+      "normalizedSha256": "cbdf2bddcaa881239acde806b2ad7e1010b3b16807c98fa2e9ce770230cdc0e7"
+    },
+    {
+      "path": "private-source-unit.log",
+      "originalSha256": "df0cd52d3d32aa4b7eef5ddba4466311c3ec0588d5fbad0aeedd43566dfa52b7",
+      "normalizedSha256": "589a9b3b96faac917b0630fecd566787853edbb9f4065e614cdf454ea82e9dc3"
+    },
+    {
+      "path": "electron-unit-all-rerun.log",
+      "originalSha256": "b251bc3bee52e7663b9d84c08e91b7bd9b50317abaf0888073b180d86d71b91a",
+      "normalizedSha256": "c236e0effeed40390e506690d7e6e76704671be017bd322db5770ccd97f16041"
+    },
+    {
+      "path": "core-unit-all-rerun.log",
+      "originalSha256": "6e247a41eb954f91be040e6982f2aa0aa7e6ff879aa4957a5abffa0499919a5f",
+      "normalizedSha256": "f17c6e6d014c3c18bd2a25cac38bd20fc6a2c6b3fda2bdb95834247d09582cfd"
+    },
+    {
+      "path": "cross-language-binding.log",
+      "originalSha256": "1b91e8f173e47354796a886c8266ab3a8ccf1c9d1c2086b1839948ef36fe8cd9",
+      "normalizedSha256": "dc222b54add1b43fe39187a496108909fb7b17b21561028614f3115631b74b03"
+    },
+    {
+      "path": "runtime-unit.log",
+      "originalSha256": "fdf044ccd3e6c7fcb864c91eded4dccfe37249a99b8097c1345d3e971c3ab83f",
+      "normalizedSha256": "1654c02638e401746a04a59756ee916cbd65d5f239b4df207a6439517b5b91c0"
+    },
+    {
+      "path": "changed-boundary-integration.log",
+      "originalSha256": "64d882e72bfd0880836b0c2a1fb81f17cadfe1ab2c1bb023271746185143a2ea",
+      "normalizedSha256": "2875c7d310fc4c70de66d48766177bf623d027ef554df7cc9f5cc539f772a11c"
+    },
+    {
+      "path": "core-terminal-unit-2.log",
+      "originalSha256": "daa9328ffd3ac1116ea4be03887279a4238f2600d49e084aab2f3fdd77a895dc",
+      "normalizedSha256": "8c534f702ab49c2ad35d980b714876c6f58d7589ccee5be0a23dde837e5334ff"
+    },
+    {
+      "path": "server-unit-final.log",
+      "originalSha256": "dd020bad36de676095d509857c037d17b1dea319cec194b9e2efdab5c1edb607",
+      "normalizedSha256": "fac57f83fa4c99d0fe54dccb0b9ffa017768a8171738eae1921b62842ca5d25f"
+    },
+    {
+      "path": "server-typecheck.log",
+      "originalSha256": "cd9c7c2f914705f86d130fbcfd8747c4eb5e5569ddb5e31025b555f6c89367b0",
+      "normalizedSha256": "cd29dd1766d951817aed92d90aca2c6944bbdadb008683f37a637b1426f71056"
+    },
+    {
+      "path": "server-unit-all.log",
+      "originalSha256": "5846122af64d26ef63fc642452214591150f3244bfef871461c3515f068b6733",
+      "normalizedSha256": "58c112dd3bf456cad522e2fbf0c405c831a49a190e21f6e7392f33eab6590fa2"
+    },
+    {
+      "path": "electron-typecheck-current-source.log",
+      "originalSha256": "85de9a90b7bdbd44a5c5623c9ad9a199b04e3bcf26cb5a8fdb9a5283f122f5d4",
+      "normalizedSha256": "73bfb3786ff11deaf95d56111aa006fee67673828cc49185e0f84a5f52433c8b"
+    },
+    {
+      "path": "web-unit-all-rerun.log",
+      "originalSha256": "8d684b229cc17c027a16eef60e4e2dfd1336dee745032893bcf3b022564005c9",
+      "normalizedSha256": "668a005e5f4f7389ee9e6963020c551f657c734b1245f2176db6e38da42715ac"
+    }
+  ]
+}

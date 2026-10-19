@@ -1,0 +1,48 @@
+{
+  "phase": "member",
+  "runId": "tma_org2_manager_da1c95f9_c889b7ca0b22449c91aaee34713ba6de",
+  "tokenFrames": [
+    {
+      "t": 2593,
+      "call": true,
+      "prompt": 21373,
+      "count": 1,
+      "revision": 1
+    },
+    {
+      "t": 7950,
+      "call": true,
+      "prompt": 21492,
+      "count": 2,
+      "revision": 2
+    },
+    {
+      "t": 12183,
+      "call": true,
+      "prompt": 21611,
+      "count": 3,
+      "revision": 3
+    },
+    {
+      "t": 16592,
+      "call": true,
+      "prompt": 21730,
+      "count": 4,
+      "revision": 4
+    },
+    {
+      "t": 20622,
+      "call": true,
+      "prompt": 21849,
+      "count": 5,
+      "revision": 5
+    },
+    {
+      "t": 20628,
+      "call": false,
+      "prompt": null,
+      "count": 5,
+      "revision": 6
+    }
+  ]
+}

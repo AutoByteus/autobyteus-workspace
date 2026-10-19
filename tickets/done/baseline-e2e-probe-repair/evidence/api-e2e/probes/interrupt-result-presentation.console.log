@@ -1,0 +1,7 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.5-beta.3 test:e2e:interrupt-result-presentation /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-web
+> node tests/e2e/interrupt-result-presentation-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/tickets/in-progress/baseline-e2e-probe-repair/evidence/api-e2e/probes/interrupt-result-presentation
+
+Interrupt result presentation probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/tickets/in-progress/baseline-e2e-probe-repair/evidence/api-e2e/probes/interrupt-result-presentation/evidence.json
+exit=0

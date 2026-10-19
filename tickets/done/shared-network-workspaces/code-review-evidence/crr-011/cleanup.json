@@ -1,0 +1,8 @@
+{
+  "removedOwnedScratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky",
+  "absent": true,
+  "retainedCandidateFiles": 19,
+  "oldDistFilesPreserved": 286,
+  "liveResourcesCreated": false,
+  "sourceOrDurableTestEdits": false
+}

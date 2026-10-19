@@ -1,0 +1,11 @@
+{
+  "retiredVm": "ab-sf-fr019-macos",
+  "retiredVmStoppedBeforeDelete": true,
+  "retiredVmAbsent": true,
+  "reason": "FR025 imported necessary user OAuth; remove entire changed VM disk/keychain, not only deleted files. Public base cache retained; new credential-free clone for FR026.",
+  "newVm": "ab-sf-fr026-macos",
+  "newCloneExit": 0,
+  "sourceImage": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+  "noGlobalPrune": true,
+  "hostMountChanged": false
+}

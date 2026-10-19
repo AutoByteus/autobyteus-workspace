@@ -1,0 +1,106 @@
+# Case: API-08 packaged Electron worktree build on SDK 1.32.1 (isolated desktop instance); MCP through its embedded server
+# Commands: pnpm --silent isolated-app start --build ; probe (temporary; same source as in API-07-docker-image-mcp.txt) with BACKEND_URL=<backendUrl> MCP_HOST=127.0.0.1 STDIO_COMMAND=<abs node> STDIO_ARGS=[<worktree>/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs] STDIO_CWD=/private/tmp/mcp181/stdio-cwd (no gateway token: loopback) ; pnpm --silent isolated-app stop iso-56513-e563
+# Commit: c7f0c18fdc (packaged build electron-dist/mac-arm64/AutoByteus.app, version 1.5.6-beta.10 label; untracked build output)
+# Environment: macOS 26 arm64; isolated instance with its own ports and auto-created data root; the user's AutoByteus app untouched
+# Date: 2026-10-19
+
+== Build ==
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.6-beta.10.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.6-beta.10.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.6-beta.10.zip'
+exit 0
+
+== Start result ==
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-56513-e563",
+    "pid": 13904,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:56514",
+    "graphqlUrl": "http://127.0.0.1:56514/graphql",
+    "controlEndpoint": "http://127.0.0.1:56513",
+    "controlPort": 56513,
+    "serverPort": 56514,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-FgPLuX",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-FgPLuX/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-56513-e563.log"
+  }
+}
+
+== SDK inside the app bundle (find Resources -path "*@modelcontextprotocol/sdk/package.json") ==
+1.32.1 Resources/server/node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_zod@4.3.6/node_modules/@modelcontextprotocol/sdk/package.json  (only copy)
+
+== Probe result (value-free) ==
+{
+  "backend": "http://127.0.0.1:56514",
+  "health": 200,
+  "probe_tok": {
+    "saveErrors": null,
+    "discover": {
+      "success": true,
+      "message": "Successfully discovered and registered 1 tools.",
+      "discoveredTools": [
+        {
+          "name": "probe_tok_auth_probe"
+        }
+      ]
+    }
+  },
+  "probe_stdio": {
+    "saveErrors": null,
+    "discover": {
+      "success": true,
+      "message": "Successfully discovered and registered 1 tools.",
+      "discoveredTools": [
+        {
+          "name": "probe_stdio_report_env_and_cwd"
+        }
+      ]
+    }
+  },
+  "crossOriginPreviewError": "Failed to preview tools for MCP server: Error: Streamable HTTP error: Error POSTing to endpoint: Redirect to http://127.0.0.1:56697/mcp not followed (redirectPolicy: 'same-origin')",
+  "crossOriginTargetRequests": 0,
+  "gatewayTools": [
+    "probe_stdio_report_env_and_cwd",
+    "probe_tok_auth_probe"
+  ],
+  "httpToolResult": "MARKER-TOK-9902",
+  "stdioToolResult": {
+    "envDelivered": true,
+    "cwd": "/private/tmp/mcp181/stdio-cwd"
+  },
+  "tokServerAuth": [
+    "expected"
+  ],
+  "tokServerToolCalls": [
+    "expected"
+  ]
+}
+
+== Log scan ==
+isolated-app instance log: 37413 bytes, test-dummy occurrences: 0
+data-root *.log files: 53592 bytes, test-dummy occurrences: 0
+files under the data root containing test-dummy: <dataRoot>/server-data/mcps.json only (the saved token; plain-text storage accepted as R-001 / FU-2)
+
+== Stop result ==
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-56513-e563",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-FgPLuX",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+isolated-app list afterwards: no instance iso-56513-e563; data root no longer exists

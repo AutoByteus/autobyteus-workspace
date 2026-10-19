@@ -28,6 +28,7 @@ import {
   type MemberRunState,
   type MemberRunStateCommit,
 } from '~/services/runHydration/memberRunStateHydration'
+import { fetchRunFileChanges } from '~/services/runHydration/runFileChangeHydrationService'
 import {
   AgentOrgExecutionContext,
   type AgentOrgContextEntry,
@@ -152,8 +153,10 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
       context,
       seed,
       await fetchMemberRunState({
-        runId: seed.agentRunId,
         fetchProjection: () => fetchProjection(input.orgRunId, seed),
+        fetchFileChanges: () => fetchRunFileChanges({
+          kind: 'agentOrgMember', orgRunId: input.orgRunId, memberAddress: seed.address, agentRunId: seed.agentRunId,
+        }),
       }),
     )
     return Object.freeze({

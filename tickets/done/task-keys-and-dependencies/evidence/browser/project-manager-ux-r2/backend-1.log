@@ -1,0 +1,410 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60562
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60562
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/db/development.db"
+
+SQLite database development.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:48604) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1792249795790,"pid":48604,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:60566"}
+{"level":30,"time":1792249795816,"pid":48604,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:60562"}
+[2026-10-17T15:09:55.816Z] [INFO] [server.runtime] Server listening on 127.0.0.1:60562
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Created and registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+Created terminal session ea331a33-06e8-4fe6-957f-8fdf2a5f24d1 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: ea331a33-06e8-4fe6-957f-8fdf2a5f24d1
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session ea331a33-06e8-4fe6-957f-8fdf2a5f24d1
+Terminal WebSocket disconnected: ea331a33-06e8-4fe6-957f-8fdf2a5f24d1
+Created terminal session 5b46d3e3-74ae-46c0-8844-4f39194e509c using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 5b46d3e3-74ae-46c0-8844-4f39194e509c
+Terminal websocket attached for cwd /Users/normy
+Agent Definition created successfully with ID: manager-pmuagent-f6ef
+Closed PTY session 5b46d3e3-74ae-46c0-8844-4f39194e509c
+Terminal WebSocket disconnected: 5b46d3e3-74ae-46c0-8844-4f39194e509c
+Agent Definition created successfully with ID: release-notes-writer-pmuagent-f6ef
+Agent Definition created successfully with ID: fact-checker-pmuagent-f6ef
+Agent Team Definition created successfully with ID: docs-review-team-pmuagent-f6ef
+Agent Team Definition created successfully with ID: delivery-team-pmuagent-f6ef
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Created agent session 63547b8f-a3f8-40f2-b7ca-541e239e3be7 for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Agent WebSocket connected: session=63547b8f-a3f8-40f2-b7ca-541e239e3be7, run=manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/memory/agents/manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3/raw_traces_active.jsonl
+Agent websocket attached for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Created agent session d22645a1-6d7e-4b3e-b4d0-84b45687f255 for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Agent WebSocket connected: session=d22645a1-6d7e-4b3e-b4d0-84b45687f255, run=manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+{"level":40,"time":1792249820950,"pid":48604,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_ksc5koyqrncNKRN0to5V8zB1ZbORlHeHWpTNYMT-g9Y","statusCode":405,"elapsedMs":0.2509160041809082,"msg":"http request completed"}
+Closed agent session d22645a1-6d7e-4b3e-b4d0-84b45687f255
+Agent WebSocket disconnected: d22645a1-6d7e-4b3e-b4d0-84b45687f255
+Agent websocket attached for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Created agent session 93e21785-34bb-46bc-8131-90b8d814bcd8 for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Agent WebSocket connected: session=93e21785-34bb-46bc-8131-90b8d814bcd8, run=manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+{"level":40,"time":1792249825635,"pid":48604,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_ksc5koyqrncNKRN0to5V8zB1ZbORlHeHWpTNYMT-g9Y","statusCode":405,"elapsedMs":0.2845829725265503,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run release_notes_writer_pmuagent_f6ef_2efe9471504d40ecbd819a022dab0e39: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792249826019,"pid":48604,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_ksc5koyqrncNKRN0to5V8zB1ZbORlHeHWpTNYMT-g9Y","statusCode":405,"elapsedMs":0.18570804595947266,"msg":"http request completed"}
+{"level":40,"time":1792249826695,"pid":48604,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_ksc5koyqrncNKRN0to5V8zB1ZbORlHeHWpTNYMT-g9Y","statusCode":405,"elapsedMs":0.3215419054031372,"msg":"http request completed"}
+Closed agent session 93e21785-34bb-46bc-8131-90b8d814bcd8
+Agent WebSocket disconnected: 93e21785-34bb-46bc-8131-90b8d814bcd8
+{"level":40,"time":1792249827026,"pid":48604,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_ksc5koyqrncNKRN0to5V8zB1ZbORlHeHWpTNYMT-g9Y","statusCode":405,"elapsedMs":0.264165997505188,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run release_notes_writer_pmuagent_f6ef_b15aee856ca44b13ad3dc27a5ddd6dcd: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Created agent session 197066a3-64f1-4d65-989c-8bcb1c635869 for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Agent WebSocket connected: session=197066a3-64f1-4d65-989c-8bcb1c635869, run=manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/memory/agents/manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3/collaboration/docs_review_team_pmuagent_f6ef_d709deb8301c4748b4456ca4634a024e/fact_checker_pmuagent_f6ef_c9503a1b08f84116824cad3b5a2807fe/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/memory/agents/manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3/collaboration/docs_review_team_pmuagent_f6ef_d709deb8301c4748b4456ca4634a024e/fact_checker_pmuagent_f6ef_c9503a1b08f84116824cad3b5a2807fe/raw_traces_active.jsonl
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+Agent team websocket attached for team run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Created agent session fc2f2cd5-b899-41a5-b634-521a6a9340e0 for run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Agent Team WebSocket connected: session=fc2f2cd5-b899-41a5-b634-521a6a9340e0, run=delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run manager_pmuagent_f6ef_73922ee5c0fc4b32b2571d74edc6adb2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792249830038,"pid":48604,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_-jU0i5MP7-HxcZh5-Sn5pNQbOyjOmLstRBindI9blq0","statusCode":405,"elapsedMs":0.15637505054473877,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run release_notes_writer_pmuagent_f6ef_7274fd15e4cd43b1a45c96e692bf76a6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 197066a3-64f1-4d65-989c-8bcb1c635869
+Agent WebSocket disconnected: 197066a3-64f1-4d65-989c-8bcb1c635869
+Agent websocket attached for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Created agent session 2468f1df-12ae-4f9d-a933-e7919b2ca3a3 for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Agent WebSocket connected: session=2468f1df-12ae-4f9d-a933-e7919b2ca3a3, run=manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Agent team websocket attached for team run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Created agent session 4db3b2ec-99f9-41e6-a647-fc8702441d89 for run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Agent Team WebSocket connected: session=4db3b2ec-99f9-41e6-a647-fc8702441d89, run=delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run manager_pmuagent_f6ef_8fa9fc09104145efba62d6bd8624ef1a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792249832741,"pid":48604,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_fslYc8P_gAVYDdB1PuLDGg7ORbxX1oGLrjn19WKA6lM","statusCode":405,"elapsedMs":0.16337502002716064,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run release_notes_writer_pmuagent_f6ef_9a933ff0df1c4696afa58071ed5a8fab: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 4db3b2ec-99f9-41e6-a647-fc8702441d89
+Closed agent session 2468f1df-12ae-4f9d-a933-e7919b2ca3a3
+Agent WebSocket disconnected: 2468f1df-12ae-4f9d-a933-e7919b2ca3a3
+Agent websocket attached for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Created agent session 223b799c-d8c7-4c63-a5c2-bb77719c07bc for run manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Agent WebSocket connected: session=223b799c-d8c7-4c63-a5c2-bb77719c07bc, run=manager_pmuagent_f6ef_b84ee184a71c43a5b3a1602e034a8cc3
+Agent team websocket attached for team run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Created agent session 71f91844-031c-4863-80e5-79dc54abda70 for run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Agent Team WebSocket connected: session=71f91844-031c-4863-80e5-79dc54abda70, run=delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/memory/agent_orgs/delivery_org_pmuagent_f6ef_0d4703ad69294ff1a8024513a893411d/release_notes_writer_pmuagent_f6ef_84457e0a4cc247aa83d2eb67fbb5a48f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/memory/agent_orgs/delivery_org_pmuagent_f6ef_0d4703ad69294ff1a8024513a893411d/fact_checker_pmuagent_f6ef_6657ffd8ed9c48fa86af3f3b13041b0f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/memory/agent_orgs/delivery_org_pmuagent_f6ef_0d4703ad69294ff1a8024513a893411d/release_notes_writer_pmuagent_f6ef_84457e0a4cc247aa83d2eb67fbb5a48f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/memory/agent_orgs/delivery_org_pmuagent_f6ef_0d4703ad69294ff1a8024513a893411d/fact_checker_pmuagent_f6ef_6657ffd8ed9c48fa86af3f3b13041b0f/raw_traces_active.jsonl
+Closed agent session 71f91844-031c-4863-80e5-79dc54abda70
+Closed agent session 223b799c-d8c7-4c63-a5c2-bb77719c07bc
+Agent WebSocket disconnected: 223b799c-d8c7-4c63-a5c2-bb77719c07bc
+Agent team websocket attached for team run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Created agent session 2d1a5e2d-c467-43f7-8052-4d955f1a0fc1 for run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Agent Team WebSocket connected: session=2d1a5e2d-c467-43f7-8052-4d955f1a0fc1, run=delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Closed agent session 2d1a5e2d-c467-43f7-8052-4d955f1a0fc1
+Agent team websocket attached for team run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Created agent session 72ffc52b-0294-42df-9774-1ae1ecbfc65e for run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Agent Team WebSocket connected: session=72ffc52b-0294-42df-9774-1ae1ecbfc65e, run=delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Closed agent session 72ffc52b-0294-42df-9774-1ae1ecbfc65e
+Agent Definition created successfully with ID: manager-pmutemp-5e7f
+Agent Definition created successfully with ID: release-notes-writer-pmutemp-5e7f
+Agent Definition created successfully with ID: fact-checker-pmutemp-5e7f
+Agent Team Definition created successfully with ID: docs-review-team-pmutemp-5e7f
+Agent Team Definition created successfully with ID: delivery-team-pmutemp-5e7f
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Created agent session 8d77b6ec-76a0-4a59-aaea-6847061e7dca for run manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Agent WebSocket connected: session=8d77b6ec-76a0-4a59-aaea-6847061e7dca, run=manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/memory/agents/manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81/raw_traces_active.jsonl
+Agent websocket attached for run manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Created agent session 57eaafda-bf6e-40cb-b7c7-ec67bc09c7e7 for run manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Agent WebSocket connected: session=57eaafda-bf6e-40cb-b7c7-ec67bc09c7e7, run=manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Agent team websocket attached for team run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Created agent session 0ffef41d-71fb-474d-8127-03d4c18a3a42 for run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Agent Team WebSocket connected: session=0ffef41d-71fb-474d-8127-03d4c18a3a42, run=delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+{"level":40,"time":1792249841162,"pid":48604,"hostname":"MacBookPro","reqId":"req-w","method":"GET","url":"/mcp/agent-tools/agtrun_JTxWqd60acfavbfxN4tKbum0PIQM79taR8UdhAxxQS8","statusCode":405,"elapsedMs":0.1387089490890503,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run release_notes_writer_pmutemp_5e7f_a3d133b164b64f8eac8f58b36a3bf3cf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792249842006,"pid":48604,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_JTxWqd60acfavbfxN4tKbum0PIQM79taR8UdhAxxQS8","statusCode":405,"elapsedMs":0.13062500953674316,"msg":"http request completed"}
+Closed agent session 0ffef41d-71fb-474d-8127-03d4c18a3a42
+Closed agent session 57eaafda-bf6e-40cb-b7c7-ec67bc09c7e7
+Agent WebSocket disconnected: 57eaafda-bf6e-40cb-b7c7-ec67bc09c7e7
+Agent Definition created successfully with ID: manager-pmuf006-86f7
+Agent Definition created successfully with ID: release-notes-writer-pmuf006-86f7
+Agent Definition created successfully with ID: fact-checker-pmuf006-86f7
+Agent Team Definition created successfully with ID: docs-review-team-pmuf006-86f7
+Agent Team Definition created successfully with ID: delivery-team-pmuf006-86f7
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c
+Created agent session ff7ff864-36cc-453d-bf16-afb9bfe62ff5 for run manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c
+Agent WebSocket connected: session=ff7ff864-36cc-453d-bf16-afb9bfe62ff5, run=manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c
+{"level":40,"time":1792249842560,"pid":48604,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_0MUw0HbvS8vjjEgWS2hqsYEW95SRs9YCnA0QPUZ8Gp4","statusCode":405,"elapsedMs":0.23158299922943115,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-FTl5bm/workspace.
+Reusing registered workspace ID: agent_ws_677ae6182b211af6d49d533366b7b3e4adc0a27a8cbdb87313e960f77c5e3ff4
+AGY compaction detection off for run release_notes_writer_pmuf006_86f7_c8f73058da4b41079dbd1c3daab7d2d5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c
+Created agent session 16332357-6628-4c04-992b-7f06f21eec9d for run manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c
+Agent WebSocket connected: session=16332357-6628-4c04-992b-7f06f21eec9d, run=manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c
+Created terminal session 7d65d200-cfa7-4057-ac2c-e0ba9056e382 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 7d65d200-cfa7-4057-ac2c-e0ba9056e382
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Created agent session fc0ec3ed-2e42-4a9a-885b-d27fed058b89 for run manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Agent WebSocket connected: session=fc0ec3ed-2e42-4a9a-885b-d27fed058b89, run=manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Agent team websocket attached for team run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Created agent session 646aa6a7-f69c-4801-85e6-8b440fef9b4c for run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Agent Team WebSocket connected: session=646aa6a7-f69c-4801-85e6-8b440fef9b4c, run=delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Closed PTY session 7d65d200-cfa7-4057-ac2c-e0ba9056e382
+Terminal WebSocket disconnected: 7d65d200-cfa7-4057-ac2c-e0ba9056e382
+Closed agent session fc0ec3ed-2e42-4a9a-885b-d27fed058b89
+Agent WebSocket disconnected: fc0ec3ed-2e42-4a9a-885b-d27fed058b89
+Closed agent session 16332357-6628-4c04-992b-7f06f21eec9d
+Agent WebSocket disconnected: 16332357-6628-4c04-992b-7f06f21eec9d
+Closed agent session 646aa6a7-f69c-4801-85e6-8b440fef9b4c
+Agent websocket attached for run manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c
+Created agent session 35e3d08f-2265-4d31-961b-22042899b98b for run manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c
+Agent WebSocket connected: session=35e3d08f-2265-4d31-961b-22042899b98b, run=manager_pmuf006_86f7_4abf251e20e24f6f98ab785e54c2e58c
+Agent websocket attached for run manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Created agent session c6bf3281-0ea1-487f-8884-d2ba6083f50a for run manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Agent WebSocket connected: session=c6bf3281-0ea1-487f-8884-d2ba6083f50a, run=manager_pmutemp_5e7f_534d3a93585d45e6937c8e2c77848c81
+Agent team websocket attached for team run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Created agent session a69e6e91-e14a-4114-a5b3-5db460c4718e for run delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+Agent Team WebSocket connected: session=a69e6e91-e14a-4114-a5b3-5db460c4718e, run=delivery_team_pmuagent_f6ef_620cd9749f4a4bef9eeddd30e2b0ede7
+[2026-10-17T15:10:47.632Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session a69e6e91-e14a-4114-a5b3-5db460c4718e
+Closed agent session c6bf3281-0ea1-487f-8884-d2ba6083f50a
+Agent WebSocket disconnected: c6bf3281-0ea1-487f-8884-d2ba6083f50a
+Closed agent session 35e3d08f-2265-4d31-961b-22042899b98b
+Agent WebSocket disconnected: 35e3d08f-2265-4d31-961b-22042899b98b
+Closed agent session 8d77b6ec-76a0-4a59-aaea-6847061e7dca
+Agent WebSocket disconnected: 8d77b6ec-76a0-4a59-aaea-6847061e7dca
+Closed agent session fc2f2cd5-b899-41a5-b634-521a6a9340e0
+Closed agent session 63547b8f-a3f8-40f2-b7ca-541e239e3be7
+Agent WebSocket disconnected: 63547b8f-a3f8-40f2-b7ca-541e239e3be7
+Closed agent session ff7ff864-36cc-453d-bf16-afb9bfe62ff5
+Agent WebSocket disconnected: ff7ff864-36cc-453d-bf16-afb9bfe62ff5
+{"level":30,"time":1792249852040,"pid":48604,"hostname":"MacBookPro","reqId":"req-h2","res":{"statusCode":503},"msg":"request aborted - refusing to accept new requests as server is closing"}
+[2026-10-17T15:10:52.068Z] [INFO] [server.runtime] Server closed cleanly.

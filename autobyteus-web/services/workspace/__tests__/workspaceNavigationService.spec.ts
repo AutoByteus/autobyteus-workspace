@@ -51,8 +51,13 @@ vi.mock('~/stores/agentSelectionStore', () => ({
 }))
 
 import {
+  buildAgentOrgActiveRoute,
+  buildAgentOrgLaunchRoute,
   buildAgentRunChatRoute,
   buildWorkspaceExecutionRoute,
+  chatRouteRunId,
+  isAgentOrgLaunchRoute,
+  isAgentOrgRunRoute,
   resolveSelectionRoute,
   createWorkspaceExecutionLinkSignature,
   openWorkspaceExecutionLink,
@@ -74,6 +79,28 @@ describe('workspaceNavigationService', () => {
       workspaceExecutionRunId: 'agent-run-1',
     })).toBeNull()
     expect(createWorkspaceExecutionLinkSignature({ kind: 'agent', runId: 'agent-run-1' })).toBe('agent:agent-run-1')
+  })
+
+  // collapsed-left-panel-expand-keeps-run (D-7): one meaning of the run routes for the center and the highlight.
+  it('reads the run id a /chat route opens, or none on New chat', () => {
+    expect(chatRouteRunId((buildAgentRunChatRoute('run-1') as any).query)).toBe('run-1')
+    expect(chatRouteRunId({ id: ' run-2 ' })).toBe('run-2')
+    expect(chatRouteRunId({ id: ['run-3', 'run-4'] })).toBe('run-3')
+    expect(chatRouteRunId({ id: '  ' })).toBeNull()
+    expect(chatRouteRunId({})).toBeNull()
+  })
+
+  it('tells an Org run route from the Org launch page', () => {
+    const active = (buildAgentOrgActiveRoute('org-def', 'org-run') as any).query as LocationQuery
+    const launch = (buildAgentOrgLaunchRoute('org-def', 'org-run') as any).query as LocationQuery
+    expect(isAgentOrgRunRoute(active)).toBe(true)
+    expect(isAgentOrgRunRoute({ ...active, mode: 'history' })).toBe(true)
+    expect(isAgentOrgRunRoute(launch)).toBe(false)
+    expect(isAgentOrgRunRoute({ ...active, orgRunId: '' })).toBe(false)
+    expect(isAgentOrgRunRoute({})).toBe(false)
+    expect(isAgentOrgLaunchRoute(launch)).toBe(true)
+    expect(isAgentOrgLaunchRoute(active)).toBe(false)
+    expect(isAgentOrgLaunchRoute({})).toBe(false)
   })
 
   it('resolves committed selections to the chat view for agents and the workspace for teams', () => {

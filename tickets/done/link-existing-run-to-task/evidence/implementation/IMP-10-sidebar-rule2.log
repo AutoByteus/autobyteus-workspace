@@ -1,0 +1,11 @@
+# IMP-10 kept sidebar rule 2: its web unit cases
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run stores/__tests__/runHistoryStore.spec.ts -t 'left the history'
+# Commit: ffeea43dac
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-18T19:04Z
+
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > top-level rows of runs that left the history > drops an open agent run and an open team run once a later read no longer lists them, and shows them again if listed 21ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > top-level rows of runs that left the history > keeps an open agent run that only fell out of the per-agent window, and drops it once a read would have listed it 5ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > top-level rows of runs that left the history > never drops a run no read has listed yet (a run created this session) 2ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > top-level rows of runs that left the history > archiving an open team run takes it out of its group, and the next read keeps it out 3ms
+      Tests  4 passed | 53 skipped (57)

@@ -52,6 +52,7 @@ const directPayload = (eventId: string) => createTokenUsageUpdatedPayload({
     runtime_kind: "autobyteus",
     ingestion_kind: "autobyteus_llm_phase",
     usage_scope: "per_call",
+    reports_model_call: true,
     input_token_semantic: "gross_includes_cache",
     reported_input_tokens: 1,
     reported_output_tokens: 0,
@@ -80,6 +81,7 @@ const localPayload = createTokenUsageUpdatedPayload({
     runtime_kind: "OLLAMA",
     ingestion_kind: "autobyteus_llm_phase",
     usage_scope: "per_call",
+    reports_model_call: true,
     input_token_semantic: "gross_includes_cache",
     reported_input_tokens: 2,
     reported_output_tokens: 1,
@@ -145,10 +147,13 @@ describe("TokenUsageRunAccumulator", () => {
       expect(second.run_summary_after_event?.estimated_api_total_cost).toBeCloseTo(15 * 10 / 1e6, 9);
       const persisted = await repository.getByRunId("sdk-selected-sql");
       expect(persisted?.claudeSdkUsageStateJson).toContain("claude-haiku");
-      expect(persisted?.usageReportCount).toBe(2n);
+      // Turn-end results reconcile totals but are not model calls (D-3, D-4).
+      expect(persisted?.usageReportCount).toBe(0n);
+      expect(persisted?.revision).toBe(2n);
+      expect(second.run_summary_after_event?.revision).toBe(2);
       expect(await accumulator.recordObservation(usage("two", 15, "resume"))).toMatchObject({
         meter_delta_total_tokens: 0 });
-      expect((await repository.getByRunId("sdk-selected-sql"))?.usageReportCount).toBe(2n);
+      expect((await repository.getByRunId("sdk-selected-sql"))?.revision).toBe(2n);
       await prisma.tokenUsageRunRecord.update({ where: { runId: "sdk-selected-sql" },
         data: { claudeSdkUsageStateJson: null } });
       expect((await repository.getByRunId("sdk-selected-sql"))?.claudeSdkUsageStateJson).toBeNull();
@@ -182,6 +187,34 @@ describe("TokenUsageRunAccumulator", () => {
       expect(result.run_summary_after_event?.cache_state).toBe("unsupported_or_local");
     } finally {
       await prisma.tokenUsageRunRecord.deleteMany({ where: { runId: localPayload.run_id } });
+      await prisma.$disconnect();
+    }
+  });
+
+  it("claims the observation's current root, not the stored record's, when the record has seen more than one root", async () => {
+    const realCalculator = new TokenCostCalculator();
+    const calculator = { resolvePolicy: vi.fn().mockResolvedValue(policy),
+      applyPolicy: vi.fn((payload, resolvedPolicy) => realCalculator.applyPolicy(payload, resolvedPolicy)) };
+    const runId = "run-mixed-root-member";
+    const observation = (eventId: string, rootTeamRunId: string | null) => {
+      const base = directPayload(eventId);
+      return createTokenUsageUpdatedPayload({ runId,
+        payload: { ...base, run_id: runId, root_team_run_id: rootTeamRunId } });
+    };
+    const prisma = new PrismaClient({ datasourceUrl: process.env.DATABASE_URL });
+    const repository = new SqlTokenUsageRunRepository(prisma);
+    try {
+      const accumulator = new TokenUsageRunAccumulator(repository, calculator as never);
+      const first = await accumulator.recordObservation(observation("1", "team-a"));
+      expect(first.run_summary_after_event?.root_team_run_id).toBe("team-a");
+      // Legacy or migrated usage of the same run under another team: the record no longer stores a single root.
+      const current = await accumulator.recordObservation(observation("2", "team-b"));
+      expect((await repository.getByRunId(runId))?.rootTeamRunId).toBeNull();
+      // The live summary still claims the root the run reports now, so its Team root accepts it.
+      expect(current.run_summary_after_event?.root_team_run_id).toBe("team-b");
+      expect(current.run_summary_after_event?.total_tokens).toBe(2);
+    } finally {
+      await prisma.tokenUsageRunRecord.deleteMany({ where: { runId } });
       await prisma.$disconnect();
     }
   });

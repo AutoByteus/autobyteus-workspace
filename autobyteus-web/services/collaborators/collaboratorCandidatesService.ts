@@ -93,7 +93,7 @@ const fetchCandidates = async (subject: CollaboratorCandidateSubject): Promise<v
 /**
  * The `@` menu's candidate list per subject (a Team or Org root, or one focused agent of an Agent
  * root). The server's candidate policy is the only authority; the list is refreshed whenever the
- * menu opens and when a collaborator is added to the root.
+ * menu opens.
  */
 export const collaboratorCandidatesService = Object.freeze({
   entry(subject: CollaboratorCandidateSubject): CollaboratorCandidateEntry | null {
@@ -107,17 +107,6 @@ export const collaboratorCandidatesService = Object.freeze({
     const attempt = fetchCandidates(subject).finally(() => inFlight.delete(key))
     inFlight.set(key, attempt)
     return attempt
-  },
-
-  /**
-   * A collaborator was added (or the run changed): the next menu open fetches again, for every
-   * focused agent of the root.
-   */
-  invalidate(rootKind: CollaboratorRootKind, rootRunId: string): void {
-    const rootKey = rootKeyOf(rootKind, rootRunId)
-    for (const key of [...cache.keys()]) {
-      if (key === rootKey || key.startsWith(`${rootKey}${FOCUSED_SEPARATOR}`)) cache.delete(key)
-    }
   },
 
   /** Test support. */

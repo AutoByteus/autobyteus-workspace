@@ -52,6 +52,7 @@ const messages = {
   'tools.components.tools.McpServerFormModal.paste_a_standard_mcpservers_json_object': '在下面粘贴标准“mcpServers” JSON 对象。应用后，第一个有效的服务器配置将填充表单。',
   'tools.components.tools.McpServerFormModal.server_id': '服务器ID',
   'tools.components.tools.McpServerFormModal.tabs': '选项卡',
+  'tools.components.tools.McpServerFormModal.token_hint': '以 "Authorization: Bearer <令牌>" 发送。其他认证方式（例如 Basic）请改为在 JSON 视图中添加 Authorization 请求头。',
   'tools.components.tools.McpServerFormModal.token_optional': '令牌（可选）',
   'tools.components.tools.McpServerFormModal.tool_name_prefix_optional': '工具名称前缀（可选）',
   'tools.components.tools.McpServerFormModal.transport_type': '运输类型',

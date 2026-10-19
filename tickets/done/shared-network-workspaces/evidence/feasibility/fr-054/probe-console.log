@@ -1,0 +1,7 @@
+PASS patched root daemon with all-squashed data directly serves selected Mac source
+PASS two independent Linux daemon mounts share same Mac-bound storage identity at agreed path
+PASS ordinary Mac host-folder write is exact in both Linux NFS clients within five seconds
+PASS Linux mounted append reaches original Mac source and peer without copying
+PASS cross-client rename relative symlink executable exclusive-create and existing-source preservation
+PASS Linux Git on identical Mac source captures root versus data-UID inode/device views
+{"run": "ab-sf-fr054-00b67a81", "passes": 6, "fatal": null}

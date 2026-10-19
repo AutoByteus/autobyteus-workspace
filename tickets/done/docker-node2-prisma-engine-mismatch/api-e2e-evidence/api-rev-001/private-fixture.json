@@ -1,0 +1,20 @@
+{
+  "tmpfs": {
+    "/home/autobyteus/data": "rw,mode=0700",
+    "/root": "rw,mode=0700"
+  },
+  "signInFilesAbsent": [
+    {
+      "path": "/root/.gemini/antigravity-cli/antigravity-oauth-token",
+      "exists": false
+    },
+    {
+      "path": "/root/.codex/auth.json",
+      "exists": false
+    },
+    {
+      "path": "/root/.claude/.credentials.json",
+      "exists": false
+    }
+  ]
+}

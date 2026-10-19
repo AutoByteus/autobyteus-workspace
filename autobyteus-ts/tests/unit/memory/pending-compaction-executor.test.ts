@@ -12,7 +12,7 @@ describe('PendingCompactionExecutor direct path', () => {
   it('commits first/repeated summaries once, keeps the head/recent tail and creates no categories', async () => {
     const h = setup();
     await expect(h.executor.executeIfAuthorized(h.input)).resolves.toBe(true);
-    expect(h.compress).toHaveBeenCalledOnce();
+    expect(h.summarize).toHaveBeenCalledOnce();
     const first = h.manager.getWorkingContextMessages();
     expect(first[0].content).toBe('System'); expect(first.at(-1)?.content).toBe('ack-11');
     expect(countCompactedMemoryRegions(first)).toBe(1);
@@ -23,28 +23,31 @@ describe('PendingCompactionExecutor direct path', () => {
     h.request();
     await h.executor.executeIfAuthorized({ ...h.input, turnId: 'execute-2' });
     expect(countCompactedMemoryRegions(h.manager.getWorkingContextMessages())).toBe(1);
-    expect(h.compress.mock.calls[1]?.[0].split(summary)).toHaveLength(2);
+    expect(h.summarize.mock.calls[1]?.[0].transcriptContent.split(summary)).toHaveLength(2);
+    // The summarizer receives the whole settled baseline conversation for the cached summary request.
+    expect(h.summarize.mock.calls[1]?.[0]).toMatchObject({ operationId: expect.any(String), executionTurnId: 'execute-2' });
+    expect(h.summarize.mock.calls[0]?.[0].baselineMessages.map(({ content }: { content: string | null }) => content).at(-1)).toBe('ack-11');
     expect(h.store.listTurnRawTraceCorpusOrdered()).toHaveLength(12);
   });
   it('rejects generation failure without mutation and requires an exact one-use retry permit', async () => {
     const h = setup(); const before = h.snapshotStore.read('agent');
-    h.compress.mockRejectedValueOnce(new Error('provider failed'));
+    h.summarize.mockRejectedValueOnce(new Error('provider failed'));
     await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow('provider failed');
     expect(h.snapshotStore.read('agent')).toEqual(before); expect(h.store.listTurnRawTracesOrdered()).toHaveLength(12);
     await expect(h.executor.executeIfAuthorized({ ...h.input, turnId: 'agent-retry' })).rejects.toThrow('user_retry_required');
-    expect(h.compress).toHaveBeenCalledOnce();
+    expect(h.summarize).toHaveBeenCalledOnce();
     expect(h.manager.authorizeCompactionRetry({ block: h.manager.getCompactionRecovery()!, userAdmissionId: 'later-B' })).toBe('accepted');
     await expect(h.executor.executeIfAuthorized(h.input)).resolves.toBe(true);
   });
   it.each(['', '<compaction_summary>' + summary + '</compaction_summary>', summary.replace('## Current state', '## Other')])('rejects malformed independent body without host re-invocation: %s', async value => {
     const h = setup(); const before = h.snapshotStore.read('agent');
-    h.compress.mockResolvedValue(value);
+    h.summarize.mockResolvedValue(value);
     await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
-    expect(h.compress).toHaveBeenCalledOnce(); expect(h.snapshotStore.read('agent')).toEqual(before);
+    expect(h.summarize).toHaveBeenCalledOnce(); expect(h.snapshotStore.read('agent')).toEqual(before);
   });
   it('cannot commit a late cancelled result', async () => {
     const h = setup(); const before = h.snapshotStore.read('agent');
-    h.compress.mockImplementationOnce(async () => { h.controller.abort(); return summary; });
+    h.summarize.mockImplementationOnce(async () => { h.controller.abort(); return summary; });
     await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
     expect(h.snapshotStore.read('agent')).toEqual(before); expect(h.store.listTurnRawTracesOrdered()).toHaveLength(12);
   });
@@ -64,7 +67,7 @@ describe('terminal activity is scoped to an authorized executor call', () => {
   it.each(['resolve', 'reject'])('emits stopped before an ignoring provider settles (%s), never commits late', async (mode) => {
     const h = setup(); const before = h.snapshotStore.read('agent');
     let resolve!: (value: string) => void; let reject!: (reason: Error) => void;
-    h.compress.mockImplementationOnce(() => new Promise((yes, no) => { resolve = yes; reject = no; }));
+    h.summarize.mockImplementationOnce(() => new Promise((yes, no) => { resolve = yes; reject = no; }));
     const execution = h.executor.executeIfAuthorized(h.input);
     const failed = expect(execution).rejects.toThrow();
     h.controller.abort();
@@ -80,7 +83,7 @@ describe('terminal activity is scoped to an authorized executor call', () => {
     const h = setup(); h.controller.abort();
     const removed = vi.spyOn(h.input.signal, 'removeEventListener');
     await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
-    expect(h.compress).not.toHaveBeenCalled();
+    expect(h.summarize).not.toHaveBeenCalled();
     expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['stopped']);
     expect(removed).toHaveBeenCalledWith('abort', expect.any(Function));
   });
@@ -94,13 +97,13 @@ describe('terminal activity is scoped to an authorized executor call', () => {
     expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'completed']);
   });
   it('does not infer stopped from a provider error string or emit it after a failed call has ended', async () => {
-    const h = setup(); h.compress.mockRejectedValueOnce(new Error('cancelled timeout abort'));
+    const h = setup(); h.summarize.mockRejectedValueOnce(new Error('cancelled timeout abort'));
     await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow('cancelled timeout abort');
     h.controller.abort();
     expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'failed']);
   });
   it('allows a genuinely authorized fresh execution of the pending gate after stopped', async () => {
-    const h = setup(); h.compress.mockImplementationOnce(async () => { h.controller.abort(); return summary; });
+    const h = setup(); h.summarize.mockImplementationOnce(async () => { h.controller.abort(); return summary; });
     await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
     expect(h.manager.authorizeCompactionRetry({ block: h.manager.getCompactionRecovery()!, userAdmissionId: 'fresh' })).toBe('accepted');
     await expect(h.executor.executeIfAuthorized({ ...h.input, signal: new AbortController().signal })).resolves.toBe(true);

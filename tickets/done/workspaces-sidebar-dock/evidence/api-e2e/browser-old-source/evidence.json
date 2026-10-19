@@ -1,0 +1,132 @@
+{
+  "startedAt": "2026-10-13T14:08:57.704Z",
+  "source": "9848d80eec3f522e4a3b06d2a2834c294d023c1b",
+  "platform": "linux-arm64",
+  "cases": {
+    "BR-001": {
+      "result": "Fail",
+      "name": "Wide Team/Activity actual pointer drag, three cycles and meaningful controls",
+      "error": "1000-teamMembers-intermediate\n\n'strip' !== 'docked'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: 1000-teamMembers-intermediate\n\n'strip' !== 'docked'\n\n    at docked (file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:149:12)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:181:21\n    at async scenario (file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:59:5)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web/tests/e2e/workspaces-sidebar-dock-probe.mjs:176:3"
+    }
+  },
+  "snapshots": [
+    {
+      "label": "1000-teamMembers-intermediate",
+      "viewport": {
+        "width": 1000,
+        "height": 800,
+        "dpr": 1
+      },
+      "state": {
+        "shell": {
+          "viewportWidth": 1000,
+          "viewportHeight": 800,
+          "mode": "wide",
+          "isNarrow": false,
+          "isShortHeight": false,
+          "showGenericSurfaceControls": false,
+          "leftPanel": {
+            "preference": "hidden-by-user",
+            "presentation": "strip",
+            "presentationSource": "user",
+            "consumedWidth": 50,
+            "preferredWidth": 320,
+            "stripBehavior": "consuming",
+            "stripActivation": "open-drawer"
+          },
+          "rightPanel": {
+            "preference": "visible",
+            "presentation": "docked",
+            "presentationSource": "user",
+            "consumedWidth": 598,
+            "preferredWidth": 598,
+            "stripBehavior": null,
+            "stripActivation": null,
+            "resizeIntent": "user-sized",
+            "centerProtectionMode": "user-override",
+            "effectiveCenterMinWidth": 200
+          },
+          "showLeftStrip": true,
+          "showRightStrip": false
+        },
+        "rawRight": 598,
+        "measuredRight": 598,
+        "intent": "user-sized",
+        "leftWidth": 320,
+        "selection": {
+          "kind": "team_run",
+          "rootTeamRunId": "dock-probe-team"
+        },
+        "focus": "dock-probe-agent",
+        "tab": "teamMembers"
+      },
+      "left": null,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "width": 400,
+        "height": 800,
+        "right": 400
+      },
+      "right": {
+        "x": 402,
+        "y": 0,
+        "width": 598,
+        "height": 800,
+        "right": 1000
+      },
+      "drawer": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320
+      },
+      "backdrop": {
+        "x": 0,
+        "y": 0,
+        "width": 1000,
+        "height": 800,
+        "right": 1000
+      },
+      "url": "http://127.0.0.1:39253/api-e2e-workspaces-sidebar-dock"
+    }
+  ],
+  "browserErrors": [],
+  "operations": [
+    "GetApplicationsCapability",
+    "GetSkillImprovementCapability",
+    "GetAgentDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetApplicationsCapability",
+    "GetSkillImprovementCapability",
+    "GetAgentDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory"
+  ],
+  "cleanup": {
+    "routeRemoved": true,
+    "privateHomeRemoved": true,
+    "nuxtExit": 0,
+    "portFree": true,
+    "browserClosed": true
+  },
+  "browserUid": 1000,
+  "port": 39253,
+  "nuxtPid": 24628,
+  "browser": "153.0.8010.52",
+  "warmupErrors": [],
+  "result": "Fail",
+  "error": "1000-teamMembers-intermediate\n\n'strip' !== 'docked'\n",
+  "finishedAt": "2026-10-13T14:09:26.236Z"
+}

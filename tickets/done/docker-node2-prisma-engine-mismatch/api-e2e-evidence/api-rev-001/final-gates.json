@@ -1,0 +1,59 @@
+[
+  {
+    "command": [
+      "/usr/bin/python3",
+      "scripts/check_licensing.py"
+    ],
+    "exit": 0,
+    "output": "Licensing is consistent.\nTracked files scanned: 6517\n"
+  },
+  {
+    "command": [
+      "/usr/bin/python3",
+      "scripts/check_repository_artifact_hygiene.py"
+    ],
+    "exit": 0,
+    "output": "Repository artifact hygiene check passed.\nTracked files scanned: 62262\nPath-length threshold: 200\nLongest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js\n"
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "a609de982a22925299d550bea4084e578cc5cd60",
+      "--check"
+    ],
+    "exit": 2,
+    "output": "tickets/in-progress/docker-node2-prisma-engine-mismatch/architecture-review-revision-record.md:28: new blank line at EOF.\ntickets/in-progress/docker-node2-prisma-engine-mismatch/design-review-report.md:193: new blank line at EOF.\n"
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "a609de982a22925299d550bea4084e578cc5cd60",
+      "--",
+      ".",
+      ":!tickets"
+    ],
+    "exit": 0,
+    "output": ""
+  }
+]

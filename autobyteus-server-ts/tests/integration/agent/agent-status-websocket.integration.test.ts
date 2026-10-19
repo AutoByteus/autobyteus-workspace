@@ -1,4 +1,5 @@
 import fastify from "fastify";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import websocket from "@fastify/websocket";
 import { describe, expect, it } from "vitest";
 import WebSocket from "ws";
@@ -6,6 +7,7 @@ import type {
   AgentRunBackend,
   AgentRunSourceEventBatchListener,
 } from "../../../src/agent-execution/backends/agent-run-backend.js";
+import type { AgentRunBackendInputDispatchResult } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
@@ -49,7 +51,7 @@ const event = (
 
 class ScriptedAgentRunBackend implements AgentRunBackend {
   readonly context: AgentRunContext<null>;
-  readonly inputCapabilities = { kind: "start_only" } as const;
+  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
   active = true;
   private snapshot: AgentRuntimeLifecycleSnapshot;
@@ -97,8 +99,12 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     return () => this.sourceListeners.delete(listener);
   }
 
-  async postUserMessage(): Promise<{ accepted: true }> {
-    return { accepted: true };
+  hasRunningBackgroundTasks(): boolean {
+    return false;
+  }
+
+  async dispatchUserInput(): Promise<AgentRunBackendInputDispatchResult> {
+    throw new Error("dispatchUserInput is not used by this harness.");
   }
 
   async approveToolInvocation(): Promise<{ accepted: true }> {
@@ -146,8 +152,9 @@ const waitForOpen = (socket: WebSocket, timeoutMs = 2_000): Promise<void> =>
   });
 
 /**
- * Status and content frames in arrival order. AGENT_INPUT_STATE companions (the input-queue
- * projection) are not part of this status/content contract and are left out of the trace.
+ * Status and content frames in arrival order. `AGENT_INPUT_STATE` frames are left out of this
+ * status/content trace on purpose. A changed input state is a cadence boundary (it flushes pending
+ * content first); the PB-001 cases below assert that directly.
  */
 const captureMessages = (socket: WebSocket): WsMessage[] => {
   const messages: WsMessage[] = [];
@@ -435,6 +442,89 @@ describe("Agent status WebSocket contract integration", () => {
     }
   });
 
+  it("sends no repeated input state during a content window and a queued message's new revision right after the pending content", async () => {
+    const previousInterval = process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+    process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "500";
+    const backend = new ScriptedAgentRunBackend(
+      "run-input-state-window",
+      RuntimeKind.CODEX_APP_SERVER,
+      runningSnapshot("turn-input-state"),
+    );
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: backend.context, backend });
+    const harness = await openAgentApp(run);
+    // Unlike captureMessages, this trace keeps AGENT_INPUT_STATE frames.
+    const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
+    const frames: WsMessage[] = [];
+    socket.on("message", (data) => frames.push(JSON.parse(data.toString()) as WsMessage));
+    const inputStates = () => frames.filter((frame) => frame.type === "AGENT_INPUT_STATE");
+
+    try {
+      await waitForOpen(socket);
+      const deadline = Date.now() + 2_000;
+      while (inputStates().length === 0 && Date.now() < deadline) await wait(10);
+      expect(inputStates().map((frame) => frame.payload.revision)).toEqual([1]);
+
+      await backend.emitSource([
+        event(run.runId, AgentRunEventType.SEGMENT_START, {
+          id: "segment-input-state",
+          turn_id: "turn-input-state",
+          segment_type: "text",
+        }),
+      ]);
+      for (const delta of ["a", "b", "c"]) {
+        await backend.emitSource([
+          event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+            id: "segment-input-state",
+            turn_id: "turn-input-state",
+            delta,
+          }),
+        ]);
+      }
+      await wait(150);
+      expect(inputStates()).toHaveLength(1);
+      expect(frames.filter((frame) => frame.type === "SEGMENT_CONTENT")).toHaveLength(0);
+
+      const postedAt = Date.now();
+      await expect(run.postUserMessage(new AgentInputUserMessage("queued during the window")))
+        .resolves.toEqual({ accepted: true, turnId: null });
+      const queuedDeadline = Date.now() + 1_000;
+      while (inputStates().length < 2 && Date.now() < queuedDeadline) await wait(5);
+      expect(Date.now() - postedAt).toBeLessThan(250);
+
+      const liveTrace = frames.filter(
+        (frame) => frame.type === "SEGMENT_CONTENT" || frame.type === "AGENT_INPUT_STATE",
+      );
+      expect(liveTrace.map((frame) => [frame.type, frame.payload.delta ?? frame.payload.revision])).toEqual([
+        ["AGENT_INPUT_STATE", 1],
+        ["SEGMENT_CONTENT", "abc"],
+        ["AGENT_INPUT_STATE", 2],
+      ]);
+      expect(inputStates()[1]?.payload.entries).toMatchObject([
+        { content: "queued during the window", state: "queued" },
+      ]);
+
+      await backend.emitSource([
+        event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+          id: "segment-input-state",
+          turn_id: "turn-input-state",
+          delta: "d",
+        }),
+      ]);
+      await wait(650);
+      expect(inputStates()).toHaveLength(2);
+      expect(frames.filter((frame) => frame.type === "SEGMENT_CONTENT").map((frame) => frame.payload.delta))
+        .toEqual(["abc", "d"]);
+    } finally {
+      socket.close();
+      await harness.app.close();
+      if (previousInterval === undefined) {
+        delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+      } else {
+        process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = previousInterval;
+      }
+    }
+  });
+
   it("preserves B while rejecting a retired turn's late segment content across reconnect", async () => {
     const backend = new ScriptedAgentRunBackend(
       "run-retired-turn-ordering",
@@ -482,7 +572,7 @@ describe("Agent status WebSocket contract integration", () => {
         }),
       ]);
 
-      await waitForMessageCount(primary.messages, 12);
+      await waitForMessageCount(primary.messages, 11);
       const trace = primary.messages.slice(2);
       expect(trace.map((message) => [message.type, message.payload.status ?? message.payload.turn_id])).toEqual([
         ["AGENT_STATUS", "running"],
@@ -494,9 +584,8 @@ describe("Agent status WebSocket contract integration", () => {
         ["AGENT_STATUS", "running"],
         ["TURN_STARTED", "turn-b"],
         ["TURN_COMPLETED", "turn-a"],
-        ["ERROR", "turn-a"],
       ]);
-      expect(trace.at(-1)?.payload.code).toBe("AGENT_SEGMENT_LIFECYCLE_INVALID");
+      // The ended turn's late content stays undisplayed and gets no chat notice (REQ-003).
       expect(run.getStatusSnapshot()).toEqual({
         status: "running",
         agent_id: run.runId,
@@ -515,7 +604,8 @@ describe("Agent status WebSocket contract integration", () => {
       await backend.emitSource([
         event(run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-b" }),
       ]);
-      await waitForMessageCount(primary.messages, 14);
+      await waitForMessageCount(primary.messages, 13);
+      expect(primary.messages.filter((message) => message.type === "ERROR")).toEqual([]);
       expect(primary.messages.slice(-2).map((message) => message.type)).toEqual([
         "TURN_INTERRUPTED",
         "AGENT_STATUS",

@@ -4,7 +4,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentOrgRunManager } from '../../../src/agent-org-execution/services/agent-org-run-manager.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../src/run-history/store/agent-org-run-execution-tree-store.js';
-import { AgentOrgCommunicationMessagesV1Store } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
+import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { AgentOrgExecutionTreeLocationService } from '../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
 import { AgentOrgMemberRunViewProjectionService } from '../../../src/run-history/services/agent-org-member-run-view-projection-service.js';
 import { projectAgentOrgExecutionSnapshot } from '../../../src/services/agent-streaming/agent-org-execution-view-projector.js';
@@ -23,7 +23,7 @@ const fixture = async (taskExecutionResources?: InMemoryTaskExecutionResources) 
     delegatorAgentRunId: 'configured', startedAt: tree.createdAt }];
   const messages = { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', messages: [] };
   await new AgentOrgRunExecutionTreeStore().write(dir, tree);
-  await new AgentOrgCommunicationMessagesV1Store().write(dir, messages as never);
+  await new AgentOrgCommunicationMessagesStore().write(dir, messages as never);
   const build = vi.fn();
   const manager = new AgentOrgRunManager({ memoryDir, scopeBuilder: { build } as never, taskExecutionResources });
   return { memoryDir, dir, tree, messages, manager, build };
@@ -72,9 +72,10 @@ describe('strict read-only Org inspection', () => {
     const f = await fixture();
     await expect(f.manager.getInspection('missing')).rejects.toThrow('unavailable');
     const file = (await fs.readdir(f.dir)).find((name) => name.includes('communication'))!;
-    await fs.writeFile(path.join(f.dir, file), '{broken');
+    // A complete malformed line (an unfinished last line would be ignored by design, REQ-005).
+    await fs.writeFile(path.join(f.dir, file), '{broken\n');
     await expect(f.manager.getInspection('org')).rejects.toThrow();
-    expect(await fs.readFile(path.join(f.dir, file), 'utf8')).toBe('{broken');
+    expect(await fs.readFile(path.join(f.dir, file), 'utf8')).toBe('{broken\n');
     expect(f.build).not.toHaveBeenCalled();
   });
 
@@ -86,14 +87,14 @@ describe('strict read-only Org inspection', () => {
     // Location activity follows the root; a delegated child's liveness is runtime-only.
     expect(exact).toMatchObject({ agentRunId: 'task-run', platformAgentRunId: 'task-provider', isActive: true,
       configuredPlacement: { agentRunId: 'configured', platformAgentRunId: 'configured-provider' },
-      memoryDir: path.join(f.dir, 'task-run') });
+      memoryDir: path.join(f.memoryDir, 'agents', 'task-run') });
     const getRequiredProjectionFromMetadata = vi.fn(async (input) => ({ runId: input.runId, conversation: [], activities: [],
       summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false }));
     const service = new AgentOrgMemberRunViewProjectionService({ memoryDir: f.memoryDir, locations,
       agentRunViewProjectionService: { getRequiredProjectionFromMetadata } as never });
     await expect(service.getProjection('org', '/assistant', 'task-run')).resolves.toMatchObject({ agentRunId: 'task-run', conversation: [] });
     expect(getRequiredProjectionFromMetadata).toHaveBeenCalledWith({ runId: 'task-run', metadata: expect.objectContaining({
-      platformAgentRunId: 'task-provider', agentDefinitionId: 'definition-configured', memoryDir: path.join(f.dir, 'task-run'),
+      platformAgentRunId: 'task-provider', agentDefinitionId: 'definition-configured', memoryDir: path.join(f.memoryDir, 'agents', 'task-run'),
     }) });
     getRequiredProjectionFromMetadata.mockRejectedValueOnce(new Error('unreadable trace'));
     await expect(service.getProjection('org', '/assistant', 'task-run')).rejects.toThrow('unreadable trace');
@@ -145,7 +146,7 @@ it('distinguishes a real empty local task trace from a physical read failure wit
     agentRunViewProjectionService: new AgentRunViewProjectionService(f.memoryDir),
     locations: new AgentOrgExecutionTreeLocationService({ memoryDir: f.memoryDir }) });
   await expect(service.getProjection('org', '/assistant', 'task-run')).resolves.toMatchObject({ conversation: [], activities: [] });
-  await fs.mkdir(path.join(f.dir, 'task-run', RAW_TRACES_ACTIVE_MEMORY_FILE_NAME), { recursive: true });
+  await fs.mkdir(path.join(f.memoryDir, 'agents', 'task-run', RAW_TRACES_ACTIVE_MEMORY_FILE_NAME), { recursive: true });
   await expect(service.getProjection('org', '/assistant', 'task-run')).rejects.toThrow();
   expect(f.build).not.toHaveBeenCalled();
 });

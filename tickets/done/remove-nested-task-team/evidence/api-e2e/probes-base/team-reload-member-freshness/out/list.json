@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": [
+      {
+        "instanceId": "iso-54255-c1c9",
+        "pid": 92912,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/cmc-desktop-test-app/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:54256",
+        "graphqlUrl": "http://127.0.0.1:54256/graphql",
+        "controlEndpoint": "http://127.0.0.1:54255",
+        "controlPort": 54255,
+        "serverPort": 54256,
+        "dataRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/cmcdv-data-root",
+        "ownsDataRoot": false,
+        "keepDataRoot": false,
+        "databaseUrl": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cmcdv-data-root/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-54255-c1c9.log",
+        "startedAt": "2026-10-15T17:05:29.150Z",
+        "running": false
+      },
+      {
+        "instanceId": "iso-54255-0e9d",
+        "pid": 18442,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/cmc-desktop-test-app/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:54256",
+        "graphqlUrl": "http://127.0.0.1:54256/graphql",
+        "controlEndpoint": "http://127.0.0.1:54255",
+        "controlPort": 54255,
+        "serverPort": 54256,
+        "dataRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/cmcdv-data-root",
+        "ownsDataRoot": false,
+        "keepDataRoot": false,
+        "databaseUrl": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cmcdv-data-root/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-54255-0e9d.log",
+        "startedAt": "2026-10-15T17:24:39.121Z",
+        "running": false
+      }
+    ]
+  }
+}

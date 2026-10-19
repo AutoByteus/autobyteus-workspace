@@ -1,0 +1,247 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__ stores/__tests__/existingRunConfigStore.spec.ts stores/__tests__/delegatedLaunchDraftStore.spec.ts components/run-settings/__tests__ utils/runSettings/__tests__ services/agentCollaboration/__tests__ stores/__tests__/agentRunCollaboration --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web
+
+stderr | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/RunMembersLine.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/existingRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/RunMembersLine.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/existingRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (23 tests) 122ms
+ ✓ stores/__tests__/agentRunCollaborationDisclosure.spec.ts (4 tests) 32ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (12 tests) 17ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts (6 tests) 19ms
+ ✓ stores/__tests__/existingRunConfigStore.spec.ts (29 tests) 273ms
+ ✓ components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts (8 tests) 146ms
+ ✓ components/run-settings/__tests__/RunMembersLine.spec.ts (4 tests) 132ms
+ ✓ components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts (6 tests) 178ms
+ ❯ components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts (8 tests | 1 failed) 218ms
+   ✓ stopped Agent same-view canonical saved rows > keeps the accepted saved model in the mounted row after Save, not the stale live view 38ms
+   ✓ retains the mounted Settings view and edit lock through readback, then uses the new value as the next original 34ms
+   ✓ clears committed edits, locks stale rows with an honest error and retries reads without saving again 62ms
+   ✓ initial failed snapshot load has no stale live fallback and exposes a working Refresh 7ms
+   ✓ Cancel writes nothing and rejected Save keeps the recoverable edit without Saved feedback 11ms
+   ✓ renders the refreshed canonical summary in real member rows and preserves their open disclosure 30ms
+   × refreshes a Team selection and its follower, preserves own defaults and neighboring instances 16ms
+     → expected 'old:null' to be 'new:null' // Object.is equality
+   ✓ leaves active Agent rows live-view-backed and does not request a stopped snapshot after Save 18ms
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/OrgLaunchPage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/runMemberTree.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/memberLaunchDefaults.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/delegatedCopyChoices.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/delegatedLaunchRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/OrgLaunchPage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/runSettings/__tests__/delegatedCopyChoices.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/runSettings/__tests__/runMemberTree.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/runSettings/__tests__/memberLaunchDefaults.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (7 tests) 17ms
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/runSettings/__tests__/memberLaunchDefaults.spec.ts (6 tests) 6ms
+ ✓ utils/runSettings/__tests__/runMemberTree.spec.ts (5 tests) 13ms
+ ✓ utils/runSettings/__tests__/delegatedCopyChoices.spec.ts (5 tests) 6ms
+stdout | utils/runSettings/__tests__/delegatedLaunchRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts (3 tests) 7ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts (2 tests) 22ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts (3 tests) 26ms
+ ✓ components/run-settings/__tests__/OrgLaunchPage.spec.ts (3 tests) 110ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (2 tests) 19ms
+stderr | stores/__tests__/agentRunCollaborationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/startModelDefaults.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunCollaborationStoreClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/launchReadiness.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/runSettings/__tests__/modelOptions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/runSettings/__tests__/startModelDefaults.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunCollaborationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/runSettings/__tests__/startModelDefaults.spec.ts (7 tests) 5ms
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunCollaborationStoreClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/runSettings/__tests__/launchReadiness.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/runSettings/__tests__/launchReadiness.spec.ts (5 tests) 3ms
+stdout | utils/runSettings/__tests__/modelOptions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts (6 tests) 23ms
+ ✓ utils/runSettings/__tests__/modelOptions.spec.ts (5 tests) 3ms
+ ✓ stores/__tests__/agentRunCollaborationStore.spec.ts (4 tests) 15ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts (3 tests) 16ms
+ ✓ stores/__tests__/agentRunCollaborationStoreClosure.spec.ts (2 tests) 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts > refreshes a Team selection and its follower, preserves own defaults and neighboring instances
+AssertionError: expected 'old:null' to be 'new:null' // Object.is equality
+
+Expected: "new:null"
+Received: "old:null"
+
+ ❯ components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts:183:63
+    181|   await wrapper.get('[data-test="edit-/team@team-copy"]').trigger('cli…
+    182|   await wrapper.get('[data-test="save-existing-model-config"]').trigge…
+    183|   expect(wrapper.get('[data-test="/team@team-copy"]').text()).toBe('ne…
+       |                                                               ^
+    184|   expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe…
+    185|   expect(wrapper.get('[data-test="/team/own@own"]').text()).toBe('own-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 24 passed (25)
+      Tests  1 failed | 167 passed (168)
+   Start at  17:27:24
+   Duration  14.36s (transform 5.14s, setup 94.78s, collect 10.13s, tests 1.44s, environment 7.32s, prepare 4.75s)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -22,56 +22,14 @@ import {
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from './memory-file-names.js';
+import { replaceFileDurably } from './durable-file-replace.js';
+import { jsonlLogEndsCleanly, repairJsonlDamagedEnd, serializeJsonlRecords } from './jsonl-log-file.js';
 import type { RawTraceArchiveManifest, RawTraceArchiveSegmentEntry } from './raw-trace-archive-manifest.js';
 import {
   RawTraceArchiveManager,
   type RawTraceArchiveBoundaryInput,
   type RawTraceArchiveResult,
 } from './raw-trace-archive-manager.js';
-
-const readJsonl = (filePath: string): Record<string, unknown>[] => {
-  if (!fs.existsSync(filePath)) return [];
-  const raw = fs.readFileSync(filePath, 'utf-8');
-  const lines = raw.split('\n');
-  const records: Record<string, unknown>[] = [];
-  let validBytes = 0;
-  for (let index = 0; index < lines.length; index += 1) {
-    const line = lines[index]!;
-    const trimmed = line.trim();
-    const isLastPhysicalLine = index === lines.length - 1;
-    if (!trimmed) {
-      validBytes += Buffer.byteLength(line + (isLastPhysicalLine ? '' : '\n'), 'utf8');
-      continue;
-    }
-    try {
-      records.push(JSON.parse(trimmed) as Record<string, unknown>);
-      validBytes += Buffer.byteLength(line + (isLastPhysicalLine ? '' : '\n'), 'utf8');
-    } catch (error) {
-      if (isLastPhysicalLine || index === lines.length - 2 && lines.at(-1) === '') {
-        // A process crash can leave only the final JSONL record incomplete.
-        // Preserve complete prior evidence and truncate the broken tail.
-        fs.writeFileSync(filePath, raw.slice(0, validBytes), 'utf-8');
-        break;
-      }
-      throw error;
-    }
-  }
-  return records;
-};
-
-const writeJsonl = (filePath: string, items: Record<string, unknown>[]): void => {
-  const tmpPath = `${filePath}.tmp`;
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(tmpPath, items.map((item) => JSON.stringify(item)).join('\n') + (items.length ? '\n' : ''), 'utf-8');
-  fs.renameSync(tmpPath, filePath);
-};
-
-const writeJson = (filePath: string, payload: Record<string, unknown>): void => {
-  const tmpPath = `${filePath}.tmp`;
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(tmpPath, JSON.stringify(payload), 'utf-8');
-  fs.renameSync(tmpPath, filePath);
-};
 
 const traceId = (item: Record<string, unknown>): string | null =>
   typeof item.id === 'string' && item.id.length > 0 ? item.id : null;
@@ -113,6 +71,8 @@ export type { RawTraceArchiveBoundaryInput, RawTraceArchiveResult } from './raw-
 export class RunMemoryFileStore {
   readonly runDir: string;
   private readonly archiveManager: RawTraceArchiveManager;
+  /** JSONL files of this instance whose end is known to be clean; appends to them need no further check. */
+  private readonly verifiedEndPaths = new Set<string>();
 
   constructor(runDir: string) {
     this.runDir = runDir;
@@ -154,9 +114,7 @@ export class RunMemoryFileStore {
 
   add(items: Iterable<MemoryItem>): void {
     for (const item of items) {
-      const filePath = this.getFilePath(item.memoryType);
-      fs.mkdirSync(path.dirname(filePath), { recursive: true });
-      fs.appendFileSync(filePath, `${JSON.stringify(item.toDict())}\n`, 'utf-8');
+      this.appendJsonlRecord(this.getFilePath(item.memoryType), item.toDict());
     }
   }
 
@@ -189,13 +147,15 @@ export class RunMemoryFileStore {
       content,
       source_event: SYSTEM_INSTRUCTIONS_SUPPLIED_SOURCE_EVENT,
     };
-    fs.mkdirSync(path.dirname(this.getRawTracesPath()), { recursive: true });
-    fs.appendFileSync(this.getRawTracesPath(), `${JSON.stringify(trace)}\n`, 'utf-8');
+    this.appendJsonlRecord(this.getRawTracesPath(), trace);
     return { trace, created: true };
   }
 
+  /** Reads a file for use: its damaged end, if any, is cut first. */
   readMemoryDicts(memoryType: MemoryType, limit?: number): Record<string, unknown>[] {
-    const records = readJsonl(this.getFilePath(memoryType));
+    const filePath = this.getFilePath(memoryType);
+    const records = repairJsonlDamagedEnd(filePath);
+    this.verifiedEndPaths.add(filePath);
     return typeof limit === 'number' ? records.slice(-limit) : records;
   }
 
@@ -314,7 +274,7 @@ export class RunMemoryFileStore {
       });
       return;
     }
-    writeJsonl(this.getRawTracesPath(), keep);
+    this.writeActiveRawTraces(keep);
   }
 
   prepareCompactionArchive(selectedTurnTraceIds: readonly string[]): PreparedCompactionArchive {
@@ -395,7 +355,7 @@ export class RunMemoryFileStore {
   }
 
   writeWorkingContextSnapshot(payload: Record<string, unknown>): void {
-    writeJson(this.getWorkingContextSnapshotPath(), payload);
+    replaceFileDurably(this.getWorkingContextSnapshotPath(), JSON.stringify(payload));
   }
 
   writeWorkingContextSnapshotState(
@@ -419,7 +379,7 @@ export class RunMemoryFileStore {
       return null;
     }
     if (result.created) {
-      writeJsonl(this.getRawTracesPath(), keepSet);
+      this.writeActiveRawTraces(keepSet);
     } else {
       this.removeActiveRawTracesArchivedByBoundary(boundary.boundaryKey);
     }
@@ -427,10 +387,20 @@ export class RunMemoryFileStore {
   }
 
   private rewriteActiveWithoutTraceIds(traceIds: Set<string>): void {
-    writeJsonl(
-      this.getRawTracesPath(),
-      this.listRawTraceDicts().filter((item) => !traceIds.has(traceId(item) ?? '')),
-    );
+    this.writeActiveRawTraces(this.listRawTraceDicts().filter((item) => !traceIds.has(traceId(item) ?? '')));
   }
 
+  private writeActiveRawTraces(records: Record<string, unknown>[]): void {
+    replaceFileDurably(this.getRawTracesPath(), serializeJsonlRecords(records));
+  }
+
+  /** An appended record is always a line of its own: the first append to a file per instance cuts a damaged end. */
+  private appendJsonlRecord(filePath: string, record: Record<string, unknown>): void {
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    if (!this.verifiedEndPaths.has(filePath)) {
+      if (!jsonlLogEndsCleanly(filePath)) repairJsonlDamagedEnd(filePath);
+      this.verifiedEndPaths.add(filePath);
+    }
+    fs.appendFileSync(filePath, `${JSON.stringify(record)}\n`, 'utf-8');
+  }
 }

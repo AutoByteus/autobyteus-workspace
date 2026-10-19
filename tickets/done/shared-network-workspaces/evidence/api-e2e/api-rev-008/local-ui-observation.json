@@ -1,0 +1,11 @@
+{
+  "result": "Pass",
+  "surface": "Current worktree-built isolated Electron desktop / native CUA",
+  "observed": [
+    "Local README.md rendered API008 LOCAL Markdown heading and bold Local preview preserved.",
+    "Local notes.txt rendered exact API008 LOCAL clean reader text."
+  ],
+  "workspaceId": "agent_ws_c4dec39cb622a871fbb6c9a12096fa5171bbf29d8cae23c08e55f7479b60276c",
+  "setupEvidence": "local-workspace-api-result.json",
+  "limits": "Local regression only, not NFS peer proof. Native folder-picker attempted but not qualified. Screenshots observed in CUA session; no durable screenshot file claimed."
+}

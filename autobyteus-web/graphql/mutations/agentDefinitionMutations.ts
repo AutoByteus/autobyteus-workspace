@@ -30,6 +30,7 @@ const AgentDefinitionMutationFields = gql`
       runtimeKind
       llmConfig
     }
+    loadIssue { code reason definitionPath packageRoot }
   }
 `
 
@@ -58,11 +59,5 @@ export const DeleteAgentDefinition = gql`
       success
       message
     }
-  }
-`
-
-export const RefreshAgentDefinitionCatalog = gql`
-  mutation RefreshAgentDefinitionCatalog {
-    refreshAgentDefinitionCatalog
   }
 `

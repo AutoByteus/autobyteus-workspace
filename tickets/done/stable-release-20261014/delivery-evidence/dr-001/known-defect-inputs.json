@@ -1,0 +1,68 @@
+[
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts",
+    "currentSha256": "f49c643385cf59d91a39f29cf7da75c4e6087c6fdbf99df1428b85751b8d3208",
+    "previousStableEqual": true,
+    "previousReviewEqual": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+    "currentSha256": "53d0f3e045090df1834bdf79418e81e964bec4c6b7e2dcf9ae30b52083724826",
+    "previousStableEqual": true,
+    "previousReviewEqual": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+    "currentSha256": "4abf0cd924cca1082e7c5b0692a9d6044f93f390e020accc48be068320be2d65",
+    "previousStableEqual": true,
+    "previousReviewEqual": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts",
+    "currentSha256": "b868c637d8dbcd70049d34568ecf91f4ca1d1908af4214cb116b6bc37c8b8771",
+    "previousStableEqual": true,
+    "previousReviewEqual": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts",
+    "currentSha256": "4279bb1eb76b688985afddd413f88d4259c8049af9625d4953e7c184d3bb5952",
+    "previousStableEqual": true,
+    "previousReviewEqual": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-content-cadence-scheduler.ts",
+    "currentSha256": "e00bbb3d894472aea87977e610f90962bf9c00f104ee08ad70e7da19c3f6ea51",
+    "previousStableEqual": true,
+    "previousReviewEqual": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-egress-control-composition.ts",
+    "currentSha256": "06a795cd071e929991f93026d121e8ecacc4926e6004a4c2b438bb881f2a363a",
+    "previousStableEqual": true,
+    "previousReviewEqual": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/config/streaming-content-flush-interval-setting.ts",
+    "currentSha256": "93f1c0a2f3647e6946bb6cae3b01adaf9de182828fe0e5eb14f4d504dc01c312",
+    "previousStableEqual": true,
+    "previousReviewEqual": true
+  },
+  {
+    "path": "autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md",
+    "currentSha256": "79025cc370da62ad9b58be3f7711586f7b6ce8ece4cd2caeffa0818b82a6b0a8",
+    "previousStableEqual": true,
+    "previousReviewEqual": true
+  },
+  {
+    "path": "autobyteus-web/electron/updater/appUpdateErrorClassifier.ts",
+    "currentSha256": "53c98145bca1d9c0dd61969a9e3d5456b93454ddfd18761824766822737d4eb0",
+    "previousStableEqual": true,
+    "previousReviewEqual": null
+  },
+  {
+    "path": "scripts/public/docker/autobyteus-docker.sh",
+    "currentSha256": "e7d4c195e14419e0614ce08b2101fd9f1c76cee5030152c85116be0b7bfef187",
+    "previousStableEqual": true,
+    "previousReviewEqual": null
+  }
+]

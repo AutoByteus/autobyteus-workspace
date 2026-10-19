@@ -5,10 +5,8 @@ import {
   McpTransportType,
   StdioMcpServerConfig,
   StreamableHttpMcpServerConfig,
-  WebsocketMcpServerConfig,
   type StdioMcpServerConfigData,
-  type StreamableHttpMcpServerConfigData,
-  type WebsocketMcpServerConfigData
+  type StreamableHttpMcpServerConfigData
 } from './types.js';
 
 type ConfigDict = Record<string, unknown>;
@@ -17,14 +15,12 @@ type TransportSpecificParamsKeyMap = Record<McpTransportType, string>;
 
 const TRANSPORT_SPECIFIC_PARAMS_KEY_MAP: TransportSpecificParamsKeyMap = {
   [McpTransportType.STDIO]: 'stdio_params',
-  [McpTransportType.STREAMABLE_HTTP]: 'streamable_http_params',
-  [McpTransportType.WEBSOCKET]: 'websocket_params'
+  [McpTransportType.STREAMABLE_HTTP]: 'streamable_http_params'
 };
 
 const TRANSPORT_TYPE_NAME: Record<McpTransportType, string> = {
   [McpTransportType.STDIO]: 'STDIO',
-  [McpTransportType.STREAMABLE_HTTP]: 'STREAMABLE_HTTP',
-  [McpTransportType.WEBSOCKET]: 'WEBSOCKET'
+  [McpTransportType.STREAMABLE_HTTP]: 'STREAMABLE_HTTP'
 };
 
 export class McpConfigService extends Singleton {
@@ -95,19 +91,8 @@ export class McpConfigService extends Singleton {
       if (transportType === McpTransportType.STDIO) {
         return new StdioMcpServerConfig(constructorParams as unknown as StdioMcpServerConfigData);
       }
-      if (transportType === McpTransportType.STREAMABLE_HTTP) {
-        return new StreamableHttpMcpServerConfig(constructorParams as unknown as StreamableHttpMcpServerConfigData);
-      }
-      if (transportType === McpTransportType.WEBSOCKET) {
-        return new WebsocketMcpServerConfig(constructorParams as unknown as WebsocketMcpServerConfigData);
-      }
-      throw new Error(
-        `Unsupported McpTransportType '${transportType}' for server '${serverId}'.`
-      );
+      return new StreamableHttpMcpServerConfig(constructorParams as unknown as StreamableHttpMcpServerConfigData);
     } catch (error: unknown) {
-      if (transportType === McpTransportType.WEBSOCKET) {
-        throw error;
-      }
       const errorMessage = error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to create config for server '${serverId}' due to incompatible parameters for ` +

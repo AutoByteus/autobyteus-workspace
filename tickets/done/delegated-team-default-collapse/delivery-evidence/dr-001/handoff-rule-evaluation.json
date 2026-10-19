@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-10-13T08:19:03.595837+00:00",
+  "result": "Blocked \u2014 user-verification hold",
+  "returnedRules": [
+    {
+      "when": "Code or packaging Local Fix",
+      "recipient_address": "/software_engineering_team/implementation_engineer",
+      "matches": false
+    },
+    {
+      "when": "Design Impact, Requirement Gap, Unclear issue or non-deployment blocker requiring upstream classification",
+      "recipient_address": "/software_engineering_team/solution_designer",
+      "matches": false
+    },
+    {
+      "when": "Delivery Completed after verification/finalization/rollout/cleanup",
+      "recipient_address": "/software_engineering_team/solution_designer",
+      "matches": false
+    }
+  ],
+  "reason": "No technical classification defect or successful terminal result; ordinary pending user clarification/verification only.",
+  "fallback": "Return persisted hold result to requesting caller; no further code review requested",
+  "recipient_address": "/software_engineering_team/code_reviewer",
+  "userAsyncQuestion": "For the Project Task Manager sidebar issue, what OS and AutoByteus version are you using, and is it the desktop app or a browser connected to a server? The validated fix is still on the ticket branch; it has not upgraded or restarted your installed app.",
+  "userAsyncQuestionAcceptedByTool": true,
+  "userResponseReceived": false,
+  "handoffAcceptance": "Established only by send_message_to tool receipt, not this planned routing record"
+}

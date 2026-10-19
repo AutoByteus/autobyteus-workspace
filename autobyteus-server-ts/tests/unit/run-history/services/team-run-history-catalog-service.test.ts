@@ -7,7 +7,7 @@ import { resetTeamRunHistoryCatalogState, TeamRunHistoryCatalogService } from ".
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
 import { TeamRunPackageCatalog } from "../../../../src/run-history/services/team-run-package-catalog.js";
-import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 
 const buildTree = (teamRunId = "team-1") => testExecutionTree({
@@ -23,7 +23,7 @@ const buildTree = (teamRunId = "team-1") => testExecutionTree({
 // admitted (startup admission, 6beda63e6); admission is asynchronous.
 const writeCurrentPackage = (rootDir: string, tree: ReturnType<typeof buildTree>) => Promise.all([
   new TeamRunExecutionTreeStore().write(rootDir, tree),
-  new TeamCommunicationV1Store().write(rootDir, { schemaVersion: 1, rootTeamRunId: tree.rootTeam.teamRunId, messages: [] }),
+  new TeamCommunicationStore().write(rootDir, { schemaVersion: 1, rootTeamRunId: tree.rootTeam.teamRunId, messages: [] }),
 ]);
 
 describe("TeamRunHistoryCatalogService current V2 tree", () => {
@@ -155,7 +155,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
     const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
     await Promise.all([
       new TeamRunExecutionTreeStore().write(rootDir, tree),
-      new TeamCommunicationV1Store().write(rootDir, { schemaVersion: 1, rootTeamRunId: "team-1", messages: [] }),
+      new TeamCommunicationStore().write(rootDir, { schemaVersion: 1, rootTeamRunId: "team-1", messages: [] }),
     ]);
     const indexStore = new TeamRunHistoryIndexStore(memoryDir);
     const packageCatalog = new TeamRunPackageCatalog(memoryDir);

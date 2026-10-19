@@ -1,9 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { LLMFactory } from 'autobyteus-ts/llm/llm-factory.js';
 import { OllamaModelProvider } from 'autobyteus-ts/llm/ollama-provider.js';
-import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
-import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
-import { MultimediaRuntime } from 'autobyteus-ts/multimedia/runtimes.js';
 import { ModelAvailabilityService } from '../../../../src/llm-management/services/model-availability-service.js';
 
 describe('ModelAvailabilityService', () => {
@@ -21,7 +18,6 @@ describe('ModelAvailabilityService', () => {
     const service = new ModelAvailabilityService(
       catalog as never,
       customProviders as never,
-      { configuredHosts: vi.fn(() => []) } as never,
     );
 
     await expect(service.ensureModelAvailable(identifier, 'LLM')).resolves.toBeUndefined();
@@ -42,34 +38,36 @@ describe('ModelAvailabilityService', () => {
     const service = new ModelAvailabilityService(
       catalog as never,
       { getProviderById: vi.fn() } as never,
-      { configuredHosts: vi.fn(() => []) } as never,
     );
 
     await service.ensureModelAvailable('vendor:family:model:ollama@localhost:11434', 'LLM');
     expect(catalog.ensureProviderModelCatalog).toHaveBeenCalledWith('OLLAMA', 'autobyteus');
   });
 
-  it('matches multimedia identifiers by the final at-sign and ensures AutoByteus', async () => {
+  it('treats a registered media model as available and an unregistered one as unavailable without catalog work', async () => {
     const catalog = { ensureProviderModelCatalog: vi.fn().mockResolvedValue(undefined) };
-    const identifier = 'vendor@family@model@gateway.example.invalid:8443';
-    vi.spyOn(AudioClientFactory, 'listModels')
-      .mockReturnValueOnce([])
-      .mockReturnValueOnce([{
-        modelIdentifier: identifier,
-        runtime: MultimediaRuntime.AUTOBYTEUS,
-        hostUrl: 'https://gateway.example.invalid:8443',
-      }] as never);
-    const service = new ModelAvailabilityService(
-      catalog as never,
-      { getProviderById: vi.fn() } as never,
-      { configuredHosts: vi.fn(() => ['https://gateway.example.invalid:8443']) } as never,
-    );
+    const service = new ModelAvailabilityService(catalog as never, { getProviderById: vi.fn() } as never);
 
-    await service.ensureModelAvailable(
-      identifier,
-      'AUDIO',
-    );
-    expect(catalog.ensureProviderModelCatalog).toHaveBeenCalledWith('AUTOBYTEUS', 'autobyteus');
+    await expect(service.ensureModelAvailable('gpt-4o-mini-tts', 'AUDIO')).resolves.toBeUndefined();
+    await expect(service.ensureModelAvailable('not-a-registered-image-model', 'IMAGE'))
+      .rejects.toThrow('MODEL_IDENTIFIER_NOT_AVAILABLE');
+    expect(catalog.ensureProviderModelCatalog).not.toHaveBeenCalled();
+  });
+
+  it('reports saved remote AutoByteus model identifiers as unavailable without catalog work (AC-004)', async () => {
+    const catalog = { ensureProviderModelCatalog: vi.fn().mockResolvedValue(undefined) };
+    const customProviders = { getProviderById: vi.fn() };
+    vi.spyOn(LLMFactory, 'listAvailableModels').mockResolvedValue([]);
+    const service = new ModelAvailabilityService(catalog as never, customProviders as never);
+
+    await expect(service.ensureModelAvailable('gpt-4o:autobyteus@gateway.example.invalid:8000', 'LLM'))
+      .rejects.toThrow('MODEL_IDENTIFIER_NOT_AVAILABLE');
+    await expect(service.ensureModelAvailable('imagen@gateway.example.invalid:8000', 'IMAGE'))
+      .rejects.toThrow('MODEL_IDENTIFIER_NOT_AVAILABLE');
+    await expect(service.ensureModelAvailable('tts@gateway.example.invalid:8000', 'AUDIO'))
+      .rejects.toThrow('MODEL_IDENTIFIER_NOT_AVAILABLE');
+    expect(catalog.ensureProviderModelCatalog).not.toHaveBeenCalled();
+    expect(customProviders.getProviderById).not.toHaveBeenCalled();
   });
 
   it('does no catalog work for an already registered model and rejects noncanonical identifiers', async () => {
@@ -78,7 +76,6 @@ describe('ModelAvailabilityService', () => {
     const service = new ModelAvailabilityService(
       catalog as never,
       customProviders as never,
-      { configuredHosts: vi.fn(() => []) } as never,
     );
     vi.spyOn(LLMFactory, 'listAvailableModels')
       .mockResolvedValueOnce([{ model_identifier: 'gpt-4.1' }] as never)
@@ -103,7 +100,6 @@ describe('ModelAvailabilityService', () => {
     const service = new ModelAvailabilityService(
       catalog as never,
       { getProviderById: vi.fn() } as never,
-      { configuredHosts: vi.fn(() => []) } as never,
     );
 
     await expect(service.ensureModelAvailable(identifier, 'LLM'))
@@ -122,7 +118,6 @@ describe('ModelAvailabilityService', () => {
     const service = new ModelAvailabilityService(
       catalog as never,
       { getProviderById: vi.fn() } as never,
-      { configuredHosts: vi.fn(() => []) } as never,
     );
 
     await expect(service.ensureModelAvailable(identifier, 'LLM'))

@@ -1,0 +1,18 @@
+{
+  "case": "L24",
+  "surface": "CUA native AX; current isolated worktree Electron window",
+  "instanceId": "iso-63125-cdfd",
+  "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+  "observations": [
+    {
+      "action": "Open Nodes",
+      "observed": "Current Window Node Embedded Node EMBEDDED http://127.0.0.1:63126; Manage Nodes, Memory Sync, Phone Setup, Docker Guide, NFS Guide tabs"
+    },
+    {
+      "action": "Select NFS Guide",
+      "observed": "AutoByteus NFS; Copy install and start command for macOS disabled; Copy install and start command for Linux disabled; Command not yet available; No compatible, verified release is published for these computers yet. Command copying and downloads become available after release qualification.",
+      "limitationsVisible": "Trusted private network, unencrypted host trust/mapall, no local fallback, Mac Docker STORAGE/Windows unsupported; Docker local-only sharing separate"
+    }
+  ],
+  "result": "Pass current unavailable-release user surface; clipboard success/denial in fresh21 component tests, not fake published download"
+}

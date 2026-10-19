@@ -1,0 +1,91 @@
+{
+  "startedAt": "2026-10-13T03:58:50.536Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-list"
+    }
+  ],
+  "details": {
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nCreate Agent Team\n\nDrag from library to canvas, then assign a coordinator.\n\nUse Template\nBasics\nAT\nUpload Avatar\n\nPNG/JPG, square recommended\n\nTeam Name\n\nMember names auto-fill from dragged item names.\n\nTeam Description\nCategory\nInstructions\nAgent Library\n\nAGENTS\n\n⋮⋮\nDaily Assistant\nAGENT\n⋮⋮\nRetrospective Skill Improver\nAGENT\n⋮⋮\nAPI Coordinator\nAGENT\n⋮⋮\nAPI Architect\nAGENT\n⋮⋮\nAPI Implementer\nAGENT\n⋮⋮\nAPI Reviewer\nAGENT\n⋮⋮\nAPI Validator\nAGENT\n⋮⋮\nAPI Delivery\nAGENT\n\nDrag Agents into the Team canvas. Teams cannot contain Teams.\n\nTeam Canvas\nAT\nUntitled Team\n\nDragged from Library → Canvas\n\nDrop Agents here to add them to this Team\nMember Details\n\nSelect a member in Team Canvas to edit details.\n\nHandoffs\nAdd handoff\n\nNo handoffs yet\n\nAdd the first handoff\nLLM config\n\nOptional runtime, model, and LLM settings.\n\nRuntime\nChoose when launching\nAutoByteus\nCodex App Server\nClaude Agent SDK\nGrok Build\nAntigravity CLI\nModel\nSelect a model\n○ Team Name required\n○ At least 1 member required\n○ Coordinator required\nCancel\nCreate Team",
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      "Use Template",
+      "Upload Avatar",
+      "⋮⋮Daily Assistant",
+      "⋮⋮Retrospective Skill Improver",
+      "⋮⋮API Coordinator",
+      "⋮⋮API Architect",
+      "⋮⋮API Implementer",
+      "⋮⋮API Reviewer",
+      "⋮⋮API Validator",
+      "⋮⋮API Delivery",
+      " Add handoff",
+      "Add the first handoff",
+      "Select a model",
+      "Cancel",
+      " Create Team"
+    ],
+    "fields": [
+      {
+        "id": "",
+        "tag": "INPUT",
+        "placeholder": null,
+        "test": null
+      },
+      {
+        "id": "team-name",
+        "tag": "INPUT",
+        "placeholder": "e.g., Content Production Unit",
+        "test": null
+      },
+      {
+        "id": "team-description",
+        "tag": "TEXTAREA",
+        "placeholder": "Describe the team's purpose and goals...",
+        "test": null
+      },
+      {
+        "id": "team-category",
+        "tag": "INPUT",
+        "placeholder": "e.g., software-engineering",
+        "test": null
+      },
+      {
+        "id": "team-instructions",
+        "tag": "TEXTAREA",
+        "placeholder": "Enter the team coordinator's instructions...",
+        "test": null
+      },
+      {
+        "id": "",
+        "tag": "INPUT",
+        "placeholder": "Search Agents",
+        "test": null
+      },
+      {
+        "id": "team-definition-runtime-kind",
+        "tag": "SELECT",
+        "placeholder": null,
+        "test": null
+      }
+    ]
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-create",
+  "finishedAt": "2026-10-13T03:58:50.666Z"
+}

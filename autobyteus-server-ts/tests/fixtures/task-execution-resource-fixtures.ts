@@ -15,7 +15,7 @@ type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskE
  */
 export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort {
   readonly entries = new Map<string, Entry>();
-  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true }>();
+  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true; taskKey?: string }>();
   readonly damaged = new Set<string>();
   readonly links: NewTaskExecutionLinkInput[] = [];
   /** Every committed existing-copy assignment, in order. */
@@ -26,8 +26,9 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   beforeLinkCommit?: (input: NewTaskExecutionLinkInput) => Promise<void> | void;
   private adHocCount = 0;
 
-  addTask(taskId: string, description = `saved work for ${taskId}`): void {
-    this.tasks.set(taskId, { description, referenceFiles: [], done: false });
+  /** A saved Project Task; with `taskKey`, agents may also name it by that key (any letter case). */
+  addTask(taskId: string, description = `saved work for ${taskId}`, taskKey?: string): void {
+    this.tasks.set(taskId, { description, referenceFiles: [], done: false, ...(taskKey ? { taskKey } : {}) });
   }
   /** The ad-hoc Tasks (no Project) that links created, in creation order. */
   adHocTaskIds(): string[] { return [...this.tasks.entries()].filter(([, task]) => task.adHoc).map(([taskId]) => taskId); }
@@ -47,13 +48,16 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   }
   entry(execution: TaskExecutionReference): Entry | undefined { return this.entries.get(taskExecutionReferenceKey(execution)); }
 
-  async resolveAssignment(taskId: string) {
+  /** Like the Projects side: a Project Task by its ID, else by its key; the stored ID and the agent-facing key come back. */
+  async resolveAssignment(reference: string) {
+    const taskId = this.tasks.has(reference) ? reference
+      : [...this.tasks.entries()].find(([, task]) => task.taskKey === reference.toLowerCase())?.[0] ?? reference;
     if (this.damaged.has(taskId)) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", `Task run data could not be read (${taskId}). Fix or restore the file and restart the app; other features keep working.`);
     const task = this.tasks.get(taskId);
     if (!task) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
     if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE; reopen it before assigning new work.");
     if (task.adHoc) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
-    return { description: task.description, referenceFiles: task.referenceFiles };
+    return { taskId, taskReference: task.taskKey ?? taskId, description: task.description, referenceFiles: task.referenceFiles };
   }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput) {
     await this.beforeLinkCommit?.(input);
@@ -96,9 +100,6 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     return { taskId: innermost.taskId, execution: innermost.execution, open: innermost.open };
   }
   isOpen(execution: TaskExecutionReference): boolean { return this.entry(execution)?.open === true; }
-  openTaskExecutions(taskId: string, role: TaskExecutionRole): TaskExecutionReference[] {
-    return [...this.entries.values()].filter(e => e.taskId === taskId && e.role === role && e.open).map(e => e.execution);
-  }
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
     return [...this.entries.values()].filter(e => !e.open && !this.damaged.has(e.taskId)
       && rootExecutionIdentityKey(e.hostRoot) === rootExecutionIdentityKey(hostRoot)).map(e => e.execution);
@@ -106,11 +107,11 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   async assertReopenable(input: TaskExecutionReopenInput): Promise<void> {
     const entry = this.entry(input.execution);
     if (!entry) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
-    if (entry.role !== "assigned" || entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Only the run that assigned it can reactivate it.");
+    if (entry.role !== "assigned" || entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Only the agent that assigned the Task can continue it.");
     if (entry.start !== "started") throw rejection("TASK_REACTIVATION_UNAVAILABLE", "This assignment never started.");
     const task = this.tasks.get(entry.taskId);
-    if (!task) throw rejection("TASK_NOT_FOUND", "The Task was deleted; its work cannot be reactivated.");
-    if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.");
+    if (!task) throw rejection("TASK_NOT_FOUND", "The Task was deleted, so its task agent cannot continue.");
+    if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.");
   }
   async reopenAssignment(input: TaskExecutionReopenInput) {
     this.reopenRequests.push(input);
@@ -125,10 +126,10 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     await this.resolveAssignment(input.taskId);
     const entry = this.entry(input.execution);
     if (!entry) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This copy belongs to no Task.");
-    if (entry.role !== "assigned") throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This copy is sub-work or a helper of a Task worker, not an assignment.");
-    if (entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the run that made this copy's most recent assignment can give it a new Task.");
-    if (entry.open) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This copy still works on Task ${entry.taskId}. Mark it DONE or CANCELLED first, or delegate Task ${input.taskId} to a new copy with recipient_address.`);
-    if (entry.taskId === input.taskId) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This copy's most recent assignment is already Task ${input.taskId}.`);
+    if (entry.role !== "assigned") throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This task agent works on part of another agent's Task, so you can't give it a Task.");
+    if (entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one.");
+    if (entry.open) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This task agent still works on Task ${entry.taskId}. Set it to DONE or CANCELLED first, or delegate Task ${input.taskId} to a new task agent with recipient_address.`);
+    if (entry.taskId === input.taskId) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This task agent already has Task ${input.taskId}.`);
     if (!entry.everStarted) throw rejection("TASK_REACTIVATION_UNAVAILABLE", "This copy never started, so it has no conversation to resume.");
   }
   async assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> {

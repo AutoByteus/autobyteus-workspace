@@ -1,0 +1,82 @@
+[
+  {
+    "name": "ordinary-mounted-read-and-source-identity",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-5336c36d",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "set -e; id; stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api002-linux-5336c36d-source; sha256sum /home/admin/ab-nfs-api002-linux-5336c36d-source/project/preexisting.txt /Volumes/autobyteus-shared/project/preexisting.txt; cat /home/admin/ab-nfs-api002-linux-5336c36d-source/.autobyteus-nfs/storage.json; cat /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; sudo -n stat -c \"%u %g %a %n\" /var/lib/autobyteus-nfs /var/lib/autobyteus-nfs/attachment.json; sha256sum /usr/libexec/autobyteus-nfs/autobyteus-nfs"
+    ],
+    "rc": 0,
+    "seconds": 0.146,
+    "stdout": "uid=1000(admin) gid=109(admin) groups=109(admin)\n64769:577887:1000:109:755\nca408b84600659e3878b8bcdb27362694d8494fc85df5ecf41c8bde880c103e7  /home/admin/ab-nfs-api002-linux-5336c36d-source/project/preexisting.txt\nca408b84600659e3878b8bcdb27362694d8494fc85df5ecf41c8bde880c103e7  /Volumes/autobyteus-shared/project/preexisting.txt\n{\"storageId\":\"7f00baa9-8f2c-4163-aebf-59f03f3b7087\"}\n{\"storageId\":\"7f00baa9-8f2c-4163-aebf-59f03f3b7087\"}\n0 0 700 /var/lib/autobyteus-nfs\n0 0 600 /var/lib/autobyteus-nfs/attachment.json\n9aae4944c680e3be1331f760f2c07794695a2dbea6327858ca87007b77111fd3  /usr/libexec/autobyteus-nfs/autobyteus-nfs\n",
+    "stderr": ""
+  },
+  {
+    "name": "strace-internal-probe-source",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-5336c36d",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/var/empty PATH=/usr/bin:/bin LANG=C /usr/bin/strace -f -s 200 -e trace=openat,openat2,newfstatat,statx,readlinkat,close /usr/libexec/autobyteus-nfs/autobyteus-nfs internal-probe /home/admin/ab-nfs-api002-linux-5336c36d-source 7f00baa9-8f2c-4163-aebf-59f03f3b7087"
+    ],
+    "rc": 0,
+    "seconds": 0.098,
+    "stdout": "",
+    "stderr": "openat(AT_FDCWD, \"/sys/kernel/mm/transparent_hugepage/hpage_pmd_size\", O_RDONLY) = 3\nclose(3)                                = 0\nopenat(AT_FDCWD, \"/proc/self/cgroup\", O_RDONLY|O_CLOEXEC) = 3\nclose(3)                                = 0\nopenat(AT_FDCWD, \"/proc/self/mountinfo\", O_RDONLY|O_CLOEXEC) = 3\nclose(3)                                = 0\nopenat(AT_FDCWD, \"/sys/fs/cgroup/system.slice/tart-guest-agent.service/cpu.max\", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)\n/usr/bin/strace: Process 2480 attached\n/usr/bin/strace: Process 2481 attached\n/usr/bin/strace: Process 2482 attached\n/usr/bin/strace: Process 2483 attached\n[pid  2479] openat(AT_FDCWD, \"/home/admin/ab-nfs-api002-linux-5336c36d-source\", O_RDONLY|O_CLOEXEC) = 3\n[pid  2479] openat(AT_FDCWD, \"/home/admin/ab-nfs-api002-linux-5336c36d-source\", O_RDONLY|O_CLOEXEC) = 4\n[pid  2479] openat(4, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 5\n[pid  2479] newfstatat(5, \"storage.json\", {st_mode=S_IFREG|0644, st_size=53, ...}, AT_SYMLINK_NOFOLLOW) = 0\n[pid  2479] close(5)                    = 0\n[pid  2479] openat(4, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 5\n[pid  2479] openat(5, \"storage.json\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 6\n[pid  2479] close(5)                    = 0\n[pid  2479] close(6)                    = 0\n[pid  2479] close(4)                    = 0\n[pid  2479] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4\n[pid  2479] newfstatat(4, \"health\", {st_mode=S_IFDIR|0700, st_size=4096, ...}, AT_SYMLINK_NOFOLLOW) = 0\n[pid  2479] close(4)                    = 0\n[pid  2479] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4\n[pid  2479] openat(4, \"health\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 6\n[pid  2479] close(4)                    = 0\n[pid  2479] openat(6, \"c95c9d5f-7c02-4768-94e1-bd5e961a294d\", O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW|O_CLOEXEC, 0600) = 4\n[pid  2479] close(6)                    = 0\n[pid  2479] close(4)                    = 0\n[pid  2479] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4\n[pid  2479] openat(4, \"health\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 6\n[pid  2479] close(4)                    = 0\n[pid  2479] openat(6, \"c95c9d5f-7c02-4768-94e1-bd5e961a294d\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 4\n[pid  2479] close(6)                    = 0\n[pid  2479] --- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=2479, si_uid=1000} ---\n[pid  2482] close(4)                    = 0\n[pid  2482] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4\n[pid  2482] openat(4, \"health\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 6\n[pid  2482] close(4)                    = 0\n[pid  2482] close(6)                    = 0\n[pid  2482] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4\n[pid  2482] openat(4, \"health\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 6\n[pid  2482] close(4)                    = 0\n[pid  2482] close(6)                    = 0\n[pid  2482] close(3)                    = 0\n[pid  2483] +++ exited with 0 +++\n[pid  2481] +++ exited with 0 +++\n[pid  2480] +++ exited with 0 +++\n[pid  2482] +++ exited with 0 +++\n+++ exited with 0 +++\n"
+  },
+  {
+    "name": "strace-internal-probe-mount",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-5336c36d",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/var/empty PATH=/usr/bin:/bin LANG=C /usr/bin/strace -f -s 200 -e trace=openat,openat2,newfstatat,statx,readlinkat,close /usr/libexec/autobyteus-nfs/autobyteus-nfs internal-probe /Volumes/autobyteus-shared 7f00baa9-8f2c-4163-aebf-59f03f3b7087"
+    ],
+    "rc": 1,
+    "seconds": 0.066,
+    "stdout": "",
+    "stderr": "openat(AT_FDCWD, \"/sys/kernel/mm/transparent_hugepage/hpage_pmd_size\", O_RDONLY) = 3\nclose(3)                                = 0\nopenat(AT_FDCWD, \"/proc/self/cgroup\", O_RDONLY|O_CLOEXEC) = 3\nclose(3)                                = 0\nopenat(AT_FDCWD, \"/proc/self/mountinfo\", O_RDONLY|O_CLOEXEC) = 3\nclose(3)                                = 0\nopenat(AT_FDCWD, \"/sys/fs/cgroup/system.slice/tart-guest-agent.service/cpu.max\", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)\n/usr/bin/strace: Process 2490 attached\n/usr/bin/strace: Process 2491 attached\n/usr/bin/strace: Process 2492 attached\n[pid  2489] openat(AT_FDCWD, \"/Volumes/autobyteus-shared\", O_RDONLY|O_CLOEXEC) = 3\n[pid  2489] openat(AT_FDCWD, \"/Volumes/autobyteus-shared\", O_RDONLY|O_CLOEXEC) = 4\n[pid  2489] openat(4, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 5\n[pid  2489] newfstatat(5, \"storage.json\", {st_mode=S_IFREG|0644, st_size=53, ...}, AT_SYMLINK_NOFOLLOW) = 0\n[pid  2489] close(5)                    = 0\n[pid  2489] openat(4, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = -1 EREMOTEIO (Remote I/O error)\n[pid  2489] close(4)                    = 0\n[pid  2489] close(3)                    = 0\nAutoByteus NFS incomplete: openat .autobyteus-nfs/storage.json: remote I/O error\n[pid  2492] +++ exited with 1 +++\n[pid  2491] +++ exited with 1 +++\n[pid  2490] +++ exited with 1 +++\n+++ exited with 1 +++\n"
+  },
+  {
+    "name": "public-reconnect-fresh-repro",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-5336c36d",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "/home/admin/ab-nfs-api002-linux-5336c36d-binary reconnect --yes --json"
+    ],
+    "rc": 1,
+    "seconds": 0.616,
+    "stdout": "",
+    "stderr": "Resuming the same source/UUID. Any recovery restores configuration only, NOT storage bytes.\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api002-linux-5336c36d-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.5\n - Attach 192.168.64.5:/autobyteus/7f00baa9-8f2c-4163-aebf-59f03f3b7087 at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nAutoByteus NFS incomplete: nonroot storage check incomplete: exit status 1: AutoByteus NFS incomplete: openat .autobyteus-nfs/storage.json: remote I/O error\n\nAutoByteus NFS incomplete: exit status 1\n"
+  }
+]

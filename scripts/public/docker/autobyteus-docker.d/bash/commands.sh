@@ -143,7 +143,8 @@ stop_nodes() {
     container="${CONTAINER_NAME:-$name}"
     if container_exists "$container"; then
       docker stop "$container" >/dev/null
-      log "Stopped ${name}. Named volumes were kept."
+      log "Stop requested for ${name}. Named volumes and restart policy were kept."
+      log "Stop on an already-failed/non-running node is a no-op, not a restart-policy change. To disable automatic restarts durably: docker update --restart=no ${container}. Docker always-policy keeps its own semantics."
       any=1
     fi
   done

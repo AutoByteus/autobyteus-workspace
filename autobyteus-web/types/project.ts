@@ -59,6 +59,16 @@ export interface ProjectTask {
   createdAt: string
   updatedAt: string
   root: TaskRootView | null
+  /**
+   * The readable key `<prefix>-<number>` (e.g. `autobyteus-42`): numbered per Project in creation order,
+   * never changed, also after a Project rename. It is the agent-facing and Task page URL ID; `taskId` stays the
+   * stored identity used in requests and the change feed.
+   */
+  taskKey: string
+  /** Tasks of the same Project this Task depends on (informs only). An ID that names no current Task is ignored. */
+  dependsOnTaskIds: string[]
+  /** The Task of the same Project this Task is a part of (its parent), or null. One level only; an ID that names no current Task is ignored. */
+  partOfTaskId: string | null
 }
 
 /** A Task with no Project ("Temp task"): created by an agent's described delegation; read only. */
@@ -72,8 +82,34 @@ export interface TaskWithoutProject {
   root: TaskRootView | null
 }
 
+/** A Task worker: a delegated task Agent or task Team copy that is a Task's latest assignment (its root). */
+export type TaskWorkerRef = { kind: 'agent'; agentRunId: string } | { kind: 'team'; teamRunId: string }
+
+/** A Task worker's current Task, from the server; `projectId` null means a Temp task. */
+export interface TaskWorkerTask {
+  taskId: string
+  projectId: string | null
+  description: string
+  status: ProjectTaskStatus
+}
+
 /** Where a Task lives in the change feed. */
 export type TaskScope = { kind: 'project'; projectId: string } | { kind: 'no_project' }
+
+/** A Project Task search match: an exact text match, or related by meaning. */
+export interface ProjectTaskSearchMatch { taskId: string; match: 'EXACT' | 'MEANING' }
+/**
+ * Readiness of meaning search for a Project. While preparing, `done`/`total` count bytes when downloading the model
+ * and Tasks when indexing; `reason` says why it is unavailable.
+ */
+export interface MeaningSearchStatus {
+  state: 'READY' | 'PREPARING' | 'UNAVAILABLE'
+  phase: 'DOWNLOADING' | 'LOADING' | 'INDEXING' | null
+  done: number | null
+  total: number | null
+  reason: string | null
+}
+export interface ProjectTaskSearchResult { matches: ProjectTaskSearchMatch[]; meaningSearch: MeaningSearchStatus }
 
 /** One `/ws/projects` change-feed message (mirrors the server contract). */
 export type ProjectChangeMessage =

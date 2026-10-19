@@ -1,0 +1,6 @@
+{
+  "cause": "harness awaited system/init from an idle streaming-input SDK session before supplying any turn",
+  "evidence": "no stdout system/init within160s; no model turn submitted; subsequent FR-013 public initializationResult + supportedCommands immediately discovers skills, and first native turn carries authoritative system/init",
+  "disposition": "harness startup readiness must observe public control initialization and discovered command names, then assert actual init cwd/plugins on first turn",
+  "productBugClaim": false
+}

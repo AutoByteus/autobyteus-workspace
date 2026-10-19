@@ -103,8 +103,9 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
     await catalog.rebuild();
     expect(catalog.listAdmittedRootIds()).toEqual([]);
     const historicalDiagnostic = catalog.getDiagnostics().get(validRoot);
-    expect(historicalDiagnostic).toContain("ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED");
-    expect(historicalDiagnostic).toContain("missing required field(s): address, defaultLaunchConfiguration");
+    // An exact V1 root is not a current package: its JSON message log stays unconverted (the append-only
+    // conversion waits for its tree), so current readiness rejects it before reading the tree.
+    expect(historicalDiagnostic).toContain("ROOT_RUN_PACKAGE_MANIFEST_INVALID");
     expect(catalog.getDiagnostics().get(invalidRoot)).toContain(
       "ROOT_RUN_PACKAGE_MISSING_TREE: Execution tree is missing; package preserved.",
     );

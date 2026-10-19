@@ -1,0 +1,10 @@
+# Case: REPO-07
+# Command (from the worktree root): pnpm -C autobyteus-server-ts test:unit
+# Commit: e24ff6b333
+# Environment: ENV-1 (macOS 26.5.2 arm64, Node v22.23.1, worktree /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence)
+# Date: 2026-10-18 09:44 (local, file write time)
+# ----
+# Excerpt: summary lines of the full log REPO-07-test-unit.log
+ Test Files  722 passed | 4 skipped (726)
+      Tests  5856 passed | 7 skipped (5863)
+   Duration  598.11s (transform 18.72s, setup 7.90s, import 318.19s, tests 193.38s, environment 1.12s)

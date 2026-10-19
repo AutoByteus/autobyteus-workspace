@@ -1,0 +1,2 @@
+run-settings R09,R04 exit 1
+cross-scope codex exit 1

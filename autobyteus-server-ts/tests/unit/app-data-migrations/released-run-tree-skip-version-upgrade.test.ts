@@ -8,10 +8,12 @@ import { AppConfig } from "../../../src/config/app-config.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
 import { AppDataMigrationRecordRepository } from "../../../src/app-data-migrations/repositories/app-data-migration-record-repository.js";
+import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, AppendOnlyMessageLogsV1AppDataMigration } from "../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID as FAMILY } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import { TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID as LOCATORS } from "../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import { AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID as SUMMARY } from "../../../src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
-import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID as TASK_AGENT_OWN_RUN } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
@@ -108,7 +110,11 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   const ddl = (await fs.readFile(path.resolve("prisma/migrations/20260517090000_add_app_data_migration_records/migration.sql"), "utf8")).replaceAll('"summary_json"', '"summary"');
   for (const statement of ddl.split(";").filter((part) => part.trim())) await db.$executeRawUnsafe(statement);
   const repository = new AppDataMigrationRecordRepository(db);
-  const registry = new AppDataMigrationRegistry();
+  // The production list in its order; the append-only log conversion reads this test's ledger (the
+  // production default is the process database).
+  const productionRegistry = () => new AppDataMigrationRegistry(new AppDataMigrationRegistry().listDefinitions().map((definition) =>
+    definition.id === APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID ? new AppendOnlyMessageLogsV1AppDataMigration(memory, { ledger: repository }) : definition));
+  const registry = productionRegistry();
   const ids = registry.listDefinitions().map((definition) => definition.id);
   const released = ids.filter((id) => id < FAMILY);
   for (const id of released) {
@@ -120,17 +126,23 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   const results = await runner.runPending();
   // Migrations released earlier are not re-run.
   for (const id of released) expect((await repository.getRecord(id))?.summary).toBe("earlier release");
-  for (const id of [FAMILY, LOCATORS, SUMMARY]) {
+  for (const id of [FAMILY, LOCATORS, SUMMARY, TASK_AGENT_OWN_RUN, APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID]) {
     const result = results.find((candidate) => candidate.migrationId === id)!;
     expect(result.status, `${id}: ${result.logPath ? await fs.readFile(result.logPath, "utf8") : result.errorMessage}`)
       .toMatch(/^SUCCEEDED/);
   }
   expect(ids.some((id) => id.includes("delegator"))).toBe(false);
 
-  // (1) No startup rewrite of this change: the released Team tree keeps its bytes (V2, settledAt)…
-  expect(await sha(path.join(teamDir, "team_run_execution_tree.json"))).toBe(teamTreeHash);
-  // …and the current tolerant reader loads it; the old child carries no delegator.
-  const teamTree = validateTeamRunExecutionTreePayload(JSON.parse(await fs.readFile(path.join(teamDir, "team_run_execution_tree.json"), "utf8")), "team-a");
+  // (1) 20261017 (last) gave the task agent its own run: the released Team tree keeps everything else and
+  // links the task agent; it never wrote memory, so its own file is written at L1 (SKIPPED_UNMATERIALIZED).
+  expect(await sha(path.join(teamDir, "team_run_execution_tree.json"))).not.toBe(teamTreeHash);
+  const rawTeamTree = JSON.parse(await fs.readFile(path.join(teamDir, "team_run_execution_tree.json"), "utf8"));
+  expect(rawTeamTree.rootTeam.taskExecutions).toEqual([{ address: "/worker", agentRunId: "task-run", startedAt: T0 }]);
+  const own = JSON.parse(await fs.readFile(path.join(memory, "agents", "task-run", "run_metadata.json"), "utf8"));
+  expect(own).toMatchObject({ runId: "task-run", llmModelIdentifier: null, runtimeKind: null,
+    taskAgent: { coordinatingRun: { kind: "agent_team", runId: "team-a" }, address: "/worker", origin: "configured_place" } });
+  // …and the current store composes today's record; the old child carries no delegator.
+  const teamTree = (await new TeamRunExecutionTreeStore().read(teamDir, "team-a"))!;
   expect(teamTree.rootTeam.taskExecutions).toEqual([{ address: "/worker", agentRunId: "task-run", platformAgentRunId: null, startedAt: T0 }]);
   // (2) 20260901 produced the Org exactly as released (Org tree V1); the current reader loads it.
   const orgTreeRaw = JSON.parse(await fs.readFile(path.join(memory, "agent_orgs", "org-a", "agent_org_run_execution_tree.json"), "utf8"));
@@ -142,6 +154,13 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   // (4) 20260905 produced the first-message summary for the released Org.
   const orgRows = await new AgentOrgRunHistoryIndexStore(memory).readIndex();
   expect(orgRows.find((row) => row.orgRunId === "org-a")?.summary).toBe("Plan the release");
+  // (4b) 20261018 (last) converted the admitted runs' message logs; the tree-less root's log stays JSON (a warning).
+  const conversion = results.find((candidate) => candidate.migrationId === APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID)!;
+  expect(conversion.status).toBe("SUCCEEDED_WITH_WARNINGS");
+  for (const dir of [teamDir, path.join(memory, "agent_orgs", "org-a")]) {
+    expect((await fs.readdir(dir)).filter((name) => name.includes("communication_messages"))).toEqual(
+      [dir === teamDir ? "team_communication_messages_active.jsonl" : "agent_org_communication_messages_active.jsonl"]);
+  }
   // (5) Records files stay byte-identical; admission takes the tree roots and still excludes the
   // tree-less root (no tree is created for it).
   expect(await sha(path.join(teamDir, "task_delegation_records.json"))).toBe(recordsHash);
@@ -157,7 +176,7 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   // (6) A repeat startup runs nothing and changes nothing.
   const ledgerBefore = await Promise.all(ids.map((id) => repository.getRecord(id)));
   const memoryBefore = await tree(memory);
-  await new AppDataMigrationRunner(new AppDataMigrationRegistry(), repository, { logsDir: path.join(root, "logs") }).runPending();
+  await new AppDataMigrationRunner(productionRegistry(), repository, { logsDir: path.join(root, "logs") }).runPending();
   expect(await Promise.all(ids.map((id) => repository.getRecord(id)))).toEqual(ledgerBefore);
   expect(await tree(memory)).toEqual(memoryBefore);
 });

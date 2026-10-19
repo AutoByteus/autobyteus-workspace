@@ -247,3 +247,90 @@ describe('agentOrgLaunchDraftStore (UIS-004)', () => {
     expect(store.draft).toBeNull()
   })
 })
+
+describe('agentOrgLaunchDraftStore member defaults (REQ-009, REQ-010, AC-012)', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    window.localStorage.clear()
+    mocks.orgs = [structuredClone(org)]
+    mocks.enabled = new Set(['autobyteus', 'codex_app_server'])
+    mocks.hasFetched = true
+    mocks.fetchAvailability.mockImplementation(async () => [])
+    const seeded = structuredClone(references) as any
+    seeded.teams['team-def'].defaultLaunchConfig = { runtimeKind: 'autobyteus', llmModelIdentifier: 'first' }
+    seeded.agents['analyst-def'].defaultLaunchConfig = { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex', llmConfig: { reasoning_effort: 'high' } }
+    seeded.agents.b = { id: 'b', name: 'Writer', defaultLaunchConfig: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'retired' } }
+    mocks.references = seeded
+  })
+
+  it('seeds the placed team from its team default and agents from their own; unusable ones get a note', async () => {
+    const store = useAgentOrgLaunchDraftStore()
+    store.start({ orgDefinitionId: 'org-1' })
+    await flushPromises()
+    expect(store.draft).toMatchObject({
+      root: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex' },
+      teamOverrides: { '/product': { runtimeKind: 'autobyteus', llmModelIdentifier: 'first' } },
+      agentOverrides: { '/analyst': { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex', llmConfig: { reasoning_effort: 'high' } } },
+      pinnedMemberAddresses: ['/product', '/analyst'],
+      memberLaunchNotes: { '/product/writer': { reason: 'model_unavailable', llmModelIdentifier: 'retired' } },
+    })
+    const analyst = store.memberNodes.find((node) => node.key === '/analyst')!
+    // Equal to the Org's model, yet its own (pinned): shown as customized.
+    expect(analyst.customized.model).toBe(true)
+    const writer = store.memberNodes.find((node) => node.key === '/product')!.children.find((node) => node.key === '/product/writer')!
+    expect(writer.launchNotes).toMatchObject([{ kind: 'unusable_default', reason: 'model_unavailable' }])
+    expect(writer.values.runtimeKind).toBe('autobyteus')
+  })
+
+  it('a root change does not move pinned rows; a row reset releases the pin; a "+" copy is not seeded', async () => {
+    const store = useAgentOrgLaunchDraftStore()
+    store.start({ orgDefinitionId: 'org-1' })
+    await flushPromises()
+    store.setModel({ runtimeKind: 'autobyteus', llmModelIdentifier: 'first' })
+    expect(store.memberNodes.find((node) => node.key === '/analyst')!.values.llmModelIdentifier).toBe('gpt-codex')
+    store.resetMember('/analyst', { field: 'all' })
+    expect(store.draft!.pinnedMemberAddresses).toEqual(['/product'])
+    expect(store.memberNodes.find((node) => node.key === '/analyst')!.values.llmModelIdentifier).toBe('first')
+    mocks.inspection.mockResolvedValue({ execution_tree: {} })
+    mocks.seed.mockReturnValue({
+      definitionId: 'org-1', runtimeKind: 'autobyteus', llmModelIdentifier: 'first', llmConfig: null, autoExecuteTools: true,
+      workspaceSelection: { mode: 'existing', existingWorkspaceId: 'temp', newWorkspacePath: '' },
+      teamOverrides: {}, agentOverrides: {}, teamWorkspaceSelections: {},
+    })
+    store.start({ orgDefinitionId: 'org-1', sourceOrgRunId: 'org-run-9' })
+    await flushPromises()
+    expect(store.draft).toMatchObject({ agentOverrides: {}, teamOverrides: {}, pinnedMemberAddresses: [] })
+  })
+})
+
+describe('agentOrgLaunchDraftStore carried (switcher) start seeds members (SR-005)', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    window.localStorage.clear()
+    mocks.orgs = [structuredClone(org)]
+    mocks.enabled = new Set(['autobyteus', 'codex_app_server'])
+    mocks.hasFetched = true
+    mocks.fetchAvailability.mockImplementation(async () => [])
+    const seeded = structuredClone(references) as any
+    seeded.teams['team-def'].defaultLaunchConfig = { runtimeKind: 'autobyteus', llmModelIdentifier: 'first' }
+    seeded.agents['analyst-def'].defaultLaunchConfig = { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex' }
+    mocks.references = seeded
+  })
+
+  it('keeps the carried root and seeds placed teams and agents with pins', async () => {
+    const store = useAgentOrgLaunchDraftStore()
+    store.start({ orgDefinitionId: 'org-1', carried: {
+      workspace: { kind: 'existing', workspaceId: 'temp' }, runtimeKind: 'autobyteus', llmModelIdentifier: 'first', llmConfig: null, autoExecuteTools: true,
+    } })
+    await flushPromises()
+    expect(store.draft).toMatchObject({
+      root: { runtimeKind: 'autobyteus', llmModelIdentifier: 'first' },
+      teamOverrides: { '/product': { runtimeKind: 'autobyteus', llmModelIdentifier: 'first' } },
+      agentOverrides: { '/analyst': { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-codex' } },
+      pinnedMemberAddresses: ['/product', '/analyst'],
+    })
+    expect(mocks.inspection).not.toHaveBeenCalled()
+  })
+})

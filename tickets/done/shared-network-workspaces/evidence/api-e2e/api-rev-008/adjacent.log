@@ -1,0 +1,361 @@
+
+> autobyteus@1.5.3-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/fileExplorer/__tests__ components/fileExplorer/viewers/__tests__ stores/__tests__/fileExplorerStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts utils/fileExplorer/__tests__ --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > keeps drafts through tab/workspace selection, reopening an open path, and component remount
+[FileExplorer] Opening file: notes.md
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > keeps drafts through Zen remount and previews committed bytes without exposing a draft
+[FileExplorer] Opening file: notes.md
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > retains failed-save drafts and later keystrokes while a save is pending
+Core file write operation failed: Error: write refused
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts:132:34
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > retains failed-save drafts and later keystrokes while a save is pending
+Save operation failed: Error: write refused
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts:132:34
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > shows a refresh error without hiding an existing draft
+Failed to fetch file content Error: read refused
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts:143:54
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > discards only on explicit close and reopens committed content, not the retired draft
+[FileExplorer] Opening file: notes.md
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > discards only on explicit close and reopens committed content, not the retired draft
+[FileExplorer] Determined file type for "notes.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'notes.md',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "notes.md" via GraphQL.
+
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts (8 tests) 169ms
+ ✓ components/fileExplorer/__tests__/FileExplorer.spec.ts (10 tests) 221ms
+stderr | components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/FileExplorer.metadataActivation.spec.ts (14 tests) 75ms
+ ✓ components/fileExplorer/__tests__/FileItem.spec.ts (7 tests) 57ms
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorerLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorerLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts (2 tests) 47ms
+ ✓ components/fileExplorer/__tests__/FileExplorerLayout.spec.ts (3 tests) 27ms
+stderr | components/fileExplorer/__tests__/MonacoEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/MonacoEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/MonacoEditor.spec.ts (3 tests) 31ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.spec.ts (2 tests) 24ms
+stderr | components/fileExplorer/__tests__/FileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/FileViewer.spec.ts (6 tests) 21ms
+stdout | components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts (6 tests) 23ms
+stderr | components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts (3 tests) 17ms
+stdout | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts (3 tests) 15ms
+stderr | utils/fileExplorer/__tests__/fileUtils.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/fileExplorer/__tests__/treeNode.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/fileExplorer/__tests__/fileUtils.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts (24 tests) 13ms
+stdout | utils/fileExplorer/__tests__/treeNode.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/fileExplorer/__tests__/treeNode.test.ts (13 tests) 13ms
+stderr | utils/fileExplorer/__tests__/TreeNode.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/fileExplorer/__tests__/TreeNode.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/fileExplorer/__tests__/TreeNode.spec.ts (9 tests) 12ms
+stdout | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts (2 tests) 10ms
+stderr | stores/__tests__/fileExplorerStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/fileExplorerNodeRouting.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/fileExplorerStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children GraphQL errors instead of converting them to an empty tree
+Error fetching folder children: Error: Workspace root is unavailable
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/stores/fileExplorerTreeActions.ts:25:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/stores/fileExplorerTreeActions.ts:125:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+stderr | stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children payload errors instead of converting them to an empty tree
+Error fetching folder children: Error: Workspace not found
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/stores/fileExplorerTreeActions.ts:25:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/stores/fileExplorerTreeActions.ts:142:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+ ✓ stores/__tests__/fileExplorerStore.spec.ts (5 tests) 11ms
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Opening file: /tmp/diagram.SVG
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Determined file type for "/tmp/diagram.SVG": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/diagram.SVG',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/diagram.SVG": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.SVG
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Opening file: /tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Determined file type for "/tmp/diagram.svg": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/diagram.svg',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+[FileExplorer] Constructed local media URL: local-file://local/tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Opening file: /tmp/notes.md
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Determined file type for "/tmp/notes.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/notes.md',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "/tmp/notes.md" via GraphQL.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Opening file: /tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Determined file type for "/tmp/diagram.svg": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/diagram.svg',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/diagram.svg": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Opening file: /tmp/archive.zip
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Determined file type for "/tmp/archive.zip": Unsupported
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/archive.zip',
+  type: 'Unsupported',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stderr | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Unsupported local file type "Unsupported" for "/tmp/archive.zip".
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > routes supported Lua code through the text reader instead of Unsupported
+[FileExplorer] Opening file: /tmp/script.lua
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > routes supported Lua code through the text reader instead of Unsupported
+[FileExplorer] Determined file type for "/tmp/script.lua": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/script.lua',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+ ✓ stores/__tests__/fileExplorerNodeRouting.spec.ts (6 tests) 12ms
+stderr | utils/fileExplorer/__tests__/workspaceResourceUrl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/fileExplorer/__tests__/stateSync.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/fileExplorer/__tests__/workspaceResourceUrl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/fileExplorer/__tests__/workspaceResourceUrl.spec.ts (13 tests) 5ms
+stdout | utils/fileExplorer/__tests__/stateSync.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/fileExplorer/__tests__/stateSync.test.ts (2 tests) 4ms
+stderr | utils/fileExplorer/__tests__/contextMenu.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/fileExplorer/__tests__/contextMenu.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/fileExplorer/__tests__/contextMenu.test.ts (5 tests) 6ms
+stdout | utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts (2 tests) 3ms
+
+ Test Files  22 passed (22)
+      Tests  148 passed (148)
+   Start at  17:16:32
+   Duration  25.09s (transform 4.44s, setup 38.31s, collect 2.07s, tests 817ms, environment 3.37s, prepare 2.19s)
+

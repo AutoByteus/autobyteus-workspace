@@ -1,14 +1,13 @@
 import fs from 'node:fs/promises';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentFactory } from 'autobyteus-ts';
-import { CollaboratorAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-admission.js';
 import { StandaloneAgentRunRootManager } from '../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js';
 import { createNativeRootFixture, HOST } from './native-compaction-root-fixture.js';
 
 afterEach(() => vi.restoreAllMocks());
 
-// The normal cases use real native setup/admission. Faults only reject setup;
-// they never replace admission with a successful mock or weaken native assertions.
+// The normal cases use real native setup and root resolution. Faults only reject setup;
+// they never replace resolution with a successful mock or weaken native assertions.
 describe('native root fixture owns acquired resources even before returning close', () => {
   it.each(['agent', 'agent_team'] as const)('%s: successful close stops native and removes both owned directories', async kind => {
     const f = await createNativeRootFixture(kind, false);
@@ -36,12 +35,12 @@ describe('native root fixture owns acquired resources even before returning clos
     await expect(fs.access(native.context.config.memoryDir)).rejects.toMatchObject({ code: 'ENOENT' });
   }, 20000);
 
-  it.each([false, true])('post-root admission rejection releases both directories and preserves error (cleanupReportsFailure=%s)', async cleanupReportsFailure => {
+  it.each([false, true])('root resolution rejection releases both directories and preserves error (cleanupReportsFailure=%s)', async cleanupReportsFailure => {
     const created = vi.spyOn(AgentFactory.prototype, 'createAgent'); // call-through
     const directory = vi.spyOn(fs, 'mkdtemp'); // call-through, exact owned path
     const terminate = vi.spyOn(StandaloneAgentRunRootManager.prototype, 'endRoot');
-    const failure = new Error('controlled admission setup failure');
-    vi.spyOn(CollaboratorAdmission.prototype, 'ensure').mockRejectedValueOnce(failure);
+    const failure = new Error('controlled root resolution setup failure');
+    vi.spyOn(StandaloneAgentRunRootManager.prototype, 'resolveRoot').mockRejectedValueOnce(failure);
     const report = vi.spyOn(console, 'error').mockImplementation(() => {});
     const cleanupFailure = new Error('controlled cleanup uncertainty after actual removal');
     if (cleanupReportsFailure) {

@@ -1,0 +1,79 @@
+# Case: API-03 value-free summary (MCP_AUTH_E2E_EVIDENCE_DIR output)
+# Commit: c7f0c18fdc (source = 4923d179c1); runtime test file unchanged from origin/personal (autobyteus-179); helper with the API/E2E redirects option
+# Date: 2026-10-19
+
+{
+  "runtime": "autobyteus",
+  "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+  "toolNamesSelected": [
+    "hdr_auth_probe",
+    "tok_auth_probe"
+  ],
+  "toolEvents": [
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "tok_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "tok_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "tok_auth_probe"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "hdr_auth_probe"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "tok_auth_probe"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "tok_auth_probe"
+    }
+  ],
+  "remoteToolCalls": {
+    "hdr": [
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ],
+    "tok": [
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ]
+  },
+  "markersReceived": {
+    "hdr": true,
+    "tok": true
+  },
+  "dummyValueOnAgentWire": false
+}

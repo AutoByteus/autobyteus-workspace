@@ -4,8 +4,9 @@ import type { CollaboratorDefinitionCatalog } from "./collaborator-candidate-pol
 import { CollaboratorCandidatePolicy } from "./collaborator-candidate-policy.js";
 import { CollaboratorEntryBuilder } from "./collaborator-entry-builder.js";
 import { CollaboratorAdmission } from "./collaborator-admission.js";
-import { CollaboratorRunnabilityValidator } from "./collaborator-runnability-validator.js";
+import { CollaboratorLaunchResolver } from "./collaborator-launch-resolver.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 
 export const createCollaboratorDefinitionCatalog = (services: Readonly<{
   agents: Pick<AgentDefinitionService, "getAllAgentDefinitions" | "getAgentDefinitionById">;
@@ -21,11 +22,12 @@ export const createCollaboratorDefinitionCatalog = (services: Readonly<{
 export const createCollaboratorAdmission = (
   catalog: CollaboratorDefinitionCatalog,
   modelSelectionValidator: RunModelSelectionValidator,
+  runtimeAvailability: Pick<RuntimeAvailabilityService, "getRuntimeAvailability">,
 ): CollaboratorAdmission =>
   new CollaboratorAdmission({
     policy: new CollaboratorCandidatePolicy(catalog),
     entries: new CollaboratorEntryBuilder(catalog),
-    runnability: new CollaboratorRunnabilityValidator(modelSelectionValidator),
+    launches: new CollaboratorLaunchResolver({ availability: runtimeAvailability, validator: modelSelectionValidator }),
   });
 
 let processAdmission: CollaboratorAdmission | null = null;

@@ -1,5 +1,8 @@
 import { writeAttachmentSidecars, writeAttachmentAgentMetadata } from "../../../fixtures/current-attachment-package-fixtures.js";
+import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
+import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import fs from "node:fs";
+import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
@@ -124,14 +127,15 @@ const finalizeAttachment = async (
   return (response.json() as { attachments: FinalizedAttachment[] }).attachments[0]!;
 };
 
-const writeExecutionTree = (input: {
+/** Writes a team run as the app writes it: task agents' own files at L1 and their links in the tree (D-1). */
+const writeExecutionTree = async (input: {
   memoryDir: string;
   rootTeamRunId: string;
   rootAgentRunId?: string;
   rootAgents?: Array<{ address: string; agentRunId: string }>;
   tasks?: Array<{ address: string; agentRunId: string }>;
   nested?: Array<{ address: string; teamRunId: string; agentAddress: string; agentRunId: string }>;
-}): void => {
+}): Promise<void> => {
   const rootAgents = input.rootAgents?.map((entry) => testAgentNode(entry.address, { agentRunId: entry.agentRunId }))
     ?? [testAgentNode("/A", { agentRunId: input.rootAgentRunId ?? `coordinator-${input.rootTeamRunId}` })];
   const tree = testExecutionTree({
@@ -141,24 +145,25 @@ const writeExecutionTree = (input: {
     coordinatorAddress: "/A",
     children: rootAgents,
   });
-  for (const entry of input.nested ?? []) {
-    if (!rootAgents.some(agent => agent.address === entry.address)) rootAgents.push(testAgentNode(entry.address));
-  }
   const delegatorAgentRunId = rootAgents[0]!.agentRunId;
   const taskExecutions = [
     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunId: null, delegatorAgentRunId,
       startedAt: "2026-09-01T00:00:00.000Z" })),
+    // A Team copy of a flat team run is a catalog copy with its recorded source.
     ...(input.nested ?? []).map(entry => ({ address: entry.address, teamRunId: entry.teamRunId,
       members: [{ address: entry.agentAddress, agentRunId: entry.agentRunId, platformAgentRunId: null }],
-      taskExecutions: [], delegatorAgentRunId, startedAt: "2026-09-01T00:00:00.000Z" })),
-  ] as typeof tree.rootTeam.taskExecutions;
+      taskExecutions: [], delegatorAgentRunId, startedAt: "2026-09-01T00:00:00.000Z",
+      source: { kind: "agent_team", teamDefinitionId: `team-${entry.teamRunId}`, coordinatorAddress: entry.agentAddress,
+        members: [{ address: entry.agentAddress, agentDefinitionId: "member" }], handoffs: [],
+        defaultLaunchConfiguration: tree.rootTeam.defaultLaunchConfiguration } })),
+  ];
   const teamDir = new AgentMemoryLayout(input.memoryDir).getTeamDirPath({
     rootTeamRunId: input.rootTeamRunId,
     ancestorTeamRunIds: [],
   });
-  fs.mkdirSync(teamDir, { recursive: true });
-  fs.writeFileSync(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify({ ...tree, rootTeam: { ...tree.rootTeam, members: testExecutionTree({ rootTeamRunId: input.rootTeamRunId, coordinatorAddress: "/A", children: rootAgents }).rootTeam.members, taskExecutions } }), "utf8");
-  writeAttachmentSidecars(teamDir, "team", input.rootTeamRunId);
+  await new TeamRunExecutionTreeStore().write(teamDir,
+    validateTeamRunExecutionTreePayload({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions } }, input.rootTeamRunId));
+  writeAttachmentSidecars(teamDir, "team");
 };
 
 describe("REST context-files routes", () => {
@@ -211,7 +216,7 @@ describe("REST context-files routes", () => {
   it("supports direct Team-member draft delete and exact final Team-member read", async () => {
     const rootTeamRunId = "root-team-direct";
     const agentRunId = "agent-run-A";
-    writeExecutionTree({ memoryDir, rootTeamRunId, rootAgentRunId: agentRunId });
+    await writeExecutionTree({ memoryDir, rootTeamRunId, rootAgentRunId: agentRunId });
     const draftOwner = { kind: "team_member_draft", teamDraftId: "draft-team-A", memberAddress: "/A" };
 
     const deleted = await uploadDraftAttachment(app, draftOwner, "delete.md", "delete me");
@@ -240,7 +245,7 @@ describe("REST context-files routes", () => {
 
   it("maps known final Team failures exactly and keeps serving the valid same-owner file", async () => {
     const rootTeamRunId = "root-team-owner-boundary";
-    writeExecutionTree({
+    await writeExecutionTree({
       memoryDir,
       rootTeamRunId,
       rootAgents: [
@@ -289,7 +294,7 @@ describe("REST context-files routes", () => {
 
   it("does not convert an unexpected final Team access fault into a client error", async () => {
     const rootTeamRunId = "root-team-unexpected-fault";
-    writeExecutionTree({ memoryDir, rootTeamRunId, rootAgentRunId: "agent-run-A" });
+    await writeExecutionTree({ memoryDir, rootTeamRunId, rootAgentRunId: "agent-run-A" });
     const access = vi.spyOn(ContextFileReadService.prototype, "getFinalFilePath")
       .mockRejectedValueOnce(new Error("controlled unexpected access fault"));
 
@@ -310,7 +315,7 @@ describe("REST context-files routes", () => {
     const rootTeamRunId = "root-team-nested";
     const childTeamRunId = "child-team-C";
     const agentRunId = "agent-run-C-D";
-    writeExecutionTree({
+    await writeExecutionTree({
       memoryDir,
       rootTeamRunId,
       nested: [{ address: "/C", teamRunId: childTeamRunId, agentAddress: "/C/D", agentRunId }],
@@ -325,8 +330,9 @@ describe("REST context-files routes", () => {
     );
 
     expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("nested notes");
+    // A task agent team's member keeps its memory in the team's own folder (contract L1).
     const finalDir = new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
-      { rootTeamRunId, ancestorTeamRunIds: [childTeamRunId] },
+      { rootTeamRunId: childTeamRunId, ancestorTeamRunIds: [] },
       agentRunId,
     );
     expect(fs.readFileSync(path.join(finalDir, "context_files", uploaded.storedFilename), "utf8"))
@@ -335,7 +341,7 @@ describe("REST context-files routes", () => {
 
   it("rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft", async () => {
     const rootTeamRunId = "root-team-exact";
-    writeExecutionTree({
+    await writeExecutionTree({
       memoryDir,
       rootTeamRunId,
       nested: [
@@ -370,7 +376,7 @@ describe("REST context-files routes", () => {
   });
 
   it("rejects old, mixed, missing and malformed final identities before moving draft bytes", async () => {
-    writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured" });
+    await writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured" });
     const draftOwner = { kind: "team_member_draft", teamDraftId: "retry", memberAddress: "/A" };
     const uploaded = await uploadDraftAttachment(app, draftOwner, "retry.md", "retained retry bytes");
     for (const identity of [{}, { memberAddress: "/A" }, { agentRunId: "configured", memberAddress: "/A" },
@@ -390,7 +396,7 @@ describe("REST context-files routes", () => {
   });
 
   it("isolates image and file bytes for duplicate-address executions even with repeated stored filenames", async () => {
-    writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured",
+    await writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured",
       tasks: [{ address: "/A", agentRunId: "task" }] });
     const draftOwner = { kind: "team_member_draft", teamDraftId: "duplicate", memberAddress: "/A" };
     for (const input of [
@@ -398,7 +404,8 @@ describe("REST context-files routes", () => {
       { name: "notes.txt", type: "text/plain", bytes: Buffer.from("configured file bytes") },
     ]) {
       const uploaded = await uploadDraftAttachment(app, draftOwner, input.name, input.bytes, input.type);
-      const otherDir = path.join(memoryDir, "agent_teams", "team", "task", "context_files");
+      // The task agent is a normal run: its context files are in `agents/task/` (contract L1).
+      const otherDir = path.join(memoryDir, "agents", "task", "context_files");
       fs.mkdirSync(otherDir, { recursive: true });
       fs.writeFileSync(path.join(otherDir, uploaded.storedFilename), "retained task bytes");
       const final = await finalizeAttachment(app, draftOwner,
@@ -410,6 +417,47 @@ describe("REST context-files routes", () => {
       const taskRead = await app.inject({ method: "GET", url: final.locator.replace("/configured/", "/task/") });
       expect(taskRead.body).toBe("retained task bytes");
     }
+  });
+
+  it("answers 400 with detail for a malformed agent-final run ID or stored filename", async () => {
+    const draftOwner = { kind: "agent_draft", draftRunId: "draft-final-validation" };
+    const uploaded = await uploadDraftAttachment(app, draftOwner, "notes.txt", "final bytes");
+    const finalized = await finalizeAttachment(app, draftOwner, { kind: "agent_final", runId: "run-A" }, uploaded);
+    expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("final bytes");
+
+    // A raw socket keeps `%2E%2E` intact; app.inject and URL clients collapse it before routing.
+    await app.listen({ port: 0, host: "127.0.0.1" });
+    const { port } = app.server.address() as { port: number };
+    const rawGet = (rawPath: string) => new Promise<{ statusCode: number; body: string }>((resolve, reject) => {
+      http.get({ host: "127.0.0.1", port, path: rawPath }, (response) => {
+        let body = "";
+        response.setEncoding("utf8");
+        response.on("data", (chunk) => { body += chunk; });
+        response.on("end", () => resolve({ statusCode: response.statusCode ?? 0, body }));
+      }).on("error", reject);
+    });
+    for (const rawPath of [
+      `/rest/runs/%2E%2E/context-files/${uploaded.storedFilename}`,
+      `/rest/runs/..%2Fagents%2Frun-A/context-files/${uploaded.storedFilename}`,
+      `/rest/runs/%20run-A/context-files/${uploaded.storedFilename}`,
+      "/rest/runs/run-A/context-files/ctx_a__b%00.txt",
+      "/rest/runs/run-A/context-files/ctx_a__b%20c.txt",
+      "/rest/runs/run-A/context-files/%2E",
+    ]) {
+      const response = await rawGet(rawPath);
+      expect({ rawPath, status: response.statusCode, detail: typeof (JSON.parse(response.body) as { detail?: unknown }).detail })
+        .toEqual({ rawPath, status: 400, detail: "string" });
+    }
+    expect((await rawGet("/rest/runs/run-unknown/context-files/ctx_a__b.txt")).statusCode).toBe(404);
+  });
+
+  it("keeps the legitimate server run ID format through upload, finalize and read", async () => {
+    const runId = "solution_designer_0123456789abcdef0123456789abcdef";
+    writeAttachmentAgentMetadata(memoryDir, runId);
+    const draftOwner = { kind: "agent_draft", draftRunId: "temp-1728555555555-3" };
+    const uploaded = await uploadDraftAttachment(app, draftOwner, "notes.txt", "legitimate bytes");
+    const finalized = await finalizeAttachment(app, draftOwner, { kind: "agent_final", runId }, uploaded);
+    expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("legitimate bytes");
   });
 
   it("preserves the original display name while sanitizing the stored filename", async () => {

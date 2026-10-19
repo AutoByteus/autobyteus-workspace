@@ -1,0 +1,50 @@
+{
+  "url": "http://127.0.0.1:64734/graphql",
+  "attempts": [
+    {
+      "request": {
+        "query": "mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId rootPath}}",
+        "variables": {
+          "input": {
+            "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/local-preview"
+          }
+        }
+      },
+      "response": {
+        "data": null,
+        "errors": [
+          {
+            "message": "Cannot query field \"rootPath\" on type \"WorkspaceMetadata\".",
+            "locations": [
+              {
+                "line": 1,
+                "column": 82
+              }
+            ]
+          }
+        ]
+      },
+      "status": 400
+    },
+    {
+      "request": {
+        "query": "mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}",
+        "variables": {
+          "input": {
+            "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/local-preview"
+          }
+        }
+      },
+      "response": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_c4dec39cb622a871fbb6c9a12096fa5171bbf29d8cae23c08e55f7479b60276c"
+          }
+        }
+      },
+      "status": 200
+    }
+  ],
+  "result": "Pass",
+  "attemptNotes": "Initial nonexistent rootPath result-field rejected400 before mutation. Correct public workspaceId shape succeeds. Native GoTo UI attempt returned without workspace; no native folder-picker qualification claimed; public API seeds fixture then actual UI read."
+}

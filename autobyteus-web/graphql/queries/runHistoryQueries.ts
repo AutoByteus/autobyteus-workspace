@@ -131,6 +131,40 @@ export const GetRunFileChanges = gql`
   }
 `;
 
+export const GetTeamMemberFileChanges = gql`
+  query GetTeamMemberFileChanges($teamRunId: String!, $agentRunId: String!) {
+    getTeamMemberFileChanges(teamRunId: $teamRunId, agentRunId: $agentRunId) {
+      id
+      runId
+      path
+      type
+      status
+      sourceTool
+      sourceInvocationId
+      content
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GetAgentOrgMemberFileChanges = gql`
+  query GetAgentOrgMemberFileChanges($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+    getAgentOrgMemberFileChanges(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+      id
+      runId
+      path
+      type
+      status
+      sourceTool
+      sourceInvocationId
+      content
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 const activeTracePageFields = gql`
   fragment EventMonitorActiveTracePageFields on EventMonitorActiveTracePage {
     beforeCursor
@@ -193,7 +227,7 @@ export const GetTeamMemberEventMonitorActiveTracePage = gql`
   ${activeTracePageFields}
 `;
 
-/** A standalone run's collaborator or collaborator-Team member (its host keeps the run query). */
+/** A standalone run's delegated copy or copy-Team member (its host keeps the run query). */
 export const GetAgentRunCollaborationMemberEventMonitorActiveTracePage = gql`
   query GetAgentRunCollaborationMemberEventMonitorActiveTracePage(
     $hostRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String

@@ -1,0 +1,256 @@
+{
+  "launch": {
+    "success": true,
+    "message": "Agent run created successfully.",
+    "runId": "pts_new_tools_6778b04dd24a40519bb673eda10c3d8f"
+  },
+  "runId": "pts_new_tools_6778b04dd24a40519bb673eda10c3d8f",
+  "definitionToolNames": [
+    "list_projects",
+    "create_project",
+    "update_project"
+  ],
+  "exposedToolNames": [
+    "create_project",
+    "delegate_task",
+    "list_projects",
+    "send_message_to",
+    "update_project"
+  ],
+  "descriptions": {
+    "create_project": {
+      "description": "Create a Project on the current node: required name, optional description and workspaces (absolute node-local folder paths; registration not required). Returns the saved Project (projectId, name, description, workspaces). Does not delegate work.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Trimmed non-empty Project name.",
+            "type": "string"
+          },
+          "description": {
+            "description": "Optional Project description.",
+            "type": "string"
+          },
+          "workspaces": {
+            "description": "Optional workspace links. Use absolute folder paths on this node; registration and existence are not required.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "workspace_path": {
+                  "description": "Absolute folder path on this node; no shell expansion or registration required.",
+                  "type": "string"
+                },
+                "description": {
+                  "description": "Optional link description.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "workspace_path"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "update_project": {
+      "description": "Update a known Project by its project_id: name, description and/or workspaces. Omitted fields are kept; blank description clears. A supplied workspaces list replaces ALL links ([] unlinks all, folders are not deleted); retained links keep omitted descriptions. Returns the saved Project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "description": "Known Project identity to update. Never resolved by name.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Trimmed non-empty Project name; omit to keep.",
+            "type": "string"
+          },
+          "description": {
+            "description": "Project description; omit to keep, blank to clear.",
+            "type": "string"
+          },
+          "workspaces": {
+            "description": "Complete desired workspace links, not append. Omit to keep; [] unlinks all without deleting folders. Use absolute folder paths on this node; registration and existence are not required.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "workspace_path": {
+                  "description": "Absolute folder path on this node; no shell expansion or registration required.",
+                  "type": "string"
+                },
+                "description": {
+                  "description": "Link description; omit to keep a retained link's description, blank to clear. New links default to blank.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "workspace_path"
+              ]
+            }
+          }
+        },
+        "required": [
+          "project_id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "stored": {
+    "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+    "name": "PTS New 24e9 renamed",
+    "description": "made",
+    "workspaces": []
+  },
+  "calls": [
+    {
+      "tool": "create_project",
+      "arguments": {
+        "name": "PTS New 24e9",
+        "description": "made",
+        "workspaces": [
+          {
+            "workspace_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-a",
+            "description": "A"
+          }
+        ]
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+          "name": "PTS New 24e9",
+          "description": "made",
+          "workspaces": [
+            {
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-a",
+              "description": "A"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7",
+        "name": "PTS New 24e9 renamed"
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+          "name": "PTS New 24e9 renamed",
+          "description": "made",
+          "workspaces": [
+            {
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-a",
+              "description": "A"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7",
+        "workspaces": [
+          {
+            "workspace_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-b"
+          }
+        ]
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+          "name": "PTS New 24e9 renamed",
+          "description": "made",
+          "workspaces": [
+            {
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-create-or-update-project/tickets/in-progress/remove-create-or-update-project/evidence/api-e2e/app/journey/workspace/linked-b",
+              "description": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7",
+        "workspaces": []
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_3329b093-9bee-446a-916b-30042e534eb7",
+          "name": "PTS New 24e9 renamed",
+          "description": "made",
+          "workspaces": []
+        }
+      }
+    },
+    {
+      "tool": "create_project",
+      "arguments": {
+        "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7",
+        "name": "Must not be created"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_TOOL_ARGUMENT_INVALID",
+          "message": "Unsupported tool argument."
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_3329b093-9bee-446a-916b-30042e534eb7"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_PATCH_REQUIRED",
+          "message": "Supply name, description and/or workspaces to update a Project."
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "name": "x"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_TOOL_ARGUMENT_INVALID",
+          "message": "project_id must be a non-empty string."
+        }
+      }
+    },
+    {
+      "tool": "create_project",
+      "arguments": {
+        "name": "  "
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_NAME_REQUIRED",
+          "message": "Project name is required."
+        }
+      }
+    }
+  ]
+}

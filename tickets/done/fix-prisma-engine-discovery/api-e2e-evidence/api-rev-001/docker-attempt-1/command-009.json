@@ -1,0 +1,10 @@
+{
+  "command": [
+    "git",
+    "rev-parse",
+    "HEAD^{tree}"
+  ],
+  "exit": 0,
+  "stdout": "0f208ff3ab930b9a2f3aec691c7e2c12f983531c\n",
+  "stderr": ""
+}

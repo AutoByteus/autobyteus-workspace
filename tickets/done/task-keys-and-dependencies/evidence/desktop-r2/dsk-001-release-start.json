@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-54666-daa7",
+    "pid": 38638,
+    "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:54667",
+    "graphqlUrl": "http://127.0.0.1:54667/graphql",
+    "controlEndpoint": "http://127.0.0.1:54666",
+    "controlPort": 54666,
+    "serverPort": 54667,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tkd-desktop-root.J8O5GovcWk",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tkd-desktop-root.J8O5GovcWk/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-54666-daa7.log"
+  }
+}

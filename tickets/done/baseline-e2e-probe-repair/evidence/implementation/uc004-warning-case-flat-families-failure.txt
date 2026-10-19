@@ -1,0 +1,48 @@
+##### FIRST
+FLAT:
+{"migrationId":"20260901_agent_org_flat_team_families_v1","status":"FAILED","recoveryAction":"RESTART_TO_RETRY","canRetry":false,"attempts":1,"summary":"Scanned 0; migrated 0; skipped 0; failed 1.","errorMessage":"1 flat-Team/AgentOrg runtime/history item(s) require correction and restart.","logPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/tests/.tmp/team-v1-warning-startup-31410-1792224378030-28384d453b355/logs/app-data-migrations/20260901_agent_org_flat_team_families_v1-2026-10-17T08-06-22-813Z.log"}
+migrationId=20260901_agent_org_flat_team_families_v1
+displayName=Cut over flat Team and AgentOrg run families
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":1}
+error=1 flat-Team/AgentOrg runtime/history item(s) require correction and restart.
+details=
+{"itemId":"FAILED_HISTORY","status":"FAILED","message":"Count: 1. Examples: . Reasons: Invalid team run history index format: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/tests/.tmp/team-v1-warning-startup-31410-1792224378030-28384d453b355/memory/team_run_history_index.json."}
+
+LIST:
+{"data":null,"errors":[{"message":"Invalid team run history index format: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/tests/.tmp/team-v1-warning-startup-31410-1792224378030-28384d453b355/memory/team_run_history_index.json","locations":[{"line":1,"column":8}],"path":["listCollaborationRootHistory"]}]}
+TEAMRESUME:
+{"data":null,"errors":[{"message":"rootTeam.members[1] is missing required field(s): agentDefinitionId, agentRunId, platformAgentRunId, launchConfiguration.","locations":[{"line":1,"column":21}],"path":["getTeamRunResumeConfig"]}]}
+ORG:
+{"data":{"getAgentOrgRootHistory":null}}
+RESTORE TEAM:
+{"data":{"restoreAgentTeamRun":{"success":false,"message":"Error: TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun 'team-v1-warning-root' is not an admitted current package."}}}
+RESTORE ORG:
+{"data":{"restoreAgentOrgRun":{"success":false,"message":"AGENT_ORG_STATE_PACKAGE_NOT_CATALOGED: AgentOrg 'team-v1-warning-root' is not an admitted current package."}}}
+TERM ORG:
+{"data":{"terminateAgentOrgRun":{"success":false,"message":"Agent organization run not found."}}}
+LEDGER flat rows:
+[["FAILED",1]]
+##### SECOND (no correction)
+FLAT:
+{"migrationId":"20260901_agent_org_flat_team_families_v1","status":"FAILED","recoveryAction":"RESTART_TO_RETRY","canRetry":false,"attempts":2,"summary":"Scanned 0; migrated 0; skipped 0; failed 1.","errorMessage":"1 flat-Team/AgentOrg runtime/history item(s) require correction and restart.","logPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/tests/.tmp/team-v1-warning-startup-31410-1792224378030-28384d453b355/logs/app-data-migrations/20260901_agent_org_flat_team_families_v1-2026-10-17T08-06-26-888Z.log"}
+migrationId=20260901_agent_org_flat_team_families_v1
+displayName=Cut over flat Team and AgentOrg run families
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":1}
+error=1 flat-Team/AgentOrg runtime/history item(s) require correction and restart.
+details=
+{"itemId":"FAILED_HISTORY","status":"FAILED","message":"Count: 1. Examples: . Reasons: Invalid team run history index format: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/tests/.tmp/team-v1-warning-startup-31410-1792224378030-28384d453b355/memory/team_run_history_index.json."}
+
+LIST:
+{"data":null,"errors":[{"message":"Invalid team run history index format: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/tests/.tmp/team-v1-warning-startup-31410-1792224378030-28384d453b355/memory/team_run_history_index.json","locations":[{"line":1,"column":8}],"path":["listCollaborationRootHistory"]}]}
+TEAMRESUME:
+{"data":null,"errors":[{"message":"rootTeam.members[1] is missing required field(s): agentDefinitionId, agentRunId, platformAgentRunId, launchConfiguration.","locations":[{"line":1,"column":21}],"path":["getTeamRunResumeConfig"]}]}
+ORG:
+{"data":{"getAgentOrgRootHistory":null}}
+RESTORE TEAM:
+{"data":{"restoreAgentTeamRun":{"success":false,"message":"Error: TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun 'team-v1-warning-root' is not an admitted current package."}}}
+RESTORE ORG:
+{"data":{"restoreAgentOrgRun":{"success":false,"message":"AGENT_ORG_STATE_PACKAGE_NOT_CATALOGED: AgentOrg 'team-v1-warning-root' is not an admitted current package."}}}
+TERM ORG:
+{"data":{"terminateAgentOrgRun":{"success":false,"message":"Agent organization run not found."}}}
+LEDGER flat rows:
+[["FAILED",2]]

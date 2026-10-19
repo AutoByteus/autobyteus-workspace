@@ -1,0 +1,2 @@
+# API-L02b: output of the step named in the execution report Cases row for API-L02b; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{"typed":"the navigation panel on the left forgets that I folded it when I reopen the program","at":1792317581598}

@@ -1,0 +1,2 @@
+# API-L03c: output of the step named in the execution report Cases row for API-L03c; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{"projectId":"project_060dbe1f-4610-4194-8721-7ec516c25faa","searches":234,"ms":{"p50":77,"p90":125,"p99":236,"max":423}}

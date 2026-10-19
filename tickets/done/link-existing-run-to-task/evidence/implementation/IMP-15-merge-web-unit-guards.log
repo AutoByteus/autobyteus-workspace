@@ -1,0 +1,12 @@
+# IMP-15 web unit suite and guards after the merge
+# Command: pnpm -C autobyteus-web exec nuxi prepare; test:nuxt --run; guard:web-boundary; guard:localization-boundary; audit:localization-literals
+# Commit: a130f4a86f
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-18T20:17Z
+
+ Test Files  636 passed | 2 skipped (638)
+      Tests  4516 passed | 3 skipped (4519)
+   Duration  310.37s (transform 44.13s, setup 2021.87s, collect 204.88s, tests 104.80s, environment 191.89s, prepare 115.89s)
+guard:web-boundary: exit 0
+guard:localization-boundary: exit 0
+audit:localization-literals: exit 0

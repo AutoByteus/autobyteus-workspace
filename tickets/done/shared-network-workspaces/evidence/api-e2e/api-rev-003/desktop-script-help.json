@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--help"
+  ],
+  "rc": 0,
+  "stdout": "usage: browser run-script [-h] --tab-id TAB_ID (--script SCRIPT |\n                          --script-file SCRIPT_FILE | --script-stdin)\n                          [--arg-json ARG_JSON | --arg-file ARG_FILE]\n                          [--output-file OUTPUT_FILE] [--overwrite]\n                          [--dialog {accept,dismiss}]\n                          [--prompt-text PROMPT_TEXT]\n\noptions:\n  -h, --help            show this help message and exit\n  --tab-id TAB_ID       Opaque tab ID returned by list/open/attach.\n  --script SCRIPT\n  --script-file SCRIPT_FILE\n  --script-stdin\n  --arg-json ARG_JSON\n  --arg-file ARG_FILE\n  --output-file OUTPUT_FILE\n                        Workspace-relative artifact path.\n  --overwrite\n  --dialog {accept,dismiss}\n                        Answer for a confirm/prompt/leave-page dialog the page\n                        opens; without it the dialog is dismissed and the\n                        command fails with DIALOG_DECISION_REQUIRED.\n  --prompt-text PROMPT_TEXT\n                        Text for an accepted prompt (default: the prompt's\n                        default value).\n",
+  "stderr": ""
+}

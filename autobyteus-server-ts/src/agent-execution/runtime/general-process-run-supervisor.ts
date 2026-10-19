@@ -1,3 +1,4 @@
+import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
@@ -8,6 +9,9 @@ import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/a
 import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../services/agent-run-manager.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
+import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
+import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
 import { AgentRunResourceManager } from "../services/agent-run-resource-manager.js";
 import { AgentRunActivationRegistry } from "../runtime/agent-run-activation-registry.js";
 import { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
@@ -27,7 +31,7 @@ import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
-import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { AgentOrgExecutionScopeBuilder } from "../../agent-org-execution/services/agent-org-execution-scope-builder.js";
 import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
@@ -67,6 +71,7 @@ import {
   releaseProcessStandaloneRunCommandPort,
 } from "../services/standalone-run-ports.js";
 import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import {
@@ -75,6 +80,8 @@ import {
   createCollaboratorDefinitionCatalog,
   releaseProcessCollaboratorAdmission,
 } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
+import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 
 export type GeneralProcessRunSupervisorInput = Readonly<{
   memoryDir: string;
@@ -89,6 +96,11 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
   /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
   taskExecutionResources: TaskExecutionResourcePort;
+  /**
+   * Platform notices that ride along with each run's next external input, told when runs are
+   * published and released (the host composition owns and closes it). None by default.
+   */
+  platformInputNotices?: (AgentRunInputPreface & AgentRunLifecycleObserver) | null;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -128,6 +140,7 @@ export class GeneralProcessRunSupervisor {
   readonly teamRunHistoryService: TeamRunHistoryService;
   readonly agentOrgRunHistoryCatalogService: AgentOrgRunHistoryCatalogService;
   readonly collaborationRootHistoryService: CollaborationRootHistoryService;
+  readonly delegatedLaunchSelectionService: DelegatedLaunchSelectionService;
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private readonly agentOrgRunManager: AgentOrgRunManager;
@@ -164,7 +177,7 @@ export class GeneralProcessRunSupervisor {
     const collaboratorAdmission = createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
       agents: input.agentDefinitionService,
       teams: input.agentTeamDefinitionService,
-    }), input.modelSelectionValidator);
+    }), input.modelSelectionValidator, getRuntimeAvailabilityService());
     let collaboratorAdmissionBound = false;
     // The one process owner of live run file changes: it records FILE_CHANGE events and serves reads.
     const runFileChangeService = new RunFileChangeService({ workspaceManager });
@@ -196,6 +209,9 @@ export class GeneralProcessRunSupervisor {
         runFileChangeService,
         publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
         memoryRecorder,
+        workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
+        lifecycleObserver: input.platformInputNotices ?? null,
+        mcpServerInstances: McpServerInstanceManager.getInstance(),
       });
       const activationRegistry = new AgentRunActivationRegistry(resourceManager);
       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
@@ -214,6 +230,8 @@ export class GeneralProcessRunSupervisor {
         providerInputNormalizer,
         agentToolMcpRunSessionDeactivator:
           input.agentToolMcpSessionAuthority.runSessions,
+        inputPreface: input.platformInputNotices ?? null,
+        lifecycleObserver: input.platformInputNotices ?? null,
       });
 
       const metadataService = new AgentRunMetadataService(memoryDir);
@@ -235,7 +253,7 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
         locationService: storedTeamLocations,
       });
-      const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+      const memoryLocator = new AgentRunMemoryLocator({ memoryDir });
       const activityInspector = new AgentConversationActivityInspector();
       const generalAgentRunManager = agentRunManager;
       const flatTeamExecutionFactory = new FlatTeamExecutionFactory({
@@ -360,6 +378,13 @@ export class GeneralProcessRunSupervisor {
       bindProcessTeamRunService(teamRunService);
       teamRunServiceBound = true;
 
+      this.delegatedLaunchSelectionService = new DelegatedLaunchSelectionService({
+        teams: agentTeamRunManager,
+        orgs: agentOrgRunManager,
+        agents: standaloneRootManager,
+        agentRuns: agentRunService,
+        validator: input.modelSelectionValidator,
+      });
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentOrgRunManager = agentOrgRunManager;

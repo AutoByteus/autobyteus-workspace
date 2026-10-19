@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import { computed } from 'vue'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
 import { AgentStatus } from '~/types/agent/AgentStatus'
@@ -61,25 +62,16 @@ describe('AgentRunCollaborationContext', () => {
     expect(host.referenceContentPath('m1', 'r1')).toBe('agent-collaborations/host-run/communication/messages/m1/references/r1/content')
   })
 
-  it('applies sequenced events: a collaborator added in place (Offline), messages, and a reload for an extra copy', () => {
+  it('applies sequenced events: messages in place, a started delegated run through a checkpoint, and a gap', () => {
     const context = build()
-    expect(context.applyEvent(5, { kind: 'collaborator_added', collaborator: {
-      kind: 'agent', address: '/code_reviewer', agentDefinitionId: 'code-reviewer', agentRunId: 'cr-run', platformAgentRunId: null,
-      launchConfiguration: launch, addedAt: created, addedViaAgentRunId: 'host-run',
-    } })).toBe('applied')
-    expect(invalidate).toHaveBeenCalledWith('agent', 'host-run')
-    expect(context.view.execution_tree.collaborators).toHaveLength(3)
-    // The new instance has its context at once, Offline, and a row under the run.
-    expect(context.getAgentContext('cr-run')?.state.currentStatus).toBe('offline')
-    expect(context.listTaskRows(() => false).map((entry) => entry.row.displayName)).toContain('code reviewer')
-    expect(context.applyEvent(6, { kind: 'communication', message: {
+    expect(context.applyEvent(5, { kind: 'communication', message: {
       messageId: 'm2', senderAgentRunId: 'host-run', receiverAgentRunId: 'pp-run', content: 'thanks', messageType: 'direct_message', referenceFiles: [], createdAt: created,
     } })).toBe('applied')
     expect(context.view.communication_messages.messages).toHaveLength(2)
-    expect(context.applyEvent(7, { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: {
+    expect(context.applyEvent(6, { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: {
       address: '/code_reviewer', agentRunId: 'cr-copy-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
     } })).toBe('checkpoint_required')
-    expect(() => context.applyEvent(9, { kind: 'communication', message: {
+    expect(() => context.applyEvent(8, { kind: 'communication', message: {
       messageId: 'm3', senderAgentRunId: 'host-run', receiverAgentRunId: 'pp-run', content: 'gap', messageType: 'direct_message', referenceFiles: [], createdAt: created,
     } })).toThrow('change sequence gap')
     expect(context.phase).toBe('reopen_required')
@@ -143,6 +135,49 @@ it('post-response recovery projects no held A and cold dormant contexts invent n
   expect(saved.state.inputProjection).toBeNull(); expect(saved.state.recoverableBlock).toBeNull()
 })
 
+/** delegated-copies-slow-open D-4: republication keeps opened children's shown content, never their loaded mark. */
+describe('AgentRunCollaborationContext adoption of loaded children', () => {
+  beforeEach(() => { setActivePinia(createPinia()) })
+  const stored = (text: string) => ({ type: 'ai', text, timestamp: new Date(created), isComplete: true, segments: [] }) as never
+
+  it('carries a loaded child\'s conversation into the new context without its loaded mark; unloaded children start empty', () => {
+    const previous = build()
+    const loaded = previous.getAgentContext('cua-run')!
+    loaded.state.conversation.messages.push(stored('stored answer'))
+    loaded.state.hasEarlierActiveTraceEvents = true
+    previous.markChildHydrated('cua-run')
+    previous.getAgentContext('pp-run')!.state.conversation.messages.push(stored('live partial'))
+    const next = build()
+
+    next.prepareLocalContextAdoption(previous)()
+
+    expect(next.getAgentContext('cua-run')).toBe(loaded)
+    expect(loaded.state.conversation.messages).toMatchObject([{ text: 'stored answer' }])
+    expect(loaded.state.hasEarlierActiveTraceEvents).toBe(true)
+    expect(next.isChildHydrated('cua-run')).toBe(false)
+    expect(previous.isChildHydrated('cua-run')).toBe(true)
+    expect(next.getAgentContext('pp-run')!.state.conversation.messages).toEqual([])
+    expect(() => next.markChildHydrated('host-run')).toThrow('is not a child of this run')
+  })
+
+  it('a carried conversation shows the new view\'s pending input, not the old one', () => {
+    const before = agentRootView()
+    before.agent_input_states = [{ agent_run_id: 'cua-run', state: inputState() }]
+    const previous = build(before)
+    previous.getAgentContext('cua-run')!.state.conversation.messages.unshift(stored('stored answer'))
+    previous.markChildHydrated('cua-run')
+    const after = agentRootView()
+    const fresh = inputState(4); fresh.entries = [fresh.entries[1]!]
+    after.agent_input_states = [{ agent_run_id: 'cua-run', state: fresh }]
+    const next = build(after)
+
+    next.prepareLocalContextAdoption(previous)()
+
+    expect(next.getAgentContext('cua-run')!.state.conversation.messages.map((message: any) => [message.type, message.messageId ?? null, message.pendingInput?.state ?? null]))
+      .toEqual([['ai', null, null], ['user', 'A', null], ['user', 'B', 'queued']])
+  })
+})
+
 it.each(['host-input', 'unknown-input', 'duplicate-input', 'duplicate-status', 'wrong-address'])(
   'rejects %s rather than applying a partial snapshot', kind => {
     const view = agentRootView()
@@ -156,3 +191,50 @@ it.each(['host-input', 'unknown-input', 'duplicate-input', 'duplicate-status', '
     expect(() => build(view)).toThrow(/identity/)
   },
 )
+
+/** delegated-team-aggregate-status REQ-001..003/005/008, AC-001/002/005/006/007 (Agent runs). */
+describe('AgentRunCollaborationContext task Team status', () => {
+  beforeEach(() => { setActivePinia(createPinia()) })
+
+  const teamStatusOf = (rows: ReturnType<AgentRunCollaborationContext['listTaskRows']>, name: string) =>
+    rows.find((entry) => entry.row.displayName === name)!.teamStatus
+
+  it('gives a task Team row its status from all its listed agents, collapsed or expanded; agent rows carry none', () => {
+    const context = build()
+    const collapsed = context.listTaskRows(() => false)
+    expect(collapsed.map((entry) => entry.row.displayName)).toEqual(['computer use agent', 'product team'])
+    expect(teamStatusOf(collapsed, 'product team')).toBe(AgentStatus.Running)
+    expect(teamStatusOf(collapsed, 'computer use agent')).toBeNull()
+    const expanded = context.listTaskRows(() => true)
+    expect(teamStatusOf(expanded, 'product team')).toBe(AgentStatus.Running)
+    expect(teamStatusOf(expanded, 'prototyper')).toBeNull()
+    // The Team row keeps its agent-only currentStatus empty.
+    expect(expanded.find((entry) => entry.row.displayName === 'product team')!.row.currentStatus).toBeNull()
+  })
+
+  it('follows member status changes while collapsed, without expanding or reloading', () => {
+    const context = build()
+    const rows = computed(() => context.listTaskRows(() => false))
+    const team = () => teamStatusOf(rows.value, 'product team')
+    const prototyper = context.getAgentContext('pp-run')!.state
+    const bootstrapper = context.getAgentContext('pb-run')!.state
+    expect(team()).toBe(AgentStatus.Running)
+    prototyper.currentStatus = AgentStatus.Idle
+    expect(team()).toBe(AgentStatus.Idle)
+    bootstrapper.currentStatus = AgentStatus.Error
+    expect(team()).toBe(AgentStatus.Error)
+    bootstrapper.currentStatus = AgentStatus.Initializing
+    expect(team()).toBe(AgentStatus.Running)
+    prototyper.currentStatus = AgentStatus.Offline
+    bootstrapper.currentStatus = AgentStatus.Offline
+    expect(team()).toBe(AgentStatus.Offline)
+  })
+
+  it('reads gray when the run is not alive, whatever the members last reported', () => {
+    const view = agentRootView()
+    view.is_active = false
+    const context = build(view)
+    expect(context.getAgentContext('pp-run')!.state.currentStatus).toBe(AgentStatus.Running)
+    expect(teamStatusOf(context.listTaskRows(() => true), 'product team')).toBe(AgentStatus.Offline)
+  })
+})

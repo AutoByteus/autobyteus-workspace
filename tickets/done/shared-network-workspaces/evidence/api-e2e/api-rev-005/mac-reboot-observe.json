@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+    "exec",
+    "ab-nfs-api005-mac-59bba374",
+    "/bin/sh",
+    "-c",
+    "date; /usr/sbin/ipconfig getifaddr en0; mount; sudo -n launchctl print system/com.autobyteus.nfs; sudo -n tail -60 /Library/\"Application Support\"/AutoByteusNFS/service.log; sudo -n nfsd status; cat /etc/exports"
+  ],
+  "rc": 0,
+  "stdout": "Thu Oct 15 10:18:38 UTC 2026\n192.168.64.2\nsystem/com.autobyteus.nfs = {\n\tactive count = 1\n\tpath = /Library/LaunchDaemons/com.autobyteus.nfs.plist\n\ttype = LaunchDaemon\n\tstate = running\n\n\tprogram = /Library/AutoByteusNFS/libexec/autobyteus-nfs\n\targuments = {\n\t\t/Library/AutoByteusNFS/libexec/autobyteus-nfs\n\t\tservice\n\t}\n\n\tstdout path = /Library/Application Support/AutoByteusNFS/service.log\n\tstderr path = /Library/Application Support/AutoByteusNFS/service.log\n\tdefault environment = {\n\t\tPATH => /usr/bin:/bin:/usr/sbin:/sbin\n\t}\n\n\tenvironment = {\n\t\tOSLogRateLimit => 64\n\t\tXPC_SERVICE_NAME => com.autobyteus.nfs\n\t}\n\n\tdomain = system\n\tminimum runtime = 30\n\texit timeout = 5\n\truns = 1\n\tpid = 309\n\timmediate reason = speculative\n\tforks = 1\n\texecs = 1\n\tinitialized = 1\n\ttrampolined = 1\n\tstarted suspended = 0\n\tproxy started suspended = 0\n\tchecked allocations = 0 (queried = 1)\n\tchecked allocations reason = no host\n\tchecked allocations flags = 0x0\n\tlast exit code = (never exited)\n\n\tresource coalition = {\n\t\tID = 323\n\t\ttype = resource\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tjetsam coalition = {\n\t\tID = 324\n\t\ttype = jetsam\n\t\tstate = active\n\t\tactive count = 1\n\t\tname = com.autobyteus.nfs\n\t}\n\n\tspawn type = daemon (3)\n\tjetsam priority = 40\n\tjetsam memory limit (active) = (unlimited)\n\tjetsam memory limit (inactive) = (unlimited)\n\tjetsamproperties category = daemon\n\tjetsam thread limit = 32\n\tcpumon = default\n\n\tproperties = keepalive | runatload | inferred program | system service | managed LWCR | has LWCR | tle system\n}\nAutoByteus NFS checking/incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable\nAutoByteus NFS checking/incomplete: selected source device/inode changed; no replacement will be exported\nAutoByteus NFS checking/incomplete: selected source device/inode changed; no replacement will be exported\n# BEGIN AutoByteus NFS 927998c9-5b83-4e2b-9b0e-b8f2194a42b3\n\"/Users/admin/ab-nfs-api005-mac-59bba374-source\" -mapall=501:20 192.168.64.2\n# END AutoByteus NFS 927998c9-5b83-4e2b-9b0e-b8f2194a42b3\n",
+  "stderr": "/bin/sh: mount: command not found\nsudo: nfsd: command not found\n",
+  "scope": "Read only during ordinary reboot observation, no manual Start/reconnect/mount/repair"
+}

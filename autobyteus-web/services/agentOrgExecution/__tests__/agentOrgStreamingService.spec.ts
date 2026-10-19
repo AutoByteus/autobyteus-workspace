@@ -90,7 +90,6 @@ const snapshot = {
         subjectKind: 'agent_org', createdAt: '2026-09-01T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [],
         rootOrg: {
-          collaborators: [],
           address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{
@@ -320,6 +319,26 @@ describe('AgentOrgStreamingService', () => {
     }
   })
 
+  it('passes a received content batch with its covered range to the context (autobyteus-139)', async () => {
+    const first = candidate()
+    vi.mocked(first.applyEvent).mockReturnValue('applied')
+    mocks.hydrate.mockResolvedValueOnce(first)
+    const publish = vi.fn()
+    const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError: vi.fn() })
+    service.connect()
+    const socket = TestWebSocket.instances[0]!
+    socket.emit(connected)
+    socket.emit(snapshot)
+    await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
+    const event = { kind: 'agent_presentation_batch', items: [{ member_address: '/direct', agent_run_id: 'agent-run',
+      message: { type: 'SEGMENT_CONTENT', payload: { segment_id: 's-1', turn_id: 't-1', segment_type: 'text', delta: 'xy' } } }] }
+    socket.emit({ type: 'ROOT_EXECUTION_EVENT', payload: {
+      root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5, change_sequence_through: 9, event,
+    } })
+    await vi.waitFor(() => expect(first.applyEvent).toHaveBeenCalledWith(5, event, 9))
+    expect(TestWebSocket.instances).toHaveLength(1)
+  })
+
   it('checkpoint-hydrates a fresh task activation instead of publishing a partial context', async () => {
     const first = candidate()
     vi.mocked(first.applyEvent).mockReturnValue('checkpoint_required')
@@ -357,7 +376,8 @@ describe('AgentOrgStreamingService', () => {
     recoverySocket.emit(connected)
     recoverySocket.emit(snapshot)
     await vi.waitFor(() => expect(publish).toHaveBeenLastCalledWith(second, expect.any(Function)))
-    expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'task_execution_started' }))
+    // A single event carries no change_sequence_through (only content batches cover a range).
+    expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'task_execution_started' }), undefined)
     expect(first.requireReopen).not.toHaveBeenCalled()
     expect(reportError).not.toHaveBeenCalled()
     expect(mocks.query).toHaveBeenCalledTimes(2)
@@ -607,24 +627,4 @@ describe('AgentOrgStreamingService', () => {
     expect(first.setActive).not.toHaveBeenCalled()
     expect(reportError).not.toHaveBeenCalled()
   })
-})
-
-it('notifies scoped history only after a current-generation collaborator change is successfully applied', async () => {
-  setActivePinia(createPinia()); TestWebSocket.instances = []; vi.stubGlobal('WebSocket', TestWebSocket)
-  const context = candidate(); vi.mocked(context.applyEvent).mockReturnValue('applied')
-  mocks.hydrate.mockResolvedValue(context)
-  const changed = vi.fn(), reportError = vi.fn()
-  const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish: vi.fn(), reportError, onExecutionTreeChanged: changed })
-  service.connect(); const socket = TestWebSocket.instances[0]!
-  socket.emit(connected); socket.emit(snapshot); await service.whenReady()
-  const event = { type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-    event: { kind: 'collaborator_added', collaborator: { kind: 'agent', address: '/new_agent', agentDefinitionId: 'new-definition',
-      agentRunId: 'new-run', platformAgentRunId: null, launchConfiguration: launch, addedAt: '2026-09-01T00:00:01.000Z', addedViaAgentRunId: 'agent-run' } } } }
-  socket.emit(event); await vi.waitFor(() => expect(changed).toHaveBeenCalledOnce())
-  expect(context.applyEvent).toHaveBeenCalledWith(5, event.payload.event)
-  socket.emit({ ...event, payload: { ...event.payload, change_sequence: 6, event: { kind: 'agent_presentation', agent_run_id: 'agent-run', member_address: '/direct',
-    message: { type: 'AGENT_STATUS', payload: { status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } } } } })
-  await vi.waitFor(() => expect(context.applyEvent).toHaveBeenCalledTimes(2)); expect(changed).toHaveBeenCalledOnce()
-  service.disconnect(); socket.emit(event); await new Promise(resolve => setTimeout(resolve, 0))
-  expect(changed).toHaveBeenCalledOnce(); expect(reportError).not.toHaveBeenCalled(); vi.unstubAllGlobals()
 })

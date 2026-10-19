@@ -454,13 +454,20 @@ Standalone agent persisted files:
   `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
   `applicationExecutionContext` and `launchPurpose` (stored only as
   `"server_helper"` for server-owned helper runs such as the memory compactor
-  and the skill improver; those runs never host collaborators)
-- optional collaboration package (created lazily with the first collaborator):
-  `memory/agents/<runId>/collaboration/collaboration_tree.json` (host identity,
-  `collaborators`, `taskExecutions`) and `communication_messages.json`; each
-  child's runtime memory lives in `collaboration/<childRunId>/...` (task Team
-  members below their task TeamRun IDs). See
+  and the skill improver; those runs never host delegated copies)
+- optional collaboration package (created lazily with the first delegated copy):
+  `memory/agents/<runId>/collaboration/collaboration_tree.json` (host identity and
+  a link per task agent) and the host's own message log (`communication_messages_*.jsonl`,
+  see Message logs below).
+  Each task agent is a run of its own: an agent at `memory/agents/<childRunId>/`
+  (its `run_metadata.json` carries a `taskAgent` section and its catalog source,
+  plus its own `communication_messages` log), a task Team at
+  `memory/agent_teams/<taskTeamRunId>/` (its own tree and log, members inside).
+  The standalone metadata reader treats a task agent's `run_metadata.json` as
+  absent (G1), so task agents never appear as their own history rows. See
   [Standalone Agent Run Root](./standalone_agent_run_root.md).
+- deleting a run from history removes only its own folder: its task agents'
+  folders are kept (they become detached: not listed, not restored, not reported).
 - runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
@@ -476,18 +483,51 @@ Team persisted files:
   root with direct Agents, and delegated child executions (with
   `delegatorAgentRunId` for children created since the resource lifecycle). The
   root carries a complete `defaultLaunchConfiguration`; every direct configured
-  Agent carries a complete `launchConfiguration`. The root also carries
-  `collaborators` (entries for shared Agents and Agent Teams brought in with
-  `@` or by an agent's first message; read as `[]` when absent, always written).
-  A delegated child that is a **catalog copy** carries an optional `source`
+  Agent carries a complete `launchConfiguration`. The tree has no `collaborators`
+  list: earlier releases recorded shared Agents and Agent Teams brought in with `@`
+  or by an agent's first message there, and the startup migration
+  `20261015_collaborators_to_delegated_runs_v1` converted each into a delegated run
+  (below). A delegated child that is a **catalog copy** carries an optional `source`
   (`store/task-execution-source-schema.ts`):
-  - for an Agent: `{kind: "agent", agentDefinitionId, launchConfiguration}`;
-  - for a Team: `{kind: "agent_team", teamDefinitionId, coordinatorAddress, members, handoffs, defaultLaunchConfiguration}`.
+  - for an Agent: `{kind: "agent", agentDefinitionId, launchConfiguration, launchSource?}`;
+  - for a Team: `{kind: "agent_team", teamDefinitionId, coordinatorAddress, members, handoffs, defaultLaunchConfiguration, defaultLaunchSource?}`.
 
   Activation and restore read it first. When it is absent, the copy's source is
-  the configured placement or collaborator at its address, as for every record
-  written before catalog copies. The same field is used in the Org and Agent-root
-  trees. The tree is read tolerantly
+  the configured placement at its address, as for every record
+  written before catalog copies (the standalone Agent root requires it on every copy). The same field is used in the Org and Agent-root
+  trees.
+
+  Per-agent launch records (catalog-copy sources; see
+  [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies)):
+  - `launchSource` (an Agent, or a Team member) and `defaultLaunchSource` (a
+    Team) are `{origin, fallbacks}`. `origin` is `agent_default`,
+    `team_default` or `inherited`. Each fallback is `{layer, runtimeKind,
+    llmModelIdentifier, reason, detail}` for a configured layer that was skipped.
+    Note text is rendered from it and never stored.
+  - A Team member (`members[]` of a Team-copy source)
+    carries its own `launchConfiguration` only when it runs on its own agent
+    default, and a `launchSource` only when its agent definition had a default
+    (used or skipped). Otherwise the member runs on the Team's
+    `defaultLaunchConfiguration` and shares its source. The run-history domain
+    functions `effectiveMemberLaunchConfiguration` and
+    `effectiveMemberLaunchSource` are the only readers of a member's launch.
+  - The user's model choice for one copy instance (see
+    [User model choice of copies](./agent_communication.md#user-model-choice-and-stop-of-copies))
+    is `userLaunchSelection: {llmModelIdentifier, llmConfig, selectedAt}` on an
+    agent-level record (a task Agent, a task Team's member Agent) and
+    `userTeamLaunchSelection` (same shape) on a team-level record (a task Team). It replaces only the
+    model and its settings, beside the started values, which are never changed. The
+    run-history domain function `effectiveCopyAgentLaunch` (with
+    `memberFollowsTeam`) is the single rule: the agent's own choice, else the Team's
+    when the member follows its Team, else the started launch.
+  - All of these fields are optional, with truthful absence, so no migration is
+    needed. A record written before them restores every member on the Team
+    value, and its source reads as not recorded. Writers emit the fields only
+    when they carry information. A build older than these fields ignores them
+    on restore and runs every member of such a Team on the Team value (downgrade
+    only).
+
+  The tree is read tolerantly
   (known required fields and invariants; `schemaVersion`, `settledAt`, and
   unknown keys ignored) and written exactly with no `schemaVersion`.
 - member runtime memory artifacts: direct members use
@@ -497,8 +537,8 @@ Team persisted files:
   can persist `raw_traces_active.jsonl`; only native AutoByteus continuation
   owns new `working_context_snapshot.json` writes.
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical Team/Agent directory, for example `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<agentRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
-- versioned team communication projection:
-  `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
+- message log: `memory/agent_teams/<rootTeamRunId>/team_communication_messages_active.jsonl`
+  plus sealed `team_communication_messages_<6 digits>.jsonl` files (see Message logs below)
 - older packages may still contain a released
   `task_delegation_records.json`; it is neither required nor read, and it stays
   untouched on disk
@@ -514,8 +554,28 @@ AgentOrg persisted files:
   direct mounted Teams with their direct Agents, handoffs, effective launch
   configurations, concrete identities, application binding, and delegated child
   executions; read tolerantly and written exactly like the Team tree
-- versioned communication projection:
-  `memory/agent_orgs/<orgRunId>/agent_org_communication_messages.json`
+- message log: `memory/agent_orgs/<orgRunId>/agent_org_communication_messages_active.jsonl`
+  plus sealed `agent_org_communication_messages_<6 digits>.jsonl` files
+
+Message logs (append-only, since `append-only-message-logs`):
+
+- Each run's message log is a set of JSON Lines files in the run's folder, named by family:
+  `communication_messages` (a standalone host's log in `collaboration/`, or a task agent's
+  own log in `agents/<id>/`), `team_communication_messages` (a team run or a task agent team),
+  `agent_org_communication_messages` (an org run). `MessageLog`
+  (`src/run-history/store/message-log.ts`) is the only owner of these files.
+- A message is appended to `<base>_active.jsonl` as one line (exactly the seven message fields,
+  compact JSON) and synced. When the active file has reached 4 MiB, it is renamed to the next sealed
+  file `<base>_<6-digit index>.jsonl`; appends and rotation never write a sealed file again (the one
+  exception: the released locator migration's one-time startup repair, DEC-008). A message larger
+  than the limit is stored whole.
+- Reading takes the sealed files in index order, then the active file; a line counts only when its
+  `\n` is present (an unfinished last line is an append that never returned success, and the next
+  append cuts it off); any other invalid line fails the read; each message ID is kept once; the
+  result is sorted by `createdAt`. A log file has no header or version: the folder names its run.
+- Startup migration `20261018_append_only_message_logs_v1` converted the earlier JSON logs
+  (`<base>.json`) and removed each after it read back equal. A JSON message log left in a team or
+  org package is retired residue: readiness does not admit that run.
 - older packages may still contain a released
   `agent_org_task_delegation_records.json`; it is neither required nor read
 - rooted member runtime artifacts below `memory/agent_orgs/<orgRunId>/...`,
@@ -605,6 +665,29 @@ Important identity/storage rules:
   commit, index, cleanup, postcondition or unknown failure remain `FAILED` and
   retryable; global token discovery and any other fatal outcome dominate
   warnings.
+- `20261015_collaborators_to_delegated_runs_v1` is the required startup-only
+  conversion of the removed collaborator concept (registered last). For every Agent-root
+  `collaboration_tree.json`, Team `team_run_execution_tree.json` and Org
+  `agent_org_run_execution_tree.json` that still holds a `collaborators` list it
+  (1) validates each entry with a migration-owned frozen schema
+  (`migrations/collaborators-to-delegated-runs-v1/released-collaborator-entry-v1.ts`),
+  (2) stamps `source` on stored copies that had none at a collaborator's (or collaborator
+  Team member's) address, at any depth, so they keep restoring, (3) appends each entry to the
+  root-level `taskExecutions` as an **unowned** delegated run in `addedAt` order (delegator =
+  `addedViaAgentRunId`, `startedAt` = `addedAt`, catalog `source` from the entry's snapshot,
+  `userLaunchSelection`/`userTeamLaunchSelection` carried over, a Team entry's members, handoffs,
+  defaults and stored copies mapped), removes `collaborators`, (4) validates the result with the
+  current reader and writes the one tree file atomically, then re-reads it with the current
+  store. Only that file changes: memory folders, messages, context files and token records stay
+  where they are, because a collaborator's memory already sits where a root-level copy's memory
+  sits in every family. Per-tree dispositions: `MIGRATED`, `SKIPPED_ALREADY_CURRENT` (no or an
+  empty `collaborators` list; re-runs change nothing), `PRESERVED_TREE_UNREADABLE_WARNING`
+  (missing or unparseable tree, left untouched), `FAILED_INVALID_COLLABORATOR` (an entry fails
+  the frozen schema, tree untouched), `FAILED_CONVERTED_TREE_INVALID` (the current reader rejects
+  the result, original kept) and `FAILED_OPERATION` (I/O). Any failure makes the migration
+  `FAILED` (startup continues and the conversion retries on the next start); warnings alone give
+  `SUCCEEDED_WITH_WARNINGS`. A converted collaborator Team that never started has no
+  conversation; waking it by run ID reports `TASK_EXECUTION_CONTEXT_UNAVAILABLE`.
 - required startup app-data migration
   `20260706_remove_global_skill_discovery_mode` rewrites persisted
   `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata and
@@ -796,19 +879,29 @@ memory without rewriting durable team catalog activity/status fields or
 changing a stable non-empty title.
 
 Produced-file Artifacts are not part of the replay bundle, but their historical
-read path must resolve the same run identity. `RunFileChangeProjectionService`
-uses `AgentRunMetadataService` for standalone runs and the shared
-`AgentMemoryLocationService` for team-member run ids. This lets
-`getRunFileChanges(runId)` and `/runs/:runId/file-change-content` read
-team-member `agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<agentRunId>/file_changes.json`,
-including nested child-team members and task-agent memory directories, without
-adding a separate team-file route or treating produced files as message-reference
-rows.
+read path must resolve the same run identity. Every read names its owner.
+`getRunFileChanges(runId)` and `/runs/:runId/file-change-content` serve
+standalone runs only, decided by `AgentRunMetadataService` (standalone run
+metadata, running or saved). A team member is read through
+`getTeamMemberFileChanges(teamRunId, agentRunId)` and
+`/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content`:
+`TeamMemberRunViewProjectionService` locates the member inside that team run
+only and the file-change service reads its
+`agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<agentRunId>/file_changes.json`
+(live while the team runs), including nested child-team members and task-agent
+memory directories. Org members use the org-scoped equivalents (see
+[Agent Artifacts](./agent_artifacts.md)). No file-change read searches all saved
+team, org or standalone trees, and produced files are not message-reference rows.
+
+`TeamMemberRunViewProjectionService.requireLocation` locates a team member by
+`{ rootTeamRunId, agentRunId }`, so `getTeamMemberRunProjection` and the
+team-member event-monitor pages also read only the named team run's tree. A run
+id that is not in that team gives the same not-found error as before.
 
 Team Communication messages are also outside the member replay bundle. Accepted
 team communication events are processor input; derived
 `TEAM_COMMUNICATION_MESSAGE` events are projected once per team run into
-`agent_teams/<teamRunId>/team_communication_messages.json`. Historical Team tab
+the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`). Historical Team tab
 hydration reads that projection through `getTeamCommunicationMessages(teamRunId)`,
 and referenced content opens by persisted message-owned identity at
 `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
@@ -988,7 +1081,7 @@ For AgentOrg runs:
    their direct Agents, exact configuration/identity, handoffs, and delegated
    children.
 2. `AgentOrgStatePackageLoader` reads that tree with
-   `agent_org_communication_messages.json`; a Team package is never a fallback.
+   the org's message log (`agent_org_communication_messages_*.jsonl`); a Team package is never a fallback.
 3. Restore rematerializes the stored Org scope and provider identities. Team
    focus resolves to that mounted Team's stored direct coordinator; the Org has
    no coordinator or first-member fallback.

@@ -1,0 +1,23 @@
+{
+  "result": "Fail",
+  "error": {
+    "message": "locator.waitFor: Error: strict mode violation: locator('[data-test=\"workspace-center-pane\"]').getByText('PRESERVED_CONVERSATION_ALPHA', { exact: true }) resolved to 2 elements:\n    1) <h4 data-test=\"agent-workspace-title\" title=\"PRESERVED_CONVERSATION_ALPHA\" class=\"truncate text-base font-medium text-gray-800\">PRESERVED_CONVERSATION_ALPHA</h4> aka locator('[data-test=\"agent-workspace-title\"]')\n    2) <div class=\"whitespace-pre-wrap break-words text-gray-900 leading-6\">…</div> aka getByTestId('agent-conversation-feed').getByText('PRESERVED_CONVERSATION_ALPHA')\n\nCall log:\n  - waiting for locator('[data-test=\"workspace-center-pane\"]').getByText('PRESERVED_CONVERSATION_ALPHA', { exact: true }) to be visible\n",
+    "stack": "locator.waitFor: Error: strict mode violation: locator('[data-test=\"workspace-center-pane\"]').getByText('PRESERVED_CONVERSATION_ALPHA', { exact: true }) resolved to 2 elements:\n    1) <h4 data-test=\"agent-workspace-title\" title=\"PRESERVED_CONVERSATION_ALPHA\" class=\"truncate text-base font-medium text-gray-800\">PRESERVED_CONVERSATION_ALPHA</h4> aka locator('[data-test=\"agent-workspace-title\"]')\n    2) <div class=\"whitespace-pre-wrap break-words text-gray-900 leading-6\">…</div> aka getByTestId('agent-conversation-feed').getByText('PRESERVED_CONVERSATION_ALPHA')\n\nCall log:\n  - waiting for locator('[data-test=\"workspace-center-pane\"]').getByText('PRESERVED_CONVERSATION_ALPHA', { exact: true }) to be visible\n\n    at select (/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-journey.mjs:73:92)\n    at async file:///home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-journey.mjs:79:2"
+  },
+  "cleanup": {
+    "stop": {
+      "instanceId": "iso-46767-a316",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/sidebar-api-setup.IYl8Nq/tmp/autobyteus-isolated-root-J0nt5O",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "list": {
+      "instances": []
+    }
+  },
+  "evidence": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/desktop-03/evidence.json"
+}

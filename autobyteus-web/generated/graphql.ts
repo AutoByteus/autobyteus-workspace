@@ -24,7 +24,7 @@ export type Scalars = {
 export type AddProjectWorkspaceInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['String']['input'];
-  workspaceId: Scalars['String']['input'];
+  workspaceRootPath: Scalars['String']['input'];
 };
 
 export type AgentDefinition = {
@@ -38,6 +38,7 @@ export type AgentDefinition = {
   instructions: Scalars['String']['output'];
   lifecycleProcessorNames: Array<Scalars['String']['output']>;
   llmResponseProcessorNames: Array<Scalars['String']['output']>;
+  loadIssue?: Maybe<DefinitionLoadIssue>;
   name: Scalars['String']['output'];
   ownerApplicationId?: Maybe<Scalars['String']['output']>;
   ownerApplicationName?: Maybe<Scalars['String']['output']>;
@@ -94,6 +95,7 @@ export type AgentOrgDefinition = {
   handoffs: Array<AgentOrgHandoff>;
   id: Scalars['String']['output'];
   instructions: Scalars['String']['output'];
+  loadIssues: Array<DefinitionLoadIssueEntry>;
   members: Array<AgentOrgMember>;
   name: Scalars['String']['output'];
   revision?: Maybe<Scalars['String']['output']>;
@@ -289,6 +291,7 @@ export type AgentPackage = {
   __typename?: 'AgentPackage';
   agentTeamCount: Scalars['Int']['output'];
   applicationCount: Scalars['Int']['output'];
+  autoRefresh?: Maybe<AgentPackageAutoRefresh>;
   displayName: Scalars['String']['output'];
   isDefault: Scalars['Boolean']['output'];
   isRemovable: Scalars['Boolean']['output'];
@@ -300,6 +303,18 @@ export type AgentPackage = {
   teamLocalAgentCount: Scalars['Int']['output'];
   updateInfo: AgentPackageUpdateInfo;
 };
+
+export type AgentPackageAutoRefresh = {
+  __typename?: 'AgentPackageAutoRefresh';
+  message?: Maybe<Scalars['String']['output']>;
+  state: AgentPackageAutoRefreshState;
+};
+
+export enum AgentPackageAutoRefreshState {
+  FolderMissing = 'FOLDER_MISSING',
+  Unavailable = 'UNAVAILABLE',
+  Watching = 'WATCHING'
+}
 
 export enum AgentPackageImportSourceKind {
   GithubRepository = 'GITHUB_REPOSITORY',
@@ -383,6 +398,7 @@ export type AgentTeamDefinition = {
   handoffs: Array<AgentTeamHandoff>;
   id: Scalars['String']['output'];
   instructions: Scalars['String']['output'];
+  loadIssues: Array<DefinitionLoadIssueEntry>;
   name: Scalars['String']['output'];
   nodes: Array<TeamMember>;
   ownerApplicationId?: Maybe<Scalars['String']['output']>;
@@ -648,6 +664,14 @@ export type ApproveToolInvocationResult = {
   success: Scalars['Boolean']['output'];
 };
 
+export type ArchiveStoredAgentRunGroupMutationResult = {
+  __typename?: 'ArchiveStoredAgentRunGroupMutationResult';
+  /** Non-empty means the group had running runs and nothing was archived. */
+  activeRunIds: Array<Scalars['String']['output']>;
+  archivedRunIds: Array<Scalars['String']['output']>;
+  failedRunIds: Array<Scalars['String']['output']>;
+};
+
 export type ArchiveStoredRunMutationResult = {
   __typename?: 'ArchiveStoredRunMutationResult';
   message: Scalars['String']['output'];
@@ -824,7 +848,9 @@ export type CreateProjectInput = {
 
 export type CreateProjectTaskInput = {
   contextDraft?: InputMaybe<ProjectTaskContextDraftInput>;
+  dependsOnTaskIds?: InputMaybe<Array<Scalars['String']['input']>>;
   description: Scalars['String']['input'];
+  partOfTaskId?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['String']['input'];
 };
 
@@ -868,20 +894,6 @@ export type DefaultLaunchConfigInput = {
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DefinitionAdmissionDiagnostic = {
-  __typename?: 'DefinitionAdmissionDiagnostic';
-  code: Scalars['String']['output'];
-  definitionId?: Maybe<Scalars['String']['output']>;
-  definitionPath: Scalars['String']['output'];
-  dependencyChain: Array<Scalars['String']['output']>;
-  expectedFamily: Scalars['String']['output'];
-  ownerAction: Scalars['String']['output'];
-  packageRoot: Scalars['String']['output'];
-  reason: Scalars['String']['output'];
-  sourceClass: Scalars['String']['output'];
-  subjectKind: Scalars['String']['output'];
-};
-
 export type DefinitionEndpoint = {
   __typename?: 'DefinitionEndpoint';
   address: Scalars['String']['output'];
@@ -896,6 +908,80 @@ export type DefinitionEndpointCatalog = {
   __typename?: 'DefinitionEndpointCatalog';
   from: Array<DefinitionEndpoint>;
   to: Array<DefinitionEndpoint>;
+};
+
+export enum DefinitionKind {
+  Agent = 'AGENT',
+  AgentOrg = 'AGENT_ORG',
+  AgentTeam = 'AGENT_TEAM'
+}
+
+export type DefinitionLoadIssue = {
+  __typename?: 'DefinitionLoadIssue';
+  code: Scalars['String']['output'];
+  definitionPath: Scalars['String']['output'];
+  packageRoot: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+};
+
+export type DefinitionLoadIssueEntry = {
+  __typename?: 'DefinitionLoadIssueEntry';
+  code: Scalars['String']['output'];
+  definitionId: Scalars['String']['output'];
+  definitionPath: Scalars['String']['output'];
+  kind: DefinitionKind;
+  name?: Maybe<Scalars['String']['output']>;
+  packageRoot: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+  usingLastGood: Scalars['Boolean']['output'];
+};
+
+export type DefinitionProblem = {
+  __typename?: 'DefinitionProblem';
+  code: Scalars['String']['output'];
+  definitionId: Scalars['String']['output'];
+  definitionPath: Scalars['String']['output'];
+  dependencyChain: Array<Scalars['String']['output']>;
+  kind: DefinitionKind;
+  packageRoot: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+  usingLastGood: Scalars['Boolean']['output'];
+};
+
+export type DelegatedConfiguredPatchInput = {
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  scopeAddress: Scalars['String']['input'];
+  scopeKind: Scalars['String']['input'];
+};
+
+export type DelegatedExecutionTargetInput = {
+  agentRunId?: InputMaybe<Scalars['String']['input']>;
+  rootKind: Scalars['String']['input'];
+  rootRunId: Scalars['String']['input'];
+  teamRunId?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DelegatedLaunchChangeInput = {
+  agentRunId?: InputMaybe<Scalars['String']['input']>;
+  selection: DelegatedLaunchSelectionValueInput;
+  teamRunId?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DelegatedLaunchModelOptionsObject = {
+  __typename?: 'DelegatedLaunchModelOptionsObject';
+  agentRunId?: Maybe<Scalars['String']['output']>;
+  currentModel?: Maybe<RunModelOptionObject>;
+  currentModelIdentifier: Scalars['String']['output'];
+  replacements: Array<RunModelOptionObject>;
+  scope: Scalars['String']['output'];
+  teamRunId?: Maybe<Scalars['String']['output']>;
+  unavailableReason?: Maybe<Scalars['String']['output']>;
+};
+
+export type DelegatedLaunchSelectionValueInput = {
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
 };
 
 export type DeleteAgentDefinitionResult = {
@@ -1256,6 +1342,27 @@ export enum McpTransportTypeEnum {
   StreamableHttp = 'STREAMABLE_HTTP'
 }
 
+export enum MeaningSearchPhase {
+  Downloading = 'DOWNLOADING',
+  Indexing = 'INDEXING',
+  Loading = 'LOADING'
+}
+
+export enum MeaningSearchState {
+  Preparing = 'PREPARING',
+  Ready = 'READY',
+  Unavailable = 'UNAVAILABLE'
+}
+
+export type MeaningSearchStatus = {
+  __typename?: 'MeaningSearchStatus';
+  done?: Maybe<Scalars['Int']['output']>;
+  phase?: Maybe<MeaningSearchPhase>;
+  reason?: Maybe<Scalars['String']['output']>;
+  state: MeaningSearchState;
+  total?: Maybe<Scalars['Int']['output']>;
+};
+
 export type MemoryAvailabilitySummary = {
   __typename?: 'MemoryAvailabilitySummary';
   hasEpisodic: Scalars['Boolean']['output'];
@@ -1478,6 +1585,7 @@ export type Mutation = {
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
   archiveStoredAgentOrgRun: AgentOrgStoredRunMutationResult;
+  archiveStoredAgentRunGroup: ArchiveStoredAgentRunGroupMutationResult;
   archiveStoredRun: ArchiveStoredRunMutationResult;
   archiveStoredTeamRun: ArchiveStoredTeamRunMutationResult;
   cancelPreparedAgentRun: CancelPreparedAgentRunResult;
@@ -1522,10 +1630,9 @@ export type Mutation = {
   moveFileOrFolder: Scalars['String']['output'];
   prepareAgentRun: PrepareAgentRunResult;
   probeCustomProvider: CustomProviderProbeResultObject;
-  refreshAgentDefinitionCatalog: Scalars['Boolean']['output'];
-  refreshAgentTeamDefinitionCatalog: Scalars['Boolean']['output'];
   regenerateMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
   reloadAgentPackage: Array<AgentPackage>;
+  reloadAgentPackageDefinitions: Scalars['Boolean']['output'];
   reloadApplicationPackage: Array<ApplicationPackage>;
   reloadProviderModelCatalog: ProviderModelCatalogSnapshotObject;
   reloadSkillCatalog: SkillCatalogReloadResult;
@@ -1540,6 +1647,7 @@ export type Mutation = {
   restoreAgentOrgRun: AgentOrgRunMutationResult;
   restoreAgentRun: RestoreAgentRunResult;
   restoreAgentTeamRun: RestoreAgentTeamRunResult;
+  retryEmbeddingModel: Scalars['Boolean']['output'];
   revokeMemoryHubSourceCredential: MemoryHubCredentialSummaryGql;
   runAppDataMigration: AppDataMigrationMutationResult;
   saveGeminiAiStudio: GeminiConfigurationCommandResult;
@@ -1553,6 +1661,7 @@ export type Mutation = {
   startAgentRunSkillImprovement: GraphqlSkillImprovementStartResult;
   startMemorySync: MemorySyncRunResultGql;
   startTeamMemberSkillImprovement: GraphqlSkillImprovementStartResult;
+  stopDelegatedExecution: StopDelegatedExecutionResult;
   terminateAgentOrgRun: AgentOrgRunMutationResult;
   terminateAgentRun: TerminateAgentRunResult;
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
@@ -1561,6 +1670,7 @@ export type Mutation = {
   updateAgentOrgDefinition: AgentOrgDefinition;
   updateAgentPackage: Array<AgentPackage>;
   updateAgentTeamDefinition: AgentTeamDefinition;
+  updateDelegatedLaunchSelections: UpdateDelegatedLaunchSelectionsResult;
   updateGitHubSkillSource: SkillSourceOperationResult;
   updateMemoryHubConfig: MemorySyncStatusGql;
   updateMemorySyncSourceConfig: MemorySyncStatusGql;
@@ -1595,6 +1705,12 @@ export type MutationApproveToolInvocationArgs = {
 
 export type MutationArchiveStoredAgentOrgRunArgs = {
   orgRunId: Scalars['String']['input'];
+};
+
+
+export type MutationArchiveStoredAgentRunGroupArgs = {
+  agentDefinitionId: Scalars['String']['input'];
+  workspaceRootPath: Scalars['String']['input'];
 };
 
 
@@ -1972,6 +2088,11 @@ export type MutationStartTeamMemberSkillImprovementArgs = {
 };
 
 
+export type MutationStopDelegatedExecutionArgs = {
+  input: DelegatedExecutionTargetInput;
+};
+
+
 export type MutationTerminateAgentOrgRunArgs = {
   agentOrgRunId: Scalars['String']['input'];
 };
@@ -2009,6 +2130,11 @@ export type MutationUpdateAgentPackageArgs = {
 
 export type MutationUpdateAgentTeamDefinitionArgs = {
   input: UpdateAgentTeamDefinitionInput;
+};
+
+
+export type MutationUpdateDelegatedLaunchSelectionsArgs = {
+  input: UpdateDelegatedLaunchSelectionsInput;
 };
 
 
@@ -2111,11 +2237,14 @@ export type ProjectTask = {
   __typename?: 'ProjectTask';
   contextFiles: Array<ProjectTaskContextFile>;
   createdAt: Scalars['String']['output'];
+  dependsOnTaskIds: Array<Scalars['String']['output']>;
   description: Scalars['String']['output'];
+  partOfTaskId?: Maybe<Scalars['String']['output']>;
   projectId: Scalars['String']['output'];
   root?: Maybe<TaskRoot>;
   status: ProjectTaskStatus;
   taskId: Scalars['String']['output'];
+  taskKey: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
 };
 
@@ -2139,6 +2268,23 @@ export type ProjectTaskContextFile = {
   storedFilename: Scalars['String']['output'];
 };
 
+export enum ProjectTaskMatchKind {
+  Exact = 'EXACT',
+  Meaning = 'MEANING'
+}
+
+export type ProjectTaskSearchMatch = {
+  __typename?: 'ProjectTaskSearchMatch';
+  match: ProjectTaskMatchKind;
+  taskId: Scalars['String']['output'];
+};
+
+export type ProjectTaskSearchResult = {
+  __typename?: 'ProjectTaskSearchResult';
+  matches: Array<ProjectTaskSearchMatch>;
+  meaningSearch: MeaningSearchStatus;
+};
+
 export enum ProjectTaskStatus {
   Cancelled = 'CANCELLED',
   Done = 'DONE',
@@ -2148,11 +2294,9 @@ export enum ProjectTaskStatus {
 
 export type ProjectWorkspace = {
   __typename?: 'ProjectWorkspace';
-  addedAt: Scalars['String']['output'];
   availability: ProjectWorkspaceAvailability;
   description: Scalars['String']['output'];
   displayName: Scalars['String']['output'];
-  workspaceId: Scalars['String']['output'];
   workspaceRootPath: Scalars['String']['output'];
 };
 
@@ -2163,7 +2307,7 @@ export enum ProjectWorkspaceAvailability {
 
 export type ProjectWorkspaceFormInput = {
   description?: InputMaybe<Scalars['String']['input']>;
-  workspaceId: Scalars['String']['input'];
+  workspaceRootPath: Scalars['String']['input'];
 };
 
 export type ProviderCredentialSettingObject = {
@@ -2194,6 +2338,7 @@ export type Query = {
   agentPackages: Array<AgentPackage>;
   agentRunCollaboration?: Maybe<Scalars['JSON']['output']>;
   agentRunCollaborationMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
+  agentRunCollaborationMemberFileChanges: Array<RunFileChangeEntryObject>;
   agentRunCollaborationMemberProjection: AgentRunCollaborationMemberProjectionPayload;
   agentRunModelOptions: RunModelOptionsObject;
   agentTeamDefinition?: Maybe<AgentTeamDefinition>;
@@ -2212,11 +2357,13 @@ export type Query = {
   availableOptionalToolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
   availableToolNames: Array<Scalars['String']['output']>;
   collaboratorMentionCandidates: CollaboratorMentionCandidatesPayload;
-  definitionAdmissionDiagnostics: Array<DefinitionAdmissionDiagnostic>;
+  definitionProblems: Array<DefinitionProblem>;
+  delegatedLaunchModelOptions: Array<DelegatedLaunchModelOptionsObject>;
   fileContent: Scalars['String']['output'];
   folderChildren: Scalars['String']['output'];
   getAgentOrgExecutionCheckpoint: AgentOrgExecutionCheckpointPayload;
   getAgentOrgMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
+  getAgentOrgMemberFileChanges: Array<RunFileChangeEntryObject>;
   getAgentOrgMemberRunMemoryView: AgentMemoryView;
   getAgentOrgMemberRunProjection: AgentOrgMemberRunProjectionPayload;
   getAgentOrgMemberTokenUsageSummary: TokenUsageRunSummaryGraphql;
@@ -2242,6 +2389,7 @@ export type Query = {
   getStandaloneRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getTeamCommunicationMessages: Array<TeamCommunicationMessageObject>;
   getTeamMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
+  getTeamMemberFileChanges: Array<RunFileChangeEntryObject>;
   getTeamMemberRunMemoryView: AgentMemoryView;
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
   getTeamMemberSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
@@ -2274,6 +2422,7 @@ export type Query = {
   runtimeAvailabilityKinds: Array<Scalars['String']['output']>;
   runtimeCurrentModelDescriptors: Array<RuntimeCurrentModelDescriptorObject>;
   searchFiles: Array<Scalars['String']['output']>;
+  searchProjectTasks: ProjectTaskSearchResult;
   skill?: Maybe<Skill>;
   skillFileContent?: Maybe<Scalars['String']['output']>;
   skillFileTree?: Maybe<Scalars['String']['output']>;
@@ -2283,6 +2432,7 @@ export type Query = {
   skillSourceRegistryError?: Maybe<Scalars['String']['output']>;
   skillSources: Array<SkillSource>;
   skills: Array<Skill>;
+  taskWorkerTasks: Array<TaskWorkerTask>;
   tasksWithoutProject: Array<TaskWithoutProject>;
   teamRunModelOptions: Array<TeamScopeModelOptionsObject>;
   tokenUsageAnalytics: TokenUsageAnalyticsResultGraphql;
@@ -2331,6 +2481,13 @@ export type QueryAgentRunCollaborationMemberEventMonitorActiveTracePageArgs = {
 };
 
 
+export type QueryAgentRunCollaborationMemberFileChangesArgs = {
+  agentRunId: Scalars['String']['input'];
+  hostRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+};
+
+
 export type QueryAgentRunCollaborationMemberProjectionArgs = {
   agentRunId: Scalars['String']['input'];
   hostRunId: Scalars['String']['input'];
@@ -2370,6 +2527,17 @@ export type QueryCollaboratorMentionCandidatesArgs = {
 };
 
 
+export type QueryDefinitionProblemsArgs = {
+  kind: DefinitionKind;
+};
+
+
+export type QueryDelegatedLaunchModelOptionsArgs = {
+  rootKind: Scalars['String']['input'];
+  rootRunId: Scalars['String']['input'];
+};
+
+
 export type QueryFileContentArgs = {
   filePath: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
@@ -2390,6 +2558,13 @@ export type QueryGetAgentOrgExecutionCheckpointArgs = {
 export type QueryGetAgentOrgMemberEventMonitorActiveTracePageArgs = {
   agentRunId: Scalars['String']['input'];
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  memberAddress: Scalars['String']['input'];
+  orgRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetAgentOrgMemberFileChangesArgs = {
+  agentRunId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
   orgRunId: Scalars['String']['input'];
 };
@@ -2502,6 +2677,12 @@ export type QueryGetTeamCommunicationMessagesArgs = {
 export type QueryGetTeamMemberEventMonitorActiveTracePageArgs = {
   agentRunId: Scalars['String']['input'];
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  teamRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetTeamMemberFileChangesArgs = {
+  agentRunId: Scalars['String']['input'];
   teamRunId: Scalars['String']['input'];
 };
 
@@ -2658,6 +2839,12 @@ export type QuerySearchFilesArgs = {
 };
 
 
+export type QuerySearchProjectTasksArgs = {
+  projectId: Scalars['String']['input'];
+  query: Scalars['String']['input'];
+};
+
+
 export type QuerySkillArgs = {
   name: Scalars['String']['input'];
 };
@@ -2671,6 +2858,12 @@ export type QuerySkillFileContentArgs = {
 
 export type QuerySkillFileTreeArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type QueryTaskWorkerTasksArgs = {
+  agentRunIds: Array<Scalars['String']['input']>;
+  teamRunIds: Array<Scalars['String']['input']>;
 };
 
 
@@ -2764,7 +2957,7 @@ export type ReloadToolSchemaResult = {
 
 export type RemoveProjectWorkspaceInput = {
   projectId: Scalars['String']['input'];
-  workspaceId: Scalars['String']['input'];
+  workspaceRootPath: Scalars['String']['input'];
 };
 
 export type RemoveWorkspaceInput = {
@@ -3030,6 +3223,14 @@ export type StdioMcpServerConfigInput = {
   env?: InputMaybe<Scalars['JSON']['input']>;
 };
 
+export type StopDelegatedExecutionResult = {
+  __typename?: 'StopDelegatedExecutionResult';
+  message: Scalars['String']['output'];
+  notStoppedUnattributed: Scalars['Int']['output'];
+  outcome: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export type StreamableHttpMcpServerConfig = {
   __typename?: 'StreamableHttpMcpServerConfig';
   enabled: Scalars['Boolean']['output'];
@@ -3081,6 +3282,21 @@ export type TaskWithoutProject = {
   status: ProjectTaskStatus;
   taskId: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
+};
+
+export type TaskWorkerTask = {
+  __typename?: 'TaskWorkerTask';
+  task?: Maybe<TaskWorkerTaskView>;
+  workerKind: Scalars['String']['output'];
+  workerRunId: Scalars['String']['output'];
+};
+
+export type TaskWorkerTaskView = {
+  __typename?: 'TaskWorkerTaskView';
+  description: Scalars['String']['output'];
+  projectId?: Maybe<Scalars['String']['output']>;
+  status: ProjectTaskStatus;
+  taskId: Scalars['String']['output'];
 };
 
 export type TeamCommunicationMessageObject = {
@@ -3358,6 +3574,7 @@ export type TokenUsageRunSummaryGraphql = {
   cacheReadInputTokenRate?: Maybe<Scalars['Float']['output']>;
   cacheReadInputTokens: Scalars['SafeInt']['output'];
   cacheState: Scalars['String']['output'];
+  contextCompactionThresholdTokens?: Maybe<Scalars['SafeInt']['output']>;
   contextWindowUsagePercent?: Maybe<Scalars['Float']['output']>;
   currency?: Maybe<Scalars['String']['output']>;
   effectiveContextWindowTokens?: Maybe<Scalars['SafeInt']['output']>;
@@ -3384,6 +3601,7 @@ export type TokenUsageRunSummaryGraphql = {
   outputTokens: Scalars['SafeInt']['output'];
   pricingPolicyKey?: Maybe<Scalars['String']['output']>;
   reasoningOutputTokens: Scalars['SafeInt']['output'];
+  revision: Scalars['SafeInt']['output'];
   rootTeamRunId?: Maybe<Scalars['String']['output']>;
   runId: Scalars['String']['output'];
   selectedPricingTierId?: Maybe<Scalars['String']['output']>;
@@ -3528,6 +3746,21 @@ export type UpdateAgentTeamDefinitionInput = {
   nodes?: InputMaybe<Array<TeamMemberInput>>;
 };
 
+export type UpdateDelegatedLaunchSelectionsInput = {
+  changes: Array<DelegatedLaunchChangeInput>;
+  configuredPatches?: InputMaybe<Array<DelegatedConfiguredPatchInput>>;
+  rootKind: Scalars['String']['input'];
+  rootRunId: Scalars['String']['input'];
+};
+
+export type UpdateDelegatedLaunchSelectionsResult = {
+  __typename?: 'UpdateDelegatedLaunchSelectionsResult';
+  fieldErrors: Array<RunModelConfigFieldErrorObject>;
+  message: Scalars['String']['output'];
+  outcome: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateMemoryHubConfigInput = {
   advertisedHubBaseUrl?: InputMaybe<Scalars['String']['input']>;
   enabled?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3553,7 +3786,9 @@ export type UpdateProjectInput = {
 
 export type UpdateProjectTaskInput = {
   contextChanges?: InputMaybe<ProjectTaskContextChangesInput>;
+  dependsOnTaskIds?: InputMaybe<Array<Scalars['String']['input']>>;
   description: Scalars['String']['input'];
+  partOfTaskId?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['String']['input'];
   taskId: Scalars['String']['input'];
 };
@@ -3561,7 +3796,7 @@ export type UpdateProjectTaskInput = {
 export type UpdateProjectWorkspaceInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['String']['input'];
-  workspaceId: Scalars['String']['input'];
+  workspaceRootPath: Scalars['String']['input'];
 };
 
 export type UpdateSkillInput = {
@@ -3689,47 +3924,47 @@ export type WorkspaceRunHistoryGroupObject = {
   workspaceRootPath: Scalars['String']['output'];
 };
 
-export type AgentPackageFieldsFragment = { __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } };
+export type AgentPackageFieldsFragment = { __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null }, autoRefresh?: { __typename?: 'AgentPackageAutoRefresh', state: AgentPackageAutoRefreshState, message?: string | null } | null };
 
 export type GetAgentPackagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentPackagesQuery = { __typename?: 'Query', agentPackages: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
+export type GetAgentPackagesQuery = { __typename?: 'Query', agentPackages: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null }, autoRefresh?: { __typename?: 'AgentPackageAutoRefresh', state: AgentPackageAutoRefreshState, message?: string | null } | null }> };
 
 export type ImportAgentPackageMutationVariables = Exact<{
   input: ImportAgentPackageInput;
 }>;
 
 
-export type ImportAgentPackageMutation = { __typename?: 'Mutation', importAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
+export type ImportAgentPackageMutation = { __typename?: 'Mutation', importAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null }, autoRefresh?: { __typename?: 'AgentPackageAutoRefresh', state: AgentPackageAutoRefreshState, message?: string | null } | null }> };
 
 export type RemoveAgentPackageMutationVariables = Exact<{
   packageId: Scalars['String']['input'];
 }>;
 
 
-export type RemoveAgentPackageMutation = { __typename?: 'Mutation', removeAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
+export type RemoveAgentPackageMutation = { __typename?: 'Mutation', removeAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null }, autoRefresh?: { __typename?: 'AgentPackageAutoRefresh', state: AgentPackageAutoRefreshState, message?: string | null } | null }> };
 
 export type ReloadAgentPackageMutationVariables = Exact<{
   packageId: Scalars['String']['input'];
 }>;
 
 
-export type ReloadAgentPackageMutation = { __typename?: 'Mutation', reloadAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
+export type ReloadAgentPackageMutation = { __typename?: 'Mutation', reloadAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null }, autoRefresh?: { __typename?: 'AgentPackageAutoRefresh', state: AgentPackageAutoRefreshState, message?: string | null } | null }> };
 
 export type CheckAgentPackageUpdatesMutationVariables = Exact<{
   packageIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 
-export type CheckAgentPackageUpdatesMutation = { __typename?: 'Mutation', checkAgentPackageUpdates: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
+export type CheckAgentPackageUpdatesMutation = { __typename?: 'Mutation', checkAgentPackageUpdates: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null }, autoRefresh?: { __typename?: 'AgentPackageAutoRefresh', state: AgentPackageAutoRefreshState, message?: string | null } | null }> };
 
 export type UpdateAgentPackageMutationVariables = Exact<{
   packageId: Scalars['String']['input'];
 }>;
 
 
-export type UpdateAgentPackageMutation = { __typename?: 'Mutation', updateAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } }> };
+export type UpdateAgentPackageMutation = { __typename?: 'Mutation', updateAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null }, autoRefresh?: { __typename?: 'AgentPackageAutoRefresh', state: AgentPackageAutoRefreshState, message?: string | null } | null }> };
 
 export type ApplicationPackageListFieldsFragment = { __typename?: 'ApplicationPackage', packageId: string, displayName: string, sourceKind: ApplicationPackageSourceKind, sourceSummary?: string | null, applicationCount: number, isPlatformOwned: boolean, isRemovable: boolean };
 
@@ -3761,21 +3996,21 @@ export type RemoveApplicationPackageMutationVariables = Exact<{
 
 export type RemoveApplicationPackageMutation = { __typename?: 'Mutation', removeApplicationPackage: Array<{ __typename?: 'ApplicationPackage', packageId: string, displayName: string, sourceKind: ApplicationPackageSourceKind, sourceSummary?: string | null, applicationCount: number, isPlatformOwned: boolean, isRemovable: boolean }> };
 
-export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null };
+export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null };
 
 export type CreateAgentDefinitionMutationVariables = Exact<{
   input: CreateAgentDefinitionInput;
 }>;
 
 
-export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
 
 export type UpdateAgentDefinitionMutationVariables = Exact<{
   input: UpdateAgentDefinitionInput;
 }>;
 
 
-export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
 
 export type DeleteAgentDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -3783,11 +4018,6 @@ export type DeleteAgentDefinitionMutationVariables = Exact<{
 
 
 export type DeleteAgentDefinitionMutation = { __typename?: 'Mutation', deleteAgentDefinition: { __typename: 'DeleteAgentDefinitionResult', success: boolean, message: string } };
-
-export type RefreshAgentDefinitionCatalogMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type RefreshAgentDefinitionCatalogMutation = { __typename?: 'Mutation', refreshAgentDefinitionCatalog: boolean };
 
 export type TerminateAgentRunMutationVariables = Exact<{
   agentRunId: Scalars['String']['input'];
@@ -3831,21 +4061,21 @@ export type ApproveToolInvocationMutationVariables = Exact<{
 
 export type ApproveToolInvocationMutation = { __typename?: 'Mutation', approveToolInvocation: { __typename: 'ApproveToolInvocationResult', success: boolean, message: string } };
 
-export type AgentOrgDefinitionFieldsFragment = { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null };
+export type AgentOrgDefinitionFieldsFragment = { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> };
 
 export type CreateAgentOrgDefinitionMutationVariables = Exact<{
   input: CreateAgentOrgDefinitionInput;
 }>;
 
 
-export type CreateAgentOrgDefinitionMutation = { __typename?: 'Mutation', createAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+export type CreateAgentOrgDefinitionMutation = { __typename?: 'Mutation', createAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> } };
 
 export type UpdateAgentOrgDefinitionMutationVariables = Exact<{
   input: UpdateAgentOrgDefinitionInput;
 }>;
 
 
-export type UpdateAgentOrgDefinitionMutation = { __typename?: 'Mutation', updateAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+export type UpdateAgentOrgDefinitionMutation = { __typename?: 'Mutation', updateAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> } };
 
 export type DeleteAgentOrgDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -3896,6 +4126,11 @@ export type DeleteStoredAgentOrgRunMutationVariables = Exact<{
 
 export type DeleteStoredAgentOrgRunMutation = { __typename?: 'Mutation', deleteStoredAgentOrgRun: { __typename?: 'AgentOrgStoredRunMutationResult', success: boolean, message: string, orgRunId?: string | null } };
 
+export type ReloadAgentPackageDefinitionsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ReloadAgentPackageDefinitionsMutation = { __typename?: 'Mutation', reloadAgentPackageDefinitions: boolean };
+
 export type AgentTeamDefinitionMutationFieldsFragment = { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> };
 
 export type CreateAgentTeamDefinitionMutationVariables = Exact<{
@@ -3918,11 +4153,6 @@ export type DeleteAgentTeamDefinitionMutationVariables = Exact<{
 
 
 export type DeleteAgentTeamDefinitionMutation = { __typename?: 'Mutation', deleteAgentTeamDefinition: { __typename: 'DeleteAgentTeamDefinitionResult', success: boolean, message: string } };
-
-export type RefreshAgentTeamDefinitionCatalogMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type RefreshAgentTeamDefinitionCatalogMutation = { __typename?: 'Mutation', refreshAgentTeamDefinitionCatalog: boolean };
 
 export type CreateAgentTeamRunMutationVariables = Exact<{
   input: CreateAgentTeamRunInput;
@@ -3965,6 +4195,25 @@ export type SetApplicationsEnabledMutationVariables = Exact<{
 
 
 export type SetApplicationsEnabledMutation = { __typename?: 'Mutation', setApplicationsEnabled: { __typename?: 'ApplicationsCapability', enabled: boolean, scope: ApplicationsCapabilityScope, settingKey: string, source: ApplicationsCapabilitySource } };
+
+export type StopDelegatedExecutionMutationVariables = Exact<{
+  input: DelegatedExecutionTargetInput;
+}>;
+
+
+export type StopDelegatedExecutionMutation = { __typename?: 'Mutation', stopDelegatedExecution: { __typename?: 'StopDelegatedExecutionResult', success: boolean, outcome: string, message: string, notStoppedUnattributed: number } };
+
+export type UpdateDelegatedLaunchSelectionsMutationVariables = Exact<{
+  input: UpdateDelegatedLaunchSelectionsInput;
+}>;
+
+
+export type UpdateDelegatedLaunchSelectionsMutation = { __typename?: 'Mutation', updateDelegatedLaunchSelections: { __typename?: 'UpdateDelegatedLaunchSelectionsResult', success: boolean, outcome: string, message: string, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
+
+export type RetryEmbeddingModelMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RetryEmbeddingModelMutation = { __typename?: 'Mutation', retryEmbeddingModel: boolean };
 
 export type WriteFileContentMutationVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -4180,14 +4429,14 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceRootPath: string, displayName: string, description: string, availability: ProjectWorkspaceAvailability }> } };
 
 export type UpdateProjectMutationVariables = Exact<{
   input: UpdateProjectInput;
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceRootPath: string, displayName: string, description: string, availability: ProjectWorkspaceAvailability }> } };
 
 export type DeleteProjectMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -4201,35 +4450,35 @@ export type AddProjectWorkspaceMutationVariables = Exact<{
 }>;
 
 
-export type AddProjectWorkspaceMutation = { __typename?: 'Mutation', addProjectWorkspace: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+export type AddProjectWorkspaceMutation = { __typename?: 'Mutation', addProjectWorkspace: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceRootPath: string, displayName: string, description: string, availability: ProjectWorkspaceAvailability }> } };
 
 export type UpdateProjectWorkspaceMutationVariables = Exact<{
   input: UpdateProjectWorkspaceInput;
 }>;
 
 
-export type UpdateProjectWorkspaceMutation = { __typename?: 'Mutation', updateProjectWorkspace: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+export type UpdateProjectWorkspaceMutation = { __typename?: 'Mutation', updateProjectWorkspace: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceRootPath: string, displayName: string, description: string, availability: ProjectWorkspaceAvailability }> } };
 
 export type RemoveProjectWorkspaceMutationVariables = Exact<{
   input: RemoveProjectWorkspaceInput;
 }>;
 
 
-export type RemoveProjectWorkspaceMutation = { __typename?: 'Mutation', removeProjectWorkspace: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+export type RemoveProjectWorkspaceMutation = { __typename?: 'Mutation', removeProjectWorkspace: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceRootPath: string, displayName: string, description: string, availability: ProjectWorkspaceAvailability }> } };
 
 export type CreateProjectTaskMutationVariables = Exact<{
   input: CreateProjectTaskInput;
 }>;
 
 
-export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null } };
+export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null } };
 
 export type UpdateProjectTaskMutationVariables = Exact<{
   input: UpdateProjectTaskInput;
 }>;
 
 
-export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null } };
+export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null } };
 
 export type DeleteProjectTaskMutationVariables = Exact<{
   input: DeleteProjectTaskInput;
@@ -4251,6 +4500,14 @@ export type ArchiveStoredRunMutationVariables = Exact<{
 
 
 export type ArchiveStoredRunMutation = { __typename?: 'Mutation', archiveStoredRun: { __typename?: 'ArchiveStoredRunMutationResult', success: boolean, message: string } };
+
+export type ArchiveStoredAgentRunGroupMutationVariables = Exact<{
+  workspaceRootPath: Scalars['String']['input'];
+  agentDefinitionId: Scalars['String']['input'];
+}>;
+
+
+export type ArchiveStoredAgentRunGroupMutation = { __typename?: 'Mutation', archiveStoredAgentRunGroup: { __typename?: 'ArchiveStoredAgentRunGroupMutationResult', archivedRunIds: Array<string>, activeRunIds: Array<string>, failedRunIds: Array<string> } };
 
 export type DeleteStoredTeamRunMutationVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -4349,12 +4606,12 @@ export type GetAgentCustomizationOptionsQuery = { __typename?: 'Query', availabl
 export type GetAgentDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null }> };
+export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null }> };
 
 export type GetAgentOrgDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentOrgDefinitionsQuery = { __typename?: 'Query', agentOrgDefinitions: Array<{ __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null }> };
+export type GetAgentOrgDefinitionsQuery = { __typename?: 'Query', agentOrgDefinitions: Array<{ __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> }> };
 
 export type GetAgentOrgEndpointCatalogQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -4368,7 +4625,7 @@ export type GetAgentOrgReferencedAgentQueryVariables = Exact<{
 }>;
 
 
-export type GetAgentOrgReferencedAgentQuery = { __typename?: 'Query', agentDefinition?: { __typename?: 'AgentDefinition', id: string, name: string, description: string, ownershipScope: AgentDefinitionOwnershipScope, ownerOrgId?: string | null, ownerTeamId?: string | null } | null };
+export type GetAgentOrgReferencedAgentQuery = { __typename?: 'Query', agentDefinition?: { __typename?: 'AgentDefinition', id: string, name: string, description: string, ownershipScope: AgentDefinitionOwnershipScope, ownerOrgId?: string | null, ownerTeamId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } | null };
 
 export type GetAgentOrgReferencedTeamQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -4380,7 +4637,7 @@ export type GetAgentOrgReferencedTeamQuery = { __typename?: 'Query', agentTeamDe
 export type GetAgentTeamDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> }> };
+export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }>, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> }> };
 
 export type GetAppDataMigrationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4448,6 +4705,22 @@ export type GetAgentRunCollaborationMemberProjectionQueryVariables = Exact<{
 
 
 export type GetAgentRunCollaborationMemberProjectionQuery = { __typename?: 'Query', agentRunCollaborationMemberProjection: { __typename?: 'AgentRunCollaborationMemberProjectionPayload', agentRunId: string, memberAddress: string, conversation: Array<any>, activities: Array<any>, summary?: string | null, lastActivityAt?: string | null, hasEarlierActiveTraceEvents: boolean } };
+
+export type GetAgentRunCollaborationMemberFileChangesQueryVariables = Exact<{
+  hostRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentRunCollaborationMemberFileChangesQuery = { __typename?: 'Query', agentRunCollaborationMemberFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
+
+export type GetDefinitionProblemsQueryVariables = Exact<{
+  kind: DefinitionKind;
+}>;
+
+
+export type GetDefinitionProblemsQuery = { __typename?: 'Query', definitionProblems: Array<{ __typename?: 'DefinitionProblem', kind: DefinitionKind, definitionId: string, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean, dependencyChain: Array<string> }> };
 
 export type GetFileContentQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -4647,35 +4920,51 @@ export type GetAgentOrgMemberRunMemoryViewQueryVariables = Exact<{
 
 export type GetAgentOrgMemberRunMemoryViewQuery = { __typename?: 'Query', getAgentOrgMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, selectedRawTraceFileName?: string | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraceFiles?: Array<{ __typename?: 'RawTraceFileSummary', fileName: string, kind: string, recordCount: number, segmentIndex?: number | null, firstTimestamp?: number | null, lastTimestamp?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', scope: string, id?: string | null, traceType: string, sourceEvent?: string | null, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId?: string | null, seq?: number | null, ts: number, fileAttachments?: Array<{ __typename?: 'MemoryFileAttachment', uri: string, fileType: string, fileName?: string | null }> | null }> | null } };
 
-export type ProjectFieldsFragment = { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> };
+export type ProjectFieldsFragment = { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceRootPath: string, displayName: string, description: string, availability: ProjectWorkspaceAvailability }> };
 
 export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> }> };
+export type GetProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceRootPath: string, displayName: string, description: string, availability: ProjectWorkspaceAvailability }> }> };
 
 export type GetProjectQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } | null };
+export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceRootPath: string, displayName: string, description: string, availability: ProjectWorkspaceAvailability }> } | null };
 
 export type TaskRootFieldsFragment = { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null };
 
-export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null };
+export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null };
 
 export type GetProjectTasksQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
 
 
-export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
+export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
+
+export type GetTaskWorkerTasksQueryVariables = Exact<{
+  agentRunIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  teamRunIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type GetTaskWorkerTasksQuery = { __typename?: 'Query', taskWorkerTasks: Array<{ __typename?: 'TaskWorkerTask', workerKind: string, workerRunId: string, task?: { __typename?: 'TaskWorkerTaskView', taskId: string, projectId?: string | null, description: string, status: ProjectTaskStatus } | null }> };
 
 export type GetTasksWithoutProjectQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetTasksWithoutProjectQuery = { __typename?: 'Query', tasksWithoutProject: Array<{ __typename?: 'TaskWithoutProject', taskId: string, description: string, status: ProjectTaskStatus, referenceFiles: Array<string>, createdAt: string, updatedAt: string, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
+
+export type SearchProjectTasksQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  query: Scalars['String']['input'];
+}>;
+
+
+export type SearchProjectTasksQuery = { __typename?: 'Query', searchProjectTasks: { __typename?: 'ProjectTaskSearchResult', matches: Array<{ __typename?: 'ProjectTaskSearchMatch', taskId: string, match: ProjectTaskMatchKind }>, meaningSearch: { __typename?: 'MeaningSearchStatus', state: MeaningSearchState, phase?: MeaningSearchPhase | null, done?: number | null, total?: number | null, reason?: string | null } } };
 
 export type ListWorkspaceRunHistoryQueryVariables = Exact<{
   limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
@@ -4705,6 +4994,23 @@ export type GetRunFileChangesQueryVariables = Exact<{
 
 
 export type GetRunFileChangesQuery = { __typename?: 'Query', getRunFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
+
+export type GetTeamMemberFileChangesQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetTeamMemberFileChangesQuery = { __typename?: 'Query', getTeamMemberFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
+
+export type GetAgentOrgMemberFileChangesQueryVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentOrgMemberFileChangesQuery = { __typename?: 'Query', getAgentOrgMemberFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
 
 export type EventMonitorActiveTracePageFieldsFragment = { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorInterAgentVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, senderAgentRunId: string, senderAddress?: string | null, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', agentRunId: string } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> }> }> };
 
@@ -4835,6 +5141,14 @@ export type AgentOrgRunModelOptionsQueryVariables = Exact<{
 
 export type AgentOrgRunModelOptionsQuery = { __typename?: 'Query', agentOrgRunModelOptions: Array<{ __typename?: 'AgentOrgRunModelOptionObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
 
+export type DelegatedLaunchModelOptionsQueryVariables = Exact<{
+  rootKind: Scalars['String']['input'];
+  rootRunId: Scalars['String']['input'];
+}>;
+
+
+export type DelegatedLaunchModelOptionsQuery = { __typename?: 'Query', delegatedLaunchModelOptions: Array<{ __typename?: 'DelegatedLaunchModelOptionsObject', scope: string, agentRunId?: string | null, teamRunId?: string | null, currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
+
 export type RuntimeCurrentModelDescriptorsQueryVariables = Exact<{
   runtimeKind: Scalars['String']['input'];
   identifiers: Array<Scalars['String']['input']> | Scalars['String']['input'];
@@ -4911,28 +5225,28 @@ export type GetTokenUsageAnalyticsQuery = { __typename?: 'Query', tokenUsageAnal
 
 export type TokenUsageCostSummaryAggregateFieldsFragment = { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> };
 
-export type TokenUsageRunSummaryFieldsFragment = { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } };
+export type TokenUsageRunSummaryFieldsFragment = { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, contextCompactionThresholdTokens?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, revision: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } };
 
 export type GetAgentRunTokenUsageSummaryQueryVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
 
 
-export type GetAgentRunTokenUsageSummaryQuery = { __typename?: 'Query', getAgentRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
+export type GetAgentRunTokenUsageSummaryQuery = { __typename?: 'Query', getAgentRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, contextCompactionThresholdTokens?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, revision: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
 
 export type GetStandaloneRunTokenUsageSummaryQueryVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
 
 
-export type GetStandaloneRunTokenUsageSummaryQuery = { __typename?: 'Query', getStandaloneRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
+export type GetStandaloneRunTokenUsageSummaryQuery = { __typename?: 'Query', getStandaloneRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, contextCompactionThresholdTokens?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, revision: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
 
 export type GetTeamRunTokenUsageSummaryQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
 }>;
 
 
-export type GetTeamRunTokenUsageSummaryQuery = { __typename?: 'Query', getTeamRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
+export type GetTeamRunTokenUsageSummaryQuery = { __typename?: 'Query', getTeamRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, contextCompactionThresholdTokens?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, revision: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
 
 export type GetTeamMemberTokenUsageSummaryQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -4940,7 +5254,7 @@ export type GetTeamMemberTokenUsageSummaryQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamMemberTokenUsageSummaryQuery = { __typename?: 'Query', getTeamMemberTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
+export type GetTeamMemberTokenUsageSummaryQuery = { __typename?: 'Query', getTeamMemberTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, contextCompactionThresholdTokens?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, revision: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
 
 export type GetAgentOrgMemberTokenUsageSummaryQueryVariables = Exact<{
   orgRunId: Scalars['String']['input'];
@@ -4949,7 +5263,7 @@ export type GetAgentOrgMemberTokenUsageSummaryQueryVariables = Exact<{
 }>;
 
 
-export type GetAgentOrgMemberTokenUsageSummaryQuery = { __typename?: 'Query', getAgentOrgMemberTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
+export type GetAgentOrgMemberTokenUsageSummaryQuery = { __typename?: 'Query', getAgentOrgMemberTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, contextCompactionThresholdTokens?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, revision: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
 
 export type TokenUsageTaskStatisticsRowFieldsFragment = { __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, taskId?: string | null, rootTeamRunId?: string | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, modelDisplayNames: Array<string>, runtimeKinds: Array<string>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } };
 
@@ -5158,6 +5472,10 @@ export const AgentPackageFieldsFragmentDoc = gql`
     checkedAt
     lastError
   }
+  autoRefresh {
+    state
+    message
+  }
 }
     `;
 export const ApplicationPackageListFieldsFragmentDoc = gql`
@@ -5216,6 +5534,12 @@ export const AgentDefinitionMutationFieldsFragmentDoc = gql`
     runtimeKind
     llmConfig
   }
+  loadIssue {
+    code
+    reason
+    definitionPath
+    packageRoot
+  }
 }
     `;
 export const AgentOrgDefinitionFieldsFragmentDoc = gql`
@@ -5242,6 +5566,16 @@ export const AgentOrgDefinitionFieldsFragmentDoc = gql`
     llmModelIdentifier
     runtimeKind
     llmConfig
+  }
+  loadIssues {
+    kind
+    definitionId
+    name
+    code
+    reason
+    definitionPath
+    packageRoot
+    usingLastGood
   }
 }
     `;
@@ -5491,11 +5825,9 @@ export const ProjectFieldsFragmentDoc = gql`
   createdAt
   updatedAt
   workspaces {
-    workspaceId
     workspaceRootPath
     displayName
     description
-    addedAt
     availability
   }
   taskCount
@@ -5539,6 +5871,9 @@ export const ProjectTaskFieldsFragmentDoc = gql`
   root {
     ...TaskRootFields
   }
+  taskKey
+  dependsOnTaskIds
+  partOfTaskId
 }
     ${TaskRootFieldsFragmentDoc}`;
 export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
@@ -5795,12 +6130,14 @@ export const TokenUsageRunSummaryFieldsFragmentDoc = gql`
   latestPromptTokens
   effectiveContextWindowTokens
   contextWindowUsagePercent
+  contextCompactionThresholdTokens
   latestModelProvider
   latestModelIdentifier
   latestRuntimeKind
   latestSelectedRawModelId
   hasCacheWriteRateAssumption
   usageReportCount
+  revision
   updatedAt
 }
     `;
@@ -6255,29 +6592,6 @@ export function useDeleteAgentDefinitionMutation(options: VueApolloComposable.Us
   return VueApolloComposable.useMutation<DeleteAgentDefinitionMutation, DeleteAgentDefinitionMutationVariables>(DeleteAgentDefinitionDocument, options);
 }
 export type DeleteAgentDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteAgentDefinitionMutation, DeleteAgentDefinitionMutationVariables>;
-export const RefreshAgentDefinitionCatalogDocument = gql`
-    mutation RefreshAgentDefinitionCatalog {
-  refreshAgentDefinitionCatalog
-}
-    `;
-
-/**
- * __useRefreshAgentDefinitionCatalogMutation__
- *
- * To run a mutation, you first call `useRefreshAgentDefinitionCatalogMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRefreshAgentDefinitionCatalogMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRefreshAgentDefinitionCatalogMutation();
- */
-export function useRefreshAgentDefinitionCatalogMutation(options: VueApolloComposable.UseMutationOptions<RefreshAgentDefinitionCatalogMutation, RefreshAgentDefinitionCatalogMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RefreshAgentDefinitionCatalogMutation, RefreshAgentDefinitionCatalogMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RefreshAgentDefinitionCatalogMutation, RefreshAgentDefinitionCatalogMutationVariables>(RefreshAgentDefinitionCatalogDocument, options);
-}
-export type RefreshAgentDefinitionCatalogMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RefreshAgentDefinitionCatalogMutation, RefreshAgentDefinitionCatalogMutationVariables>;
 export const TerminateAgentRunDocument = gql`
     mutation TerminateAgentRun($agentRunId: String!) {
   terminateAgentRun(agentRunId: $agentRunId) {
@@ -6747,6 +7061,29 @@ export function useDeleteStoredAgentOrgRunMutation(options: VueApolloComposable.
   return VueApolloComposable.useMutation<DeleteStoredAgentOrgRunMutation, DeleteStoredAgentOrgRunMutationVariables>(DeleteStoredAgentOrgRunDocument, options);
 }
 export type DeleteStoredAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteStoredAgentOrgRunMutation, DeleteStoredAgentOrgRunMutationVariables>;
+export const ReloadAgentPackageDefinitionsDocument = gql`
+    mutation ReloadAgentPackageDefinitions {
+  reloadAgentPackageDefinitions
+}
+    `;
+
+/**
+ * __useReloadAgentPackageDefinitionsMutation__
+ *
+ * To run a mutation, you first call `useReloadAgentPackageDefinitionsMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useReloadAgentPackageDefinitionsMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useReloadAgentPackageDefinitionsMutation();
+ */
+export function useReloadAgentPackageDefinitionsMutation(options: VueApolloComposable.UseMutationOptions<ReloadAgentPackageDefinitionsMutation, ReloadAgentPackageDefinitionsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ReloadAgentPackageDefinitionsMutation, ReloadAgentPackageDefinitionsMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ReloadAgentPackageDefinitionsMutation, ReloadAgentPackageDefinitionsMutationVariables>(ReloadAgentPackageDefinitionsDocument, options);
+}
+export type ReloadAgentPackageDefinitionsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ReloadAgentPackageDefinitionsMutation, ReloadAgentPackageDefinitionsMutationVariables>;
 export const CreateAgentTeamDefinitionDocument = gql`
     mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
   createAgentTeamDefinition(input: $input) {
@@ -6836,29 +7173,6 @@ export function useDeleteAgentTeamDefinitionMutation(options: VueApolloComposabl
   return VueApolloComposable.useMutation<DeleteAgentTeamDefinitionMutation, DeleteAgentTeamDefinitionMutationVariables>(DeleteAgentTeamDefinitionDocument, options);
 }
 export type DeleteAgentTeamDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteAgentTeamDefinitionMutation, DeleteAgentTeamDefinitionMutationVariables>;
-export const RefreshAgentTeamDefinitionCatalogDocument = gql`
-    mutation RefreshAgentTeamDefinitionCatalog {
-  refreshAgentTeamDefinitionCatalog
-}
-    `;
-
-/**
- * __useRefreshAgentTeamDefinitionCatalogMutation__
- *
- * To run a mutation, you first call `useRefreshAgentTeamDefinitionCatalogMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRefreshAgentTeamDefinitionCatalogMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRefreshAgentTeamDefinitionCatalogMutation();
- */
-export function useRefreshAgentTeamDefinitionCatalogMutation(options: VueApolloComposable.UseMutationOptions<RefreshAgentTeamDefinitionCatalogMutation, RefreshAgentTeamDefinitionCatalogMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RefreshAgentTeamDefinitionCatalogMutation, RefreshAgentTeamDefinitionCatalogMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RefreshAgentTeamDefinitionCatalogMutation, RefreshAgentTeamDefinitionCatalogMutationVariables>(RefreshAgentTeamDefinitionCatalogDocument, options);
-}
-export type RefreshAgentTeamDefinitionCatalogMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RefreshAgentTeamDefinitionCatalogMutation, RefreshAgentTeamDefinitionCatalogMutationVariables>;
 export const CreateAgentTeamRunDocument = gql`
     mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
   createAgentTeamRun(input: $input) {
@@ -7069,6 +7383,96 @@ export function useSetApplicationsEnabledMutation(options: VueApolloComposable.U
   return VueApolloComposable.useMutation<SetApplicationsEnabledMutation, SetApplicationsEnabledMutationVariables>(SetApplicationsEnabledDocument, options);
 }
 export type SetApplicationsEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetApplicationsEnabledMutation, SetApplicationsEnabledMutationVariables>;
+export const StopDelegatedExecutionDocument = gql`
+    mutation StopDelegatedExecution($input: DelegatedExecutionTargetInput!) {
+  stopDelegatedExecution(input: $input) {
+    success
+    outcome
+    message
+    notStoppedUnattributed
+  }
+}
+    `;
+
+/**
+ * __useStopDelegatedExecutionMutation__
+ *
+ * To run a mutation, you first call `useStopDelegatedExecutionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useStopDelegatedExecutionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useStopDelegatedExecutionMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useStopDelegatedExecutionMutation(options: VueApolloComposable.UseMutationOptions<StopDelegatedExecutionMutation, StopDelegatedExecutionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<StopDelegatedExecutionMutation, StopDelegatedExecutionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<StopDelegatedExecutionMutation, StopDelegatedExecutionMutationVariables>(StopDelegatedExecutionDocument, options);
+}
+export type StopDelegatedExecutionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<StopDelegatedExecutionMutation, StopDelegatedExecutionMutationVariables>;
+export const UpdateDelegatedLaunchSelectionsDocument = gql`
+    mutation UpdateDelegatedLaunchSelections($input: UpdateDelegatedLaunchSelectionsInput!) {
+  updateDelegatedLaunchSelections(input: $input) {
+    success
+    outcome
+    message
+    fieldErrors {
+      path
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useUpdateDelegatedLaunchSelectionsMutation__
+ *
+ * To run a mutation, you first call `useUpdateDelegatedLaunchSelectionsMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDelegatedLaunchSelectionsMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateDelegatedLaunchSelectionsMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateDelegatedLaunchSelectionsMutation(options: VueApolloComposable.UseMutationOptions<UpdateDelegatedLaunchSelectionsMutation, UpdateDelegatedLaunchSelectionsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateDelegatedLaunchSelectionsMutation, UpdateDelegatedLaunchSelectionsMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateDelegatedLaunchSelectionsMutation, UpdateDelegatedLaunchSelectionsMutationVariables>(UpdateDelegatedLaunchSelectionsDocument, options);
+}
+export type UpdateDelegatedLaunchSelectionsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateDelegatedLaunchSelectionsMutation, UpdateDelegatedLaunchSelectionsMutationVariables>;
+export const RetryEmbeddingModelDocument = gql`
+    mutation RetryEmbeddingModel {
+  retryEmbeddingModel
+}
+    `;
+
+/**
+ * __useRetryEmbeddingModelMutation__
+ *
+ * To run a mutation, you first call `useRetryEmbeddingModelMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRetryEmbeddingModelMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRetryEmbeddingModelMutation();
+ */
+export function useRetryEmbeddingModelMutation(options: VueApolloComposable.UseMutationOptions<RetryEmbeddingModelMutation, RetryEmbeddingModelMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RetryEmbeddingModelMutation, RetryEmbeddingModelMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RetryEmbeddingModelMutation, RetryEmbeddingModelMutationVariables>(RetryEmbeddingModelDocument, options);
+}
+export type RetryEmbeddingModelMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RetryEmbeddingModelMutation, RetryEmbeddingModelMutationVariables>;
 export const WriteFileContentDocument = gql`
     mutation WriteFileContent($workspaceId: String!, $filePath: String!, $content: String!) {
   writeFileContent(
@@ -8281,6 +8685,41 @@ export function useArchiveStoredRunMutation(options: VueApolloComposable.UseMuta
   return VueApolloComposable.useMutation<ArchiveStoredRunMutation, ArchiveStoredRunMutationVariables>(ArchiveStoredRunDocument, options);
 }
 export type ArchiveStoredRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ArchiveStoredRunMutation, ArchiveStoredRunMutationVariables>;
+export const ArchiveStoredAgentRunGroupDocument = gql`
+    mutation ArchiveStoredAgentRunGroup($workspaceRootPath: String!, $agentDefinitionId: String!) {
+  archiveStoredAgentRunGroup(
+    workspaceRootPath: $workspaceRootPath
+    agentDefinitionId: $agentDefinitionId
+  ) {
+    archivedRunIds
+    activeRunIds
+    failedRunIds
+  }
+}
+    `;
+
+/**
+ * __useArchiveStoredAgentRunGroupMutation__
+ *
+ * To run a mutation, you first call `useArchiveStoredAgentRunGroupMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useArchiveStoredAgentRunGroupMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useArchiveStoredAgentRunGroupMutation({
+ *   variables: {
+ *     workspaceRootPath: // value for 'workspaceRootPath'
+ *     agentDefinitionId: // value for 'agentDefinitionId'
+ *   },
+ * });
+ */
+export function useArchiveStoredAgentRunGroupMutation(options: VueApolloComposable.UseMutationOptions<ArchiveStoredAgentRunGroupMutation, ArchiveStoredAgentRunGroupMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ArchiveStoredAgentRunGroupMutation, ArchiveStoredAgentRunGroupMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ArchiveStoredAgentRunGroupMutation, ArchiveStoredAgentRunGroupMutationVariables>(ArchiveStoredAgentRunGroupDocument, options);
+}
+export type ArchiveStoredAgentRunGroupMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ArchiveStoredAgentRunGroupMutation, ArchiveStoredAgentRunGroupMutationVariables>;
 export const DeleteStoredTeamRunDocument = gql`
     mutation DeleteStoredTeamRun($teamRunId: String!) {
   deleteStoredTeamRun(teamRunId: $teamRunId) {
@@ -8752,6 +9191,12 @@ export const GetAgentDefinitionsDocument = gql`
       runtimeKind
       llmConfig
     }
+    loadIssue {
+      code
+      reason
+      definitionPath
+      packageRoot
+    }
   }
 }
     `;
@@ -8800,6 +9245,16 @@ export const GetAgentOrgDefinitionsDocument = gql`
       llmModelIdentifier
       runtimeKind
       llmConfig
+    }
+    loadIssues {
+      kind
+      definitionId
+      name
+      code
+      reason
+      definitionPath
+      packageRoot
+      usingLastGood
     }
   }
 }
@@ -8878,6 +9333,11 @@ export const GetAgentOrgReferencedAgentDocument = gql`
     ownershipScope
     ownerOrgId
     ownerTeamId
+    defaultLaunchConfig {
+      llmModelIdentifier
+      runtimeKind
+      llmConfig
+    }
   }
 }
     `;
@@ -8999,6 +9459,16 @@ export const GetAgentTeamDefinitionsDocument = gql`
       memberName
       ref
       refScope
+    }
+    loadIssues {
+      kind
+      definitionId
+      name
+      code
+      reason
+      definitionPath
+      packageRoot
+      usingLastGood
     }
   }
 }
@@ -9338,6 +9808,88 @@ export function useGetAgentRunCollaborationMemberProjectionLazyQuery(variables?:
   return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>(GetAgentRunCollaborationMemberProjectionDocument, variables, options);
 }
 export type GetAgentRunCollaborationMemberProjectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>;
+export const GetAgentRunCollaborationMemberFileChangesDocument = gql`
+    query GetAgentRunCollaborationMemberFileChanges($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+  agentRunCollaborationMemberFileChanges(
+    hostRunId: $hostRunId
+    memberAddress: $memberAddress
+    agentRunId: $agentRunId
+  ) {
+    id
+    runId
+    path
+    type
+    status
+    sourceTool
+    sourceInvocationId
+    content
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetAgentRunCollaborationMemberFileChangesQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentRunCollaborationMemberFileChangesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunCollaborationMemberFileChangesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentRunCollaborationMemberFileChangesQuery({
+ *   hostRunId: // value for 'hostRunId'
+ *   memberAddress: // value for 'memberAddress'
+ *   agentRunId: // value for 'agentRunId'
+ * });
+ */
+export function useGetAgentRunCollaborationMemberFileChangesQuery(variables: GetAgentRunCollaborationMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberFileChangesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>(GetAgentRunCollaborationMemberFileChangesDocument, variables, options);
+}
+export function useGetAgentRunCollaborationMemberFileChangesLazyQuery(variables?: GetAgentRunCollaborationMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberFileChangesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>(GetAgentRunCollaborationMemberFileChangesDocument, variables, options);
+}
+export type GetAgentRunCollaborationMemberFileChangesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>;
+export const GetDefinitionProblemsDocument = gql`
+    query GetDefinitionProblems($kind: DefinitionKind!) {
+  definitionProblems(kind: $kind) {
+    kind
+    definitionId
+    code
+    reason
+    definitionPath
+    packageRoot
+    usingLastGood
+    dependencyChain
+  }
+}
+    `;
+
+/**
+ * __useGetDefinitionProblemsQuery__
+ *
+ * To run a query within a Vue component, call `useGetDefinitionProblemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDefinitionProblemsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetDefinitionProblemsQuery({
+ *   kind: // value for 'kind'
+ * });
+ */
+export function useGetDefinitionProblemsQuery(variables: GetDefinitionProblemsQueryVariables | VueCompositionApi.Ref<GetDefinitionProblemsQueryVariables> | ReactiveFunction<GetDefinitionProblemsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetDefinitionProblemsQuery, GetDefinitionProblemsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetDefinitionProblemsQuery, GetDefinitionProblemsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetDefinitionProblemsQuery, GetDefinitionProblemsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetDefinitionProblemsQuery, GetDefinitionProblemsQueryVariables>(GetDefinitionProblemsDocument, variables, options);
+}
+export function useGetDefinitionProblemsLazyQuery(variables?: GetDefinitionProblemsQueryVariables | VueCompositionApi.Ref<GetDefinitionProblemsQueryVariables> | ReactiveFunction<GetDefinitionProblemsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetDefinitionProblemsQuery, GetDefinitionProblemsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetDefinitionProblemsQuery, GetDefinitionProblemsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetDefinitionProblemsQuery, GetDefinitionProblemsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetDefinitionProblemsQuery, GetDefinitionProblemsQueryVariables>(GetDefinitionProblemsDocument, variables, options);
+}
+export type GetDefinitionProblemsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetDefinitionProblemsQuery, GetDefinitionProblemsQueryVariables>;
 export const GetFileContentDocument = gql`
     query GetFileContent($workspaceId: String!, $filePath: String!) {
   fileContent(workspaceId: $workspaceId, filePath: $filePath)
@@ -10578,6 +11130,44 @@ export function useGetProjectTasksLazyQuery(variables?: GetProjectTasksQueryVari
   return VueApolloComposable.useLazyQuery<GetProjectTasksQuery, GetProjectTasksQueryVariables>(GetProjectTasksDocument, variables, options);
 }
 export type GetProjectTasksQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProjectTasksQuery, GetProjectTasksQueryVariables>;
+export const GetTaskWorkerTasksDocument = gql`
+    query GetTaskWorkerTasks($agentRunIds: [String!]!, $teamRunIds: [String!]!) {
+  taskWorkerTasks(agentRunIds: $agentRunIds, teamRunIds: $teamRunIds) {
+    workerKind
+    workerRunId
+    task {
+      taskId
+      projectId
+      description
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTaskWorkerTasksQuery__
+ *
+ * To run a query within a Vue component, call `useGetTaskWorkerTasksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTaskWorkerTasksQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTaskWorkerTasksQuery({
+ *   agentRunIds: // value for 'agentRunIds'
+ *   teamRunIds: // value for 'teamRunIds'
+ * });
+ */
+export function useGetTaskWorkerTasksQuery(variables: GetTaskWorkerTasksQueryVariables | VueCompositionApi.Ref<GetTaskWorkerTasksQueryVariables> | ReactiveFunction<GetTaskWorkerTasksQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>(GetTaskWorkerTasksDocument, variables, options);
+}
+export function useGetTaskWorkerTasksLazyQuery(variables?: GetTaskWorkerTasksQueryVariables | VueCompositionApi.Ref<GetTaskWorkerTasksQueryVariables> | ReactiveFunction<GetTaskWorkerTasksQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>(GetTaskWorkerTasksDocument, variables, options);
+}
+export type GetTaskWorkerTasksQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTaskWorkerTasksQuery, GetTaskWorkerTasksQueryVariables>;
 export const GetTasksWithoutProjectDocument = gql`
     query GetTasksWithoutProject {
   tasksWithoutProject {
@@ -10613,6 +11203,47 @@ export function useGetTasksWithoutProjectLazyQuery(options: VueApolloComposable.
   return VueApolloComposable.useLazyQuery<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>(GetTasksWithoutProjectDocument, {}, options);
 }
 export type GetTasksWithoutProjectQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>;
+export const SearchProjectTasksDocument = gql`
+    query SearchProjectTasks($projectId: String!, $query: String!) {
+  searchProjectTasks(projectId: $projectId, query: $query) {
+    matches {
+      taskId
+      match
+    }
+    meaningSearch {
+      state
+      phase
+      done
+      total
+      reason
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchProjectTasksQuery__
+ *
+ * To run a query within a Vue component, call `useSearchProjectTasksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchProjectTasksQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useSearchProjectTasksQuery({
+ *   projectId: // value for 'projectId'
+ *   query: // value for 'query'
+ * });
+ */
+export function useSearchProjectTasksQuery(variables: SearchProjectTasksQueryVariables | VueCompositionApi.Ref<SearchProjectTasksQueryVariables> | ReactiveFunction<SearchProjectTasksQueryVariables>, options: VueApolloComposable.UseQueryOptions<SearchProjectTasksQuery, SearchProjectTasksQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<SearchProjectTasksQuery, SearchProjectTasksQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<SearchProjectTasksQuery, SearchProjectTasksQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<SearchProjectTasksQuery, SearchProjectTasksQueryVariables>(SearchProjectTasksDocument, variables, options);
+}
+export function useSearchProjectTasksLazyQuery(variables?: SearchProjectTasksQueryVariables | VueCompositionApi.Ref<SearchProjectTasksQueryVariables> | ReactiveFunction<SearchProjectTasksQueryVariables>, options: VueApolloComposable.UseQueryOptions<SearchProjectTasksQuery, SearchProjectTasksQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<SearchProjectTasksQuery, SearchProjectTasksQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<SearchProjectTasksQuery, SearchProjectTasksQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<SearchProjectTasksQuery, SearchProjectTasksQueryVariables>(SearchProjectTasksDocument, variables, options);
+}
+export type SearchProjectTasksQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<SearchProjectTasksQuery, SearchProjectTasksQueryVariables>;
 export const ListWorkspaceRunHistoryDocument = gql`
     query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {
   listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {
@@ -10832,6 +11463,91 @@ export function useGetRunFileChangesLazyQuery(variables?: GetRunFileChangesQuery
   return VueApolloComposable.useLazyQuery<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>(GetRunFileChangesDocument, variables, options);
 }
 export type GetRunFileChangesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>;
+export const GetTeamMemberFileChangesDocument = gql`
+    query GetTeamMemberFileChanges($teamRunId: String!, $agentRunId: String!) {
+  getTeamMemberFileChanges(teamRunId: $teamRunId, agentRunId: $agentRunId) {
+    id
+    runId
+    path
+    type
+    status
+    sourceTool
+    sourceInvocationId
+    content
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetTeamMemberFileChangesQuery__
+ *
+ * To run a query within a Vue component, call `useGetTeamMemberFileChangesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTeamMemberFileChangesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTeamMemberFileChangesQuery({
+ *   teamRunId: // value for 'teamRunId'
+ *   agentRunId: // value for 'agentRunId'
+ * });
+ */
+export function useGetTeamMemberFileChangesQuery(variables: GetTeamMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetTeamMemberFileChangesQueryVariables> | ReactiveFunction<GetTeamMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberFileChangesQuery, GetTeamMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberFileChangesQuery, GetTeamMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberFileChangesQuery, GetTeamMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTeamMemberFileChangesQuery, GetTeamMemberFileChangesQueryVariables>(GetTeamMemberFileChangesDocument, variables, options);
+}
+export function useGetTeamMemberFileChangesLazyQuery(variables?: GetTeamMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetTeamMemberFileChangesQueryVariables> | ReactiveFunction<GetTeamMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberFileChangesQuery, GetTeamMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberFileChangesQuery, GetTeamMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberFileChangesQuery, GetTeamMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTeamMemberFileChangesQuery, GetTeamMemberFileChangesQueryVariables>(GetTeamMemberFileChangesDocument, variables, options);
+}
+export type GetTeamMemberFileChangesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberFileChangesQuery, GetTeamMemberFileChangesQueryVariables>;
+export const GetAgentOrgMemberFileChangesDocument = gql`
+    query GetAgentOrgMemberFileChanges($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+  getAgentOrgMemberFileChanges(
+    orgRunId: $orgRunId
+    memberAddress: $memberAddress
+    agentRunId: $agentRunId
+  ) {
+    id
+    runId
+    path
+    type
+    status
+    sourceTool
+    sourceInvocationId
+    content
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetAgentOrgMemberFileChangesQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgMemberFileChangesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgMemberFileChangesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgMemberFileChangesQuery({
+ *   orgRunId: // value for 'orgRunId'
+ *   memberAddress: // value for 'memberAddress'
+ *   agentRunId: // value for 'agentRunId'
+ * });
+ */
+export function useGetAgentOrgMemberFileChangesQuery(variables: GetAgentOrgMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberFileChangesQueryVariables> | ReactiveFunction<GetAgentOrgMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberFileChangesQuery, GetAgentOrgMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberFileChangesQuery, GetAgentOrgMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberFileChangesQuery, GetAgentOrgMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgMemberFileChangesQuery, GetAgentOrgMemberFileChangesQueryVariables>(GetAgentOrgMemberFileChangesDocument, variables, options);
+}
+export function useGetAgentOrgMemberFileChangesLazyQuery(variables?: GetAgentOrgMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberFileChangesQueryVariables> | ReactiveFunction<GetAgentOrgMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberFileChangesQuery, GetAgentOrgMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberFileChangesQuery, GetAgentOrgMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberFileChangesQuery, GetAgentOrgMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgMemberFileChangesQuery, GetAgentOrgMemberFileChangesQueryVariables>(GetAgentOrgMemberFileChangesDocument, variables, options);
+}
+export type GetAgentOrgMemberFileChangesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgMemberFileChangesQuery, GetAgentOrgMemberFileChangesQueryVariables>;
 export const GetRunEventMonitorActiveTracePageDocument = gql`
     query GetRunEventMonitorActiveTracePage($runId: String!, $beforeCursor: String) {
   getRunEventMonitorActiveTracePage(runId: $runId, beforeCursor: $beforeCursor) {
@@ -11445,6 +12161,59 @@ export function useAgentOrgRunModelOptionsLazyQuery(variables?: AgentOrgRunModel
   return VueApolloComposable.useLazyQuery<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>(AgentOrgRunModelOptionsDocument, variables, options);
 }
 export type AgentOrgRunModelOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>;
+export const DelegatedLaunchModelOptionsDocument = gql`
+    query DelegatedLaunchModelOptions($rootKind: String!, $rootRunId: String!) {
+  delegatedLaunchModelOptions(rootKind: $rootKind, rootRunId: $rootRunId) {
+    scope
+    agentRunId
+    teamRunId
+    currentModelIdentifier
+    unavailableReason
+    currentModel {
+      llmModelIdentifier
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
+    }
+    replacements {
+      llmModelIdentifier
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
+    }
+  }
+}
+    `;
+
+/**
+ * __useDelegatedLaunchModelOptionsQuery__
+ *
+ * To run a query within a Vue component, call `useDelegatedLaunchModelOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDelegatedLaunchModelOptionsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useDelegatedLaunchModelOptionsQuery({
+ *   rootKind: // value for 'rootKind'
+ *   rootRunId: // value for 'rootRunId'
+ * });
+ */
+export function useDelegatedLaunchModelOptionsQuery(variables: DelegatedLaunchModelOptionsQueryVariables | VueCompositionApi.Ref<DelegatedLaunchModelOptionsQueryVariables> | ReactiveFunction<DelegatedLaunchModelOptionsQueryVariables>, options: VueApolloComposable.UseQueryOptions<DelegatedLaunchModelOptionsQuery, DelegatedLaunchModelOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<DelegatedLaunchModelOptionsQuery, DelegatedLaunchModelOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<DelegatedLaunchModelOptionsQuery, DelegatedLaunchModelOptionsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<DelegatedLaunchModelOptionsQuery, DelegatedLaunchModelOptionsQueryVariables>(DelegatedLaunchModelOptionsDocument, variables, options);
+}
+export function useDelegatedLaunchModelOptionsLazyQuery(variables?: DelegatedLaunchModelOptionsQueryVariables | VueCompositionApi.Ref<DelegatedLaunchModelOptionsQueryVariables> | ReactiveFunction<DelegatedLaunchModelOptionsQueryVariables>, options: VueApolloComposable.UseQueryOptions<DelegatedLaunchModelOptionsQuery, DelegatedLaunchModelOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<DelegatedLaunchModelOptionsQuery, DelegatedLaunchModelOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<DelegatedLaunchModelOptionsQuery, DelegatedLaunchModelOptionsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<DelegatedLaunchModelOptionsQuery, DelegatedLaunchModelOptionsQueryVariables>(DelegatedLaunchModelOptionsDocument, variables, options);
+}
+export type DelegatedLaunchModelOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<DelegatedLaunchModelOptionsQuery, DelegatedLaunchModelOptionsQueryVariables>;
 export const RuntimeCurrentModelDescriptorsDocument = gql`
     query RuntimeCurrentModelDescriptors($runtimeKind: String!, $identifiers: [String!]!) {
   runtimeCurrentModelDescriptors(

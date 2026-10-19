@@ -1,0 +1,67 @@
+{
+  "reason": "Linux preparation advanced during user interruption; initial cleanup purpose text prematurely said no running VM. Corrected receipt controls.",
+  "guest": {
+    "name": "ab-nfs-api007-linux-b72ac1ef",
+    "image": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+    "env": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/home",
+      "TART_HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/tart-state",
+      "TART_NO_AUTO_PRUNE": "1"
+    },
+    "tart": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+    "pid": 94894,
+    "runArgv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "run",
+      "ab-nfs-api007-linux-b72ac1ef",
+      "--no-graphics",
+      "--no-audio",
+      "--no-clipboard",
+      "--no-usb-accessories"
+    ],
+    "preflight": "Linux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\nuid=1000(admin) gid=109(admin) groups=109(admin)\n",
+    "binary": {
+      "path": "/home/admin/api007-nfs",
+      "sha256": "3944a3f0696f006ac658475ea335fcc5dd8c9bfc1195c2301ab92608de446b38"
+    },
+    "ready": true
+  },
+  "commands": [
+    {
+      "argv": [
+        "ps",
+        "-p",
+        "94894",
+        "-o",
+        "command="
+      ],
+      "rc": 0,
+      "stdout": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart run ab-nfs-api007-linux-b72ac1ef --no-graphics --no-audio --no-clipboard --no-usb-accessories\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api007-linux-b72ac1ef"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "ps",
+        "-p",
+        "94894",
+        "-o",
+        "command="
+      ],
+      "rc": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "result": "No running API007 guest; Linux disk/cache/current image retained for single-VM resume"
+}

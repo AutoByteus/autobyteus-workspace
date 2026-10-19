@@ -1,0 +1,44 @@
+{
+  "descriptionIdentical": true,
+  "schemaIdentical": true,
+  "description": "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference absolute node-local folder paths: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "project_id": {
+        "description": "Known Project identity for patch; omit to create. Never resolved by name.",
+        "type": "string"
+      },
+      "name": {
+        "description": "Trimmed non-empty Project name; required for create, optional for patch.",
+        "type": "string"
+      },
+      "description": {
+        "description": "Project description; omit to preserve on patch, blank to clear.",
+        "type": "string"
+      },
+      "workspaces": {
+        "description": "Complete desired workspace links, not append. Omit to preserve on patch; [] unlinks all without deleting folders. Use absolute folder paths on this node; registration and existence are not required.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "workspace_path": {
+              "description": "Absolute folder path on this node; no shell expansion or registration required.",
+              "type": "string"
+            },
+            "description": {
+              "description": "Link description; omit to preserve a retained link, blank to clear. New links default to blank.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "workspace_path"
+          ]
+        }
+      }
+    },
+    "required": [],
+    "additionalProperties": false
+  }
+}

@@ -21,6 +21,14 @@ import {
 } from "../domain/collaboration-agent-platform-binding.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 
+/** `reason` is the inspector's plain-words reason, e.g. "line 120 of raw_traces_active.jsonl is damaged". */
+const unreadableConversationState = (reason: Error): CollaborationAgentActivationError =>
+  new CollaborationAgentActivationError(
+    "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE",
+    `The local conversation state cannot be inspected safely: ${reason.message}.`,
+    { cause: reason },
+  );
+
 export class ConfiguredAgentActivationPlanner {
   constructor(private readonly input: {
     identity: CollaborationMemberExecutionIdentity;
@@ -81,11 +89,7 @@ export class ConfiguredAgentActivationPlanner {
           : Object.freeze({ kind: "new" });
       }
       if (activity.kind === "indeterminate") {
-        throw new CollaborationAgentActivationError(
-          "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE",
-          "The local conversation state cannot be inspected safely.",
-          { cause: activity.error },
-        );
+        throw unreadableConversationState(activity.error);
       }
       const platformAgentRunId = currentPlatformAgentRunId?.trim() || null;
       if (platformAgentRunId) return Object.freeze({ kind: "restore_external", platformAgentRunId });
@@ -97,11 +101,7 @@ export class ConfiguredAgentActivationPlanner {
     const activity = this.inspectConversationActivity(config);
     if (activity.kind === "present") return Object.freeze({ kind: "restore_native" });
     if (activity.kind === "none") return Object.freeze({ kind: "new" });
-    throw new CollaborationAgentActivationError(
-      "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE",
-      "The local conversation state cannot be inspected safely.",
-      { cause: activity.error },
-    );
+    throw unreadableConversationState(activity.error);
   }
 
   private beginCandidate(plan: ActivationPlan, config: AgentRunConfig): AgentRunActivationOperation {
@@ -125,17 +125,13 @@ export class ConfiguredAgentActivationPlanner {
       );
     }
     if (activity.kind === "indeterminate") {
-      throw new CollaborationAgentActivationError(
-        "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE",
-        "The local conversation state cannot be inspected safely.",
-        { cause: activity.error },
-      );
+      throw unreadableConversationState(activity.error);
     }
   }
 
   private inspectConversationActivity(config: AgentRunConfig) {
     if (!config.memoryDir) {
-      return { kind: "indeterminate" as const, error: new Error("AgentRun memory location is unavailable.") };
+      return { kind: "indeterminate" as const, error: new Error("its memory folder is unknown") };
     }
     return (this.input.activityInspector ?? getAgentConversationActivityInspector()).inspect({
       agentRunId: this.input.identity.agentRunId,

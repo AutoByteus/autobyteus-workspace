@@ -1,0 +1,378 @@
+# delivery integrated-state rerun on 0fac00e191 (merge of origin/personal fee828e9cf); worktree paths shown as <worktree>
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m<worktree>/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:<worktree>/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:2533) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mPlatform detection: Windows=false
+App root directory: <worktree>/autobyteus-server-ts
+App data directory: <worktree>/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: <worktree>/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: <worktree>/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mAgent Definition created successfully with ID: osf-manager-d4bf76
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mAgent Definition created successfully with ID: osf-mate-d4bf76
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mAgent Definition created successfully with ID: osf-sibling-d4bf76
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mAgent Definition created successfully with ID: osf-lead-d4bf76
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mAgent Definition created successfully with ID: osf-peer-d4bf76
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mAgent Definition created successfully with ID: osf-helper-d4bf76
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mAgent Team Definition created successfully with ID: osf-team-d4bf76
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)
+[22m[39mAgent Team Definition created successfully with ID: osf-squad-d4bf76
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mCreated and registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mAgent team websocket attached for team run osf_team_d4bf76_d52b4251f979423c9fc3d0dbeecf721d
+Created agent session fe82714a-2fb7-4c18-8c5e-fd6a8b394d67 for run osf_team_d4bf76_d52b4251f979423c9fc3d0dbeecf721d
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mAgent Team WebSocket connected: session=fe82714a-2fb7-4c18-8c5e-fd6a8b394d67, run=osf_team_d4bf76_d52b4251f979423c9fc3d0dbeecf721d
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mAgent team websocket attached for team run osf_team_d4bf76_074b7c8fd6b048298d1d6649132dee37
+Created agent session c37f907c-efd6-4c43-ae2b-d1602a1e3013 for run osf_team_d4bf76_074b7c8fd6b048298d1d6649132dee37
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mAgent Team WebSocket connected: session=c37f907c-efd6-4c43-ae2b-d1602a1e3013, run=osf_team_d4bf76_074b7c8fd6b048298d1d6649132dee37
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mAGY compaction detection off for run osf_manager_d4bf76_802f847ac9074fbf86aa82085c649289: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mAGY compaction detection off for run osf_helper_d4bf76_d0b0129ef00345f9be987c63c4bd4c54: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mAGY compaction detection off for run osf_mate_d4bf76_f35f8b693a7742dd90fa26a0915e8479: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mClosed agent session fe82714a-2fb7-4c18-8c5e-fd6a8b394d67
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mTeam root: configured member, team task agent and a pending file, read through the team run; running, then stopped
+[22m[39mClosed agent session c37f907c-efd6-4c43-ae2b-d1602a1e3013
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mAGY compaction detection off for run osf_manager_d4bf76_45ee8d45946842179c37f9db24f2d95e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mAGY compaction detection off for run osf_lead_d4bf76_e1ed80b14bb04440ad27d018502a6138: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mAGY compaction detection off for run osf_helper_d4bf76_fd0c64be2cae46b6adca013f6a769498: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mAGY compaction detection off for run osf_helper_d4bf76_9629e11183534b338cb10172ddf420b7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-file-changes-e2e-Kwk0aT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mReusing registered workspace ID: agent_ws_246f797fc1e3360d59c44dac803eabe912a591afd90c75fc16c359c751742e18
+
+[90mstdout[2m | tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts[2m > [22m[2mTeam and org member file changes are read through their owner (real HTTP/GraphQL, real Team and Org runs)[2m > [22m[2mOrg root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped
+[22m[39mAGY compaction detection off for run osf_sibling_d4bf76_64fc4c86865e4fa098b999388e43d4f8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+ [32m✓[39m tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 3822[2mms[22m[39m
+     [33m[2m✓[22m[39m Team root: configured member, team task agent and a pending file, read through the team run; running, then stopped [33m 1369[2mms[22m[39m
+     [33m[2m✓[22m[39m Org root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped [33m 2053[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m   Start at [22m 11:26:48
+[2m   Duration [22m 12.10s[2m (transform 5.60s, setup 26ms, import 7.78s, tests 3.82s, environment 0ms)[22m
+
+exit=0

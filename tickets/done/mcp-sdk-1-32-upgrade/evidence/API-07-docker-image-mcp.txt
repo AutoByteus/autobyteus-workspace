@@ -1,0 +1,196 @@
+# Case: API-07 Docker image built from this worktree on SDK 1.32.1; test-owned container; MCP through the product
+# Commands:
+#   docker buildx build --builder multi-platform-builder --load --platform linux/arm64 --build-arg CLI_INSTALL_CACHE_BUSTER=20261019 -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-server:mcp-sdk-1-32-validation .   (same Dockerfile and args as docker/build.sh)
+#   docker run -d --name mcp181-sdk-validation -p 127.0.0.1:54597:8000 -e AUTOBYTEUS_MCP_GATEWAY_TOKEN=test-dummy-gateway -v <worktree>/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs:/app/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs:ro autobyteus-server:mcp-sdk-1-32-validation
+#   probe: BACKEND_URL=http://127.0.0.1:<port> MCP_HOST=host.docker.internal STDIO_COMMAND=node STDIO_ARGS=[fixture] STDIO_CWD=/tmp GATEWAY_TOKEN=test-dummy-gateway node mcp-packaged-probe.mjs (temporary probe, source below)
+#   cleanup: docker rm -f -v mcp181-sdk-validation; docker rmi autobyteus-server:mcp-sdk-1-32-validation
+# Commit: c7f0c18fdc (build context = worktree; dist and node_modules excluded by .dockerignore)
+# Environment: macOS 26, Docker 29.0.1, buildx multi-platform-builder, linux/arm64; container without user volumes, loopback-only port
+# Date: 2026-10-19
+
+== Build log excerpt (full log: 1100+ lines, not committed) ==
+15:#2 DONE 3.2s
+29:#4 DONE 1.6s
+47:#8 DONE 1.2s
+65:#10 DONE 1.0s
+69:#12 DONE 2.9s
+262:#11 DONE 73.1s
+314:#25 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+342:#25 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+355:#25 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+374:#25 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+388:#25 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+398:#25 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+437:#25 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+487:#25 75.31 .../node_modules/@prisma/client postinstall: `prisma generate --schema=./path/to/your/schema.prisma` to generate Prisma Client.
+493:#25 76.46  WARN  Issues with peer dependencies found
+497:#25 76.46     ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+499:#25 76.46       └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+508:#25 76.52 Done in 1m 14.6s using pnpm v10.28.2
+509:#25 DONE 77.0s
+556:#34 DONE 2.3s
+567:#35 DONE 2.5s
+577:#36 DONE 2.6s
+584:#37 [builder 26/28] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+593:#37 DONE 7.0s
+598:#38 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+601:#38 0.636 > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+617:#38 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+649:#38 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+653:#38 DONE 32.7s
+687:#10 DONE 216.9s
+692:#10 DONE 217.1s
+701:#10 DONE 220.6s
+715:#10 DONE 220.7s
+728:#10 DONE 220.8s
+819:#42 DONE 12.6s
+1088:#39 DONE 47.2s
+1123:#43 DONE 49.8s
+1129:#45 DONE 8.4s
+1222:#72 DONE 164.2s
+1223:exit 0
+
+== SDK resolution inside the image ==
+autobyteus-ts sdk 1.32.1
+autobyteus-server-ts sdk 1.32.1
+node_modules/.pnpm: @modelcontextprotocol+sdk@1.32.1_zod@4.3.6 (only copy)
+node_modules/.pnpm: @anthropic-ai+claude-agent-sdk@0.3.280_..._ba12f93b41fd79b682e6258669c811d4 (the 1.32.1-peer variant, same hash as the host lock resolution)
+node_modules/.pnpm: @google+genai@2.24.0_@modelcontextprotocol+sdk@1.32.1_zod@4.3.6_
+node v22.23.3; /rest/health 200 after 4 polls
+
+== Probe result (value-free) ==
+{
+  "backend": "http://127.0.0.1:54597",
+  "health": 200,
+  "probe_tok": {
+    "saveErrors": null,
+    "discover": {
+      "success": true,
+      "message": "Successfully discovered and registered 1 tools.",
+      "discoveredTools": [
+        {
+          "name": "probe_tok_auth_probe"
+        }
+      ]
+    }
+  },
+  "probe_stdio": {
+    "saveErrors": null,
+    "discover": {
+      "success": true,
+      "message": "Successfully discovered and registered 1 tools.",
+      "discoveredTools": [
+        {
+          "name": "probe_stdio_report_env_and_cwd"
+        }
+      ]
+    }
+  },
+  "crossOriginPreviewError": "Failed to preview tools for MCP server: Error: Streamable HTTP error: Error POSTing to endpoint: Redirect to http://host.docker.internal:54635/mcp not followed (redirectPolicy: 'same-origin')",
+  "crossOriginTargetRequests": 0,
+  "gatewayTools": [
+    "probe_stdio_report_env_and_cwd",
+    "probe_tok_auth_probe"
+  ],
+  "httpToolResult": "MARKER-TOK-9902",
+  "stdioToolResult": {
+    "envDelivered": true,
+    "cwd": "/tmp"
+  },
+  "tokServerAuth": [
+    "expected"
+  ],
+  "tokServerToolCalls": [
+    "expected"
+  ]
+}
+
+== Container log scan ==
+docker logs: 48227 bytes, test-dummy occurrences: 0
+data-dir logs: 7514 bytes, test-dummy occurrences: 0
+files under /home/autobyteus/data containing test-dummy: /home/autobyteus/data/mcps.json only (the saved token; plain-text storage accepted as R-001 / FU-2)
+
+== Cleanup ==
+container mcp181-sdk-validation removed with its anonymous volumes; image autobyteus-server:mcp-sdk-1-32-validation deleted (sha256:91b5e5a2468a…)
+
+== Probe source (temporary, not committed elsewhere) ==
+// Temporary API/E2E probe (ticket mcp-sdk-1-32-upgrade, API-07/API-08): drives a packaged AutoByteus server
+// (Docker container or isolated desktop instance) through GraphQL and /mcp/gateway.
+// Env: BACKEND_URL, MCP_HOST (host name the backend uses to reach this machine's 127.0.0.1 servers),
+// SDK_DIR (absolute path of @modelcontextprotocol/sdk dist/esm), STDIO_COMMAND, STDIO_ARGS (JSON array),
+// STDIO_CWD, GATEWAY_TOKEN (optional, dummy). Prints one value-free JSON result. Dummy values only.
+import http from 'node:http';
+
+const { BACKEND_URL, MCP_HOST, SDK_DIR, STDIO_COMMAND, STDIO_ARGS, STDIO_CWD, GATEWAY_TOKEN } = process.env;
+const { McpServer } = await import(`${SDK_DIR}/server/mcp.js`);
+const { StreamableHTTPServerTransport } = await import(`${SDK_DIR}/server/streamableHttp.js`);
+const { Client } = await import(`${SDK_DIR}/client/index.js`);
+const { StreamableHTTPClientTransport } = await import(`${SDK_DIR}/client/streamableHttp.js`);
+const DUMMY = 'test-dummy';
+
+const startServer = async ({ marker, redirectTo }) => {
+  const observations = [];
+  const srv = http.createServer(async (req, res) => {
+    let raw = ''; for await (const chunk of req) raw += chunk;
+    const body = raw ? JSON.parse(raw) : undefined;
+    const auth = req.headers.authorization === undefined ? 'none' : req.headers.authorization === `Bearer ${DUMMY}` ? 'expected' : 'other';
+    observations.push({ method: req.method, rpc: body?.method ?? null, auth });
+    if (redirectTo) { res.writeHead(307, { location: redirectTo() }).end(); return; }
+    if (auth !== 'expected') { res.writeHead(401).end('unauthorized'); return; }
+    const mcp = new McpServer({ name: 'packaged-probe', version: '1' });
+    mcp.tool('auth_probe', 'Returns the marker.', async () => ({ content: [{ type: 'text', text: marker }] }));
+    const t = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+    res.on('close', () => { void t.close(); void mcp.close(); });
+    await mcp.connect(t); await t.handleRequest(req, res, body);
+  });
+  await new Promise((r) => srv.listen(0, '127.0.0.1', r));
+  return { port: srv.address().port, observations, close: () => { srv.closeAllConnections(); srv.close(); } };
+};
+
+const graphql = async (query, variables) => {
+  const res = await fetch(`${BACKEND_URL}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) });
+  return res.json();
+};
+const CONFIGURE = 'mutation($input: McpServerInput!) { configureMcpServer(input: $input) { savedConfig { __typename } } }';
+const DISCOVER = 'mutation($id: String!) { discoverAndRegisterMcpServerTools(serverId: $id) { success message discoveredTools { name } } }';
+const PREVIEW = 'query($input: McpServerInput!) { previewMcpServerTools(input: $input) { name } }';
+
+const other = await startServer({ marker: 'MARKER-OTHER-9901' });
+const tok = await startServer({ marker: 'MARKER-TOK-9902' });
+const cross = await startServer({ marker: 'unused', redirectTo: () => `http://${MCP_HOST}:${other.port}/mcp` });
+const result = { backend: BACKEND_URL };
+try {
+  const health = await fetch(`${BACKEND_URL}/rest/health`); result.health = health.status;
+  const http1 = { serverId: 'probe_tok', transportType: 'STREAMABLE_HTTP', enabled: true, toolNamePrefix: 'probe_tok',
+    streamableHttpConfig: { url: `http://${MCP_HOST}:${tok.port}/mcp`, token: DUMMY, headers: null } };
+  const stdio = { serverId: 'probe_stdio', transportType: 'STDIO', enabled: true, toolNamePrefix: 'probe_stdio',
+    stdioConfig: { command: STDIO_COMMAND, args: JSON.parse(STDIO_ARGS), env: { PROBE_ENV: 'test-dummy-env' }, cwd: STDIO_CWD } };
+  for (const input of [http1, stdio]) {
+    const saved = await graphql(CONFIGURE, { input });
+    const discovered = await graphql(DISCOVER, { id: input.serverId });
+    result[input.serverId] = { saveErrors: saved.errors?.map((e) => e.message) ?? null, discover: discovered.data?.discoverAndRegisterMcpServerTools ?? discovered.errors };
+  }
+  const crossPreview = await graphql(PREVIEW, { input: { serverId: 'probe_cross', transportType: 'STREAMABLE_HTTP', enabled: true,
+    streamableHttpConfig: { url: `http://${MCP_HOST}:${cross.port}/mcp`, token: DUMMY, headers: null } } });
+  result.crossOriginPreviewError = crossPreview.errors?.[0]?.message ?? null;
+  result.crossOriginTargetRequests = other.observations.length;
+
+  const client = new Client({ name: 'packaged-probe-gateway', version: '1' });
+  await client.connect(new StreamableHTTPClientTransport(new URL(`${BACKEND_URL}/mcp/gateway`),
+    GATEWAY_TOKEN ? { requestInit: { headers: { Authorization: `Bearer ${GATEWAY_TOKEN}` } } } : undefined));
+  const names = (await client.listTools()).tools.map((t) => t.name);
+  result.gatewayTools = names.filter((n) => n.startsWith('probe_'));
+  const tokCall = await client.callTool({ name: 'probe_tok_auth_probe', arguments: {} });
+  const stdioCall = await client.callTool({ name: 'probe_stdio_report_env_and_cwd', arguments: { name: 'PROBE_ENV' } });
+  await client.close();
+  result.httpToolResult = tokCall.content?.map((c) => c.text).join('');
+  const stdioText = JSON.parse(stdioCall.content?.map((c) => c.text).join('') ?? '{}');
+  result.stdioToolResult = { envDelivered: stdioText.value === 'test-dummy-env', cwd: stdioText.cwd };
+  result.tokServerAuth = [...new Set(tok.observations.map((o) => o.auth))];
+  result.tokServerToolCalls = tok.observations.filter((o) => o.rpc === 'tools/call').map((o) => o.auth);
+} catch (error) {
+  result.error = String(error);
+} finally {
+  other.close(); tok.close(); cross.close();
+}
+console.log(JSON.stringify(result, null, 2));

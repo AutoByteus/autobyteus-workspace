@@ -53,7 +53,7 @@ runtime prompt:
 
 Keep the body specific to the agent's responsibilities and boundaries. Do not
 copy the platform-owned native Working Environment, Bash Operating Practice,
-File And Directory Practice, AgentTeam Addressing/Collaboration guidance,
+File And Directory Practice, collaboration guidance (`Working With Other Agents`),
 configured skill bodies, or tool schemas into `agent.md`. Authored Markdown
 headings are deterministically nested below `Responsibilities and Boundaries`
 during composition.
@@ -96,8 +96,12 @@ Agent definitions now persist `defaultLaunchConfig` alongside the rest of the de
 These defaults are consumed by:
 
 - the native agent create/edit/detail surfaces,
-- direct agent launch preparation, and
+- direct agent launch preparation,
+- delegated catalog copies that an agent starts with `delegate_task`. The agent, or each Team member, runs on its own usable default first, then its Team's default, then the run root's settings. See [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies),
+- the web Team and Org launch forms, which seed each member row from its usable default (see [Agent Team Definition](./agent_team_definition.md#default-launch-preferences)), and
 - application-authored backend orchestration flows that choose to reuse persisted defaults when calling `context.agentExecution.startAgent(...)`.
+
+A default is used only as a whole (runtime, model and model settings together) and only when it is usable: it names both a runtime and a model, the runtime is available, and the model and its settings are valid for it. An unusable default is skipped with a visible note. Delegation to a configured placement uses that placement's own launch configuration, not the definition default.
 
 The generic Applications host no longer launches embedded agents directly at page-load time.
 
@@ -129,7 +133,7 @@ previous release displayed.
 
 The shipped prompt allows straightforward work directly and specialist
 collaboration when useful. `list_available_agents` is selected by this definition,
-but runtime availability and eligible collaborators still follow the existing
+but runtime availability and eligible catalog definitions still follow the existing
 context/eligibility rules. Discovery is not an installed-public-package inventory
 and does not grant the specialist's skills to the caller. Direct work uses relevant
 available skills or reasoning/tools; no guaranteed delegation or routing order is
@@ -140,7 +144,7 @@ The built-in-agent bootstrapper owns this lifecycle:
 - every built-in has its `agent.md` and `agent-config.json` rewritten from the template on every startup, and its `skills/` folder mirrored from the template (removed when the template has none); app-data edits to those ids, including edits to the Daily Assistant's prompt, tools, model defaults, skill scope or agent-local skills, do not survive restart;
 - standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
 - `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and
-- the agent-definition cache is refreshed after built-in definitions resolve.
+- built-in files are written for every built-in first, then one full reload of the agent package definitions (`reloadAgentPackageDefinitions()`) runs, and only then is each built-in resolved through `getAgentDefinitionById` and its setting default initialized.
 
 Internal infrastructure-agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting.
 
@@ -164,9 +168,10 @@ Manager (`autobyteus-project-task-manager`) was retired this way by migration
 ## Notes
 
 - Canonical ids encode ownership provenance so callers can resolve application-owned and team-local agents deterministically.
-- Team-local agent ids use the subject-specific nested-safe shape `team-local-agent:<encoded-owner-team-id>:<encoded-local-agent-id>`. The owner team id can itself be a canonical team-local team id, so local agents owned by local subteams resolve under the local subteam's `agents/` folder rather than the root parent team's `agents/` folder.
-- `AgentDefinitionService` and the file provider remain the authoritative read/write boundary; callers should not reimplement ownership-path resolution.
+- Team-local agent ids use the shape `team-local-agent:<encoded-owner-team-id>:<encoded-local-agent-id>`. Both parts are encoded, so any canonical owner team id is safe inside it. Teams are flat: a team-local agent is owned by its one Team, and there are no team-local subteams.
+- `AgentDefinitionService` is the authoritative read/write boundary; callers should not reimplement ownership-path resolution or read files for a "fresher" copy. Shared, team-local and org-owned agents of registered agent packages are served from the [agent package definitions](./agent_package_definitions.md), which apply pending file changes before every read and keep the last working version of a broken definition (`AgentDefinition.loadIssue` explains why). Application-package agents are not agent package definitions: list results and exact-ID reads read them on demand from their application packages, and a malformed one is logged and skipped without failing the list. Writes go through the file provider and the owning definition folder is reloaded immediately. There is no separate cached or fresh read path.
 - Application-owned agents can be edited in place when the owning bundle source is writable.
+- Agents of registered agent packages are saved into their package folder; Teams and Orgs of those packages follow the same rule (source class `registered_package`).
 - Application-owned agents are not created or deleted through the shared standalone provider path.
 - No generic agent Duplicate/Fork API exists; customization should happen in source packages, direct edits to user-owned standalone agents, or a newly created shared agent.
 - `getAllAgentDefinitions()` still uses batched prompt mapping retrieval to avoid N+1 query patterns.

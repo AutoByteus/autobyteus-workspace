@@ -1,0 +1,68 @@
+{
+  "main": "project_c9803157-ef4d-412c-aaed-ab5bb5e6604e",
+  "long": "project_ab43b998-96e0-4285-b841-64d9991f0377",
+  "tasks": {
+    "p": {
+      "taskId": "project_task_2f646535-bcd0-49f2-80d4-020c5f8c96f8",
+      "taskKey": "autobyteus-1"
+    },
+    "handshake": {
+      "taskId": "project_task_ba5246a4-79e6-471d-90e7-e46112826964",
+      "taskKey": "autobyteus-2"
+    },
+    "relay": {
+      "taskId": "project_task_15ad2051-2a1c-4a7d-a713-cd6f5c10ba1c",
+      "taskKey": "autobyteus-3"
+    },
+    "docs": {
+      "taskId": "project_task_14f7f7ba-f723-492a-9e48-ce713c372c16",
+      "taskKey": "autobyteus-4"
+    },
+    "bridge": {
+      "taskId": "project_task_56e6a59d-b4c6-4fc4-8a95-8a92022b9ede",
+      "taskKey": "autobyteus-5"
+    },
+    "e2e": {
+      "taskId": "project_task_194f2166-7856-454d-bf9f-0158801c4f98",
+      "taskKey": "autobyteus-6"
+    },
+    "notes": {
+      "taskId": "project_task_3f997494-9b6c-4620-bf77-3c494e52a4c2",
+      "taskKey": "autobyteus-7"
+    },
+    "onboarding": {
+      "taskId": "project_task_06e87267-f4ea-4784-a09d-bb4f9365b02b",
+      "taskKey": "autobyteus-8"
+    },
+    "welcome": {
+      "taskId": "project_task_9c7d8b4e-702c-4789-aff8-3457d6ffa1ed",
+      "taskKey": "autobyteus-9"
+    },
+    "signin": {
+      "taskId": "project_task_53bf2069-f59c-4b53-9e13-799ee3ed8194",
+      "taskKey": "autobyteus-10"
+    },
+    "cleanup": {
+      "taskId": "project_task_4fb9e99f-41de-41a3-8288-962101360320",
+      "taskKey": "autobyteus-11"
+    },
+    "tables": {
+      "taskId": "project_task_e88b9645-fa55-4d19-ae1f-3bba219fdbb5",
+      "taskKey": "autobyteus-12"
+    },
+    "step1": {
+      "taskId": "project_task_2f24e9e7-dc27-4a67-96e7-3a3f835e32b1",
+      "taskKey": "autobyteus-13"
+    }
+  },
+  "longTasks": {
+    "parent": {
+      "taskId": "project_task_efcccc6e-aa7a-4bbb-a7d5-07bff66ba3a7",
+      "taskKey": "enterprise-customer-onboarding-experience-redesign-program-1"
+    },
+    "part": {
+      "taskId": "project_task_2de1721d-4cf8-41ab-8db0-d9df0c55a828",
+      "taskKey": "enterprise-customer-onboarding-experience-redesign-program-2"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+# API-L08 step 3 (UXJ-003, AC-002 Remove): desktop; Remove on the downloaded EmbeddingGemma 2 (non-active) with its inline confirmation; files before/after; build d2bcb95d3a; Mon Oct 19 13:02:47 CEST 2026
+files before:
+337M	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-9k7eWf/server-data/embeddings/models/embeddinggemma-2
+ 53M	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-9k7eWf/server-data/embeddings/models/granite-embedding-small-english-r2
+{"clicked":"embedding-model-embeddinggemma-2-remove","at":1792407768376}
+confirmation shown: []
+confirmation text: "Remove Google EmbeddingGemma 2? This frees 346 MB.\n\nRemove\nCancel"
+focus on: embedding-model-embeddinggemma-2-remove-cancel
+{"clicked":"embedding-model-embeddinggemma-2-remove-confirm","at":1792407770028}
+after Remove: [('embeddinggemma-2', 'Not downloaded', ['download', 'use'])] On disk: 55 MB
+files after:
+ 53M	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-9k7eWf/server-data/embeddings/models/granite-embedding-small-english-r2

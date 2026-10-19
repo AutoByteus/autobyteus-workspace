@@ -1,0 +1,110 @@
+
+===== mdbr-leaf-ir  (shipped calibration {'clearMatchFloor': 0.24, 'nearBestMargin': 0.045})
+     current floor 0.24 margin 0.045        | fixture: para 0.968 unrel 0.917 | templated: para 0.873 unrel 0.583 | repo: para 0.905 unrel 0.417
+  -- absolute floor sweep (margin = shipped and 0.02) --
+     floor 0.24 margin 0.045                | fixture: para 0.968 unrel 0.917 | templated: para 0.873 unrel 0.583 | repo: para 0.905 unrel 0.417
+     floor 0.27 margin 0.045                | fixture: para 0.952 unrel 0.917 | templated: para 0.873 unrel 0.750 | repo: para 0.905 unrel 0.542
+     floor 0.3 margin 0.045                 | fixture: para 0.952 unrel 0.958 | templated: para 0.873 unrel 0.917 | repo: para 0.905 unrel 0.833
+     floor 0.32 margin 0.045                | fixture: para 0.937 unrel 0.958 | templated: para 0.873 unrel 0.917 | repo: para 0.889 unrel 0.917
+     floor 0.34 margin 0.045                | fixture: para 0.921 unrel 1.000 | templated: para 0.857 unrel 1.000 | repo: para 0.889 unrel 0.958
+     floor 0.36 margin 0.045                | fixture: para 0.905 unrel 1.000 | templated: para 0.841 unrel 1.000 | repo: para 0.873 unrel 1.000
+     floor 0.24 margin 0.02                 | fixture: para 0.921 unrel 0.917 | templated: para 0.810 unrel 0.583 | repo: para 0.810 unrel 0.417
+     floor 0.27 margin 0.02                 | fixture: para 0.905 unrel 0.917 | templated: para 0.810 unrel 0.750 | repo: para 0.810 unrel 0.542
+     floor 0.3 margin 0.02                  | fixture: para 0.905 unrel 0.958 | templated: para 0.810 unrel 0.917 | repo: para 0.810 unrel 0.833
+     floor 0.32 margin 0.02                 | fixture: para 0.889 unrel 0.958 | templated: para 0.810 unrel 0.917 | repo: para 0.794 unrel 0.917
+     floor 0.34 margin 0.02                 | fixture: para 0.873 unrel 1.000 | templated: para 0.810 unrel 1.000 | repo: para 0.794 unrel 0.958
+     floor 0.36 margin 0.02                 | fixture: para 0.857 unrel 1.000 | templated: para 0.794 unrel 1.000 | repo: para 0.778 unrel 1.000
+  -- z-score gate (best score vs this query's whole-collection distribution) --
+     zgate 3.0 margin 0.02                  | fixture: para 0.857 unrel 0.875 | templated: para 0.825 unrel 0.208 | repo: para 0.778 unrel 0.125
+     zgate 3.0 margin 0.03                  | fixture: para 0.857 unrel 0.875 | templated: para 0.841 unrel 0.208 | repo: para 0.794 unrel 0.125
+     zgate 3.0 margin 0.045                 | fixture: para 0.905 unrel 0.875 | templated: para 0.889 unrel 0.208 | repo: para 0.873 unrel 0.125
+     zgate 3.5 margin 0.02                  | fixture: para 0.635 unrel 0.917 | templated: para 0.778 unrel 0.708 | repo: para 0.730 unrel 0.333
+     zgate 3.5 margin 0.03                  | fixture: para 0.635 unrel 0.917 | templated: para 0.794 unrel 0.708 | repo: para 0.746 unrel 0.333
+     zgate 3.5 margin 0.045                 | fixture: para 0.651 unrel 0.917 | templated: para 0.825 unrel 0.708 | repo: para 0.810 unrel 0.333
+     zgate 4.0 margin 0.02                  | fixture: para 0.333 unrel 1.000 | templated: para 0.651 unrel 0.875 | repo: para 0.571 unrel 0.750
+     zgate 4.0 margin 0.03                  | fixture: para 0.333 unrel 1.000 | templated: para 0.651 unrel 0.875 | repo: para 0.587 unrel 0.750
+     zgate 4.0 margin 0.045                 | fixture: para 0.349 unrel 1.000 | templated: para 0.683 unrel 0.875 | repo: para 0.651 unrel 0.750
+     zgate 4.5 margin 0.02                  | fixture: para 0.127 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.381 unrel 0.917
+     zgate 4.5 margin 0.03                  | fixture: para 0.127 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.397 unrel 0.917
+     zgate 4.5 margin 0.045                 | fixture: para 0.127 unrel 1.000 | templated: para 0.444 unrel 1.000 | repo: para 0.429 unrel 0.917
+     zgate 5.0 margin 0.02                  | fixture: para 0.032 unrel 1.000 | templated: para 0.222 unrel 1.000 | repo: para 0.238 unrel 1.000
+     zgate 5.0 margin 0.03                  | fixture: para 0.032 unrel 1.000 | templated: para 0.222 unrel 1.000 | repo: para 0.238 unrel 1.000
+     zgate 5.0 margin 0.045                 | fixture: para 0.032 unrel 1.000 | templated: para 0.238 unrel 1.000 | repo: para 0.238 unrel 1.000
+     zgate 5.5 margin 0.02                  | fixture: para 0.000 unrel 1.000 | templated: para 0.143 unrel 1.000 | repo: para 0.190 unrel 1.000
+     zgate 5.5 margin 0.03                  | fixture: para 0.000 unrel 1.000 | templated: para 0.143 unrel 1.000 | repo: para 0.190 unrel 1.000
+     zgate 5.5 margin 0.045                 | fixture: para 0.000 unrel 1.000 | templated: para 0.159 unrel 1.000 | repo: para 0.190 unrel 1.000
+     zgate 6.0 margin 0.02                  | fixture: para 0.000 unrel 1.000 | templated: para 0.127 unrel 1.000 | repo: para 0.095 unrel 1.000
+     zgate 6.0 margin 0.03                  | fixture: para 0.000 unrel 1.000 | templated: para 0.127 unrel 1.000 | repo: para 0.095 unrel 1.000
+     zgate 6.0 margin 0.045                 | fixture: para 0.000 unrel 1.000 | templated: para 0.143 unrel 1.000 | repo: para 0.095 unrel 1.000
+  -- z gate + z item membership --
+     zgate 4.0 zitem 3.5                    | fixture: para 0.349 unrel 1.000 | templated: para 0.683 unrel 0.875 | repo: para 0.635 unrel 0.750
+     zgate 4.0 zitem 4.0                    | fixture: para 0.333 unrel 1.000 | templated: para 0.667 unrel 0.875 | repo: para 0.619 unrel 0.750
+     zgate 4.5 zitem 3.5                    | fixture: para 0.127 unrel 1.000 | templated: para 0.444 unrel 1.000 | repo: para 0.429 unrel 0.917
+     zgate 4.5 zitem 4.0                    | fixture: para 0.127 unrel 1.000 | templated: para 0.444 unrel 1.000 | repo: para 0.429 unrel 0.917
+     zgate 4.5 zitem 4.5                    | fixture: para 0.127 unrel 1.000 | templated: para 0.444 unrel 1.000 | repo: para 0.381 unrel 0.917
+     zgate 5.0 zitem 3.5                    | fixture: para 0.032 unrel 1.000 | templated: para 0.238 unrel 1.000 | repo: para 0.238 unrel 1.000
+     zgate 5.0 zitem 4.0                    | fixture: para 0.032 unrel 1.000 | templated: para 0.238 unrel 1.000 | repo: para 0.238 unrel 1.000
+     zgate 5.0 zitem 4.5                    | fixture: para 0.032 unrel 1.000 | templated: para 0.238 unrel 1.000 | repo: para 0.238 unrel 1.000
+     zgate 5.0 zitem 5.0                    | fixture: para 0.032 unrel 1.000 | templated: para 0.238 unrel 1.000 | repo: para 0.238 unrel 1.000
+     zgate 5.5 zitem 3.5                    | fixture: para 0.000 unrel 1.000 | templated: para 0.159 unrel 1.000 | repo: para 0.190 unrel 1.000
+     zgate 5.5 zitem 4.0                    | fixture: para 0.000 unrel 1.000 | templated: para 0.159 unrel 1.000 | repo: para 0.190 unrel 1.000
+     zgate 5.5 zitem 4.5                    | fixture: para 0.000 unrel 1.000 | templated: para 0.159 unrel 1.000 | repo: para 0.190 unrel 1.000
+     zgate 5.5 zitem 5.0                    | fixture: para 0.000 unrel 1.000 | templated: para 0.159 unrel 1.000 | repo: para 0.190 unrel 1.000
+  z(best) fixture: para min 2.32 p05 2.86 p10 3.02 median 3.72 | unrel median 2.42 p90 3.45 max 3.87
+  z(best) templated: para min 2.50 p05 3.18 p10 3.39 median 4.41 | unrel median 3.38 p90 4.07 max 4.34
+  z(best) repo: para min 2.75 p05 2.95 p10 3.19 median 4.37 | unrel median 3.65 p90 4.42 max 4.97
+
+===== granite-embedding-small-english-r2  (shipped calibration {'clearMatchFloor': 0.78, 'nearBestMargin': 0.02})
+PASS current floor 0.78 margin 0.02         | fixture: para 0.968 unrel 0.958 | templated: para 0.937 unrel 0.958 | repo: para 0.921 unrel 0.958
+  -- absolute floor sweep (margin = shipped and 0.02) --
+PASS floor 0.78 margin 0.02                 | fixture: para 0.968 unrel 0.958 | templated: para 0.937 unrel 0.958 | repo: para 0.921 unrel 0.958
+     floor 0.81 margin 0.02                 | fixture: para 0.857 unrel 1.000 | templated: para 0.841 unrel 1.000 | repo: para 0.841 unrel 1.000
+     floor 0.84 margin 0.02                 | fixture: para 0.651 unrel 1.000 | templated: para 0.651 unrel 1.000 | repo: para 0.651 unrel 1.000
+     floor 0.86 margin 0.02                 | fixture: para 0.429 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.429 unrel 1.000
+     floor 0.88 margin 0.02                 | fixture: para 0.079 unrel 1.000 | templated: para 0.079 unrel 1.000 | repo: para 0.079 unrel 1.000
+     floor 0.9 margin 0.02                  | fixture: para 0.000 unrel 1.000 | templated: para 0.000 unrel 1.000 | repo: para 0.000 unrel 1.000
+PASS floor 0.78 margin 0.02                 | fixture: para 0.968 unrel 0.958 | templated: para 0.937 unrel 0.958 | repo: para 0.921 unrel 0.958
+     floor 0.81 margin 0.02                 | fixture: para 0.857 unrel 1.000 | templated: para 0.841 unrel 1.000 | repo: para 0.841 unrel 1.000
+     floor 0.84 margin 0.02                 | fixture: para 0.651 unrel 1.000 | templated: para 0.651 unrel 1.000 | repo: para 0.651 unrel 1.000
+     floor 0.86 margin 0.02                 | fixture: para 0.429 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.429 unrel 1.000
+     floor 0.88 margin 0.02                 | fixture: para 0.079 unrel 1.000 | templated: para 0.079 unrel 1.000 | repo: para 0.079 unrel 1.000
+     floor 0.9 margin 0.02                  | fixture: para 0.000 unrel 1.000 | templated: para 0.000 unrel 1.000 | repo: para 0.000 unrel 1.000
+  -- z-score gate (best score vs this query's whole-collection distribution) --
+     zgate 3.0 margin 0.02                  | fixture: para 0.857 unrel 0.833 | templated: para 0.952 unrel 0.333 | repo: para 0.937 unrel 0.167
+     zgate 3.0 margin 0.03                  | fixture: para 0.857 unrel 0.833 | templated: para 0.952 unrel 0.333 | repo: para 0.952 unrel 0.167
+     zgate 3.0 margin 0.02                  | fixture: para 0.857 unrel 0.833 | templated: para 0.952 unrel 0.333 | repo: para 0.937 unrel 0.167
+     zgate 3.5 margin 0.02                  | fixture: para 0.603 unrel 0.958 | templated: para 0.905 unrel 0.625 | repo: para 0.857 unrel 0.583
+     zgate 3.5 margin 0.03                  | fixture: para 0.603 unrel 0.958 | templated: para 0.905 unrel 0.625 | repo: para 0.873 unrel 0.583
+     zgate 3.5 margin 0.02                  | fixture: para 0.603 unrel 0.958 | templated: para 0.905 unrel 0.625 | repo: para 0.857 unrel 0.583
+     zgate 4.0 margin 0.02                  | fixture: para 0.254 unrel 0.958 | templated: para 0.857 unrel 0.833 | repo: para 0.794 unrel 0.792
+     zgate 4.0 margin 0.03                  | fixture: para 0.254 unrel 0.958 | templated: para 0.857 unrel 0.833 | repo: para 0.810 unrel 0.792
+     zgate 4.0 margin 0.02                  | fixture: para 0.254 unrel 0.958 | templated: para 0.857 unrel 0.833 | repo: para 0.794 unrel 0.792
+     zgate 4.5 margin 0.02                  | fixture: para 0.048 unrel 1.000 | templated: para 0.683 unrel 0.917 | repo: para 0.587 unrel 0.917
+     zgate 4.5 margin 0.03                  | fixture: para 0.048 unrel 1.000 | templated: para 0.683 unrel 0.917 | repo: para 0.603 unrel 0.917
+     zgate 4.5 margin 0.02                  | fixture: para 0.048 unrel 1.000 | templated: para 0.683 unrel 0.917 | repo: para 0.587 unrel 0.917
+     zgate 5.0 margin 0.02                  | fixture: para 0.032 unrel 1.000 | templated: para 0.524 unrel 0.958 | repo: para 0.476 unrel 0.958
+     zgate 5.0 margin 0.03                  | fixture: para 0.032 unrel 1.000 | templated: para 0.524 unrel 0.958 | repo: para 0.492 unrel 0.958
+     zgate 5.0 margin 0.02                  | fixture: para 0.032 unrel 1.000 | templated: para 0.524 unrel 0.958 | repo: para 0.476 unrel 0.958
+     zgate 5.5 margin 0.02                  | fixture: para 0.016 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.254 unrel 0.958
+     zgate 5.5 margin 0.03                  | fixture: para 0.016 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.254 unrel 0.958
+     zgate 5.5 margin 0.02                  | fixture: para 0.016 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.254 unrel 0.958
+     zgate 6.0 margin 0.02                  | fixture: para 0.000 unrel 1.000 | templated: para 0.222 unrel 1.000 | repo: para 0.159 unrel 1.000
+     zgate 6.0 margin 0.03                  | fixture: para 0.000 unrel 1.000 | templated: para 0.222 unrel 1.000 | repo: para 0.159 unrel 1.000
+     zgate 6.0 margin 0.02                  | fixture: para 0.000 unrel 1.000 | templated: para 0.222 unrel 1.000 | repo: para 0.159 unrel 1.000
+  -- z gate + z item membership --
+     zgate 4.0 zitem 3.5                    | fixture: para 0.254 unrel 0.958 | templated: para 0.857 unrel 0.833 | repo: para 0.810 unrel 0.792
+     zgate 4.0 zitem 4.0                    | fixture: para 0.254 unrel 0.958 | templated: para 0.857 unrel 0.833 | repo: para 0.778 unrel 0.792
+     zgate 4.5 zitem 3.5                    | fixture: para 0.048 unrel 1.000 | templated: para 0.683 unrel 0.917 | repo: para 0.603 unrel 0.917
+     zgate 4.5 zitem 4.0                    | fixture: para 0.048 unrel 1.000 | templated: para 0.683 unrel 0.917 | repo: para 0.587 unrel 0.917
+     zgate 4.5 zitem 4.5                    | fixture: para 0.048 unrel 1.000 | templated: para 0.683 unrel 0.917 | repo: para 0.587 unrel 0.917
+     zgate 5.0 zitem 3.5                    | fixture: para 0.032 unrel 1.000 | templated: para 0.524 unrel 0.958 | repo: para 0.492 unrel 0.958
+     zgate 5.0 zitem 4.0                    | fixture: para 0.032 unrel 1.000 | templated: para 0.524 unrel 0.958 | repo: para 0.476 unrel 0.958
+     zgate 5.0 zitem 4.5                    | fixture: para 0.032 unrel 1.000 | templated: para 0.524 unrel 0.958 | repo: para 0.476 unrel 0.958
+     zgate 5.0 zitem 5.0                    | fixture: para 0.032 unrel 1.000 | templated: para 0.524 unrel 0.958 | repo: para 0.460 unrel 0.958
+     zgate 5.5 zitem 3.5                    | fixture: para 0.016 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.254 unrel 0.958
+     zgate 5.5 zitem 4.0                    | fixture: para 0.016 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.254 unrel 0.958
+     zgate 5.5 zitem 4.5                    | fixture: para 0.016 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.254 unrel 0.958
+     zgate 5.5 zitem 5.0                    | fixture: para 0.016 unrel 1.000 | templated: para 0.429 unrel 1.000 | repo: para 0.254 unrel 0.958
+  z(best) fixture: para min 2.30 p05 2.61 p10 2.92 median 3.68 | unrel median 2.38 p90 3.23 max 4.25
+  z(best) templated: para min 3.03 p05 3.39 p10 3.60 median 5.22 | unrel median 3.42 p90 4.46 max 5.12
+  z(best) repo: para min 3.13 p05 3.27 p10 3.51 median 5.01 | unrel median 3.46 p90 4.44 max 5.70

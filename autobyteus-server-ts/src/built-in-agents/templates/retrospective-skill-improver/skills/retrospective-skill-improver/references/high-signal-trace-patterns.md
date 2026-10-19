@@ -1,20 +1,20 @@
 # High-Signal Trace Patterns
 
-Use this reference to recognize work-trace evidence that can become durable skill guidance.
+Use this reference to recognize Work Journal evidence that can become durable skill guidance.
 
 ## Strong Signals
 
 ### User Correction Or Future-Facing Guidance
 
-A user correction is high signal when it states reusable future-task behavior. Preserve the generalized lesson in concise wording.
+A `User:` or `Message from …:` correction is high signal when it states reusable future-task behavior. Preserve the generalized lesson in concise wording.
 
 ### Repeated Retry Or Backtracking
 
-Repeated retries often indicate a reusable guidance opportunity. Look for several attempts around the same decision, command, tool, file location, or workflow.
+Repeated retries often indicate a reusable guidance opportunity. Look for several attempts around the same decision, command, tool, file location, or workflow: the same `Command:` with `→ exit 1` or `→ failed`, repeated `Edit file:` entries on one path, or a `Tool:` call retried with changed arguments.
 
 ### Tool Exploration To SOP Convergence
 
-Sometimes the work trace shows the target run/agent starting without knowing an environment, website, UI, or tool surface. It tries several probes, then discovers a reliable action sequence. If that sequence is reusable, convert it into an SOP.
+Sometimes the journal shows the target run/agent starting without knowing an environment, website, UI, or tool surface. It tries several probes, then discovers a reliable action sequence. If that sequence is reusable, convert it into an SOP.
 
 Example pattern:
 
@@ -38,4 +38,4 @@ Treat run-specific details as context for judgment rather than durable guidance 
 
 ## Decision Rule
 
-Update durable skill guidance when the trace supports a reusable future behavior.
+Update durable skill guidance when the journal supports a reusable future behavior.

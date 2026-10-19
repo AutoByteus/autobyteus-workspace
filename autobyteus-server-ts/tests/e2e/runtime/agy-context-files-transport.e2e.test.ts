@@ -182,8 +182,10 @@ suite("AGY receives app-attached context files as text through the real server (
     agentRunId?: string) => {
     await run.until(() => inputs().length > before);
     const row = inputs()[before]!;
-    const replies = () => run.frames.filter((f) => f.type === "SEGMENT_CONTENT"
-      && (!agentRunId || f.payload["agent_run_id"] === agentRunId)).map((f) => String(f.payload["delta"] ?? "")).join("");
+    // Text arrives as SEGMENT_CONTENT, or batched as SEGMENT_CONTENT_BATCH items (Team sockets since autobyteus-139).
+    const replies = () => run.frames.flatMap((f) => f.type === "SEGMENT_CONTENT" ? [f.payload]
+      : f.type === "SEGMENT_CONTENT_BATCH" ? ((f.payload["items"] ?? []) as Array<Record<string, unknown>>) : [])
+      .filter((item) => !agentRunId || item["agent_run_id"] === agentRunId).map((item) => String(item["delta"] ?? "")).join("");
     const content = row.line.message.content;
     const expected = `VIEWED:${typeof content === "string" ? listedUnder(content, IMAGE_HEADING).length
       + listedUnder(content, "Reference files:").length : 0}`;

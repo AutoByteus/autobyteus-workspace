@@ -41,6 +41,39 @@ how to apply them; they do not replace user-approved product requirements.
    as a speculative optimization program. Retain failure/environment limits;
    an API timing does not prove UI readiness, and a pre-change installed binary
    does not validate changed source.
+7. **Contain bad data to its own run.** When one run's saved data is broken or
+   in a shape current code no longer reads, the app keeps starting and working,
+   and every other run stays unaffected. Only that run is left out, or reports
+   that its data cannot be read. Record it with a logged warning that names the
+   run and the reason, and never change or delete the data, so it can still be
+   recovered. Put this containment at the boundary of one run: a startup
+   admission check, or a lookup or scan across many runs that skips the
+   unreadable run. It is not permission to swallow errors inside normal work.
+   Historical data must never lock users out (see the
+   [Data Migration Guideline](autobyteus-server-ts/docs/design/data_migration_guideline.md)).
+8. **No version numbers in the names of current code.** Current files, types,
+   functions and constants describe the one current shape, so they carry no
+   `V1`/`V2`/`v3` (for example `team-communication-store.ts`, not
+   `team-communication-v1-store.ts`). A version in a current name implies several
+   shapes living side by side, which current code forbids, and it goes stale when
+   the shape changes. Old shapes live only inside migrations: name a frozen copy
+   after the migration that owns it or the period it comes from (for example
+   `released-trees-before-task-agent-own-run.ts`), not after an invented shape
+   number. Renaming code never renames a file or value on disk. Product or
+   external names that contain a number (a model name, an external API version)
+   are not schema versions.
+9. **No compatibility between different software versions.** The desktop app, its
+   web UI, its embedded server and any server node the user connects are built
+   from one release and are expected to run the same version. When one of them
+   is older or newer than another (an old desktop app against an updated server
+   node, or an updated desktop app against an old server node), updating is the
+   user's responsibility; making it work is not ours. Do not design for that case:
+   no version checks or negotiation, no old and new APIs side by side, no fallback
+   for a client or server that does not know a new route or field. Change
+   contracts between them as a clean cut. Reviewers do not raise a mismatched
+   version as a finding, risk or open question. This is about running software,
+   not saved data: data written by an older version must still be read, as rule 7
+   and the Data Migration Guideline require.
 
 ## Work in two phases: clean functionality, then evidence-led refinement
 
@@ -302,6 +335,13 @@ update it in the same change.
   users out of startup or new work; prefer tolerant readers over migrations; no
   schema version fields; never reuse a field name with a new meaning; old shapes
   live only inside registered migrations.
+- **Agent collaboration and orchestration:** the
+  [Collaboration Model](autobyteus-server-ts/docs/design/collaboration_model.md)
+  is the canonical contract for runs, membership versus delegation,
+  `send_message_to` versus `delegate_task`, Task ownership of delegated runs,
+  coordination, and where each run's memory and messages are stored. Changes to
+  Teams, Orgs, standalone collaboration, Tasks, messaging or run storage follow
+  it or update it in the same change.
 - **Server startup and configuration-dependent services:**
   [Startup Initialization and Lazy Service Access](autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md).
 - **Mandatory agent processors:**

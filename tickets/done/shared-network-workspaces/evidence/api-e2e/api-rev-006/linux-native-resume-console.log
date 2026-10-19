@@ -1,0 +1,15 @@
+Started separate explicit public reconnect
+separate explicit public reconnect: Pass
+Started same saved binding after explicit reconnect
+same saved binding after explicit reconnect: Pass
+Started public replacement directory copiedmarker refusal
+public replacement directory copiedmarker refusal: Pass
+Started restore exact original public reconnect
+restore exact original public reconnect: Pass
+Started restored original mounted RW
+restored original mounted RW: Pass
+Started public drained detach
+public drained detach: Pass
+Started original source preserved mount job attachment absent
+original source preserved mount job attachment absent: Pass
+{"result": "Pass", "fatal": null}

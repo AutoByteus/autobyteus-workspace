@@ -1,0 +1,113 @@
+{
+  "actualExit": 2,
+  "expectedExit": 2,
+  "seconds": 13.033,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [
+    "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts(885,7): error TS2322: Type 'string' is not assignable to type 'number'."
+  ],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 98538,
+      "ppid": 98537,
+      "pgid": 98538,
+      "command": "(node)"
+    },
+    {
+      "pid": 98554,
+      "ppid": 98538,
+      "pgid": 98538,
+      "command": "(node)"
+    },
+    {
+      "pid": 98577,
+      "ppid": 98538,
+      "pgid": 98538,
+      "command": "sh -c pnpm prepare:shared && tsc -p tsconfig.claude-interrupt-resume-e2e.json --noEmit"
+    },
+    {
+      "pid": 98578,
+      "ppid": 98577,
+      "pgid": 98538,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm prepare:shared"
+    },
+    {
+      "pid": 98607,
+      "ppid": 98578,
+      "pgid": 98538,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build"
+    },
+    {
+      "pid": 98741,
+      "ppid": 98607,
+      "pgid": 98538,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-sdk-contracts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 98773,
+      "ppid": 98607,
+      "pgid": 98538,
+      "command": "(bash)"
+    },
+    {
+      "pid": 98780,
+      "ppid": 98773,
+      "pgid": 98538,
+      "command": "node ./scripts/clean-dist.mjs"
+    },
+    {
+      "pid": 98876,
+      "ppid": 98773,
+      "pgid": 98538,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 99639,
+      "ppid": 98773,
+      "pgid": 98538,
+      "command": "(node)"
+    },
+    {
+      "pid": 99676,
+      "ppid": 98607,
+      "pgid": 98538,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-backend-sdk/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 99803,
+      "ppid": 98577,
+      "pgid": 98538,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.claude-interrupt-resume-e2e.json --noEmit"
+    },
+    {
+      "pid": 99804,
+      "ppid": 99803,
+      "pgid": 98538,
+      "command": "(bash)"
+    },
+    {
+      "pid": 99805,
+      "ppid": 99804,
+      "pgid": 98538,
+      "command": "(bash)"
+    },
+    {
+      "pid": 99808,
+      "ppid": 99805,
+      "pgid": 98538,
+      "command": "(sed)"
+    },
+    {
+      "pid": 288,
+      "ppid": 98538,
+      "pgid": 98538,
+      "command": "(ps)"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-fixture-types-kud9czas",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

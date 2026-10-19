@@ -1,0 +1,33 @@
+{
+  "artifactCommit": "41af4e7f82f1c2d9b4b58074b758540391674a4f",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "902638e584d8e669b632cf81bcc0a95074892403",
+        "HEAD",
+        "--check"
+      ],
+      "rc": 2,
+      "stdout": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-004/go-race.log:282: trailing whitespace.\n+        \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-004/go-race.log:285: trailing whitespace.\n+        \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-004/go-race.log:299: trailing whitespace.\n+        \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-004/go-race.log:300: trailing whitespace.\n+        \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "902638e584d8e669b632cf81bcc0a95074892403",
+        "HEAD",
+        "--check",
+        "--",
+        ":(exclude)**/*.log"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "result": "Pass artifact/source whitespace; four raw Go output whitespace warnings retained",
+  "rawLogPolicy": "Preserve original test output verbatim, do not silently trim evidence. No changed source/test whitespace failure."
+}

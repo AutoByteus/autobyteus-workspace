@@ -1,0 +1,33 @@
+== M1: an omitted defaultLaunchConfig clears it instead of keeping it (team service)
+  defaultLaunchConfig: false
+    ? cloneDefaultLaunchConfig(existing.defaultLaunchConfig)
+    : normalizeDefaultLaunchConfigInput(updateData.defaultLaunchConfig) ?? null,
+     × TDG-001 creates, updates, keeps and clears the default, lists templates and deletes a Team 67ms
+     ✓ TDG-002 reads a file-authored Team with a team-local member and saves a swap between team-local and shared members 63ms
+     ✓ TDG-003 exposes the flat md-centric Team contract: members without refType, updates that carry a revision 3ms
+     ✓ TDG-004 refuses a coordinator that is not a member 3ms
+     ✓ TDG-005 refuses a Team member that names a Team: the flat model has no member type 2ms
+     ✓ TDG-006 creates, updates with its revision and deletes an Org of an Agent and a Team 35ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 5 passed (6)
+== M2: the Org revision check is skipped
+      Tests  6 passed (6)
+== M3: the coordinator-membership check is skipped
+  nodes: Array<{ memberName: string }>,
+): void => {
+  const matches = nodes.some((member) => member.memberName === coordinatorMemberName);
+  if (!matches) {
+    throw new Error("Coordinator member name must match one of nodes.memberName values.");
+  }
+};
+== M3: the coordinator-membership check is skipped
+     ✓ TDG-001 creates, updates, keeps and clears the default, lists templates and deletes a Team 91ms
+     ✓ TDG-002 reads a file-authored Team with a team-local member and saves a swap between team-local and shared members 22ms
+     ✓ TDG-003 exposes the flat md-centric Team contract: members without refType, updates that carry a revision 2ms
+     × TDG-004 refuses a coordinator that is not a member 4ms
+     ✓ TDG-005 refuses a Team member that names a Team: the flat model has no member type 2ms
+     ✓ TDG-006 creates, updates with its revision and deletes an Org of an Agent and a Team 37ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 5 passed (6)
+
+Note: M2 survives because the atomic package transaction independently rejects a stale revision (DEFINITION_REVISION_CONFLICT); the Org case asserts that outcome end to end. Sources reverted (git status shows tests only).

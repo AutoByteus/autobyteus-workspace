@@ -1,7 +1,7 @@
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
 import { TeamExecutionIndex } from "./team-execution-v1-index.js";
 import type { TaskDelegationRecordsSnapshot } from "../../legacy/released-run-package-shapes/team-task-delegation-record-v1.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../../services/team-communication/team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 
 export type TeamRunStatePackage = Readonly<{
   executionTree: TeamRunExecutionTreeSnapshot;

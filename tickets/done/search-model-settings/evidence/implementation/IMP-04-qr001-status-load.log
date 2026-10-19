@@ -1,0 +1,38 @@
+# Check: IMP-04 (QR-001 / RSK-001 status load, 20 Projects x 1,000 Tasks)
+# Command: (cd autobyteus-server-ts && RUN_PROJECT_INDEX_STATUS_LOAD=1 TEST_STATUS_LOAD_OUT=<file> pnpm exec vitest run tests/integration/projects/project-task-index-status-load.integration.test.ts)
+# Commit tested: server src at 9c73c22672 (identical to 8469d4bcf5: git diff 9c73c22672 8469d4bcf5 -- autobyteus-server-ts/src is empty); the test file as committed in 8469d4bcf5
+# Environment: Darwin arm64, Apple M1 Max, node v22.23.1; nothing else running
+# Date: 2026-10-19 (run finished before the evidence suites started)
+
+## Result (TEST_STATUS_LOAD_OUT)
+{
+  "projects": 20,
+  "tasksPerProject": 1000,
+  "seedingMs": 349759,
+  "states": {
+    "needsUpdate": 3,
+    "ready": 17
+  },
+  "firstPollMs": 665,
+  "pollMs": [
+    645,
+    589,
+    648,
+    622,
+    626
+  ],
+  "medianPollMs": 626,
+  "maxPollMs": 648,
+  "budgetMs": 1000,
+  "node": "v22.23.1",
+  "platform": "darwin-arm64",
+  "cpus": 10
+}
+## Runner output
+INDEX_STATUS_LOAD {"projects":20,"tasksPerProject":1000,"seedingMs":349759,"states":{"needsUpdate":3,"ready":17},"firstPollMs":665,"pollMs":[645,589,648,622,626],"medianPollMs":626,"maxPollMs":648,"budgetMs":1000,"node":"v22.23.1","platform":"darwin-arm64","cpus":10}
+ ✓ tests/integration/projects/project-task-index-status-load.integration.test.ts (1 test) 356211ms
+     ✓ answers one status poll within 1000 ms  3799ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  360.01s (transform 2.34s, setup 24ms, import 3.28s, tests 356.21s, environment 0ms)
+# Exit code: 0

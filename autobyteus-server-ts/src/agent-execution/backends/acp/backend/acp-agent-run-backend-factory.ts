@@ -164,10 +164,12 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
   ): Promise<AcpAgentRunBackend> {
     const { launchProfile, sessionProfile } = this.deps;
     assertAccepting();
+    const args = launchProfile.args({ model: config.llmModelIdentifier, reasoningEffort: reasoningEffortOf(config) });
+    const env = launchProfile.env(globalThis.process.env);
     const process = AcpAgentProcess.spawn({
       command: launchProfile.command(),
-      args: launchProfile.args({ model: config.llmModelIdentifier, reasoningEffort: reasoningEffortOf(config) }),
-      env: launchProfile.env(globalThis.process.env),
+      args,
+      env,
       cwd: prepared.workingDirectory,
     });
     owner.process = process;
@@ -180,7 +182,8 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     });
     owner.session = session;
     try {
-      const capabilities = AcpAgentCapabilities.fromInitialize(await connection.initialize());
+      const initialized = await connection.initialize();
+      const capabilities = AcpAgentCapabilities.fromInitialize(initialized);
       capabilities.require(launchProfile.agentLabel,
         AcpAgentCapabilities.requiredFor({ restore, mcp: prepared.descriptor !== null }));
       assertAccepting();

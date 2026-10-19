@@ -1,6 +1,7 @@
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunHistoryRetiredRunsStore, withoutRetiredRuns } from '~/stores/runHistoryRetiredRuns';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentOrgRunHistoryItem, RunHistoryWorkspaceGroup } from './runHistoryTypes';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
@@ -27,13 +28,16 @@ export const refreshRunNavigationTopologyForStore = (
   _reason: string,
 ): void => {
   const workspaceStore = useWorkspaceStore();
-  store.navigationProjection = buildRunHistoryNavigationProjection({
+  const topLevel = withoutRetiredRuns({
     workspaceGroups: store.workspaceGroups,
+    agentContexts: useAgentContextsStore().runs,
+    teamContexts: useAgentTeamContextsStore().allTeamRuns ?? [],
+  }, useRunHistoryRetiredRunsStore().retiredRunIds);
+  store.navigationProjection = buildRunHistoryNavigationProjection({
+    ...topLevel,
     agentAvatarByDefinitionId: store.agentAvatarByDefinitionId,
     allWorkspaces: workspaceStore.allWorkspaces,
     workspacesById: workspaceStore.workspaces,
-    agentContexts: useAgentContextsStore().runs,
-    teamContexts: useAgentTeamContextsStore().allTeamRuns ?? [],
     agentOrgHistory: store.agentOrgHistory,
   }, store.navigationProjection);
   store.navigationTopologyRevision += 1;

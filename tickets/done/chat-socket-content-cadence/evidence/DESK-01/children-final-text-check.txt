@@ -1,0 +1,10 @@
+# Case: DESK-01 delegated children — final answer text: persisted projection (agentRunCollaborationMemberProjection) vs the renderer DOM (dom-child1.txt / dom-child2.txt, normalized)
+# Commit: e24ff6b333; Env: ENV-3 iso-53150-351f; Date: 2026-10-18T11:54:32.080Z
+desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b: entries message/user:458,reasoning/:375,message/assistant:2,tool_call/:0,reasoning/:214,message/assistant:205,message/user:80,reasoning/:5642,message/assistant:2,tool_call/:0,reasoning/:232,message/assistant:233
+  assistant (0 chars): empty (stopped before answer text)
+  assistant 202 chars; in a child DOM: true
+  assistant (0 chars): empty (stopped before answer text)
+  assistant 230 chars; in a child DOM: true
+desk_essay_worker_966d7d18df354d09b7af8aad742dd30d: entries message/user:452,reasoning/:282,message/assistant:2070,message/user:80,reasoning/:29674,message/assistant:0
+  assistant 2067 chars; in a child DOM: true
+  assistant (0 chars): empty (stopped before answer text)

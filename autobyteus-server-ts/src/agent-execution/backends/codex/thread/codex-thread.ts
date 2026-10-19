@@ -2,7 +2,7 @@ import { submitCodexStartInput, submitCodexAppendInput } from "./codex-thread-in
 import { CodexThreadReleaseScope } from "./codex-thread-release-scope.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CodexReadyTokenUsageUpdate } from "./codex-thread-token-usage.js";
-import { asString } from "../codex-app-server-json.js";
+import { asObject, asString } from "../codex-app-server-json.js";
 import type { CodexAppServerClient } from "../../../../runtime-management/codex/client/codex-app-server-client.js";
 import { handleAppServerNotification as applyAppServerNotification } from "./codex-thread-notification-handler.js";
 import {
@@ -24,13 +24,18 @@ import {
   isCodexSegmentTurnAdmissionEventName,
   resolveCodexSegmentTurnAdmission,
 } from "./codex-segment-turn-admission.js";
-import { logCodexSegmentTurnAdmissionRejection } from "../events/codex-thread-event-debug.js";
+import {
+  logCodexSegmentTurnAdmissionRejection,
+  logCodexSegmentTurnAdmissionRejectionSummaries,
+} from "../events/codex-thread-event-debug.js";
+import { CodexSegmentTurnRejectionAccounts } from "./codex-segment-turn-rejection-accounts.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import {
   CodexPendingMcpToolCallRegistry,
   type CodexPendingMcpToolCall,
 } from "./codex-pending-mcp-tool-call-registry.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
+import { CodexModelCallTiming } from "./codex-model-call-timing.js";
 
 export type { CodexPendingMcpToolCall } from "./codex-pending-mcp-tool-call-registry.js";
 
@@ -76,11 +81,13 @@ export class CodexThread {
   readonly approvalRecords: Map<string, CodexApprovalRecord>;
   private readonly pendingMcpToolCalls: CodexPendingMcpToolCallRegistry;
   readonly pendingTokenUsageUpdates: Map<string, CodexReadyTokenUsageUpdate>;
+  readonly modelCallTiming: CodexModelCallTiming;
   readonly listeners: Set<(message: CodexThreadEventMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
   lastTerminalTurnId: string | null;
   private readonly releaseScope = new CodexThreadReleaseScope(this);
   private pendingSystemInstructionCapture: SystemInstructionTraceRecord | null = null;
+  private readonly segmentTurnRejections = new CodexSegmentTurnRejectionAccounts();
 
   constructor(input: {
     runContext: CodexRunContext;
@@ -90,6 +97,7 @@ export class CodexThread {
     approvalRecords?: Map<string, CodexApprovalRecord>;
     pendingMcpToolCalls?: Map<string, CodexPendingMcpToolCall>;
     pendingTokenUsageUpdates?: Map<string, CodexReadyTokenUsageUpdate>;
+    modelCallTiming?: CodexModelCallTiming;
     listeners?: Set<(message: CodexThreadEventMessage) => void>;
     unbindHandlers?: Array<() => void>;
     lastTerminalTurnId?: string | null;
@@ -101,6 +109,7 @@ export class CodexThread {
     this.approvalRecords = input.approvalRecords ?? new Map();
     this.pendingMcpToolCalls = new CodexPendingMcpToolCallRegistry(input.pendingMcpToolCalls);
     this.pendingTokenUsageUpdates = input.pendingTokenUsageUpdates ?? new Map();
+    this.modelCallTiming = input.modelCallTiming ?? new CodexModelCallTiming();
     this.listeners = input.listeners ?? new Set();
     this.unbindHandlers = input.unbindHandlers ?? [];
     this.lastTerminalTurnId = input.lastTerminalTurnId ?? null;
@@ -244,24 +253,33 @@ export class CodexThread {
         this.emitLocalDerivedEvent(event);
       },
     });
+    this.modelCallTiming.markRequestReplyBoundary();
   }
 
   handleAppServerNotification(method: string, params: JsonObject): void {
     const nativeEventName = method.trim();
+    if (
+      nativeEventName === CodexThreadEventName.TURN_STARTED ||
+      nativeEventName === CodexThreadEventName.TURN_COMPLETED
+    ) {
+      this.flushSegmentTurnRejectionSummaries();
+    }
     let admittedParams: Readonly<JsonObject> = Object.freeze({ ...params });
     if (isCodexSegmentTurnAdmissionEventName(nativeEventName)) {
-      const admission = resolveCodexSegmentTurnAdmission(
-        nativeEventName,
-        params,
-        this.activeTurnId,
-      );
+      const activeTurnId = this.activeTurnId;
+      const admission = resolveCodexSegmentTurnAdmission(nativeEventName, params, activeTurnId);
       if (!admission.accepted) {
-        logCodexSegmentTurnAdmissionRejection({
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          runId: this.runId,
-          nativeEventName,
-          reasonCode: admission.reason,
-        });
+        if (this.segmentTurnRejections.record(admission.eventTurnId)) {
+          logCodexSegmentTurnAdmissionRejection({
+            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+            runId: this.runId,
+            nativeEventName,
+            reasonCode: admission.reason,
+            itemType: asString(asObject(params.item)?.type),
+            turnId: admission.eventTurnId,
+            activeTurnId,
+          });
+        }
         return;
       }
       admittedParams = admission.paramsWithExactTurn;
@@ -275,6 +293,14 @@ export class CodexThread {
     if (handling.emitNativeMessage) {
       this.emitThreadEventMessage(nativeMessage);
     }
+  }
+
+  /** Writes one count summary per rejection account with pending rejections. */
+  flushSegmentTurnRejectionSummaries(): void {
+    logCodexSegmentTurnAdmissionRejectionSummaries(
+      { runtimeKind: RuntimeKind.CODEX_APP_SERVER, runId: this.runId },
+      this.segmentTurnRejections.takeSummaries(),
+    );
   }
 
   handleAppServerRequest(
@@ -294,7 +320,7 @@ export class CodexThread {
       emitEvent: (_codexThread, event) => {
         this.emitLocalDerivedEvent(event);
       },
-    });
+    }).then(() => this.modelCallTiming.markRequestReplyBoundary());
   }
 
 
@@ -320,6 +346,7 @@ export class CodexThread {
       errorMessage ??
       "Codex app server closed before app server message processing completed.";
 
+    this.flushSegmentTurnRejectionSummaries();
     this.rejectStartupReady(
       new Error(`Codex app server closed before startup completed: ${message}`),
     );

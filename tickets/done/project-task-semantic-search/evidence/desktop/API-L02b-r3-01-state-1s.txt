@@ -1,0 +1,10 @@
+# API-L02b (round 3): board 1.5 s after typing the t01 paraphrase (first search, Granite default); commit 600d079b9c; ENV-2c; Sun Oct 18 21:10:29 CEST 2026
+{
+ "query": "the navigation panel on the left forgets that I folded it when I reopen the program",
+ "placeholder": "Describe the task you're looking for",
+ "status": "Preparing meaning search: downloading the model (0 of 55 MB)…",
+ "retry": false,
+ "noMatch": true,
+ "cancelledToggle": null,
+ "lanes": {}
+}

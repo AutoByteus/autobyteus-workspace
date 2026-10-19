@@ -9,7 +9,7 @@ import { RunModelSelectionService } from '../../../src/llm-management/services/r
 import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
 import { createAgentOrgRootExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from '../../fixtures/current-agent-org-run-fixtures.js';
-import { AgentOrgCommunicationMessagesV1Store } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
+import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { applyAgentOrgRunModelConfigPatches, listAgentOrgRunModelConfigScopes, resolveAgentOrgRunModelConfigTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
 
 const view = (rows: any[]) => ({ offeredModels: rows,
@@ -30,7 +30,7 @@ async function setup() {
   const tree = { ...root, rootOrg: { ...root.rootOrg, defaultLaunchConfiguration: { ...root.rootOrg.defaultLaunchConfiguration,
     llmModelIdentifier: 'test-model', llmConfig: { temperature: 1, enabled: true } } } };
   const store = new AgentOrgRunExecutionTreeStore(); await store.write(dir, tree);
-  await new AgentOrgCommunicationMessagesV1Store().write(dir, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', messages: [] });
+  await new AgentOrgCommunicationMessagesStore().write(dir, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', messages: [] });
   const catalog = { runtimeModelSelectionCatalog: vi.fn().mockResolvedValue(view(['test-model','equal','larger','smaller'].map(model_identifier =>
     ({ model_identifier, config_schema: { properties: { temperature: { type: 'number', minimum: 0, maximum: 1 }, enabled: { type: 'boolean' } } } })))) };
   const capacity = { resolveMany: vi.fn().mockReturnValue({
@@ -253,5 +253,40 @@ describe('stopped AgentOrg Team workspace composition', () => {
     expect((h.build.mock.calls[0]![0] as any).state.executionTree.rootOrg.members[1].members[0].launchConfiguration.workspaceRootPath).toBe('/B');
     await h.manager.terminate('org'); const write = vi.spyOn(h.store, 'write');
     expect((await h.manager.updateStoppedRunConfig(input)).outcome).toBe('UNCHANGED'); expect(write).not.toHaveBeenCalled();
+  });
+});
+
+describe('stopped AgentOrg Save with delegated copies (AR-004, AR-003)', () => {
+  const withTeamCopy = async (h: Awaited<ReturnType<typeof setup>>) => {
+    const tree = { ...h.tree, rootOrg: { ...h.tree.rootOrg, taskExecutions: [{
+      address: '/team', teamRunId: 'team-copy', startedAt: '2026-10-13T00:00:00.000Z', delegatorAgentRunId: 'worker', taskExecutions: [],
+      members: [{ address: '/team/lead', agentRunId: 'copy-lead', platformAgentRunId: null }],
+    }] } };
+    await h.store.write(h.dir, tree as never);
+    return tree;
+  };
+
+  it('records a Team choice on a configured-placement copy in the same write as configured patches', async () => {
+    const h = await setup(); h.failStop(); await withTeamCopy(h);
+    const write = vi.spyOn(h.store, 'write');
+    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
+      modelPatches: [select('CONFIGURED_AGENT', '/worker')],
+      delegatedChanges: [{ teamRunId: 'team-copy', selection: { llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } }] });
+    expect(result).toMatchObject({ outcome: 'UPDATED', success: true });
+    expect(write).toHaveBeenCalledTimes(1);
+    const saved = (await h.store.read(h.dir, 'org'))!;
+    expect(saved.rootOrg.taskExecutions[0]).toMatchObject({ teamRunId: 'team-copy',
+      userTeamLaunchSelection: { llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } });
+    expect((saved.rootOrg.members[0] as { launchConfiguration: { llmModelIdentifier: string } }).launchConfiguration.llmModelIdentifier).toBe('equal');
+  });
+
+  it('refuses the whole Save when a delegated model is unavailable and writes nothing', async () => {
+    const h = await setup(); h.failStop(); await withTeamCopy(h);
+    const write = vi.spyOn(h.store, 'write');
+    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
+      modelPatches: [select('CONFIGURED_AGENT', '/worker')],
+      delegatedChanges: [{ teamRunId: 'team-copy', selection: { llmModelIdentifier: 'not-offered', llmConfig: null } }] });
+    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false });
+    expect(write).not.toHaveBeenCalled();
   });
 });

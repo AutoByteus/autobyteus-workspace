@@ -1,0 +1,22 @@
+[
+ {
+  "t": 2375,
+  "type": "TOKEN_USAGE_UPDATED",
+  "phase": null,
+  "call": true,
+  "prompt": 7331,
+  "count": 5,
+  "revision": 5,
+  "summaryPrompt": 7331
+ },
+ {
+  "t": 2376,
+  "type": "TURN_COMPLETED",
+  "phase": null,
+  "call": null,
+  "prompt": null,
+  "count": null,
+  "revision": null,
+  "summaryPrompt": null
+ }
+]

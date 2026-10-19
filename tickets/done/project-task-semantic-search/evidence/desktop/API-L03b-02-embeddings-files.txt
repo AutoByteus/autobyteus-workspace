@@ -1,0 +1,24 @@
+# API-L03b: output of the step named in the execution report Cases row for API-L03b; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6x1LUC/server-data/embeddings:
+total 16584
+drwxr-xr-x@  6 normy  staff      192 Oct 18 11:59 .
+drwx------@ 16 normy  staff      512 Oct 18 11:59 ..
+-rw-r--r--@  1 normy  staff  3846144 Oct 18 12:01 embeddings.sqlite
+-rw-r--r--@  1 normy  staff    32768 Oct 18 11:59 embeddings.sqlite-shm
+-rw-r--r--@  1 normy  staff  4165352 Oct 18 12:01 embeddings.sqlite-wal
+drwxr-xr-x@  3 normy  staff       96 Oct 18 11:59 models
+
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6x1LUC/server-data/embeddings/models/mdbr-leaf-ir/:
+total 1400
+drwxr-xr-x@ 5 normy  staff     160 Oct 18 11:59 .
+drwxr-xr-x@ 3 normy  staff      96 Oct 18 11:59 ..
+drwxr-xr-x@ 4 normy  staff     128 Oct 18 11:59 onnx
+-rw-r--r--@ 1 normy  staff  711661 Oct 18 11:59 tokenizer.json
+-rw-r--r--@ 1 normy  staff    1529 Oct 18 11:59 tokenizer_config.json
+
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6x1LUC/server-data/embeddings/models/mdbr-leaf-ir/onnx:
+total 45272
+drwxr-xr-x@ 4 normy  staff       128 Oct 18 11:59 .
+drwxr-xr-x@ 5 normy  staff       160 Oct 18 11:59 ..
+-rw-r--r--@ 1 normy  staff    220597 Oct 18 11:59 model_quantized.onnx
+-rw-r--r--@ 1 normy  staff  22954752 Oct 18 11:59 model_quantized.onnx_data

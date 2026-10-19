@@ -1,0 +1,13 @@
+# IMP-06 web guards
+# Command: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals
+# Commit: ffeea43dac (worktree content identical when run)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T19:04Z
+
+guard:web-boundary: exit 0
+[guard:web-boundary] Passed.
+guard:localization-boundary: exit 0
+[guard:localization-boundary] Passed.
+audit:localization-literals: exit 0
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/withdraw-adoption/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)

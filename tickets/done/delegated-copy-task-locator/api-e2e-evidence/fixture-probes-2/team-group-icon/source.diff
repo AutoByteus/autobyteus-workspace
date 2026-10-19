@@ -1,0 +1,240 @@
+diff --git a/TESTING.md b/TESTING.md
+index acd2d51ee..fc0499b0b 100644
+--- a/TESTING.md
++++ b/TESTING.md
+@@ -563,7 +563,7 @@ pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh evidence
+   - **Load:** a UI write on a 60-Task Project with a busy worker arrives within 2 s.
+ 
+   `PROJECT_CHANGE_FEED_E2E_EVIDENCE_DIR` keeps a JSON receipt with frame counts.
+-- **`test:e2e:project-manager-ux`** (PMU-001..PMU-019) in a real browser:
++- **`test:e2e:project-manager-ux`** (PMU-001..PMU-025) in a real browser:
+   - live list, board and highlights;
+   - root lines and opening them for Agent, Team and Org hosts;
+   - DONE → Offline;
+@@ -599,6 +599,19 @@ pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh evidence
+     - no highlight on the Org launch page, an empty `/workspace` or `/agents`;
+     - a page icon docks and navigates;
+     - no reveal off a run: New chat after a Team run, `/agents` after an Agent run and `/projects` after a Team run keep focus on the Workspaces section, with no scroll.
++  - Task summaries under delegated copy rows and "Show Task in Projects" (PMU-020..PMU-025; cases in
++    `autobyteus-web/tests/e2e/project-manager-ux-task-locator-cases.mjs`). Copies come from the real
++    `delegate_task` / `send_message_to` tools:
++    - PMU-020: the agent, task Team and Temp-task copies of an Agent run, and a Team run's copy, show their Task's first line with the spec's type, colour, alignment, elbow and chevron. Team members, a sub-work copy and an `@` collaborator stay one line. `taskWorkerTasks` answers match the GraphQL query, and the tree reads workers in batches, never a Task list.
++    - PMU-021: locate with the panel docked on another tab. The picker switches Project (or to Temp tasks) and keeps that choice after reload; the card is centred, focused and highlighted for 2.4 s; the center and tree selection stay. Enter opens the Task; locating from an open Task returns to the board; only the latest of two locates is highlighted; a search is kept or cleared. Keyboard Tab / Enter / Space; a row click on an agent copy or a task Team copy opens it and locates nothing.
++    - PMU-022: a hidden panel reopens docked, a 900×800 window opens the drawer (reduced motion: static highlight), and the New chat start surface opens its tools.
++    - PMU-023: from the Agents page (wide and narrow) the summary opens the Agent run, and from the Projects page it opens the selected Team run without collapsing it, then locates.
++    - PMU-024: live without reload: rename; feed lost then reconnect re-read; follow-up Task by run ID (the earlier Task stays in Done); a Task cancelled just before the click is located in the Cancelled lane (slate-300 pill), then its row leaves; Task delete; Project delete.
++    - PMU-025: zh-CN tooltip, accessible name and row name.
++
++    PMU-024 emulates two network conditions in the browser only, with Playwright `routeWebSocket`: a lost
++    `/ws/projects` connection, and a delayed collaboration stream (held in order from the closure frame on) so
++    the still-shown summary can be clicked after the Task closed.
+ 
+   Every case fails on any browser error. PMU-007 allows errors only while the backend restarts. On failure, `evidence.json` keeps each page's URL, center text and its last console lines. PMU-004 and PMU-007 depend on earlier cases in the same run.
+ 
+diff --git a/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs b/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs
+index 087a1add2..b4f621f58 100755
+--- a/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs
++++ b/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs
+@@ -7,6 +7,7 @@ import process from 'node:process';
+ import { spawn } from 'node:child_process';
+ import { createRequire } from 'node:module';
+ import { fileURLToPath } from 'node:url';
++import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
+ 
+ const require = createRequire(import.meta.url);
+ const { chromium } = require('playwright-core');
+@@ -174,6 +175,8 @@ try {
+   page.on('console', (message) => evidence.browserEvents.push({ type: `console:${message.type()}`, text: message.text() }));
+   page.on('pageerror', (error) => evidence.browserEvents.push({ type: 'pageerror', text: error.message }));
+   page.on('requestfailed', (request) => evidence.browserEvents.push({ type: 'requestfailed', text: `${request.method()} ${request.url()} ${request.failure()?.errorText || ''}` }));
++  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
++  await routeTaskWorkerBoundaries(context);
+   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+   await page.locator('[data-test="background-contention-probe"]').waitFor({ state: 'visible', timeout: timeoutMs });
+   await page.waitForFunction(() => Boolean(window.__backgroundContentionProbe), null, { timeout: timeoutMs });
+diff --git a/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue b/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue
+index ddba204fc..de3669be3 100644
+--- a/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue
++++ b/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue
+@@ -489,6 +489,7 @@ const actions: WorkspaceHistorySectionActions = {
+   onTerminateRun: () => {}, onArchiveRun: () => {}, onDeleteRun: () => {},
+   onTerminateTeam: () => {}, onArchiveTeam: () => {}, onDeleteTeam: () => {},
+   onSelectTeam: (team) => { if (expandedTeams.has(team.teamRunId)) expandedTeams.delete(team.teamRunId); else expandedTeams.add(team.teamRunId); },
++  onOpenTeamRun: (team) => { expandedTeams.add(team.teamRunId); },
+   onSelectTeamMember: (row: RunHistoryTeamExecutionRow) => {
+     if (!row.agentRunId) return;
+     const result = richTeam.view.focusAgent(row.agentRunId);
+diff --git a/autobyteus-web/tests/e2e/fixtures/nested-team-aggregate-status.page.vue b/autobyteus-web/tests/e2e/fixtures/nested-team-aggregate-status.page.vue
+index f36e57c89..e8dc85c11 100644
+--- a/autobyteus-web/tests/e2e/fixtures/nested-team-aggregate-status.page.vue
++++ b/autobyteus-web/tests/e2e/fixtures/nested-team-aggregate-status.page.vue
+@@ -299,6 +299,7 @@ const actions: WorkspaceHistorySectionActions = {
+   onArchiveTeam: () => {},
+   onDeleteTeam: () => {},
+   onSelectTeam: () => { teamSelectionCount.value += 1; },
++  onOpenTeamRun: () => {},
+   onSelectTeamMember: () => { memberSelectionCount.value += 1; },
+ };
+ 
+diff --git a/autobyteus-web/tests/e2e/fixtures/nested-team-hierarchy.page.vue b/autobyteus-web/tests/e2e/fixtures/nested-team-hierarchy.page.vue
+index c02edc5b4..a2d437a4a 100644
+--- a/autobyteus-web/tests/e2e/fixtures/nested-team-hierarchy.page.vue
++++ b/autobyteus-web/tests/e2e/fixtures/nested-team-hierarchy.page.vue
+@@ -295,6 +295,7 @@ const actions: WorkspaceHistorySectionActions = {
+   onArchiveTeam: () => { archiveCount.value += 1; },
+   onDeleteTeam: () => { deleteCount.value += 1; },
+   onSelectTeam: () => { teamSelectionCount.value += 1; },
++  onOpenTeamRun: () => {},
+   onSelectTeamMember: (member) => {
+     memberSelectionCount.value += 1;
+     selectedAgentRunId.value = member.agentRunId;
+diff --git a/autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue b/autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue
+index b78180f2e..8aeb04271 100644
+--- a/autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue
++++ b/autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue
+@@ -250,6 +250,7 @@ const sectionActions: WorkspaceHistorySectionActions = {
+   onArchiveTeam: () => undefined,
+   onDeleteTeam: () => undefined,
+   onSelectTeam: () => undefined,
++  onOpenTeamRun: () => undefined,
+   onSelectTeamMember: () => undefined,
+ };
+ 
+diff --git a/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue b/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue
+index dbf693eb2..9baabe64f 100644
+--- a/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue
++++ b/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue
+@@ -259,6 +259,7 @@ const actions: WorkspaceHistorySectionActions = {
+   onArchiveTeam: () => {},
+   onDeleteTeam: () => {},
+   onSelectTeam: () => {},
++  onOpenTeamRun: () => {},
+   onSelectTeamMember: () => {},
+ };
+ 
+diff --git a/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs b/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs
+index 6b6f6da18..15efd8680 100644
+--- a/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs
++++ b/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs
+@@ -8,6 +8,7 @@ import process from 'node:process';
+ import { spawn } from 'node:child_process';
+ import { createRequire } from 'node:module';
+ import { fileURLToPath } from 'node:url';
++import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
+ 
+ const require = createRequire(import.meta.url);
+ const { chromium } = require('playwright-core');
+@@ -359,6 +360,8 @@ try {
+     });
+   });
+ 
++  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
++  await routeTaskWorkerBoundaries(context);
+   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+   await page.locator('[data-test="nested-team-aggregate-status-probe"]').waitFor({ state: 'visible', timeout: timeoutMs });
+   await page.waitForFunction(() => Boolean(window.__nestedTeamAggregateStatusProbe), null, { timeout: timeoutMs });
+diff --git a/autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs b/autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs
+index ec110c782..021c41100 100644
+--- a/autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs
++++ b/autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs
+@@ -8,6 +8,7 @@ import process from 'node:process';
+ import { spawn } from 'node:child_process';
+ import { createRequire } from 'node:module';
+ import { fileURLToPath } from 'node:url';
++import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
+ 
+ const require = createRequire(import.meta.url);
+ const { chromium } = require('playwright-core');
+@@ -363,6 +364,8 @@ try {
+     });
+   });
+ 
++  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
++  await routeTaskWorkerBoundaries(context);
+   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+   await page.locator('[data-test="nested-team-hierarchy-probe"]').waitFor({ state: 'visible', timeout: timeoutMs });
+   await page.waitForFunction(() => Boolean(window.__nestedTeamHierarchyProbe), null, { timeout: timeoutMs });
+diff --git a/autobyteus-web/tests/e2e/project-manager-ux-probe.mjs b/autobyteus-web/tests/e2e/project-manager-ux-probe.mjs
+index 8b70d83de..ab32892bd 100644
+--- a/autobyteus-web/tests/e2e/project-manager-ux-probe.mjs
++++ b/autobyteus-web/tests/e2e/project-manager-ux-probe.mjs
+@@ -18,6 +18,7 @@ import { randomUUID } from 'node:crypto';
+ import { spawn } from 'node:child_process';
+ import { createRequire } from 'node:module';
+ import { fileURLToPath } from 'node:url';
++import { createTaskLocatorCases } from './project-manager-ux-task-locator-cases.mjs';
+ 
+ const require = createRequire(import.meta.url);
+ const { chromium } = require('playwright-core');
+@@ -34,7 +35,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/projec
+ const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
+   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
+     .find((candidate) => fs.existsSync(candidate));
+-const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016', 'PMU-017', 'PMU-018', 'PMU-019'];
++const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016', 'PMU-017', 'PMU-018', 'PMU-019', 'PMU-020', 'PMU-021', 'PMU-022', 'PMU-023', 'PMU-024', 'PMU-025'];
+ const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
+ 
+ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+@@ -218,8 +219,8 @@ const rootOf = async (projectId, taskId) => (await projectTasks(projectId)).find
+ // ---------------------------------------------------------------- browser helpers
+ let browser;
+ const openPages = [];
+-const newPage = async ({ width = 1440, height = 1000 } = {}) => {
+-  const context = await browser.newContext({ viewport: { width, height }, locale: 'en-US' });
++const newPage = async ({ width = 1440, height = 1000, locale = 'en-US' } = {}) => {
++  const context = await browser.newContext({ viewport: { width, height }, locale });
+   const page = await context.newPage();
+   openPages.push({ context, page });
+   const errors = [];
+@@ -1843,6 +1844,9 @@ const CASES = {
+   'PMU-017': ['Cancelled Tasks (task-closed-status): agent cancel hides the row behind "Cancelled (N)" beside Refresh, Cancelled as the last column (stacked last when narrow), keyboard, muted Cancelled pill vs Done, open counts, live reopen; Temp board/header/page; right-panel board and detail', cancelledTasksJourney],
+   'PMU-018': ['Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat', collapsedStripWorkspaces],
+   'PMU-019': ['Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates; in-app New chat, /agents and /projects after a run (no reveal off a run)', collapsedStripOtherEntries],
++  // delegated-copy-task-locator: Task summaries under delegated copy rows and "Show Task in Projects".
++  ...createTaskLocatorCases({ gql, createDefinitions, createProject, createTask, createRoot, managerInput, rootOf, projectTasks, tempTasks,
++    newPage, goto, shot, until, sleep, assert, callTool, segment, slug, expandWorkspace, centerText, selectionState, navTo, assertNoBrowserErrors }),
+ };
+ 
+ let result = 'Pass';
+diff --git a/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs b/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs
+index c2b2e79ae..32c4d519e 100644
+--- a/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs
++++ b/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs
+@@ -12,6 +12,7 @@ import process from 'node:process';
+ import { spawn } from 'node:child_process';
+ import { createRequire } from 'node:module';
+ import { fileURLToPath } from 'node:url';
++import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
+ 
+ const require = createRequire(import.meta.url);
+ const { chromium } = require('playwright-core');
+@@ -241,6 +242,8 @@ try {
+     });
+   });
+ 
++  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
++  await routeTaskWorkerBoundaries(page);
+   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+   await page.locator('[data-test="peer-sidebar-probe"]').waitFor({ state: 'visible' });
+   await page.waitForFunction(() => Boolean(window.__peerSidebarProbe));
+diff --git a/autobyteus-web/tests/e2e/team-group-icon-probe.mjs b/autobyteus-web/tests/e2e/team-group-icon-probe.mjs
+index d13e1a50f..3e012bd42 100644
+--- a/autobyteus-web/tests/e2e/team-group-icon-probe.mjs
++++ b/autobyteus-web/tests/e2e/team-group-icon-probe.mjs
+@@ -18,6 +18,7 @@ import net from 'node:net';
+ import assert from 'node:assert/strict';
+ import { createHash } from 'node:crypto';
+ import { chromium } from 'playwright-core';
++import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
+ 
+ const here = path.dirname(fileURLToPath(import.meta.url));
+ const web = path.resolve(here, '../..'), root = path.resolve(web, '..');
+@@ -99,6 +100,8 @@ try {
+       : query.includes('agentTeamDefinitions') ? { agentTeamDefinitions: [] } : query.includes('workspaces') ? { workspaces: [] } : {};
+     return route.fulfill({ contentType: 'application/json', body: JSON.stringify({ data }) });
+   });
++  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
++  await routeTaskWorkerBoundaries(page);
+   await page.goto(url);
+   await page.locator('[data-preview="team-icons"]').waitFor();
+   await page.locator('[data-team-icon="temporary-task-team"] svg').first().waitFor();

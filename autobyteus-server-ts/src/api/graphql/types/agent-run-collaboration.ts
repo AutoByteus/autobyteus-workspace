@@ -7,6 +7,7 @@ import { getStandaloneRootMemberViewProjectionService } from "../../../standalon
 import { projectAgentCollaborationView } from "../../../services/agent-streaming/agent-collaboration-view-projector.js";
 import { resolveCollaboratorRootPort } from "../services/collaborator-root-port-resolver.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
+import { RunFileChangeEntryObject } from "./run-file-changes.js";
 
 @ObjectType()
 export class CollaboratorMentionCandidateObject {
@@ -20,7 +21,7 @@ export class CollaboratorMentionCandidateObject {
 
 @ObjectType()
 export class CollaboratorMentionCandidatesPayload {
-  /** `AVAILABLE`, or `UNAVAILABLE_APPLICATION_ROOT` for runs that cannot host collaborators. */
+  /** `AVAILABLE`, or `UNAVAILABLE_APPLICATION_ROOT` for runs that cannot involve other agents. */
   @Field(() => String) availability!: "AVAILABLE" | "UNAVAILABLE_APPLICATION_ROOT";
   @Field(() => [CollaboratorMentionCandidateObject]) candidates!: CollaboratorMentionCandidateObject[];
 }
@@ -65,6 +66,16 @@ export class AgentRunCollaborationResolver {
     @Arg("beforeCursor", () => String, { nullable: true }) beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePageObject> {
     return getStandaloneRootMemberViewProjectionService().getActiveTracePage(hostRunId, memberAddress, agentRunId, beforeCursor);
+  }
+
+  /** One child's artifact list, located inside the named hub only (live while the hub runs). */
+  @Query(() => [RunFileChangeEntryObject])
+  agentRunCollaborationMemberFileChanges(
+    @Arg("hostRunId", () => String) hostRunId: string,
+    @Arg("memberAddress", () => String) memberAddress: string,
+    @Arg("agentRunId", () => String) agentRunId: string,
+  ): Promise<RunFileChangeEntryObject[]> {
+    return getStandaloneRootMemberViewProjectionService().getFileChanges(hostRunId, memberAddress, agentRunId);
   }
 
   /**

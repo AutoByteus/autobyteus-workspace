@@ -1,0 +1,25 @@
+{
+  "head": "c01dbfdcb6032a26177a2f92bb487aa95c39d422",
+  "source": "a3f65bfe6e7859a3167cb41013b80bc223385cfb",
+  "delta": [
+    "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.spec.ts",
+    "autobyteus-web/docs/file_explorer.md",
+    "autobyteus-web/stores/fileExplorerContentActions.ts",
+    "autobyteus-web/stores/fileExplorerState.ts"
+  ],
+  "unchangedStorageServerLauncherRequirementsDesignGuidelines": true,
+  "priorCleanup": "Complete",
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o",
+  "sourceHashes": {
+    "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue": "242a529cc896b7906e19f3c1bf9bd1077593bbe9137c3768c6819e2a0d259fc8",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts": "54e1298b0b1bf21f134b5b050bc57edca415b43ecbf6342d77b4b6524f57e0dc",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.spec.ts": "01c5eae143cf0ae87b091e37eeb8a436229403fa8067cb558f49ef315e91128c",
+    "autobyteus-web/docs/file_explorer.md": "b74e9b6a111513ae9f7682fc8e9af2c3db88cae270cf1609691dd2edc65fffb1",
+    "autobyteus-web/stores/fileExplorerContentActions.ts": "9380ee4f6bb778c77b9a828a2e78350f769e7242bec56b32b37c456947cc0bb1",
+    "autobyteus-web/stores/fileExplorerState.ts": "ed2d8a6743652ec7cff429aedb89e5e97e4ac8176c7a84b78a037d97f51cefa7"
+  },
+  "priorApiResult": "Fail82.14",
+  "followup": "project_task_a4f90984-add2-4300-983d-de54ded3032b, user-directed outside increment, unresolved notPassed"
+}

@@ -1,19 +1,22 @@
+import { messageLogOwnerOf } from "../../run-history/store/task-agent-message-logs.js";
+import type {
+  DelegatedLaunchSelectionCommand,
+  DelegatedLaunchUpdateResult,
+  DelegatedStopResult,
+} from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
+import type { DelegatedLaunchChange, DelegatedRunReference } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { createAgentOrgDelegatedLaunchCommand } from "../services/agent-org-run-delegated-launches.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
-import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
+import type { TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { AgentOrgIndexedAgentExecution } from "../services/agent-org-execution-index.js";
-import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
-import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { createCollaborationMemberExecutionIdentity, sameCollaborationMemberExecutionIdentity, sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type { AssignToExistingCopyInput, SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
-import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import { parseBackgroundTaskUpdatedPayload } from "../../agent-execution/domain/agent-background-task.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
@@ -24,11 +27,8 @@ import type { CollaborationAgentPlatformBindingChange } from "../../agent-collab
 import { createCollaborationAgentStatusSnapshot, type CollaborationAgentExecutionEvent } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "./agent-org-run-execution-tree.js";
 import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
-import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
+import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import { AgentOrgExecutionIndex } from "../services/agent-org-execution-index.js";
-import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
-import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
-import { AgentOrgRunPersistenceCoordinator } from "../services/agent-org-run-persistence-coordinator.js";
 import { AgentOrgTaskExecutionAdapter, type ResolvedAgentOrgRecipient } from "../services/agent-org-task-execution-adapter.js";
 import { AgentOrgCommunicationAdapter } from "../services/agent-org-communication-adapter.js";
 import { adoptAgentOrgPlatformBinding, replaceAgentOrgPlatformBindingWithoutConversation } from "../services/agent-org-run-execution-tree-mutator.js";
@@ -37,10 +37,8 @@ import { AgentOrgRecipientResolver } from "../services/agent-org-recipient-resol
 import { AgentOrgRunCollaborators } from "../services/agent-org-run-collaborators.js";
 import { AgentOrgRunMessageDelivery } from "../services/agent-org-run-message-delivery.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
-import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
+import type { CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
-import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import type { RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
@@ -55,7 +53,7 @@ export type AgentOrgRunPackageSnapshot = Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
   /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
   closedTaskExecutions: readonly TaskExecutionReference[];
-  messages: AgentOrgCommunicationMessagesFileV1;
+  messages: AgentOrgCommunicationMessagesFile;
   statuses: readonly CollaborationAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -64,7 +62,7 @@ export type AgentOrgRunPackageSnapshot = Readonly<{
 export class AgentOrgRun implements ActiveRootMessageBoundary {
   private lifecycle: "activating" | "active" | "terminating" | "terminated" | "fail_stop" = "activating";
   private tree: AgentOrgRunExecutionTreeSnapshot;
-  private messages: AgentOrgCommunicationMessagesFileV1;
+  private messages: AgentOrgCommunicationMessagesFile;
   private index: AgentOrgExecutionIndex;
   private readonly taskExecutions: RootTaskExecutionLifecycle<ResolvedAgentOrgRecipient>;
   private readonly communication: RootCommunicationEngine;
@@ -73,6 +71,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly delivery: AgentOrgRunMessageDelivery;
   private readonly collaborators: AgentOrgRunCollaborators;
   private readonly eventRetirement: AgentOrgTaskEventRetirement;
+  private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
   private termination: Promise<AgentOperationResult> | null = null;
   /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
   private failStopped = false;
@@ -121,20 +120,18 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
-      identities: options.taskExecutionIdentity,
+      getTree: () => this.tree,
+    });
+    this.delegatedLaunches = createAgentOrgDelegatedLaunchCommand({
+      taskExecutions: this.taskExecutions,
       persistence: options.persistence,
       getTree: () => this.tree,
+      getIndex: () => this.index,
       assertAdmitting: () => this.assertAdmitting(),
-      prepareHandles: (entries) => options.prepareCollaboratorHandles(entries),
       replaceTree: (tree) => this.replaceTree(tree),
-      publish: (event) => options.publisher.publish(event),
+      publishSelectionsChanged: (selections) => options.publisher.publish({ kind: "delegated_launch_selections_changed", selections }),
     });
-    const recipients: AgentOrgRecipientResolver = new AgentOrgRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
-      taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
-        resolvePlacement: address => recipients.resolveDelegationPlacement(sender, address),
-        getAgent: id => this.index.requireAgent(id),
-      }),
-    });
+    const recipients = new AgentOrgRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators });
     this.delivery = new AgentOrgRunMessageDelivery({
       orgRunId: this.orgRunId,
       root: options.root,
@@ -155,6 +152,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       isOpen: () => this.isAdmitting(),
       assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
       isCurrentAgent: (identity) => this.isPublishedAgent(identity),
+      messageLogOwnerOf: (agentRunId) => messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
       replaceMessages: (messages) => { this.messages = messages; },
       publish: (message) => options.publisher.publish({ kind: "communication", message }),
@@ -174,6 +172,18 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return this.taskExecutions.taskExecutionStatus(execution);
   }
 
+  /** DS-002: the user's Stop of one delegated copy and the copies it started. */
+  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
+    return this.operationGate.run(() => this.delegatedLaunches.stop(target));
+  }
+  /** DS-001: the user's model choice for stopped delegated copies of this live run. */
+  updateDelegatedLaunchSelections(
+    changes: readonly DelegatedLaunchChange[],
+    validator: RunModelSelectionValidator,
+  ): Promise<DelegatedLaunchUpdateResult> {
+    return this.operationGate.run(() => this.delegatedLaunches.update(changes, validator));
+  }
+
   get orgRunId(): string { return this.tree.rootOrg.orgRunId; }
   get rootIdentity(): RootExecutionIdentity { return this.options.root; }
   isActive(): boolean { return this.lifecycle === "active"; }
@@ -182,7 +192,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     this.lifecycle = "active";
   }
   getExecutionTreeSnapshot(): AgentOrgRunExecutionTreeSnapshot { return this.tree; }
-  getCommunicationSnapshot(): AgentOrgCommunicationMessagesFileV1 { return this.messages; }
+  getCommunicationSnapshot(): AgentOrgCommunicationMessagesFile { return this.messages; }
   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
     return projectAgentOrgAgentStatusSnapshots({
       tree: this.tree,

@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
-import type { TreeNode } from "../../../src/file-explorer/tree-node.js";
+import type { TreeNode, TreeNodeDict } from "../../../src/file-explorer/tree-node.js";
 
 const createTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-file-explorer-"));
 
@@ -17,7 +17,8 @@ describe("WorkspaceFileExplorer", () => {
     await explorer.buildWorkspaceDirectoryTree();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await explorer.close();
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
 
@@ -57,22 +58,40 @@ describe("WorkspaceFileExplorer", () => {
     expect(tree.name).toBe(path.basename(tempDir));
   });
 
-  it("serializes the tree to JSON", () => {
-    const jsonValue = explorer.toJson();
+  it("serializes the live tree to JSON with workspace-relative identity", async () => {
+    fs.mkdirSync(path.join(tempDir, "docs"));
+    fs.writeFileSync(path.join(tempDir, "docs", "notes.txt"), "notes", "utf-8");
+    await explorer.buildWorkspaceDirectoryTree();
+
+    const jsonValue = explorer.getTree()?.toJson() ?? null;
     expect(jsonValue).toBeTruthy();
 
-    const parsed = JSON.parse(jsonValue as string) as { name?: string; children?: unknown[] };
+    const parsed = JSON.parse(jsonValue as string) as TreeNodeDict;
     expect(parsed.name).toBeTruthy();
     expect(Array.isArray(parsed.children)).toBe(true);
-  });
-
-  it("rejects reading files outside the workspace", async () => {
-    await expect(explorer.readFileContent("../outside.txt")).rejects.toThrow(
-      "Access denied: File is outside the workspace.",
+    expect(explorer.getTree()?.findNodeByPath(path.join("docs", "notes.txt"))?.getPath()).toBe(
+      path.join("docs", "notes.txt"),
+    );
+    expect(parsed.children[0]?.children[0]?.path).toBe(
+      path.join("docs", "notes.txt"),
     );
   });
 
-  it("produces shallow JSON with limited depth", async () => {
+  it("keeps an unloaded snapshot's tree JSON null", async () => {
+    const unloadedExplorer = new WorkspaceFileExplorer(tempDir);
+    expect(unloadedExplorer.getTree()?.toJson() ?? null).toBeNull();
+    await unloadedExplorer.close();
+  });
+
+  it("rejects reading files outside the workspace", async () => {
+    const treeBeforeDenial = explorer.getTree()?.toJson() ?? null;
+    await expect(explorer.readFileContent("../outside.txt")).rejects.toThrow(
+      "Access denied: File is outside the workspace.",
+    );
+    expect(explorer.getTree()?.toJson() ?? null).toBe(treeBeforeDenial);
+  });
+
+  it("projects the live tree with limited depth and relative paths", async () => {
     const folder2 = path.join(tempDir, "folder1", "folder2");
     fs.mkdirSync(folder2, { recursive: true });
     fs.writeFileSync(path.join(folder2, "deep_file.txt"), "deep", "utf-8");
@@ -81,10 +100,8 @@ describe("WorkspaceFileExplorer", () => {
 
     await explorer.buildWorkspaceDirectoryTree();
 
-    const shallowJson = explorer.toShallowJson(1) as string;
-    const shallowDict = JSON.parse(shallowJson) as {
-      children: Array<{ name: string; children: Array<{ name: string }> }>;
-    };
+    const tree = explorer.getTree() as TreeNode;
+    const shallowDict = tree.toShallowDict(1);
 
     const childNames = new Set(shallowDict.children.map((child) => child.name));
     expect(childNames.has("folder1")).toBe(true);
@@ -92,11 +109,9 @@ describe("WorkspaceFileExplorer", () => {
 
     const folder1 = shallowDict.children.find((child) => child.name === "folder1");
     expect(folder1?.children ?? []).toEqual([]);
+    expect(folder1?.path).toBe("folder1");
 
-    const shallowJson2 = explorer.toShallowJson(2) as string;
-    const shallowDict2 = JSON.parse(shallowJson2) as {
-      children: Array<{ name: string; children: Array<{ name: string; children: Array<unknown> }> }>;
-    };
+    const shallowDict2 = tree.toShallowDict(2);
 
     const folder1Depth2 = shallowDict2.children.find((child) => child.name === "folder1");
     const folder1Children = new Set(folder1Depth2?.children.map((child) => child.name) ?? []);
@@ -105,5 +120,6 @@ describe("WorkspaceFileExplorer", () => {
 
     const folder2Depth2 = folder1Depth2?.children.find((child) => child.name === "folder2");
     expect(folder2Depth2?.children ?? []).toEqual([]);
+    expect(folder2Depth2?.path).toBe(path.join("folder1", "folder2"));
   });
 });

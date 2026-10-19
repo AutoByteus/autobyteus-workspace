@@ -66,6 +66,7 @@ export const createSessionHarness = (options: FakeAgentOptions & {
   profile?: AcpAgentSessionProfile;
   autoExecuteTools?: boolean;
   idleTimeoutMs?: number;
+  now?: () => number;
 }): SessionHarness => {
   const connection = new AcpClientConnection(spawnFakeAgent(options), "Fake Agent");
   const events: AgentRunEvent[] = [];
@@ -79,6 +80,7 @@ export const createSessionHarness = (options: FakeAgentOptions & {
     emit: (batch) => { events.push(...batch); },
     onFailed: (failure) => { failures.push(failure); },
     idleTimeoutMs: options.idleTimeoutMs,
+    now: options.now,
   });
   return { connection, session, events, failures };
 };

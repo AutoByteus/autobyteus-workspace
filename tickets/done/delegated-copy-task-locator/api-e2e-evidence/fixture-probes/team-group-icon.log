@@ -1,0 +1,22 @@
+{
+  "result": "Fail",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: 'An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D'\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: 'An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D'\n+   }\n+ ]\n- []\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:157:12\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:68:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:127:3",
+  "cases": {
+    "B01": {
+      "description": "Shared + Agent/Team parent icons, pointer/keyboard/disclosure/focus at normal/constrained widths",
+      "startedAt": "2026-10-11T07:33:10.325Z",
+      "result": "Fail",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: 'An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D'\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:60242/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: 'An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22taskWorkerTasks%22%2C%22%7B%7D%22%5D%7D'\n+   }\n+ ]\n- []\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:157:12\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:68:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:127:3"
+    }
+  },
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtExited": {
+      "pid": 65804,
+      "exitCode": 0,
+      "signal": null
+    },
+    "routeRemoved": true,
+    "portsReleased": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "recordedAt": "2026-10-13T12:36:36.081050+00:00",
+  "ticketWorktree": "/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse",
+  "ticketWorktreeRemoved": true,
+  "generatedBuildDependenciesRemovedWithOwnedWorktree": true,
+  "worktreeRegistrationAbsent": true,
+  "prune": "Completed; dry-run empty, no unrelated registrations removed",
+  "localTicketBranch": "Deleted",
+  "localFinalizeBranch": "Deleted",
+  "remoteTicketBranch": "Deleted with lease expecting our published744998e67; no other writer overwritten",
+  "sourceMergeAlreadyPushed": "e3a6772951a3c0ccf54cfb5ef92350cccf16f2d2",
+  "durableArtifactSnapshot": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse",
+  "otherWorktreesSharedMainUserDataTouched": false,
+  "newDesktopServerInferenceStartedThisRound": false,
+  "upstreamRuntimeCleanupReceipt": "api-e2e-evidence/api-rev-002/cleanup-receipt.json"
+}

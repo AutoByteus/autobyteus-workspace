@@ -1,0 +1,4 @@
+# API-L03d baseline: embedded server after start, before any search (iso-65187-14ae, commit 722b9b3918, macOS arm64 packaged build, Sun Oct 18 12:42:13 CEST 2026)
+  PID    RSS
+33379 268960
+AutoByteus [33379]: 64-bit    Footprint: 186 MB (16384 bytes per page)

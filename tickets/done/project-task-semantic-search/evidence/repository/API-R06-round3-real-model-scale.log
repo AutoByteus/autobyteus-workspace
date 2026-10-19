@@ -1,0 +1,8 @@
+# API-R06 (round 3): RUN_EMBEDDING_MODEL_E2E=1 TEST_EMBEDDING_SCALE=1 TEST_EMBEDDING_MODEL_CACHE=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/integration/embeddings/embedding-model-quality.integration.test.ts --no-watch (Granite default; the real-text backlog now includes the 10 tickets added by the merge); commit 600d079b9c; ENV-1; Sun Oct 18 21:41:33 CEST 2026
+# Excerpt (full log removed at cleanup)
+EMBEDDING_MODEL_QUALITY granite-embedding-small-english-r2 {"fixture":{"tasks":60,"top5":1,"top10":1,"shownInFirst5":0.968,"unrelatedWithoutMatch":0.958},"generated":{"tasks":1000,"top5":0.952,"top10":0.968,"shownInFirst5":0.937,"unrelatedWithoutMatch":0.958},"repository":{"tasks":1000,"top5":0.952,"top10":0.952,"shownInFirst5":0.921,"unrelatedWithoutMatch":0.958}}
+ ✓ tests/integration/embeddings/embedding-model-quality.integration.test.ts (1 test) 408845ms
+     ✓ granite-embedding-small-english-r2 meets QR-007, AC-001 and AC-004  408841ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+exit=0

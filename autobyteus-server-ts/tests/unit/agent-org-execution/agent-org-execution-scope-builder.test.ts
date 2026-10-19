@@ -9,7 +9,6 @@ import { AgentRunActivationCandidate } from "../../../src/agent-execution/servic
 import { AgentOrgExecutionScopeBuilder } from "../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import { validateAgentOrgStatePackage } from "../../../src/agent-org-execution/services/agent-org-state-package-validator.js";
-import { validateAgentOrgCommunicationMessagesV1 } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-schema.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
@@ -37,12 +36,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
     });
     const state = validateAgentOrgStatePackage({
       executionTree,
-      communicationMessages: validateAgentOrgCommunicationMessagesV1({
-        schemaVersion: 1,
-        subjectKind: "agent_org",
-        orgRunId,
-        messages: [],
-      }, orgRunId),
+      communicationMessages: Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] }),
     });
     const publicationOrder: string[] = [];
     const orgMemoryDir = mkdtempSync(join(tmpdir(), "agent-org-idle-restore-"));
@@ -95,7 +89,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       teamDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
       memoryLocator: {
-        getLocation: () => ({ memoryDir: `/memory/agent_org/${orgRunId}/${agentRunId}` }),
+        getMemoryDir: () => `/memory/agent_org/${orgRunId}/${agentRunId}`,
       } as never,
       activityInspector: { inspect: () => ({ kind: "none" as const }) } as never,
     });

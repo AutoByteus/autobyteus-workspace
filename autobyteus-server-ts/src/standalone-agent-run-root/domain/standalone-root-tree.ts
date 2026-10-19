@@ -1,7 +1,6 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type {
-  CollaboratorEntry,
   IsoTimestamp,
   TaskExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
@@ -15,25 +14,27 @@ export type StandaloneRootHost = Readonly<{
 
 /**
  * `memory/agents/<hostRunId>/collaboration/collaboration_tree.json`: created on the first
- * admitted mention. Read tolerantly, written exactly. Every task execution is hosted by the
- * root and sits at a collaborator address.
+ * delegation. Read tolerantly, written exactly. Every task execution is hosted by the root and
+ * carries the catalog source it was started from.
  */
 export type StandaloneRootTreeFile = Readonly<{
   subjectKind: "agent";
   createdAt: IsoTimestamp;
   host: StandaloneRootHost;
-  collaborators: readonly CollaboratorEntry[];
   taskExecutions: readonly TaskExecution[];
 }>;
 
 export type StandaloneRootTreeSnapshot = StandaloneRootTreeFile;
 
-/** `memory/agents/<hostRunId>/collaboration/communication_messages.json`. */
-export type StandaloneRootMessagesFileV1 = Readonly<{
+/**
+ * The host's messages in memory. On disk they are the host's `MessageLog` in
+ * `memory/agents/<hostRunId>/collaboration/` (`communication_messages_*.jsonl`).
+ */
+export type StandaloneRootMessagesFile = Readonly<{
   schemaVersion: 1;
   subjectKind: "agent";
   hostRunId: string;
-  messages: readonly CollaborationCommunicationMessageV1[];
+  messages: readonly CollaborationCommunicationMessage[];
 }>;
 
 export const emptyStandaloneRootTree = (input: Readonly<{
@@ -43,9 +44,8 @@ export const emptyStandaloneRootTree = (input: Readonly<{
   subjectKind: "agent",
   createdAt: input.createdAt,
   host: Object.freeze({ ...input.host }),
-  collaborators: Object.freeze([]),
   taskExecutions: Object.freeze([]),
 });
 
-export const emptyStandaloneRootMessages = (hostRunId: string): StandaloneRootMessagesFileV1 =>
+export const emptyStandaloneRootMessages = (hostRunId: string): StandaloneRootMessagesFile =>
   Object.freeze({ schemaVersion: 1, subjectKind: "agent", hostRunId, messages: Object.freeze([]) });

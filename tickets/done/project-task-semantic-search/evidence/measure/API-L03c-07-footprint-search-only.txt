@@ -1,0 +1,2 @@
+# API-L03c/QR-004: footprint while only searching in a process that has not indexed (after restart; model loaded by the first search)
+footprint right after restart: 186 MB; before the loop: 325 MB; during 17 s loop: max 622 MB (+436 MB over the 186 MB pre-search baseline), median 495 MB

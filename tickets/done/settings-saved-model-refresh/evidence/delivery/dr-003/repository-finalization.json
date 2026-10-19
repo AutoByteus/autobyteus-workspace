@@ -1,0 +1,19 @@
+{
+  "time": "2026-10-13T17:41:58.628989+00:00",
+  "ticketBranch": "codex/settings-saved-model-refresh",
+  "ticketCommit": "cde52504c5b72a30177404258be92ed1c6d94d6c",
+  "ticketPush": "Completed",
+  "targetBefore": "abfd379059a7bc1c392a6a2137d27e32427cda26",
+  "finalizeBranch": "finalize/settings-saved-model-refresh",
+  "method": "no-ff",
+  "sourceMerge": "a80785e5217aa707ee195340fe1a83de6182688c",
+  "mergeTreeEqualsTicket": true,
+  "freshPrePushTargetUnchanged": true,
+  "targetPush": "Completed",
+  "remotePersonal": "a80785e5217aa707ee195340fe1a83de6182688c",
+  "hygiene": "Passed",
+  "licensing": "Passed",
+  "noRelease": true,
+  "custodyFilesByteVerified": 568,
+  "remoteWarning": "GitHub dependency warning on default branch; not a new task-specific verified finding, no dependency changes attempted"
+}

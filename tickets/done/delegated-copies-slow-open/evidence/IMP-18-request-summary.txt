@@ -1,0 +1,17 @@
+# Check: IMP-18 (summary of IMP-18-browser-collapse-probe/evidence.json)
+# Command: (cd autobyteus-web && pnpm test:e2e:delegated-team-default-collapse --output-dir <ticket>/evidence/IMP-18-browser-collapse-probe)
+# Commit: 2cb21ab41e (merged origin/personal 2763e7c678); server dist built from it
+# Environment: macOS 26.5.2, node v22.23.1, headless 155.0.8059.84
+# Date: 2026-10-18T14:27:19.507Z
+# Probe result: Pass; cases: B-001=Pass, P-001=Pass, B-002=Pass, B-003=Pass, B-004=Pass, B-006=Pass, B-005=Pass
+# Browser errors: 0; failed requests: 0, of which GraphQL or non-/_nuxt/: 0
+# Cleanup: {"browserClosed": true, "frontend": {"pid": 45396, "status": "terminated", "exit": "SIGTERM"}, "backend": {"pid": 45368, "status": "terminated", "exit": 0}, "dataRootRemoved": true, "backendPortClosed": true, "frontendPortClosed": true}
+# Hub project_task_manager_probe_951e3f68f15741eb832b82450fa031da: 7 task Teams, 42 child agents
+# ---- every GraphQL read of copy details or artifacts during the whole probe (operation, run) -> count
+  15  GetAgentRunCollaboration  host
+   5  GetAgentRunCollaboration  project_task_manager_probe_4ebaf36ec8214c6494395969df9cbcb5
+   5  GetAgentRunCollaborationMemberFileChanges  implementation_engineer_bce660062e6b42d399be35e077cd1060
+   3  GetAgentRunCollaborationMemberFileChanges  solution_designer_9d2b7e0029304d5b8cf2d0c10de4c817
+   5  GetAgentRunCollaborationMemberProjection  implementation_engineer_bce660062e6b42d399be35e077cd1060
+   3  GetAgentRunCollaborationMemberProjection  solution_designer_9d2b7e0029304d5b8cf2d0c10de4c817
+  30  GetRunFileChanges  host

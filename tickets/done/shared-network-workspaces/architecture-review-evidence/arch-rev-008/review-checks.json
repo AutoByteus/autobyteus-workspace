@@ -1,0 +1,56 @@
+{
+  "result": "PASS",
+  "scope": "Acceptance/design alignment; no runtime tests or repeated technical source audit",
+  "inputCommit": "b1af17feda2dd4d3825ce6b3e727ce4114283c16",
+  "sourceCommit": "d3c88f37c30ee74a89a95a4f6906992667c9b875",
+  "referencesExist": 1610,
+  "focusedInputHashes": {
+    "requirements-doc.md": "de08282bd6ed8d74b9007b2f4bd278f4caa07eef54addf1749443afbebf9f3ae",
+    "approval-record-sr024.md": "0373672038598b96acbc0003320c39cff6b103968fffdd3c3af73be7677d6519",
+    "requirements-approval-request.md": "8cc1bbb42885ffc2a81502f3912c70a75e2f06ee7a129254d8b57c87ad74de31",
+    "design-spec.md": "7ac9584edb6713205bdd701a9784c96d40a4223f70b96b4b4861548d53d83ca2",
+    "investigation-notes.md": "2c513afea8c5814a89198ddfed3b08deff4409aefed5d1bca423a274447bb43c",
+    "solution-revision-record.md": "4ee11438735fb8e83cb56e011ea1b7ea1a6a95460b977970cc84dc11f673cb3e",
+    "solution-design-handoff.md": "94de5c9a6569ace2972cb8a7dcd36c62ced2d1145a18f063d488f614c591fdd5",
+    "code-review-report.md": "a8decf0b778200ed9013a31f4648ed00c9eb827a00a447902ec93a7b23e0d79d",
+    "code-review-revision-record.md": "97d26e0766b27fa38298b5dcfa25d0b145c80173bbc025bb9d9436452dad47cb",
+    "api-e2e-execution-coverage-report.md": "96d731fe284483555c9c3fb5c6aa5c3c96a3632453dd91d112f017828a7ad175",
+    "api-e2e-test-case-ledger.md": "42907e6a22ba600d3a2aeebf0b1d35a2d1c68a75323584b7cddf9c504889a686",
+    "api-e2e-revision-record.md": "62ad4ae58b98ff326d989d9ca4decccd32a67637be482e97783d41cf4d470707",
+    "implementation-handoff.md": "633c33f4ba83f2fe3cc36c192cfa00a400a7bf7881bc906504a8fe4663add1bc",
+    "evidence/acceptance-revision/sr024/acceptance-disposition.md": "67316f626f82b6e434e7cbfa6426dde3eef6f6d79b0e344396cf17a8a9dfda22",
+    "evidence/acceptance-revision/sr024/final-audit.json": "db9a67db4c661655beb66f162e363b7be745b8ebdd4c542825f6d087f4f37045",
+    "evidence/api-e2e/api-rev-006/prior-failure-resolution.json": "86648c8415748bdbcaba792b41e6f04b4bfb3cfde4de549e825723da31c9ef08",
+    "evidence/api-e2e/api-rev-006/peer-network-confirm-result.json": "cfc2d922cca156a4502dfd6d1b1f27d41b860cd53d17764fbb2c64cf76f204b0",
+    "evidence/api-e2e/api-rev-006/mac-native-result.json": "eba45a81fb500d3e0ca0e3d3cc253dc8f1a4bc6be4061e8339a9719d809ae482",
+    "evidence/api-e2e/api-rev-006/mac-volume-result.json": "aeaed467502c1ef2815db7b15d7485b45fbd7ff83a635878f196c6e260d7468b",
+    "evidence/api-e2e/api-rev-006/mac-controls-confirm-v2-result.json": "b1bccfaba40b43ea009ee84a1733fc3b829b9703fe83809bcb48b39fb1f80c37"
+  },
+  "productionDeltaFromSource": [],
+  "priorArchitectureEntriesExactPrefix": true,
+  "reportSections": 28,
+  "scopedEvidence": {
+    "nativeMacResult": "Pass",
+    "bootIds": [
+      "AF4F68C7-F354-42B5-90E9-1CA4B7FFD6A2",
+      "0B4C3F0C-A620-4020-A8D8-03B7D5E87AFC",
+      "193F98DC-86D8-4827-B479-69948ACC75DF"
+    ],
+    "sourceStats": [
+      "16777228:507558:501:20:755",
+      "16777229:507558:501:20:755",
+      "16777229:507558:501:20:755"
+    ],
+    "sameBindingAndVolume": true,
+    "replacementSameStatDifferentVolume": true,
+    "macGuestPeerTCP22": "nc: connectx to 192.168.64.4 port 22 (tcp) failed: Operation timed out",
+    "macGuestPeerTCP2049": "nc: connectx to 192.168.64.4 port 2049 (tcp) failed: No route to host"
+  },
+  "notClaimed": [
+    "All input hashes re-audited",
+    "Full source re-review",
+    "New API score or Pass",
+    "Peer filesystem proof from self-mount",
+    "Physical/native-agent/personal/release qualification"
+  ]
+}

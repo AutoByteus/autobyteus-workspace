@@ -161,6 +161,11 @@
       >
         <DockerNodeStartGuideCard />
       </div>
+      <div v-else-if="activeTab === 'nfsGuide'" id="node-manager-panel-nfsGuide"
+        class="mx-auto w-full max-w-7xl" role="tabpanel" aria-labelledby="node-manager-tab-nfsGuide"
+        data-testid="node-manager-panel-nfsGuide">
+        <NfsGuideCard :release="nfsPublishedRelease" />
+      </div>
     </div>
   </div>
 </template>
@@ -170,6 +175,8 @@ import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import CurrentWindowNodeCard from '~/components/settings/CurrentWindowNodeCard.vue';
 import DockerNodeStartGuideCard from '~/components/settings/DockerNodeStartGuideCard.vue';
+import { nfsPublishedRelease } from '~/utils/nfsLauncherCommands';
+import NfsGuideCard from '~/components/settings/NfsGuideCard.vue';
 import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
 import MemorySyncCard from '~/components/settings/MemorySyncCard.vue';
 import PhoneAccessCard from '~/components/settings/PhoneAccessCard.vue';
@@ -182,7 +189,7 @@ import { validateServerHostConfiguration } from '~/utils/nodeHostValidation';
 
 const { t } = useLocalization();
 
-type NodeManagerTabId = 'manage' | 'memorySync' | 'phoneSetup' | 'dockerGuide';
+type NodeManagerTabId = 'manage' | 'memorySync' | 'phoneSetup' | 'dockerGuide' | 'nfsGuide';
 
 const nodeStore = useNodeStore();
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -199,7 +206,7 @@ const busyNodeId = ref<string | null>(null);
 const addError = ref<string | null>(null);
 const addInfo = ref<string | null>(null);
 const addWarnings = ref<string[]>([]);
-const validTabs = new Set<NodeManagerTabId>(['manage', 'memorySync', 'phoneSetup', 'dockerGuide']);
+const validTabs = new Set<NodeManagerTabId>(['manage', 'memorySync', 'phoneSetup', 'dockerGuide', 'nfsGuide']);
 const initialActiveTab = (): NodeManagerTabId => {
   const queryTab = typeof route.query.nodeTab === 'string' ? route.query.nodeTab : '';
   return validTabs.has(queryTab as NodeManagerTabId) ? queryTab as NodeManagerTabId : 'manage';

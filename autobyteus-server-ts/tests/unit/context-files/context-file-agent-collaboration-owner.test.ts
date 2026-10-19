@@ -1,4 +1,6 @@
 import fs from "node:fs/promises";
+import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { validateStandaloneRootTreePayload } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -36,17 +38,14 @@ const fixture = async () => {
   await put(path.join(hostDir, "run_metadata.json"), {
     runId: "host", agentDefinitionId: "def", workspaceRootPath: "/workspace", memoryDir: hostDir, llmModelIdentifier: "model", runtimeKind: "autobyteus",
   });
-  await put(path.join(hostDir, "collaboration", "collaboration_tree.json"), {
+  // Written as the app writes it: the child's own file at `agents/child/`, its link in the host's tree.
+  await new StandaloneRootPackageStore().writeTree(path.join(hostDir, "collaboration"), validateStandaloneRootTreePayload({
     subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
     host: { address: "/assistant", agentRunId: "host", agentDefinitionId: "def" },
-    collaborators: [{
-      kind: "agent", address: "/code_reviewer", agentDefinitionId: "reviewer", agentRunId: "reviewer-run", platformAgentRunId: null,
-      launchConfiguration: testOrgLaunchConfiguration(),
-      addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "host",
-    }],
-    taskExecutions: [{ address: "/code_reviewer", agentRunId: "child", platformAgentRunId: null, delegatorAgentRunId: "host", startedAt: "2026-09-30T00:00:01.000Z" }],
-  });
-  await put(path.join(hostDir, "collaboration", "communication_messages.json"), { schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] });
+    taskExecutions: [{ address: "/code_reviewer", agentRunId: "child", platformAgentRunId: null, delegatorAgentRunId: "host", startedAt: "2026-09-30T00:00:01.000Z",
+      source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: testOrgLaunchConfiguration() } }],
+  }, "host"));
+  await fs.writeFile(path.join(hostDir, "collaboration", "communication_messages_active.jsonl"), "");
   // Startup admits current packages before any context-file access.
   await new RootRunPackageReadinessIndex(memoryDir).rebuild();
   const layout = new ContextFileLayout({ appDataDir: root, memoryDir });
@@ -79,7 +78,8 @@ describe("context files of an Agent-root child", () => {
     expect(f.local.resolve(buildDraftContextFileLocator(draft, filename))).toBe(f.layout.getDraftFilePath(draft, filename));
     const finalized = await f.finalize.finalizeDraftAttachments({ draftOwner: draft, finalOwner: final, attachments: [{ storedFilename: filename, displayName: "notes.txt" }] });
     expect(finalized).toHaveLength(1);
-    const expected = path.join(f.hostDir, "collaboration", "child", "context_files", filename);
+    // The Agent-root child is a task agent: its memory is its own run folder `agents/<agentRunId>/` (contract L1).
+    const expected = path.join(f.memoryDir, "agents", "child", "context_files", filename);
     expect(await f.read.getFinalFilePath(final, filename)).toBe(expected);
     expect(await fs.readFile(expected, "utf8")).toBe("draft bytes");
     expect(f.local.resolve(buildFinalContextFileLocator(final, filename))).toBe(expected);

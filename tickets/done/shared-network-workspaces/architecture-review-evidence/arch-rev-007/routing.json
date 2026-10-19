@@ -1,0 +1,29 @@
+{
+  "round": "ARCH-REV-007",
+  "solution": "SR023",
+  "result": "Pass",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "rules": {
+    "handoffs": [
+      {
+        "when": "When the architecture review passes and the cumulative reviewed architecture package is ready for implementation.",
+        "recipient_address": "/software_engineering_team/implementation_engineer"
+      },
+      {
+        "when": "When the architecture review is Fail or Blocked with a Design Impact, Requirement Gap, or Unclear finding that requires architecture revision or upstream requirements clarification before implementation.",
+        "recipient_address": "/software_engineering_team/solution_designer"
+      },
+      {
+        "when": "When architecture review passes and Solution Designer needs the informational pass notification after the primary implementation handoff succeeds.",
+        "recipient_address": "/software_engineering_team/solution_designer"
+      }
+    ]
+  },
+  "selectedPrimaryRecipient": "/software_engineering_team/implementation_engineer",
+  "selectedPrimaryWhen": "When the architecture review passes and the cumulative reviewed architecture package is ready for implementation.",
+  "informationalCondition": "Evaluate only after confirmed primary delivery; no duplicate implementation forwarding",
+  "delivery": "Not claimed by this pre-dispatch record",
+  "personalOnly": true,
+  "noDelegation": true
+}

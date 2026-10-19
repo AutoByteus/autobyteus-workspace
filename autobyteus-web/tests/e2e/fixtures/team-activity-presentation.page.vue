@@ -1,10 +1,10 @@
 <template>
   <main data-test="team-activity-probe" class="min-h-screen bg-slate-100 p-6 text-slate-900">
     <header class="mx-auto mb-6 max-w-5xl rounded-lg bg-white p-4 shadow-sm">
-      <h1 class="text-xl font-semibold">Binary team activity presentation probe</h1>
+      <h1 class="text-xl font-semibold">Team status (history) and binary activity (running) presentation probe</h1>
       <p data-test="resolved-locale" class="mt-1 text-sm text-slate-600">{{ resolvedLocale }}</p>
       <p data-test="independent-facts" class="mt-1 text-sm text-slate-600">
-        member={{ memberStatus }} subscribed={{ subscribed }} stopPending={{ stopPending }} failures={{ stopFailureCount }}
+        member={{ memberStatus }} stopPending={{ stopPending }} failures={{ stopFailureCount }}
       </p>
       <div class="mt-3 flex flex-wrap gap-2">
         <button data-test="set-locale-en" type="button" @click="setPreference('en')">English</button>
@@ -49,7 +49,8 @@ import WorkspaceHistoryWorkspaceSection from '~/components/workspace/history/Wor
 import RunningTeamGroup from '~/components/workspace/running/RunningTeamGroup.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 import type {
   TeamMemberTreeRow,
   TeamRunHistoryDefinitionGroup,
@@ -65,7 +66,6 @@ import type {
 const { resolvedLocale, setPreference } = useLocalization();
 const activeRunIsActive = ref(true);
 const memberStatus = ref<AgentStatus>(AgentStatus.Error);
-const subscribed = ref(false);
 const stopPending = ref(false);
 const stopFailureCount = ref(0);
 const representativeFlip = ref(false);
@@ -152,43 +152,14 @@ const historyGroups = computed<TeamRunHistoryDefinitionGroup[]>(() => [{
   })),
 }]);
 
-const runningMember = (): AgentTeamMemberNode => ({
-  memberKind: 'agent',
-  memberName: 'critic',
-  displayName: 'Critic',
-  memberPath: ['critic'],
-  memberRouteKey: 'critic',
-  memberRunId: 'critic-run-browser',
-  agentDefinitionId: 'critic-definition',
-  currentStatus: memberStatus.value,
+// A real Team execution view (the running components read activity, rows and contexts from AgentTeamContext.view).
+const runningRun = (teamRunId: string, isActive: boolean): AgentTeamContext => buildTestTeamContext({
+  teamRunId,
+  teamDefinitionId: 'team-def-browser',
+  teamDefinitionName: 'Browser Review Team',
+  rootChildren: [testAgentNode('/critic', { displayName: 'Critic', agentRunId: `${teamRunId}:critic`, currentStatus: memberStatus.value })],
+  isActive,
 });
-
-const runningRun = (teamRunId: string, isActive: boolean): AgentTeamContext => {
-  const member = runningMember();
-  return {
-    teamRunId,
-    config: {
-      teamDefinitionId: 'team-def-browser',
-      teamDefinitionName: 'Browser Review Team',
-      runtimeKind: 'autobyteus',
-      workspaceId: null,
-      workspaceMetadata: null,
-      llmModelIdentifier: 'browser-fixture',
-      llmConfig: null,
-      autoExecuteTools: false,
-      memberOverrides: {},
-      isLocked: true,
-    },
-    memberTree: [member],
-    memberNodesByRouteKey: new Map([[member.memberRouteKey, member]]),
-    leafAgentContextsByRouteKey: new Map(),
-    coordinatorMemberRouteKey: 'critic',
-    historicalHydration: null,
-    focusedMemberRouteKey: 'critic',
-    isActive,
-    isSubscribed: subscribed.value,
-  };
-};
 
 const runningRuns = computed<AgentTeamContext[]>(() => [
   runningRun('team-run-active-browser', activeRunIsActive.value),
@@ -259,6 +230,7 @@ const actions: WorkspaceHistorySectionActions = {
   onArchiveTeam: () => {},
   onDeleteTeam: () => {},
   onSelectTeam: () => {},
+  onOpenTeamRun: () => {},
   onSelectTeamMember: () => {},
 };
 
@@ -266,7 +238,6 @@ const varyIndependentFacts = () => {
   memberStatus.value = memberStatus.value === AgentStatus.Error
     ? AgentStatus.Running
     : AgentStatus.Error;
-  subscribed.value = !subscribed.value;
   representativeFlip.value = !representativeFlip.value;
 };
 

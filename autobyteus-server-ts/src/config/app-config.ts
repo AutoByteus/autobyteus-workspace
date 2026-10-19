@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
 import {
+  listAbsolutePaths,
   listExistingAbsoluteDirectoryPaths,
   listExistingDirectoryPaths,
   normalizeOptionalConfigString,
@@ -415,6 +416,15 @@ export class AppConfig {
 
   getAdditionalAgentPackageRoots(): string[] {
     return listExistingAbsoluteDirectoryPaths({
+      rawValue: this.get("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", ""),
+      label: "Agent package root",
+      onWarn: logger.warn,
+    });
+  }
+
+  /** Every registered agent package root (absolute, de-duplicated), including roots whose folder is missing. */
+  getRegisteredAgentPackageRoots(): string[] {
+    return listAbsolutePaths({
       rawValue: this.get("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", ""),
       label: "Agent package root",
       onWarn: logger.warn,

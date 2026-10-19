@@ -1,5 +1,4 @@
 import { MultimediaProvider } from '../providers.js';
-import { MultimediaRuntime } from '../runtimes.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseVideoClient } from './base-video-client.js';
@@ -16,8 +15,6 @@ export interface VideoModelOptions {
   provider: MultimediaProvider;
   clientClass: VideoClientConstructor;
   parameterSchema?: ParameterSchemaInput;
-  runtime?: MultimediaRuntime;
-  hostUrl?: string | null;
   description?: string | null;
 }
 
@@ -26,8 +23,6 @@ export class VideoModel {
   value: string;
   provider: MultimediaProvider;
   clientClass: VideoClientConstructor;
-  runtime: MultimediaRuntime;
-  hostUrl?: string | null;
   description?: string | null;
   parameterSchema: ParameterSchema;
   defaultConfig: MultimediaConfig;
@@ -37,8 +32,6 @@ export class VideoModel {
     this.value = options.value;
     this.provider = options.provider;
     this.clientClass = options.clientClass;
-    this.runtime = options.runtime ?? MultimediaRuntime.API;
-    this.hostUrl = options.hostUrl;
     this.description = options.description ?? null;
 
     if (options.parameterSchema && !(options.parameterSchema instanceof ParameterSchema)) {
@@ -60,16 +53,6 @@ export class VideoModel {
   }
 
   get modelIdentifier(): string {
-    if (this.runtime === MultimediaRuntime.AUTOBYTEUS && this.hostUrl) {
-      try {
-        const url = new URL(this.hostUrl);
-        const host = url.host || url.hostname || this.hostUrl;
-        return `${this.name}@${host}`;
-      } catch {
-        return `${this.name}@${this.hostUrl}`;
-      }
-    }
-
     return this.name;
   }
 
@@ -85,10 +68,7 @@ export class VideoModel {
       configToUse = cloned;
     }
 
-    if (
-      this.runtime === MultimediaRuntime.API
-      && this.provider === MultimediaProvider.GEMINI
-    ) {
+    if (this.provider === MultimediaProvider.GEMINI) {
       if (!geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
       return new this.clientClass(this, configToUse, apiKeyResolver, geminiRuntimeResolver);
     }
@@ -97,6 +77,6 @@ export class VideoModel {
   }
 
   toString(): string {
-    return `VideoModel(identifier='${this.modelIdentifier}', provider='${this.provider}', runtime='${this.runtime}')`;
+    return `VideoModel(identifier='${this.modelIdentifier}', provider='${this.provider}')`;
   }
 }

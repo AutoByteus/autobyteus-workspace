@@ -18,6 +18,7 @@ import apiKeySettingsMessages from './api-key-settings';
 import packageMigrationSettingsMessages from './package-migration-settings';
 import tokenUsageSettingsMessages from './token-usage-settings';
 import memorySyncSettingsMessages from './memorySyncSettings';
+import embeddingSettingsMessages from './embeddingSettings';
 import projectMessages from './projects';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
@@ -28,6 +29,7 @@ import toolsLocalMessages from './tools';
 import generatedWorkspaceMessages from './workspace.generated';
 import workspaceMessages from './workspace';
 import runSettingsMessages from './runSettings';
+import agentPackageDefinitionsMessages from './agentPackageDefinitions';
 import type { TranslationCatalog } from '../../runtime/types';
 
 const enMessages: TranslationCatalog = {
@@ -51,6 +53,7 @@ const enMessages: TranslationCatalog = {
   ...packageMigrationSettingsMessages,
   ...tokenUsageSettingsMessages,
   ...memorySyncSettingsMessages,
+  ...embeddingSettingsMessages,
   ...projectMessages,
   ...generatedShellMessages,
   ...shellMessages,
@@ -61,6 +64,7 @@ const enMessages: TranslationCatalog = {
   ...generatedWorkspaceMessages,
   ...workspaceMessages,
   ...runSettingsMessages,
+  ...agentPackageDefinitionsMessages,
 };
 
 export default enMessages;

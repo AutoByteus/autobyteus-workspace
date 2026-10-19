@@ -48,6 +48,7 @@ store.
   - deterministic lifetime fold: `projections/token-usage-run-fold.ts`
   - selected Claude SDK cumulative-model reconciliation:
     `projections/claude-sdk-model-usage-reconciler.ts`
+- Claude SDK per-call usage: `src/agent-execution/backends/claude/session/claude-call-usage-tracker.ts`
   - admitted-contribution projection: `projections/token-usage-analytics-contribution.ts`
   - accumulator and atomic write coordinator: `services/token-usage-run-accumulator.ts`
   - analytics projection writer: `services/token-usage-analytics-projection-writer.ts`
@@ -66,6 +67,7 @@ store.
   - `prisma/migrations/20260819090000_add_token_usage_run_records/`
   - `prisma/migrations/20260822090000_add_token_usage_analytics/`
   - `prisma/migrations/20260923130000_add_claude_sdk_usage_state/`
+  - `prisma/migrations/20261009120000_token_meter_context_readings/`
 - Migration-only legacy owners:
   - `src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts`
   - `src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts`
@@ -97,11 +99,14 @@ pipeline processes each token event in this order:
    observation to `TokenUsageRunStore`. `TokenUsageRunAccumulator` serializes
    work by `run_id`, resolves the pricing policy, and folds inside a real SQLite
    transaction.
-7. Only a `CHANGED` fold saves the lifetime run row and increments the matching
-   UTC daily analytical facet in that same transaction. Duplicate, regressed,
-   no-advance, or zeroed contributions advance neither store. Any facet-write
-   failure rolls back the run save; different runs may contend on a shared facet
-   through the atomic SQL upsert without allowing committed run/facet drift.
+7. Only a `CHANGED` fold saves the lifetime run row. In the same transaction it
+   increments the matching UTC daily analytical facet when the contribution adds
+   tokens or reports a model call; a reading-only save (Codex compaction) or a
+   zero Claude turn-end remainder writes no facet. Duplicate and readingless
+   no-advance observations are `SUPPRESSED` and advance neither store. Any
+   facet-write failure rolls back the run save; different runs may contend on a
+   shared facet through the atomic SQL upsert without allowing committed
+   run/facet drift.
 8. After commit, the accumulator returns the authoritative per-event contribution
    plus `run_summary_after_event`.
 
@@ -142,10 +147,35 @@ drain.
 ### Additive Observations
 
 `per_call` and `per_turn` observations contribute their normalized component
-deltas directly. The fold accumulates token and cost components, merges
-identity/pricing/cache/status facts truthfully, increments `usage_report_count`,
-and preserves only the latest prompt/context fields selected by the observation
-ordering marker.
+deltas directly. Every observation carries two explicit facts besides its
+tokens:
+
+- `reports_model_call`: the observation is exactly one provider model call.
+- The context reading (`latest_prompt_tokens`, `effective_context_window_tokens`,
+  `context_window_usage_percent`, `context_compaction_threshold_tokens`): the
+  runtime's own figures for its latest call, or null when it carries none.
+
+The fold applies three rules:
+
+- tokens, costs and pricing/cache facts are added when the observation
+  contributes tokens or reports a model call;
+- `usage_report_count` increases by one only for a model-call observation, and
+  the latest runtime/provider/model fields change only on the latest model call;
+- the latest context reading changes only when the latest observation carries a
+  reading. An observation without a reading (a Claude turn-end remainder, or a
+  native compaction summary call) leaves the previous reading in place instead
+  of erasing it.
+
+`usage_report_count` therefore means model calls. Claude Agent SDK rows written
+before token-meter-accuracy counted one report per turn; later increments count
+calls.
+
+Every save advances the row's `revision`, including reading-only and zero-call
+saves. The run summary's `revision` is the sum of the summarized records'
+revisions (one row for an exact run; the members for Team and standalone
+roll-ups). Records are never deleted and roll-up membership only grows, so the
+sum only grows. It is the live freshness key: the call count cannot order
+summaries, because a reading-only save keeps it unchanged.
 
 ### Cumulative Snapshots
 
@@ -153,7 +183,10 @@ Cumulative sources such as Codex cannot be summed blindly. The persisted fold
 uses a stable snapshot-series digest and the exact transient source counters:
 
 - a known series contributes only positive advancement beyond its checkpoint;
-- unchanged replays contribute zero and do not increment the report count;
+- unchanged replays contribute zero and do not increment the report count. A
+  non-advancing update that carries a context reading (Codex's post-compaction
+  size) is saved for that reading only, with no tokens and no model call;
+  without a reading it is suppressed;
 - regressed counters contribute zero, preserve the component-wise maximum
   checkpoint, and add a quality flag;
 - the first Codex snapshot uses provider-delta reconciliation when available;
@@ -221,6 +254,11 @@ into an unsafe monetary total. Captured estimates are not repriced later.
 
 ## Runtime Adapter Semantics
 
+Each adapter reports one model call per observation with the runtime's own
+per-call usage and, where the runtime has one, its own context reading. Adapters
+only convert field meaning; they never derive a number the runtime already
+reports, and never sum several calls into a "latest" value.
+
 ### Codex App Server
 
 Codex emits `thread/tokenUsage/updated` notifications containing
@@ -233,26 +271,108 @@ Codex emits `thread/tokenUsage/updated` notifications containing
 - carries `last` in transient reconciliation metadata so the first cumulative
   snapshot can charge the provider delta rather than historical totals;
 - treats input as `gross_includes_cache`;
-- maps cache-read, reasoning-output, latest-prompt, and context-window facts to
-  first-class fields; and
+- sets the context in use to Codex's own `last.totalTokens` over
+  `modelContextWindow`. After a compaction Codex sends `last.inputTokens = 0`
+  with `last.totalTokens` equal to the post-compaction size, which is stored as
+  a reading-only save;
+- reports a model call when `last.inputTokens + last.outputTokens > 0`, and adds
+  `last.totalTokens` to the idempotency identity so a compaction update in the
+  same turn as a call is not mistaken for its replay;
+- maps cache-read and reasoning-output facts to first-class fields; and
 - does not infer cache creation from `inputTokens - cachedInputTokens`.
 
-The supported Codex contract exposes no cache-write quantity. Raw Codex
-payloads remain transient event evidence used by the fold and live path; they
-are not retained in the cumulative database row. Multiple updates for one
-active turn are dispatched in arrival order rather than collapsed in a pending
-turn map.
+Codex reports no compaction threshold. Its `modelContextWindow` is already its
+effective window (95 % of the model window), and its own reading can exceed it
+just before it compacts; the meter shows that as an overflow. The supported Codex
+contract exposes no cache-write quantity. Raw Codex payloads remain transient
+event evidence used by the fold and live path; they are not retained in the
+cumulative database row. Multiple updates for one active turn are dispatched in
+arrival order rather than collapsed in a pending turn map.
+
+### Claude Agent SDK
+
+The SDK query runs with `includePartialMessages`. `ClaudeSession` routes every
+`stream_event` frame to `ClaudeCallUsageTracker` and never to the turn tracker,
+so chat projection is unchanged (text and tools still come from the `assistant`
+messages). Only main-loop frames (`parent_tool_use_id` null) count.
+
+Per call (`claude_sdk_call`, `per_call`, a model call): the tracker pairs a
+`message_start` (API response model, cache-write 5-minute/1-hour split) with its
+`message_delta` (final usage, including `output_tokens_details.thinking_tokens`).
+It then reads `getContextUsage({detail:'summary'})` through
+`ClaudeSdkStreamingSession.readContextUsage()`. That read is local (no provider
+call) and is bounded by a 2-second timeout. Latest prompt = `totalTokens`,
+window = `rawMaxTokens`, threshold = `autoCompactThreshold` (only when
+`isAutoCompactEnabled`), percent = 100 × tokens / window. A failed or timed-out
+read yields the call without a reading and the flag
+`claude_sdk_context_usage_unavailable`. The idempotency key is
+`claude_sdk_call:<sessionId>:<message.id>`. The call is priced like any per-call
+observation by the API response model's exact Anthropic catalog identity.
+
+`handleFrame` awaits the tracker, which awaits the context read and emits the
+observation before it returns. The frame pump awaits `handleFrame`, events are
+dispatched per run in order, and the accumulator serializes folds per run, so
+every call is folded before the turn's `result`, which arrives a few ms after the
+last `message_delta`. Fire-and-forget emission would let the result count the
+last call a second time.
+
+Turn end (`claude_sdk_result`, `per_turn`, not a model call, no reading): the
+result sanitizer keeps safe per-model `modelUsage` counters privately for the
+fold. The selected SDK model value is resolved against the active query's
+`supportedModels()` metadata to one raw model id; a missing or ambiguous match
+never substitutes another model. Only the agent's selected model counts;
+auxiliary models such as the Haiku title call are excluded (DEC-002). The fold
+does the reconciliation in `claude-sdk-model-usage-reconciler.ts`:
+
+- it differences the selected row's cumulative counters against bounded,
+  session-and-raw-model checkpoints;
+- it contributes, per dimension, `max(0, delta − live sums)`, where the live sums
+  are the main-loop usage admitted per call in this session since the last
+  result. The remainder is what per-call data cannot see: the SDK's own
+  compaction (summariser) calls. It is priced with the configured 1-hour
+  cache-write rate as the flagged assumption `claude_sdk_cache_write_1h_assumed`.
+  Live sums above the delta are clamped and flagged
+  `claude_sdk_live_exceeds_cumulative`;
+- the live sums are consumed by every result.
+
+Duplicate or regressed observations do not double-count; a regression becomes a
+new baseline before later growth. Legacy/unknown resume history is baselined
+rather than guessed. A resumed process restarts cumulative `modelUsage` from an
+unknown origin, so the session marks the first result observation of every
+process generation opened with `resume` with `claude_sdk_series_restart`. That
+result re-anchors every checkpoint of the session and admits nothing (flag
+`claude_sdk_series_restart_rebaselined`), because its calls were already counted
+live. A non-success result whose `modelUsage` rows are all zero (a crash or
+startup failure) is not forwarded, so it cannot reset the baseline; the
+series-restart mark moves to the next emitted result.
+
+All-source checkpoints and live sums stay private in the nullable
+`claude_sdk_usage_state_json` column. Its reader is tolerant: it requires the
+checkpoints, treats a missing live-sum list as empty and ignores fields it no
+longer uses. The `20261009120000_token_meter_context_readings` migration cleared
+the latest prompt, window and percentage of every Claude SDK row written before
+this change. Those values summed every call of a turn (up to 6,759 %) and cannot
+be recomputed; totals and costs were left untouched. A direct upgrade from a
+ledger-era release consolidates Claude SDK ledger rows the same way: the
+`token-usage-run-records-v1` consolidation keeps their totals and drops their
+readings.
+
+Claude/Anthropic input uses `base_excludes_cache`: gross input is base input
+plus cache-read and cache-creation buckets. Per-call cache writes carry the exact
+5-minute/1-hour split from `message_start`. Cost is an AutoByteus-configured
+Standard API-equivalent estimate, not the SDK's reported dollars or a
+subscription charge. Missing trusted prices remain missing rather than zero.
+Numeric thinking details map to `reasoning_output_tokens`; absent numeric detail
+remains null even when thinking content exists.
 
 ### Antigravity CLI (AGY)
 
-`AgyStreamEventConverter` emits one `TOKEN_USAGE_UPDATED` per AGY terminal
-`result` event that carries `usage`. AGY's `result.usage` is cumulative for the
-AGY process (verified live on AGY 1.3.2: input 8,919 → 17,920 → 27,003 over
-three turns, with `total_tokens = input_tokens + output_tokens`). The converter
-therefore sends a `cumulative_snapshot` with
-`snapshot_series_key=<conversation-id>` and the idempotency key
-`agy:<conversation-id>:<num_turns>`. The normal snapshot-delta fold derives each
-turn's contribution.
+Each `agent_response` `step_update` in state `DONE` that carries `usage` is one
+model call (`agy_step`, `per_call`, key `agy_step:<conversation>:<step_index>`),
+so usage arrives during the turn rather than only at its end. AGY reports no
+window or threshold, so the meter shows the tokens with "context limit
+unavailable". The cumulative terminal `result.usage` is not mapped: per-step
+usage sums to it (verified live), and mapping both would count every call twice.
 
 AGY `input_tokens` **excludes** `cache_read_tokens`, so AGY input is
 `base_excludes_cache`, as for Claude:
@@ -260,6 +380,7 @@ AGY `input_tokens` **excludes** `cache_read_tokens`, so AGY input is
 - gross input = `input_tokens` + `cache_read_tokens`;
 - cache miss = `input_tokens`;
 - cache read = `cache_read_tokens`;
+- latest prompt = that call's `input_tokens` + `cache_read_tokens`;
 - `thinking_tokens` maps to reasoning output.
 
 The cache hit rate for AGY runs uses the same gross basis as the native Gemini
@@ -269,75 +390,54 @@ state is `not_reported`. AGY reports no cache-write quantity.
 
 The semantic applies to every model run through AGY, not only Gemini. AGY model
 ids (for example `gemini-3.8-flash-high`) have no catalog price and stay
-`price_missing`. Before 2026-10 (ticket `gemini-native-cache-hit`) AGY input was
-marked `gross_includes_cache`. That over-stated the hit rate, under-counted
-gross input, and rejected as a regressed snapshot every AGY turn after the
-first whose cache reads grew faster than its input, so those turns are missing
-from older rows. The fix is fix-forward only: older AGY
-run rows and daily facets keep their stored values and are not rewritten. A run
-that continues after an upgrade folds new snapshots on the corrected basis.
+`price_missing`.
 
-### Claude Agent SDK
+History, fix-forward only: before 2026-10 (ticket `gemini-native-cache-hit`) AGY
+mapped only the cumulative `result.usage` as a `cumulative_snapshot` marked
+`gross_includes_cache`. That over-stated the hit rate, under-counted gross
+input, and rejected as a regressed snapshot every AGY turn after the first whose
+cache reads grew faster than its input, so those turns are missing from older
+rows. `gemini-native-cache-hit` corrected the result semantic to
+`base_excludes_cache`, and `token-meter-accuracy` replaced the result mapping
+with the per-step mapping above. Older AGY run rows and daily facets keep their
+stored values and are not rewritten. A run that continues after an upgrade keeps
+its stored AGY snapshot-series state, which is no longer read; new steps add
+their own per-call usage.
 
-Claude SDK accounting starts at terminal `result` events; thinking/text stream
-chunks are content, not token contributions. The selected SDK model value is
-resolved against the active query's `supportedModels()` metadata to one raw
-model id. The result sanitizer retains safe per-model counters privately for
-the fold. A missing or ambiguous selected-model match must not substitute
-main-loop totals or another model (for example, auxiliary Haiku) in the public
-meter. The public summary keeps the selected canonical and raw identities.
+### Grok Build
 
-`claude-sdk-model-usage-reconciler.ts` differences cumulative `modelUsage`
-counters against bounded, session-and-raw-model checkpoints. Duplicate or
-regressed observations do not double-count; a regression becomes a new
-baseline before later growth. Legacy/unknown resume history is baselined rather
-than guessed. In streaming input mode one Claude process serves many turns and
-`modelUsage` is cumulative across them; each result's delta is admitted per
-turn. A resumed process continues from the totals its transcript saved only after a
-clean exit. After an unexpected exit it restarts from the last clean-exit
-total, which is an unknown origin and can be 0 or a restore-time total.
-Therefore the Claude session marks the first emitted usage observation of every
-process generation opened with `resume` with `claude_sdk_series_restart`. For
-that one observation the reconciler:
-- admits the selected model's per-turn main-loop usage as the delta (flag
-  `claude_sdk_series_restart_main_loop_delta`);
-- re-anchors every checkpoint of the session to the observed rows, without a
-  regression check.
+One observation per `response_completed` call (`grok_acp_call`, a model call).
+Input excludes cache reads; the latest prompt = input + cache read + cache write.
+Grok reports no window or threshold.
 
-If main-loop usage is unavailable it admits nothing and flags
-`claude_sdk_series_restart_main_loop_unavailable`. All other observations keep
-cumulative differencing. The approximation is that one turn's main-loop usage
-excludes auxiliary selected-model calls within that turn.
+### Native AutoByteus
 
-A non-success result whose `modelUsage` rows are all zero (a crash or startup
-failure) is not forwarded as usage, so it cannot reset the baseline. The
-series-restart mark then moves to the next emitted observation. Only the selected model's admitted delta reaches the lifetime
-run, daily analytics, GraphQL, and live `run_summary_after_event` projections;
-all-source checkpoints remain private in the nullable
-`claude_sdk_usage_state_json` run-record column. The 2026-09-23 Prisma migration
-adds this column without backfilling or repricing older records. Apply the
-normal production migration/startup-readiness flow before running this server.
+`LlmPhase` reports one observation per provider call (a model call) with the
+prompt over the effective context capacity. When automatic memory compaction is
+enabled, it also reports `context_compaction_threshold_tokens` =
+`compactionTokenBudget.triggerThresholdTokens`.
 
-For the latest Claude SDK prompt context, the terminal result's selected raw
-model row supplies the capacity. Only a positive safe-integer `contextWindow`
-and a safe full prompt sum (base input plus cache read plus cache creation)
-produce `context_window_usage_percent = 100 × prompt / capacity`. A missing,
-zero, or unsafe capacity leaves the percentage unavailable; the model name is
-not a fallback capacity. For an older run row with valid latest prompt and
-capacity but null percentage, the run-summary read projection derives the
-percentage from that same latest row without mutating SQL or repricing. A
-previously stored finite percentage and non-Claude runtime behavior remain
-unchanged.
+Each compaction summary attempt reports its own usage
+(`ingestion_kind: autobyteus_compaction`). It is a real provider call on the
+agent's own model, so it counts as a model call and its tokens and cost are
+added. It carries no reading of the agent's context. Under the ordinary rule
+the previous prompt, percentage, window and threshold therefore stay unchanged
+during compaction. The agent's next call reports the compacted context and
+replaces them. No local estimate is made.
 
-Claude/Anthropic input uses `base_excludes_cache`: gross input is base input
-plus cache-read and cache-creation buckets. A cache-write 5-minute/1-hour split
-is exact only when the terminal main-loop usage fully reconciles with the
-selected-model delta in every token dimension. Otherwise cache writes use the
-configured 1-hour rate as a visibly flagged approximation. Cost is an
-AutoByteus-configured Standard API-equivalent estimate, not the SDK's reported
-dollars or a subscription charge. Missing trusted prices remain missing rather
-than zero. Numeric thinking details map to `reasoning_output_tokens`; absent
-numeric detail remains null even when thinking content exists.
+### Compaction Per Runtime
+
+| Runtime | Threshold reported | Where it comes from |
+| --- | --- | --- |
+| Claude Agent SDK | Yes | `getContextUsage().autoCompactThreshold` = window − 33,000 (Opus 5.5: 967,000 of 1,000,000) |
+| Native AutoByteus | When enabled | `compactionRatio` (default 0.8) × input budget |
+| Codex | No | Compacts when the previous context reaches its limit; the post-compaction size is reported |
+| Antigravity | No | Internal |
+| Grok Build | No | — |
+
+A runtime's own reading can be above its window: Codex just before it compacts,
+or the Claude SDK after a failed compaction. The meter shows the true number and
+marks it as over the runtime's window.
 
 ## Token And Pricing Semantics
 
@@ -416,6 +516,23 @@ the same calls. One-shot calls such as the compaction summarizer stay uncached.
 `2.50` five-minute cache write and `4` one-hour cache write per million tokens
 for new observations (Anthropic's standard price since the cancelled 2026-09-01
 increase); stored records keep the price captured when they were observed.
+
+`ANTHROPIC` + `claude-sonnet-5-5` (effective 2026-09-28) uses `2` input, `10`
+output, `0.10` cache read, `2.50` five-minute cache write and `4` one-hour
+cache write per million tokens. `ANTHROPIC` + `claude-haiku-5-5` (effective
+2026-10-07) is tiered at 100,000 prompt tokens, counted as gross input
+including cache reads and writes (the basis the calculator already uses to
+select a tier):
+
+| Exact model | Tier | Input | Output | Cache read | 5m cache write | 1h cache write |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `claude-haiku-5-5` | `prompt_le_100k` | 0.10 | 0.50 | 0.01 | 0.125 | 0.20 |
+| `claude-haiku-5-5` | `prompt_gt_100k`, entire request | 0.50 | 2.50 | 0.05 | 0.625 | 1 |
+
+Both rows come from the `autobyteus-ts` catalog (see
+`autobyteus-ts/docs/provider_model_catalogs.md`); the server calculator code is
+unchanged, and a calculator test prices a Haiku 5.5 call on each side of the
+boundary.
 
 These are Standard estimates only. Fast, Batch, Flex, regional/data-residency,
 partner, subscription/credit, private, and negotiated variants are not inferred
@@ -592,8 +709,8 @@ records:
 
 ### Standalone Run Roll-Up
 
-A standalone run's usage includes its collaborators, the members of its
-collaborator Teams and its task copies (recursively), as a Team run's usage
+A standalone run's usage includes its delegated copies and the members of its
+Team copies (recursively), as a Team run's usage
 includes its members (REQ-006). `StandaloneRunTokenUsageSummaryService`
 (`token-usage/services/`) reads the run's collaboration tree (the live root's
 tree, else the stored package; see
@@ -638,10 +755,35 @@ accounting, pricing, coverage, comparison, or provider quota facts.
 The live Token Meter remains record-backed: standalone and Team-member caches
 accept complete current-record GraphQL summaries or strict post-persist
 `run_summary_after_event` snapshots, while Team aggregation retains its existing
-single-flight refresh and exact identity rules. A standalone run's panel shows its roll-up
+single-flight refresh and exact identity rules. Summaries are ordered by
+`revision`, not by the model-call count. Exact-run and Team-member caches reject
+an equal or older revision, and the standalone roll-up rejects only an older one.
+The live Team partial aggregate adds a model call only for events with
+`reports_model_call`. The context card shows the runtime's threshold as a marker
+and label when one is reported, and marks a reading above the window (the bar
+stays clamped). A standalone run's panel shows its roll-up
 (`getStandaloneRunTokenUsageSummary`), kept apart from the host's exact live
 summary: each new host usage report refetches the roll-up. Usage reported only by
 children appears on the next host report or when the panel is opened again.
+
+Each model call's TPS rides on its own canonical usage event as
+`output_throughput { method: "generation" | "end_to_end", output_tokens, duration_ms }`
+(integer milliseconds), or null. The runtime integration times the call on the
+server clock and chooses the method for its own stream; `createTokenUsageUpdatedPayload`
+passes the value through `acceptModelCallThroughput`
+(`agent-execution/domain/model-call-throughput.ts`), the only shape and
+minimum-sample check (at least 20 output tokens and 250 ms), and sets it to null
+for non-model-call events. This happens before accounting: delta, cost, fold and
+persistence carry the field untouched and never read it, the run record stores
+none of it, and a persistence failure still delivers it. For Codex, the call ends at its
+`rawResponse/completed` (its `usage.outputTokens` is the call's output). The
+reading is attached to the next model-call usage update of the turn only when
+that update's `last.outputTokens` matches, because a tool-ending call's usage
+update arrives only after the tool has run; usage arrival is never a call end. The strict presentation and Team DTOs require the
+nullable field, and the collaboration and Team projectors map it. The frontend
+**TPS** card shows the newest value per exact AgentRun; nothing is kept on the
+server or reconstructed after reload. See
+[TPS](../../../autobyteus-web/docs/token_meter.md) for the per-runtime methods and limits.
 
 Settings > Token Statistics has two sibling views:
 

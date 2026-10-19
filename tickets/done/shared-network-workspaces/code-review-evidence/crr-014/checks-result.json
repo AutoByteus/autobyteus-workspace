@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts",
+    "components/fileExplorer/__tests__/FileExplorerTabs.spec.ts",
+    "--run",
+    "--maxWorkers=2"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+  "environmentKeys": [
+    "CI",
+    "HOME",
+    "LANG",
+    "NO_COLOR",
+    "PATH",
+    "TMPDIR"
+  ],
+  "isolatedHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr014-uj84hvzn/home",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "seconds": 10.531,
+  "ownedScratchRemoved": true,
+  "inputsUnchangedAfterExecution": true,
+  "trackedDiffAfterExecution": ""
+}

@@ -1,0 +1,29 @@
+{
+  "reason": "Public image download exceeded original 900s; resume same owned cache/clone with 1800s limit; command-only plan, no application sequence",
+  "commands": [
+    {
+      "args": [
+        "clone",
+        "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+        "ab-nfs-api008-linux-0c05c8d7"
+      ],
+      "rc": 0,
+      "log": "guest-command-only-clone.log"
+    },
+    {
+      "args": [
+        "set",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "--cpu",
+        "4",
+        "--memory",
+        "8192",
+        "--disk-size",
+        "100"
+      ],
+      "rc": 0,
+      "log": "guest-command-only-set.log"
+    }
+  ],
+  "result": "Ready"
+}

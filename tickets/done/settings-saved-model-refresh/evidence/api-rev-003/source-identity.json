@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-13T17:11:49.866604+00:00",
+  "head": "76fab065ec30bff5be76dd2e013243abda3a6934",
+  "status": "?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n",
+  "probeSha256": "8ab8bc0d76eddf396ceac68dd10c781e645ac95becd96318c7989f3f25f3256d",
+  "unchangedApprovedPackage": {
+    "requirements-doc.md": true,
+    "investigation-notes.md": true,
+    "design-spec.md": true,
+    "solution-revision-record.md": true,
+    "handoff-architecture-design-complete.md": true
+  },
+  "previousAsarNotReusable": "15ff98c7a607f6e33d814c9a63489d2c6c8d33bfb256de92a815c5f6ec53fab0"
+}

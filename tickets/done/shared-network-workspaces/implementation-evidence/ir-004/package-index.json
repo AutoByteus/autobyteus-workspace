@@ -1,0 +1,503 @@
+{
+  "round": "IR-004",
+  "trigger": "CRR-003 CR-002 / API-F001",
+  "result": "Local Fix Complete; source re-review required, not API/delivery signoff",
+  "sourceCommit": "174e480bd0cfaee29f22fd46b1922afbb274e56b",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "artifactHashScope": "IR004 evidence, excluding this self-referential index; current handoff/revision governed by artifact commit",
+  "cumulativeReferenceFiles": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-handoff.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/solution-design-handoff.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/requirements-doc.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/approval-record-sr018.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/approval-record-sr017.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/investigation-notes.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/design-spec.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/solution-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/design-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/architecture-review-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/architecture-review-scope-feedback.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-003/checks-and-limits.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-003/source-contracts.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-003/focused-audit.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-003/execution-summary.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-001/package-index.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-001/mac-vm-result.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-001/mac-matrix-result.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-001/mac-repro-result.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-001/cleanup.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-001/source-lease-design-impact.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-001/source-audit.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-002/checks-and-limits.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-002/source-audit.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-002/updater-follow-up.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-002/updater-baseline-finding.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-002/updater-candidate-disposition.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-003/checks-and-limits.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-003/source-audit.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-003/final-checks.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-001/installer-permission-trace.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-002/checks-and-limits.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/sr019-artifact-audit.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/sr018-artifact-audit.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/sr017-selection-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/experiment-index.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/feasibility-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/macos-vm-feasibility-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/native-folder-hosting-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/backend-correctness-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/private-runtime-skill-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/native-private-readiness-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/real-agent-roundtrip-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/ui-reference/docker-guide-user.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/package-index.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/checks-and-limits.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/startup-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/source-audit.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/final-source-check.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/local-checks-result.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/vm-summary.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/ports-binary.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/ports-plain-result.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/ports-confirm-trace-result.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/ports-trace-result.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/ports-trace-null-proof.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/final-trace-packets-rpc.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/run-mac-cold.py",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/run-local-checks.py",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/cleanup.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/routing.json",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/packaging-check.json"
+  ],
+  "files": [
+    {
+      "path": "implementation-evidence/ir-004/baseline-binary.json",
+      "sha256": "12facad753f1aa977e23193ac8d9673247b3af6ff6a9eb4989203027420d73cc",
+      "bytes": 334
+    },
+    {
+      "path": "implementation-evidence/ir-004/baseline-trace-console.log",
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    {
+      "path": "implementation-evidence/ir-004/baseline-trace-packets.log",
+      "sha256": "a5946e0a550d56862da6640b157e0baddd0dc365ba34f77309f3b53f96ca8297",
+      "bytes": 90836
+    },
+    {
+      "path": "implementation-evidence/ir-004/baseline-trace-result.json",
+      "sha256": "21433ebbba736e5c166764d1e997cdd6b6976789830efedbc5553b11dbdbceae",
+      "bytes": 127305
+    },
+    {
+      "path": "implementation-evidence/ir-004/build-darwin-amd64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/build-darwin-arm64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/build-linux-amd64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/build-linux-arm64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/build-darwin-amd64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/build-darwin-arm64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/build-linux-amd64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/build-linux-arm64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/go-race.log",
+      "sha256": "5f54ee8c71207375b7c02294f9d367b4edd91aa1a651b334fc412e1861e16c14",
+      "bytes": 9263
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/go-startup.log",
+      "sha256": "1ece1260dc8803abc6ae9f340e24c1e9215260c38598f524c05ed33ee872ceb0",
+      "bytes": 3790
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/go-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/local-checks-result.json",
+      "sha256": "32b1fcd1e47cdd20103660dd4644efabe7f3d4c3abcc42161a731d1a86cc7bac",
+      "bytes": 9685
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/mutation-activation-only.log",
+      "sha256": "e0d45c56483886ba7e7ade419a456d0058a9a7e0c84f04357d0dfef6ea30aa40",
+      "bytes": 610
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/mutation-blanket-retry.log",
+      "sha256": "b0644f239a7c279199cac6150b2499997eca21b373e208d666a349cad2460517",
+      "bytes": 1271
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/mutation-one-observation.log",
+      "sha256": "91d981ed067f75ec61bcc6c747166439d586183d1d60697cf1cd7131e9461a98",
+      "bytes": 369
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/native-version.log",
+      "sha256": "27c1cfab3f07267ba6cc39e0ef36570b580e48569f735d691a0ed1e3137d7c68",
+      "bytes": 24
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/python-packaging.log",
+      "sha256": "da803f849c8b7c1147e7005dd5799b70a50ae42988cbfa1198cc95a7704ce545",
+      "bytes": 1060
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-1/unqualified-publish.log",
+      "sha256": "378159f5b9e056565b861d3fc3f97fd5c0898b8acea1b142ff9073056b6c4d60",
+      "bytes": 54
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/build-darwin-amd64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/build-darwin-arm64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/build-linux-amd64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/build-linux-arm64.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/go-race.log",
+      "sha256": "01ba304771e83292b5d0ab6d6e6a830cf85a30bce4d180e18f74fb70a9624737",
+      "bytes": 9477
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/go-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/local-checks-result.json",
+      "sha256": "6524ecf461b4401f342012b9b6cd1dd1157f049349470970a2a4a26e631cf50f",
+      "bytes": 9683
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/mutation-activation-only.log",
+      "sha256": "f9a80047d1509c6aff2ed5d684374fa24bfee0881c80e610c804a50dd9489d18",
+      "bytes": 610
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/mutation-blanket-retry.log",
+      "sha256": "0c46c2cdea064628c82b1537a6a252c4d8dc739904ab00e2463f2e06b2e8a828",
+      "bytes": 1271
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/mutation-one-observation.log",
+      "sha256": "ca680148b417f52fc12bd0e6ef5ca7ce8d691f02b92a6bc7bdd3be55a8c7e8d1",
+      "bytes": 369
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/native-version.log",
+      "sha256": "27c1cfab3f07267ba6cc39e0ef36570b580e48569f735d691a0ed1e3137d7c68",
+      "bytes": 24
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/python-packaging.log",
+      "sha256": "1b59a7a28653921d9218cd70815a547ab03c4335fe90b19bd73bf31f0b35981f",
+      "bytes": 1060
+    },
+    {
+      "path": "implementation-evidence/ir-004/candidate-2/unqualified-publish.log",
+      "sha256": "378159f5b9e056565b861d3fc3f97fd5c0898b8acea1b142ff9073056b6c4d60",
+      "bytes": 54
+    },
+    {
+      "path": "implementation-evidence/ir-004/checks-and-limits.md",
+      "sha256": "f2fbbba2697e2ffa2332bb4843c4f672f12382968de3c10008d5b9f5d768da0c",
+      "bytes": 9474
+    },
+    {
+      "path": "implementation-evidence/ir-004/cleanup.json",
+      "sha256": "6a3efe1c4a28089542a8e37d2cbcf6f5956f64de8cd9e92c8ec0927c549b1f00",
+      "bytes": 2374
+    },
+    {
+      "path": "implementation-evidence/ir-004/decode-startup-rpc.py",
+      "sha256": "e075fe09de7e6fed8df671ceba99dd7cb011f62f8359d8e83eaf5b39310b4eda",
+      "bytes": 1794
+    },
+    {
+      "path": "implementation-evidence/ir-004/final-binary.json",
+      "sha256": "c12085869b448bd6dee1344757838742ad231a5d3d005b6193b7a0a14dfeaa95",
+      "bytes": 359
+    },
+    {
+      "path": "implementation-evidence/ir-004/final-source-check.json",
+      "sha256": "514dec3c182bfbb9ed4c18327a003ea1b1292c88136d295881bcc011a1a3e447",
+      "bytes": 944
+    },
+    {
+      "path": "implementation-evidence/ir-004/final-trace-console.log",
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    {
+      "path": "implementation-evidence/ir-004/final-trace-packets-rpc.json",
+      "sha256": "6d1cffaa462666ac8621858288ad381009792e4cbad285f85218670d5580d2ae",
+      "bytes": 10413
+    },
+    {
+      "path": "implementation-evidence/ir-004/final-trace-packets.log",
+      "sha256": "a6061deaecded2ffff592d6744f40cc2aededdca1a36f463ed669612b86180b0",
+      "bytes": 191566
+    },
+    {
+      "path": "implementation-evidence/ir-004/final-trace-result.json",
+      "sha256": "9209233110fb54e29dbad14d0a799a9d3c0afc02685147c3eb1c8d038f6cc695",
+      "bytes": 232417
+    },
+    {
+      "path": "implementation-evidence/ir-004/fixed-binary.json",
+      "sha256": "e92d0331f5bd1ff32003ae5d1eccb67d82e3d3eb8c6c35d79d1ed0584e60a652",
+      "bytes": 359
+    },
+    {
+      "path": "implementation-evidence/ir-004/fixed-plain-console.log",
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    {
+      "path": "implementation-evidence/ir-004/fixed-plain-result.json",
+      "sha256": "722550672317a0c5c6e913328488708cd72de2b44fb0c28b7ff46dbfa7dfd75a",
+      "bytes": 27739
+    },
+    {
+      "path": "implementation-evidence/ir-004/fixed-trace-console.log",
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    {
+      "path": "implementation-evidence/ir-004/fixed-trace-packets.log",
+      "sha256": "2310ff60f320dc112a9dfe076fe73922e598cdfb9c2d8df56e8c68accff751d1",
+      "bytes": 169937
+    },
+    {
+      "path": "implementation-evidence/ir-004/fixed-trace-result.json",
+      "sha256": "fdcfbe50316d263a54c3629c837724aa3695a3ee55d9579ccbca66bbecb6c09c",
+      "bytes": 211510
+    },
+    {
+      "path": "implementation-evidence/ir-004/go-race.log",
+      "sha256": "a0a135027b4c25c19e5c63b80c7fdca3ee87463f9a733d949704f7d97b04ab4a",
+      "bytes": 11629
+    },
+    {
+      "path": "implementation-evidence/ir-004/go-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation-evidence/ir-004/local-checks-result.json",
+      "sha256": "d18c601c0ace5f55c44b1215dd412bd990571f783f46c0979509e3fff926bf9b",
+      "bytes": 9684
+    },
+    {
+      "path": "implementation-evidence/ir-004/mutation-activation-only.log",
+      "sha256": "e1024f207310aa0fbecb24fdffe71fbdaf38f1eb0e54d3f80a69dd28f3f678a3",
+      "bytes": 604
+    },
+    {
+      "path": "implementation-evidence/ir-004/mutation-blanket-retry.log",
+      "sha256": "e84cb5535c1b3eb94f721793b3a81920034bd72a552878d12dca43cc5d97d947",
+      "bytes": 2844
+    },
+    {
+      "path": "implementation-evidence/ir-004/mutation-one-observation.log",
+      "sha256": "3fd7fb741681512c11ffb44d8e97dace07641ca72a44046c644ad8be0de2304d",
+      "bytes": 272
+    },
+    {
+      "path": "implementation-evidence/ir-004/native-version.log",
+      "sha256": "27c1cfab3f07267ba6cc39e0ef36570b580e48569f735d691a0ed1e3137d7c68",
+      "bytes": 24
+    },
+    {
+      "path": "implementation-evidence/ir-004/packaging-check.json",
+      "sha256": "f884a17061b7088140211c5d696b027240a58ffca31729c11b6a41f6145f1a94",
+      "bytes": 1052
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-binary.json",
+      "sha256": "1d96a9ee6dc3ea179d73db2b182fce94e5378987a11c542a3c8e711ae3491d47",
+      "bytes": 359
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-confirm-trace-console.log",
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-confirm-trace-packets-rpc.json",
+      "sha256": "f997bc7fa8a02567ad7539e281170658979968e7a41ad2f452a8ac42c584ff11",
+      "bytes": 137223
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-confirm-trace-packets.log",
+      "sha256": "3accd48d3d11c740aafde49049eb4ba52a81bdce3a23dc819413f14ef86e7243",
+      "bytes": 588982
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-confirm-trace-result.json",
+      "sha256": "d820c41083032acb83d3ee57a8c34f24ecb50902570af1b01723c18df5275b8a",
+      "bytes": 647025
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-plain-console.log",
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-plain-result.json",
+      "sha256": "3b91a474bb8968306d57594725607f8a6551ae1f6cc59f7bf3e32747d746ccf0",
+      "bytes": 37583
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-trace-console.log",
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-trace-null-proof.json",
+      "sha256": "ddcc4651156f5806550bd6b63d53db4bbcba7db90cd3c88e832302abd31a3dde",
+      "bytes": 2295
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-trace-packets-rpc.json",
+      "sha256": "906ee7b622838285fcc286d598a7f31efa54be4865b1b6afb38b4ed7832ba4da",
+      "bytes": 107314
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-trace-packets.log",
+      "sha256": "fc708fa9a0d73776a3e695dc5780f571398a4876860c768387f464349b62fcf0",
+      "bytes": 495684
+    },
+    {
+      "path": "implementation-evidence/ir-004/ports-trace-result.json",
+      "sha256": "a2e0742eb60ef062af85e81cdc29aadadf32fc4d03f0be68829e66027e6ad0eb",
+      "bytes": 557006
+    },
+    {
+      "path": "implementation-evidence/ir-004/python-packaging.log",
+      "sha256": "062bc3a8372933c1fb5eb694aa5f34bcf24610b300ac4f9297bc41447100ea15",
+      "bytes": 1060
+    },
+    {
+      "path": "implementation-evidence/ir-004/routing.json",
+      "sha256": "a632448617631f989a6a318fc790c2378c6288cfd116bf33694bb08c228848ed",
+      "bytes": 2262
+    },
+    {
+      "path": "implementation-evidence/ir-004/run-local-checks.py",
+      "sha256": "422610b0bab016ee457100ee07000a73646c0219f63bfd93c8ad1432e77d7db1",
+      "bytes": 2760
+    },
+    {
+      "path": "implementation-evidence/ir-004/run-mac-cold.py",
+      "sha256": "39ccdc25ea5c16b5e0a064fb7a5fcaa898c3507525367dfdd39f91f09b823b28",
+      "bytes": 10123
+    },
+    {
+      "path": "implementation-evidence/ir-004/source-audit.json",
+      "sha256": "a6da83f9de59961a0b41d7e0715addad7a9c61c8a56594cc66f0dd05196a1363",
+      "bytes": 185209
+    },
+    {
+      "path": "implementation-evidence/ir-004/startup-investigation.md",
+      "sha256": "49a1b4d5cf37b02eabf87011498a0e462cf53d4a30a81c7043aa081fba4289c1",
+      "bytes": 5014
+    },
+    {
+      "path": "implementation-evidence/ir-004/toolchain.json",
+      "sha256": "0ce5ddb37122aed70ffab24573c9e335405db84095512a6f7fa9ab35eef893d6",
+      "bytes": 316
+    },
+    {
+      "path": "implementation-evidence/ir-004/transport-binary.json",
+      "sha256": "ed5609e3a542b3d4dff1bf32b09b0248373adbe1dd4c978789b90e97dca18180",
+      "bytes": 363
+    },
+    {
+      "path": "implementation-evidence/ir-004/transport-trace-console.log",
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    {
+      "path": "implementation-evidence/ir-004/transport-trace-packets-rpc.json",
+      "sha256": "e3d52cd2c99de2f3b149b9dfa033cfab4fdf7ed9d35a71d8b9d0fa7a42de470a",
+      "bytes": 707
+    },
+    {
+      "path": "implementation-evidence/ir-004/transport-trace-packets.log",
+      "sha256": "ac0b763ed918f0e6b460de77846d3e5b5be56cda0cd0ee815dfc9cf4408a2cdc",
+      "bytes": 3422
+    },
+    {
+      "path": "implementation-evidence/ir-004/transport-trace-result.json",
+      "sha256": "2e56200a129cd17d1cc81efa6bcea8daff8f7e7f38c790418cdf305a96401288",
+      "bytes": 40061
+    },
+    {
+      "path": "implementation-evidence/ir-004/unqualified-publish.log",
+      "sha256": "378159f5b9e056565b861d3fc3f97fd5c0898b8acea1b142ff9073056b6c4d60",
+      "bytes": 54
+    },
+    {
+      "path": "implementation-evidence/ir-004/vm-summary.json",
+      "sha256": "f9f92fe06670dd54aebdb229bdd9d4b68665a8a4e6d864f65d7bffda8fe01d8a",
+      "bytes": 26975
+    }
+  ],
+  "historicalEvidenceLimit": "Candidate-1/2 logs and earlier VM attempts retained; only ports-plain and ports-confirm-trace are complete current-source passing harnesses; ports-trace public create passed but full harness failed on its unnecessary GID0 assertion."
+}

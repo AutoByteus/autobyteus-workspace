@@ -1,0 +1,126 @@
+{
+  "result": "Complete",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "sh",
+        "-c",
+        "set -e; ! grep -E \" nfs4? \" /proc/mounts; test ! -e /var/lib/autobyteus-nfs/attachment.json; test ! -e /etc/systemd/system/autobyteus-nfs.service; sha256sum /home/admin/ab-nfs-api008-linux-0c05c8d7-native-source/project/preexisting.txt; cat /home/admin/ab-nfs-api008-linux-0c05c8d7-native-source/.autobyteus-nfs/storage.json; sudo -n docker ps -a --format \"{{.Names}} {{.Image}} {{.Command}}\""
+      ],
+      "rc": 0,
+      "stdout": "d7806ed87c5789fe6a39970e9b135479219c68b89a1b16733c6bc6c692752473  /home/admin/ab-nfs-api008-linux-0c05c8d7-native-source/project/preexisting.txt\n{\"storageId\":\"8bab521e-5c65-4e34-a5ca-4d8d79f06367\"}\nab-nfs-api008-registry registry:2 \"/entrypoint.sh /etc\u2026\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/bin/ps",
+        "-p",
+        "93222",
+        "-o",
+        "command="
+      ],
+      "rc": 0,
+      "stdout": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart run ab-nfs-api008-linux-0c05c8d7 --no-graphics --no-audio --no-clipboard --no-usb-accessories\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api008-linux-0c05c8d7"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/bin/ps",
+        "-p",
+        "93222",
+        "-o",
+        "command="
+      ],
+      "rc": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "image",
+        "inspect",
+        "ab-nfs-api008-server:current"
+      ],
+      "rc": 0,
+      "stdout": "[\n    {\n        \"Id\": \"sha256:985611996d6b29b173e3ce228ac88b4a03d277d37f45bd0c3469bc416d5981d2\",\n        \"RepoTags\": [\n            \"ab-nfs-api008-server:current\"\n        ],\n        \"RepoDigests\": [\n            \"ab-nfs-api008-server@sha256:985611996d6b29b173e3ce228ac88b4a03d277d37f45bd0c3469bc416d5981d2\"\n        ],\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2026-10-15T15:20:21.520269878Z\",\n        \"Config\": {\n            \"ExposedPorts\": {\n                \"5900/tcp\": {},\n                \"6080/tcp\": {},\n                \"8000/tcp\": {},\n                \"9223/tcp\": {}\n            },\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\n                \"USER_UID=1000\",\n                \"USER_GID=1000\",\n                \"IMAGE_VARIANT=default\",\n                \"DEBIAN_FRONTEND=noninteractive\",\n                \"DISPLAY=:99\",\n                \"SCREEN_RESOLUTION=1920x1080x24\",\n                \"XDG_RUNTIME_DIR=/run/user/1000\",\n                \"GTK_IM_MODULE=fcitx\",\n                \"QT_IM_MODULE=fcitx\",\n                \"XMODIFIERS=@im=fcitx\",\n                \"SDL_IM_MODULE=fcitx\",\n                \"LANG=en_US.UTF-8\",\n                \"LANGUAGE=en_US:en\",\n                \"LC_ALL=en_US.UTF-8\",\n                \"NODE_ENV=production\",\n                \"BROWSER=/usr/local/bin/open-vnc-browser-url.sh\",\n                \"HOME=/root\",\n                \"AUTOBYTEUS_BIND_HOST=0.0.0.0\",\n                \"AUTOBYTEUS_SERVER_PORT=8000\",\n                \"AUTOBYTEUS_DATA_DIR=/home/autobyteus/data\"\n            ],\n            \"Entrypoint\": [\n                \"/usr/local/bin/entrypoint.sh\"\n            ],\n            \"WorkingDir\": \"/app\",\n            \"Labels\": {\n                \"org.opencontainers.image.licenses\": \"AGPL-3.0-only\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            }\n        },\n        \"Architecture\": \"arm64\",\n        \"Os\": \"linux\",\n        \"Size\": 2448278447,\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:8edaba05454265cd17270d38ec146446c640d1d25637413c3da64a3eff296c36\",\n                \"sha256:0a6faf9004fe0e2f082aa679cd0fdd04e8f2214164bd0d36d50e08d0083de2bf\",\n                \"sha256:4e29fb3d7cf2aeafe253968937594e8c18d369cfaaad456845a09b1972e83cb6\",\n                \"sha256:bfdc7a8e4053c29967878fa4d9ca776a91931a13bb5833215abfd9f1f629c626\",\n                \"sha256:46f1b9636cf9d159133f44a57d0087949394c85cc3256a2697a8da753dd25a0b\",\n                \"sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef\",\n                \"sha256:7c9503120f9b28be708cd56d20acae9e2fa4347708996eb4ef3e2bd0a4400188\",\n                \"sha256:3cb7fc6d09034bef4748ea873a209ae871fa7a52596821a1c5333a802842225b\",\n                \"sha256:982c11de681e8a237f69c21ed29f9b14625ce62a3b3c35daa9b9fcefb83df440\",\n                \"sha256:f4e5a04b277f779e41f1e33a22e6eee2375a5f2266bc2e9320ea08be7d1c49d6\",\n                \"sha256:bda2b77da71af0fd7e7aa4fb614e5d28abd34fdd8658e51bc284ee1db356f548\",\n                \"sha256:6e80ec3ee46c7ebf78df32fd200f1011f1446e5cbc7a994f8b052282a5bf311c\",\n                \"sha256:66ebbb62d6c4bb7bd0c116dd077b2ba236683c2d35f98caeb805a043e84d88e2\",\n                \"sha256:3438fb3e914b7eec4f5c11d759bce472f213381ad27b92cab2d61f76ba07654b\",\n                \"sha256:e716cc382ecbe6adbf6841016c1a7713f0acc3d9ef7ab2c905e40e63ba00a29d\",\n                \"sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef\",\n                \"sha256:73901430933a953f7eefaf21c90715d2081b28c23a7c8e8fda9c1377908af017\",\n                \"sha256:85162ee2d6b1f6dbc636ffc07119caa5a0007b1a1c542e169e1e6dcb666a29f2\",\n                \"sha256:503b828895d92da766d7cf23fca8eddc5e6df1fa1e703a07dbff0cd5e0721b3d\",\n                \"sha256:c9517c2bd85765ae79dba4a7f15f3357793c772b3d013754ea321c248e5ccd21\",\n                \"sha256:a808488faba3acb677b2fa02f69a5231218e109f206402d0b975f00c61327339\",\n                \"sha256:86918b38d2d50c4ffea690cb67351335f4e74e19c2ab564a620cc09bd5b32705\",\n                \"sha256:2d88ade8d2d46842d835b97e34dd76f3883255b544f8c38a28bfd0911578a8b8\",\n                \"sha256:0920e1b2b80ecd0972b7b8a2e3c34085cdf7019b2a6040304bb2a0ad9b9b03e9\",\n                \"sha256:551b94912e5b18c30071aa47cb3cb56a9b8e3e09e145e6ef580830b6a71cc2be\",\n                \"sha256:c373b2c2fb3f72c8a0901af592f9626327b33ece7bded2f34d0ba996e0c47134\",\n                \"sha256:a79b9b6ea45b99939847d50c24cadf8a1b0d69a3acf6bb2629eb16433a5c33ae\",\n                \"sha256:b1ea33c6cd3da4485e2f8300e94ad68ae26cbc8d7efb34b06484693cb9d04ae7\",\n                \"sha256:6d344a25d1eabbe7ebaaeff380cdfd3934a381e971cb437854063ca6256d1369\",\n                \"sha256:9f6559b3b3121f30ceff6c7af76a2843cfc1d0a44d5099e63d2737dd57a8a201\",\n                \"sha256:d946fe8c91b8ef4a3ba0c7321449c59782a6045c2b0f87c292a1ff36b42be599\",\n                \"sha256:5e2fe4fe3b0009060664a4b59868a9edea6714e9a2d369eafd903569b6ad0649\",\n                \"sha256:232340a5fea63dc70c7d5a8f4e22230f5e729b3a82eed56c266ad2401097b0e0\",\n                \"sha256:f42f082e60a877f4e3ef0b00753d10a7b783f262bf9690eb0f9531e58656db23\",\n                \"sha256:6bdd1fc60bf4182058cf9c59b7343e51ebe4021980f2189c8ac068b951f43e2d\",\n                \"sha256:4e67a27fb9bdfbe52aab437251e2a019786a7dcd7f9fb61da19af498aee3e245\",\n                \"sha256:c72ab95b7a52ad499b9e993d31e4e129a2f7da6147d7d64c10d7a9612380befc\",\n                \"sha256:23635c3e0c0c7890984afcc111116a2eb8cdf050779562c269f9d381e1da3fde\",\n                \"sha256:b06485639c0cc0cb0e85f98766134a4b162b0179589469e69f86dded039a25b3\",\n                \"sha256:4878901e7d50231e44a0e2534fe25980d3c7a6adbb1f40b48c726604a4dd3c7b\",\n                \"sha256:3a222529908a67b324c4d68c4e2f9857d9565889258dd57786fb59dea34ef56b\",\n                \"sha256:a3de624fefb96032cb1d7591a5931a4cfa163e0b46fdd8a375983cd6d4ab78f1\",\n                \"sha256:57f898d27daa3e585f899f0905820fd82afdffb74b86ff3ef19828b5ee2e9904\",\n                \"sha256:a8bf6302aaac5c0d6f728f223fac0a3f4711a6d5cfc7767ff604a9f871fdd62e\",\n                \"sha256:14b5f28cb2740f297b484b5c57da42e2103aa333ecb31ba76ee73e96030e4daf\",\n                \"sha256:78962cdf470b6839dbfdb11a43bb78a576ddff849dfcd34db216f9d5b90d34f6\",\n                \"sha256:d6769a070bb870ca9f6e4351dba68a6abc12eefff0a97277ba6f7d92cdafe988\",\n                \"sha256:2994af4d27fd3b5bc3a5eea0ef844b24d84edbb2c632ab1e01ea28f7d2e0b9f2\",\n                \"sha256:98346c0947b845a059712e93a395e68bd77dd1321d53ff652c0abbd170452323\",\n                \"sha256:8feacd3da66593538eae4d6452de43bc11efa24d3fae562adad9600776ee12fa\",\n                \"sha256:adbbe62cea4d75f8d81e9b43a8fa4e9cc8fc9fa20df07a420424b289032caf95\",\n                \"sha256:cc6c103b180d85bc899fa393920443034559cfba2250da0a8af08a5f9e6aa0b6\",\n                \"sha256:83b99dab0d0312815ae917c248631a6b1bb68e9e16e9d19fd1a990a164382dc7\",\n                \"sha256:911e0e5c597ff55b2365752ed430acb7d07c6315111b1c69f16854c0db521df0\",\n                \"sha256:e10f49c9d6a05d99a002ac8aee5d47ad9477307ba85539c7de3a645292800e13\",\n                \"sha256:fac1b135fa3716b508d299451f49fd17d2a20d783de314e942ad814e22c4fa26\",\n                \"sha256:96b3d9d41d141c9b3b742dc015cdddcead452aa0967f49fa9f6a5974e9df93bd\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"2026-10-15T15:21:03.492025758Z\"\n        },\n        \"Descriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.index.v1+json\",\n            \"digest\": \"sha256:985611996d6b29b173e3ce228ac88b4a03d277d37f45bd0c3469bc416d5981d2\",\n            \"size\": 857\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "image",
+        "rm",
+        "ab-nfs-api008-server:current"
+      ],
+      "rc": 0,
+      "stdout": "Untagged: ab-nfs-api008-server:current\nDeleted: sha256:985611996d6b29b173e3ce228ac88b4a03d277d37f45bd0c3469bc416d5981d2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "image",
+        "inspect",
+        "ab-nfs-api008-server:current"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such image: ab-nfs-api008-server:current\n"
+    }
+  ],
+  "applicationNotStartedInGuest": true,
+  "vmGone": true,
+  "cloneGone": true,
+  "unusedHostApplicationTagGone": true,
+  "engineRetained": true,
+  "priorPublicMacCacheRetained": true,
+  "priorBuildTreesPreserved": {
+    "applications/brief-studio/dist": true,
+    "autobyteus-application-backend-sdk/dist": true,
+    "autobyteus-application-devkit/dist": true,
+    "autobyteus-application-frontend-sdk/dist": true,
+    "autobyteus-application-sdk-contracts/dist": true
+  },
+  "desktopStoppedNormally": {
+    "instanceId": "iso-64733-d776",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/desktop-tmp/autobyteus-isolated-root-7XNnUY",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  },
+  "portsClosed": {
+    "64733": true,
+    "64734": true
+  },
+  "scratchAndPrivateCacheGone": true,
+  "sharedCaches": "No global Docker build-cache prune; preexisting worktree generated build outputs retained. Exact owned VM/private cache/scratch and host image tag removed."
+}

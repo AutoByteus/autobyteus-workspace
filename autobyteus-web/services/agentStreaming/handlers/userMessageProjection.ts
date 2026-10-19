@@ -1,6 +1,6 @@
 import { acceptedInputIdentityKey, normalizeAcceptedInputIdentity, type AgentInputStateDto } from '@autobyteus/agent-presentation-contracts';
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { UserMessage } from '~/types/conversation';
+import type { Conversation, UserMessage } from '~/types/conversation';
 import type { UserMessageProjectionPayload } from '../protocol/messageTypes';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 import { isExecutableContextAttachment } from '~/utils/contextFiles/contextAttachmentSend';
@@ -118,13 +118,28 @@ export const upsertPendingUserMessage = (
     locator: file.uri, type: file.file_type, displayName: file.file_name,
   }));
   message.pendingInput = { runInstanceId, state: entry.state };
-  const index = findExistingMessageIndex(context.conversation.messages, message);
-  const existing = context.conversation.messages[index];
+  applyPendingUserMessage(context.conversation.messages, message);
+};
+
+/**
+ * Carries the pending (held or queued) user messages shown in `source` onto `target`, exactly as the
+ * input state that produced them would: used when a stored conversation replaces a shown one.
+ */
+export const overlayPendingUserMessages = (target: Conversation, source: Conversation): void => {
+  for (const message of source.messages) {
+    if (message.type === 'user' && message.pendingInput) applyPendingUserMessage(target.messages, { ...message });
+  }
+};
+
+const applyPendingUserMessage = (messages: Conversation['messages'], message: UserMessage): void => {
+  const identity = normalizeAcceptedInputIdentity(message);
+  const index = findExistingMessageIndex(messages, message);
+  const existing = messages[index];
   if (existing?.type !== 'user') {
-    context.conversation.messages.push(message);
+    messages.push(message);
     return;
   }
-  context.conversation.messages[index] = {
+  messages[index] = {
     ...existing, ...message,
     ...normalizeAcceptedInputIdentity({
       messageId: identity.messageId ?? existing.messageId,

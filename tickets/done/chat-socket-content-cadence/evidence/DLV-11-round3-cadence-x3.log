@@ -1,0 +1,538 @@
+# HEAD 7b6bb525ec (code 4b3c8a08ef on merge 8f91efb2cd, origin/personal 8945d0c8a2)
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session e8e2be18-86f3-4deb-8f42-e5916ecf1a42 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent Team WebSocket connected: session=e8e2be18-86f3-4deb-8f42-e5916ecf1a42, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mClosed agent session e8e2be18-86f3-4deb-8f42-e5916ecf1a42
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session d6fdf6a8-bbfe-4760-a9b4-c6f25b201d9f for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent Team WebSocket connected: session=d6fdf6a8-bbfe-4760-a9b4-c6f25b201d9f, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mClosed agent session d6fdf6a8-bbfe-4760-a9b4-c6f25b201d9f
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 07d7263e-55b6-40d8-8e3e-d5c98443bf49 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent Team WebSocket connected: session=07d7263e-55b6-40d8-8e3e-d5c98443bf49, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mClosed agent session 07d7263e-55b6-40d8-8e3e-d5c98443bf49
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 283d3ea9-a139-42af-82f2-cad4f0fe2828 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent Team WebSocket connected: session=283d3ea9-a139-42af-82f2-cad4f0fe2828, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mClosed agent session 283d3ea9-a139-42af-82f2-cad4f0fe2828
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 1a8da042-4d91-4295-88c5-98a34e7837fc for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent Team WebSocket connected: session=1a8da042-4d91-4295-88c5-98a34e7837fc, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mClosed agent session 1a8da042-4d91-4295-88c5-98a34e7837fc
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session c1a811bb-8e26-417c-bd00-738fe3b8b4e2 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent Team WebSocket connected: session=c1a811bb-8e26-417c-bd00-738fe3b8b4e2, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Org /ws/agent-org'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mClosed agent session c1a811bb-8e26-417c-bd00-738fe3b8b4e2
+
+ [32m✓[39m tests/integration/agent/chat-socket-content-cadence.integration.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 10258[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 699[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 679[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1826[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 677[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 669[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1818[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 668[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 665[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1816[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m18 passed[39m[22m[90m (18)[39m
+[2m   Start at [22m 15:55:06
+[2m   Duration [22m 14.49s[2m (transform 2.50s, setup 23ms, import 3.76s, tests 10.26s, environment 0ms)[22m
+
+# cadence run 1 exit 0
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 9ab0b2f0-2f09-4402-b59d-884c0460b7d7 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent Team WebSocket connected: session=9ab0b2f0-2f09-4402-b59d-884c0460b7d7, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mClosed agent session 9ab0b2f0-2f09-4402-b59d-884c0460b7d7
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session d679627e-18ae-4d73-aa2e-9aac689b5349 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent Team WebSocket connected: session=d679627e-18ae-4d73-aa2e-9aac689b5349, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mClosed agent session d679627e-18ae-4d73-aa2e-9aac689b5349
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 7ae8d00a-ad8c-4849-98b8-2de509d2cdb8 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent Team WebSocket connected: session=7ae8d00a-ad8c-4849-98b8-2de509d2cdb8, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mClosed agent session 7ae8d00a-ad8c-4849-98b8-2de509d2cdb8
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 4e958fc7-4289-4267-a9d6-cf44a831b5cb for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent Team WebSocket connected: session=4e958fc7-4289-4267-a9d6-cf44a831b5cb, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mClosed agent session 4e958fc7-4289-4267-a9d6-cf44a831b5cb
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session d55878ca-59be-4a4e-8c20-efa20ec8e0c1 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent Team WebSocket connected: session=d55878ca-59be-4a4e-8c20-efa20ec8e0c1, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mClosed agent session d55878ca-59be-4a4e-8c20-efa20ec8e0c1
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session fd20575a-10ba-466a-8e3a-2602b09080ab for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent Team WebSocket connected: session=fd20575a-10ba-466a-8e3a-2602b09080ab, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Org /ws/agent-org'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mClosed agent session fd20575a-10ba-466a-8e3a-2602b09080ab
+
+ [32m✓[39m tests/integration/agent/chat-socket-content-cadence.integration.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 10293[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 690[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 665[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1821[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 697[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 675[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1821[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 682[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 679[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1821[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m18 passed[39m[22m[90m (18)[39m
+[2m   Start at [22m 15:55:21
+[2m   Duration [22m 14.69s[2m (transform 2.87s, setup 23ms, import 3.94s, tests 10.29s, environment 0ms)[22m
+
+# cadence run 2 exit 0
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session f4adbc8c-ef70-4905-8716-0e9cdc33ab92 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mAgent Team WebSocket connected: session=f4adbc8c-ef70-4905-8716-0e9cdc33ab92, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mClosed agent session f4adbc8c-ef70-4905-8716-0e9cdc33ab92
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 51fb39aa-2c68-40fb-ae10-76f1d4f50224 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mcoalesces two interleaved agents into one batch, each agent's text in order (AC-009)
+[22m[39mAgent Team WebSocket connected: session=51fb39aa-2c68-40fb-ae10-76f1d4f50224, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mClosed agent session 51fb39aa-2c68-40fb-ae10-76f1d4f50224
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 6206efa7-2ccc-4aa9-97d2-d49f8a4a35d4 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mlets a boundary from either interleaved agent close the batch first (AC-009, AC-004)
+[22m[39mAgent Team WebSocket connected: session=6206efa7-2ccc-4aa9-97d2-d49f8a4a35d4, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mClosed agent session 6206efa7-2ccc-4aa9-97d2-d49f8a4a35d4
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session f937f10d-e166-4df0-9bc5-d5beb421fc8b for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mdelivers pending text before every boundary, immediately and contiguously (AC-004)
+[22m[39mAgent Team WebSocket connected: session=f937f10d-e166-4df0-9bc5-d5beb421fc8b, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mClosed agent session f937f10d-e166-4df0-9bc5-d5beb421fc8b
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 64796df1-93ea-4e4a-8851-9c24895d80da for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2mleaves direct root subscribers unthrottled while the socket holds the text (AC-005)
+[22m[39mAgent Team WebSocket connected: session=64796df1-93ea-4e4a-8851-9c24895d80da, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mClosed agent session 64796df1-93ea-4e4a-8851-9c24895d80da
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent team websocket attached for team run team-run-root
+Created agent session 95d19cca-8283-4282-b7da-c0762dad3a82 for run team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Team /ws/agent-team'[2m > [22m[2muses a changed interval only for the next newly opened window (AC-003)
+[22m[39mAgent Team WebSocket connected: session=95d19cca-8283-4282-b7da-c0762dad3a82, run=team-run-root
+
+[90mstdout[2m | tests/integration/agent/chat-socket-content-cadence.integration.test.ts[2m > [22m[2mcontent cadence on 'Org /ws/agent-org'[2m > [22m[2msends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002)
+[22m[39mClosed agent session 95d19cca-8283-4282-b7da-c0762dad3a82
+
+ [32m✓[39m tests/integration/agent/chat-socket-content-cadence.integration.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 10342[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 699[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 681[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1819[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 692[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 672[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1823[2mms[22m[39m
+     [33m[2m✓[22m[39m sends a 30-delta burst with identical running statuses as one batch after the window (AC-001, AC-002) [33m 672[2mms[22m[39m
+     [33m[2m✓[22m[39m coalesces two interleaved agents into one batch, each agent's text in order (AC-009) [33m 673[2mms[22m[39m
+     [33m[2m✓[22m[39m uses a changed interval only for the next newly opened window (AC-003) [33m 1819[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m18 passed[39m[22m[90m (18)[39m
+[2m   Start at [22m 15:55:36
+[2m   Duration [22m 14.17s[2m (transform 2.38s, setup 25ms, import 3.35s, tests 10.34s, environment 0ms)[22m
+
+# cadence run 3 exit 0

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "docker",
+    "inspect",
+    "--format",
+    "{{json .Mounts}}",
+    "api-prisma-90067e31-699-recreated"
+  ],
+  "exit": 0,
+  "stdout": "[{\"Type\":\"bind\",\"Source\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/home\",\"Destination\":\"/root\",\"Mode\":\"\",\"RW\":true,\"Propagation\":\"rprivate\"},{\"Type\":\"bind\",\"Source\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/data\",\"Destination\":\"/home/autobyteus/data\",\"Mode\":\"\",\"RW\":true,\"Propagation\":\"rprivate\"},{\"Type\":\"bind\",\"Source\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/dist\",\"Destination\":\"/app/autobyteus-server-ts/dist\",\"Mode\":\"\",\"RW\":false,\"Propagation\":\"rprivate\"}]\n",
+  "stderr": ""
+}

@@ -4,6 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
+import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
@@ -73,8 +74,10 @@ describe("AgentOrgRun execution tree tolerant reading and exact writing", () => 
       .toThrow("delegator 'ghost-run' is not an AgentRun in this tree");
   });
 
-  it("writes the exact current shape with the delegator on new children", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "org-tree-exact-"));
+  it("writes the exact current shape: links in the tree (root and configured team), facts in own files, the delegator on new children", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-tree-exact-"));
+    const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath("org-run");
+    const LINK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "startedAt"];
     try {
       const loaded = validateAgentOrgRunExecutionTreePayload(releasedOrg(), "org-run");
       const next = {
@@ -85,14 +88,17 @@ describe("AgentOrgRun execution tree tolerant reading and exact writing", () => 
           taskExecutions: [...loaded.rootOrg.taskExecutions, taskAgent({ agentRunId: "new-run", delegatorAgentRunId: "director-run" })],
         },
       } as never;
-      await new AgentOrgRunExecutionTreeStore().write(dir, next);
+      const store = new AgentOrgRunExecutionTreeStore();
+      await store.write(dir, next);
       const written = JSON.parse(await fs.readFile(getAgentOrgRunExecutionTreePath(dir), "utf8")) as Record<string, any>;
       expect(keys(written)).toEqual(TOP_LEVEL_KEYS);
-      expect(written.rootOrg.taskExecutions.map(keys)).toEqual([withoutDelegator(TASK_AGENT_KEYS), TASK_AGENT_KEYS]);
-      expect(written.rootOrg.members[1].taskExecutions.map(keys)).toEqual([withoutDelegator(TASK_AGENT_KEYS)]);
+      expect(written.rootOrg.taskExecutions.map(keys)).toEqual([withoutDelegator(LINK_AGENT_KEYS), LINK_AGENT_KEYS]);
+      expect(written.rootOrg.members[1].taskExecutions.map(keys)).toEqual([withoutDelegator(LINK_AGENT_KEYS)]);
       expect(JSON.stringify(written)).not.toMatch(/schemaVersion|settledAt/);
+      // Composing the links with the own files gives back today's records exactly.
+      expect(await store.read(dir, "org-run")).toEqual(validateAgentOrgRunExecutionTreePayload(next, "org-run"));
     } finally {
-      await fs.rm(dir, { recursive: true, force: true });
+      await fs.rm(memoryDir, { recursive: true, force: true });
     }
   });
 });

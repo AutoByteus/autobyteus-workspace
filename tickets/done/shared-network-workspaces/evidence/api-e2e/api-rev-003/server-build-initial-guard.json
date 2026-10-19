@@ -1,0 +1,10 @@
+{
+  "result": "Stopped before Docker build",
+  "reason": "Tracked web .env/.env.production triggered secret-filename guard",
+  "files": [
+    "autobyteus-web/.env",
+    "autobyteus-web/.env.production"
+  ],
+  "context": "Empty owned server-build-context directory retained; no image/build attempted",
+  "sourceUnchanged": true
+}

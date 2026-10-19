@@ -379,7 +379,8 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const turnLifecycleState = new AgentTurnLifecycleState();
     const recordConverted = (method: string, params: JsonObject): AgentRunEvent[] => {
       const canonicalEvents = segmentLifecycleTransformer.transform({
-        runContext: {} as never,
+        // The transformer reads the run identity only to log a segment rejection.
+        runContext: { runId, config: { runtimeKind: "codex_app_server" } } as never,
         events: converter.emitThroughThread({ method, params }),
         lifecycleState: turnLifecycleState,
         segmentLifecycleState,
@@ -628,7 +629,8 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const turnLifecycleState = new AgentTurnLifecycleState();
     const recordCanonicalEvent = (sourceEvent: AgentRunEvent): void => {
       const canonicalEvents = segmentLifecycleTransformer.transform({
-        runContext: {} as never,
+        // The transformer reads the run identity only to log a segment rejection.
+        runContext: { runId, config: { runtimeKind: "codex_app_server" } } as never,
         events: [sourceEvent],
         lifecycleState: turnLifecycleState,
         segmentLifecycleState,
@@ -843,7 +845,8 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const recordConverted = (method: string, params: JsonObject): AgentRunEvent[] => {
       const converted = converter.emitThroughThread({ method, params });
       const canonicalEvents = segmentLifecycleTransformer.transform({
-        runContext: {} as never,
+        // The transformer reads the run identity only to log a segment rejection.
+        runContext: { runId, config: { runtimeKind: "codex_app_server" } } as never,
         events: converted,
         lifecycleState: turnLifecycleState,
         segmentLifecycleState,

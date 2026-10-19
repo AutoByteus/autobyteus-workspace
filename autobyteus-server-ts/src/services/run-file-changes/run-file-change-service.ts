@@ -89,13 +89,21 @@ export class RunFileChangeService {
     if (context.memoryDir) await this.projectionStore.writeProjection(context.memoryDir, projection);
   }
 
+  /**
+   * The run's current projection. An attached run's first read fills the cache from the stored record, but only if the
+   * cache is still empty when that read returns: a FILE_CHANGE (or another read) may have filled it meanwhile, and the
+   * newer cache wins, so a late stored read never hides a recorded file. Reads never wait for the event queue.
+   */
   private async load(context: ProjectionContext): Promise<RunFileChangeProjection> {
     if (!this.attachedRunIds.has(context.runId)) return this.readStored(context);
     const cached = this.projections.get(context.runId);
     if (cached) return cloneRunFileChangeProjection(cached);
-    const projection = await this.readStored(context);
-    if (this.attachedRunIds.has(context.runId)) this.projections.set(context.runId, projection);
-    return cloneRunFileChangeProjection(projection);
+    const stored = await this.readStored(context);
+    if (!this.attachedRunIds.has(context.runId)) return stored;
+    const current = this.projections.get(context.runId);
+    if (current) return cloneRunFileChangeProjection(current);
+    this.projections.set(context.runId, stored);
+    return cloneRunFileChangeProjection(stored);
   }
 
   private async readStored(context: ProjectionContext): Promise<RunFileChangeProjection> {

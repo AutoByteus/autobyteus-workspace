@@ -1,0 +1,430 @@
+[
+ {
+  "q": "find tickets by meaning with a local model instead of exact words",
+  "rel": [
+   "autobyteus-71"
+  ]
+ },
+ {
+  "q": "bring the hidden sidebar back without leaving the current conversation",
+  "rel": [
+   "autobyteus-5"
+  ]
+ },
+ {
+  "q": "group symbol turned into a lightning bolt",
+  "rel": [
+   "autobyteus-3"
+  ]
+ },
+ {
+  "q": "stop companies from selling a closed modified copy of our code",
+  "rel": [
+   "autobyteus-7"
+  ]
+ },
+ {
+  "q": "long running shell jobs get killed when an inactive helper is stopped",
+  "rel": [
+   "autobyteus-9"
+  ]
+ },
+ {
+  "q": "a status for tickets we decided not to do",
+  "rel": [
+   "autobyteus-12"
+  ]
+ },
+ {
+  "q": "Claude bills the full prompt every turn because nothing is reused",
+  "rel": [
+   "autobyteus-27",
+   "autobyteus-30"
+  ]
+ },
+ {
+  "q": "button to copy what the file preview shows",
+  "rel": [
+   "autobyteus-52"
+  ]
+ },
+ {
+  "q": "the same chat bubble is shown two times",
+  "rel": [
+   "autobyteus-58"
+  ]
+ },
+ {
+  "q": "cannot resume an old conversation because its LLM is gone from the list",
+  "rel": [
+   "autobyteus-53"
+  ]
+ },
+ {
+  "q": "sync with the issue trackers companies already use",
+  "rel": [
+   "autobyteus-98"
+  ]
+ },
+ {
+  "q": "run the delegated helper inside a chosen folder",
+  "rel": [
+   "autobyteus-97"
+  ]
+ },
+ {
+  "q": "allow every kind of attachment, no allowed-extensions list",
+  "rel": [
+   "autobyteus-101"
+  ]
+ },
+ {
+  "q": "separate tools for making a new ticket and editing an existing one",
+  "rel": [
+   "autobyteus-102",
+   "autobyteus-agents-19"
+  ]
+ },
+ {
+  "q": "agent freezes when the context limit is configured below the output limit",
+  "rel": [
+   "autobyteus-45"
+  ]
+ },
+ {
+  "q": "built-in summarization presets cannot be removed in settings",
+  "rel": [
+   "autobyteus-46"
+  ]
+ },
+ {
+  "q": "opening the manager's conversation takes forever after launching the app",
+  "rel": [
+   "autobyteus-93"
+  ]
+ },
+ {
+  "q": "tell whether a helper I handed work to is busy, idle or waiting on me",
+  "rel": [
+   "autobyteus-60"
+  ]
+ },
+ {
+  "q": "choose a different LLM for each team member when handing off work",
+  "rel": [
+   "autobyteus-32"
+  ]
+ },
+ {
+  "q": "stop rewriting the whole message history file on every message",
+  "rel": [
+   "autobyteus-114"
+  ]
+ },
+ {
+  "q": "tell the user which conversations failed to load",
+  "rel": [
+   "autobyteus-120",
+   "autobyteus-129"
+  ]
+ },
+ {
+  "q": "container machine claims the Google coding CLI is not installed",
+  "rel": [
+   "autobyteus-67"
+  ]
+ },
+ {
+  "q": "pictures I attach never reach the model",
+  "rel": [
+   "autobyteus-22"
+  ]
+ },
+ {
+  "q": "crafted id with dot dot slash reads someone else's files",
+  "rel": [
+   "autobyteus-35"
+  ]
+ },
+ {
+  "q": "the skill sources popup looks bad, redesign it",
+  "rel": [
+   "autobyteus-36"
+  ]
+ },
+ {
+  "q": "writing files keeps erroring out while streaming from the newest Anthropic model",
+  "rel": [
+   "autobyteus-37"
+  ]
+ },
+ {
+  "q": "running agents should reload instructions when their skill files change",
+  "rel": [
+   "autobyteus-76",
+   "autobyteus-136"
+  ]
+ },
+ {
+  "q": "type a message to an agent while it is still in the middle of answering",
+  "rel": [
+   "autobyteus-77",
+   "autobyteus-78",
+   "autobyteus-79"
+  ]
+ },
+ {
+  "q": "make a short animation that explains a ticket to a human",
+  "rel": [
+   "autobyteus-agents-4"
+  ]
+ },
+ {
+  "q": "the planner should run unrelated work at the same time instead of one after another",
+  "rel": [
+   "autobyteus-agents-7",
+   "autobyteus-agents-8"
+  ]
+ },
+ {
+  "q": "look up a ticket by its short number",
+  "rel": [
+   "autobyteus-126"
+  ]
+ },
+ {
+  "q": "one shared drive across my laptop and container machines",
+  "rel": [
+   "autobyteus-70",
+   "autobyteus-nfs-1"
+  ]
+ },
+ {
+  "q": "where do notes go when a stable version bundles several changes",
+  "rel": [
+   "autobyteus-66"
+  ]
+ },
+ {
+  "q": "generation speed numbers are wrong",
+  "rel": [
+   "autobyteus-88"
+  ]
+ },
+ {
+  "q": "blog article about the two improvement loops",
+  "rel": [
+   "autobyteus-marketing-1"
+  ]
+ },
+ {
+  "q": "handoffs between agents attach way too many files",
+  "rel": [
+   "autobyteus-agents-20"
+  ]
+ },
+ {
+  "q": "flaky timing in end to end tests under load",
+  "rel": [
+   "autobyteus-103",
+   "autobyteus-112"
+  ]
+ },
+ {
+  "q": "remove leftover code from the old remote provider",
+  "rel": [
+   "autobyteus-54",
+   "autobyteus-39"
+  ]
+ },
+ {
+  "q": "token cost totals and price calculations have gaps",
+  "rel": [
+   "autobyteus-56",
+   "autobyteus-50"
+  ]
+ },
+ {
+  "q": "attach an existing conversation to a ticket without starting new work",
+  "rel": [
+   "autobyteus-11"
+  ]
+ },
+ {
+  "q": "clearer message when an agent's definition went missing for a run",
+  "rel": [
+   "autobyteus-1"
+  ]
+ },
+ {
+  "q": "archive every run in a sidebar group at once",
+  "rel": [
+   "autobyteus-2"
+  ]
+ },
+ {
+  "q": "helpers in a handed-off team all look active before they get any work",
+  "rel": [
+   "autobyteus-4"
+  ]
+ },
+ {
+  "q": "run stuck forever after stopping and sending again on the Google CLI runtime",
+  "rel": [
+   "autobyteus-13"
+  ]
+ },
+ {
+  "q": "make the whole unit test suite pass again",
+  "rel": [
+   "autobyteus-19",
+   "autobyteus-108"
+  ]
+ },
+ {
+  "q": "the remote server and all-in-one container images don't build",
+  "rel": [
+   "autobyteus-21"
+  ]
+ },
+ {
+  "q": "Gemini cache reuse is worse than on the Google command line tool",
+  "rel": [
+   "autobyteus-29"
+  ]
+ },
+ {
+  "q": "team row in the sidebar is always grey even when members are busy",
+  "rel": [
+   "autobyteus-31"
+  ]
+ },
+ {
+  "q": "rename the leftover catalog names for collaborators",
+  "rel": [
+   "autobyteus-107"
+  ]
+ },
+ {
+  "q": "old team conversations don't get the people I added to the team later",
+  "rel": [
+   "autobyteus-24"
+  ]
+ },
+ {
+  "q": "agents on different machines working together over a private network",
+  "rel": [
+   "autobyteus-25"
+  ]
+ },
+ {
+  "q": "free models from a provider that speaks two different APIs",
+  "rel": [
+   "autobyteus-26"
+  ]
+ },
+ {
+  "q": "the reasoning options in the message box are confusing",
+  "rel": [
+   "autobyteus-49"
+  ]
+ },
+ {
+  "q": "remove what is left of teams inside teams",
+  "rel": [
+   "autobyteus-119",
+   "autobyteus-135",
+   "autobyteus-124"
+  ]
+ },
+ {
+  "q": "a memory page view to list and delete detached helpers",
+  "rel": [
+   "autobyteus-117"
+  ]
+ },
+ {
+  "q": "only read a helper's details when I expand it",
+  "rel": [
+   "autobyteus-118"
+  ]
+ },
+ {
+  "q": "ship the next stable version",
+  "rel": [
+   "autobyteus-87"
+  ]
+ },
+ {
+  "q": "numbers are formatted differently across the usage cards",
+  "rel": [
+   "autobyteus-89"
+  ]
+ },
+ {
+  "q": "one shared shape for data attached to each run",
+  "rel": [
+   "autobyteus-90"
+  ]
+ },
+ {
+  "q": "setting up secrets for tests against real providers is painful",
+  "rel": [
+   "autobyteus-38"
+  ]
+ },
+ {
+  "q": "make the product video agent work for any product, not only ours",
+  "rel": [
+   "autobyteus-agents-3"
+  ]
+ },
+ {
+  "q": "small team that writes and reviews test cases for a login tutorial",
+  "rel": [
+   "autobyteus-agents-21"
+  ]
+ },
+ {
+  "q": "the designer explains its thinking first, then proposes an answer",
+  "rel": [
+   "autobyteus-agents-9"
+  ]
+ },
+ {
+  "q": "write the readme and push the first version of the app store repository",
+  "rel": [
+   "niuzhirui-app-market-1"
+  ]
+ },
+ {
+  "q": "move the network file system code into its own repository",
+  "rel": [
+   "autobyteus-nfs-1"
+  ]
+ },
+ {
+  "q": "the shipping role should read the repository's publishing rules",
+  "rel": [
+   "autobyteus-agents-12"
+  ]
+ },
+ {
+  "q": "checking whether a process is gone is slow so stopping fails",
+  "rel": [
+   "autobyteus-122"
+  ]
+ },
+ {
+  "q": "a team's colored dot should only count the agents shown under it",
+  "rel": [
+   "autobyteus-123"
+  ]
+ },
+ {
+  "q": "the notice about updated skills should list which files changed",
+  "rel": [
+   "autobyteus-136"
+  ]
+ }
+]

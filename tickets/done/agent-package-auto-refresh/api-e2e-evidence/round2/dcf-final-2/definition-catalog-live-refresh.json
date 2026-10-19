@@ -1,0 +1,225 @@
+{
+  "dcf001": {
+    "invalid": {
+      "code": 4401,
+      "reason": "REMOTE_ACCESS_AUTH_INVALID"
+    },
+    "sibling": {
+      "code": 4401,
+      "reason": "REMOTE_ACCESS_AUTH_INVALID"
+    },
+    "revoked": {
+      "code": 4403,
+      "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+    },
+    "pairedFrames": [
+      {
+        "type": "connected"
+      },
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ]
+  },
+  "dcf002": {
+    "createdVisibleMs": 77,
+    "createdFrames": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org"
+        ]
+      }
+    ],
+    "editVisibleMs": 9,
+    "fixClearedMs": 58,
+    "deleteVisibleMs": 9
+  },
+  "dcf003": {
+    "missing": {
+      "state": "ROOT_MISSING",
+      "message": "Its definitions keep their last loaded version until the folder returns."
+    },
+    "missingMs": 69,
+    "restoredMs": 64
+  },
+  "dcf004": {
+    "agents page Reload": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ],
+    "teams page Reload": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ],
+    "orgs page Reload": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ],
+    "package Reload": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      }
+    ]
+  },
+  "dcf005": {
+    "githubRequests": [
+      "https://api.github.com/repos/apar-e2e/agents",
+      "https://api.github.com/repos/apar-e2e/agents/branches/main",
+      "https://codeload.github.com/apar-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "https://api.github.com/repos/apar-e2e/agents",
+      "https://api.github.com/repos/apar-e2e/agents/branches/main",
+      "https://api.github.com/repos/apar-e2e/agents",
+      "https://api.github.com/repos/apar-e2e/agents/branches/main",
+      "https://codeload.github.com/apar-e2e/agents/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "updateFrames": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org",
+          "agent_package"
+        ]
+      },
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent_package"
+        ]
+      }
+    ],
+    "autoRefreshAfterUpdate": {
+      "state": "WATCHING",
+      "message": null
+    }
+  },
+  "dcf006": {
+    "diagnostic": {
+      "subject": "AGENT_TEAM",
+      "definitionId": "apar-dup-team",
+      "code": "DEFINITION_IDENTITY_DUPLICATED",
+      "reason": "Definition identity 'agent_team:apar-dup-team' is registered by multiple packages: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/dup-a-9c5d49/agent-teams/apar-dup-team, /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/dup-b-a27e7b/agent-teams/apar-dup-team.",
+      "definitionPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/dup-a-9c5d49/agent-teams/apar-dup-team",
+      "packageRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/dup-a-9c5d49",
+      "usingLastGood": false,
+      "dependencyChain": []
+    }
+  },
+  "dcf009": {
+    "brokenVisibleMs": 7,
+    "issues": [
+      {
+        "subject": "AGENT",
+        "definitionId": "agent-org-owned-agent:apar-studio:writer",
+        "name": "APAR Studio Writer",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "Invalid JSON: Unexpected end of JSON input",
+        "definitionPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/org-package-2c1674/agent-orgs/apar-studio/agents/writer/agent-config.json",
+        "packageRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/org-package-2c1674",
+        "usingLastGood": true
+      },
+      {
+        "subject": "AGENT_TEAM",
+        "definitionId": "agent-org-owned-team:apar-studio:squad",
+        "name": "APAR Studio Squad",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "team.md must start with '---' frontmatter delimiter (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/org-package-2c1674/agent-orgs/apar-studio/agent-teams/squad/team.md)",
+        "definitionPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/org-package-2c1674/agent-orgs/apar-studio/agent-teams/squad/team.md",
+        "packageRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/org-package-2c1674",
+        "usingLastGood": true
+      },
+      {
+        "subject": "AGENT",
+        "definitionId": "team-local-agent:agent-org-owned-team%3Aapar-studio%3Asquad:lead",
+        "name": "APAR Studio Squad Lead",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "agent.md must start with '---' frontmatter delimiter (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/org-package-2c1674/agent-orgs/apar-studio/agent-teams/squad/agents/lead/agent.md)",
+        "definitionPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/org-package-2c1674/agent-orgs/apar-studio/agent-teams/squad/agents/lead/agent.md",
+        "packageRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/definition-catalog-e2e-BxUeu4/org-package-2c1674",
+        "usingLastGood": true
+      }
+    ],
+    "clearedMs": 6
+  },
+  "dcf007": {
+    "listAfterWriteMs": 376,
+    "framesWhenListed": [
+      {
+        "type": "definitions_changed",
+        "subjects": [
+          "agent",
+          "agent_team",
+          "agent_org"
+        ]
+      }
+    ],
+    "teamListedAfterWriteMs": 444,
+    "squadV1Members": [
+      "/apar_fresh_squad/lead",
+      "/apar_fresh_squad/mate"
+    ],
+    "squadV2Members": [
+      "/apar_fresh_squad/chief",
+      "/apar_fresh_squad/scout"
+    ],
+    "deletedDelegation": {
+      "isError": false,
+      "text": "{\n  \"delegated\": false,\n  \"message\": \"'/apar_doomed' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"\n}"
+    }
+  },
+  "dcf008": {
+    "restored": {
+      "success": false,
+      "message": "Error: AGY_AGENT_DEFINITION_MISSING: apar-steady",
+      "runId": null
+    },
+    "launchesBefore": 6,
+    "launchesAfterEdit": 6
+  },
+  "frames": {
+    "total": 58,
+    "invalid": []
+  },
+  "cleanup": {
+    "baseRemoved": true,
+    "serverClosed": true,
+    "errors": []
+  }
+}

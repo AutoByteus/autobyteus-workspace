@@ -1,0 +1,4 @@
+{
+  "issue": "Asymmetric removal of owned NFS recreation label excluded only after; before correctly retained a prior recreation label after LN detach. All other labels identical.",
+  "correction": "Normalize only the two product-owned NFS labels on both snapshots; no runtime modification; fresh confirm using recorded before and actual current inspect."
+}

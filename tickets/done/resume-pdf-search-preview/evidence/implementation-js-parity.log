@@ -1,0 +1,5 @@
+Exact TS -> JS parity: autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.js
+Exact TS -> JS parity: autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.js
+Exact TS -> JS parity: autobyteus-server-ts/tests/integration/file-explorer/file-search.integration.test.js
+Exact TS -> JS parity: autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.js
+Static parity only: default Vitest includes tests/**/*.test.ts and does not execute these JS files.

@@ -1,0 +1,12 @@
+# IMP-04 refusal / existing-copy / reactivation e2e (excerpt)
+# Command: see IMP-04-withdraw-refusal-e2e.full.log
+# Commit: ffeea43dac (worktree content identical when run)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T19:04Z
+
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 153936ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 24906ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 13345ms
+     ✓ CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate  1444ms
+ Test Files  3 passed (3)
+      Tests  24 passed | 3 skipped (27)

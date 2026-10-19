@@ -1,0 +1,250 @@
+{
+  "startedAt": "2026-10-13T03:58:26.852Z",
+  "instanceId": "iso-52535-8486",
+  "events": [
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-architect%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Architect%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-implementer%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Implementer%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-reviewer%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Reviewer%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-validator%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Validator%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssue%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentDefinition%5C%22%2C%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-delivery%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Delivery%5C%22%2C%5Cn%20%20%5C%22role%5C%22%3A%20%5C%22Disposable%20desktop%20verification%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Test-owned%20member%20for%20isolated%20desktop%20Team%20inspection.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22Definition%20inspection%20only.%20Do%20not%20execute%20model%20turns.%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20%5C%22API%20verification%5C%22%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22toolNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22inputProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22llmResponseProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolExecutionResultProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22toolInvocationPreprocessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22lifecycleProcessorNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillNames%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22skillScope%5C%22%3A%20%5C%22CONFIGURED%5C%22%2C%5Cn%20%20%5C%22ownershipScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%5C%22ownerTeamId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerTeamName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerApplicationName%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerPackageId%5C%22%3A%20null%2C%5Cn%20%20%5C%22ownerLocalApplicationId%5C%22%3A%20null%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    }
+  ],
+  "operations": [
+    {
+      "name": "GetSkills",
+      "query": "skills {"
+    },
+    {
+      "name": "GetMcpServers",
+      "query": "mcpServers {"
+    },
+    {
+      "name": "CreateAgentDefinition",
+      "query": "createAgentDefinition(input: $input) {"
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "query": "agentDefinitions {"
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "query": "agentTeamDefinitions {"
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "query": "agentOrgDefinitions {"
+    },
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    },
+    {
+      "name": "GetSkills",
+      "query": "skills {"
+    },
+    {
+      "name": "GetMcpServers",
+      "query": "mcpServers {"
+    },
+    {
+      "name": "CreateAgentDefinition",
+      "query": "createAgentDefinition(input: $input) {"
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "query": "agentDefinitions {"
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "query": "agentTeamDefinitions {"
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "query": "agentOrgDefinitions {"
+    },
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    },
+    {
+      "name": "GetSkills",
+      "query": "skills {"
+    },
+    {
+      "name": "GetMcpServers",
+      "query": "mcpServers {"
+    },
+    {
+      "name": "CreateAgentDefinition",
+      "query": "createAgentDefinition(input: $input) {"
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "query": "agentDefinitions {"
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "query": "agentTeamDefinitions {"
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "query": "agentOrgDefinitions {"
+    },
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "GetSkills",
+      "query": "skills {"
+    },
+    {
+      "name": "GetMcpServers",
+      "query": "mcpServers {"
+    },
+    {
+      "name": "CreateAgentDefinition",
+      "query": "createAgentDefinition(input: $input) {"
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "query": "agentDefinitions {"
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "query": "agentTeamDefinitions {"
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "query": "agentOrgDefinitions {"
+    },
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    },
+    {
+      "name": "GetSkills",
+      "query": "skills {"
+    },
+    {
+      "name": "GetMcpServers",
+      "query": "mcpServers {"
+    },
+    {
+      "name": "CreateAgentDefinition",
+      "query": "createAgentDefinition(input: $input) {"
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "query": "agentDefinitions {"
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "query": "agentTeamDefinitions {"
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "query": "agentOrgDefinitions {"
+    },
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    }
+  ],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-coordinator"
+    }
+  ],
+  "details": {
+    "created": [
+      {
+        "name": "API Architect",
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-architect"
+      },
+      {
+        "name": "API Implementer",
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-implementer"
+      },
+      {
+        "name": "API Reviewer",
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-reviewer"
+      },
+      {
+        "name": "API Validator",
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-validator"
+      },
+      {
+        "name": "API Delivery",
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-delivery"
+      }
+    ],
+    "apiReadback": [
+      {
+        "id": "autobyteus-daily-assistant",
+        "name": "Daily Assistant",
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "autobyteus-retrospective-skill-improver",
+        "name": "Retrospective Skill Improver",
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "api-coordinator",
+        "name": "API Coordinator",
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "api-architect",
+        "name": "API Architect",
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "api-implementer",
+        "name": "API Implementer",
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "api-reviewer",
+        "name": "API Reviewer",
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "api-validator",
+        "name": "API Validator",
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "api-delivery",
+        "name": "API Delivery",
+        "ownershipScope": "SHARED"
+      }
+    ]
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=detail&id=api-delivery",
+  "finishedAt": "2026-10-13T03:58:36.774Z"
+}

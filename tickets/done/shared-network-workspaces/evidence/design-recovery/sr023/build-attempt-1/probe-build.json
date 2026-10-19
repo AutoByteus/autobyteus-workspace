@@ -1,0 +1,24 @@
+[
+  {
+    "argv": [
+      "/private/tmp/nfs-sr023-gc5go40z/go/bin/go",
+      "build",
+      "-o",
+      "/private/tmp/nfs-sr023-gc5go40z/identity-probe-arm64",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr023/identity-probe.go"
+    ],
+    "env": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/private/tmp/nfs-sr023-gc5go40z",
+      "GOCACHE": "/private/tmp/nfs-sr023-gc5go40z/go-cache",
+      "GOPATH": "/private/tmp/nfs-sr023-gc5go40z/go-path",
+      "GOTOOLCHAIN": "local",
+      "GOOS": "darwin",
+      "GOARCH": "arm64",
+      "CGO_ENABLED": "0"
+    },
+    "rc": 1,
+    "stdout": "",
+    "stderr": "# command-line-arguments\ntickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr023/identity-probe.go:16:53: undefined: syscall.MNT_LOCAL\n"
+  }
+]

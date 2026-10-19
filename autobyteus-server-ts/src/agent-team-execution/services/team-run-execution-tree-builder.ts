@@ -5,7 +5,6 @@ import type {
 import type {
   AgentLaunchConfiguration,
   TeamRunAgentNode,
-  TeamRunAgentTeamNode,
 } from "../domain/team-run-config.js";
 import { TeamRunConfig } from "../domain/team-run-config.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
@@ -47,11 +46,7 @@ export const buildInitialTeamRunExecutionTree = (input: {
     teamRunId: input.config.rootTeam.teamRunId,
     coordinatorAddress: input.config.rootTeam.coordinatorAddress,
     defaultLaunchConfiguration: launchConfiguration(input.config.rootTeam.defaultLaunchConfiguration),
-    members: input.config.rootTeam.children.map((member) => {
-      if (member.kind !== "agent") throw new Error(`Team V2 cannot contain configured Team '${member.address}'.`);
-      return toAgent(member);
-    }),
-    collaborators: [],
+    members: input.config.rootTeam.children.map(toAgent),
     taskExecutions: [],
   },
 }, input.config.rootTeam.teamRunId);

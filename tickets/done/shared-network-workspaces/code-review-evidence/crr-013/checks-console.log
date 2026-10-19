@@ -1,0 +1,13 @@
+go-version 0
+go-race 0
+go-vet 0
+python-packaging 0
+publish-refusal 1
+source-hash 0
+test-compile-darwin-amd64 0
+test-compile-linux-arm64 0
+test-compile-linux-amd64 0
+mutation-binding-save 1
+mutation-correlation 1
+mutation-duplicate 1
+all scoped checks completed

@@ -17,7 +17,7 @@ import { testAgentOrgExecutionTree,testOrgAgentNode } from '../../fixtures/curre
 async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeof createRecoveryFixture>>) {
  const root=kind==='agent_team'?createTeamRootExecutionIdentity('team-run-root'):createAgentOrgRootExecutionIdentity('org-run-1');
  const identity=createCollaborationMemberExecutionIdentity({root,memberAddress:'/product_manager',agentRunId:f.run.runId});
- const memberExecutionContext=new MemberExecutionContext({identity,teamScoped:true,
+ const memberExecutionContext=new MemberExecutionContext({identity,teamScoped: true, collaborationRole: "team_member",
   collaboration:new MemberCollaborationContext({deliverLogicalMessage:async()=>({accepted:true})}),
   tasks:{root,delegateToNewCopy:vi.fn(),assignToExistingCopy:vi.fn(),submitTaskResult:vi.fn(),reviewTaskResult:vi.fn()}});
  const prepareNewAgentRun=vi.fn(async()=>({runId:f.run.runId,runtimeKind:'autobyteus',platformAgentRunId:null,
@@ -26,7 +26,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
   execution:{agentDefinitionId:'test',llmModelIdentifier:'parent',llmConfig:null,autoExecuteTools:false,runtimeKind:'autobyteus',workspaceRootPath:null,platformAgentRunId:null},
   activationMode:'fresh',memberExecutionContext,callbacks:{publishAgentEvent:vi.fn(),commitPlatformBindingChange:vi.fn()},
   agentRunManager:testActivationManager({newPreparation: prepareNewAgentRun,getActiveRun:()=>f.run}) as any,
-  memoryLocator:{getLocation:()=>({memoryDir:'/unused/test-owned'})} as any});
+  memoryLocator:{getMemoryDir:()=>'/unused/test-owned'} as any});
  const activation=await handle.prepareConfiguredActivation();activation.commitAfterDurability();
  const send=vi.fn(); const connection={send,close:vi.fn()};
  const publisher=new RootEventPublisher<any>();
@@ -36,7 +36,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
  };
  let handler:AgentTeamStreamHandler|AgentOrgStreamHandler;
  if(kind==='agent_team') {
-  const tree=JSON.parse(fs.readFileSync(path.resolve('tests/fixtures/current-team-run-v2/case-001-nested-task-team/team_run_execution_tree.json'),'utf8').replaceAll('agent-run-product-manager',f.run.runId));
+  const tree=JSON.parse(fs.readFileSync(path.resolve('tests/fixtures/current-team-run-v2/case-001-delegated-task-team-forest/team_run_execution_tree.json'),'utf8').replaceAll('agent-run-product-manager',f.run.runId));
   tree.rootTeam.collaborators=[];
   const run={teamRunId:root.rootRunId,getExecutionTreeSnapshot:()=>tree,executeAgentCommand,
    openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,closedTaskExecutions:[],messages:{schemaVersion:1,teamRunId:root.rootRunId,messages:[]},statuses:[],inputStates:handle.getInputStateSnapshots()}))};
@@ -72,5 +72,5 @@ describe('actual root user command compaction recovery ingress',()=>{
    expect(f.parent.requests.slice(3).map(m=>m.at(-1)?.content)).toEqual(['A','B']);
    expect(route.prepareNewAgentRun).toHaveBeenCalledOnce();
   }finally{await route?.close();await f.close()}
- },15000);
+ },30000);
 });

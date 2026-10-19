@@ -1,3 +1,5 @@
+import { terminalChildEnvironment } from "../terminal-child-environment.js";
+import { NonInteractiveShellResolver } from "../command-execution/non-interactive-shell-resolver.js";
 import { tool } from '../../functional-tool.js';
 import type { BaseTool, ToolExecutionOptions } from '../../base-tool.js';
 import { ToolCategory } from '../../tool-category.js';
@@ -19,7 +21,7 @@ export async function runBash(
   executionOptions: ToolExecutionOptions = {}
 ): Promise<TerminalResult> {
   const resolvedCwd = resolveExecutionCwd(context, cwd);
-  const executor = new ShellCommandExecutor();
+  const executor = new ShellCommandExecutor(new NonInteractiveShellResolver({ env: terminalChildEnvironment(context) }));
   return executor.execute(command, resolvedCwd, {
     timeoutSeconds,
     backgroundManager: getBackgroundManager(context),

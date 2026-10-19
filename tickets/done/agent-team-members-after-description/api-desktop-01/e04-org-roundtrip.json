@@ -1,0 +1,84 @@
+{
+  "startedAt": "2026-10-13T04:05:12.962Z",
+  "instanceId": "iso-52535-8486",
+  "events": [
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22loadIssues%22%2C%22%7B%5Cn%20%20%5C%22id%5C%22%3A%20%5C%22api-desktop-verification-org%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22API%20Desktop%20Verification%20Org%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Disposable%20Org%20for%20testing%20Team%20and%20Agent%20return%20context%20through%20actual%20Electron%20pages.%5C%22%2C%5Cn%20%20%5C%22instructions%5C%22%3A%20%5C%22%5C%22%2C%5Cn%20%20%5C%22category%5C%22%3A%20null%2C%5Cn%20%20%5C%22avatarUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22revision%5C%22%3A%20%5C%22ccddcc291250c320d9b6ed96b628eb2e0463e225c3ddabdab27afabf5bc50600%5C%22%2C%5Cn%20%20%5C%22handoffs%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22members%5C%22%3A%20%5B%5Cn%20%20%20%20%7B%5Cn%20%20%20%20%20%20%5C%22memberName%5C%22%3A%20%5C%22api_desktop_engineering_team%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22ref%5C%22%3A%20%5C%22api-desktop-engineering-team%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22refType%5C%22%3A%20%5C%22AGENT_TEAM%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22refScope%5C%22%3A%20%5C%22SHARED%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentOrgMember%5C%22%5Cn%20%20%20%20%7D%5Cn%20%20%5D%2C%5Cn%20%20%5C%22defaultLaunchConfig%5C%22%3A%20null%2C%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22AgentOrgDefinition%5C%22%5Cn%7D%22%5D%7D"
+    }
+  ],
+  "operations": [
+    {
+      "name": "CreateAgentOrgDefinition",
+      "query": "createAgentOrgDefinition(input: $input) {"
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "query": "agentOrgDefinitions {"
+    },
+    {
+      "name": "GetDefinitionProblems",
+      "query": "definitionProblems(kind: $kind) {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    }
+  ],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-create"
+    }
+  ],
+  "result": "Fail",
+  "failure": {
+    "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: 'API Desktop Verification Org', exact: true }) to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: 'API Desktop Verification Org', exact: true }) to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/[eval1]:7:83\n    at async run (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/tickets/in-progress/agent-team-members-after-description/api-desktop-01/desktop-session.mjs:37:24)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/[eval1]:3:1"
+  },
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=api-desktop-verification-org",
+  "finishedAt": "2026-10-13T04:05:43.316Z"
+}

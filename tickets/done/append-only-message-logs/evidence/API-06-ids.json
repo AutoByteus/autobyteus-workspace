@@ -1,0 +1,28 @@
+{
+  "definitions": {
+    "host": "aoml-host",
+    "helper": "aoml-helper",
+    "lead": "aoml-lead",
+    "mate": "aoml-mate",
+    "pair": "aoml-pair",
+    "company": "aoml-company"
+  },
+  "hub": "aoml_host_1b9db3bae1944871a305a993805db88e",
+  "hubHelper": "aoml_helper_9bdf7971717c4ae391a9154f51e02cf1",
+  "hubPair": "aoml_pair_c95616ffa5754cf2b9ded9e1a06ad04d",
+  "hubPairCoordinator": "aoml_lead_83c07daa9f5f4a0ea2358b9669754a80",
+  "team": "aoml_pair_5d168649b4ac468193d3c2679d952070",
+  "teamMembers": {
+    "/lead": "aoml_lead_702597bbfc3c469f9524a555733bfc45",
+    "/mate": "aoml_mate_acebbee80aab4f12a33ade6c71b38e1b"
+  },
+  "teamHelper": "aoml_helper_7d42e48e22594693bc650222b6308e72",
+  "org": "aoml_company_d74f4bf4d6ca449f836e481740699704",
+  "orgMembers": {
+    "/director": "aoml_lead_882761e0aae6468d8be95c995c7dbb2d",
+    "/analyst": "aoml_mate_9ce9eb0240914c30b15960fd6a98d0b7"
+  },
+  "orgHelper": "aoml_helper_eff28cbf8fb54fc7ab7e28ad77bf26b4",
+  "teamEmpty": "aoml_pair_f125ef9022c4484bab30f85c53a16ee6",
+  "teamUnreadable": "aoml_pair_d5d592a9b3484500933bf5e6d0625d9e"
+}

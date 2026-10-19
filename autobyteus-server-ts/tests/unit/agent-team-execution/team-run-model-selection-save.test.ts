@@ -28,7 +28,8 @@ afterEach(async () => { await Promise.all(memoryDirs.splice(0).map((dir) => fs.r
 const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKind = 'codex_app_server') => {
   let saved: any = testExecutionTree({ rootTeamRunId: 'root', coordinatorAddress: '/member', children: [testAgentNode('/member', { platformAgentRunId: 'retained-provider-id' })] });
   saved = structuredClone(saved);
-  saved.rootTeam.taskExecutions = [{ address: '/task-run', agentRunId: 'retained-task', platformAgentRunId: 'platform-task',
+  // A source-less task agent is a copy of the configured place at its address (U-4).
+  saved.rootTeam.taskExecutions = [{ address: '/member', agentRunId: 'retained-task', platformAgentRunId: 'platform-task',
     delegatorAgentRunId: 'run-member', startedAt: '2026-09-01T00:00:00.000Z' }];
   const root = saved.rootTeam.defaultLaunchConfiguration;
   root.runtimeKind = runtimeKind; root.llmModelIdentifier = 'small'; root.workspaceRootPath = '/workspace'; root.llmConfig = null;
@@ -52,7 +53,7 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
   memoryDirs.push(memoryDir);
   const packageDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: 'root', ancestorTeamRunIds: [] });
   await new TeamRunExecutionTreeStore().write(packageDir, saved);
-  writeAttachmentSidecars(packageDir, 'team', 'root');
+  writeAttachmentSidecars(packageDir, 'team');
   const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => 'task' }),
     executionTreeStore: { read, write } as any, modelSelectionValidator: new RunModelSelectionService(catalog, capacity) });
@@ -128,4 +129,40 @@ describe('configured Team model selection Save', () => {
     },
   );
 
+});
+
+describe('stopped Team Save with delegated copies (AR-004)', () => {
+  const withCatalogCopy = (h: Awaited<ReturnType<typeof harness>>) => {
+    const copy = h.saved().rootTeam.taskExecutions[0];
+    copy.source = { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: { ...h.saved().rootTeam.defaultLaunchConfiguration } };
+    return copy;
+  };
+
+  it('validates configured and delegated changes together and writes them in one tree write', async () => {
+    const h = await harness(); const copy = withCatalogCopy(h); const started = structuredClone(copy.source);
+    const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root',
+      configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', llmModelIdentifier: 'equal', llmConfig: null }],
+      delegatedChanges: [{ agentRunId: 'retained-task', selection: { llmModelIdentifier: 'large', llmConfig: null } }] });
+    expect(result).toMatchObject({ outcome: 'UPDATED', success: true });
+    expect(h.write).toHaveBeenCalledTimes(1);
+    expect(h.saved().rootTeam.members[0].launchConfiguration.llmModelIdentifier).toBe('equal');
+    expect(h.saved().rootTeam.taskExecutions[0]).toMatchObject({ source: started, userLaunchSelection: { llmModelIdentifier: 'large', llmConfig: null } });
+  });
+
+  it('refuses the whole Save when one delegated model is unavailable, writing nothing', async () => {
+    const h = await harness(); withCatalogCopy(h); const original = structuredClone(h.saved());
+    const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root',
+      configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', llmModelIdentifier: 'equal', llmConfig: null }],
+      delegatedChanges: [{ agentRunId: 'retained-task', selection: { llmModelIdentifier: 'not-offered', llmConfig: null } }] });
+    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false });
+    expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);
+  });
+
+  it('refuses a delegated change naming a configured member', async () => {
+    const h = await harness(); withCatalogCopy(h);
+    const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root', configuredPatches: [],
+      delegatedChanges: [{ agentRunId: 'run-member', selection: { llmModelIdentifier: 'equal', llmConfig: null } }] });
+    expect(result).toMatchObject({ outcome: 'VALIDATION_FAILED', fieldErrors: [{ path: 'changes[0]' }] });
+    expect(h.write).not.toHaveBeenCalled();
+  });
 });

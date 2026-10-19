@@ -1,0 +1,75 @@
+openTurn(5cf22989) active null -> 5cf22989 retired=[]
+openTurn(5cf22989) active 5cf22989 -> 5cf22989 retired=[]
+openTurn(5cf22989) active 5cf22989 -> 5cf22989 retired=[]
+openTurn(5cf22989) active 5cf22989 -> 5cf22989 retired=[]
+openTurn(ae24af90) active null -> ae24af90 retired=[5cf22989]
+openTurn(469ed38b) active ae24af90 -> 469ed38b retired=[5cf22989,ae24af90]
+openTurn(ae24af90) active null -> null retired=[5cf22989,ae24af90,469ed38b]
+BACKGROUND_TASK_UPDATED:
+SEGMENT_START:5cf22989
+SEGMENT_CONTENT:5cf22989:I'll wait for the readiness notification.
+SEGMENT_END:5cf22989
+TURN_COMPLETED:5cf22989
+BACKGROUND_TASK_UPDATED:
+TURN_STARTED:469ed38b
+SYSTEM_TASK_NOTIFICATION:469ed38b
+TURN_COMPLETED:469ed38b
+TURN_STARTED:ae24af90
+SYSTEM_TASK_NOTIFICATION:ae24af90
+ERROR:ae24af90:AGENT_SEGMENT_LIFECYCLE_INVALID
+ERROR:ae24af90:AGENT_SEGMENT_LIFECYCLE_INVALID
+ERROR:ae24af90:AGENT_SEGMENT_LIFECYCLE_INVALID
+ERROR:ae24af90:AGENT_SEGMENT_LIFECYCLE_INVALID
+ERROR:ae24af90:AGENT_SEGMENT_LIFECYCLE_INVALID
+ERROR:ae24af90:AGENT_SEGMENT_LIFECYCLE_INVALID
+TURN_COMPLETED:ae24af90
+DIAGNOSTICS [33m6[39m
+openTurn(76897624) active null -> 76897624 retired=[]
+openTurn(76897624) active 76897624 -> 76897624 retired=[]
+openTurn(76897624) active 76897624 -> 76897624 retired=[]
+openTurn(76897624) active 76897624 -> 76897624 retired=[]
+openTurn(ccc2b514) active null -> ccc2b514 retired=[76897624]
+openTurn(71dab781) active null -> 71dab781 retired=[76897624,ccc2b514]
+openTurn(71dab781) active 71dab781 -> 71dab781 retired=[76897624,ccc2b514]
+openTurn(71dab781) active 71dab781 -> 71dab781 retired=[76897624,ccc2b514]
+openTurn(71dab781) active 71dab781 -> 71dab781 retired=[76897624,ccc2b514]
+BACKGROUND_TASK_UPDATED:
+SEGMENT_START:76897624
+SEGMENT_CONTENT:76897624:I'll wait for the readiness notification.
+SEGMENT_END:76897624
+TURN_COMPLETED:76897624
+BACKGROUND_TASK_UPDATED:
+TURN_STARTED:ccc2b514
+SYSTEM_TASK_NOTIFICATION:ccc2b514
+TURN_COMPLETED:ccc2b514
+TURN_STARTED:71dab781
+SYSTEM_TASK_NOTIFICATION:71dab781
+SEGMENT_START:71dab781
+SEGMENT_CONTENT:71dab781:The stack is ready; continuing the rendered board check.
+SEGMENT_END:71dab781
+SEGMENT_START:71dab781
+SEGMENT_CONTENT:71dab781:Seeding the test Project now.
+SEGMENT_END:71dab781
+TURN_COMPLETED:71dab781
+DIAGNOSTICS [33m0[39m
+openTurn(be4253b3) active null -> be4253b3 retired=[]
+openTurn(be4253b3) active be4253b3 -> be4253b3 retired=[]
+openTurn(be4253b3) active be4253b3 -> be4253b3 retired=[]
+openTurn(be4253b3) active be4253b3 -> be4253b3 retired=[]
+openTurn(96431429) active null -> 96431429 retired=[be4253b3]
+openTurn(68489ee3) active 96431429 -> 68489ee3 retired=[be4253b3,96431429]
+openTurn(96431429) active 68489ee3 -> 68489ee3 retired=[be4253b3,96431429]
+openTurn(96431429) active 68489ee3 -> 68489ee3 retired=[be4253b3,96431429]
+openTurn(96431429) active 68489ee3 -> 68489ee3 retired=[be4253b3,96431429]
+openTurn(96431429) active null -> null retired=[be4253b3,96431429,68489ee3]
+openTurn(96431429) active null -> null retired=[be4253b3,96431429,68489ee3]
+openTurn(96431429) active null -> null retired=[be4253b3,96431429,68489ee3]
+openTurn(96431429) active null -> null retired=[be4253b3,96431429,68489ee3]
+openTurn(96431429) active null -> null retired=[be4253b3,96431429,68489ee3]
+openTurn(96431429) active null -> null retired=[be4253b3,96431429,68489ee3]
+STATUS-EVENTS initializing,running,running,running,running,running,running,running,idle,idle,running,running,running,idle,idle,idle,idle,idle,idle
+openTurn(96431429) active null -> null retired=[be4253b3,96431429,68489ee3]
+openTurn(96431429) active null -> null retired=[be4253b3,96431429,68489ee3]
+openTurn(96431429) active null -> null retired=[be4253b3,96431429,68489ee3]
+ [32m✓[39m tests/unit/zz-investigation/claude-provider-turn-segment-race.probe.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 433[2mms[22m[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m

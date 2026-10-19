@@ -67,7 +67,6 @@ export class AgentOrgStreamingService {
     orgRunId: string
     publish(context: AgentOrgExecutionContext, commit: () => void): void
     onInactive?(): void
-    onExecutionTreeChanged?(): void
     reportError(message: string): void
     onAcceptedExternalUserMessage?(event: Readonly<{
       orgRunId: string
@@ -326,11 +325,9 @@ export class AgentOrgStreamingService {
       if (message.payload.root_subject_kind !== 'agent_org') {
         throw new Error('AgentOrg stream supplied a non-Org event.')
       }
-      const application = this.context.applyEvent(message.payload.change_sequence, message.payload.event)
+      const application = this.context.applyEvent(
+        message.payload.change_sequence, message.payload.event, message.payload.change_sequence_through)
       if (application === 'checkpoint_required') await this.reopenOwned(generation)
-      else if (application === 'applied' && message.payload.event.kind === 'collaborator_added' && this.isCurrent(generation)) {
-        this.options.onExecutionTreeChanged?.()
-      }
       return
     }
     this.context.setActive(message.payload.is_active)

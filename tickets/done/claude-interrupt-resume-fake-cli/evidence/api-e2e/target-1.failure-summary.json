@@ -1,0 +1,71 @@
+[
+  {
+    "id": "API-CL01",
+    "result": "Fail",
+    "leafErrors": [
+      "this.runSessions.deactivateForRun is not a function",
+      "expected true to be false // Object.is equality"
+    ]
+  },
+  {
+    "id": "API-CL02",
+    "result": "Fail",
+    "leafErrors": [
+      "this.runSessions.deactivateForRun is not a function",
+      "expected true to be false // Object.is equality"
+    ]
+  },
+  {
+    "id": "API-CL03",
+    "result": "Fail",
+    "leafErrors": [
+      "this.runSessions.deactivateForRun is not a function",
+      "expected true to be false // Object.is equality"
+    ]
+  },
+  {
+    "id": "API-CL04",
+    "result": "Fail",
+    "leafErrors": [
+      "this.runSessions.deactivateForRun is not a function",
+      "expected true to be false // Object.is equality"
+    ]
+  },
+  {
+    "id": "WS-INT",
+    "result": "Fail",
+    "leafErrors": [
+      "this.runSessions.deactivateForRun is not a function",
+      "expected true to be false // Object.is equality"
+    ]
+  },
+  {
+    "id": "WS-BUSY",
+    "result": "Fail",
+    "leafErrors": [
+      "this.runSessions.deactivateForRun is not a function",
+      "expected true to be false // Object.is equality"
+    ]
+  },
+  {
+    "id": "WS-RACE",
+    "result": "Fail",
+    "leafErrors": [
+      "this.runSessions.deactivateForRun is not a function",
+      "expected true to be false // Object.is equality"
+    ]
+  },
+  {
+    "id": "WS-BG",
+    "result": "Fail",
+    "leafErrors": [
+      "this.runSessions.deactivateForRun is not a function",
+      "expected true to be false // Object.is equality"
+    ]
+  },
+  {
+    "id": "LIVE-001",
+    "result": "Not Tested",
+    "leafErrors": []
+  }
+]

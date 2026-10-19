@@ -22,7 +22,6 @@ const tree = (): TeamRunExecutionTreeDto => ({
   application_binding: null,
   handoffs: [],
   root_team: {
-    collaborators: [],
     address: '/', team_definition_id: 'root-def', team_definition_name: 'Team', team_run_id: 'root-run',
     coordinator_address: '/linked', default_launch_configuration: launch('gpt', { effort: 'medium' }), task_executions: [],
     members: [
@@ -68,31 +67,6 @@ describe('existing Team model-config draft planner', () => {
     draft = updateExistingTeamScopeModelConfig(draft, '/linked', { llmModelIdentifier: 'gpt', llmConfig: { effort: 'max' } })
     draft = updateExistingTeamScopeModelConfig(draft, '/', { llmModelIdentifier: 'gpt', llmConfig: { effort: 'high' } })
     expect(draft.scopesByAddress['/linked']?.draftSelection.llmConfig).toEqual({ effort: 'max' })
-  })
-
-  it('adapts nested configured Teams to the shared recursive policy without crossing a direct-edit boundary', () => {
-    const base = tree()
-    const nested: TeamRunExecutionTreeDto = { ...base, root_team: { ...base.root_team, members: [{
-      kind: 'configured_team', address: '/group', team_definition_id: 'group-def', role: null, description: null,
-      team_run_id: 'group-run', coordinator_address: '/group/member',
-      default_launch_configuration: launch('gpt', { effort: 'medium' }), task_executions: [],
-      members: [{
-        kind: 'configured_agent', address: '/group/member', agent_definition_id: 'member-def', role: null, description: null,
-        agent_run_id: 'member-run', platform_agent_run_id: null,
-        launch_configuration: launch('gpt', { effort: 'medium' }),
-      }],
-    }] } }
-    let draft = createExistingTeamModelConfigDraft(nested)
-    draft = updateExistingTeamScopeModelConfig(draft, '/group/member', {
-      llmModelIdentifier: 'member-model', llmConfig: { budget: 0, enabled: false },
-    })
-    draft = updateExistingTeamScopeModelConfig(draft, '/', {
-      llmModelIdentifier: 'root-next', llmConfig: null,
-    })
-    expect(draft.scopesByAddress['/group']?.draftSelection).toEqual({ llmModelIdentifier: 'root-next', llmConfig: null })
-    expect(draft.scopesByAddress['/group/member']?.draftSelection).toEqual({
-      llmModelIdentifier: 'member-model', llmConfig: { budget: 0, enabled: false },
-    })
   })
 })
 

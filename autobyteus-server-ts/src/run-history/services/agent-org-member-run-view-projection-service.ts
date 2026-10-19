@@ -12,11 +12,14 @@ import {
 import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import { TokenUsageRunStore } from "../../token-usage/providers/token-usage-run-store.js";
 import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
+import { locatedExecutionSource } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import { CollaborationMemberNotFoundError } from "../../agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
 import {
-  catalogCopyExecutionSource,
-  collaboratorExecutionSource,
-  taskExecutionListsOf,
-} from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+  RunFileChangeProjectionService,
+  getRunFileChangeProjectionService,
+  type ResolvedRunFileChangeEntry,
+} from "./run-file-change-projection-service.js";
+import type { RunFileChangeEntry } from "../../services/run-file-changes/run-file-change-types.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -38,12 +41,14 @@ export class AgentOrgMemberRunViewProjectionService {
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: AgentOrgExecutionTreeLocationService;
   private readonly tokenUsage: TokenUsageRunStore;
+  private readonly injectedFileChanges: RunFileChangeProjectionService | null;
 
   constructor(options: {
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: AgentOrgExecutionTreeLocationService;
     tokenUsage?: TokenUsageRunStore;
+    runFileChangeProjectionService?: RunFileChangeProjectionService;
   } = {}) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
@@ -52,6 +57,7 @@ export class AgentOrgMemberRunViewProjectionService {
       manager: AgentOrgRunManager.getInstance(),
     });
     this.tokenUsage = options.tokenUsage ?? new TokenUsageRunStore();
+    this.injectedFileChanges = options.runFileChangeProjectionService ?? null;
   }
 
   async getProjection(
@@ -106,7 +112,28 @@ export class AgentOrgMemberRunViewProjectionService {
     return summary;
   }
 
-  private async requireLocation(orgRunId: string, memberAddress: string, agentRunId: string) {
+  /** The member's artifacts: live while the org runs, else its stored file changes. */
+  async getFileChanges(orgRunId: string, memberAddress: string, agentRunId: string): Promise<RunFileChangeEntry[]> {
+    const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
+    return this.fileChanges().getLocatedCollaborationMemberProjection(location);
+  }
+
+  /** One recorded file change of the member, resolved against its own launch workspace. */
+  async resolveFileChangeEntry(
+    orgRunId: string,
+    memberAddress: string,
+    agentRunId: string,
+    filePath: string,
+  ): Promise<ResolvedRunFileChangeEntry | null> {
+    const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
+    return this.fileChanges().resolveLocatedCollaborationMemberEntry(location, filePath);
+  }
+
+  private fileChanges(): RunFileChangeProjectionService {
+    return this.injectedFileChanges ?? getRunFileChangeProjectionService();
+  }
+
+  private async requireLocation(orgRunId: string, memberAddress: string, agentRunId: string): Promise<LocatedAgentOrgAgentExecution> {
     const root = required(orgRunId, "orgRunId");
     const address = required(memberAddress, "memberAddress");
     const run = required(agentRunId, "agentRunId");
@@ -116,26 +143,18 @@ export class AgentOrgMemberRunViewProjectionService {
       agentRunId: run,
     });
     if (!location || location.rootRunId !== root || location.memberAddress !== address) {
-      throw new Error(`AgentRun '${run}' at '${address}' was not found in AgentOrg '${root}'.`);
+      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' at '${address}' was not found in AgentOrg '${root}'.`);
     }
-    if (!location.configuredPlacement && !childSourceOf(location)) {
-      throw new Error(`AgentRun '${run}' has no configured AgentOrg launch placement, collaborator or catalog source.`);
+    if (!locatedExecutionSource(location)) {
+      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' has no configured AgentOrg launch placement or catalog source.`);
     }
     return location;
   }
 }
 
-const childSourceOf = (location: LocatedAgentOrgAgentExecution) =>
-  collaboratorExecutionSource(location.tree.rootOrg.collaborators, location.memberAddress)
-  ?? catalogCopyExecutionSource(taskExecutionListsOf({
-    taskExecutions: location.tree.rootOrg.taskExecutions,
-    teams: location.tree.rootOrg.members.flatMap((member) => "teamRunId" in member ? [member] : []),
-    collaborators: location.tree.rootOrg.collaborators,
-  }), location.agentRunId);
-
 const metadataFor = (location: LocatedAgentOrgAgentExecution): AgentRunMetadata => {
-  // A collaborator or catalog-copy run has no configured placement: its entry or recorded source supplies it.
-  const source = location.configuredPlacement ?? childSourceOf(location)!;
+  // A catalog-copy run has no configured placement: its recorded source supplies it.
+  const source = locatedExecutionSource(location)!;
   const launch = source.launchConfiguration;
   return {
     runId: location.agentRunId,

@@ -1,0 +1,9 @@
+# API-R08 (round 3): python3 scripts/check_licensing.py; python3 scripts/check_repository_artifact_hygiene.py; python3 -m pytest -q scripts/tests/test_check_licensing.py; commit 600d079b9c (HEAD a46cb5f306, only tickets/ after it); ENV-1; Sun Oct 18 20:59:12 CEST 2026
+Licensing is consistent.
+Tracked files scanned: 6774
+exit=0
+Repository artifact hygiene check passed.
+Tracked files scanned: 73382
+Path-length threshold: 200
+exit=0
+12 passed in 5.82s

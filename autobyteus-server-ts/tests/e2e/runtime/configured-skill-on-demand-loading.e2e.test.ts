@@ -21,6 +21,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import type { AutoByteusAgentRunBackend } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.js";
+import type { AgentRunBackendPreparation } from "../../../src/agent-execution/backends/agent-run-backend-preparation.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
 import { DAILY_ASSISTANT_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
@@ -59,7 +60,8 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
   let workspaceRoot: string;
   let registrySnapshot: ReturnType<typeof defaultToolRegistry.snapshot>;
   let closeStudioServices: (() => void) | null = null;
-  const activeBackends = new Set<AutoByteusAgentRunBackend>();
+  const preparations = new Set<AgentRunBackendPreparation>();
+  const preparationByBackend = new Map<AutoByteusAgentRunBackend, AgentRunBackendPreparation>();
   const llms = new Set<DeterministicLLM>();
 
   beforeAll(async () => {
@@ -94,10 +96,11 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
 
   afterAll(async () => {
     closeStudioServices?.();
-    for (const backend of activeBackends) {
-      await backend.terminate().catch(() => undefined);
+    for (const preparation of preparations) {
+      await preparation.release().catch(() => undefined);
     }
-    activeBackends.clear();
+    preparations.clear();
+    preparationByBackend.clear();
     for (const llm of llms) {
       await llm.cleanup();
     }
@@ -169,10 +172,11 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
           workspaceId === workspace.workspaceId ? workspace : undefined,
         getOrCreateTempWorkspace: async () => workspace,
       } as any,
-      compactionLlmFactory: async () => { throw new Error("Unexpected compaction in skill probe"); },
     });
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
+    const preparation = factory.beginPreparation({
+      kind: "new",
+      runId: input.runId,
+      config: new AgentRunConfig({
         agentDefinitionId: input.agentDefinitionId,
         llmModelIdentifier: "configured-skill-e2e",
         autoExecuteTools: true,
@@ -180,15 +184,20 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
         memoryDir: path.join(dataRoot, "memory", input.runId),
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
-      input.runId,
-    );
-    activeBackends.add(backend);
+    });
+    // Registered before prepare() so afterAll also releases what a failed preparation acquired.
+    preparations.add(preparation);
+    const backend = (await preparation.prepare()) as AutoByteusAgentRunBackend;
+    preparationByBackend.set(backend, preparation);
     return backend;
   };
 
   const terminateBackend = async (backend: AutoByteusAgentRunBackend): Promise<void> => {
-    await backend.terminate();
-    activeBackends.delete(backend);
+    const preparation = preparationByBackend.get(backend)!;
+    await expect(preparation.release()).resolves.toEqual({ kind: "released" });
+    expect(backend.isActive()).toBe(false);
+    preparations.delete(preparation);
+    preparationByBackend.delete(backend);
   };
 
   it("keeps ordinary native tools and configured skill reads explicit in the same active run", async () => {

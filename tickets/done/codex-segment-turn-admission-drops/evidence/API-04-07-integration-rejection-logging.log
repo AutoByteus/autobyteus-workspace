@@ -1,0 +1,170 @@
+# API-04..07 Codex rejection logging through the real Codex client path
+# Command (from worktree root, run 3 times): pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts --no-watch --reporter=verbose
+# Commit: 53fc6e9c61 (source = dedaf77fba) + final new test and fixture (committed with this evidence); date 2026-10-19 05:54; macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Test file sha256: c758bfe731a268ec; fixture sha256: 93176d96327c8e64
+# Prisma migration listing lines removed from the output.
+
+=== run 1 ===
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-segment-turn-admission-drops/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-segment-turn-admission-drops/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+Database reset successful
+The following migration(s) have been applied:
+migrations/
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered
+[receipt] SCN-001 {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-1","activeTurnId":"scripted-thread-1-turn-4"},{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-2","activeTurnId":"scripted-thread-1-turn-4"},{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-3","activeTurnId":"scripted-thread-1-turn-4"}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-late-tools","turnId":"scripted-thread-1-turn-1","count":1}]}
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered 412ms
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary
+[receipt] SCN-002 {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-whole-turn","nativeEventName":"item/started","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":"agentMessage","turnId":"codex-turn-not-adopted","activeTurnId":null},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":null,"activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":"codex-turn-not-adopted","count":437},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":null,"count":2},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":"codex-turn-not-adopted","count":2}]}
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > run termination writes one summary per pending account, and nothing when nothing is pending (AC-005)
+[receipt] AC-005 pending {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-a","activeTurnId":null},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":"commandExecution","turnId":"codex-turn-b","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-a","count":4},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-b","count":2}]}
+[receipt] AC-005 clean {"detailed":[],"summaries":[]}
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary 148ms
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > run termination writes one summary per pending account, and nothing when nothing is pending (AC-005) 43ms
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > an app-server exit writes the pending summaries (client close)
+[receipt] client close {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-z","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","turnId":"codex-turn-z","count":2}]}
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > an app-server exit writes the pending summaries (client close) 85ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  05:54:51
+   Duration  5.32s (transform 2.84s, setup 25ms, import 4.11s, tests 689ms, environment 0ms)
+exit 0
+
+=== run 2 ===
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-segment-turn-admission-drops/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-segment-turn-admission-drops/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+Database reset successful
+The following migration(s) have been applied:
+migrations/
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered
+[receipt] SCN-001 {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-1","activeTurnId":"scripted-thread-1-turn-4"},{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-2","activeTurnId":"scripted-thread-1-turn-4"},{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-3","activeTurnId":"scripted-thread-1-turn-4"}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-late-tools","turnId":"scripted-thread-1-turn-1","count":1}]}
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary
+[receipt] SCN-002 {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-whole-turn","nativeEventName":"item/started","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":"agentMessage","turnId":"codex-turn-not-adopted","activeTurnId":null},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":null,"activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":"codex-turn-not-adopted","count":437},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":null,"count":2},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":"codex-turn-not-adopted","count":2}]}
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered 471ms
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > run termination writes one summary per pending account, and nothing when nothing is pending (AC-005)
+[receipt] AC-005 pending {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-a","activeTurnId":null},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":"commandExecution","turnId":"codex-turn-b","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-a","count":4},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-b","count":2}]}
+[receipt] AC-005 clean {"detailed":[],"summaries":[]}
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary 152ms
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > run termination writes one summary per pending account, and nothing when nothing is pending (AC-005) 43ms
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > an app-server exit writes the pending summaries (client close)
+[receipt] client close {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-z","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","turnId":"codex-turn-z","count":2}]}
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > an app-server exit writes the pending summaries (client close) 91ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  05:54:56
+   Duration  5.49s (transform 3.07s, setup 24ms, import 4.25s, tests 757ms, environment 0ms)
+exit 0
+
+=== run 3 ===
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-segment-turn-admission-drops/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-segment-turn-admission-drops/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+Database reset successful
+The following migration(s) have been applied:
+migrations/
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered
+[receipt] SCN-001 {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-1","activeTurnId":"scripted-thread-1-turn-4"},{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-2","activeTurnId":"scripted-thread-1-turn-4"},{"runtimeKind":"codex_app_server","runId":"run-late-tools","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_CONFLICT","itemType":"commandExecution","turnId":"scripted-thread-1-turn-3","activeTurnId":"scripted-thread-1-turn-4"}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-late-tools","turnId":"scripted-thread-1-turn-1","count":1}]}
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-001: late tool items of stopped turns get one CONFLICT line per turn while the new turn's output is delivered 514ms
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary
+[receipt] SCN-002 {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-whole-turn","nativeEventName":"item/started","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":"agentMessage","turnId":"codex-turn-not-adopted","activeTurnId":null},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":null,"activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":"codex-turn-not-adopted","count":437},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":null,"count":2},{"runtimeKind":"codex_app_server","runId":"run-whole-turn","turnId":"codex-turn-not-adopted","count":2}]}
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > run termination writes one summary per pending account, and nothing when nothing is pending (AC-005)
+[receipt] AC-005 pending {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-a","activeTurnId":null},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","nativeEventName":"item/completed","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":"commandExecution","turnId":"codex-turn-b","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-a","count":4},{"runtimeKind":"codex_app_server","runId":"run-terminated-pending","turnId":"codex-turn-b","count":2}]}
+[receipt] AC-005 clean {"detailed":[],"summaries":[]}
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > SCN-002: a whole turn rejected with no active turn writes one detailed line and one summary per boundary 150ms
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > run termination writes one summary per pending account, and nothing when nothing is pending (AC-005) 39ms
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > an app-server exit writes the pending summaries (client close)
+[receipt] client close {"detailed":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","nativeEventName":"item/agentMessage/delta","reasonCode":"CODEX_SEGMENT_TURN_INACTIVE","itemType":null,"turnId":"codex-turn-z","activeTurnId":null}],"summaries":[{"runtimeKind":"codex_app_server","runId":"run-client-closed","turnId":"codex-turn-z","count":2}]}
+ ✓ tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > an app-server exit writes the pending summaries (client close) 90ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  05:55:02
+   Duration  6.89s (transform 4.05s, setup 26ms, import 5.50s, tests 794ms, environment 0ms)
+exit 0

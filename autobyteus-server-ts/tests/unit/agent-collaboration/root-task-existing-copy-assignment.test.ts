@@ -28,12 +28,12 @@ const unchanged = (f: Fixture) => {
 type Fixture = ReturnType<typeof fixture>;
 const refusalCases: Array<[string, (f: Fixture) => Promise<void>, string, string]> = [
   ["the copy's current Task is still open (AC-006)", async (f: Fixture) => { f.resources.setTaskOpen("task-A"); f.resources.entry(worker)!.open = true; },
-      "This copy still works on Task task-A. Mark it DONE or CANCELLED first, or delegate Task task-B to a new copy with recipient_address.", "manager"],
-  ["the sender did not make its most recent assignment (AC-007, QR-002)", async () => undefined, "Only the run that made this copy's most recent assignment can give it a new Task", "intruder"],
+      "This task agent still works on Task task-A. Set it to DONE or CANCELLED first, or delegate Task task-B to a new task agent with recipient_address.", "manager"],
+  ["the sender did not make its most recent assignment (AC-007, QR-002)", async () => undefined, "Only the agent that gave this task agent its most recent Task can give it a new one", "intruder"],
   ["Task B is DONE (AC-009)", async (f: Fixture) => { f.resources.tasks.get("task-B")!.done = true; }, "Task is DONE", "manager"],
   ["Task B is unknown (AC-009)", async (f: Fixture) => { f.resources.tasks.delete("task-B"); }, "Task 'task-B' was not found.", "manager"],
   ["the copy's latest assignment is already Task B (AC-009)", async (f: Fixture) => { f.resources.entry(worker)!.taskId = "task-B"; },
-      "This copy's most recent assignment is already Task task-B.", "manager"],
+      "This task agent already has Task task-B.", "manager"],
   ["any Task's data is unreadable (REQ-005)", async (f: Fixture) => { f.resources.damaged.add("task-Z"); }, "could not be read", "manager"],
 ];
 
@@ -51,7 +51,9 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
     const [work] = f.delivered;
     expect(work!.target).toBe("worker");
     expect(work!.content).toContain("New Task assigned to you: task-B. Your previous Task is closed");
-    expect(work!.content).toContain("Task delegator AgentRun ID: manager");
+    expect(work!.content).not.toContain("Task delegator");
+    // The header of the delivery gives the sender's ID; the body carries no reply line (SR-006).
+    expect(work!.content).not.toContain("send_message_to");
     expect(work!.content).toContain("Follow-up cleanup proposed by the reviewer");
     expect(work!.referenceFiles).toEqual([notes]);
   });
@@ -66,11 +68,11 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
   });
 
   it.each([
-    ["a Team coordinator passed as target_agent_run_id", { agentRunId: "lead" }, 'lead is the coordinator of Team copy review-team; use target_team_run_id "review-team".'],
-    ["a team run ID passed as target_agent_run_id", { agentRunId: "review-team" }, 'review-team is a Team copy\'s team run ID; use target_team_run_id "review-team".'],
-    ["an Agent copy passed as target_team_run_id", { teamRunId: "worker" }, 'worker is an Agent copy\'s agent run ID; use target_agent_run_id "worker".'],
-    ["a Team member", { agentRunId: "member" }, 'member is a member of Team copy review-team, not a copy itself; to assign that Team copy, use target_team_run_id "review-team".'],
-    ["an unknown ID or a copy of another root", { agentRunId: "elsewhere" }, "elsewhere is not a delegated copy in this run."],
+    ["a Team coordinator passed as target_agent_run_id", { agentRunId: "lead" }, 'lead is the coordinator of task agent team review-team; use target_team_run_id "review-team".'],
+    ["a team run ID passed as target_agent_run_id", { agentRunId: "review-team" }, 'review-team is a task agent team\'s run id; use target_team_run_id "review-team".'],
+    ["an Agent copy passed as target_team_run_id", { teamRunId: "worker" }, 'worker is a task agent\'s run id; use target_agent_run_id "worker".'],
+    ["a Team member", { agentRunId: "member" }, 'member is a member of task agent team review-team; to give that team a Task, use target_team_run_id "review-team".'],
+    ["an unknown ID or a copy of another root", { agentRunId: "elsewhere" }, "elsewhere is not one of your task agents."],
   ])("refuses %s with its specific reason; nothing changes (AC-008)", async (_case, copy, message) => {
     const f = await afterTaskADone();
     expect(await f.assignTo(copy, "task-B")).toEqual({ delegated: false, message: expect.stringContaining(message) });
@@ -94,13 +96,13 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
     await f.resources.markFailed(worker);
     f.control.absent.add("agent:worker");
     // While F is open the copy is not closed work of this root: nothing tells it apart from an unknown ID.
-    expect(await f.assignTo(worker, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("worker is not a delegated copy in this run.") });
+    expect(await f.assignTo(worker, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("worker is not one of your task agents.") });
     f.resources.close("task-F");
     expect(await f.assignTo(worker, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("This copy never started") });
     // Another sender gets the assigner-only reason; the wrong ID kind keeps its own refusal.
     expect(await f.assignTo(worker, "task-G", "intruder")).toEqual({ delegated: false,
-      message: expect.stringContaining("Only the run that made this copy's most recent assignment") });
-    expect(await f.assignTo({ teamRunId: "worker" }, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("is not a delegated copy in this run.") });
+      message: expect.stringContaining("Only the agent that gave this task agent its most recent Task") });
+    expect(await f.assignTo({ teamRunId: "worker" }, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("is not one of your task agents.") });
     expect(f.log).toEqual([]);
     unchanged(f);
   });
@@ -113,7 +115,7 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
       execution: { agentRunId: "elsewhere" } });
     await f.resources.markStarted({ agentRunId: "elsewhere" });
     f.resources.close("task-F");
-    expect(await f.assignTo({ agentRunId: "elsewhere" }, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("elsewhere is not a delegated copy in this run.") });
+    expect(await f.assignTo({ agentRunId: "elsewhere" }, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("elsewhere is not one of your task agents.") });
     unchanged(f);
   });
 
@@ -124,7 +126,7 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
     await f.resources.markStarted(helper);
     f.resources.addTask("task-B");
     await f.done();
-    expect(await f.assignTo(helper, "task-B")).toEqual({ delegated: false, message: expect.stringContaining("sub-work or a helper of a Task worker") });
+    expect(await f.assignTo(helper, "task-B")).toEqual({ delegated: false, message: expect.stringContaining("works on part of another agent's Task") });
     unchanged(f);
   });
 
@@ -132,7 +134,7 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
     const f = await afterTaskADone(["worker", "team"]);
     f.resources.setTaskOpen("task-A");
     f.resources.entry(team)!.open = true;
-    expect(await f.assignTo(worker, "task-B", "lead")).toEqual({ delegated: false, message: "Task workers delegate sub-work without task_id." });
+    expect(await f.assignTo(worker, "task-B", "lead")).toEqual({ delegated: false, message: "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task." });
     unchanged(f);
   });
 
@@ -153,11 +155,43 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
     expect(await f.assignTo(worker, "task-B")).toMatchObject({ delegated: true });
   });
 
+  it("a key task_id (any letter case) reaches the stored Task; the work message names the key, never the stored ID (AC-022, AC-023)", async () => {
+    const f = fixture();
+    await f.assign(worker);
+    f.resources.addTask("project_task_b", "Follow-up cleanup", "autobyteus-42");
+    await f.done();
+    expect(await f.assignTo(worker, "AutoByteus-42")).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "worker" } });
+    expect(f.resources.assignments).toEqual([{ hostRoot: root, execution: worker, taskId: "project_task_b", assignedBy: "manager" }]);
+    expect(f.delivered[0]!.content).toContain("New Task assigned to you: autobyteus-42. Your previous Task is closed");
+    expect(f.delivered[0]!.content).not.toContain("project_task_b");
+  });
+
+  it("an undelivered work message names the Task by key (AC-023)", async () => {
+    const f = fixture();
+    await f.assign(worker);
+    f.resources.addTask("project_task_b", "Follow-up cleanup", "autobyteus-42");
+    await f.done();
+    f.control.deliveryRefusal = { accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "input closed" };
+    const result = await f.assignTo(worker, "project_task_b");
+    expect(result).toEqual({ delegated: false, message: "Task autobyteus-42 was given to the task agent, but the message with its work was not delivered "
+      + "(input closed). Message the task agent's run id worker, or set Task autobyteus-42 to CANCELLED, or delegate it to a new task agent." });
+  });
+
+  it.each([
+    ["an unknown Task", (f: Fixture) => { f.resources.tasks.delete("task-B"); }, "Task 'task-B' was not found."],
+    ["a DONE Task", (f: Fixture) => { f.resources.tasks.get("task-B")!.done = true; }, "Task is DONE"],
+  ])("the named Task is checked before the copy: a copy outside the tree with %s gets the Task's refusal (REC-005)", async (_case, arrange, message) => {
+    const f = await afterTaskADone(["worker"]);
+    arrange(f);
+    expect(await f.assignTo({ agentRunId: "elsewhere" }, "task-B")).toEqual({ delegated: false, message: expect.stringContaining(message) });
+    unchanged(f);
+  });
+
   it("a delivery not accepted after the commit marks B's entry failed and says the work was not delivered", async () => {
     const f = await afterTaskADone(["worker"]);
     f.control.deliveryRefusal = { accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "input closed" };
-    expect(await f.assignTo(worker, "task-B")).toEqual({ delegated: false, message: "Task task-B was assigned to the copy but its work was not delivered "
-      + "(input closed). Message the copy's ingress worker, or mark Task task-B CANCELLED or delegate it to a new copy." });
+    expect(await f.assignTo(worker, "task-B")).toEqual({ delegated: false, message: "Task task-B was given to the task agent, but the message with its work was not delivered "
+      + "(input closed). Message the task agent's run id worker, or set Task task-B to CANCELLED, or delegate it to a new task agent." });
     expect(f.resources.entry(worker)).toMatchObject({ taskId: "task-B", open: true, start: "failed" });
   });
 
@@ -225,7 +259,7 @@ describe("a DONE of the earlier Task racing the assignment (QR-001)", () => {
     const f = fixture();
     await f.assign(worker);
     f.resources.addTask("task-B");
-    expect(await f.assignTo(worker, "task-B")).toEqual({ delegated: false, message: expect.stringContaining("This copy still works on Task task-A") });
+    expect(await f.assignTo(worker, "task-B")).toEqual({ delegated: false, message: expect.stringContaining("This task agent still works on Task task-A") });
     await f.done();
     expect(f.authority.get("agent:worker")).toBe("fenced");
     expect(f.resources.entry(worker)).toMatchObject({ taskId: "task-A", open: false });

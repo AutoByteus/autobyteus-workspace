@@ -6,7 +6,6 @@ import { BaseAudioClient } from './base-audio-client.js';
 import { GeminiAudioClient } from './api/gemini-audio-client.js';
 import { OpenAIAudioClient } from './api/openai-audio-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
-import { MultimediaRuntime } from '../runtimes.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
@@ -30,8 +29,6 @@ export class AudioClientFactory extends Singleton {
   protected static instance?: AudioClientFactory;
 
   private static modelsByIdentifier: Map<string, AudioModel> = new Map();
-  private static modelIdsBySource = new Map<string, Set<string>>();
-  private static sourceByModelId = new Map<string, string>();
   private static initialized = false;
 
   constructor() {
@@ -52,8 +49,6 @@ export class AudioClientFactory extends Singleton {
   static reinitialize(): void {
     AudioClientFactory.ensureInitialized();
     AudioClientFactory.modelsByIdentifier.clear();
-    AudioClientFactory.modelIdsBySource.clear();
-    AudioClientFactory.sourceByModelId.clear();
     AudioClientFactory.initializeRegistry();
     AudioClientFactory.initialized = true;
   }
@@ -168,52 +163,6 @@ export class AudioClientFactory extends Singleton {
     AudioClientFactory.modelsByIdentifier.set(identifier, model);
   }
 
-  static replaceSourceModels(sourceId: string, models: readonly AudioModel[]): number {
-    AudioClientFactory.ensureInitialized();
-    const source = sourceId.trim();
-    if (!source) throw new Error('AUDIO_MODEL_SOURCE_REQUIRED');
-    const identifiers = new Set<string>();
-    for (const model of models) {
-      const identifier = model.modelIdentifier;
-      if (identifiers.has(identifier)) throw new Error(`AUDIO_MODEL_SOURCE_DUPLICATE:${identifier}`);
-      identifiers.add(identifier);
-      const existing = AudioClientFactory.modelsByIdentifier.get(identifier);
-      if (existing && AudioClientFactory.sourceByModelId.get(identifier) !== source) {
-        throw new Error(`AUDIO_MODEL_SOURCE_COLLISION:${identifier}`);
-      }
-    }
-    for (const identifier of AudioClientFactory.modelIdsBySource.get(source) ?? []) {
-      AudioClientFactory.modelsByIdentifier.delete(identifier);
-      AudioClientFactory.sourceByModelId.delete(identifier);
-    }
-    AudioClientFactory.modelIdsBySource.set(source, new Set());
-    for (const model of models) {
-      AudioClientFactory.modelsByIdentifier.set(model.modelIdentifier, model);
-      AudioClientFactory.sourceByModelId.set(model.modelIdentifier, source);
-      AudioClientFactory.modelIdsBySource.get(source)!.add(model.modelIdentifier);
-    }
-    return models.length;
-  }
-
-  static removeSourceModels(sourceId: string): void {
-    AudioClientFactory.replaceSourceModels(sourceId, []);
-  }
-
-  static retainSourceModels(
-    sourceId: string,
-    predicate: (model: AudioModel) => boolean,
-  ): number {
-    const retained = AudioClientFactory.listSourceModels(sourceId).filter(predicate);
-    return AudioClientFactory.replaceSourceModels(sourceId, retained);
-  }
-
-  static listSourceModels(sourceId: string): AudioModel[] {
-    AudioClientFactory.ensureInitialized();
-    return Array.from(AudioClientFactory.modelIdsBySource.get(sourceId.trim()) ?? [])
-      .map((identifier) => AudioClientFactory.modelsByIdentifier.get(identifier))
-      .filter((model): model is AudioModel => Boolean(model));
-  }
-
   static hasRegisteredModel(modelIdentifier: string): boolean {
     AudioClientFactory.ensureInitialized();
     return AudioClientFactory.modelsByIdentifier.has(modelIdentifier);
@@ -235,8 +184,7 @@ export class AudioClientFactory extends Singleton {
 
   static requiresGeminiRuntimeResolver(modelIdentifier: string): boolean {
     const model = AudioClientFactory.requireModel(modelIdentifier);
-    return model.runtime === MultimediaRuntime.API
-      && model.provider === MultimediaProvider.GEMINI;
+    return model.provider === MultimediaProvider.GEMINI;
   }
 
   static createAudioClient(
@@ -246,12 +194,6 @@ export class AudioClientFactory extends Singleton {
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseAudioClient {
     return AudioClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver, geminiRuntimeResolver);
-  }
-
-  static syncRuntimeModels(runtime: MultimediaRuntime, models: AudioModel[]): number {
-    AudioClientFactory.ensureInitialized();
-    if (models.some((model) => model.runtime !== runtime)) throw new Error('AUDIO_RUNTIME_MODEL_SYNC_INVALID');
-    return AudioClientFactory.replaceSourceModels(String(runtime), models);
   }
 
   static listModels(): AudioModel[] {

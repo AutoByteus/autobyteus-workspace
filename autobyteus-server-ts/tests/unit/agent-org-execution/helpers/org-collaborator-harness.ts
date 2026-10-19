@@ -1,3 +1,4 @@
+import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -5,7 +6,6 @@ import { vi } from "vitest";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
 import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
-import { prepareCollaboratorHandles } from "../../../../src/agent-collaboration/execution/backends/collaborator-handle-preparation.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "../../../../src/agent-org-execution/services/agent-org-runtime-config-projector.js";
 import type { TeamRunAgentTeamNode } from "../../../../src/agent-team-execution/domain/team-run-config.js";
@@ -15,7 +15,7 @@ import { RootTeamExecutionDirectory } from "../../../../src/agent-collaboration/
 import { RootAgentExecutionRegistry } from "../../../../src/agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { AgentOrgRunPersistenceCoordinator } from "../../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import type { FlatTeamExecutionCallbacks } from "../../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
 import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
@@ -24,7 +24,6 @@ import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/provid
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { observeConfiguredHandles } from "./task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
-import type { AgentOrgRunCollaborators } from "../../../../src/agent-org-execution/services/agent-org-run-collaborators.js";
 
 /**
  * An AgentOrg (`/director`, mounted Team `/target` with `/target/lead` and `/target/writer`) over a
@@ -56,14 +55,16 @@ export const admission = (runnable = true) => {
     listTeamDefinitions: async () => teams,
     getAgentDefinition: async (id) => agents.find((agent) => agent.id === id) ?? null,
     getTeamDefinition: async (id) => teams.find((team) => team.id === id) ?? null,
-  }, validator(runnable));
+  }, validator(runnable), { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 };
 
 export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const root = createAgentOrgRootExecutionIdentity("org-collaborators");
-  const orgMemoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-collaborators-")); directories.push(orgMemoryDir);
+  // A real memory root: task agents' own files live beside the org's folder (contract L1).
+  const memoryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "org-collaborators-")); directories.push(memoryRoot);
+  const orgMemoryDir = new AgentMemoryLayout(memoryRoot).getOrgDirPath(root.rootRunId);
   const tree = testAgentOrgExecutionTree({ orgRunId: root.rootRunId, members: [
     { ...testOrgAgentNode("/director", "director"), agentDefinitionId: "definition-director" },
     testOrgTeamNode({ address: "/target", teamRunId: "configured-team", coordinatorAddress: "/target/lead",
@@ -72,7 +73,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   const messages = { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: root.rootRunId, messages: [] };
   const executionTreeStore = new AgentOrgRunExecutionTreeStore();
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: root.rootRunId, orgMemoryDir,
-    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesV1Store(), enterPersistenceFailStop: vi.fn() });
+    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
   await persistence.commitInitial({ tree, messages });
   let run: AgentOrgRun | undefined;
   const resources = new InMemoryTaskExecutionResources();
@@ -103,17 +104,9 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     } as never,
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
-    prepareCollaboratorHandles: (entries) => prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode: "fresh" }),
     // Production always binds the Task side; every delegated copy belongs to a Task.
     taskExecutionResources: resources,
   });
   run.activate();
   return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources };
 };
-
-/**
- * Brings a catalog address in as a collaborator (Offline, nothing started): the bring-in step of
- * the sender's first send_message_to that address, without delivering the message.
- */
-export const bringIn = (owner: AgentOrgRun, address: string, senderRunId: string) =>
-  (owner as unknown as { collaborators: AgentOrgRunCollaborators }).collaborators.bringInAt({ address, senderRunId });

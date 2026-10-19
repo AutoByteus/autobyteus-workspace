@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-10-13T04:00:48.457Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-detail&id=api-desktop-engineering-team"
+    }
+  ],
+  "details": {
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nReload\nCreate Team\nAD\nAPI Desktop Engineering Team\n\nA test-owned six-member Team for user-style validation of the reordered detail page.\n\nAPI verification\nRun\nView Details\n→\nA\napi_coordinator\nA\napi_architect\nA\napi_implementer\nA\napi_reviewer\n+2 more\n\nCoordinator\n\napi_coordinator\n\nMembers\n\n6",
+    "cards": [],
+    "nativeViewport": {
+      "width": 1200,
+      "height": 768,
+      "devicePixelRatio": 2
+    }
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-list",
+  "finishedAt": "2026-10-13T04:00:48.604Z"
+}

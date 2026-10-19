@@ -1,0 +1,175 @@
+{
+  "scope": "IR003 personal local checks. No sudo, mounts, live Docker, providers or API/E2E.\nRun from the worktree root; GO_BINARY may select an already installed Go >=1.25.\nMutation controls edit only disposable copies, never the working source.\n",
+  "steps": [
+    {
+      "name": "go-race-final",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "./..."
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "go-vet-final",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go",
+        "vet",
+        "./..."
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "installer-final",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts/tests/test_nfs_packaging_and_launcher.py",
+        "scripts/tests/test_nfs_installer_fixture.py",
+        "-v"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "mutation-old-umask",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "^TestBootstrapDirectoryModes$",
+        "-v",
+        "./internal/platform"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "mutation-missing-node-mode",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "^TestBootstrapDirectoryModes$",
+        "-v",
+        "./internal/platform"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "mutation-missing-parent-mode",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "^TestBootstrapDirectoryModes$",
+        "-v",
+        "./internal/platform"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "build-darwin-arm64",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-final-cj_b9v9w/darwin-arm64",
+        "./cmd/autobyteus-nfs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "build-darwin-amd64",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-final-cj_b9v9w/darwin-amd64",
+        "./cmd/autobyteus-nfs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "build-linux-arm64",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-final-cj_b9v9w/linux-arm64",
+        "./cmd/autobyteus-nfs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "build-linux-amd64",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-final-cj_b9v9w/linux-amd64",
+        "./cmd/autobyteus-nfs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "native-version",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-final-cj_b9v9w/darwin-arm64",
+        "version"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "native-unqualified-refusal",
+      "command": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-final-cj_b9v9w/darwin-arm64",
+        "verify-release",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/cmd/autobyteus-nfs/release.json"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1
+    }
+  ],
+  "compiledTargets": [
+    {
+      "target": "darwin-arm64",
+      "sha256": "7dd49f2fd3871be9357ce5bcea20d13b17d9b3cb063337ce094755ed2f12fecf"
+    },
+    {
+      "target": "darwin-amd64",
+      "sha256": "e1345c2d45a832543c0d75c01d6d19624ce3e8854e8efc0c0ab6c279327887b2"
+    },
+    {
+      "target": "linux-arm64",
+      "sha256": "080a563160a36ab8c40f845ce7da1088d30af7632a07762fb286f3c7ca6957ec"
+    },
+    {
+      "target": "linux-amd64",
+      "sha256": "c2af53ecf114b6bdf324e3a3fd91d473a5b67ca1698c80d6525e3f59b2b20ade"
+    }
+  ],
+  "temporaryRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-final-cj_b9v9w",
+  "toolchain": "go version go1.27.2 darwin/arm64",
+  "temporaryRootRemoved": true
+}

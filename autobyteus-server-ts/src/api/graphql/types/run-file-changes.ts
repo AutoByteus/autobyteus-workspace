@@ -2,7 +2,7 @@ import { Arg, Field, ObjectType, Query, Resolver } from "type-graphql";
 import { getRunFileChangeProjectionService } from "../../../run-history/services/run-file-change-projection-service.js";
 
 @ObjectType()
-class RunFileChangeEntryObject {
+export class RunFileChangeEntryObject {
   @Field(() => String)
   id!: string;
 
@@ -38,10 +38,11 @@ class RunFileChangeEntryObject {
 export class RunFileChangesResolver {
   private readonly projectionService = getRunFileChangeProjectionService();
 
+  /** A standalone run's artifact list; any other run id (a team, org or hub member) has none. */
   @Query(() => [RunFileChangeEntryObject])
   async getRunFileChanges(
     @Arg("runId", () => String) runId: string,
   ): Promise<RunFileChangeEntryObject[]> {
-    return this.projectionService.getProjection(runId);
+    return this.projectionService.getStandaloneRunProjection(runId);
   }
 }

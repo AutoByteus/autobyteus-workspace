@@ -1,0 +1,31 @@
+# Case: API-07 opt-in call path (REQ-005: call only when explicitly given) on a test-owned user-kind server: video-audio-mcp restored with git archive a947f1a^ into <L>/own-mcps
+# Command: env -i PATH HOME=<temp> TMPDIR RUN_REAL_MCP_SERVER_E2E=1 AUTOBYTEUS_MCPS_DIR=<L>/own-mcps REAL_MCP_SERVER_FOLDER=video-audio-mcp REAL_MCP_SERVER_COMMAND="uv run --frozen python server.py" REAL_MCP_SERVER_CALL={"tool":"get_media_duration","arguments":{"media_path":"<L>/own-mcps/video-audio-mcp/tests/sample.mp4"}} pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts --reporter=verbose  (source copy afterwards: no .venv)
+# Commit: 8d7edc2827 (test code baaee3a150; later commits: TESTING.md row and ticket files only)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2, uv 0.10.2; <L> = test-owned scratch $TMPDIR/mcp189-api (removed after the round)
+# Date: 2026-10-19
+
+== api07.log ==
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-real-server-test-fixtures/autobyteus-ts
+
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/real-mcp-server-71yTii/venv/lib/python3.14/site-packages/anyio/from_thread.py:119: SyntaxWarning: 'return' in a 'finally' block
+  return result
+[10/19/26 15:12:19] INFO     Processing request of type            server.py:733
+                             ListToolsRequest                                   
+stdout | tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: video-audio-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+[real-mcp-server] video-audio-mcp: 32 tools: get_media_duration, convert_audio_properties, convert_video_properties, change_aspect_ratio, convert_audio_format, set_audio_bitrate, set_audio_sample_rate, set_audio_channels, convert_video_format, set_video_resolution, set_video_codec, set_video_bitrate, set_video_frame_rate, set_video_audio_track_codec, set_video_audio_track_bitrate, set_video_audio_track_sample_rate, set_video_audio_track_channels, trim_video, concatenate_videos, concatenate_audios, change_video_speed, remove_silence, extract_audio_from_video, replace_audio_track, add_subtitles, add_text_overlay, add_image_overlay, create_video_from_image_and_audio, extract_frame_from_video, add_b_roll, add_basic_transitions, health_check
+
+                    INFO     Processing request of type            server.py:733
+                             CallToolRequest                                    
+stdout | tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: video-audio-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+[real-mcp-server] video-audio-mcp: called get_media_duration: isError=false
+
+ ✓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: video-audio-mcp > lists the server tools from a temp copy, leaving the source folder unchanged 2807ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  15:12:14
+   Duration  5.92s (transform 61ms, setup 23ms, import 2.54s, tests 3.26s, environment 0ms)
+
+

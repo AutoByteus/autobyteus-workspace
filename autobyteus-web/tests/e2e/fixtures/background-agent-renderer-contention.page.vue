@@ -87,7 +87,6 @@ import { createUploadedContextAttachment } from '~/utils/contextFiles/contextAtt
 import {
   buildTestTeamContext,
   testAgentNode,
-  testSubTeamNode,
 } from '~/test-support/currentTeamTestFixtures';
 
 const composerTarget = useComposerTarget();
@@ -156,21 +155,10 @@ selectionStore.selectRunWithoutShellNavigation(composerContext.state.runId, 'age
 
 const richWorkerContext = contextFor('rich-worker-run', 0, AgentStatus.Idle);
 const richTaskContext = contextFor('rich-task-agent-run', 0, AgentStatus.Running);
-const richReviewerContext = contextFor('rich-reviewer-run', 0, AgentStatus.Idle);
 const richTaskTeamChildContext = contextFor('rich-task-team-child-run', 0, AgentStatus.Running);
 const richWorkerNode = testAgentNode('/worker', {
   agentRunId: richWorkerContext.state.runId,
   displayName: 'Worker',
-});
-const richReviewerNode = testAgentNode('/ReviewTeam/reviewer', {
-  agentRunId: richReviewerContext.state.runId,
-  displayName: 'Reviewer',
-});
-const richStableTeamNode = testSubTeamNode('/ReviewTeam', [richReviewerNode], {
-  displayName: 'Review Team',
-  teamDefinitionId: 'review-team',
-  teamRunId: 'review-team-run',
-  coordinatorAddress: '/ReviewTeam/reviewer',
 });
 const richTeam = buildTestTeamContext({
   teamRunId: 'team-0',
@@ -183,14 +171,23 @@ const richTeam = buildTestTeamContext({
     workspaceId: 'workspace-0',
     workspaceMetadata: workspaceMetadata(0),
   },
-  rootChildren: [richWorkerNode, richStableTeamNode],
+  rootChildren: [richWorkerNode],
   taskExecutions: [
     {
       kind: 'task_agent', address: '/worker', agent_run_id: richTaskContext.state.runId,
       platform_agent_run_id: null, delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
     },
     {
+      // A catalog Review Team copy (Teams are flat).
       kind: 'task_team', address: '/ReviewTeam', team_run_id: 'rich-task-team-run',
+      source: {
+        kind: 'agent_team', team_definition_id: 'review-team', coordinator_address: '/ReviewTeam/reviewer',
+        members: [{ address: '/ReviewTeam/reviewer', agent_definition_id: 'reviewer-definition' }], handoffs: [],
+        default_launch_configuration: {
+          runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
+          auto_execute_tools: true, workspace_root_path: null,
+        },
+      },
       members: [{
         kind: 'task_team_agent', address: '/ReviewTeam/reviewer',
         agent_run_id: richTaskTeamChildContext.state.runId, platform_agent_run_id: null,
@@ -201,7 +198,6 @@ const richTeam = buildTestTeamContext({
   contexts: [
     { agentRunId: richWorkerContext.state.runId, context: richWorkerContext },
     { agentRunId: richTaskContext.state.runId, context: richTaskContext },
-    { agentRunId: richReviewerContext.state.runId, context: richReviewerContext },
     { agentRunId: richTaskTeamChildContext.state.runId, context: richTaskTeamChildContext },
   ],
 });
@@ -489,6 +485,7 @@ const actions: WorkspaceHistorySectionActions = {
   onTerminateRun: () => {}, onArchiveRun: () => {}, onDeleteRun: () => {},
   onTerminateTeam: () => {}, onArchiveTeam: () => {}, onDeleteTeam: () => {},
   onSelectTeam: (team) => { if (expandedTeams.has(team.teamRunId)) expandedTeams.delete(team.teamRunId); else expandedTeams.add(team.teamRunId); },
+  onOpenTeamRun: (team) => { expandedTeams.add(team.teamRunId); },
   onSelectTeamMember: (row: RunHistoryTeamExecutionRow) => {
     if (!row.agentRunId) return;
     const result = richTeam.view.focusAgent(row.agentRunId);

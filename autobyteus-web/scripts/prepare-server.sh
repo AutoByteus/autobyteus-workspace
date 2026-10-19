@@ -313,6 +313,9 @@ if [ -d "${TARGET_DIR}/node_modules/node-pty/prebuilds" ]; then
   fi
 fi
 
+echo -e "\n${YELLOW}Pruning onnxruntime-web to its Node build and checking the embedding runtime...${NC}"
+node "$WEB_ROOT/scripts/onnxruntime-web-packaging.mjs" "$TARGET_DIR"
+
 if [ -d "$SERVER_REPO_DIR/download" ]; then
   mkdir -p "$TARGET_DIR/download"
   cp -R "$SERVER_REPO_DIR/download/." "$TARGET_DIR/download/"

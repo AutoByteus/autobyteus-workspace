@@ -1,6 +1,6 @@
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 
 /** Current Team package: execution tree (read tolerantly) + communication messages. Task-records files are not read. */
 export type TeamRunStatePackage = Readonly<{

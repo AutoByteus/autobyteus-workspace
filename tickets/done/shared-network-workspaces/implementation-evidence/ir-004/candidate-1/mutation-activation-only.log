@@ -1,0 +1,8 @@
+--- FAIL: TestAppleActivationWaitsForBothServingPrograms (0.00s)
+    --- FAIL: TestAppleActivationWaitsForBothServingPrograms/restart (0.00s)
+        apple_startup_test.go:40: command completion alone is not startup readiness: [/sbin/nfsd checkexports /sbin/nfsd enable /sbin/nfsd restart]
+    --- FAIL: TestAppleActivationWaitsForBothServingPrograms/update (0.00s)
+        apple_startup_test.go:40: command completion alone is not startup readiness: [/sbin/nfsd checkexports /sbin/nfsd enable /sbin/nfsd update]
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.373s
+FAIL

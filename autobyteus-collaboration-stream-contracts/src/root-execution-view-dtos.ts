@@ -86,18 +86,6 @@ const validateAgentRootCorrelation = (value: AgentRootExecutionViewDto, context:
     }
   };
   visit(view.execution_tree.taskExecutions as readonly IdentityNode[]);
-  // Collaborators are children of the root: one instance each, with their run IDs in the entry.
-  for (const entry of view.execution_tree.collaborators) {
-    if (entry.kind === "agent") visit([entry]);
-    else {
-      visit(entry.members);
-      visit(entry.taskExecutions as readonly IdentityNode[]);
-    }
-  }
-  const collaboratorAddresses = new Set(view.execution_tree.collaborators.map((entry) => entry.address));
-  if (collaboratorAddresses.size !== view.execution_tree.collaborators.length || collaboratorAddresses.has(view.execution_tree.host.address)) {
-    addCorrelationIssue(context, "Agent root collaborator addresses must be unique and differ from the host address.");
-  }
   for (const message of view.communication_messages.messages) {
     if (!addresses.has(message.senderAgentRunId) || !addresses.has(message.receiverAgentRunId)) {
       addCorrelationIssue(context, `Agent root communication message '${message.messageId}' identity mismatch.`);
@@ -109,7 +97,7 @@ const validateAgentRootCorrelation = (value: AgentRootExecutionViewDto, context:
     }
   }
   validateClosedTaskExecutions(view.closed_task_executions,
-    [view.execution_tree as TaskExecutionHolder, ...view.execution_tree.collaborators as readonly TaskExecutionHolder[]], "Agent root", context);
+    [view.execution_tree as TaskExecutionHolder], "Agent root", context);
 };
 
 export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kind", [
@@ -181,19 +169,6 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
     }
   }
   taskIdentities(value.root_org.execution_tree.rootOrg.taskExecutions as readonly IdentityNode[], rootLive);
-  // Collaborators: hosted instances whose run IDs are in the entry; their addresses are unique.
-  for (const entry of value.root_org.execution_tree.rootOrg.collaborators) {
-    if (configuredAgentAddresses.has(entry.address) || configuredTeamAddresses.has(entry.address)) {
-      addCorrelationIssue(context, `AgentOrg collaborator address '${entry.address}' collides with a configured address.`);
-    }
-    if (entry.kind === "agent") {
-      addAgent(entry, rootLive, "task_member");
-      continue;
-    }
-    addTeam({ address: entry.address, teamRunId: entry.teamRunId, members: entry.members, taskExecutions: entry.taskExecutions as readonly IdentityNode[] }, "task_member");
-    memberIdentities(entry.members, rootLive, "task_member");
-    taskIdentities(entry.taskExecutions as readonly IdentityNode[], rootLive);
-  }
 
   for (const message of value.root_org.communication_messages.messages) {
     if (!addressesByRunId.has(message.senderAgentRunId) || !addressesByRunId.has(message.receiverAgentRunId)) {
@@ -221,14 +196,27 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
   }
   const rootOrg = value.root_org.execution_tree.rootOrg;
   validateClosedTaskExecutions(value.root_org.closed_task_executions,
-    [rootOrg as TaskExecutionHolder, ...rootOrg.collaborators as readonly TaskExecutionHolder[]], "AgentOrg", context);
+    [rootOrg as TaskExecutionHolder], "AgentOrg", context);
 });
 
+/**
+ * One root event, or a batch covering the contiguous root sequences
+ * `[change_sequence, change_sequence_through]`. `change_sequence_through` is required with and only
+ * allowed with the `agent_presentation_batch` event kind.
+ */
 export const RootExecutionEventDtoSchema = z.discriminatedUnion("root_subject_kind", [
   z.object({ root_subject_kind: z.literal("agent_team"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: z.unknown() }).strict(),
-  z.object({ root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: agentOrgExecutionEventDtoSchema }).strict(),
-  z.object({ root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: agentRunCollaborationEventDtoSchema }).strict(),
-]);
+  z.object({ root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, change_sequence_through: positiveSequence.optional(), event: agentOrgExecutionEventDtoSchema }).strict(),
+  z.object({ root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, change_sequence_through: positiveSequence.optional(), event: agentRunCollaborationEventDtoSchema }).strict(),
+]).superRefine((value, context) => {
+  if (value.root_subject_kind === "agent_team") return;
+  const batch = value.event.kind === "agent_presentation_batch";
+  if (batch !== (value.change_sequence_through !== undefined)) {
+    addCorrelationIssue(context, "change_sequence_through is required with and only allowed with an agent_presentation_batch event.");
+  } else if (value.change_sequence_through !== undefined && value.change_sequence_through < value.change_sequence) {
+    addCorrelationIssue(context, "change_sequence_through must not be lower than change_sequence.");
+  }
+});
 
 const rootSubjectKind = z.enum(["agent_team", "agent_org", "agent"]);
 /** Roots that accept per-agent commands on the collaboration stream. */
@@ -239,7 +227,7 @@ const commandAck = z.object({
   root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema,
   command_id: nonEmptyStringSchema, command_type: commandType, target_agent_run_id: nonEmptyStringSchema,
   state: z.enum(["accepted", "rejected", "failed"]), code: nonEmptyStringSchema.nullable(), message: z.string().nullable(),
-  /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */
+  /** With `COLLABORATOR_ADD_FAILED`: the mentioned definition that could not be involved (the message is the reason). */
   collaborator_name: nonEmptyStringSchema.optional(),
 }).strict();
 export const CollaborationStreamServerMessageSchema = z.discriminatedUnion("type", [

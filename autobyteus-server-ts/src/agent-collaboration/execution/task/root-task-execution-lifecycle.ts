@@ -1,21 +1,22 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import { messagePlacement } from "../../collaborators/message-recipient-resolution.js";
 import { dispatchTaskCopy, type TaskExecutionJoin } from "./root-task-dispatch.js";
 import { notACopyOfThisRun, resolveExistingCopy } from "./existing-copy-target.js";
 import { RootTaskExecutionResourceScope, asTaskDelegationError } from "./root-task-execution-resource-scope.js";
-import { taskReactivationRejectionCode, type TaskExecutionResourcePort, type TaskExecutionStopResult } from "./task-execution-resource-port.js";
+import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, taskReactivationRejectionCode, type TaskExecutionResourcePort, type TaskExecutionStopResult } from "./task-execution-resource-port.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-execution-idle-shutdown-setting.js";
 import type { RootTaskExecutionAdapter, TaskExecutionTarget } from "./root-task-execution-adapter.js";
 import { RootTaskExecutionCommandQueue } from "./root-task-execution-command-queue.js";
+import { TaskExecutionLiveHolds } from "./task-execution-live-holds.js";
 import {
+  ROOT_NOT_ACTIVE_MESSAGE,
   TaskDelegationError,
   TaskDispatchIndeterminateError,
-  copyTargetOf,
   delegatedCopyOf,
   type AssignToExistingCopyInput,
   type SpawnTaskInput,
+  type TaskCopyPlacementLaunchNotes,
   type TaskDelegationContext,
   type TaskDelegationOutcome,
 } from "./task-delegation-command.js";
@@ -45,19 +46,30 @@ export type TaskExecutionAgentStatus = "offline" | "initializing" | "idle" | "ru
  */
 export type DeliverTaskWork = (ingressAgentRunId: string, content: string, referenceFiles: readonly string[]) => Promise<AgentOperationResult>;
 
+/** A user Stop of task copies (SR-006): those it stopped and those that were already offline. */
+export type TaskExecutionUserStopResult = Readonly<{
+  stopped: readonly TaskExecutionReference[];
+  alreadyStopped: readonly TaskExecutionReference[];
+}>;
+
+/** A step that runs only while the listed copies are stopped (AR-001); otherwise the running ones. */
+export type StoppedTaskExecutionsStep<T> =
+  | Readonly<{ ran: true; value: T }>
+  | Readonly<{ ran: false; running: readonly TaskExecutionReference[] }>;
+
 /**
  * Root-neutral resource lifecycle for delegated children (task executions) of
  * one root. It owns delegation admission, the serialized activation / wake /
  * shutdown FIFO, idle-shutdown scheduling and live leases. It owns no subject
  * tree, index or store; the subject adapter owns those.
  */
-export class RootTaskExecutionLifecycle<TPlacement> {
+export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaunchNotes> {
   private readonly queue = new RootTaskExecutionCommandQueue();
   private readonly schedule: TaskExecutionIdleShutdownSchedule;
-  private readonly leases = new Map<string, number>();
   private accepting = true;
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
-  private readonly helperAttempts = new Map<string, Promise<TaskExecutionTarget>>();
+  /** Live leases and user Stops in progress (SR-006). */
+  private readonly holds = new TaskExecutionLiveHolds();
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -115,14 +127,14 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     let description: string, referenceFiles: readonly string[];
     let join: TaskExecutionJoin;
     if (linked) {
-      if (owner) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "Task workers delegate sub-work without task_id.");
-      const taskId = requireTaskString(input.task_id, "task_id");
-      const saved = await this.resourceScope.port().resolveAssignment(taskId).catch(error => { throw asTaskDelegationError(error); });
+      if (owner) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.");
+      // The agent's task_id (key or ID) is resolved once; only the stored ID goes on.
+      const saved = await this.resourceScope.port().resolveAssignment(requireTaskString(input.task_id, "task_id")).catch(error => { throw asTaskDelegationError(error); });
       description = saved.description;
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
-      join = { role: "assigned", taskId, assignedBy: context.identity.agentRunId };
+      join = { role: "assigned", taskId: saved.taskId, assignedBy: context.identity.agentRunId };
     } else {
-      if (owner && !owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
+      if (owner && !owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.");
       // An unowned copy could not be told apart from an unreadable Task's work: reject before any planning.
       if (!owner) this.resourceScope.assertResourceDataReadable();
       description = requireTaskString(input.description, "description");
@@ -133,32 +145,32 @@ export class RootTaskExecutionLifecycle<TPlacement> {
         : { role: "assigned", assignedBy: context.identity.agentRunId, adHocTask: { description, referenceFiles } };
     }
     return dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
-      workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, description, referenceFiles }),
+      workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, delegatorAddress: this.adapter.reachingAddressOf(context.identity), description, referenceFiles }),
       join, resources: this.resourceScope.port(),
       assertAdmitting: () => this.assertAdmitting(context.identity),
     });
   }
 
   /**
-   * DS-002, `delegate_task` with a copy's own ID: finds the copy in this root, asks the Task side whether
-   * this sender may give it Task `taskId`, settles its previous stop and checks it can be restored, commits
+   * DS-002, `delegate_task` with a copy's own ID: resolves the named Task first (its refusals come before the
+   * copy's), finds the copy in this root, asks the Task side whether this sender may give it the Task, settles its previous stop and checks it can be restored, commits
    * the new assignment, publishes it as reopened, then delivers the Task's work through the root's exact
    * delivery (which wakes or restores it with its conversation). Every refusal before the commit changes nothing.
    */
   async assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     const sender = context.identity.agentRunId;
-    let target: TaskExecutionTarget, taskId: string, description: string, referenceFiles: readonly string[];
+    let target: TaskExecutionTarget, taskId: string, taskReference: string, description: string, referenceFiles: readonly string[];
     try {
       this.assertAdmitting(context.identity);
       this.adapter.assertCurrentSchemaReady();
-      if (this.resourceScope.ownerOf(sender)) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "Task workers delegate sub-work without task_id.");
-      taskId = requireTaskString(input.taskId, "task_id");
+      if (this.resourceScope.ownerOf(sender)) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.");
       const port = this.resourceScope.port();
+      // The agent's task_id (key or ID) is resolved once; only the stored ID goes on, the key only into texts.
+      const saved = await port.resolveAssignment(requireTaskString(input.taskId, "task_id"));
+      ({ taskId, taskReference, description } = saved);
       const found = resolveExistingCopy(this.adapter, input.copy);
       if (!found) return await this.refuseCopyOutsideTree(port, input.copy, sender, taskId);
       target = found;
-      const saved = await port.resolveAssignment(taskId);
-      ({ description } = saved);
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
       await port.assertAssignable({ execution: target.execution, requestedBy: sender, taskId });
       await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId) });
@@ -169,7 +181,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
       throw error;
     }
     this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
-    const content = buildExistingCopyTaskMessage({ taskId, delegator: context.identity, description });
+    const content = buildExistingCopyTaskMessage({ taskReference, description });
     let delivered: AgentOperationResult;
     try { delivered = await this.withLiveLease(sender, () => deliverWork(target.ingressAgentRunId, content, referenceFiles)); }
     catch (error) { delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: errorMessage(error) }; }
@@ -178,8 +190,8 @@ export class RootTaskExecutionLifecycle<TPlacement> {
       const reason = delivered.message ?? delivered.code ?? "delivery was not accepted";
       try { await port.markFailed(target.execution, { code: delivered.code ?? "TASK_WORK_NOT_DELIVERED", message: reason }); }
       catch (recordError) { throw new TaskDispatchIndeterminateError(target.execution, recordError); }
-      return { delegated: false, message: `Task ${taskId} was assigned to the copy but its work was not delivered (${reason}). `
-        + `Message the copy's ingress ${target.ingressAgentRunId}, or mark Task ${taskId} CANCELLED or delegate it to a new copy.` };
+      return { delegated: false, message: `Task ${taskReference} was given to the task agent, but the message with its work was not delivered (${reason}). `
+        + `Message the task agent's run id ${target.ingressAgentRunId}, or set Task ${taskReference} to CANCELLED, or delegate it to a new task agent.` };
     }
     try { await port.markStarted(target.execution); }
     catch (error) { throw new TaskDispatchIndeterminateError(target.execution, error); }
@@ -205,43 +217,11 @@ export class RootTaskExecutionLifecycle<TPlacement> {
 
   assertInputAllowed(agentRunId: string): void { this.resourceScope.assertInputAllowed(agentRunId); }
   assertMessageScope(sender: string, recipient: string): void { this.resourceScope.assertMessageScope(sender, recipient); }
-  /** The Task owning the copy that contains the agent, as an opaque key; `null` when unowned. */
-  taskOwnerOf(agentRunId: string): Readonly<{ taskId: string }> | null {
-    const owner = this.resourceScope.ownerOf(agentRunId);
-    return owner ? { taskId: owner.taskId } : null;
-  }
   releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.resourceScope.releaseTaskExecutions(executions);
   }
   /** Closed (Task DONE or CANCELLED) task executions of the root's current tree, for its package snapshot. */
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.resourceScope.closedTaskExecutions(); }
-
-  /** One seedless brought-in copy per Task/address among the Task's open helpers; rejects when it could not be started. */
-  async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<TaskExecutionTarget> {
-    const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
-    if (!owner) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Helper bring-in requires a Task-owned sender.");
-    if (!owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
-    const existing = this.adapter.taskExecutionAt(address, this.resourceScope.port().openTaskExecutions(owner.taskId, "broughtIn"));
-    if (existing) return existing;
-    const key = `${owner.taskId}:${address}`;
-    const pending = this.helperAttempts.get(key);
-    if (pending) return pending;
-    const attempt = dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
-      join: { role: "broughtIn", creator: owner.execution }, resources: this.resourceScope.port(),
-      assertAdmitting: () => this.assertAdmitting(context.identity),
-    }).then((outcome) => {
-      if (!outcome.delegated) throw new Error(outcome.message);
-      return Object.freeze({ root: this.adapter.root, ...copyTargetOf(outcome.copy) });
-    });
-    this.helperAttempts.set(key, attempt);
-    try { return await attempt; } finally { if (this.helperAttempts.get(key) === attempt) this.helperAttempts.delete(key); }
-  }
-
-  helperPlacement(taskId: string, address: string) {
-    const helper = this.adapter.taskExecutionAt(address, this.resourceScope.port().openTaskExecutions(taskId, "broughtIn"));
-    return helper ? messagePlacement("agentRunId" in helper.execution ? "agent" : "agent_team", address,
-      { agentRunId: helper.ingressAgentRunId, address }) : null;
-  }
 
   /** Actual input fence shared by all root facades: wakes the chain and holds it live for the operation. */
   async withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
@@ -275,18 +255,17 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     const result = await this.withLiveLease(senderAgentRunId, deliver);
     if (!reactivated) return result;
     return result.accepted
-      ? { ...result, message: `${result.message ?? `Delivered message to ${targetAgentRunId}.`} ${targetAgentRunId} was reactivated.` }
-      : { ...result, message: `${result.message ?? "The message was not delivered."} ${targetAgentRunId} was reactivated (its Task work is open again) but did not receive this message; message it again.` };
+      ? { ...result, message: `${result.message ?? `Delivered message to ${targetAgentRunId}.`} ${targetAgentRunId} continues with its conversation.` }
+      : { ...result, message: `${result.message ?? "The message was not delivered."} ${targetAgentRunId} continues with its conversation (its Task is open again) but did not receive this message; send it again.` };
   }
 
   /** DS-L1. `true` only when this call committed the reopen. Every refusal before the commit leaves the Task and its entries unchanged. */
   private async reactivateClosedTarget(senderAgentRunId: string, targetAgentRunId: string): Promise<boolean> {
     if (this.resourceScope.ownerOf(targetAgentRunId)?.open !== false) return false;
-    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     const execution = this.adapter.taskExecutionWithIngress(targetAgentRunId);
     if (!execution) {
-      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "This run is part of closed Task work. Only the run that assigned the work "
-        + "can reactivate it: move the Task to TODO or IN_PROGRESS, then message the copy's agent run ID (for a Team copy, its coordinator's).");
+      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
     }
     const port = this.resourceScope.port();
     const request = { execution, requestedBy: senderAgentRunId };
@@ -303,7 +282,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
    * restored. A copy already open (a concurrent reopen or assignment) is never released.
    */
   private async prepareClosedCopyForResume(execution: TaskExecutionReference, ingressAgentRunId: string): Promise<void> {
-    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     if (this.resourceScope.port().isOpen(execution)) return;
     await this.resourceScope.discardReleasedExecution(execution);
     this.adapter.assertRestorableChain(ingressAgentRunId);
@@ -346,19 +325,22 @@ export class RootTaskExecutionLifecycle<TPlacement> {
    */
   async acquireLiveLease(agentRunId: string): Promise<TaskExecutionLiveLease> {
     if (!this.accepting) {
-      throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
+      throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     }
     // The Task side's loaded records are the authority: no durable read, closed stays closed after restart.
     this.resourceScope.assertInputAllowed(agentRunId);
+    this.assertNotStopping(agentRunId);
     return this.queue.submit({ kind: "wake", executeAtQueueHead: () => this.acquireAtHead(agentRunId) });
   }
 
   private async acquireAtHead(agentRunId: string): Promise<TaskExecutionLiveLease> {
     if (!this.accepting) {
-      throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
+      throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     }
     const assertOpen = () => this.resourceScope.assertInputAllowed(agentRunId);
     assertOpen();
+    // A wake queued before a Stop marked its chain is refused at the head, never restored.
+    this.assertNotStopping(agentRunId);
     const chain = this.adapter.taskExecutionChainFor(agentRunId);
     if (!chain.length) return Object.freeze({ assertOpen, release: () => undefined });
     this.adapter.assertRestorableChain(agentRunId);
@@ -371,23 +353,18 @@ export class RootTaskExecutionLifecycle<TPlacement> {
       if (error instanceof TaskDelegationError) throw error;
       throw new TaskDelegationError(
         "TASK_EXECUTION_RESTORE_FAILED",
-        `The delegated execution for AgentRun '${agentRunId}' could not be restored: ${errorMessage(error)}`,
+        `The task agent ${agentRunId} could not continue with its conversation: ${errorMessage(error)}`,
         { cause: error },
       );
     }
-    const keys = chain.map(taskExecutionReferenceKey);
-    keys.forEach((key) => this.leases.set(key, (this.leases.get(key) ?? 0) + 1));
+    const releaseHold = this.holds.lease(chain.map(taskExecutionReferenceKey));
     let released = false;
     return Object.freeze({
       assertOpen,
       release: () => {
         if (released) return;
         released = true;
-        for (const key of keys) {
-          const next = (this.leases.get(key) ?? 1) - 1;
-          if (next > 0) this.leases.set(key, next);
-          else this.leases.delete(key);
-        }
+        releaseHold();
         if (this.accepting) this.armLive(chain);
       },
     });
@@ -406,10 +383,75 @@ export class RootTaskExecutionLifecycle<TPlacement> {
 
   private async shutdownAtHead(reference: TaskExecutionReference): Promise<void> {
     if (!this.accepting) return;
-    if (this.leases.has(taskExecutionReferenceKey(reference))) return;
+    const key = taskExecutionReferenceKey(reference);
+    if (this.holds.isLeased(key) || this.holds.isStopping(key)) return;
     if (!this.adapter.isLive(reference)) return;
     // Not quiet: a later idle/offline/error status or lease release re-arms.
     await this.adapter.tryShutDownIfQuiet(reference);
+  }
+
+  /**
+   * User Stop of task copies (SR-006), `executions` innermost first (`delegatedStopSet`):
+   * 1. marks them stopping: from now on a live lease on any chain containing one is refused with
+   *    `TASK_EXECUTION_STOPPING`, before any queue step (deliveries into, from or by them are refused);
+   * 2. waits, outside the queue, for the leases already held on them to be released (in-flight
+   *    deliveries finish; their inner queue steps still run, since this never holds the queue head);
+   * 3. submits one non-waiting `stop` step per copy, innermost first, that releases a live copy into
+   *    the restorable idle-shutdown state;
+   * 4. clears the marks. An overlapping Stop first lets the earlier attempt settle.
+   */
+  async stopForUser(executions: readonly TaskExecutionReference[]): Promise<TaskExecutionUserStopResult> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
+    const stop = await this.holds.beginStop([...new Set(executions.map(taskExecutionReferenceKey))]);
+    executions.forEach((reference) => this.schedule.cancel(reference));
+    try {
+      await stop.drained;
+      const stopped: TaskExecutionReference[] = [];
+      const alreadyStopped: TaskExecutionReference[] = [];
+      for (const reference of executions) {
+        const done = await this.queue.submit({ kind: "stop", executeAtQueueHead: () => this.stopAtHead(reference) });
+        (done ? stopped : alreadyStopped).push(reference);
+      }
+      return Object.freeze({ stopped: Object.freeze(stopped), alreadyStopped: Object.freeze(alreadyStopped) });
+    } finally {
+      stop.end();
+      this.resourceScope.taskExecutionsStatusChanged(executions);
+    }
+  }
+
+  /**
+   * AR-001: runs `operation` at the queue head only while every listed copy is stopped (not live,
+   * not held by a lease and not being stopped); wake, activation, idle shutdown and Stop cannot
+   * interleave with it. Otherwise nothing runs and the running copies are returned.
+   */
+  async whileTaskExecutionsStopped<T>(
+    references: readonly TaskExecutionReference[],
+    operation: () => Promise<T> | T,
+  ): Promise<StoppedTaskExecutionsStep<T>> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
+    return this.queue.submit({
+      kind: "reconfigure",
+      executeAtQueueHead: async (): Promise<StoppedTaskExecutionsStep<T>> => {
+        const running = references.filter((reference) => {
+          const key = taskExecutionReferenceKey(reference);
+          return this.holds.isStopping(key) || this.holds.isLeased(key) || this.adapter.isLive(reference);
+        });
+        if (running.length) return Object.freeze({ ran: false, running: Object.freeze(running) });
+        return Object.freeze({ ran: true, value: await operation() });
+      },
+    });
+  }
+
+  /** Never awaits a lease: the Stop already drained them and refuses new ones. */
+  private async stopAtHead(reference: TaskExecutionReference): Promise<boolean> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
+    if (!this.adapter.isLive(reference)) return false;
+    this.schedule.cancel(reference);
+    return this.adapter.shutDownForUser(reference);
+  }
+
+  private assertNotStopping(agentRunId: string): void {
+    this.holds.assertNotStopping(this.adapter.taskExecutionChainFor(agentRunId).map(taskExecutionReferenceKey));
   }
 
   private armLive(chain: readonly TaskExecutionReference[]): void {
@@ -420,7 +462,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
 
   private assertAdmitting(identity: CollaborationMemberExecutionIdentity): void {
     if (!this.accepting || !this.adapter.isOpen()) {
-      throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting task commands.");
+      throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     }
     this.adapter.authorize(identity);
   }

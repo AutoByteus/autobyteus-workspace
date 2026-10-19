@@ -1,7 +1,9 @@
-import { getLlmProviderDisplayName, isBuiltInLlmProviderId } from "autobyteus-ts/llm/provider-display-names.js";
-import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import type { PrismaClient } from "@prisma/client";
 import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
+import {
+  isReleasedBuiltInLlmProviderId,
+  RELEASED_LLM_PROVIDER_DISPLAY_NAMES,
+} from "../legacy/released-llm-provider-display-names.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -48,8 +50,8 @@ const resolveProviderName = (
 ): string | null => {
   const provider = compact(row.model_provider)?.toUpperCase();
   if (!provider) return null;
-  if (isBuiltInLlmProviderId(provider)) return compact(getLlmProviderDisplayName(provider));
-  if (provider !== LLMProvider.OPENAI_COMPATIBLE) return null;
+  if (isReleasedBuiltInLlmProviderId(provider)) return compact(RELEASED_LLM_PROVIDER_DISPLAY_NAMES[provider]);
+  if (provider !== "OPENAI_COMPATIBLE") return null;
   const composite = parseTokenUsageCompositeModelValue(row.model_identifier);
   return composite ? compact(customProviderNames.get(composite.providerId)) : null;
 };

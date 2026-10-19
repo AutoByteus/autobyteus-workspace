@@ -1,0 +1,86 @@
+{
+  "recordedUtc": "2026-10-13T05:14:37.691525+00:00",
+  "source": "new post-verification latest-base checks",
+  "package": "claude-interrupt-resume-fixture-types",
+  "verifiedHandoff": "d9dad8fe1e6b65921a1efd07ebd9899fd009e061",
+  "postVerificationIntegratedBase": "2614fc38c26248998e0eb563bfcd7ebe2f72fcbe",
+  "reintegrationCommit": "13f4af7c402462d5c6dacd9f6f8a8465f09e6b0c",
+  "additionalBaseCommits": 28,
+  "protectedDeliveryEdits": "/Users/normy/autobyteus_org/delivery-receipts/claude-interrupt-resume-fixture-types/pre-reintegration-ticket-backup",
+  "sourceAndGraphChange": false,
+  "renewedVerificationRequired": false,
+  "rationale": "Only unrelated net web/UI/ticket docs; relevant server/core/lock/test/release policy identical to verified state",
+  "checks": {
+    "scoped-refreshed": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "typecheck:claude-interrupt-resume-e2e"
+      ],
+      "actualExit": 0,
+      "totalDiagnostics": 0,
+      "noUnhandled": true,
+      "noOwnedRemnants": true,
+      "privateRootRemoved": true
+    },
+    "target-refreshed": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+        "--no-watch"
+      ],
+      "actualExit": 0,
+      "totalDiagnostics": 0,
+      "noUnhandled": true,
+      "noOwnedRemnants": true,
+      "privateRootRemoved": true,
+      "passed": 8,
+      "liveSkipped": 1
+    },
+    "production-refreshed": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "typecheck"
+      ],
+      "actualExit": 0,
+      "totalDiagnostics": 0,
+      "noUnhandled": true,
+      "noOwnedRemnants": true,
+      "privateRootRemoved": true
+    },
+    "focused-refreshed": {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/agent-execution/prompt/carpenter-prompt-composer.test.ts",
+        "tests/unit/agent-execution/agent-run-status-projection-service.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts",
+        "tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts",
+        "tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts",
+        "--no-watch"
+      ],
+      "actualExit": 0,
+      "totalDiagnostics": 0,
+      "noUnhandled": true,
+      "noOwnedRemnants": true,
+      "privateRootRemoved": true,
+      "passed": 48,
+      "files": 7
+    }
+  },
+  "targetSha256": "3d7a40b5bf62946dabe0d03e2d060ab7b04de36895c29a7a415850036d44ade9"
+}

@@ -1,0 +1,21 @@
+# IMP-07-web-codegen
+# command: pnpm -C autobyteus-server-ts build; node autobyteus-server-ts/dist/app.js --data-dir <temp> --host 127.0.0.1 --port 51581 (env -i PATH HOME=<temp> TMPDIR USER);
+#          BACKEND_GRAPHQL_BASE_URL=http://127.0.0.1:51581/graphql pnpm -C autobyteus-web codegen; server stopped and temp data removed afterwards
+# code: server built from the working tree identical to commit 5d6127cee4 (server); generated file committed in 03f2d4da05
+# env: macOS, private data dir and HOME, free port
+# date: 2026-10-19
+
+Introspection of Query fields containing "FileChanges" on the started server (copied output):
+['getRunFileChanges', 'getAgentOrgMemberFileChanges', 'agentRunCollaborationMemberFileChanges', 'getTeamMemberFileChanges']
+
+Codegen output (copied tail):
+[SUCCESS] Load GraphQL documents
+[SUCCESS] Generate to ./generated/graphql.ts
+[SUCCESS] Generate outputs
+
+git diff --stat (before commit): autobyteus-web/generated/graphql.ts | 491 +++++++-- (482 insertions, 9 deletions)
+The base file was stale: besides GetTeamMemberFileChanges / GetAgentOrgMemberFileChanges, the regeneration
+also adds types already served by the base server and used by in-repo documents (DelegatedLaunchModelOptions,
+UpdateDelegatedLaunchSelections, StopDelegatedExecution, SearchProjectTasks, RetryEmbeddingModel, related
+input/object types), adds the `loadIssue` field that in-repo definition documents already select to their
+fragment/mutation result types, and refreshes scalar doc comments.

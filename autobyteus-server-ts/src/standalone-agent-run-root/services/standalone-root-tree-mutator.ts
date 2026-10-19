@@ -1,71 +1,33 @@
+import {
+  applyDelegatedLaunchSelectionsToTaskExecutions,
+  type DelegatedLaunchForest,
+  type DelegatedLaunchSelections,
+} from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type {
   CollaborationAgentNoConversationBindingReplacement,
   CollaborationAgentPlatformBinding,
 } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
-import type { TaskExecutionHostIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type {
-  CollaboratorEntry,
-  TaskExecution,
-  TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
-} from "../../run-history/domain/run-execution-tree-shared-records.js";
-import { mapCollaboratorEntries } from "../../run-history/domain/collaborator-entry-tree-mapping.js";
+import type { TaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { validateStandaloneRootTreePayload } from "../persistence/standalone-root-tree-schema.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
 
 const revalidate = (tree: StandaloneRootTreeSnapshot): StandaloneRootTreeSnapshot =>
   validateStandaloneRootTreePayload(tree, tree.host.agentRunId);
 
-export const addStandaloneRootCollaborators = (input: {
-  tree: StandaloneRootTreeSnapshot;
-  collaborators: readonly CollaboratorEntry[];
-}): StandaloneRootTreeSnapshot => revalidate({
-  ...input.tree,
-  collaborators: [...input.tree.collaborators, ...input.collaborators],
-});
-
 /**
- * Appends a task execution to its host: the root, a task Team, or a collaborator Team (which
- * hosts its members' delegations).
+ * Appends a new task execution as a link of the Agent root's top level: every new task agent is hosted by
+ * the root (the adapter's `planActivation`), and a task Team never holds task executions (CM-7, U-5).
  */
 export const addStandaloneRootTaskExecution = (input: {
   tree: StandaloneRootTreeSnapshot;
-  host: TaskExecutionHostIdentity;
   execution: TaskExecution;
 }): StandaloneRootTreeSnapshot => {
   const runId = "agentRunId" in input.execution ? input.execution.agentRunId : input.execution.teamRunId;
-  const append = <T extends { taskExecutions: readonly TaskExecution[] }>(owner: T): T => {
-    if (owner.taskExecutions.some((task) => ("agentRunId" in task ? task.agentRunId : task.teamRunId) === runId)) {
-      throw new Error(`Task execution '${runId}' is already present in its host.`);
-    }
-    return { ...owner, taskExecutions: [...owner.taskExecutions, input.execution] };
-  };
-  if (input.host.hostKind === "root") return revalidate(append(input.tree));
-  let found = false;
-  const team = <T extends TaskTeamExecution | TaskTeamNestedTeamExecution>(value: T): T => {
-    if (value.teamRunId === input.host.hostRunId) {
-      found = true;
-      return append(value);
-    }
-    return {
-      ...value,
-      members: value.members.map((member) => "agentRunId" in member ? member : team(member)),
-      taskExecutions: value.taskExecutions.map(task),
-    };
-  };
-  const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? value : team(value);
-  const taskExecutions = input.tree.taskExecutions.map(task);
-  const collaborators = input.tree.collaborators.map((entry) => {
-    if (entry.kind === "agent") return entry;
-    if (entry.teamRunId === input.host.hostRunId) {
-      found = true;
-      return append(entry);
-    }
-    return { ...entry, taskExecutions: entry.taskExecutions.map(task) };
-  });
-  if (!found) throw new Error(`Task host TeamRun '${input.host.hostRunId}' was not found in the Agent root.`);
-  return revalidate({ ...input.tree, taskExecutions, collaborators });
+  if (input.tree.taskExecutions.some((task) => ("agentRunId" in task ? task.agentRunId : task.teamRunId) === runId)) {
+    throw new Error(`Task execution '${runId}' is already present in its host.`);
+  }
+  return revalidate({ ...input.tree, taskExecutions: [...input.tree.taskExecutions, input.execution] });
 };
 
 type AgentNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
@@ -74,16 +36,12 @@ const mapAgents = (
   tree: StandaloneRootTreeSnapshot,
   agent: <T extends AgentNode>(value: T) => T,
 ): StandaloneRootTreeSnapshot => {
-  const member = (value: TaskTeamMemberExecution): TaskTeamMemberExecution => "agentRunId" in value ? agent(value) : {
-    ...value, members: value.members.map(member), taskExecutions: value.taskExecutions.map(task),
-  };
   const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? agent(value) : {
-    ...value, members: value.members.map(member), taskExecutions: value.taskExecutions.map(task),
+    ...value, members: value.members.map(agent), taskExecutions: value.taskExecutions.map(task),
   };
   return {
     ...tree,
     taskExecutions: tree.taskExecutions.map(task),
-    collaborators: mapCollaboratorEntries(tree.collaborators, { agent, task }),
   };
 };
 
@@ -133,3 +91,17 @@ export const replaceStandaloneRootPlatformBindingWithoutConversation = (input: {
   if (matches !== 1) throw new Error("Platform binding replacement target was not found exactly once in the Agent-root tree.");
   return revalidate(next);
 };
+
+/** The tree's delegated copies, for the user model choice and Stop (DS-001, DS-002). */
+export const standaloneDelegatedLaunchForest = (tree: StandaloneRootTreeSnapshot): DelegatedLaunchForest => Object.freeze({
+  taskExecutionLists: taskExecutionListsOf({ taskExecutions: tree.taskExecutions }),
+});
+
+/** Records user model choices on the tree's copies; started values are untouched. */
+export const applyStandaloneDelegatedLaunchSelections = (
+  tree: StandaloneRootTreeSnapshot,
+  selections: DelegatedLaunchSelections,
+): StandaloneRootTreeSnapshot => revalidate({
+  ...tree,
+  taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(tree.taskExecutions, selections),
+});

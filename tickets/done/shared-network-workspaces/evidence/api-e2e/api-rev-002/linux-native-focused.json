@@ -1,0 +1,42 @@
+[
+  {
+    "name": "ordinary-read-observation",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-25fc064c",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "id; cat /home/admin/ab-nfs-api002-linux-25fc064c-source/.autobyteus-nfs/storage.json; cat /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; cat /Volumes/autobyteus-shared/project/preexisting.txt; stat -c \"%u:%g:%a %n\" /home/admin/ab-nfs-api002-linux-25fc064c-source /home/admin/ab-nfs-api002-linux-25fc064c-source/.autobyteus-nfs /home/admin/ab-nfs-api002-linux-25fc064c-source/.autobyteus-nfs/storage.json /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; ls -la /Volumes/autobyteus-shared; sudo -n cat /var/lib/autobyteus-nfs/ganesha/ganesha.conf; command -v strace || true"
+    ],
+    "rc": 0,
+    "seconds": 0.418,
+    "stdout": "uid=1000(admin) gid=109(admin) groups=109(admin)\n{\"storageId\":\"a294c758-b1f7-40c9-84e5-6b9124671ae1\"}\n{\"storageId\":\"a294c758-b1f7-40c9-84e5-6b9124671ae1\"}\nORIGINAL_API002_LINUX1000:109:755 /home/admin/ab-nfs-api002-linux-25fc064c-source\n1000:109:755 /home/admin/ab-nfs-api002-linux-25fc064c-source/.autobyteus-nfs\n1000:109:644 /home/admin/ab-nfs-api002-linux-25fc064c-source/.autobyteus-nfs/storage.json\n1000:109:644 /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json\ntotal 16\ndrwxr-xr-x 4 admin admin 4096 Oct 14 04:27 .\ndrwxr-xr-x 3 root  root  4096 Oct 14 04:27 ..\ndrwxr-xr-x 3 admin admin 4096 Oct 14 04:27 .autobyteus-nfs\ndrwxr-xr-x 2 admin admin 4096 Oct 14 04:26 project\nNFS_CORE_PARAM {\n Protocols = 4;\n NFS_Port = 2049;\n Enable_NLM = false;\n Enable_RQUOTA = false;\n Enable_UDP = false;\n}\nNFSv4 {\n Minor_Versions = 1;\n RecoveryBackend = fs;\n RecoveryRoot = \"/var/lib/autobyteus-nfs/ganesha/recovery\";\n}\nEXPORT {\n Export_Id = 1;\n Path = \"/home/admin/ab-nfs-api002-linux-25fc064c-source\";\n Pseudo = \"/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1\";\n Protocols = 4;\n Transports = TCP;\n SecType = sys;\n Access_Type = None;\n Squash = All_Squash;\n Anonymous_uid = 1000;\n Anonymous_gid = 109;\n CLIENT {\n  Clients = 192.168.64.4;\n  Access_Type = RW;\n  Squash = All_Squash;\n }\n FSAL { Name = VFS; }\n}\n/usr/bin/strace\n",
+    "stderr": ""
+  },
+  {
+    "name": "public-reconnect",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-25fc064c",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "/home/admin/ab-nfs-api002-linux-25fc064c-binary reconnect --yes --json"
+    ],
+    "rc": 1,
+    "seconds": 0.576,
+    "stdout": "",
+    "stderr": "Resuming the same source/UUID. Any recovery restores configuration only, NOT storage bytes.\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api002-linux-25fc064c-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.4\n - Attach 192.168.64.4:/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1 at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nAutoByteus NFS incomplete: nonroot storage check incomplete: exit status 1: AutoByteus NFS incomplete: statat .autobyteus-nfs/storage.json: remote I/O error\n\nAutoByteus NFS incomplete: exit status 1\n"
+  }
+]

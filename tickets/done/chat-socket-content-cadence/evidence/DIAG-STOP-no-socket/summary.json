@@ -1,0 +1,60 @@
+{
+  "scenario": "host-stop",
+  "model": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+  "marks": [
+    {
+      "at": 1983.1,
+      "what": "ready",
+      "origin": "http://127.0.0.1:60390",
+      "interval": "default(500)",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234"
+    },
+    {
+      "at": 6050.3,
+      "what": "pm streaming"
+    },
+    {
+      "at": 69056.4,
+      "what": "terminate did not return",
+      "ms": 60004,
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "at": 71059.3,
+      "what": "pm socket after stop",
+      "lastFrames": [
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT"
+      ]
+    }
+  ],
+  "rootId": "abt139_pm_9543bbd2b03549fc9876d31835704d7a",
+  "failure": null,
+  "textCheck": [],
+  "s2Check": null,
+  "analyses": {
+    "S1": {
+      "frames": 0,
+      "typeCounts": {},
+      "coverage": {
+        "snapshots": [],
+        "frames": 0,
+        "gaps": [],
+        "startsAfterSnapshot": []
+      },
+      "batchCount": 0,
+      "multiAgentBatches": 0,
+      "plainSegmentContentFrames": 0,
+      "batchRange": null,
+      "closedByCounts": {},
+      "spacing": {},
+      "statusSummary": {},
+      "lifecycle": [],
+      "stopCheck": null,
+      "batchesSample": [],
+      "batchesTotal": 0
+    }
+  }
+}

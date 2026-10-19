@@ -1,6 +1,6 @@
 import { agentInputStateSchema, compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
-import { agentAddressSchema, agentPresentationMessageSchema, jsonValueSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
+import { agentAddressSchema, agentPresentationMessageSchema, agentPresentationPayloadSchemas, jsonValueSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
 const timestamp = nonEmptyStringSchema;
 const nullableText = nonEmptyStringSchema.nullable();
 export const agentOrgLaunchConfigurationDtoSchema = z.object({
@@ -15,27 +15,78 @@ const configuredAgent = z.object({
     role: z.string().nullable(), description: z.string().nullable(), agentRunId: nonEmptyStringSchema,
     platformAgentRunId: nullableText, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
 }).strict();
+/**
+ * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
+ * it. Absent on records written before sources existed ("not recorded").
+ */
+export const collaborationLaunchConfigurationSourceDtoSchema = z.object({
+    origin: z.enum(["agent_default", "team_default", "inherited"]),
+    fallbacks: z.array(z.object({
+        layer: z.enum(["agent_default", "team_default"]),
+        runtimeKind: nullableText,
+        llmModelIdentifier: nullableText,
+        reason: z.enum(["incomplete", "runtime_unavailable", "model_unavailable", "model_settings_invalid"]),
+        detail: nonEmptyStringSchema,
+    }).strict()),
+}).strict();
+/**
+ * The launch a catalog-Team-copy member runs with: its own, else its Team's.
+ * Every reader of such a member's launch uses this, never the Team's value directly.
+ */
+export const collaborationMemberLaunchConfiguration = (team, member) => member.launchConfiguration ?? team.defaultLaunchConfiguration;
+/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
+export const collaborationMemberLaunchSource = (team, member) => member.launchSource ?? team.defaultLaunchSource ?? null;
+/**
+ * The user's model choice for one delegated copy: it replaces only the
+ * model and its settings. Absent when the user made no choice (every older record).
+ */
+export const userLaunchSelectionDtoSchema = z.object({
+    llmModelIdentifier: nonEmptyStringSchema,
+    llmConfig: z.record(z.string(), jsonValueSchema).nullable(),
+    selectedAt: timestamp,
+}).strict();
+/**
+ * The single launch rule of a copy agent (mirrors the server's
+ * `effectiveCopyAgentLaunch`): its own choice, else (when it follows its Team) the Team's choice,
+ * else its started launch. `selected` tells which choice applied.
+ */
+export const collaborationCopyAgentLaunch = (input) => {
+    const selection = input.agentSelection ?? (input.followsTeam ? input.teamSelection ?? null : null);
+    if (!selection)
+        return { launch: input.started, selected: null };
+    return {
+        launch: { ...input.started, llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig },
+        selected: input.agentSelection ? "agent" : "team",
+    };
+};
+/** A recorded Team member follows its Team's launch (and choice) iff it records no own launch. */
+export const collaborationMemberFollowsTeam = (member) => member.launchConfiguration === undefined;
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
+const launchSource = collaborationLaunchConfigurationSourceDtoSchema.optional();
+const memberLaunch = { launchConfiguration: agentOrgLaunchConfigurationDtoSchema.optional(), launchSource };
+const agentSelection = { userLaunchSelection: userLaunchSelectionDtoSchema.optional() };
+const teamSelection = { userTeamLaunchSelection: userLaunchSelectionDtoSchema.optional() };
 const taskAgentSource = z.object({
     kind: z.literal("agent"), agentDefinitionId: nonEmptyStringSchema, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+    launchSource,
 }).strict();
 const taskTeamSource = z.object({
     kind: z.literal("agent_team"), teamDefinitionId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
-    members: z.array(z.object({ address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema }).strict()).min(1),
+    members: z.array(z.object({ address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema, ...memberLaunch }).strict()).min(1),
     handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+    defaultLaunchSource: launchSource,
 }).strict();
 const taskAgent = z.object({
     address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-    delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource.optional(),
+    delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource.optional(), ...agentSelection,
 }).strict();
-const taskTeamMember = z.lazy(() => z.union([
-    z.object({ address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText }).strict(),
-    z.object({ address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember), taskExecutions: z.array(taskExecution) }).strict(),
-]));
+const taskTeamMember = z.object({
+    address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...agentSelection,
+}).strict();
 const taskTeam = z.lazy(() => z.object({
     address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
     taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
-    source: taskTeamSource.optional(),
+    source: taskTeamSource.optional(), ...teamSelection,
 }).strict());
 const taskExecution = z.lazy(() => z.union([taskAgent, taskTeam]));
 /** Shared by every collaboration root view (Org and Agent roots). */
@@ -55,6 +106,30 @@ export const taskExecutionsClosedEventDtoSchema = z.object({
 export const taskExecutionsReopenedEventDtoSchema = z.object({
     kind: z.literal("task_executions_reopened"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
 }).strict();
+/**
+ * Live: the user's model choices of these delegated copies were saved (DS-001).
+ * Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ */
+export const delegatedLaunchSelectionsChangedEventDtoSchema = z.object({
+    kind: z.literal("delegated_launch_selections_changed"),
+    selections: z.array(z.union([
+        z.object({ agentRunId: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+        z.object({ teamRunId: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+    ])).min(1),
+}).strict();
+/**
+ * Live: response text a chat socket coalesced over one content window. Each item is the
+ * concatenated text of one agent segment, in order of first appearance. The envelope covers the
+ * contiguous root sequences `[change_sequence, change_sequence_through]`, including absorbed
+ * identical status repeats; nothing outside that range is regrouped.
+ */
+export const agentPresentationBatchEventDtoSchema = z.object({
+    kind: z.literal("agent_presentation_batch"),
+    items: z.array(z.object({
+        member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema,
+        message: z.object({ type: z.literal("SEGMENT_CONTENT"), payload: agentPresentationPayloadSchemas.SEGMENT_CONTENT }).strict(),
+    }).strict()).min(1),
+}).strict();
 const configuredTeam = z.object({
     address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
     role: z.string().nullable(), description: z.string().nullable(), teamRunId: nonEmptyStringSchema,
@@ -69,28 +144,6 @@ const configuredTeam = z.object({
         });
     }
 });
-/**
- * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
- * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
- */
-export const collaboratorEntryDtoSchema = z.discriminatedUnion("kind", [
-    z.object({
-        kind: z.literal("agent"), address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
-        agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-        launchConfiguration: agentOrgLaunchConfigurationDtoSchema, addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
-    }).strict(),
-    z.object({
-        kind: z.literal("agent_team"), address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
-        teamRunId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
-        members: z.array(z.object({
-            address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
-            agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-        }).strict()).min(1),
-        handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
-        taskExecutions: z.array(taskExecution),
-        addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
-    }).strict(),
-]);
 export const agentOrgExecutionTreeDtoSchema = z.object({
     subjectKind: z.literal("agent_org"), createdAt: timestamp,
     archivedAt: timestamp.nullable(),
@@ -100,7 +153,7 @@ export const agentOrgExecutionTreeDtoSchema = z.object({
         address: z.literal("/"), orgDefinitionId: nonEmptyStringSchema, orgDefinitionName: nonEmptyStringSchema,
         orgRunId: nonEmptyStringSchema, defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
         members: z.array(z.union([configuredAgent, configuredTeam])),
-        collaborators: z.array(collaboratorEntryDtoSchema), taskExecutions: z.array(taskExecution),
+        taskExecutions: z.array(taskExecution),
     }).strict(),
 }).strict();
 export const agentOrgCommunicationMessageDtoSchema = z.object({
@@ -127,13 +180,14 @@ export const agentOrgExecutionViewDtoSchema = z.object({
 }).strict();
 export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
+    agentPresentationBatchEventDtoSchema,
     z.object({
         kind: z.literal("task_execution_started"),
         host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecution,
     }).strict(),
     z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
-    z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
     taskExecutionsClosedEventDtoSchema,
     taskExecutionsReopenedEventDtoSchema,
+    delegatedLaunchSelectionsChangedEventDtoSchema,
 ]);
 //# sourceMappingURL=agent-org-execution-dtos.js.map

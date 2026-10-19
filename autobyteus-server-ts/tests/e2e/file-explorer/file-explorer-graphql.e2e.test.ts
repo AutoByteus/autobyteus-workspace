@@ -171,7 +171,7 @@ describe("File explorer GraphQL e2e", () => {
       workspaceId,
       query: "beta-search-target",
     });
-    expect(searchData.searchFiles.some((result) => result.endsWith("src/beta-search-target.ts"))).toBe(true);
+    expect(searchData.searchFiles).toEqual(["src/beta-search-target.ts"]);
 
     await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
       watcher: null,

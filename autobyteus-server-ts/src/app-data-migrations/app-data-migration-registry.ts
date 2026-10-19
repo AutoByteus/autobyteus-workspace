@@ -24,7 +24,12 @@ import { AgentOrgFlatTeamFamiliesV1AppDataMigration } from "./migrations/agent-o
 import { AgentOrgHistoryFirstMessageSummaryV1AppDataMigration } from "./migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
 import { RemoveExternalMessagingDataMigration } from "./migrations/remove-external-messaging-data-migration.js";
 import { ProjectsPerFolderV1AppDataMigration } from "./migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
+import { ProjectTaskKeysV1AppDataMigration } from "./migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
 import { RemoveBuiltInProjectTaskManagerMigration } from "./migrations/remove-built-in-project-task-manager-migration.js";
+import { TaskAgentOwnRunV1AppDataMigration } from "./migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
+import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
+import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
+import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -78,9 +83,20 @@ export class AppDataMigrationRegistry {
         gatewayLogsDir: path.join(appConfigProvider.config.getLogsDir(), "messaging-gateway"),
       }),
       new ProjectsPerFolderV1AppDataMigration(appConfigProvider.config.getAppDataDir()),
+      // Keys existing Project Tasks; needs the per-Project folders.
+      new ProjectTaskKeysV1AppDataMigration(appConfigProvider.config.getAppDataDir()),
       new RemoveBuiltInProjectTaskManagerMigration(
         path.join(appConfigProvider.config.getAgentsDir(), "autobyteus-project-task-manager"),
       ),
+      // Converts stored collaborators into delegated runs; must stay after every tree-shape migration above.
+      new CollaboratorsToDelegatedRunsV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
+      // On every start each pending or failed predecessor runs before it (contract §5.4).
+      new TaskAgentOwnRunV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
+      // Registered after every released migration that may still write a JSON message log: converts
+      // each one on the same start (append-only message logs, DS-005).
+      new AppendOnlyMessageLogsV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
+      // Deletes the retired work-trace export folders once run folders are in their current place.
+      new RemoveWorkTraceExportsMigration(appConfigProvider.config.getMemoryDir()),
     ];
     this.validateDefinitions();
   }

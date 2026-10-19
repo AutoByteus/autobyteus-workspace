@@ -1,0 +1,1006 @@
+# DR-002 delivery smoke rerun: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects --no-watch; HEAD 83ec09363f (tree = 600d079b9c + tickets/ only); base origin/personal 2b04a9971d; Sun Oct 18 21:50:21 CEST 2026
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 27468ms
+     ✓ Studio: moves rows, saved files and drafts, retains the original, skips invalid/residue/duplicate/conflict, then no-ops on restart  4362ms
+     ✓ Studio: an unreadable source or a failed move keeps only Projects gated; a restart retries and completes without duplication  4872ms
+     ✓ Standalone host: never locked out by a broken source, migrates once on a valid one, composes per start and releases on close  5298ms
+     ✓ Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lockout until a restart finishes it  4824ms
+     ✓ Studio: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  3283ms
+     ✓ Standalone: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  4827ms
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:72999) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/.env
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Registered required tool unit: Core Tools
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'search_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+Successfully registered tool definition: 'list_projects'
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+Overwriting existing tool definition for name: 'list_projects'
+Configured MCP tool 'list_projects' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+Successfully registered tool definition: 'list_projects'
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+Overwriting existing tool definition for name: 'list_projects'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name
+Successfully registered tool definition: 'create_project'
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name
+Overwriting existing tool definition for name: 'create_project'
+Configured MCP tool 'create_project' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name
+Successfully registered tool definition: 'create_project'
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name
+Overwriting existing tool definition for name: 'create_project'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name
+Successfully registered tool definition: 'update_project'
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name
+Overwriting existing tool definition for name: 'update_project'
+Configured MCP tool 'update_project' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name
+Overwriting existing tool definition for name: 'update_project'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name
+Successfully registered tool definition: 'update_project'
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/not-created-folder/../not-created-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/not-created-folder.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+Created and registered workspace ID: agent_ws_c8d1501e1340f75d1033abd1338e41e86d3128678e4bfe9a6234becc4b35e5a5
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+Closing FileSystemWorkspace agent_ws_c8d1501e1340f75d1033abd1338e41e86d3128678e4bfe9a6234becc4b35e5a5
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/tool-workspace-a
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/tool-workspace-a.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+Created and registered workspace ID: agent_ws_f72cec6b7084ee93f1193bd3823785d6d5f5a2455f702b2a51819055725aec0c
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/tool-workspace-b
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/tool-workspace-b.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+Created and registered workspace ID: agent_ws_b3194f650f8a8ca00447f5eeb90ef8532721bdc22880354187149ba47f4d6bdc
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/tool-workspace-c
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/tool-workspace-c.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+Created and registered workspace ID: agent_ws_faa06630db39c1b909b97b997cfc99a9dbaf579eee3715956a2605dc15a52529
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+Closing FileSystemWorkspace agent_ws_faa06630db39c1b909b97b997cfc99a9dbaf579eee3715956a2605dc15a52529
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/protected-source
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-0AYjzX/protected-source.
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction
+Created and registered workspace ID: agent_ws_5856c8f064ac681aaaffa065e953045009a26c76ea7138170d8cafa08b0201b1
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012)
+TASK_AGENT_RESOURCE_CONFLICT {
+  execution: 'agent:fixture-worker',
+  openTasks: [
+    'project_task_8d0ff7e7-0318-4049-b028-8485f9ccd683',
+    'project_task_a422181d-4146-46dc-bde4-3e7139256437'
+  ]
+}
+
+stdout | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries
+Owned HTTP fixture cleanup: Studio/MCP listeners closed, data directory removed.
+
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (13 tests) 4733ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  479ms
+     ✓ E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically  332ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  466ms
+     ✓ CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011)  341ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  566ms
+     ✓ TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)  1421ms
+stdout | tests/e2e/projects/project-mutation-node-locality.e2e.test.ts > E-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes
+Built-node HTTP receipt {"nodeA":"http://127.0.0.1:52321","nodeB":"http://127.0.0.1:52311","projectId":"project_396e0a37-628f-4bff-aeb8-dc4e6779bfdc","workspaceId":"agent_ws_fb57ee6f47669974bf82ca9d21e28c27e528e0aed57f25626a50e5536570d948","savedBeforeRestart":{"projectId":"project_396e0a37-628f-4bff-aeb8-dc4e6779bfdc","name":"Node local","description":"Saved goal","createdAt":"2026-10-18T19:49:17.743Z","updatedAt":"2026-10-18T19:49:17.743Z","workspaces":[{"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-mutation-node-EPQKf5/registered-source","description":"Source","availability":"AVAILABLE"}]},"remotePatch":{"error":{"code":"PROJECT_NOT_FOUND","message":"Project 'project_396e0a37-628f-4bff-aeb8-dc4e6779bfdc' was not found."}},"localPathOnB":{"project":{"projectId":"project_42bc39ad-e98e-431f-bb62-b60ca9cfc235","name":"Node local","description":"","workspaces":[{"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-mutation-node-EPQKf5/registered-source","description":"B reference"}]}},"afterRestart":{"project":{"projectId":"project_396e0a37-628f-4bff-aeb8-dc4e6779bfdc","name":"Node local","description":"After restart","workspaces":[{"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-mutation-node-EPQKf5/registered-source","description":"Source"}]}}}
+
+stdout | tests/e2e/projects/project-mutation-node-locality.e2e.test.ts > E-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes
+Owned built-node cleanup: both children exited 0; four listeners closed; both private roots removed.
+
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 5729ms
+   ✓ E-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes  5728ms
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:74930) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-001: Projects is always on: no capability API, and a stored retired flag (false) is not read (projects-always-on AC-002/003)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-epL3vy
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-epL3vy/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-001: Projects is always on: no capability API, and a stored retired flag (false) is not read (projects-always-on AC-002/003)
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-002: creates, lists, edits and rejects invalid or duplicate Project names
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-m4AqWX
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-m4AqWX/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-xYsABY
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-xYsABY/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-xYsABY/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-xYsABY/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+Created and registered workspace ID: agent_ws_15b93daffed0eaeb298cdcf885abfbc9c7ad692af9d0db52a82dee0265d5a7c4
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-xYsABY/roots/autobyteus-marketing
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-xYsABY/roots/autobyteus-marketing.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+Created and registered workspace ID: agent_ws_ce2887f4f73ec5c03a082703cabaf235d3977c0a71373f2d77fee23f9c28f0a7
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-xYsABY/roots/new-root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-xYsABY/roots/new-root.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+Created and registered workspace ID: agent_ws_e61bee52fa08694702672171f51683c9975e0b472ec73703fddc92927b597ea1
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+Closing FileSystemWorkspace agent_ws_15b93daffed0eaeb298cdcf885abfbc9c7ad692af9d0db52a82dee0265d5a7c4
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+Closing FileSystemWorkspace agent_ws_ce2887f4f73ec5c03a082703cabaf235d3977c0a71373f2d77fee23f9c28f0a7
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links paths with registry availability and rejects relative and duplicate links
+Closing FileSystemWorkspace agent_ws_e61bee52fa08694702672171f51683c9975e0b472ec73703fddc92927b597ea1
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > PATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-DZmdkK
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-DZmdkK/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > PATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-DZmdkK/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-DZmdkK/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > PATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic
+Created and registered workspace ID: agent_ws_7ac795c4ce90546b2456d4eb272ccff80b0aa07576d0f613dc9bfb7a4962552a
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > PATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic
+Closing FileSystemWorkspace agent_ws_7ac795c4ce90546b2456d4eb272ccff80b0aa07576d0f613dc9bfb7a4962552a
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-3y9FeJ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-3y9FeJ/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-3y9FeJ/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-3y9FeJ/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Created and registered workspace ID: agent_ws_e8366073f703f51604710ea20e33d972dfbb89d80f1a725104546b7395b7f7f2
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-3y9FeJ/roots/autobyteus-marketing
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-3y9FeJ/roots/autobyteus-marketing.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Created and registered workspace ID: agent_ws_3afb2e5ebb5fc80935b1ff4bf8ee9b20e92aea204690c0392dcbc6fbfc4e0c07
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Closing FileSystemWorkspace agent_ws_e8366073f703f51604710ea20e33d972dfbb89d80f1a725104546b7395b7f7f2
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-3y9FeJ/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-3y9FeJ/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Created and registered workspace ID: agent_ws_e8366073f703f51604710ea20e33d972dfbb89d80f1a725104546b7395b7f7f2
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Closing FileSystemWorkspace agent_ws_3afb2e5ebb5fc80935b1ff4bf8ee9b20e92aea204690c0392dcbc6fbfc4e0c07
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Closing FileSystemWorkspace agent_ws_e8366073f703f51604710ea20e33d972dfbb89d80f1a725104546b7395b7f7f2
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-NBWKf2
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-NBWKf2/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-NBWKf2/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-NBWKf2/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Created and registered workspace ID: agent_ws_78a32d9c64996c81974c7db5a25fd7654a3d87bacabcfade1c49aedd3df2ba7f
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-NBWKf2/roots/autobyteus-superrepo
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-NBWKf2/roots/autobyteus-superrepo.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Created and registered workspace ID: agent_ws_208b45d79182912318ebafa0a4dd10f81ea02f2fb1bd98d65f5f895da83968db
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-NBWKf2/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-NBWKf2/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-NBWKf2/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Closing FileSystemWorkspace agent_ws_78a32d9c64996c81974c7db5a25fd7654a3d87bacabcfade1c49aedd3df2ba7f
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Closing FileSystemWorkspace agent_ws_208b45d79182912318ebafa0a4dd10f81ea02f2fb1bd98d65f5f895da83968db
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-tXcchz
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-tXcchz/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-tXcchz/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-tXcchz/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects
+Created and registered workspace ID: agent_ws_5c8dec6ce0894b3a2e36d9802842a50f335f8252f780a024a790659bc13527ab
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-tXcchz
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-tXcchz/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects
+Closing FileSystemWorkspace agent_ws_5c8dec6ce0894b3a2e36d9802842a50f335f8252f780a024a790659bc13527ab
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-007: creates, lists, edits and deletes Tasks through the real store without touching the Project or offering a status mutation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-6ycGz7
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-6ycGz7/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-v6Cp5e
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-v6Cp5e/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-v6Cp5e/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-v6Cp5e/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged
+Created and registered workspace ID: agent_ws_eac107853b3608f0c3cb49463d106786816207c99c4f2b610bd4ba5cc005f385
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged
+Closing FileSystemWorkspace agent_ws_eac107853b3608f0c3cb49463d106786816207c99c4f2b610bd4ba5cc005f385
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-010: Task keys and depends on: keys in creation order, never reused, kept on rename; dependencies validated, replaced, cleared and dropped on delete
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-ubEgDc
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-ubEgDc/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-da6y6A
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-da6y6A/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-da6y6A/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-da6y6A/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value
+Created and registered workspace ID: agent_ws_6c9e72f0ea3f97b4603e81c03a3e3e049c495924fd4cd0e9609527ebd18a9a57
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value
+Closing FileSystemWorkspace agent_ws_6c9e72f0ea3f97b4603e81c03a3e3e049c495924fd4cd0e9609527ebd18a9a57
+
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (11 tests) 1129ms
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:74932) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/.env
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-unavailable-e2e-c1v1l5/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Registered required tool unit: Core Tools
+
+stderr | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'search_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stderr | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable > keeps exact matches and Task writes working while the model cannot be downloaded, explains why, and tries again only after Retry (AC-011)
+EMBEDDING_MODEL_UNAVAILABLE {
+  model: 'granite-embedding-small-english-r2',
+  reason: 'Could not reach huggingface.co to download the model: fetch failed'
+}
+
+stderr | tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts > Project Task search with the real embedding layer when the model host is unreachable > keeps exact matches and Task writes working while the model cannot be downloaded, explains why, and tries again only after Retry (AC-011)
+EMBEDDING_MODEL_UNAVAILABLE {
+  model: 'granite-embedding-small-english-r2',
+  reason: 'Downloading onnx/model_quantized.onnx from huggingface.co failed (HTTP 404).'
+}
+
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 406ms
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:74934) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/.env
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-search-e2e-qyBZ7V/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Registered required tool unit: Core Tools
+
+stderr | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'search_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > validates the active-model setting and offers Retry only for an unavailable model
+Server setting 'AUTOBYTEUS_EMBEDDING_MODEL' updated
+
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (2 tests) 431ms
+stdout | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75571) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75575) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/collaboration-model-contract.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75581) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75582) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests | 11 skipped)
+stdout | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75899) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test | 1 skipped)
+stdout | tests/e2e/projects/delegated-copy-model-change.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75901) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests | 6 skipped)
+stdout | tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75902) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75904) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75911) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/hand-started-run-adoption.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75914) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/hand-started-run-adoption.e2e.test.ts (4 tests | 4 skipped)
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75917) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests | 7 skipped)
+stdout | tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:76230) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test | 1 skipped)
+stdout | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:76232) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests | 3 skipped)
+stdout | tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:76233) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test | 1 skipped)
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:76544) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 9 skipped)
+stdout | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:76545) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 7 skipped)
+
+ Test Files  6 passed | 16 skipped (22)
+      Tests  35 passed | 68 skipped (103)
+   Start at  21:48:34
+   Duration  77.80s (transform 5.96s, setup 170ms, import 35.37s, tests 39.90s, environment 1ms)
+
+exit=0

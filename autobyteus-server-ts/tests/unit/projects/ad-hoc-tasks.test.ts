@@ -81,8 +81,8 @@ describe("ad-hoc Tasks (no Project)", () => {
   it("DONE by task_id alone closes the copy and its sub-work, writes the status and asks its root to stop them (AC-004, AC-007)", async () => {
     const { taskId } = await delegate("copy-1");
     await tasks.markStarted({ agentRunId: "copy-1" });
-    await tasks.linkNewTaskExecution({ role: "broughtIn", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
-    await expect(tasks.updateTaskById({ taskId, status: "DONE" })).resolves.toEqual({ projectId: null, taskId, status: "DONE" });
+    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
+    await expect(tasks.updateTaskById({ taskId, status: "DONE" })).resolves.toEqual({ projectId: null, taskId, taskReference: taskId, status: "DONE" });
     await tasks.drainRuntimeReleases();
     expect((await taskFile(taskId)).status).toBe("DONE");
     expect(tasks.isOpen({ agentRunId: "copy-1" })).toBe(false);
@@ -111,11 +111,11 @@ describe("ad-hoc Tasks (no Project)", () => {
 
   it("patches an ad-hoc description and a Project Task by task_id alone (AC-005); unknown IDs fail TASK_NOT_FOUND (AC-004)", async () => {
     const { taskId } = await delegate("copy-1");
-    await expect(tasks.updateTaskById({ taskId, description: "  Revised  " })).resolves.toEqual({ projectId: null, taskId, status: "TODO" });
+    await expect(tasks.updateTaskById({ taskId, description: "  Revised  " })).resolves.toEqual({ projectId: null, taskId, taskReference: taskId, status: "TODO" });
     expect((await taskFile(taskId)).description).toBe("Revised");
     const projectTask = await tasks.createTask({ projectId, description: "Project work" });
     await expect(tasks.updateTaskById({ taskId: projectTask.taskId, description: "Project work, revised" }))
-      .resolves.toEqual({ projectId, taskId: projectTask.taskId, status: "TODO" });
+      .resolves.toEqual({ projectId, taskId: projectTask.taskId, taskReference: projectTask.taskKey, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
     expect((await store.readTask(projectId, projectTask.taskId))!.description).toBe("Project work, revised");
     await expect(tasks.updateTaskById({ taskId: "ad_hoc_task_missing", status: "DONE" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
     await expect(tasks.updateTaskById({ taskId: "../escape", status: "DONE" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
@@ -143,7 +143,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     const projectTask = await tasks.createTask({ projectId, description: "Project work" });
     await fs.writeFile(layout.releasedProjectsFile(), "[]");
     const { taskId } = await delegate("copy-1");
-    await expect(tasks.updateTaskById({ taskId, status: "DONE" })).resolves.toEqual({ projectId: null, taskId, status: "DONE" });
+    await expect(tasks.updateTaskById({ taskId, status: "DONE" })).resolves.toEqual({ projectId: null, taskId, taskReference: taskId, status: "DONE" });
     await expect(tasks.updateTaskById({ taskId: projectTask.taskId, status: "DONE" })).rejects.toMatchObject({ code: "PROJECTS_MIGRATION_PENDING" });
     await expect(tasks.listTasks(projectId)).rejects.toMatchObject({ code: "PROJECTS_MIGRATION_PENDING" });
   });

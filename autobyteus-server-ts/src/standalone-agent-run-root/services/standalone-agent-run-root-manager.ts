@@ -1,3 +1,16 @@
+import { isDeepStrictEqual } from "node:util";
+import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import {
+  interpretDelegatedLaunchValidation,
+  listDelegatedLaunchModelOptions,
+  planDelegatedLaunchValidation,
+  type DelegatedLaunchModelOptions,
+  type DelegatedLaunchUpdateResult,
+} from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
+import { delegatedLaunchSelections, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { StandaloneRootTaskSourceResolver } from "./standalone-root-task-source-resolver.js";
+import { applyStandaloneDelegatedLaunchSelections, standaloneDelegatedLaunchForest } from "./standalone-root-tree-mutator.js";
 import {
   ActiveCollaborationRootDirectory,
   getActiveCollaborationRootDirectory,
@@ -76,6 +89,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   private readonly directory: ActiveCollaborationRootDirectory;
   private readonly active = new Map<string, StandaloneAgentRunRoot>();
   private readonly pending = new Map<string, Promise<StandaloneAgentRunRoot>>();
+  /** A stopped root's stored-tree edit; a root load for the same run waits for it. */
+  private readonly storedEdits = new Map<string, Promise<unknown>>();
   private readonly hostContexts: StandaloneHostMemberContextBuilder;
   private readonly roots: StandaloneRootBuilder;
   private admissionOpen = true;
@@ -119,7 +134,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
 
   /**
    * The root of an eligible run: the registered one, else loaded from its package (or empty)
-   * and registered. It never starts the host. Null for a run that cannot host collaborators.
+   * and registered. It never starts the host. Null for a run that cannot host delegated copies.
    */
   async resolveRoot(hostRunIdInput: string): Promise<StandaloneAgentRunRoot | null> {
     const hostRunId = hostRunIdInput.trim();
@@ -217,11 +232,96 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const dir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
     const tree = await this.store.readTree(dir, hostRunId);
     if (!tree) return null;
-    const messages = await this.store.readMessages(dir, hostRunId) ?? emptyStandaloneRootMessages(hostRunId);
+    const messages = await this.store.readMessages(dir, tree) ?? emptyStandaloneRootMessages(hostRunId);
     return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({
       tree, closedTaskExecutions: this.closedTaskExecutionsFor(hostRunId, tree), messages,
       statuses: Object.freeze([]), inputStates: Object.freeze([]),
     }) });
+  }
+
+  /**
+   * DS-001 / AR-004 on a stopped Agent root (no registered root): validates the user model choices
+   * of its delegated copies, and the host's own new model when given, in one
+   * catalog read, then writes the stored collaboration tree once. All or nothing for the tree; the
+   * host's model is written by its own run service afterwards (a separate file).
+   */
+  async updateStoppedDelegatedLaunchSelections(input: Readonly<{
+    hostRunId: string;
+    changes: readonly DelegatedLaunchChange[];
+    hostSelection?: Readonly<{ llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null }> | null;
+    validator: RunModelSelectionValidator;
+  }>): Promise<Readonly<{ result: DelegatedLaunchUpdateResult; tree: StandaloneRootTreeSnapshot | null }>> {
+    const hostRunId = input.hostRunId.trim();
+    const previous = this.storedEdits.get(hostRunId) ?? Promise.resolve();
+    const edit = previous.catch(() => undefined).then(() => this.updateStoredTree(hostRunId, input));
+    this.storedEdits.set(hostRunId, edit);
+    try { return await edit; }
+    finally { if (this.storedEdits.get(hostRunId) === edit) this.storedEdits.delete(hostRunId); }
+  }
+
+  private async updateStoredTree(
+    hostRunId: string,
+    input: Parameters<StandaloneAgentRunRootManager["updateStoppedDelegatedLaunchSelections"]>[0],
+  ): Promise<Readonly<{ result: DelegatedLaunchUpdateResult; tree: StandaloneRootTreeSnapshot | null }>> {
+    const outcome = (result: DelegatedLaunchUpdateResult["outcome"], message: string, tree: StandaloneRootTreeSnapshot | null,
+      fieldErrors: DelegatedLaunchUpdateResult["fieldErrors"] = []) =>
+      Object.freeze({ result: Object.freeze({ outcome: result, message, fieldErrors: Object.freeze([...fieldErrors]) }), tree });
+    if (this.hasRoot(hostRunId)) return outcome("RUN_ACTIVE", "This run became active. Reopen Settings and try again.", null);
+    const metadata = await this.options.host.readMetadata(hostRunId);
+    if (!metadata) return outcome("NOT_FOUND", `Agent run '${hostRunId}' was not found.`, null);
+    const dir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
+    const tree = await this.store.readTree(dir, hostRunId);
+    if (!tree) return outcome("NOT_FOUND", "This run has no delegated copies.", null);
+    const plan = planDelegatedLaunchValidation({ ...this.delegatedLaunchReader(hostRunId, tree), changes: input.changes });
+    if (plan.kind === "refused") return outcome(plan.result.outcome, plan.result.message, tree, plan.result.fieldErrors);
+    const host = input.hostSelection ? [{
+      context: { runtimeKind: metadata.runtimeKind, currentModelIdentifier: metadata.llmModelIdentifier,
+        workspaceRootPath: metadata.workspaceRootPath ?? process.cwd() },
+      selection: input.hostSelection,
+    }] : [];
+    const results = await input.validator.validateMany([...plan.inputs, ...host]);
+    const hostResult = input.hostSelection ? results.at(-1)! : null;
+    if (hostResult && hostResult.kind !== "valid") {
+      return hostResult.kind === "invalid"
+        ? outcome("VALIDATION_FAILED", "The agent's own model settings are invalid.", tree,
+          hostResult.errors.map((error) => ({ path: `hostPatch.${error.path}`, message: error.message })))
+        : outcome(hostResult.kind === "model_unavailable" ? "MODEL_UNAVAILABLE" : "SCHEMA_UNAVAILABLE",
+          "The agent's model options are unavailable; saved settings were not changed.", tree);
+    }
+    const validation = interpretDelegatedLaunchValidation(plan.targets, results.slice(0, plan.targets.length));
+    if (validation.kind === "refused") return outcome(validation.result.outcome, validation.result.message, tree, validation.result.fieldErrors);
+    const nextTree = applyStandaloneDelegatedLaunchSelections(tree, delegatedLaunchSelections(validation.targets, new Date().toISOString()));
+    if (isDeepStrictEqual(nextTree, tree)) return outcome("UNCHANGED", "These model settings are already saved.", tree);
+    if (this.hasRoot(hostRunId)) return outcome("RUN_ACTIVE", "This run became active. Reopen Settings and try again.", tree);
+    const written = await this.store.writeTree(dir, nextTree).catch(() => null);
+    const readback = await this.store.readTree(dir, hostRunId).catch(() => null);
+    if (written?.outcome === "not_renamed") return outcome("PERSISTENCE_FAILED", "The model choices were not saved.", readback ?? tree);
+    if (written?.outcome !== "committed" || !readback || !isDeepStrictEqual(readback, nextTree)) {
+      return outcome("PERSISTENCE_INDETERMINATE", "The save outcome is being verified. Refresh Settings before saving again.", readback);
+    }
+    return outcome("UPDATED", "Saved. The new model is used when the copy resumes.", readback);
+  }
+
+  /** Model options of every editable delegated copy of the run (live or stored tree). */
+  async delegatedLaunchModelOptions(
+    hostRunIdInput: string,
+    modelOptions: Pick<RunModelSelectionService, "listOptionsMany">,
+  ): Promise<readonly DelegatedLaunchModelOptions[]> {
+    const hostRunId = hostRunIdInput.trim();
+    const tree = this.getActiveTree(hostRunId)
+      ?? await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
+    if (!tree) return Object.freeze([]);
+    return listDelegatedLaunchModelOptions({ ...this.delegatedLaunchReader(hostRunId, tree), modelOptions });
+  }
+
+  private delegatedLaunchReader(hostRunId: string, tree: StandaloneRootTreeSnapshot) {
+    const closed = new Set(this.closedTaskExecutionsFor(hostRunId, tree).map(taskExecutionReferenceKey));
+    const sources = new StandaloneRootTaskSourceResolver();
+    return {
+      forest: standaloneDelegatedLaunchForest(tree),
+      readTaskSource: (address: string, recorded: Parameters<StandaloneRootTaskSourceResolver["resolve"]>[1]) => sources.resolve(address, recorded ?? null),
+      isClosed: (reference: TaskExecutionReference) => closed.has(taskExecutionReferenceKey(reference)),
+    };
   }
 
   /** Closed (Task DONE or CANCELLED) task executions of a stored tree of this root. */
@@ -233,9 +333,10 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
 
   private async load(metadata: AgentRunMetadata): Promise<StandaloneAgentRunRoot> {
     const hostRunId = metadata.runId;
+    await this.storedEdits.get(hostRunId)?.catch(() => undefined);
     const collaborationDir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
     const storedTree = await this.store.readTree(collaborationDir, hostRunId);
-    const storedMessages = storedTree ? await this.store.readMessages(collaborationDir, hostRunId) : null;
+    const storedMessages = storedTree ? await this.store.readMessages(collaborationDir, storedTree) : null;
     if (storedTree && !storedMessages) throw new Error(`Agent root '${hostRunId}' package has no communication messages.`);
     const tree = storedTree ?? emptyStandaloneRootTree({
       host: {

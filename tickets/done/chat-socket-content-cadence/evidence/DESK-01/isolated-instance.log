@@ -1,0 +1,1232 @@
+[2026-10-18T11:35:03.317Z] [INFO] [electron] Application started
+[2026-10-18T11:35:03.421Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-10-18T11:35:03.421Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-10-18T11:35:03.422Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/db
+[2026-10-18T11:35:03.422Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/logs
+[2026-10-18T11:35:03.422Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/download
+
+DevTools listening on ws://127.0.0.1:53150/devtools/browser/8b8f578a-8b05-44a8-9f23-9986db0827d5
+[2026-10-18T11:35:03.511Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:53181
+[2026-10-18T11:35:03.533Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-18T11:35:03.533Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-18T11:35:03.534Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-18T11:35:03.534Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data
+[2026-10-18T11:35:03.534Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-10-18T11:35:03.534Z] [INFO] [electron.server.app-data] Generated runtime .env at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/.env
+[2026-10-18T11:35:03.534Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-10-18T11:35:03.534Z] [INFO] [electron.server.base-server-manager] Port 53151 is free.
+[2026-10-18T11:35:03.535Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+[2026-10-18T11:35:06.019Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-18T11:35:06.019Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-10-18T11:35:06.019Z] [INFO] [electron] Using PATH from login shell
+[2026-10-18T11:35:06.019Z] [INFO] [electron] Starting server with port: 53151
+[2026-10-18T11:35:06.019Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:53151
+[2026-10-18T11:35:06.019Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-18T11:35:06.019Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data
+[2026-10-18T11:35:06.019Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 53151 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data
+[2026-10-18T11:35:06.021Z] [INFO] [electron] Server process spawned with PID: 64240
+[2026-10-18T11:35:06.160Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-18T11:35:06.161Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-18T11:35:06.161Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data
+[2026-10-18T11:35:06.161Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/.env
+[2026-10-18T11:35:06.161Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/.env
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (2) from ../../../../../../../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:53151
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:53151
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data
+[2026-10-18T11:35:06.162Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/db
+[2026-10-18T11:35:06.163Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/logs
+[2026-10-18T11:35:06.163Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/download
+[2026-10-18T11:35:06.163Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory
+[2026-10-18T11:35:06.163Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-18T11:35:07.239Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-18T11:35:07.539Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-18T11:35:07.540Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-10-18T11:35:07.850Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-18T11:35:07.854Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/db/production.db"
+[2026-10-18T11:35:07.964Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/db/production.db
+[2026-10-18T11:35:07.978Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-10-18T11:35:07.983Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-10-18T11:35:07.989Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-10-18T11:35:07.995Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-10-18T11:35:07.997Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-10-18T11:35:07.999Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-10-18T11:35:08.003Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-10-18T11:35:08.005Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-10-18T11:35:08.017Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-10-18T11:35:08.018Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-10-18T11:35:08.023Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-10-18T11:35:08.025Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-10-18T11:35:08.026Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-10-18T11:35:08.031Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-10-18T11:35:08.033Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-10-18T11:35:08.036Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-10-18T11:35:08.047Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-10-18T11:35:08.050Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-10-18T11:35:08.052Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-10-18T11:35:08.055Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-10-18T11:35:08.056Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-10-18T11:35:08.058Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-10-18T11:35:08.059Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-10-18T11:35:08.063Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-10-18T11:35:08.066Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-10-18T11:35:08.071Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-10-18T11:35:08.073Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260924120000_remove_external_channel_tables`
+[2026-10-18T11:35:08.075Z] [INFO] [electron.embedded-server.stdout] Applying migration `20261009120000_token_meter_context_readings`
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-10-18T11:35:08.077Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20260924120000_remove_external_channel_tables/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]   └─ 20261009120000_token_meter_context_readings/
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-18T11:35:08.078Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-10-18T11:35:08.104Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-18T11:35:08.116Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-18T11:35:08.470Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-10-18T11:35:08.509Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-18T11:35:08.511Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-18T11:35:08.587Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-18T11:35:08.587Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/temp_workspace
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/temp_workspace.
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-18T11:35:08.589Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-18T11:35:08.592Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-18T11:35:08.592Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-18T11:35:08.593Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-18T11:35:08.593Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-18T11:35:08.593Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-18T11:35:08.593Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-18T11:35:08.593Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_project'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_project'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_task'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_task'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-18T11:35:08.607Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-18T11:35:08.610Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-18T11:35:08.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-18T11:35:08.610Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-18T11:35:08.625Z] [INFO] [electron.embedded-server.stdout] Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+[2026-10-18T11:35:08.625Z] [INFO] [electron.embedded-server.stdout] Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+[2026-10-18T11:35:08.633Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1792323308632,"pid":64240,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53224"}
+[2026-10-18T11:35:08.658Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1792323308658,"pid":64240,"hostname":"MacBookPro","msg":"Server listening at http://0.0.0.0:53151"}
+[2026-10-18T11:35:08.658Z] [INFO] [electron.embedded-server.stdout] [2026-10-18T11:35:08.658Z] [INFO] [server.runtime] Server listening on 0.0.0.0:53151
+[2026-10-18T11:35:08.659Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-18T11:35:08.663Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-18T11:35:08.663Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-18T11:35:08.663Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-18T11:35:08.663Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-18T11:35:08.663Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-18T11:35:08.663Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 35 LLM models into cache.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-18T11:35:08.675Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-18T11:35:08.800Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-18T11:35:08.802Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-18T11:35:08.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:08.906Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-10-18T11:35:09.285Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:09.290Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:09.392Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:09.395Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:11.939Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:11.941Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:14.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:14.419Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:19.417Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:19.418Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:21.537Z] [INFO] [electron.embedded-server.stdout] Discovering LM Studio models from host: http://localhost:1234
+[2026-10-18T11:35:21.610Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: desk-alpha
+[2026-10-18T11:35:21.630Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: desk-beta
+[2026-10-18T11:35:21.725Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: desk-essay-worker
+[2026-10-18T11:35:21.760Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: desk-pm
+[2026-10-18T11:35:21.783Z] [INFO] [electron.embedded-server.stdout] Agent Team Definition created successfully with ID: desk-team
+[2026-10-18T11:35:21.804Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace
+[2026-10-18T11:35:21.804Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace.
+[2026-10-18T11:35:21.805Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_171521481bdb1271707c8efede208dbbc0184a81ef7efaabf9ab88703d314d37
+[2026-10-18T11:35:21.876Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace
+[2026-10-18T11:35:21.877Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace.
+[2026-10-18T11:35:21.877Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_171521481bdb1271707c8efede208dbbc0184a81ef7efaabf9ab88703d314d37
+[2026-10-18T11:35:24.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:24.422Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:24.456Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:24.459Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:24.461Z] [INFO] [electron.embedded-server.stdout] GraphQL mutation to create workspace metadata
+[2026-10-18T11:35:24.462Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace
+[2026-10-18T11:35:24.462Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace.
+[2026-10-18T11:35:24.462Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_171521481bdb1271707c8efede208dbbc0184a81ef7efaabf9ab88703d314d37
+[2026-10-18T11:35:24.465Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_teams/desk_team_eb3525844255472bb1698c8c7d3ddd9d/desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955/raw_traces_active.jsonl
+[2026-10-18T11:35:24.467Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_teams/desk_team_eb3525844255472bb1698c8c7d3ddd9d/desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4/raw_traces_active.jsonl
+[2026-10-18T11:35:24.481Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run desk_team_eb3525844255472bb1698c8c7d3ddd9d
+[2026-10-18T11:35:24.485Z] [INFO] [electron.embedded-server.stdout] Created agent session 85b9be90-4617-4910-95b1-4ec23a506214 for run desk_team_eb3525844255472bb1698c8c7d3ddd9d
+[2026-10-18T11:35:24.488Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=85b9be90-4617-4910-95b1-4ec23a506214, run=desk_team_eb3525844255472bb1698c8c7d3ddd9d
+[2026-10-18T11:35:24.489Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_teams/desk_team_eb3525844255472bb1698c8c7d3ddd9d/desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955/raw_traces_active.jsonl
+[2026-10-18T11:35:24.494Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_teams/desk_team_eb3525844255472bb1698c8c7d3ddd9d/desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955/raw_traces_active.jsonl
+[2026-10-18T11:35:29.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:29.419Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:34.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:34.420Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:39.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:39.419Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:44.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:44.419Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:49.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:49.420Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:54.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:54.426Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:35:59.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:35:59.421Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:04.327Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:04.330Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:04.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:04.420Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:09.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:09.423Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:14.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:14.420Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:19.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:19.421Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:22.278Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:22.280Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:22.287Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace
+[2026-10-18T11:36:22.287Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace.
+[2026-10-18T11:36:22.287Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_171521481bdb1271707c8efede208dbbc0184a81ef7efaabf9ab88703d314d37
+[2026-10-18T11:36:22.292Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/media
+[2026-10-18T11:36:22.295Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955'. Config and State linked.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955' with config: 'Desk Alpha'.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955'.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955'. Total registered contexts: 1
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955'. Context registered.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955'.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955' created and stored successfully.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955' requesting runtime to start.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Starting worker.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Starting...
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955' asyncRun(): Starting.
+[2026-10-18T11:36:22.296Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Runtime init completed (event store initialized).
+[2026-10-18T11:36:22.297Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Runtime init completed (status deriver initialized).
+[2026-10-18T11:36:22.297Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Runtime init completed (AgentEventInbox initialized).
+[2026-10-18T11:36:22.297Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-18T11:36:22.297Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955' to become idle (timeout: 30s)...
+[2026-10-18T11:36:22.297Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 3af25289-27f1-455c-b278-83e4dcfc9455) initialized for agent_id 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955'. Subscribed to notifier.
+[2026-10-18T11:36:22.297Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Starting direct runtime bootstrap lifecycle.
+[2026-10-18T11:36:22.298Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Bootstrapper starting direct lifecycle execution.
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Executing McpServerPrewarmingStep.
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Executing SystemPromptProcessingStep.
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': No configured skills. Skipping skill catalog.
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Final processed system prompt configured and captured. Trace ID: rt_1792323382298_c34240ff-b1cf-424d-9486-0110884900bb. Final length: 6379.
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:22.300Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955' initialized successfully. Entering main event scheduler loop.
+[2026-10-18T11:36:22.308Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955' has become idle.
+[2026-10-18T11:36:22.308Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 3af25289-27f1-455c-b278-83e4dcfc9455) for 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T11:36:22.309Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 7b6a7084-cd00-421d-9653-e4546bf92684) initialized for agent_id 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955'. Subscribed to notifier.
+[2026-10-18T11:36:22.325Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:22.325Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:22.325Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': UserInputContextBuildingProcessor completed. Final content length: 105
+[2026-10-18T11:36:22.326Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:23.741Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_teams/desk_team_eb3525844255472bb1698c8c7d3ddd9d/desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4/raw_traces_active.jsonl
+[2026-10-18T11:36:24.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:24.421Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:26.162Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:26.177Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:26.177Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace
+[2026-10-18T11:36:26.179Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace.
+[2026-10-18T11:36:26.179Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_171521481bdb1271707c8efede208dbbc0184a81ef7efaabf9ab88703d314d37
+[2026-10-18T11:36:26.182Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/media
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4'. Config and State linked.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4' with config: 'Desk Beta'.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4'.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4'. Total registered contexts: 2
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4'. Context registered.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4'.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4' created and stored successfully.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4' requesting runtime to start.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Starting worker.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Starting...
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4' asyncRun(): Starting.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Runtime init completed (event store initialized).
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Runtime init completed (status deriver initialized).
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Runtime init completed (AgentEventInbox initialized).
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4' to become idle (timeout: 30s)...
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 7b6a3ce0-e6b7-426a-8d20-6a49a3348017) initialized for agent_id 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4'. Subscribed to notifier.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Starting direct runtime bootstrap lifecycle.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Bootstrapper starting direct lifecycle execution.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Executing McpServerPrewarmingStep.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Executing SystemPromptProcessingStep.
+[2026-10-18T11:36:26.186Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': No configured skills. Skipping skill catalog.
+[2026-10-18T11:36:26.197Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Final processed system prompt configured and captured. Trace ID: rt_1792323386185_0bd9a6a1-9c3f-4243-9642-328be9aba89d. Final length: 6377.
+[2026-10-18T11:36:26.197Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-18T11:36:26.197Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:26.197Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4' initialized successfully. Entering main event scheduler loop.
+[2026-10-18T11:36:26.201Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4' has become idle.
+[2026-10-18T11:36:26.211Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 7b6a3ce0-e6b7-426a-8d20-6a49a3348017) for 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T11:36:26.211Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 90e6e3f7-95c0-40ce-9e91-f32313de8c2d) initialized for agent_id 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4'. Subscribed to notifier.
+[2026-10-18T11:36:26.215Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:26.215Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:26.215Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': UserInputContextBuildingProcessor completed. Final content length: 99
+[2026-10-18T11:36:26.215Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:36:29.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:29.422Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:34.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:34.423Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:39.420Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:39.422Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:44.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:44.421Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:49.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:49.421Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:54.418Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:54.424Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:36:59.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:36:59.421Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:04.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:04.423Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:09.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:09.422Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:14.460Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:14.462Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:19.419Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:19.421Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:24.420Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:24.427Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:29.420Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:29.422Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:34.420Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:34.425Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:39.421Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:39.425Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:44.421Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:44.425Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:49.421Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:49.424Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:54.421Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:54.424Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:37:59.421Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:37:59.423Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:04.421Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:04.424Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:09.421Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:09.427Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:11.417Z] [INFO] [electron.embedded-server.stdout] Closed agent session 85b9be90-4617-4910-95b1-4ec23a506214
+[2026-10-18T11:38:11.704Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:11.706Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:11.737Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:11.738Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:11.773Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run desk_team_eb3525844255472bb1698c8c7d3ddd9d
+[2026-10-18T11:38:11.773Z] [INFO] [electron.embedded-server.stdout] Created agent session 697f88bf-0973-4e0b-b30c-30185cbeff72 for run desk_team_eb3525844255472bb1698c8c7d3ddd9d
+[2026-10-18T11:38:11.775Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=697f88bf-0973-4e0b-b30c-30185cbeff72, run=desk_team_eb3525844255472bb1698c8c7d3ddd9d
+[2026-10-18T11:38:13.719Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:13.721Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:16.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:16.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:21.773Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:21.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:22.298Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:38:22.379Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:38:22.383Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-18T11:38:22.383Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:38:22.383Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:38:22.383Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:38:22.383Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 236a7a4e-717d-4449-b1b8-583083c21672, AgentID: desk_beta_5c783d8a8e4a4aebbf9ebe0b70b407f4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:38:26.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:26.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:31.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:31.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:36.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:36.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:41.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:41.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:46.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:46.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:51.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:51.776Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:38:56.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:38:56.775Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:01.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:01.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:03.678Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:03.682Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:04.764Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:39:04.782Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:39:04.782Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-18T11:39:04.782Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:39:04.782Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:39:04.782Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:39:04.782Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: f88e23e9-85e1-4bc6-b088-4a92ea17bf6f, AgentID: desk_alpha_4cf4ba72bfa64ae2b109bc84c76ee955) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:39:06.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:06.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:11.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:11.773Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:16.773Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:16.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:21.773Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:21.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:26.773Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:26.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:31.773Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:31.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:36.773Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:36.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:41.773Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:41.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:46.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:46.776Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:50.501Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_orgs/desk_org_8233cbd221a447389df370233098e3af/desk_alpha_3507bc2881b74af385d37501d45d2db5/raw_traces_active.jsonl
+[2026-10-18T11:39:50.506Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_orgs/desk_org_8233cbd221a447389df370233098e3af/desk_beta_7441b3e7c94544b18c8a6759e80716ed/raw_traces_active.jsonl
+[2026-10-18T11:39:50.517Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:50.518Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:50.537Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_orgs/desk_org_8233cbd221a447389df370233098e3af/desk_alpha_3507bc2881b74af385d37501d45d2db5/raw_traces_active.jsonl
+[2026-10-18T11:39:50.537Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_orgs/desk_org_8233cbd221a447389df370233098e3af/desk_beta_7441b3e7c94544b18c8a6759e80716ed/raw_traces_active.jsonl
+[2026-10-18T11:39:50.543Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:50.544Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:50.549Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_orgs/desk_org_8233cbd221a447389df370233098e3af/desk_alpha_3507bc2881b74af385d37501d45d2db5/raw_traces_active.jsonl
+[2026-10-18T11:39:50.550Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/memory/agent_orgs/desk_org_8233cbd221a447389df370233098e3af/desk_beta_7441b3e7c94544b18c8a6759e80716ed/raw_traces_active.jsonl
+[2026-10-18T11:39:50.552Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:50.553Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:51.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:51.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:39:56.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:39:56.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:01.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:01.775Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:06.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:06.776Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:07.850Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace
+[2026-10-18T11:40:07.850Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace.
+[2026-10-18T11:40:07.850Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_171521481bdb1271707c8efede208dbbc0184a81ef7efaabf9ab88703d314d37
+[2026-10-18T11:40:07.854Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/media
+[2026-10-18T11:40:07.857Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'desk_alpha_3507bc2881b74af385d37501d45d2db5'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-18T11:40:07.857Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+[2026-10-18T11:40:07.857Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'desk_alpha_3507bc2881b74af385d37501d45d2db5'. Config and State linked.
+[2026-10-18T11:40:07.857Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'desk_alpha_3507bc2881b74af385d37501d45d2db5' with config: 'Desk Alpha'.
+[2026-10-18T11:40:07.857Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'desk_alpha_3507bc2881b74af385d37501d45d2db5'.
+[2026-10-18T11:40:07.857Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'desk_alpha_3507bc2881b74af385d37501d45d2db5'. Total registered contexts: 3
+[2026-10-18T11:40:07.857Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'desk_alpha_3507bc2881b74af385d37501d45d2db5'. Context registered.
+[2026-10-18T11:40:07.857Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'desk_alpha_3507bc2881b74af385d37501d45d2db5'.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5' created and stored successfully.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5' requesting runtime to start.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Starting worker.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Starting...
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_alpha_3507bc2881b74af385d37501d45d2db5' asyncRun(): Starting.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Runtime init completed (event store initialized).
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Runtime init completed (status deriver initialized).
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Runtime init completed (AgentEventInbox initialized).
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5' to become idle (timeout: 30s)...
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: e04b3f28-8dcd-489d-9dc1-53737307abc1) initialized for agent_id 'desk_alpha_3507bc2881b74af385d37501d45d2db5'. Subscribed to notifier.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Starting direct runtime bootstrap lifecycle.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Bootstrapper starting direct lifecycle execution.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Executing McpServerPrewarmingStep.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Executing SystemPromptProcessingStep.
+[2026-10-18T11:40:07.858Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': No configured skills. Skipping skill catalog.
+[2026-10-18T11:40:07.859Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Final processed system prompt configured and captured. Trace ID: rt_1792323607858_08b8b6ce-dd94-4750-91a5-e323f039f234. Final length: 6486.
+[2026-10-18T11:40:07.859Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-18T11:40:07.859Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:07.859Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_alpha_3507bc2881b74af385d37501d45d2db5' initialized successfully. Entering main event scheduler loop.
+[2026-10-18T11:40:07.869Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_alpha_3507bc2881b74af385d37501d45d2db5' has become idle.
+[2026-10-18T11:40:07.869Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: e04b3f28-8dcd-489d-9dc1-53737307abc1) for 'desk_alpha_3507bc2881b74af385d37501d45d2db5': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T11:40:07.869Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 6c4a7555-5fd5-446b-b831-9c7f68488266) initialized for agent_id 'desk_alpha_3507bc2881b74af385d37501d45d2db5'. Subscribed to notifier.
+[2026-10-18T11:40:07.881Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:07.882Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:07.882Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_alpha_3507bc2881b74af385d37501d45d2db5': UserInputContextBuildingProcessor completed. Final content length: 106
+[2026-10-18T11:40:07.884Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:07.939Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:07.941Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:11.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:11.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:12.165Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace
+[2026-10-18T11:40:12.165Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/desk-workspace.
+[2026-10-18T11:40:12.165Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_171521481bdb1271707c8efede208dbbc0184a81ef7efaabf9ab88703d314d37
+[2026-10-18T11:40:12.168Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/media
+[2026-10-18T11:40:12.188Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'desk_beta_7441b3e7c94544b18c8a6759e80716ed'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'desk_beta_7441b3e7c94544b18c8a6759e80716ed'. Config and State linked.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'desk_beta_7441b3e7c94544b18c8a6759e80716ed' with config: 'Desk Beta'.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'desk_beta_7441b3e7c94544b18c8a6759e80716ed'.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'desk_beta_7441b3e7c94544b18c8a6759e80716ed'. Total registered contexts: 4
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'desk_beta_7441b3e7c94544b18c8a6759e80716ed'. Context registered.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'desk_beta_7441b3e7c94544b18c8a6759e80716ed'.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed' created and stored successfully.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed' requesting runtime to start.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Starting worker.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Starting...
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_beta_7441b3e7c94544b18c8a6759e80716ed' asyncRun(): Starting.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Runtime init completed (event store initialized).
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Runtime init completed (status deriver initialized).
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Runtime init completed (AgentEventInbox initialized).
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed' to become idle (timeout: 30s)...
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: f2613deb-a5e3-435a-a070-7179ef2b072a) initialized for agent_id 'desk_beta_7441b3e7c94544b18c8a6759e80716ed'. Subscribed to notifier.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Starting direct runtime bootstrap lifecycle.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Bootstrapper starting direct lifecycle execution.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Executing McpServerPrewarmingStep.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Executing SystemPromptProcessingStep.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': No configured skills. Skipping skill catalog.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Final processed system prompt configured and captured. Trace ID: rt_1792323612182_ded10a24-b87a-4180-95fc-5c8eb28cd3e0. Final length: 6484.
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:12.189Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_beta_7441b3e7c94544b18c8a6759e80716ed' initialized successfully. Entering main event scheduler loop.
+[2026-10-18T11:40:12.201Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_beta_7441b3e7c94544b18c8a6759e80716ed' has become idle.
+[2026-10-18T11:40:12.201Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: f2613deb-a5e3-435a-a070-7179ef2b072a) for 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T11:40:12.204Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: e20635b6-53ab-4c27-8a56-b734337deffa) initialized for agent_id 'desk_beta_7441b3e7c94544b18c8a6759e80716ed'. Subscribed to notifier.
+[2026-10-18T11:40:12.215Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:12.215Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:12.215Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': UserInputContextBuildingProcessor completed. Final content length: 104
+[2026-10-18T11:40:12.215Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:12.222Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:40:12.227Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:16.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:16.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:21.773Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:21.851Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:26.773Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:26.775Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:31.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:31.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:36.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:36.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:41.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:41.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:46.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:46.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:51.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:51.796Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:40:56.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:40:56.775Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:01.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:01.784Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:06.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:06.775Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:11.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:11.796Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:16.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:16.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:17.910Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:41:17.923Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:41:17.923Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_beta_7441b3e7c94544b18c8a6759e80716ed': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-18T11:41:17.923Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:41:17.923Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:41:17.923Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:41:17.923Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ffd0b332-b86c-4221-bbdf-404eef3cf70d, AgentID: desk_beta_7441b3e7c94544b18c8a6759e80716ed) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:41:21.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:21.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:26.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:26.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:31.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:31.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:36.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:36.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:41.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:41.776Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:46.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:46.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:51.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:51.776Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:41:56.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:41:56.776Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:01.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:01.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:06.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:06.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:11.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:11.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:16.758Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:42:16.760Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:42:16.760Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_alpha_3507bc2881b74af385d37501d45d2db5': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-18T11:42:16.760Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:42:16.760Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:42:16.760Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:42:16.760Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 84b4b6ec-4201-40c7-9f94-5f06e1a04b17, AgentID: desk_alpha_3507bc2881b74af385d37501d45d2db5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:42:16.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:16.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:21.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:21.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:26.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:26.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:31.774Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:31.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:36.772Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:36.773Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:41.770Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:41.772Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:44.272Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:44.273Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:46.770Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:46.773Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:51.768Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:51.771Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:42:56.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:42:56.770Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:01.768Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:01.770Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:06.768Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:06.770Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:11.768Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:11.769Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:16.768Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:16.774Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:21.768Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:21.771Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:26.767Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:26.769Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:33.506Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:33.528Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:38.565Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:38.568Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:40.477Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: [2m2026-10-18T11:43:40.473639Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+[2026-10-18T11:43:40.477Z] [ERROR] [electron.embedded-server.stderr]   user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-10-18T11:43:43.565Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:43.568Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:48.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:48.570Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:53.566Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:53.573Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:43:58.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:43:58.582Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:01.290Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-18T11:44:01.348Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_pm_8519d769a66742a0b901c6c80bec377c
+[2026-10-18T11:44:01.348Z] [INFO] [electron.embedded-server.stdout] Created agent session d46e616a-83d4-4054-9518-219036efbbb1 for run desk_pm_8519d769a66742a0b901c6c80bec377c
+[2026-10-18T11:44:01.349Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=d46e616a-83d4-4054-9518-219036efbbb1, run=desk_pm_8519d769a66742a0b901c6c80bec377c
+[2026-10-18T11:44:01.393Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:01.396Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:01.414Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-18T11:44:01.416Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/media
+[2026-10-18T11:44:01.424Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'desk_pm_8519d769a66742a0b901c6c80bec377c'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-18T11:44:01.424Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+[2026-10-18T11:44:01.425Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'desk_pm_8519d769a66742a0b901c6c80bec377c'. Config and State linked.
+[2026-10-18T11:44:01.425Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'desk_pm_8519d769a66742a0b901c6c80bec377c' with config: 'Desk PM'.
+[2026-10-18T11:44:01.426Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'desk_pm_8519d769a66742a0b901c6c80bec377c'.
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'desk_pm_8519d769a66742a0b901c6c80bec377c'. Total registered contexts: 5
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'desk_pm_8519d769a66742a0b901c6c80bec377c'. Context registered.
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'desk_pm_8519d769a66742a0b901c6c80bec377c'.
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c' created and stored successfully.
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c' requesting runtime to start.
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'desk_pm_8519d769a66742a0b901c6c80bec377c': Starting worker.
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_pm_8519d769a66742a0b901c6c80bec377c': Starting...
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_pm_8519d769a66742a0b901c6c80bec377c' asyncRun(): Starting.
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Runtime init completed (event store initialized).
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Runtime init completed (status deriver initialized).
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Runtime init completed (AgentEventInbox initialized).
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'desk_pm_8519d769a66742a0b901c6c80bec377c' to become idle (timeout: 30s)...
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 796bd40c-e1ea-44f2-b2cf-722574bd991e) initialized for agent_id 'desk_pm_8519d769a66742a0b901c6c80bec377c'. Subscribed to notifier.
+[2026-10-18T11:44:01.427Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Starting direct runtime bootstrap lifecycle.
+[2026-10-18T11:44:01.428Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:01.428Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Bootstrapper starting direct lifecycle execution.
+[2026-10-18T11:44:01.428Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-18T11:44:01.428Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Executing McpServerPrewarmingStep.
+[2026-10-18T11:44:01.428Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-18T11:44:01.428Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Executing SystemPromptProcessingStep.
+[2026-10-18T11:44:01.428Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': No configured skills. Skipping skill catalog.
+[2026-10-18T11:44:01.428Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Final processed system prompt configured and captured. Trace ID: rt_1792323841428_17e8769d-47ea-4d57-b055-84f9d743f22e. Final length: 4415.
+[2026-10-18T11:44:01.428Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-18T11:44:01.429Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:01.429Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_pm_8519d769a66742a0b901c6c80bec377c' initialized successfully. Entering main event scheduler loop.
+[2026-10-18T11:44:01.438Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_pm_8519d769a66742a0b901c6c80bec377c' has become idle.
+[2026-10-18T11:44:01.438Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 796bd40c-e1ea-44f2-b2cf-722574bd991e) for 'desk_pm_8519d769a66742a0b901c6c80bec377c': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T11:44:01.439Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: c1d37dbf-21b5-49e4-8b62-c438a38b9e9e) initialized for agent_id 'desk_pm_8519d769a66742a0b901c6c80bec377c'. Subscribed to notifier.
+[2026-10-18T11:44:01.463Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:01.463Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:01.464Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_pm_8519d769a66742a0b901c6c80bec377c': UserInputContextBuildingProcessor completed. Final content length: 446
+[2026-10-18T11:44:01.466Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:03.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:03.571Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:08.566Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:08.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:13.566Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:13.569Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:18.566Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:18.571Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:19.476Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-10-18T11:44:19.477Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:19.482Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:19.482Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:19.482Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:19.485Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:19.485Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:19.485Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:19.485Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:19.485Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_pm_8519d769a66742a0b901c6c80bec377c': UserInputContextBuildingProcessor completed. Final content length: 59
+[2026-10-18T11:44:19.485Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:19.485Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:23.566Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:23.567Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:27.361Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 2 tool invocations.
+[2026-10-18T11:44:27.361Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.363Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.364Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.364Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.392Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-18T11:44:27.393Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/media
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b'. Config and State linked.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b' with config: 'Desk Essay Worker'.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b'.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b'. Total registered contexts: 6
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b'. Context registered.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b'.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b' created and stored successfully.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b' requesting runtime to start.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Starting worker.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Starting...
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b' asyncRun(): Starting.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Runtime init completed (event store initialized).
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Runtime init completed (status deriver initialized).
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Runtime init completed (AgentEventInbox initialized).
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b' to become idle (timeout: 30s)...
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: ae548a82-b278-46ba-93dd-8292cdb53083) initialized for agent_id 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b'. Subscribed to notifier.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Starting direct runtime bootstrap lifecycle.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Bootstrapper starting direct lifecycle execution.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Executing McpServerPrewarmingStep.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Executing SystemPromptProcessingStep.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': No configured skills. Skipping skill catalog.
+[2026-10-18T11:44:27.394Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Final processed system prompt configured and captured. Trace ID: rt_1792323867394_1c06bd5e-fed4-4b4f-ba8b-557f45b07643. Final length: 4664.
+[2026-10-18T11:44:27.395Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-18T11:44:27.395Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.395Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b' initialized successfully. Entering main event scheduler loop.
+[2026-10-18T11:44:27.406Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b' has become idle.
+[2026-10-18T11:44:27.406Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: ae548a82-b278-46ba-93dd-8292cdb53083) for 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T11:44:27.406Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 1e805ef0-901a-41e0-89d0-a3893ed6a16c) initialized for agent_id 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b'. Subscribed to notifier.
+[2026-10-18T11:44:27.491Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:27.492Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:27.503Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.503Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.503Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': UserInputContextBuildingProcessor completed. Final content length: 458
+[2026-10-18T11:44:27.505Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.554Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.556Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.556Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:27.570Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:27.648Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-18T11:44:27.649Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-hjcwlB/server-data/media
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d'. Config and State linked.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d' with config: 'Desk Essay Worker'.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d'.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d'. Total registered contexts: 7
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d'. Context registered.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d'.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d' created and stored successfully.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d' requesting runtime to start.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Starting worker.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Starting...
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d' asyncRun(): Starting.
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Runtime init completed (event store initialized).
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Runtime init completed (status deriver initialized).
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Runtime init completed (AgentEventInbox initialized).
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d' to become idle (timeout: 30s)...
+[2026-10-18T11:44:27.650Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: e220866a-4565-46e2-bd43-3b2c5002714d) initialized for agent_id 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d'. Subscribed to notifier.
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Starting direct runtime bootstrap lifecycle.
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Bootstrapper starting direct lifecycle execution.
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Executing McpServerPrewarmingStep.
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Executing SystemPromptProcessingStep.
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': No configured skills. Skipping skill catalog.
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Final processed system prompt configured and captured. Trace ID: rt_1792323867650_957819d3-a5e3-479d-95a9-709198ee2612. Final length: 4664.
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.651Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d' initialized successfully. Entering main event scheduler loop.
+[2026-10-18T11:44:27.661Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d' has become idle.
+[2026-10-18T11:44:27.661Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: e220866a-4565-46e2-bd43-3b2c5002714d) for 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': close() called. Unsubscribing all listeners and signaling.
+[2026-10-18T11:44:27.662Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: fa9f7f84-1330-49c4-a28f-dd4d8509b0df) initialized for agent_id 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d'. Subscribed to notifier.
+[2026-10-18T11:44:27.764Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.766Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.766Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': UserInputContextBuildingProcessor completed. Final content length: 452
+[2026-10-18T11:44:27.767Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.892Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:27.895Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:27.917Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.917Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.917Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.917Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.917Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.918Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.956Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_pm_8519d769a66742a0b901c6c80bec377c': UserInputContextBuildingProcessor completed. Final content length: 78
+[2026-10-18T11:44:27.956Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:27.957Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:28.087Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:28.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:28.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:28.570Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:33.580Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:33.713Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:38.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:38.592Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:43.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:43.572Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:44.442Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:44.450Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:44.450Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_pm_8519d769a66742a0b901c6c80bec377c': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-18T11:44:44.450Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:44.450Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:44.450Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:44.450Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:44:48.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:48.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:53.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:53.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:44:58.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:44:58.589Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:03.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:03.571Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:06.549Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:06.555Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:06.555Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-18T11:45:06.555Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:06.555Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:06.555Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:06.555Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:08.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:08.571Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:11.581Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-10-18T11:45:11.581Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.584Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.584Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.584Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.670Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.670Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.670Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.670Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.670Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.670Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.671Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_pm_8519d769a66742a0b901c6c80bec377c': UserInputContextBuildingProcessor completed. Final content length: 2324
+[2026-10-18T11:45:11.677Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': UserInputContextBuildingProcessor completed. Final content length: 53
+[2026-10-18T11:45:11.677Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: dbb7b4b8-2d0c-47ae-851d-95e9c190af89, AgentID: desk_pm_8519d769a66742a0b901c6c80bec377c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.677Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:11.681Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:13.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:13.570Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:18.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:18.573Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:22.357Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:22.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:22.358Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-18T11:45:22.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:22.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:22.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:22.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:45:23.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:23.570Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:28.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:28.576Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:33.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:33.572Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:38.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:38.573Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:43.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:43.570Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:48.567Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:48.570Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:53.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:53.572Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:45:58.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:45:58.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:03.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:03.571Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:08.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:08.569Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:13.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:13.588Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:14.379Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:46:14.379Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:46:14.381Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': UserInputContextBuildingProcessor completed. Final content length: 80
+[2026-10-18T11:46:14.382Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:46:18.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:18.572Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:18.992Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:46:18.992Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:46:18.996Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d': UserInputContextBuildingProcessor completed. Final content length: 80
+[2026-10-18T11:46:19.000Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:46:23.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:23.593Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:28.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:28.572Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:33.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:33.633Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:38.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:38.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:43.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:43.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:48.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:48.574Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:53.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:53.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:46:58.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:46:58.570Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:03.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:03.571Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:08.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:08.571Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:13.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:13.583Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:18.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:18.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:23.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:23.573Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:28.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:28.584Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:33.568Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:33.571Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:38.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:38.572Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:43.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:43.588Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:48.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:48.581Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:53.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:53.573Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:47:58.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:47:58.576Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:01.257Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-10-18T11:48:01.257Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:01.271Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:01.272Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:01.272Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:01.610Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:01.610Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:01.610Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:01.610Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:01.617Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': UserInputContextBuildingProcessor completed. Final content length: 53
+[2026-10-18T11:48:01.617Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:01.617Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:03.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:03.583Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:08.569Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:08.574Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:13.516Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:13.529Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:13.529Z] [INFO] [electron.embedded-server.stdout] Agent run 'desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-18T11:48:13.529Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:13.529Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:13.529Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:13.529Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 72841b27-2068-4d10-ae5e-aa29cf424972, AgentID: desk_essay_worker_73edcdeda1f44700bf19ac576cd5cf2b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:48:13.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:13.573Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:18.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:18.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:23.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:23.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:28.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:28.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:33.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:33.573Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:38.577Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:39.244Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:43.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:43.576Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:48.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:48.597Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:53.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:53.574Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:48:58.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:48:58.573Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:03.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:03.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:08.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:08.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:13.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:13.583Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:18.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:18.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:23.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:23.581Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:28.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:28.588Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:33.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:33.574Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:38.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:38.576Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:43.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:43.573Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:48.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:48.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:53.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:53.582Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:49:58.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:49:58.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:03.570Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:03.576Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:08.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:08.582Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:13.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:13.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:18.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:18.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:23.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:23.572Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:28.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:28.574Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:33.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:33.580Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:38.571Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:38.587Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:43.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:43.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:48.576Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:48.588Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:53.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:53.592Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:50:58.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:50:58.583Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:03.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:03.582Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:08.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:08.587Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:13.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:13.574Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:18.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:18.587Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:23.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:23.671Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:28.584Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:28.908Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:33.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:33.680Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:38.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:38.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:43.572Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:43.574Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:48.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:48.708Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:53.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:53.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:51:58.576Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:51:58.649Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:03.579Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:03.614Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:08.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:08.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:13.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:13.581Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:18.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:18.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:23.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:23.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:28.590Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:28.644Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:33.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:33.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:38.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:38.582Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:43.573Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:43.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:48.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:48.580Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:53.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:53.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:52:58.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:52:58.593Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:03.576Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:03.583Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:08.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:08.576Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:13.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:13.580Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:18.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:18.591Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:23.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:23.584Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:28.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:28.586Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:33.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:33.581Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:38.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:38.575Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:43.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:43.580Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:48.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:48.576Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:52.052Z] [INFO] [electron.embedded-server.stdout] Agent 'desk_essay_worker_966d7d18df354d09b7af8aad742dd30d' requesting runtime interrupt.
+[2026-10-18T11:53:52.052Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:53:52.126Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:53:52.129Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:53:52.129Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: c1b8e774-9830-47fe-a7c8-5cbb2c66d254, AgentID: desk_essay_worker_966d7d18df354d09b7af8aad742dd30d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-18T11:53:53.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:53.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:53:58.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:53:58.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:03.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:03.582Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:08.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:08.576Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:13.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:13.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:18.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:18.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:23.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:23.583Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:28.574Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:28.580Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:33.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:33.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:38.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:38.581Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:43.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:43.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:48.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:48.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:53.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:53.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:54:58.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:54:58.582Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:03.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:03.581Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:08.575Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:08.577Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:13.576Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:13.581Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:18.576Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:18.583Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:23.577Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:23.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:28.576Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:28.581Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:33.576Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:33.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:38.577Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:38.588Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:43.577Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:43.578Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:48.577Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:48.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:53.577Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:53.580Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-18T11:55:58.577Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-18T11:55:58.579Z] [INFO] [electron] ServerStatusManager: Emitting status change: running

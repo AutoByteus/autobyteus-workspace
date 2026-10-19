@@ -1,0 +1,13 @@
+J-01-open-overview Fail AssertionError [ERR_ASSERTION]: no visible kind word: skills-library
+J-02-scroll-short-window-1024x700 Pass 
+J-03-add-folder-success Pass 
+J-04-add-missing-folder-error-kept Pass 
+J-05-duplicate-name-conflict Pass 
+J-06-url-detection-and-import-error Pass 
+J-07-update-text-only-chip-and-confirm Pass 
+J-08-check-failed-try-again Pass 
+J-09-remove-local-cancel-and-confirm Pass 
+J-10-keyboard-focus-trap-esc Pass 
+J-11-close-paths-and-copy Fail AssertionError [ERR_ASSERTION]: Copied state
+J-12-zh-CN-render Pass 
+{"cases":{"J-01-open-overview":"Fail","J-02-scroll-short-window-1024x700":"Pass","J-03-add-folder-success":"Pass","J-04-add-missing-folder-error-kept":"Pass","J-05-duplicate-name-conflict":"Pass","J-06-url-detection-and-import-error":"Pass","J-07-update-text-only-chip-and-confirm":"Pass","J-08-check-failed-try-again":"Pass","J-09-remove-local-cancel-and-confirm":"Pass","J-10-keyboard-focus-trap-esc":"Pass","J-11-close-paths-and-copy":"Fail","J-12-zh-CN-render":"Pass"},"pageErrors":0,"cleanup":{"browser":"closed","stack":"cleaned /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-render-ptj2Ai","ownedRemoved":true,"scratchRemoved":true}}

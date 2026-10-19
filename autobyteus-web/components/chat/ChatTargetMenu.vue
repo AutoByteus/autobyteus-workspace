@@ -60,7 +60,7 @@ withDefaults(defineProps<{
   query: string
   targets: ChatTargetOption[]
   highlight: number
-  /** The agent the user is talking to; it receives the message and brings the collaborator in. */
+  /** The agent the user is talking to; it receives the message and delegates to the mentioned unit. */
   focusedName?: string
 }>(), { focusedName: '' })
 const emit = defineEmits<{

@@ -63,15 +63,15 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('Task-free %s tree 
     expect(h.index.listTaskExecutionChainForAgent(kind === 'agent' ? 'root' : 'manager')).toEqual([]);
   });
 
-  it('answers ownership and helper questions only with execution facts: chain incl. pre-commit registration, copy at address', () => {
+  it('answers ownership questions only with execution facts: chain incl. pre-commit registration, copy by reference', () => {
     const h = subject(kind);
     const adapter = adapterFor(kind, h);
     expect(adapter.ownershipChainFor('A-lead')).toEqual([{ teamRunId: 'A-team' }]);
     expect(adapter.ownershipChainFor('borrowed')).toEqual([{ agentRunId: 'borrowed' }]);
     expect(adapter.ownershipChainFor('not-yet-committed')).toEqual([]);
-    expect(adapter.taskExecutionAt('/A-helper', [{ agentRunId: 'B-worker' }, { agentRunId: 'A-helper' }]))
+    expect(adapter.taskExecutionTargetOf({ agentRunId: 'A-helper' }))
       .toEqual({ root: { rootSubjectKind: kind, rootRunId: 'root' }, execution: { agentRunId: 'A-helper' }, ingressAgentRunId: 'A-helper' });
-    expect(adapter.taskExecutionAt('/A-helper', [{ agentRunId: 'B-worker' }])).toBeNull();
+    expect(adapter.taskExecutionTargetOf({ agentRunId: 'missing' })).toBeNull();
     expect(adapter.registrationFor({ agentRunId: 'A-helper' })).toBeNull();
   });
 
@@ -117,7 +117,7 @@ it('invokes every retained exact authority regardless of liveness; one failed ta
   const { resources, scope } = scopeOver(adapter);
   resources.addTask('A');
   await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, execution: { agentRunId: 'owned-A' } });
-  await resources.linkNewTaskExecution({ role: 'broughtIn', creator: { agentRunId: 'owned-A' }, hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, execution: { agentRunId: 'helper-A' } });
+  await resources.linkNewTaskExecution({ role: 'delegated', creator: { agentRunId: 'owned-A' }, hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, execution: { agentRunId: 'helper-A' } });
   let finished = false;
   const result = scope.releaseTaskExecutions(resources.close('A')).then(r => { finished = true; return r; });
   expect([...registrations.values()].every(r => r.operation.cancel.mock.calls.length === 1)).toBe(true);
@@ -213,9 +213,9 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: Task clos
     const hostRoot = { rootSubjectKind: kind, rootRunId: 'root' };
     await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot, execution: { teamRunId: 'A-team' }, teamCoordinatorAgentRunId: 'A-lead' });
     await resources.linkNewTaskExecution({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-child' } });
-    await resources.linkNewTaskExecution({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-helper' } });
+    await resources.linkNewTaskExecution({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-helper' } });
     // Linked but never committed to this tree (e.g. its start failed): closed, yet not a node to hide.
-    await resources.linkNewTaskExecution({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-never-committed' } });
+    await resources.linkNewTaskExecution({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-never-committed' } });
     await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'B', assignedBy: 'manager', hostRoot, execution: { agentRunId: 'B-worker' } });
     const scope = new RootTaskExecutionResourceScope(adapter as never, resources);
     expect(scope.closedTaskExecutions()).toEqual([]);

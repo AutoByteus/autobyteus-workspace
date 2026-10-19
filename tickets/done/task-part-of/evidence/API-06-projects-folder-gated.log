@@ -1,0 +1,130 @@
+# Case: API-06 (also the final run of API-01..API-05)
+# Command: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects tests/e2e/app-data-migrations --no-watch
+# Commit: code 179ddb9f77 (HEAD 399303d039) + the API/E2E test edits of this round (uncommitted at run time; committed with this evidence)
+# Environment: macOS darwin arm64, Node via corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR
+# Date: 2026-10-19
+
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 160039ms
+     ✓ EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views  17510ms
+     ✓ EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner  17741ms
+     ✓ EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner  17645ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  101088ms
+     ✓ EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable  1649ms
+     ✓ EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change  1131ms
+     ✓ TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)  2799ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 29378ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  5112ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4742ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4767ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  5610ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  5958ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2762ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (14 tests) 12107ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  590ms
+     ✓ E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically  972ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  717ms
+     ✓ CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011)  358ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  925ms
+     ✓ CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012)  338ms
+     ✓ TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)  2830ms
+     ✓ POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018)  4361ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 37296ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  17793ms
+     ✓ isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root  6948ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  9025ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  3528ms
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 20111ms
+     ✓ in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values  10482ms
+     ✓ Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)  1445ms
+     ✓ Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)  6545ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (12 tests) 3202ms
+     ✓ API-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged  327ms
+     ✓ API-010: Task keys and depends on: keys in creation order, never reused, kept on rename; dependencies validated, replaced, cleared and dropped on delete  311ms
+     ✓ API-011: part of: set at create, omitted keeps, null clears, an ID replaces; refusals write nothing; one level under concurrency; a deleted parent's parts stay; a step-1 task.json reads with no parent (task-part-of AC-001..005, 007, 016)  1200ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 22556ms
+     ✓ DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save  3158ms
+     ✓ DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model  1332ms
+     ✓ DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publishes the choice; a later copy uses normal resolution  2812ms
+     ✓ DCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model  8490ms
+     ✓ DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with a Team choice in the same Save, the member's own choice wins  2964ms
+     ✓ DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation  1931ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 102364ms
+     ✓ in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree  98896ms
+     ✓ Org root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)  2960ms
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 20661ms
+     ✓ AOML-1 converts every usable log with nothing lost, keeps the unusable ones with a warning, serves the same history and references, and a second start changes nothing  9340ms
+     ✓ AOML-2 runs that ran on the release are converted, resumed and messaged: one line per owner log in each family (sealed files untouched), a delegated team gets an empty append-only log, references of old and new messages resolve, and a restart serves every message  11319ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 9660ms
+     ✓ feed contract: `connected` first on every connection, no replay, remote-access rejection like the sibling sockets  1007ms
+     ✓ Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot  1883ms
+     ✓ Team root: a delegated catalog Agent copy is hosted by the Team root; a task Team root folds its members  1523ms
+     ✓ Org root: an Org-hosted root reports its worker's status and goes Offline at DONE  797ms
+     ✓ Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks  1351ms
+     ✓ QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded  2755ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 11309ms
+     ✓ standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete  3924ms
+     ✓ Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)  3482ms
+     ✓ Agent Org root: same journey through the Org stream  3573ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 15392ms
+     ✓ CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs  1503ms
+     ✓ CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team  896ms
+     ✓ CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team  1637ms
+     ✓ CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)  1607ms
+     ✓ CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text  1388ms
+     ✓ CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)  1155ms
+     ✓ CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate  1942ms
+     ✓ CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots  3344ms
+     ✓ CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated  355ms
+     ✓ CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it  757ms
+     ✓ CPW-M3 Org root: a sibling of the organization is reachable and delegable  392ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 162444ms
+     ✓ background copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged  161993ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 32880ms
+     ✓ Studio: moves rows, saved files and drafts, retains the original, skips invalid/residue/duplicate/conflict, then no-ops on restart  4654ms
+     ✓ Studio: an unreadable source or a failed move keeps only Projects gated; a restart retries and completes without duplication  5585ms
+     ✓ Standalone host: never locked out by a broken source, migrates once on a valid one, composes per start and releases on close  5840ms
+     ✓ Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lockout until a restart finishes it  7001ms
+     ✓ Studio: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  3542ms
+     ✓ Standalone: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  6256ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3149ms
+     ✓ a Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself  2778ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 11106ms
+     ✓ standalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen + repeated DONE, Task delete  4110ms
+     ✓ Agent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen + repeated DONE, Task delete  3354ms
+     ✓ Agent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen + repeated DONE, Task delete  3314ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 5135ms
+     ✓ POF-LIVE-001: a parent's CANCELLED, then another parent's DONE, close their open parts (stopping a really running task agent), list them in closedParts and update the feed; closed parts, reopen and a part's own close change nothing; re-parent and delete cleanup are live (AC-018, AC-008, AC-007, AC-006)  3726ms
+     ✓ POF-LIVE-002: a Temp task has no parent and is no parent: both refused with TASK_PARENT_INVALID, nothing written (AC-003, AC-014)  678ms
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts (4 tests) 17207ms
+     ✓ E-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart  3784ms
+     ✓ E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued  4268ms
+     ✓ E-003 Studio fresh install: creates no installed copy and records nothing to remove  3857ms
+     ✓ E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record  5298ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 4910ms
+     ✓ CM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy  1308ms
+     ✓ CM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID  1214ms
+     ✓ CM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team  1886ms
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 19500ms
+     ✓ TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing  5944ms
+     ✓ TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows)  7508ms
+     ✓ TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are not listed  6047ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 4358ms
+     ✓ converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing  4357ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 1904ms
+     ✓ CTX-E2E-003: the Manager attaches files by tool, delegate_task({task_id}) hands the saved copies to a live worker that reads them; DONE with a bad file keeps the run open; ad-hoc Tasks refuse files  1651ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 445ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (3 tests) 1011ms
+     ✓ POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no long Task ID  568ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 7302ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 7917ms
+     ✓ DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop  2381ms
+     ✓ DF-2 Agent root: the agent the user started heads the same forest; restored after Stop  2828ms
+     ✓ DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop  2287ms
+ ✓ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests) 587ms
+     ✓ first-upgrade: preserves usage and conversation through full restore, replay and advancing response  329ms
+ ✓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests) 2230ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1400ms
+     ✓ WDR-1 delegate_task on an agent run and a team run the user started is refused with the pre-adoption text, and nothing is written  917ms
+ Test Files  29 passed (29)
+      Tests  118 passed | 4 skipped (122)
+exit=0

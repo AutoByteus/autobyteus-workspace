@@ -9,6 +9,7 @@ import type {
   AgentRunFileChangeStatus,
 } from "../../../agent-execution/domain/agent-run-file-change.js";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
+import type { ModelCallThroughput } from "../../../agent-execution/domain/model-call-throughput.js";
 import type { AgentBackgroundTask } from "../../../agent-execution/domain/agent-background-task.js";
 
 type Correlated<T extends string, D> = Readonly<{
@@ -91,6 +92,9 @@ export type AgentPresentationTokenUsageDetails = Readonly<{
   latestPromptTokens: number | null;
   effectiveContextWindowTokens: number | null;
   contextWindowUsagePercent: number | null;
+  contextCompactionThresholdTokens: number | null;
+  reportsModelCall: boolean;
+  outputThroughput: ModelCallThroughput | null;
   runSummaryAfterEvent: Omit<TokenUsageRunSummaryPayload, "root_team_run_id"> | null;
   qualityFlags: readonly string[];
 }>;

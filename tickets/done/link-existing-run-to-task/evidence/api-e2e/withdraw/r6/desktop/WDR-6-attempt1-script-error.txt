@@ -1,0 +1,11 @@
+# WDR-6 (round 6): delete a finished Task that had a delegated copy, a never-assigned Task, then the Project (the board's GraphQL mutations)
+# Commit: d95425d711 (product a130f4a86f), instance iso-53797-e01b
+# Date: 2026-10-18T20:28:53Z
+tasks before: [('ado-desktop-project-3', 'DONE'), ('ado-desktop-project-4', 'TODO'), ('ado-desktop-project-2', 'TODO'), ('ado-desktop-project-1', 'TODO')]
+delete Task 3 (DONE, had a copy):  delete Task 3 (DONE, had a copy): 
+delete Task 4 (never assigned):  delete Task 4 (never assigned): 
+tasks after: [('ado-desktop-project-3', 'DONE'), ('ado-desktop-project-4', 'TODO'), ('ado-desktop-project-2', 'TODO'), ('ado-desktop-project-1', 'TODO')]
+delete Project: {"data": {"deleteProject": true}}
+projects after: []
+app log since the DONE: errors/warnings mentioning project, task, search or adoption:
+(end)

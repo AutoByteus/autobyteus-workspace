@@ -70,8 +70,8 @@ AutoByteus then resolves its exact absolute workspace and calls
 `composeNativeAutoByteusPrompt(...)`; Codex and Claude call
 `composeSharedCarpenterPrompt(...)` and retain ownership of their provider
 working-directory fields. A team run supplies its validated `MemberTeamContext`
-so every composition includes the exact selected Team instruction, canonical
-member address, and the same AgentTeam Addressing/Collaboration guidance. No
+so every composition includes the exact selected Team instruction
+and the collaboration sections for the member's role. No
 flat communication or delegation roster is injected.
 
 The shared semantic order is Agent Identity, optional Team Instruction, and
@@ -159,7 +159,7 @@ logic must treat the whole `agentRunId` as opaque and must not parse the slug or
 assume a runtime-specific prefix.
 
 The same stateless allocation boundary is used for standalone prepared/created
-runs, Team/Org members, collaborators, delegated task Agents, and application
+runs, Team/Org members, delegated task Agents, and application
 scopes. It loads the current definition and generates a fresh UUID; it does not
 scan active runs, saved execution trees, metadata/directories, or reservations
 to check candidate-ID collisions. UUID uniqueness is probabilistic, not a
@@ -199,7 +199,7 @@ kind's capability and catalog. Accepted same-kind evidence can recover inherited
 views without resetting model/configuration/override intent; it does not heal
 different runtimes or discard an explicit failed edit. Missing exact models,
 invalid schemas, required owned references and structural admission still block
-launch. See the [Org configuration contract](../../../autobyteus-web/docs/agent_orgs.md#readiness-and-runtime-catalog-failure).
+launch. See the [Org configuration contract](../../../autobyteus-web/docs/agent_orgs.md#readiness).
 
 ## Activation Publication And Exact Continuation
 
@@ -248,7 +248,7 @@ agent's previous session was still shutting down, so this message couldn't be
 delivered. Please send it again." That code is always retryable and is never a
 quarantine: nothing is cached, a timed-out release keeps running, and the next
 send joins or repeats it. The registry's claim guard raises the same code as the
-last line of defence. A configured Agent execution (Team member, collaborator,
+last line of defence. A configured Agent execution (Team member,
 task copy) keeps the exact previous run and marks the attempt retry-safe when
 its release fails, so the next work retries the same release.
 
@@ -275,7 +275,10 @@ finish retryable. An accepted provider/runtime finish is not returned to the
 caller until the run is inactive, exact-current removal succeeds, and the
 activation registry's cleanup result is successful. That removal releases the
 same run's resources once: it deactivates the deterministic Agent Tools MCP
-run-session and detaches file-change, artifact-relay, and memory observers.
+run-session, starts closing the external MCP server instances opened for the
+run (in the background, never failing the release; see
+[MCP Server Management](./mcp_server_management.md#server-instance-lifetime)),
+and detaches file-change, artifact-relay, and memory observers.
 Replacement runs are never released by stale cleanup. Thrown finalization,
 identity mismatch, or accepted-but-active outcomes are terminal for the
 committed attempt rather than being converted into success.
@@ -283,7 +286,7 @@ committed attempt rather than being converted into success.
 ### Root Shutdown Fence
 
 When a Team, Org or standalone Agent root stops, every configured Agent
-execution it hosts (`ConfiguredAgentExecutionHandle`: members, collaborators
+execution it hosts (`ConfiguredAgentExecutionHandle`: members
 and task copies; the standalone host stops separately) first calls
 `AgentRun.fenceInputAndInterruptForRootShutdown()`. On the run's serialized
 dispatch lane it fences new input admission and, through `AgentRunTermination`,
@@ -461,6 +464,40 @@ runtime accepted the interrupt request: later `TURN_INTERRUPTED`/terminal
 socket cannot receive a server result, so client disconnect completion is a
 separate local transport failure, not a synthetic acknowledgement.
 
+### Platform Input Preface And Run Lifecycle Observer
+
+`AgentRunManager` accepts two optional generic ports. Neither carries any
+feature knowledge; the only current implementation is
+[Skill Update Notices](./skill_update_notices.md).
+
+- **`AgentRunLifecycleObserver`** (`domain/agent-run-lifecycle-observer.ts`):
+  - `runPublished(run, kind)` is reported from the single activation point,
+    after `registry.publish`, for kinds `new`, `restore` and
+    `platform_restore`;
+  - `runReleased(run)` is reported by `AgentRunResourceManager` after a
+    successful release. Every removal path goes through it.
+- **`AgentRunInputPreface`** (`domain/agent-run-input-preface.ts`):
+  `takePreface(run)`, `prefaceDelivered(run, preface, turnId)` and
+  `prefaceReturned(run, preface)`.
+  - In `executeInputDispatch`, after normalization, `AgentRun` asks the port
+    for a pending preface. It does so only when the claimed message is an
+    **external** input. Compaction-recovery dispatches
+    (`ClaimedInputDispatch.recovery`), TOOL continuations and messages that
+    already are or carry a preface never take one.
+  - The provider message becomes the preface text, a blank line, then the
+    input unchanged (sender, context files, recording attachments, metadata),
+    tagged `platform_input_preface { content, sender_id, original_content }`.
+    It is one dispatch, so one turn.
+  - The preface is settled `delivered` only when the dispatch is forwarded. On
+    delivery, `AgentRun` publishes `SYSTEM_TASK_NOTIFICATION` with the
+    preface's sender and the turn ID. Every other outcome (not forwarded,
+    failed, uncertain, `undeliveredRetryAsStart`) returns it.
+  - A failing port never affects the input.
+  - Admission state and the backend dispatch contract are unchanged.
+
+`GeneralProcessRunSupervisor` receives both ports as `platformInputNotices` from
+the studio and standalone compositions.
+
 ## Canonical Turn Lifecycle And Failure Authority
 
 Runtime lifecycle projection is boundary-owned. A live run is `running` only
@@ -474,13 +511,24 @@ Provider adapters normalize their base events, then
 `AgentRunEventDispatchQueue` serializes pipeline processing and final listener
 dispatch for each run. Different runs remain concurrent. Within one run,
 `LifecycleStatusEventTransformer` and `AgentTurnLifecycleState` own the
-identified/anonymous/retired turn state:
+identified/anonymous/ended (retired) turn state:
 
 - `TURN_STARTED` opens the supplied `turn_id` and establishes `running` when an
   accompanying explicit status is absent.
-- A matching `TURN_COMPLETED` or `TURN_INTERRUPTED` retires the current turn and
+- Only the run's ordered evidence ends a turn: its own terminal event or
+  turn-terminal error, a newer turn start in the event stream or from an
+  accepted command (which supersedes and ends a turn left without a terminal),
+  or the runtime going offline or failing globally (including an `offline` or
+  `phase: error` lifecycle snapshot). The turn a live runtime lifecycle snapshot
+  names as current is provisional, because the snapshot can be ahead of the
+  queued events: it names the active turn only while the stream holds none
+  (restore/attach mid-turn, runtimes that report their turn only by state), is
+  replaced without being ended when the stream reports a turn, and never ends a
+  turn. `AgentTurnLedger` owns this rule; the turn state and the segment
+  lifecycle state each hold their own ledger.
+- A matching `TURN_COMPLETED` or `TURN_INTERRUPTED` ends the current turn and
   establishes `idle` when an accompanying explicit status is absent.
-- Duplicate boundaries and boundaries for an already retired turn are
+- Duplicate boundaries and boundaries for an already ended turn are
   idempotent lifecycle no-ops. A terminal boundary for turn A cannot close a
   newer active turn B.
 - Ordinary segment, tool, inter-agent, and system-task activity remains
@@ -494,7 +542,7 @@ identified/anonymous/retired turn state:
 Turn correlation uses `payload.turn_id` as the canonical event field. The
 shared internal resolver tolerates `payload.turnId` while runtime/provider
 boundaries are normalized, but new publishers should emit `turn_id`. Runtime
-contexts retain retired identified turn ids for their lifetime so arbitrarily
+contexts retain ended identified turn ids for their lifetime so arbitrarily
 late content can still be delivered without reopening completed work.
 
 Canonical `ERROR` payloads add structured lifecycle evidence:
@@ -540,6 +588,15 @@ It is not a new diagnostic/log feed or recovery policy.
   uses the same existing credential redaction. Existing authentication
   recognition, error-code/generic fallback and tracker settlement remain. An
   `errors[]` field alone does not make an unrelated event terminal.
+- Only SDK error fields decide whether a Claude `result` is a turn error:
+  `is_error: true`, or a non-empty string `error` or `code`. On a successful
+  result, `result` is the agent's own final reply and is never scanned for
+  failure, so a reply that mentions "not logged in", "please run /login" or
+  `authentication_failed` completes the turn normally. The authentication
+  markers only choose `CLAUDE_RUNTIME_AUTHENTICATION_FAILED` over
+  `CLAUDE_RUNTIME_RESULT_ERROR` for a result that is already an error, such as
+  the SDK's not-logged-in result (`is_error: true`,
+  `result: "Not logged in · Please run /login"`).
 - Native AutoByteus, Codex and ACP/Grok keep their existing informative error
   paths. There is no recognized-cause allowlist or quota-specific translation,
   invented reset time/code, whole-response dump or arbitrary ordinary-message
@@ -565,8 +622,19 @@ synthesize a missing start.
 Each `AgentRun` owns one non-persisted lifecycle map keyed by exact
 `{turnId,segmentId}`. The first pipeline transformer admits valid starts,
 derives their type onto canonical content, preserves a type-less canonical end,
-and rejects conflicting/replayed/retired lifecycle mutations as specified by
-the common state machine. Browser and transport coalescing also require exact
+and rejects conflicting/replayed/ended-turn lifecycle mutations as specified by
+the common state machine. A rejected event is never displayed. The run's current
+turn gets at most one `AGENT_SEGMENT_LIFECYCLE_INVALID` notice ("Some of the
+agent's output in this turn could not be shown."); rejections for any other
+turn, or without a turn id, produce no chat notice. The server log records the
+first rejection of each turn (or of events without a turn id) as
+`[AgentSegmentLifecycleRejected]` with run id, runtime kind, turn id, event
+type, segment id and a reason code (`TURN_ENDED`, `TURN_NOT_CURRENT`,
+`SEGMENT_NOT_STARTED`, `SEGMENT_ENDED`, `SEGMENT_TYPE_CONFLICT`,
+`PAYLOAD_INVALID`). Later rejections are counted and reported as one
+`[AgentSegmentLifecycleRejectedSummary]` line per turn at the run's next
+lifecycle boundary (a turn ending, or the run releasing its runtime, including
+termination), so log volume never grows with the number of rejected events. Browser and transport coalescing also require exact
 turn, segment, and type agreement; equal deltas remain distinct events unless
 the presentation egress joins adjacent messages with every other payload field
 equal.
@@ -663,9 +731,12 @@ owner of Claude turn identity. Turn ids are `${runId}:turn:${uuid}`.
 `ClaudeBackgroundTaskRegistry` tracks the CLI's background set and completions
 the model has not seen. A turn the CLI starts itself is preceded by a
 `SYSTEM_TASK_NOTIFICATION` (`sender_id: "system.claude_background_task"`), for
-example `Background task completed: <description> (<status>)`. Agent memory
-records these notices, and only these, as `system_task_notification` traces,
-and run-history replay shows them in the conversation.
+example `Background task completed: <description> (<status>)`. For external
+runtimes, agent memory records system notices from an allow-list of senders as
+`system_task_notification` traces: these Claude background-task notices and
+skill update notices (`system.skill_update_notifier`, see
+[Skill Update Notices](./skill_update_notices.md)). Run-history replay shows
+them in the conversation.
 
 The registry also owns the live Background Tasks view. A task enters it when the
 CLI lists it in `background_tasks_changed`, reports `task_started` with
@@ -729,10 +800,11 @@ raw model; auxiliary-model usage is not charged to the selected-model meter.
 The meter reports an AutoByteus-configured API-equivalent estimate, not the
 Claude subscription's actual charge. See [Token Usage](token_usage.md) for
 checkpoint, cache-write approximation, and migration details.
-The same selected raw result row supplies a context-window capacity only when
-it is positive and safe; a safe full prompt sum then yields the latest prompt
-percentage. Older valid rows with null percentage are repaired by the
-run-summary read projection, not by a data backfill.
+Context readings do not come from the result: every main-loop model call is
+reported live from the stream's `message_start`/`message_delta` usage with the
+SDK's own `getContextUsage()` reading (tokens in context, window and
+auto-compaction threshold), and the result only reconciles what per-call data
+cannot see, such as the SDK's own compaction calls.
 
 Claude interrupt is owned by the session, not by WebSocket, GraphQL, or
 frontend button state, and it ends only the current turn. The process, the

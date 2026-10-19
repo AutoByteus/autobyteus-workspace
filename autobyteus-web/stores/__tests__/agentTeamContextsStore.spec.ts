@@ -6,7 +6,7 @@ import {
   buildTestTeamContext,
   testAgentContext,
   testAgentNode,
-  testSubTeamNode,
+  testTaskTeamLayout,
   testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
@@ -57,29 +57,31 @@ describe('agentTeamContextsStore current Team execution view', () => {
     expect(refreshRunNavigationTopologyMock).toHaveBeenCalledWith('team-context-add');
   });
 
-  it('preserves rooted nested topology and exact AgentRun lookup', () => {
+  it('preserves a delegated task Team topology and exact AgentRun lookup', () => {
     const store = useAgentTeamContextsStore();
+    const buildSquad = testTaskTeamLayout('/BuildSquad', [
+      testAgentNode('/BuildSquad/reviewer', { agentRunId: 'reviewer-run' }),
+      testAgentNode('/BuildSquad/implementer', { agentRunId: 'implementer-run' }),
+    ], { coordinatorAddress: '/BuildSquad/reviewer' });
     const team = buildTestTeamContext({
-      teamRunId: 'nested-team-1', coordinatorAddress: '/program_manager',
-      rootChildren: [
-        testAgentNode('/program_manager', { agentRunId: 'program-manager-run' }),
-        testSubTeamNode('/BuildSquad', [
-          testAgentNode('/BuildSquad/reviewer', { agentRunId: 'reviewer-run' }),
-          testAgentNode('/BuildSquad/implementer', { agentRunId: 'implementer-run' }),
-        ], { teamRunId: 'build-squad-run', coordinatorAddress: '/BuildSquad/reviewer' }),
-      ],
+      teamRunId: 'delegating-team-1', coordinatorAddress: '/program_manager',
+      rootChildren: [testAgentNode('/program_manager', { agentRunId: 'program-manager-run' })],
+      delegations: [testDelegation({
+        delegatorAgentRunId: 'program-manager-run', recipientAddress: '/BuildSquad',
+        target: { teamRunId: 'build-squad-run', team: buildSquad },
+      })],
     });
     store.addTeamContext(team);
 
-    expect(team.view.getExecutionTree().root_team.members).toMatchObject([
-      { kind: 'configured_agent', address: '/program_manager' },
-      { kind: 'configured_team', address: '/BuildSquad', members: [
-        { kind: 'configured_agent', address: '/BuildSquad/reviewer' },
-        { kind: 'configured_agent', address: '/BuildSquad/implementer' },
-      ] },
-    ]);
-    expect(team.view.getAgentContext('reviewer-run')?.state.runId).toBe('reviewer-run');
-    expect(team.view.getMemberAddress('implementer-run')).toBe('/BuildSquad/implementer');
+    expect(team.view.getExecutionTree().root_team).toMatchObject({
+      members: [{ kind: 'configured_agent', address: '/program_manager' }],
+      task_executions: [{ kind: 'task_team', address: '/BuildSquad', team_run_id: 'build-squad-run', members: [
+        { kind: 'task_team_agent', address: '/BuildSquad/reviewer', agent_run_id: 'build-squad-run:reviewer-run' },
+        { kind: 'task_team_agent', address: '/BuildSquad/implementer', agent_run_id: 'build-squad-run:implementer-run' },
+      ] }],
+    });
+    expect(team.view.getAgentContext('build-squad-run:reviewer-run')?.state.runId).toBe('build-squad-run:reviewer-run');
+    expect(team.view.getMemberAddress('build-squad-run:implementer-run')).toBe('/BuildSquad/implementer');
   });
 
   it('focuses exact AgentRun identity while preserving independent composer state', () => {

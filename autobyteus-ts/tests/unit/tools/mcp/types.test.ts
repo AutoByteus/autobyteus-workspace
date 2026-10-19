@@ -4,15 +4,14 @@ import {
   McpServerInstanceKey,
   McpTransportType,
   StdioMcpServerConfig,
-  StreamableHttpMcpServerConfig,
-  WebsocketMcpServerConfig
+  StreamableHttpMcpServerConfig
 } from '../../../../src/tools/mcp/types.js';
 
 describe('McpTransportType', () => {
   it('uses expected string values', () => {
     expect(McpTransportType.STDIO).toBe('stdio');
     expect(McpTransportType.STREAMABLE_HTTP).toBe('streamable_http');
-    expect(McpTransportType.WEBSOCKET).toBe('websocket');
+    expect(Object.values(McpTransportType)).toEqual(['stdio', 'streamable_http']);
   });
 });
 
@@ -146,90 +145,72 @@ describe('StreamableHttpMcpServerConfig', () => {
       })
     ).toThrowError("StreamableHttpMcpServerConfig 'http-4' 'headers' must be a Dict[str, str].");
   });
-});
 
-describe('WebsocketMcpServerConfig', () => {
-  it('defaults optional fields and sets transport type', () => {
-    const config = new WebsocketMcpServerConfig({
-      server_id: 'ws-1',
-      url: 'wss://localhost:8765/mcp'
+  it('trims the token and treats a blank token as no token', () => {
+    const trimmed = new StreamableHttpMcpServerConfig({
+      server_id: 'http-5',
+      url: 'http://localhost',
+      token: '  test-dummy  '
     });
+    expect(trimmed.token).toBe('test-dummy');
 
-    expect(config.transport_type).toBe(McpTransportType.WEBSOCKET);
-    expect(config.headers).toEqual({});
-    expect(config.subprotocols).toEqual([]);
-    expect(config.origin).toBeNull();
-    expect(config.open_timeout).toBe(10.0);
-    expect(config.ping_interval).toBeNull();
-    expect(config.ping_timeout).toBeNull();
-    expect(config.verify_tls).toBe(true);
+    for (const blank of ['', '   ', null, undefined]) {
+      const config = new StreamableHttpMcpServerConfig({ server_id: 'http-6', url: 'http://localhost', token: blank });
+      expect(config.token).toBeNull();
+      expect(config.requestHeaders()).toEqual({});
+    }
   });
 
-  it('requires websocket urls', () => {
-    expect(() =>
-      new WebsocketMcpServerConfig({ server_id: 'ws-2', url: 'http://localhost' })
-    ).toThrowError(
-      "WebsocketMcpServerConfig 'ws-2' 'url' must start with ws:// or wss://."
-    );
+  it('derives the request headers from the headers and the token', () => {
+    const headersOnly = new StreamableHttpMcpServerConfig({
+      server_id: 'http-7',
+      url: 'http://localhost',
+      headers: { Authorization: 'Basic test-dummy', 'X-Test': 'value' }
+    });
+    expect(headersOnly.requestHeaders()).toEqual({ Authorization: 'Basic test-dummy', 'X-Test': 'value' });
+
+    const withToken = new StreamableHttpMcpServerConfig({
+      server_id: 'http-8',
+      url: 'http://localhost',
+      token: 'test-dummy',
+      headers: { 'X-Test': 'value' }
+    });
+    expect(withToken.requestHeaders()).toEqual({ 'X-Test': 'value', Authorization: 'Bearer test-dummy' });
+    expect(withToken.headers).toEqual({ 'X-Test': 'value' });
+
+    withToken.requestHeaders().Extra = 'mutated';
+    expect(withToken.requestHeaders()).not.toHaveProperty('Extra');
   });
 
-  it('validates headers and subprotocols', () => {
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-3',
-        url: 'wss://localhost',
-        headers: { X: 1 as any }
-      })
-    ).toThrowError("WebsocketMcpServerConfig 'ws-3' 'headers' must be a Dict[str, str].");
+  it.each(['Authorization', 'authorization', 'AUTHORIZATION'])(
+    'rejects a token together with an %s header without echoing values',
+    (headerName) => {
+      let message = '';
+      try {
+        new StreamableHttpMcpServerConfig({
+          server_id: 'http-9',
+          url: 'http://localhost',
+          token: 'test-dummy',
+          headers: { [headerName]: 'Basic test-other' }
+        });
+      } catch (error) {
+        message = (error as Error).message;
+      }
+      expect(message).toBe(
+        "Streamable HTTP MCP server 'http-9' sets both 'token' and an 'Authorization' header; use one of them."
+      );
+      expect(message).not.toContain('test-dummy');
+      expect(message).not.toContain('test-other');
+    }
+  );
 
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-4',
-        url: 'wss://localhost',
-        subprotocols: ['ok', 2 as any]
-      })
-    ).toThrowError("WebsocketMcpServerConfig 'ws-4' 'subprotocols' must be a list of strings.");
-  });
-
-  it('validates numeric timeouts and verify_tls', () => {
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-5',
-        url: 'wss://localhost',
-        open_timeout: 0
-      })
-    ).toThrowError(
-      "WebsocketMcpServerConfig 'ws-5' 'open_timeout' must be a positive number when provided."
-    );
-
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-6',
-        url: 'wss://localhost',
-        verify_tls: 'false' as any
-      })
-    ).toThrowError("WebsocketMcpServerConfig 'ws-6' 'verify_tls' must be a boolean.");
-  });
-
-  it('validates certificate paths and client key requirements', () => {
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-7',
-        url: 'wss://localhost',
-        ca_file: 123 as any
-      })
-    ).toThrowError(
-      "WebsocketMcpServerConfig 'ws-7' 'ca_file' must be a string path when provided."
-    );
-
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-8',
-        url: 'wss://localhost',
-        client_key: '/tmp/key.pem'
-      })
-    ).toThrowError(
-      "WebsocketMcpServerConfig 'ws-8' requires 'client_cert' when 'client_key' is provided."
-    );
+  it('accepts an Authorization header when the token is blank', () => {
+    const config = new StreamableHttpMcpServerConfig({
+      server_id: 'http-10',
+      url: 'http://localhost',
+      token: ' ',
+      headers: { authorization: 'Basic test-dummy' }
+    });
+    expect(config.requestHeaders()).toEqual({ authorization: 'Basic test-dummy' });
   });
 });

@@ -1,0 +1,62 @@
+{
+  "phase": "send",
+  "startedAt": "2026-10-08T18:27:10.339Z",
+  "steps": {
+    "target": {
+      "ptmId": "project-task-manager",
+      "models": [
+        "opus",
+        "claude-fable-5",
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-opus-5",
+        "claude-sonnet-4-6",
+        "sonnet"
+      ],
+      "model": "haiku"
+    },
+    "sent": {
+      "request": "Create a Project named \"Strip Check\" with one Task: \"Write a two-line poem about trees and reply with it.\" Then delegate that Task to the Daily Assistant. You have my approval for this dispatch.",
+      "hash": "#/chat?id=project_task_manager_97d4e6493c444dccb998ea5be09d3826",
+      "nav": {
+        "strip": true,
+        "workspacesLit": true,
+        "stripChatLit": false,
+        "focus": "BODY",
+        "hash": "#/chat?id=project_task_manager_97d4e6493c444dccb998ea5be09d3826"
+      }
+    },
+    "delegated": {
+      "project": {
+        "projectId": "project_6e6783e6-23b3-4885-bc71-5104de30eafb",
+        "name": "Strip Check"
+      },
+      "task": {
+        "taskId": "project_task_bc7bb252-8d45-473c-9685-48611f549e77",
+        "description": "Write a two-line poem about trees and reply with it.",
+        "status": "TODO",
+        "root": {
+          "kind": "agent",
+          "recipientAddress": "/research_engineer",
+          "ingressAgentRunId": "research_engineer_d8a40aa5850d4305af91e21afd9c4259",
+          "start": "starting",
+          "status": "running",
+          "hostRoot": {
+            "kind": "agent",
+            "runId": "project_task_manager_97d4e6493c444dccb998ea5be09d3826"
+          }
+        }
+      }
+    }
+  },
+  "errors": [],
+  "window": {
+    "width": 1512,
+    "height": 913
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-08T18:30:12.867Z"
+}

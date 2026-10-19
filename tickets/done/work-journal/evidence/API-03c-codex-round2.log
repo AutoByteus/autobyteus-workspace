@@ -1,0 +1,268 @@
+# API-03c round 2 (Codex on merged HEAD): env -i PATH HOME=$HOME TMPDIR USER LOGNAME RUN_CODEX_E2E=1 WORK_JOURNAL_E2E_EVIDENCE_DIR=<evidence>/API-03-live-round2 pnpm exec vitest run tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts --no-watch
+# commit f0ff3a8671 (merge b0c81c8f20 of origin/personal + docs); codex-cli 0.163.0; 2026-10-19T05:41:35Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/.env
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stderr | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Codex: journal current after the turn
+[CodexAppServerClient] stderr: 2026-10-19T05:42:07.778243Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Codex: journal current after the turn
+Agent Definition created successfully with ID: work-journal-codex-cfe1d441-f514-430d-b0c7-b69af751cddd
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Codex: journal current after the turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/workspace-codex
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/workspace-codex.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Codex: journal current after the turn
+Created and registered workspace ID: agent_ws_116cf88df374f33238c8f63c1cbef110ec726f461f07c2e8896491413b895ff1
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Codex: journal current after the turn
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/workspace-codex
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-lZsAkM/workspace-codex.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Codex: journal current after the turn
+Reusing registered workspace ID: agent_ws_116cf88df374f33238c8f63c1cbef110ec726f461f07c2e8896491413b895ff1
+
+stderr | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Codex: journal current after the turn
+[CodexAppServerClient] stderr: 2026-10-19T05:42:08.334331Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > Codex: journal current after the turn
+Agent websocket attached for run work_journal_codex_cfe1d441_f514_430d_b0c7_b69af_b9ea268604624162b958e3ebe0028553
+Created agent session daacdfbe-d266-4b61-9790-3530468d85a6 for run work_journal_codex_cfe1d441_f514_430d_b0c7_b69af_b9ea268604624162b958e3ebe0028553
+Agent WebSocket connected: session=daacdfbe-d266-4b61-9790-3530468d85a6, run=work_journal_codex_cfe1d441_f514_430d_b0c7_b69af_b9ea268604624162b958e3ebe0028553
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Closed agent session daacdfbe-d266-4b61-9790-3530468d85a6
+Agent WebSocket disconnected: daacdfbe-d266-4b61-9790-3530468d85a6
+
+stdout | tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime
+Agent Definition with ID work-journal-codex-cfe1d441-f514-430d-b0c7-b69af751cddd deleted successfully.
+
+ ✓ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts (4 tests | 3 skipped) 16501ms
+     ✓ Codex: journal current after the turn  15642ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 3 skipped (4)
+   Start at  07:41:36
+   Duration  46.35s (transform 23.32s, setup 81ms, import 28.70s, tests 16.50s, environment 0ms)
+
+# Exit status: 0

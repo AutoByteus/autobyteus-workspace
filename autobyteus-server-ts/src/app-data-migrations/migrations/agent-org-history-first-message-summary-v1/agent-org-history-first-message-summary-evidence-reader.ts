@@ -8,7 +8,7 @@ import {
 } from "autobyteus-ts/memory/store/raw-trace-archive-manifest.js";
 import { getAgentTeamAddressBasename } from "../../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
-import type { AgentOrgCommunicationMessagesFileV1 } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1.js";
+import type { AgentOrgCommunicationMessagesFile } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import type { AgentOrgTaskDelegationRecordsFileV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1.js";
 import type { AgentOrgInternalDeliveryEvidence } from "./agent-org-history-first-message-summary-classifier.js";
 
@@ -30,7 +30,7 @@ const releasedDeliveryEnvelopeContent = (input: Readonly<{
 
 export const buildAgentOrgInternalDeliveryEvidence = (current: Readonly<{
   index: AgentOrgExecutionIndex;
-  communicationMessages: AgentOrgCommunicationMessagesFileV1;
+  communicationMessages: AgentOrgCommunicationMessagesFile;
   taskRecords: AgentOrgTaskDelegationRecordsFileV1;
 }>): readonly AgentOrgInternalDeliveryEvidence[] => {
   const configured = new Set(current.index.listAgents()

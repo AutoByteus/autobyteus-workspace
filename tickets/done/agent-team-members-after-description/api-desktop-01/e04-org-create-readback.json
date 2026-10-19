@@ -1,0 +1,60 @@
+{
+  "startedAt": "2026-10-13T04:06:53.223Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=api-desktop-verification-org"
+    }
+  ],
+  "details": {
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=api-desktop-verification-org",
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nBack to Agent Orgs\nEdit API Desktop Verification Org\n\nAdd Agents and Teams, then configure handoffs.\n\nAvatar (optional)\n\nAD\nUpload image\n\nJPEG, PNG, GIF or WebP. Saved with the Org.\n\nBasics\nName\nDescription\nMembers\nAdd member\nAgents\n\nNo Agents added.\n\nTeams\n\nAPI Desktop Engineering Team\n\nCoordinator: API Coordinator\n\nHandoffs\nAdd handoff\n\nNo handoffs yet\n\nAdd the first handoff\nAgent Org saved.\nCancel\nSave changes",
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Back to Agent Orgs",
+      "",
+      "Upload image",
+      " Add member",
+      "",
+      " Add handoff",
+      "Add the first handoff",
+      "Cancel",
+      "Save changes"
+    ],
+    "orgs": {
+      "agentOrgDefinitions": [
+        {
+          "id": "api-desktop-verification-org",
+          "name": "API Desktop Verification Org",
+          "description": "Disposable Org for testing Team and Agent return context through actual Electron pages.",
+          "members": [
+            {
+              "memberName": "api_desktop_engineering_team",
+              "ref": "api-desktop-engineering-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED"
+            }
+          ],
+          "loadIssues": []
+        }
+      ]
+    }
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=api-desktop-verification-org",
+  "finishedAt": "2026-10-13T04:06:53.368Z"
+}

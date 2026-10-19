@@ -1,0 +1,12 @@
+
+> autobyteus@1.5.4 test:e2e:delegated-team-default-collapse /Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split/autobyteus-web
+> node tests/e2e/delegated-team-default-collapse-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split/tickets/in-progress/task-tool-split/evidence/probes/delegated-team-default-collapse
+
+Seeding representative Task 1/7
+Seeding representative Task 2/7
+Seeding representative Task 3/7
+Seeding representative Task 4/7
+Seeding representative Task 5/7
+Seeding representative Task 6/7
+Seeding representative Task 7/7
+{"result":"Pass","cases":["B-001","P-001","B-002","B-003","B-004","B-006","B-005"],"errors":[],"cleanup":{"browserClosed":true,"frontend":{"pid":88788,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":88752,"status":"terminated","exit":0},"dataRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split/tickets/in-progress/task-tool-split/evidence/probes/delegated-team-default-collapse/evidence.json"}

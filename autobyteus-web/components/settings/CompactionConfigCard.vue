@@ -37,11 +37,6 @@
         {{ t('settings.components.settings.CompactionConfigCard.settingsError') }}
         <button type="button" class="ml-2 underline" @click="retryReads">{{ t('settings.components.settings.CompactionConfigCard.retry') }}</button>
       </div>
-      <p v-if="settingsReady && !currentModelSettings" class="text-sm text-red-700" role="alert">
-        {{ t('settings.components.settings.CompactionConfigCard.invalidModelSettings') }}
-      </p>
-      <CompactionModelSettings :key="currentRevision" v-model="modelSettings" :disabled="universalControlsDisabled" @valid="modelConfigValid = $event" />
-
       <div>
         <label for="compaction-ratio-input" class="mb-1 block text-sm font-medium text-gray-900">
           {{ t('settings.components.settings.CompactionConfigCard.compactionTriggerRatio') }}
@@ -102,8 +97,6 @@ import { computed, ref, watch } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useServerSettingsStore } from '~/stores/serverSettings'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import CompactionModelSettings from './CompactionModelSettings.vue'
-import { COMPACTION_MODEL_SETTINGS_KEY, parseCompactionModelSettings, type CompactionModelSettings as ModelSettings } from '~/utils/compactionModelSettings'
 
 const COMPACTION_TRIGGER_RATIO_KEY = 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO'
 const ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY = 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE'
@@ -113,8 +106,6 @@ const settingsStore = useServerSettingsStore()
 const windowNodeContextStore = useWindowNodeContextStore()
 const { t } = useLocalization()
 
-const modelSettings = ref<ModelSettings>({ modelIdentifier: null, llmConfig: null })
-const modelConfigValid = ref(true)
 const triggerRatioPercent = ref('')
 const activeContextTokensOverride = ref('')
 const detailedLogsEnabled = ref(false)
@@ -132,7 +123,6 @@ const ratioPercentFromSetting = (value: unknown): string => {
   return Number.isFinite(ratio) && ratio > 0 ? String(Math.round(ratio * 100)) : '80'
 }
 
-const currentModelSettings = computed(() => parseCompactionModelSettings(settingsStore.getSettingByKey(COMPACTION_MODEL_SETTINGS_KEY)?.value))
 const currentTriggerRatioPercent = computed(() => ratioPercentFromSetting(settingsStore.getSettingByKey(COMPACTION_TRIGGER_RATIO_KEY)?.value))
 const currentActiveContextTokensOverride = computed(() => normalizeText(settingsStore.getSettingByKey(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY)?.value))
 const currentDetailedLogsEnabled = computed(() => parseDetailedLogs(settingsStore.getSettingByKey(COMPACTION_DEBUG_LOGS_KEY)?.value))
@@ -150,12 +140,11 @@ const overrideValid = computed(() => {
   const numeric = Number(value)
   return Number.isInteger(numeric) && numeric > 0
 })
-const modelDirty = computed(() => JSON.stringify(modelSettings.value) !== JSON.stringify(currentModelSettings.value))
-const isDirty = computed(() => modelDirty.value ||
+const isDirty = computed(() =>
   normalizeText(triggerRatioPercent.value) !== currentTriggerRatioPercent.value ||
   normalizeText(activeContextTokensOverride.value) !== currentActiveContextTokensOverride.value ||
   detailedLogsEnabled.value !== currentDetailedLogsEnabled.value)
-const canSave = computed(() => isDirty.value && !isSaving.value && settingsReady.value && ratioValid.value && overrideValid.value && (!modelDirty.value || modelConfigValid.value))
+const canSave = computed(() => isDirty.value && !isSaving.value && settingsReady.value && ratioValid.value && overrideValid.value)
 
 const saveButtonBaseClass = 'inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none disabled:ring-0'
 const saveButtonIdleClass = 'border-slate-200 bg-white text-slate-400'
@@ -167,14 +156,12 @@ const saveButtonClass = computed(() => [
 
 const syncFromStore = (): void => {
   if (!settingsReady.value || isSaving.value) return
-  modelSettings.value = structuredClone(currentModelSettings.value ?? { modelIdentifier: null, llmConfig: null })
   triggerRatioPercent.value = currentTriggerRatioPercent.value
   activeContextTokensOverride.value = currentActiveContextTokensOverride.value
   detailedLogsEnabled.value = currentDetailedLogsEnabled.value
 }
 
 const resetDraftForBinding = (): void => {
-  modelSettings.value = { modelIdentifier: null, llmConfig: null }
   triggerRatioPercent.value = ''
   activeContextTokensOverride.value = ''
   detailedLogsEnabled.value = false
@@ -212,9 +199,6 @@ const retryReads = (): void => {
 
 const buildChanges = (): ReadonlyArray<Readonly<{ key: string; value: string }>> => {
   const changes: Array<Readonly<{ key: string; value: string }>> = []
-  if (modelDirty.value) {
-    changes.push({ key: COMPACTION_MODEL_SETTINGS_KEY, value: JSON.stringify(modelSettings.value) })
-  }
   if (normalizeText(triggerRatioPercent.value) !== currentTriggerRatioPercent.value) {
     changes.push({ key: COMPACTION_TRIGGER_RATIO_KEY, value: String(Number(triggerRatioPercent.value) / 100) })
   }

@@ -7,6 +7,7 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -174,6 +175,10 @@ try {
   page.on('console', (message) => evidence.browserEvents.push({ type: `console:${message.type()}`, text: message.text() }));
   page.on('pageerror', (error) => evidence.browserEvents.push({ type: 'pageerror', text: error.message }));
   page.on('requestfailed', (request) => evidence.browserEvents.push({ type: 'requestfailed', text: `${request.method()} ${request.url()} ${request.failure()?.errorText || ''}` }));
+  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
+  await routeTaskWorkerBoundaries(context);
+  // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
+  await context.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="background-contention-probe"]').waitFor({ state: 'visible', timeout: timeoutMs });
   await page.waitForFunction(() => Boolean(window.__backgroundContentionProbe), null, { timeout: timeoutMs });
@@ -267,16 +272,13 @@ try {
     await teamRow.waitFor({ state: 'visible' });
     assert(await page.locator('[data-test="workspace-team-transient-execution-row"]').count() === 0, 'Collapsed team leaked transient rows');
     await teamRow.click();
-    const workerDisclosure = page.locator('[data-test="workspace-team-member-disclosure"][data-member-address="/worker"]');
-    await workerDisclosure.click();
-    await page.locator('[data-test="workspace-team-member-disclosure"][data-member-address="/ReviewTeam"]').click();
+    // Task-Agent leaves are peers of their regular Agent (no disclosure on /worker; baseline fix).
     await page.locator('[data-test="workspace-team-transient-disclosure"][data-member-address="/ReviewTeam"]').click();
     const hierarchy = await page.evaluate(() => window.__backgroundContentionProbe.inspectHierarchy());
-    assert(hierarchy.rows.length === 6, 'Exact hierarchy row count mismatch', hierarchy);
+    assert(hierarchy.rows.length === 4, 'Exact hierarchy row count mismatch', hierarchy);
     assert(hierarchy.rows.map((row) => `${row.kind}:${row.memberAddress}:${row.agentRunId || 'team'}:${row.depth}`).join('|') === [
-      'stable_member:/worker:rich-worker-run:0', 'transient_execution:/worker:rich-task-agent-run:1',
-      'stable_member:/ReviewTeam:team:0', 'stable_member:/ReviewTeam/reviewer:rich-reviewer-run:1',
-      'transient_execution:/ReviewTeam:team:1', 'transient_execution:/ReviewTeam/reviewer:rich-task-team-child-run:2',
+      'stable_member:/worker:rich-worker-run:0', 'transient_execution:/worker:rich-task-agent-run:0',
+      'transient_execution:/ReviewTeam:team:0', 'transient_execution:/ReviewTeam/reviewer:rich-task-team-child-run:1',
     ].join('|'), 'Exact hierarchy order/depth mismatch', hierarchy);
     assert(hierarchy.rows.find((row) => row.agentRunId === 'rich-task-agent-run')?.status === 'running', 'Task-agent status mismatch', hierarchy);
     assert(hierarchy.rows.find((row) => row.agentRunId === 'rich-task-team-child-run')?.status === 'running', 'Task-team child status mismatch', hierarchy);

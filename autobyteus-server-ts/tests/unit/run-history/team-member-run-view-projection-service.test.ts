@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
+import { CollaborationMemberNotFoundError } from "../../../src/agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const executionTree = testExecutionTree({
@@ -28,20 +29,42 @@ const projection = {
   hasEarlierActiveTraceEvents: false,
 };
 
-const harness = (located: typeof location | null = location) => {
+const harness = (located: unknown = location) => {
   const locations = { findAgent: vi.fn(async () => located) };
   const agentViews = {
     getProjectionFromMetadata: vi.fn(async () => projection),
     getActiveTracePageFromMetadata: vi.fn(async () => ({ events: [], nextCursor: null })),
   };
+  const fileChanges = {
+    getLocatedCollaborationMemberProjection: vi.fn(async () => [{ path: "src/a.ts" }]),
+    resolveLocatedCollaborationMemberEntry: vi.fn(async () => ({ entry: { path: "src/a.ts" }, absolutePath: "/ws/class/src/a.ts", isActiveRun: false })),
+  };
   return {
     locations,
     agentViews,
+    fileChanges,
     service: new TeamMemberRunViewProjectionService({
       locations: locations as never,
       agentRunViewProjectionService: agentViews as never,
+      runFileChangeProjectionService: fileChanges as never,
     }),
   };
+};
+
+const taskAgentTree = {
+  ...executionTree,
+  rootTeam: {
+    ...executionTree.rootTeam,
+    taskExecutions: [{
+      address: "/reviewer", agentRunId: "reviewer-copy", platformAgentRunId: null, delegatorAgentRunId: "professor-run",
+      startedAt: "2026-08-15T00:00:00.000Z",
+      source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: { ...configured.launchConfiguration, workspaceRootPath: "/ws/review" } },
+    }],
+  },
+};
+const taskAgentLocation = {
+  ...location, agentRunId: "reviewer-copy", memberAddress: "/reviewer", configuredPlacement: null,
+  memoryDir: "/memory/agents/reviewer-copy", tree: taskAgentTree,
 };
 
 describe("TeamMemberRunViewProjectionService exact AgentRun identity", () => {
@@ -55,7 +78,7 @@ describe("TeamMemberRunViewProjectionService exact AgentRun identity", () => {
       lastActivityAt: projection.lastActivityAt,
       hasEarlierActiveTraceEvents: false,
     });
-    expect(locations.findAgent).toHaveBeenCalledWith({ agentRunId: "professor-run" });
+    expect(locations.findAgent).toHaveBeenCalledWith({ rootTeamRunId: "team-1", agentRunId: "professor-run" });
     expect(agentViews.getProjectionFromMetadata).toHaveBeenCalledWith(expect.objectContaining({
       runId: "professor-run",
       metadata: expect.objectContaining({ runId: "professor-run", memoryDir: location.memoryDir }),
@@ -75,14 +98,44 @@ describe("TeamMemberRunViewProjectionService exact AgentRun identity", () => {
   it("rejects foreign-root and missing AgentRun identities without address fallback", async () => {
     const { service } = harness({ ...location, rootTeamRunId: "other-root" });
     await expect(service.getProjection("team-1", "professor-run"))
-      .rejects.toThrow("AgentRun 'professor-run' was not found in root TeamRun 'team-1'");
+      .rejects.toThrow(new CollaborationMemberNotFoundError("AgentRun 'professor-run' was not found in root TeamRun 'team-1'."));
+    await expect(harness(null).service.getProjection("team-1", "missing"))
+      .rejects.toBeInstanceOf(CollaborationMemberNotFoundError);
     await expect(harness(null).service.getProjection("team-1", "missing"))
       .rejects.toThrow("AgentRun 'missing' was not found");
   });
 
-  it("rejects task executions that have no configured launch placement", async () => {
+  it("rejects executions that have neither a configured launch placement nor a catalog source", async () => {
     const { service } = harness({ ...location, configuredPlacement: null });
     await expect(service.getProjection("team-1", "professor-run"))
-      .rejects.toThrow("has no configured launch placement");
+      .rejects.toThrow(new CollaborationMemberNotFoundError("AgentRun 'professor-run' has no configured launch placement or catalog source."));
+  });
+
+  it("projects a team task agent from its catalog source", async () => {
+    const { service, agentViews } = harness(taskAgentLocation);
+    await service.getProjection("team-1", "reviewer-copy");
+    expect(agentViews.getProjectionFromMetadata).toHaveBeenCalledWith(expect.objectContaining({
+      metadata: expect.objectContaining({ agentDefinitionId: "reviewer", workspaceRootPath: "/ws/review", memoryDir: "/memory/agents/reviewer-copy" }),
+    }));
+  });
+});
+
+describe("TeamMemberRunViewProjectionService file changes", () => {
+  it("serves a member's file list and entry through the team-scoped, tagged location", async () => {
+    const { service, locations, fileChanges } = harness(taskAgentLocation);
+    await expect(service.getFileChanges("team-1", "reviewer-copy")).resolves.toEqual([{ path: "src/a.ts" }]);
+    await expect(service.resolveFileChangeEntry("team-1", "reviewer-copy", "src/a.ts")).resolves.toMatchObject({ absolutePath: "/ws/class/src/a.ts" });
+    expect(locations.findAgent).toHaveBeenCalledWith({ rootTeamRunId: "team-1", agentRunId: "reviewer-copy" });
+    const tagged = expect.objectContaining({ rootSubjectKind: "agent_team", rootRunId: "team-1", agentRunId: "reviewer-copy" });
+    expect(fileChanges.getLocatedCollaborationMemberProjection).toHaveBeenCalledWith(tagged);
+    expect(fileChanges.resolveLocatedCollaborationMemberEntry).toHaveBeenCalledWith(tagged, "src/a.ts");
+  });
+
+  it("does not read file changes for an agent that is not in the named team", async () => {
+    const { service, fileChanges } = harness(null);
+    await expect(service.getFileChanges("team-1", "other-run")).rejects.toBeInstanceOf(CollaborationMemberNotFoundError);
+    await expect(service.resolveFileChangeEntry("team-1", "other-run", "src/a.ts")).rejects.toBeInstanceOf(CollaborationMemberNotFoundError);
+    expect(fileChanges.getLocatedCollaborationMemberProjection).not.toHaveBeenCalled();
+    expect(fileChanges.resolveLocatedCollaborationMemberEntry).not.toHaveBeenCalled();
   });
 });

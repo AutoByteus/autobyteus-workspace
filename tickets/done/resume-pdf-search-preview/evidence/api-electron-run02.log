@@ -1,0 +1,21 @@
+
+> autobyteus@1.5.3-beta.1 test:e2e:search-pdf-electron /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+> node tests/e2e/search-pdf-electron-probe.mjs --skip-build --output-dir ../tickets/in-progress/resume-pdf-search-preview/evidence/api-electron-run02 --ledger-file /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/api-e2e-test-case-ledger.md
+
+file:///home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/tests/e2e/search-pdf-electron-probe.mjs:275
+    assert.equal(response.status(), 200); assert.match(response.headers()['content-type'], /^application\\/pdf/);
+                                                                                           ^
+
+SyntaxError: Invalid regular expression flags
+    at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:110:18)
+    at #translate (node:internal/modules/esm/loader:559:20)
+    at afterLoad (node:internal/modules/esm/loader:612:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:617:12)
+    at #createModuleJob (node:internal/modules/esm/loader:640:36)
+    at #getJobFromResolveResult (node:internal/modules/esm/loader:353:34)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:321:41)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:25)
+
+Node.js v22.23.3
+ ELIFECYCLE  Command failed with exit code 1.

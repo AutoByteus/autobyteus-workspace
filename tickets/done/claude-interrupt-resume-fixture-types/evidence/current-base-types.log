@@ -1,0 +1,48 @@
+{
+  "scope": "single target file and its imported graph, existing build compiler policy",
+  "diagnosticCount": 7,
+  "diagnostics": [
+    {
+      "file": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "line": 20,
+      "code": 7016,
+      "message": "Could not find a declaration file for module 'ws'. '/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/ws@8.19.0/node_modules/ws/wrapper.mjs' implicitly has an 'any' type.\n  If the 'ws' package actually exposes this module, consider sending a pull request to amend 'https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/ws'"
+    },
+    {
+      "file": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "line": 192,
+      "code": 2740,
+      "message": "Type '{ name: string; description: string; instructions: string; }' is missing the following properties from type 'AgentDefinition': toolNames, inputProcessorNames, llmResponseProcessorNames, toolExecutionResultProcessorNames, and 6 more."
+    },
+    {
+      "file": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "line": 260,
+      "code": 7006,
+      "message": "Parameter 'data' implicitly has an 'any' type."
+    },
+    {
+      "file": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "line": 344,
+      "code": 7006,
+      "message": "Parameter 'error' implicitly has an 'any' type."
+    },
+    {
+      "file": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "line": 407,
+      "code": 2353,
+      "message": "Object literal may only specify known properties, and 'canInterrupt' does not exist in type 'AgentRunStatusProjection'."
+    },
+    {
+      "file": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "line": 407,
+      "code": 2339,
+      "message": "Property 'can_interrupt' does not exist on type 'AgentStatusPayload'."
+    },
+    {
+      "file": "autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+      "line": 562,
+      "code": 7006,
+      "message": "Parameter 'raw' implicitly has an 'any' type."
+    }
+  ]
+}

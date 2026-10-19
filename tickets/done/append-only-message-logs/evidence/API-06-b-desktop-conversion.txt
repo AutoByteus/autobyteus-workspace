@@ -1,0 +1,55 @@
+# Case: API-06 step C, first start of the worktree build on the released package
+# Steps: pnpm --silent isolated-app start --from-worktree --data-root /private/tmp/aoml-api/desktop-root (instance iso-57762-932a, build of 78b42de3ae source = 201a4933c6, autobyteus-web/electron-dist/mac-arm64/AutoByteus.app)
+# Date: 2026-10-18 14:17 CEST
+
+## getAppDataMigrations (own-run and the conversion)
+{"migrationId":"20261017_task_agent_own_run_v1","status":"SUCCEEDED","attempts":1,"errorMessage":null,"summary":"Scanned 0; migrated 0; skipped 0; failed 0."}
+{"migrationId":"20261018_append_only_message_logs_v1","status":"SUCCEEDED_WITH_WARNINGS","attempts":1,"errorMessage":null,"summary":"Scanned 10; migrated 8; skipped 2; failed 0."}
+
+## the conversion's attempt log
+migrationId=20261018_append_only_message_logs_v1
+displayName=Append-only message logs
+statusSummary={"scannedCount":10,"migratedCount":8,"skippedCount":2,"failedCount":0}
+error=
+details=
+{"itemId":"task_agent:aoml_helper_7d42e48e22594693bc650222b6308e72","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agents/aoml_helper_7d42e48e22594693bc650222b6308e72/communication_messages.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"task_agent:aoml_helper_9bdf7971717c4ae391a9154f51e02cf1","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agents/aoml_helper_9bdf7971717c4ae391a9154f51e02cf1/communication_messages.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"task_agent:aoml_helper_eff28cbf8fb54fc7ab7e28ad77bf26b4","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agents/aoml_helper_eff28cbf8fb54fc7ab7e28ad77bf26b4/communication_messages.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"agent:aoml_host_1b9db3bae1944871a305a993805db88e","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agents/aoml_host_1b9db3bae1944871a305a993805db88e/collaboration/communication_messages.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"agent_team:aoml_pair_5d168649b4ac468193d3c2679d952070","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agent_teams/aoml_pair_5d168649b4ac468193d3c2679d952070/team_communication_messages.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"task_agent_team:aoml_pair_c95616ffa5754cf2b9ded9e1a06ad04d","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agent_teams/aoml_pair_c95616ffa5754cf2b9ded9e1a06ad04d/team_communication_messages.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"agent_team:aoml_pair_d5d592a9b3484500933bf5e6d0625d9e","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agent_teams/aoml_pair_d5d592a9b3484500933bf5e6d0625d9e/team_communication_messages.json","status":"SKIPPED","message":"PRESERVED_UNREADABLE: The JSON log cannot be read: Expected property name or '}' in JSON at position 2 (line 1 column 3)"}
+{"itemId":"agent_team:aoml_pair_f125ef9022c4484bab30f85c53a16ee6","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agent_teams/aoml_pair_f125ef9022c4484bab30f85c53a16ee6/team_communication_messages.json","status":"MIGRATED","message":"MIGRATED"}
+{"itemId":"agent_team:old-address-team","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agent_teams/old-address-team/team_communication_messages.json","status":"SKIPPED","message":"PRESERVED_UNSUPPORTED: The run has no tree file."}
+{"itemId":"agent_org:aoml_company_d74f4bf4d6ca449f836e481740699704","filePath":"/private/tmp/aoml-api/desktop-root/server-data/memory/agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages.json","status":"MIGRATED","message":"MIGRATED"}
+
+## warnings in the instance log
+[2026-10-18T12:16:47.277Z] [ERROR] [electron.embedded-server.stderr] [20261018_append_only_message_logs_v1] agent_team run 'aoml_pair_d5d592a9b3484500933bf5e6d0625d9e': message log kept as JSON (PRESERVED_UNREADABLE): The JSON log cannot be read: Expected property name or '}' in JSON at position 2 (line 1 column 3)
+[2026-10-18T12:16:47.288Z] [ERROR] [electron.embedded-server.stderr] [20261018_append_only_message_logs_v1] agent_team run 'old-address-team': message log kept as JSON (PRESERVED_UNSUPPORTED): The run has no tree file.
+
+## message-log files after the start, and the comparison with the released copies
+   4508516 agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_000001.jsonl
+   4508526 agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_000002.jsonl
+    820512 agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages_active.jsonl
+       770 agent_teams/aoml_pair_5d168649b4ac468193d3c2679d952070/team_communication_messages_active.jsonl
+       375 agent_teams/aoml_pair_c95616ffa5754cf2b9ded9e1a06ad04d/team_communication_messages_active.jsonl
+        10 agent_teams/aoml_pair_d5d592a9b3484500933bf5e6d0625d9e/team_communication_messages.json
+         0 agent_teams/aoml_pair_f125ef9022c4484bab30f85c53a16ee6/team_communication_messages_active.jsonl
+       186 agent_teams/old-address-team/team_communication_messages.json
+       186 agent_teams/old-address-team/team_communication_messages.json.backup-20260701
+       388 agents/aoml_helper_7d42e48e22594693bc650222b6308e72/communication_messages_active.jsonl
+       381 agents/aoml_helper_9bdf7971717c4ae391a9154f51e02cf1/communication_messages_active.jsonl
+       390 agents/aoml_helper_eff28cbf8fb54fc7ab7e28ad77bf26b4/communication_messages_active.jsonl
+       756 agents/aoml_host_1b9db3bae1944871a305a993805db88e/collaboration/communication_messages_active.jsonl
+
+## per released JSON log: converted? messages equal (values, order by createdAt)?
+CONVERTED  agent_orgs/aoml_company_d74f4bf4d6ca449f836e481740699704/agent_org_communication_messages.json  messages=26 lines=26 equal=true files=[000001.jsonl=4508516, 000002.jsonl=4508526, active.jsonl=820512] withinLimit+1msg=true
+CONVERTED  agent_teams/aoml_pair_5d168649b4ac468193d3c2679d952070/team_communication_messages.json  messages=2 lines=2 equal=true files=[active.jsonl=770] withinLimit+1msg=true
+CONVERTED  agent_teams/aoml_pair_c95616ffa5754cf2b9ded9e1a06ad04d/team_communication_messages.json  messages=1 lines=1 equal=true files=[active.jsonl=375] withinLimit+1msg=true
+KEPT JSON  agent_teams/aoml_pair_d5d592a9b3484500933bf5e6d0625d9e/team_communication_messages.json  bytes unchanged=true  append-only files=0
+CONVERTED  agent_teams/aoml_pair_f125ef9022c4484bab30f85c53a16ee6/team_communication_messages.json  messages=0 lines=0 equal=true files=[active.jsonl=0] withinLimit+1msg=true
+KEPT JSON  agent_teams/old-address-team/team_communication_messages.json  bytes unchanged=true  append-only files=0
+CONVERTED  agents/aoml_helper_7d42e48e22594693bc650222b6308e72/communication_messages.json  messages=1 lines=1 equal=true files=[active.jsonl=388] withinLimit+1msg=true
+CONVERTED  agents/aoml_helper_9bdf7971717c4ae391a9154f51e02cf1/communication_messages.json  messages=1 lines=1 equal=true files=[active.jsonl=381] withinLimit+1msg=true
+CONVERTED  agents/aoml_helper_eff28cbf8fb54fc7ab7e28ad77bf26b4/communication_messages.json  messages=1 lines=1 equal=true files=[active.jsonl=390] withinLimit+1msg=true
+CONVERTED  agents/aoml_host_1b9db3bae1944871a305a993805db88e/collaboration/communication_messages.json  messages=2 lines=2 equal=true files=[active.jsonl=756] withinLimit+1msg=true

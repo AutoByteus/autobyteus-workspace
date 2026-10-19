@@ -1,0 +1,16 @@
+# IMP-14 e2e (excerpt)
+# Command: see IMP-14-merge-e2e.full.log
+# Commit: a130f4a86f (merge of origin/personal 04ec416617 into codex/withdraw-adoption)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T20:12Z
+
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 160111ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 25383ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 13848ms
+     ✓ CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate  1468ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 445ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (2 tests) 327ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1478ms
+     ✓ WDR-1 delegate_task on an agent run and a team run the user started is refused with the pre-adoption text, and nothing is written  977ms
+ Test Files  6 passed (6)
+      Tests  29 passed | 3 skipped (32)

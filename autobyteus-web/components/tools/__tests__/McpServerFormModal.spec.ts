@@ -192,6 +192,55 @@ describe('McpServerFormModal JSON View actions', () => {
     }))
   })
 
+  it('shows the headers of a saved HTTP server in the JSON view and keeps them when saving from it', async () => {
+    const savedServer: McpServer = {
+      __typename: 'StreamableHttpMcpServerConfig',
+      serverId: 'remote-server',
+      transportType: 'STREAMABLE_HTTP',
+      enabled: true,
+      toolNamePrefix: '',
+      url: 'http://127.0.0.1:9000/mcp',
+      token: '',
+      headers: { Authorization: 'Basic test-dummy' },
+    }
+    const { wrapper, store } = mountComponent(savedServer)
+    await wrapper.get('#sync-on-save').setValue(false)
+
+    await clickByText(wrapper, 'JSON View')
+    const json = JSON.parse((wrapper.get('#json-input').element as HTMLTextAreaElement).value)
+    expect(json).toEqual({
+      mcpServers: {
+        'remote-server': {
+          transportType: 'streamable_http',
+          enabled: true,
+          url: 'http://127.0.0.1:9000/mcp',
+          headers: { Authorization: 'Basic test-dummy' },
+        },
+      },
+    })
+
+    await clickByText(wrapper, 'Save Configuration')
+
+    expect(store.configureMcpServer).toHaveBeenCalledWith(expect.objectContaining({
+      serverId: 'remote-server',
+      transportType: 'STREAMABLE_HTTP',
+      streamableHttpConfig: {
+        url: 'http://127.0.0.1:9000/mcp',
+        token: null,
+        headers: { Authorization: 'Basic test-dummy' },
+      },
+    }))
+  })
+
+  it('explains under the Token field how the token is sent', async () => {
+    const { wrapper } = mountComponent()
+    await wrapper.get('#transportType').setValue('STREAMABLE_HTTP')
+
+    const hint = wrapper.get('#http_token_hint')
+    expect(hint.text()).toBe('tools.components.tools.McpServerFormModal.token_hint')
+    expect(wrapper.get('#http_token').attributes('aria-describedby')).toBe('http_token_hint')
+  })
+
   it('continues to preview Form View fields without parsing JSON', async () => {
     const { wrapper, store } = mountComponent()
     await wrapper.get('#serverId').setValue('form-server')

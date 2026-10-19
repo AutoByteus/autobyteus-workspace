@@ -1,0 +1,23 @@
+{
+  "inputHead": "7b2db1b07beedfeac473b9e7ef367b7176338fde",
+  "sourceCommit": "d3c88f37c30ee74a89a95a4f6906992667c9b875",
+  "protectedInputCount": 1379,
+  "retainedOldArtifacts": 19,
+  "preexistingDistFiles": 286,
+  "newCandidateFiles": 4,
+  "inputReferences": 1351,
+  "defaultSourceHash": "cc3556ce850bf20281e6b7e0411a6b01359ea863cac6cb22104808e9dc225354",
+  "sameEngineSourceHash": "f0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88",
+  "checks": 14,
+  "mutations": 10,
+  "testCounts": {
+    "topLevelPasses": 70,
+    "firstLevelSubcases": 212,
+    "packages": 7,
+    "skips": [
+      "--- SKIP: TestInstallerDirectoryModeChild (0.00s)"
+    ]
+  },
+  "task_size": "Large",
+  "architectural_risk": "High"
+}

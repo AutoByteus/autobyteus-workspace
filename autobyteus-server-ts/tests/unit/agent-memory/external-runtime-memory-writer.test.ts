@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
@@ -26,6 +26,31 @@ afterEach(async () => {
 });
 
 describe("ExternalRuntimeMemoryWriter", () => {
+  it.each([
+    ["a zero-filled end", Buffer.alloc(1241, 0)],
+    ["a torn last record", Buffer.from('{"id":"rt_x","trace_type":"tool_call","content":"Grö', "utf8")],
+  ])("keeps every trace appended after %s left by an unclean shutdown (AC-004)", async (_label, damage) => {
+    const memoryDir = await mkTempDir();
+    const before = new ExternalRuntimeMemoryWriter({ memoryDir });
+    before.appendRawTrace({ traceType: "user", turnId: "turn-1", content: "Größe – 日本語", sourceEvent: "test" });
+    before.appendRawTrace({ traceType: "assistant", turnId: "turn-1", content: "Erledigt ✓", sourceEvent: "test" });
+    const activePath = path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
+    await fs.appendFile(activePath, damage);
+
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const restored = new ExternalRuntimeMemoryWriter({ memoryDir });
+    restored.appendRawTrace({ traceType: "user", turnId: "turn-2", content: "continue", sourceEvent: "test" });
+    restored.appendRawTrace({ traceType: "assistant", turnId: "turn-2", content: "continuing", sourceEvent: "test" });
+
+    expect(new RunMemoryFileStore(memoryDir).listRawTraceDicts().map((record) => record.content))
+      .toEqual(["Größe – 日本語", "Erledigt ✓", "continue", "continuing"]);
+    expect((await fs.readFile(activePath)).includes(0)).toBe(false);
+    expect(warn).toHaveBeenCalledWith("Removed the damaged end of a memory log.", expect.objectContaining({
+      filePath: activePath, bytesRemoved: damage.length,
+    }));
+    warn.mockRestore();
+  });
+
   it("writes exact normalized raw fields without creating a WorkingContext snapshot", async () => {
     const memoryDir = await mkTempDir();
     const writer = new ExternalRuntimeMemoryWriter({ memoryDir });

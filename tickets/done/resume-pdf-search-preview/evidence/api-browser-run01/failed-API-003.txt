@@ -1,0 +1,7 @@
+Files — synthetic workspace PDF validation
+applications
+nested
+resume sample.pdf
+resume-notes.md
+resume sample.pdf
+resume-notes.md

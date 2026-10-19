@@ -1,0 +1,4 @@
+Started test-owned Docker prerequisite in owned detached LinuxVM
+test-owned Docker prerequisite in owned detached LinuxVM: Fail
+Setup incomplete RuntimeError('E: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 3845 (unattended-upgr)\nE: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?\n')
+{"result": "Incomplete", "engineImage": null, "fatal": "RuntimeError('E: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 3845 (unattended-upgr)\\nE: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?\\n')"}

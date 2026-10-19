@@ -1,0 +1,8 @@
+PASS exact two quoted values appended only to backend program environment; no other byte changed
+PASS raw Supervisor INI parsed, original command/HOME/USER/NODE_ENV/BROWSER/options preserved
+PASS extra existing environment value/quoted comma/spaces and unrelated program preserved on owned fixture
+PASS duplicate/partial-override or missing exact-target prerequisite stops rather than rewriting unrelated input
+PASS owned temporary same-directory atomic replacement preserves exact bytes/mode/owner; fixture cleaned; no live file touched
+PASS unchanged source contract: complete explicit pair before discovery, canonical supplied DATABASE_URL retained (static inspection, not runtime proof)
+PASS zero source/test/dependency/image-recipe/launcher delta vs bootstrap; only task artifacts
+No Docker, network/node API, actual DB, user state, image build/install/cache or paid-provider operation. Isolated same-image RPC/startup/HTTP validation belongs to API/E2E; live backup/pin/start/readiness to Delivery.

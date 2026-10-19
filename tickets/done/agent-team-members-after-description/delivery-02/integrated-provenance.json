@@ -1,0 +1,43 @@
+{
+  "recordedAt": "2026-10-13T04:57:16.852764+00:00",
+  "candidateHead": "98655c1282cc59360d53006cd631d3db5104ca82",
+  "checkpoint": "26607d41363f6900528bba1b35c5e960dad014f3",
+  "integratedHead": "52143e493c2663fcd7250b485ca5ca9cbd885fb2",
+  "integratedBase": "dec0f562ce6f26a09d1e6f59d59e838142cb4865",
+  "productionDeltaVersusBuiltHead": "",
+  "graphqlStoreDeltaVersusLatestBase": "",
+  "appAsarSHA256": "e645e9a959261a1a5cb6d5ad722bb2c12a1d819b7a90a302361bc23697179a78",
+  "buildHead": "59a5bd76de232b9bdd05c369d53e3586178d789d",
+  "package": "macOS ARM64 unsigned local 1.5.3-beta.2/Electron42.4.1; NOT a release",
+  "isolatedStart": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "start",
+    "result": {
+      "instanceId": "iso-56609-2c4d",
+      "pid": 56264,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:56610",
+      "graphqlUrl": "http://127.0.0.1:56610/graphql",
+      "controlEndpoint": "http://127.0.0.1:56609",
+      "controlPort": 56609,
+      "serverPort": 56610,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-R40GRx",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-R40GRx/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-56609-2c4d.log"
+    }
+  },
+  "historicalInstance": "iso-52535-8486 stopped/cleaned by API; no live transfer",
+  "retainedRef": "d8bac598606001b702e300eeaeefe06c3caf0d3d",
+  "managerReceiptPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/task-plans/context/agent-org-cache-retained-work/manager-retention-transfer-receipt.json",
+  "managerReceiptSHA256": "463433ba8f3c46e7c6047d12350701463dc610d5947707239c8fd3561b490b6d",
+  "managerAcknowledgmentRead": true,
+  "independentServerCopyVerification": false,
+  "cacheFollowUp": "project_task_6b9ce371-7593-42d7-9d20-3c637512830a",
+  "cacheFixStatus": "Unreviewed/unresolved/Out of current R1 scope; not dispatched",
+  "humanVerification": "Pending",
+  "releaseDecision": "Pending",
+  "newBuildOrCacheTest": false
+}

@@ -24,6 +24,7 @@ import {
   getStudioAgentTeamDefinitionService,
   getStudioDefinitionAdmissionService,
 } from "../studio-application-api-services.js";
+import { DefinitionLoadIssueEntry } from "./definition-problems.js";
 import {
   GraphqlDefaultLaunchConfig,
   GraphqlDefaultLaunchConfigInput,
@@ -152,6 +153,11 @@ export class AgentTeamDefinition {
 
   @Field(() => String, { nullable: true })
   revision?: string | null;
+
+  /** Set when the Team is served from its last working version; names the file and reason. */
+  /** Every load issue in this Team's definition folder: the Team first, then its team-local agents in path order. */
+  @Field(() => [DefinitionLoadIssueEntry])
+  loadIssues!: DefinitionLoadIssueEntry[];
 }
 
 @InputType()
@@ -275,7 +281,7 @@ export class AgentTeamDefinitionResolver {
       if (!admitted) return null;
       const domainDefinition = admitted.definition;
       if (!("nodes" in domainDefinition)) return null;
-      return AgentTeamDefinitionConverter.toGraphql(domainDefinition);
+      return AgentTeamDefinitionConverter.toGraphql(domainDefinition, await service.getFolderLoadIssues(id));
     } catch (error) {
       logger.error(`Error fetching agent team definition by ID ${id}: ${String(error)}`);
       throw new Error("Unable to fetch agent team definition at this time.");
@@ -289,7 +295,9 @@ export class AgentTeamDefinitionResolver {
       const definitions = admitted.flatMap((result) => result.status === "available" && result.subjectKind === "agent_team"
         ? [result.definition]
         : []).filter((definition): definition is DomainAgentTeamDefinition => "nodes" in definition && definition.ownershipScope !== "agent_org_owned");
-      return definitions.map((definition) => AgentTeamDefinitionConverter.toGraphql(definition));
+      const issues = await getStudioAgentTeamDefinitionService().listFolderLoadIssues();
+      return definitions.map((definition) =>
+        AgentTeamDefinitionConverter.toGraphql(definition, issues.get(String(definition.id ?? "")) ?? []));
     } catch (error) {
       logger.error(`Error fetching all agent team definitions: ${String(error)}`);
       throw new Error("Unable to fetch agent team definitions at this time.");
@@ -305,18 +313,6 @@ export class AgentTeamDefinitionResolver {
     } catch (error) {
       logger.error(`Error fetching agent team templates: ${String(error)}`);
       throw new Error("Unable to fetch agent team templates at this time.");
-    }
-  }
-
-  @Mutation(() => Boolean)
-  async refreshAgentTeamDefinitionCatalog(): Promise<boolean> {
-    try {
-      await getStudioAgentDefinitionService().refreshCache();
-      await getStudioAgentTeamDefinitionService().refreshCache();
-      return true;
-    } catch (error) {
-      logger.error(`Error refreshing agent team definition catalog: ${String(error)}`);
-      throw new Error("Unable to refresh agent team definition catalog at this time.");
     }
   }
 

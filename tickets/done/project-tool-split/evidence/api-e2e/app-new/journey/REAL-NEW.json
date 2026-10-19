@@ -1,0 +1,67 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "launch": {
+    "success": true,
+    "message": "Agent run created successfully.",
+    "runId": "pts_new_tools_388905665cd749b1a7b75794832bd221"
+  },
+  "outcome": {
+    "projectId": "project_20d79e26-4b75-4f02-bfa4-5d463a147e83",
+    "name": "PTS Real New 3044",
+    "description": "real update",
+    "workspaces": []
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "content": "Create a Project named \"PTS Real New 3044\" with description \"real create\". Then change that Project's description to \"real update\". Report both tool results.",
+      "media": null,
+      "ts": 1792224552.815
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_012MQD8M1nDFvjiEdkmwrGQi",
+      "role": null,
+      "content": "",
+      "toolName": "create_project",
+      "toolArgs": {
+        "name": "PTS Real New 3044",
+        "description": "real create"
+      },
+      "toolResult": "{\"project\":{\"projectId\":\"project_20d79e26-4b75-4f02-bfa4-5d463a147e83\",\"name\":\"PTS Real New 3044\",\"description\":\"real create\",\"workspaces\":[]}}",
+      "toolError": null,
+      "media": null,
+      "ts": 1792224556.581
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_01VMQAYrXXodkXVFZFrKt4Ku",
+      "role": null,
+      "content": "",
+      "toolName": "update_project",
+      "toolArgs": {
+        "project_id": "project_20d79e26-4b75-4f02-bfa4-5d463a147e83",
+        "description": "real update"
+      },
+      "toolResult": "{\"project\":{\"projectId\":\"project_20d79e26-4b75-4f02-bfa4-5d463a147e83\",\"name\":\"PTS Real New 3044\",\"description\":\"real update\",\"workspaces\":[]}}",
+      "toolError": null,
+      "media": null,
+      "ts": 1792224557.818
+    }
+  ],
+  "frameTypes": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "TURN_STARTED",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "SEGMENT_START",
+    "TOOL_EXECUTION_STARTED",
+    "TOKEN_USAGE_UPDATED",
+    "SEGMENT_END",
+    "TOOL_EXECUTION_SUCCEEDED"
+  ]
+}

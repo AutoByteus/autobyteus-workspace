@@ -1,0 +1,227 @@
+{
+  "startedAt": "2026-10-12T20:51:27.269Z",
+  "backendUrl": "http://127.0.0.1:59785",
+  "container": "agy-api-e2e-node",
+  "cases": {
+    "LIVE-002": {
+      "result": "Pass",
+      "row": {
+        "text": "Antigravity CLI\nNot signed in on this node. Run `agy` to sign in.\nUnavailable",
+        "title": "Not signed in on this node. Run `agy` to sign in.",
+        "ariaDisabled": "true",
+        "label": "Unavailable",
+        "reason": "Not signed in on this node. Run `agy` to sign in.",
+        "reasonLines": 2,
+        "reasonClamped": false,
+        "nameBox": {
+          "x": 890.28125,
+          "y": 548.625,
+          "width": 204.984375,
+          "height": 19.5,
+          "top": 548.625,
+          "right": 1095.265625,
+          "bottom": 568.125,
+          "left": 890.28125
+        },
+        "labelBox": {
+          "x": 1103.265625,
+          "y": 550.625,
+          "width": 65.015625,
+          "height": 16,
+          "top": 550.625,
+          "right": 1168.28125,
+          "bottom": 566.625,
+          "left": 1103.265625
+        },
+        "dotBox": null
+      },
+      "visited": [
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "grok_build",
+        "grok_build",
+        "grok_build",
+        "grok_build",
+        "grok_build"
+      ],
+      "submenuAfterClick": false,
+      "menuRuntimeRows": [
+        "Runtimes",
+        "",
+        "AutoByteus",
+        "35",
+        "Codex App Server",
+        "Claude Agent SDK",
+        "Grok Build",
+        "Antigravity CLI",
+        "Not signed in on this node. Run `agy` to sign in.",
+        "Unavailable"
+      ]
+    },
+    "LIVE-003": {
+      "result": "Pass",
+      "row": {
+        "text": "Antigravity CLI\nNot signed in on this node. Run `agy` to sign in.\n不可用",
+        "title": "Not signed in on this node. Run `agy` to sign in.",
+        "ariaDisabled": "true",
+        "label": "不可用",
+        "reason": "Not signed in on this node. Run `agy` to sign in.",
+        "reasonLines": 2,
+        "reasonClamped": false,
+        "nameBox": {
+          "x": 896.59375,
+          "y": 548.625,
+          "width": 234.234375,
+          "height": 19.5,
+          "top": 548.625,
+          "right": 1130.828125,
+          "bottom": 568.125,
+          "left": 896.59375
+        },
+        "labelBox": {
+          "x": 1138.828125,
+          "y": 550.625,
+          "width": 35.765625,
+          "height": 16,
+          "top": 550.625,
+          "right": 1174.59375,
+          "bottom": 566.625,
+          "left": 1138.828125
+        },
+        "dotBox": null
+      },
+      "pageErrors": []
+    },
+    "LIVE-004": {
+      "result": "Pass",
+      "requests": [
+        {
+          "op": "GetRuntimeAvailability",
+          "vars": {
+            "runtimeKind": "antigravity_cli"
+          }
+        },
+        {
+          "op": "ListWorkspaceRunHistory",
+          "vars": {
+            "limitPerAgent": 6
+          }
+        },
+        {
+          "op": "ListCollaborationRootHistory",
+          "vars": {}
+        }
+      ],
+      "enabledAfterMs": 2397,
+      "immediate": {
+        "ariaDisabled": "true",
+        "reason": "Not signed in on this node. Run `agy` to sign in."
+      },
+      "row": {
+        "text": "Antigravity CLI"
+      },
+      "models": [
+        "claude-opus-5-5-high",
+        "claude-opus-5-5-low",
+        "claude-opus-5-5-medium",
+        "claude-sonnet-5-5-high",
+        "claude-sonnet-5-5-low",
+        "claude-sonnet-5-5-medium",
+        "gemini-3.1-pro-high",
+        "gemini-3.1-pro-low",
+        "gemini-3.6-flash-high",
+        "gemini-3.6-flash-low",
+        "gemini-3.6-flash-medium",
+        "gemini-3.7-flash-high",
+        "gemini-3.7-flash-low",
+        "gemini-3.7-flash-medium",
+        "gemini-3.8-flash-high",
+        "gemini-3.8-flash-low",
+        "gemini-3.8-flash-medium",
+        "gpt-oss-120b-medium"
+      ]
+    },
+    "LIVE-005": {
+      "result": "Pass",
+      "requests": [
+        {
+          "op": "ListWorkspaceRunHistory",
+          "vars": {
+            "limitPerAgent": 6
+          }
+        },
+        {
+          "op": "ListCollaborationRootHistory",
+          "vars": {}
+        }
+      ]
+    },
+    "LIVE-007": {
+      "result": "Pass",
+      "rawNetwork": {
+        "exit": "1",
+        "signInWordingLines": "0"
+      },
+      "signedInOk": {
+        "ok": 18
+      },
+      "network": {
+        "code": "AGY_MODEL_DISCOVERY_FAILED",
+        "message": "Antigravity model discovery failed; check authentication or network and retry."
+      },
+      "emptyHome": {
+        "code": "AGY_SIGN_IN_REQUIRED",
+        "message": "Not signed in on this node. Run `agy` to sign in."
+      },
+      "missing": {
+        "code": "AGY_CLI_UNAVAILABLE",
+        "message": "Antigravity CLI is not installed or not on this node's PATH. Install it, or set ANTIGRAVITY_CLI_COMMAND, then try again."
+      }
+    },
+    "LIVE-008": {
+      "result": "Pass",
+      "triggerBefore": "claude-fable-5\nAutoByteus",
+      "currentRuntime": "autobyteus",
+      "row": {
+        "text": "Antigravity CLI\nNot signed in on this node. Run `agy` to sign in.\nUnavailable",
+        "title": "Not signed in on this node. Run `agy` to sign in.",
+        "ariaDisabled": "true",
+        "label": "Unavailable",
+        "reason": "Not signed in on this node. Run `agy` to sign in.",
+        "reasonLines": 2,
+        "reasonClamped": false,
+        "nameBox": {
+          "x": 890.28125,
+          "y": 548.625,
+          "width": 204.984375,
+          "height": 19.5,
+          "top": 548.625,
+          "right": 1095.265625,
+          "bottom": 568.125,
+          "left": 890.28125
+        },
+        "labelBox": {
+          "x": 1103.265625,
+          "y": 550.625,
+          "width": 65.015625,
+          "height": 16,
+          "top": 550.625,
+          "right": 1168.28125,
+          "bottom": 566.625,
+          "left": 1103.265625
+        },
+        "dotBox": null
+      },
+      "alignment": {
+        "nameMid": 558.375,
+        "labelMid": 558.625
+      }
+    }
+  },
+  "cleanup": {
+    "nuxt": "SIGTERM"
+  },
+  "pageErrorsEn": [],
+  "finishedAt": "2026-10-12T20:52:36.880Z"
+}

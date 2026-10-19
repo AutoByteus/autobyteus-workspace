@@ -1,0 +1,25 @@
+{
+  "timeUTC": "2026-10-14T06:07:41.679814+00:00",
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_",
+  "ownedScratchRemoved": true,
+  "ownedVMs": [
+    "ab-nfs-ir005-build-38d60768",
+    "ab-nfs-ir005-install-962c1d52"
+  ],
+  "bothVMsStoppedDeletedProcessesExited": true,
+  "privateTartCachesRemoved": true,
+  "noHostMountsSharesNodesCredentialsProviders": true,
+  "allGuestDockerResourcesRemovedWithOwnedVM": true,
+  "retainedCandidate": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate",
+  "retainedCandidateReceipt": "retained-candidate.json",
+  "removedScratchBinaryHashes": {
+    "current-cli": "20022a9e553ce3d898531e66e48a843d9fd10fb2fd044474f1a471ed070b219e",
+    "nfs-linux-arm64": "1fe21a591a740a4b4da6d66fee9426c230461889fd179fb23602e07613a5a44e",
+    "nfs-darwin-amd64": "b0018e6947b05260ebadce3e5d0a7903048c83654baadfbcdd9f503975d914a9",
+    "bad-package-fixture": "397053f8a1c6b76a0b1387b83f0aeebc7efd656eb796f4f3aa2300fef1e07c0b",
+    "nfs-darwin-arm64": "7939c754699d1e8cd0b4ed4a1def6c43719e24ec17c08fa527a9eed60e8ef1df",
+    "package-fixture": "ad60ad5bffad3a0e044bd773fa0c668ebce7ab55297fb1020369209ebfb7e400",
+    "nfs-linux-amd64": "a270cdcbd31535ca25233323eabff294fb8000976e5f5bf21a41507ad1d3340a"
+  },
+  "priorFiveUntrackedDistUntouched": true
+}

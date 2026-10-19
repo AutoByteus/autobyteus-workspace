@@ -1,0 +1,75 @@
+{
+ "t0": 1791783333395,
+ "out": [
+  {
+   "t": 8673,
+   "type": "ROOT_EXECUTION_EVENT",
+   "kind": "agent_presentation",
+   "agent": "tma_worker_c74d9f28_3acf63ab46f4438b890d21122ef74954",
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "phase": null,
+   "prompt": 20811
+  },
+  {
+   "t": 15440,
+   "type": "ROOT_EXECUTION_EVENT",
+   "kind": "agent_presentation",
+   "agent": "tma_worker_c74d9f28_3acf63ab46f4438b890d21122ef74954",
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "phase": null,
+   "prompt": 20930
+  },
+  {
+   "t": 20971,
+   "type": "ROOT_EXECUTION_EVENT",
+   "kind": "agent_presentation",
+   "agent": "tma_worker_c74d9f28_3acf63ab46f4438b890d21122ef74954",
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "phase": null,
+   "prompt": 21049
+  },
+  {
+   "t": 26453,
+   "type": "ROOT_EXECUTION_EVENT",
+   "kind": "agent_presentation",
+   "agent": "tma_worker_c74d9f28_3acf63ab46f4438b890d21122ef74954",
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "phase": null,
+   "prompt": 21168
+  },
+  {
+   "t": 32006,
+   "type": "ROOT_EXECUTION_EVENT",
+   "kind": "agent_presentation",
+   "agent": "tma_worker_c74d9f28_3acf63ab46f4438b890d21122ef74954",
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "phase": null,
+   "prompt": 21287
+  },
+  {
+   "t": 37206,
+   "type": "ROOT_EXECUTION_EVENT",
+   "kind": "agent_presentation",
+   "agent": "tma_worker_c74d9f28_3acf63ab46f4438b890d21122ef74954",
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "phase": null,
+   "prompt": 21406
+  },
+  {
+   "t": 37211,
+   "type": "ROOT_EXECUTION_EVENT",
+   "kind": "agent_presentation",
+   "agent": "tma_worker_c74d9f28_3acf63ab46f4438b890d21122ef74954",
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": false,
+   "phase": null,
+   "prompt": null
+  }
+ ]
+}

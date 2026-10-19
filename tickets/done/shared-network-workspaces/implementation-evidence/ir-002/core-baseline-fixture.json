@@ -1,0 +1,17 @@
+{
+  "finding": "Existing traversal fixture assumes HOME is outside permitted TMPDIR. Clean throwaway HOME=TMPDIR makes outside_secret a legitimately permitted temp path; production contract is unchanged.",
+  "baseline": "65b0e6e57a0f93d8343ccbefc1b5227642d7e557",
+  "failedRun": "core-unit-all.log",
+  "files": [
+    {
+      "path": "autobyteus-ts/src/utils/file-utils.ts",
+      "baselineEqualsFailedSource": true,
+      "sha256": "1b3a202e8cfb11f90a69b6d411824e0db65851148d4e8bc43d8cd756d95f985b"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/utils/file-utils.test.ts",
+      "baselineEqualsFailedSource": true,
+      "sha256": "9036dc4664c268cecf7e9e6c28b4391ccdc242ccf1c492ef918eae3eba047214"
+    }
+  ]
+}

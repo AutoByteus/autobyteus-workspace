@@ -1,0 +1,1067 @@
+[
+  {
+    "case": "CCR-E2E-001",
+    "name": "CCR-E2E-001: the cached-mode Anthropic model (default Opus 5.5; COMPACTION_CACHE_E2E_ANTHROPIC_MODEL) compacts with a cached summary request (>= 90 % cache read), continues, and meters the call",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "triggerSettings": {
+        "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE": "233052",
+        "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO": "0.2125"
+      },
+      "compactionSite": "before_parent_request (T4)",
+      "modes": [
+        "cached"
+      ],
+      "summaryCalls": [
+        {
+          "index": 25,
+          "phase": "CCR1-T4",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 1078,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 29313,
+            "cacheRead": 28089,
+            "cacheWrite": 1220,
+            "output": 1078
+          },
+          "strictInjected": true,
+          "cacheShare": 0.9582437826220448,
+          "thinkingBlocks": 8
+        }
+      ],
+      "lastAgentCallBefore": {
+        "index": 24,
+        "phase": "CCR1-T3",
+        "host": "api.anthropic.com",
+        "pathname": "/v1/messages",
+        "stream": true,
+        "limits": {
+          "max_tokens": 128000
+        },
+        "rewritten": false,
+        "status": 200,
+        "stopSignals": [
+          "end_turn"
+        ],
+        "maxReportedOutputTokens": 214,
+        "responseHasToolCall": false,
+        "responseHasVisibleText": true,
+        "errorBody": null,
+        "usage": {
+          "inputTotal": 28091,
+          "cacheRead": 27247,
+          "cacheWrite": 842,
+          "output": 214
+        },
+        "strictInjected": true,
+        "thinkingBlocks": 8
+      },
+      "firstAgentCallAfter": {
+        "index": 26,
+        "phase": "CCR1-T4",
+        "host": "api.anthropic.com",
+        "pathname": "/v1/messages",
+        "stream": true,
+        "limits": {
+          "max_tokens": 128000
+        },
+        "rewritten": false,
+        "status": 200,
+        "stopSignals": [
+          "tool_use"
+        ],
+        "maxReportedOutputTokens": 112,
+        "responseHasToolCall": true,
+        "responseHasVisibleText": false,
+        "errorBody": null,
+        "usage": {
+          "inputTotal": 13395,
+          "cacheRead": 8543,
+          "cacheWrite": 4848,
+          "output": 112
+        },
+        "strictInjected": true
+      },
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "phase": "requested",
+          "turn_id": "turn_0003",
+          "compaction_operation_id": "compaction_operation_mv4570ro_1",
+          "requested_turn_id": "turn_0003"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv4570ro_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 21,
+          "raw_trace_count": 65,
+          "phase": "started"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv4570ro_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 21,
+          "raw_trace_count": 65,
+          "compaction_model_identifier": "claude-opus-5-5",
+          "summarizer_provider": "ANTHROPIC",
+          "compaction_invocation_id": "compaction_compaction_operation_mv4570ro_1_1",
+          "completion_status": "complete",
+          "completion_reason": "end_turn",
+          "summary_char_count": 2622,
+          "summary_token_count": 669,
+          "phase": "completed",
+          "compacted_block_count": 21
+        }
+      ],
+      "meterFrames": [
+        {
+          "usage_event_id": "c39babe3-c19e-497c-af00-3402bcabaedf",
+          "idempotency_key": "compaction_cache_auditor_a26dac02_2c8be09bc61a4f24a72d9df53176a981:turn_0004:compaction:compaction_operation_mv4570ro_1:1",
+          "observed_at": "2026-10-11T18:14:34.925Z",
+          "run_id": "compaction_cache_auditor_a26dac02_2c8be09bc61a4f24a72d9df53176a981",
+          "root_team_run_id": null,
+          "turn_id": "turn_0004",
+          "llm_call_id": "turn_0004:compaction:compaction_operation_mv4570ro_1:1",
+          "call_sequence": null,
+          "agent_definition_id": "compaction-cache-auditor-a26dac02",
+          "workspace_id": "agent_ws_0ebc196ed91f39eb0d1d0fec88d9a059b3d8dc0fd4ea28cb534d6be7cb56469d",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "compaction-cache-auditor-a26dac02",
+          "run_summary": "Audit chunk-01.txt through chunk-12.txt using the read_file tool, one file per tool call, in orde...",
+          "run_created_at": "2026-10-11T18:13:09.956Z",
+          "member_display_name": null,
+          "runtime_kind": "autobyteus",
+          "model_provider": "ANTHROPIC",
+          "provider_name": "Anthropic",
+          "model_identifier": "claude-opus-5-5",
+          "model_value": "claude-opus-5-5",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "claude_sdk_main_loop_usage": null,
+          "ingestion_kind": "autobyteus_compaction",
+          "usage_scope": "per_call",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "base_excludes_cache",
+          "reported_input_tokens": 4,
+          "reported_output_tokens": 1078,
+          "reported_total_tokens": 1082,
+          "accounting_input_tokens": 29313,
+          "accounting_output_tokens": 1078,
+          "accounting_total_tokens": 30391,
+          "standard_input_tokens": 4,
+          "cache_miss_input_tokens": 4,
+          "cache_read_input_tokens": 28089,
+          "cache_creation_input_tokens": 1220,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 1220,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 29313,
+          "billable_output_tokens": 1078,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 4,
+          "output_price_per_million": 20,
+          "cached_input_read_price_per_million": 0.2,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": 5,
+          "cached_input_write_1h_price_per_million": 8,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-opus-5-5",
+            "price_config_id": "autobyteus_model_catalog:ANTHROPIC:claude-opus-5-5",
+            "model_provider": "ANTHROPIC",
+            "model_identifier": "claude-opus-5-5",
+            "model_value": "claude-opus-5-5",
+            "canonical_name": "claude-opus-5-5",
+            "currency": "USD",
+            "input_price_per_million": 4,
+            "output_price_per_million": 20,
+            "cached_input_read_price_per_million": 0.2,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": 5,
+            "cached_input_write_1h_price_per_million": 8,
+            "input_price_tiers": [],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": true,
+              "cached_input_write_1h": true
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-opus-5-5",
+          "selected_pricing_tier_id": null,
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.0153938,
+          "estimated_api_standard_input_cost": 0.000016,
+          "estimated_api_cache_read_input_cost": 0.0056178,
+          "estimated_api_cache_creation_input_cost": 0.00976,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": 0.00976,
+          "estimated_api_output_cost": 0.02156,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.036953799999999995,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 29313,
+          "meter_delta_output_tokens": 1078,
+          "meter_delta_total_tokens": 30391,
+          "run_summary_after_event": {
+            "run_id": "compaction_cache_auditor_a26dac02_2c8be09bc61a4f24a72d9df53176a981",
+            "root_team_run_id": null,
+            "agent_definition_id": "compaction-cache-auditor-a26dac02",
+            "workspace_id": "agent_ws_0ebc196ed91f39eb0d1d0fec88d9a059b3d8dc0fd4ea28cb534d6be7cb56469d",
+            "gross_input_tokens": 501188,
+            "standard_input_tokens": 60,
+            "cache_miss_input_tokens": 60,
+            "cache_read_input_tokens": 471819,
+            "cache_creation_input_tokens": 29309,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 29309,
+            "output_tokens": 5033,
+            "reasoning_output_tokens": 1093,
+            "billable_output_tokens": 5033,
+            "total_tokens": 506221,
+            "cache_read_input_token_rate": 0.9414012306759141,
+            "standard_input_token_rate": 0.00011971555583932577,
+            "cache_creation_input_token_rate": 0.05847905376824664,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.3290758000000001,
+            "estimated_api_standard_input_cost": 0.00024,
+            "estimated_api_cache_read_input_cost": 0.09436380000000003,
+            "estimated_api_cache_creation_input_cost": 0.234472,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": 0.234472,
+            "estimated_api_output_cost": 0.10066,
+            "estimated_api_reasoning_output_cost": 0.02186,
+            "estimated_api_total_cost": 0.4297358,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-opus-5-5",
+            "selected_pricing_tier_id": null,
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 4
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "single",
+                "price_per_million": 8
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 20
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 20
+              }
+            },
+            "usage_report_count": 26,
+            "updated_at": "2026-10-11T18:14:34.925Z",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 233052,
+            "context_window_usage_percent": null,
+            "latest_model_provider": "ANTHROPIC",
+            "latest_model_identifier": "claude-opus-5-5",
+            "latest_runtime_kind": "autobyteus",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": null,
+          "effective_context_window_tokens": 233052,
+          "context_window_usage_percent": null,
+          "raw_usage_json": {
+            "events": [
+              {
+                "input_tokens": 4,
+                "cache_creation_input_tokens": 1220,
+                "cache_read_input_tokens": 28089,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1220
+                },
+                "output_tokens": 8,
+                "service_tier": "standard",
+                "inference_geo": "global"
+              },
+              {
+                "input_tokens": 4,
+                "cache_creation_input_tokens": 1220,
+                "cache_read_input_tokens": 28089,
+                "output_tokens": 1078,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                }
+              }
+            ]
+          },
+          "raw_event_json": {
+            "usage": {
+              "input_tokens": 4,
+              "output_tokens": 1078,
+              "total_tokens": 1082,
+              "usage_scope": "per_call",
+              "model_provider": "ANTHROPIC",
+              "provider_name": "Anthropic",
+              "model_identifier": "claude-opus-5-5",
+              "model_value": "claude-opus-5-5",
+              "input_token_semantic": "base_excludes_cache",
+              "cache_state": "positive",
+              "standard_input_tokens": 4,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 28089,
+              "cache_creation_input_tokens": 1220,
+              "cache_creation_5m_input_tokens": 0,
+              "cache_creation_1h_input_tokens": 1220,
+              "reasoning_output_tokens": 0,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null,
+              "raw_usage_json": {
+                "events": [
+                  {
+                    "input_tokens": 4,
+                    "cache_creation_input_tokens": 1220,
+                    "cache_read_input_tokens": 28089,
+                    "cache_creation": {
+                      "ephemeral_5m_input_tokens": 0,
+                      "ephemeral_1h_input_tokens": 1220
+                    },
+                    "output_tokens": 8,
+                    "service_tier": "standard",
+                    "inference_geo": "global"
+                  },
+                  {
+                    "input_tokens": 4,
+                    "cache_creation_input_tokens": 1220,
+                    "cache_read_input_tokens": 28089,
+                    "output_tokens": 1078,
+                    "output_tokens_details": {
+                      "thinking_tokens": 0
+                    }
+                  }
+                ]
+              },
+              "quality_flags": []
+            },
+            "turn_id": "turn_0004",
+            "llm_call_id": "turn_0004:compaction:compaction_operation_mv4570ro_1:1",
+            "runtime_kind": "autobyteus",
+            "ingestion_kind": "autobyteus_compaction",
+            "idempotency_key": "compaction_cache_auditor_a26dac02_2c8be09bc61a4f24a72d9df53176a981:turn_0004:compaction:compaction_operation_mv4570ro_1:1",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 233052,
+            "context_window_usage_percent": null,
+            "observed_at": "2026-10-11T18:14:34.925Z"
+          },
+          "quality_flags": []
+        }
+      ],
+      "runSummary": {
+        "usageReportCount": 29,
+        "standardInputTokens": 70,
+        "cacheReadInputTokens": 507969,
+        "cacheCreationInputTokens": 35894,
+        "outputTokens": 5441,
+        "estimatedApiTotalCost": 0.4978458,
+        "apiCostStatus": "estimated",
+        "cacheState": "positive"
+      },
+      "providerCalls": 29
+    },
+    "at": "2026-10-11T18:14:44.534Z"
+  },
+  {
+    "case": "CCR-E2E-002",
+    "name": "CCR-E2E-002: tools changed in Settings before the compaction turn: the summary request carries no thinking and is accepted (strict)",
+    "state": "fail",
+    "errors": [
+      "T4: {\"turn_id\":\"turn_0004\",\"compaction_operation_id\":\"compaction_operation_mv45c4pk_1\",\"requested_turn_id\":\"turn_0003\",\"execution_turn_id\":\"turn_0004\",\"phase\":\"failed\",\"error_message\":\"Memory compaction failed before dispatch [target_unattainable]: Compaction target is unattainable because required context and reserves meet or exceed it.\"}: expected { type: 'COMPACTION_STATUS', …(1) } to be null"
+    ],
+    "details": {
+      "settingMessage": "Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' has been updated successfully.",
+      "compactionInT3": 0,
+      "thinkingBlocksInLastRequestBefore": 32,
+      "summaryCalls": [],
+      "toolsChanged": null,
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv45c4pk_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "phase": "failed",
+          "error_message": "Memory compaction failed before dispatch [target_unattainable]: Compaction target is unattainable because required context and reserves meet or exceed it."
+        },
+        {
+          "type": "COMPACTION_BLOCKED",
+          "block": {
+            "operationId": "compaction_operation_mv45c4pk_1",
+            "failureEpoch": 1
+          },
+          "recovery": {
+            "operationId": "compaction_operation_mv45c4pk_1",
+            "failureEpoch": 1,
+            "position": {
+              "kind": "held_turn",
+              "turnId": "turn_0004"
+            },
+            "state": "awaiting_user",
+            "code": "target_unattainable",
+            "message": "Compaction failed — send a message to retry"
+          }
+        }
+      ],
+      "agentCalls": []
+    },
+    "at": "2026-10-11T18:18:21.509Z"
+  },
+  {
+    "case": "CCR-E2E-003",
+    "name": "CCR-E2E-003: Gemini (transcript summary mode) compacts on its own model, continues, and meters the call",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "modes": [
+        "transcript"
+      ],
+      "summaryCalls": [
+        {
+          "index": 59,
+          "phase": "CCR3-T5",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 710,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 35906,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "output": 710
+          },
+          "strictInjected": false,
+          "cacheShare": 0,
+          "mode": "transcript",
+          "systemInstruction": "You summarize the conversation history of a target agent so the target agent can continue later without rereading the fu"
+        }
+      ],
+      "agentSystemInstructions": [
+        "## Agent Identity\n\n- Name: compaction-cache-chat-69806f4f\n- Description: Live native-runtime validation agent.\n\n### Responsibilities and Boundaries\n\nYou are a helpful assistant. Answer the user's requ"
+      ],
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "phase": "requested",
+          "turn_id": "turn_0005",
+          "compaction_operation_id": "compaction_operation_mv45ck2d_1",
+          "requested_turn_id": "turn_0005"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0005",
+          "compaction_operation_id": "compaction_operation_mv45ck2d_1",
+          "requested_turn_id": "turn_0005",
+          "execution_turn_id": "turn_0005",
+          "selected_block_count": 7,
+          "raw_trace_count": 7,
+          "phase": "started"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0005",
+          "compaction_operation_id": "compaction_operation_mv45ck2d_1",
+          "requested_turn_id": "turn_0005",
+          "execution_turn_id": "turn_0005",
+          "selected_block_count": 7,
+          "raw_trace_count": 7,
+          "compaction_model_identifier": "gemini-3.8-flash",
+          "summarizer_provider": "GEMINI",
+          "compaction_invocation_id": "compaction_compaction_operation_mv45ck2d_1_1",
+          "completion_status": "complete",
+          "completion_reason": "STOP",
+          "summary_char_count": 2069,
+          "summary_token_count": 531,
+          "phase": "completed",
+          "compacted_block_count": 7
+        }
+      ],
+      "meterFrames": [
+        {
+          "usage_event_id": "116f4983-064d-4ab9-b37c-ba228f721284",
+          "idempotency_key": "compaction_cache_chat_69806f4f_dcdeb42321094d9f972a1ce31f9225d1:turn_0005:compaction:compaction_operation_mv45ck2d_1:1",
+          "observed_at": "2026-10-11T18:18:36.862Z",
+          "run_id": "compaction_cache_chat_69806f4f_dcdeb42321094d9f972a1ce31f9225d1",
+          "root_team_run_id": null,
+          "turn_id": "turn_0005",
+          "llm_call_id": "turn_0005:compaction:compaction_operation_mv45ck2d_1:1",
+          "call_sequence": null,
+          "agent_definition_id": "compaction-cache-chat-69806f4f",
+          "workspace_id": "agent_ws_46f319cf04dd80a365f6dc92853315d205c0531b6173a104d93c0c9612ae885c",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "compaction-cache-chat-69806f4f",
+          "run_summary": "Note 1: warehouse bin 1 holds 7 units of part P-1001. Note 2: warehouse bin 2 holds 14 units of p...",
+          "run_created_at": "2026-10-11T18:18:21.577Z",
+          "member_display_name": null,
+          "runtime_kind": "autobyteus",
+          "model_provider": "GEMINI",
+          "provider_name": "Gemini",
+          "model_identifier": "gemini-3.8-flash",
+          "model_value": "gemini-3.8-flash",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "claude_sdk_main_loop_usage": null,
+          "ingestion_kind": "autobyteus_compaction",
+          "usage_scope": "per_call",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 35906,
+          "reported_output_tokens": 710,
+          "reported_total_tokens": 36616,
+          "accounting_input_tokens": 35906,
+          "accounting_output_tokens": 710,
+          "accounting_total_tokens": 36616,
+          "standard_input_tokens": 35906,
+          "cache_miss_input_tokens": 35906,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "not_reported",
+          "reasoning_output_tokens": null,
+          "billable_input_tokens": 35906,
+          "billable_output_tokens": 710,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.75,
+          "output_price_per_million": 3.75,
+          "cached_input_read_price_per_million": 0.075,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash:gemini-3-8-flash-introductory-2026-09-02:introductory",
+            "price_config_id": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash",
+            "model_provider": "GEMINI",
+            "model_identifier": "gemini-3.8-flash",
+            "model_value": "gemini-3.8-flash",
+            "canonical_name": "gemini-3.8-flash",
+            "currency": "USD",
+            "input_price_per_million": 0.75,
+            "output_price_per_million": 3.75,
+            "cached_input_read_price_per_million": 0.075,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": "gemini-3-8-flash-introductory-2026-09-02",
+            "pricing_schedule_period_id": "introductory",
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash:gemini-3-8-flash-introductory-2026-09-02:introductory",
+          "selected_pricing_tier_id": null,
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.026929500000000002,
+          "estimated_api_standard_input_cost": 0.026929500000000002,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0026625,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.029592,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 35906,
+          "meter_delta_output_tokens": 710,
+          "meter_delta_total_tokens": 36616,
+          "run_summary_after_event": {
+            "run_id": "compaction_cache_chat_69806f4f_dcdeb42321094d9f972a1ce31f9225d1",
+            "root_team_run_id": null,
+            "agent_definition_id": "compaction-cache-chat-69806f4f",
+            "workspace_id": "agent_ws_46f319cf04dd80a365f6dc92853315d205c0531b6173a104d93c0c9612ae885c",
+            "gross_input_tokens": 180948,
+            "standard_input_tokens": 84060,
+            "cache_miss_input_tokens": 84060,
+            "cache_read_input_tokens": 96888,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 715,
+            "reasoning_output_tokens": 0,
+            "billable_output_tokens": 715,
+            "total_tokens": 181663,
+            "cache_read_input_token_rate": 0.5354466476556801,
+            "standard_input_token_rate": 0.46455335234431994,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.0703116,
+            "estimated_api_standard_input_cost": 0.063045,
+            "estimated_api_cache_read_input_cost": 0.0072666,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.00268125,
+            "estimated_api_reasoning_output_cost": null,
+            "estimated_api_total_cost": 0.07299285,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash:gemini-3-8-flash-introductory-2026-09-02:introductory",
+            "selected_pricing_tier_id": null,
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.75
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.075
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 3.75
+              },
+              "reasoning_output": {
+                "status": "not_applicable",
+                "price_per_million": null
+              }
+            },
+            "usage_report_count": 6,
+            "updated_at": "2026-10-11T18:18:36.862Z",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 224604,
+            "context_window_usage_percent": null,
+            "latest_model_provider": "GEMINI",
+            "latest_model_identifier": "gemini-3.8-flash",
+            "latest_runtime_kind": "autobyteus",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": null,
+          "effective_context_window_tokens": 224604,
+          "context_window_usage_percent": null,
+          "raw_usage_json": {
+            "promptTokenCount": 35906,
+            "candidatesTokenCount": 710,
+            "totalTokenCount": 36616,
+            "trafficType": "ON_DEMAND",
+            "promptTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 35906
+              }
+            ],
+            "candidatesTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 710
+              }
+            ]
+          },
+          "raw_event_json": {
+            "usage": {
+              "input_tokens": 35906,
+              "output_tokens": 710,
+              "total_tokens": 36616,
+              "usage_scope": "per_call",
+              "model_provider": "GEMINI",
+              "provider_name": "Gemini",
+              "model_identifier": "gemini-3.8-flash",
+              "model_value": "gemini-3.8-flash",
+              "input_token_semantic": "gross_includes_cache",
+              "cache_state": "not_reported",
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "billable_input_tokens": null,
+              "billable_output_tokens": 710,
+              "raw_usage_json": {
+                "promptTokenCount": 35906,
+                "candidatesTokenCount": 710,
+                "totalTokenCount": 36616,
+                "trafficType": "ON_DEMAND",
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 35906
+                  }
+                ],
+                "candidatesTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 710
+                  }
+                ]
+              },
+              "quality_flags": []
+            },
+            "turn_id": "turn_0005",
+            "llm_call_id": "turn_0005:compaction:compaction_operation_mv45ck2d_1:1",
+            "runtime_kind": "autobyteus",
+            "ingestion_kind": "autobyteus_compaction",
+            "idempotency_key": "compaction_cache_chat_69806f4f_dcdeb42321094d9f972a1ce31f9225d1:turn_0005:compaction:compaction_operation_mv45ck2d_1:1",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 224604,
+            "context_window_usage_percent": null,
+            "observed_at": "2026-10-11T18:18:36.862Z"
+          },
+          "quality_flags": []
+        }
+      ],
+      "agentCalls": [
+        {
+          "index": 54,
+          "phase": "CCR3-T1",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 13162,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 55,
+          "phase": "CCR3-T2",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 21875,
+            "cacheRead": 12023,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 56,
+          "phase": "CCR3-T3",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 30588,
+            "cacheRead": 20156,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 57,
+          "phase": "CCR3-T4",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 39703,
+            "cacheRead": 28314,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 58,
+          "phase": "CCR3-T5",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 39714,
+            "cacheRead": 36395,
+            "cacheWrite": 0,
+            "output": 1
+          },
+          "strictInjected": false
+        },
+        {
+          "index": 60,
+          "phase": "CCR3-T6",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 65536
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 4,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 5549,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "output": 4
+          },
+          "strictInjected": false
+        }
+      ],
+      "answer": "4900"
+    },
+    "at": "2026-10-11T18:18:38.557Z"
+  },
+  {
+    "case": "CCR-E2E-004",
+    "name": "CCR-E2E-004: a small configured output limit: the cached summary request carries the fitted raised limit and still reads from the cache (strict)",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "triggerSettings": {
+        "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE": "132284",
+        "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO": "0.2125"
+      },
+      "agentOutputLimit": 4096,
+      "context": 132284,
+      "ceiling": 16384,
+      "summaryCalls": [
+        {
+          "index": 86,
+          "phase": "CCR4-T4",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 16384
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 2740,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 36278,
+            "cacheRead": 34997,
+            "cacheWrite": 1277,
+            "output": 2740
+          },
+          "strictInjected": true,
+          "maxTokens": 16384,
+          "cacheShare": 0.9646893434037157,
+          "thinkingBlocks": 19
+        }
+      ],
+      "agentMaxTokens": [
+        4096
+      ],
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "phase": "requested",
+          "turn_id": "turn_0003",
+          "compaction_operation_id": "compaction_operation_mv45fzmr_1",
+          "requested_turn_id": "turn_0003"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv45fzmr_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 23,
+          "raw_trace_count": 81,
+          "phase": "started"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv45fzmr_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 23,
+          "raw_trace_count": 81,
+          "compaction_model_identifier": "claude-opus-5-5",
+          "summarizer_provider": "ANTHROPIC",
+          "compaction_invocation_id": "compaction_compaction_operation_mv45fzmr_1_1",
+          "completion_status": "complete",
+          "completion_reason": "end_turn",
+          "summary_char_count": 4427,
+          "summary_token_count": 1120,
+          "phase": "completed",
+          "compacted_block_count": 23
+        }
+      ]
+    },
+    "at": "2026-10-11T18:22:03.155Z"
+  }
+]

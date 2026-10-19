@@ -4,12 +4,13 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
 import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../domain/task-agent-execution.js";
-import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation } from "../../domain/prepared-task-execution.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import { FlatAgentExecutionContext, type FlatTeamExecutionContext } from "../flat-team-execution-context.js";
 import { FlatTeamAgentExecutionHandle } from "../flat-team-agent-execution-handle.js";
 import { createTeamAgentStatusSnapshot, type TeamAgentStatusSnapshot } from "../../domain/team-agent-status.js";
-import type { RootedAgentMemoryLocator } from "../../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { TASK_AGENT_PLACEMENT } from "../../../agent-memory/domain/agent-run-memory-placement.js";
+import type { AgentRunMemoryLocator } from "../../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { FlatTeamExecutionCallbacks } from "../flat-team-execution-callbacks.js";
@@ -31,7 +32,7 @@ export class TaskAgentExecutionRegistry {
   constructor(private readonly options: {
     teamContext: TeamRunContext<FlatTeamExecutionContext>;
     agentRunManager?: AgentRunManager;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     callbacks: FlatTeamExecutionCallbacks;
@@ -88,6 +89,7 @@ export class TaskAgentExecutionRegistry {
           platformAgentRunId: input.platformAgentRunId,
         }),
         config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: input.platformAgentRunId }),
+        memoryPlacement: TASK_AGENT_PLACEMENT,
         activationMode: "restore",
         agentRunManager: this.options.agentRunManager,
         memoryLocator: this.options.memoryLocator,
@@ -96,6 +98,9 @@ export class TaskAgentExecutionRegistry {
         callbacks: this.options.callbacks,
       });
       this.active.set(runId, handle);
+    } else if (handle.isStopped()) {
+      // A retained handle (idle shutdown or user Stop) resumes on the copy's current effective launch.
+      handle.replaceModelChoice(input.sourceNode);
     }
     await handle.getOrCreateAgentRun();
   }
@@ -120,6 +125,7 @@ export class TaskAgentExecutionRegistry {
         platformAgentRunId: null,
       }),
       config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: null }),
+      memoryPlacement: TASK_AGENT_PLACEMENT,
       activationMode: "fresh",
       agentRunManager: this.options.agentRunManager,
       memoryLocator: this.options.memoryLocator,
@@ -258,6 +264,27 @@ export class TaskAgentExecutionRegistry {
       });
       if (!result.accepted) {
         throw new TaskExecutionTeardownIndeterminateError(agentRunId, result.message ?? `Task AgentRun '${agentRunId}' shutdown was rejected.`);
+      }
+      return true;
+    } finally {
+      this.shuttingDown.delete(agentRunId);
+    }
+  }
+
+  /**
+   * User Stop (DS-002): interrupts the task Agent and releases its runtime whether or not it is
+   * quiet. The handle stays registered with input open, so the next message restores it.
+   */
+  async shutDownForUser(agentRunId: string): Promise<boolean> {
+    const handle = this.active.get(agentRunId);
+    if (!handle || !this.isLive(agentRunId) || this.shuttingDown.has(agentRunId)) return false;
+    this.shuttingDown.add(agentRunId);
+    try {
+      const result = await handle.releaseRuntimeForUserStop().catch((cause: unknown) => {
+        throw new TaskExecutionTeardownIndeterminateError(agentRunId, `Task AgentRun '${agentRunId}' stop did not finish.`, { cause });
+      });
+      if (!result.accepted) {
+        throw new TaskExecutionTeardownIndeterminateError(agentRunId, result.message ?? `Task AgentRun '${agentRunId}' stop was rejected.`);
       }
       return true;
     } finally {

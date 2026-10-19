@@ -1037,7 +1037,7 @@ Synthetic archive-timestamp hazards are not proof of an actual installed failure
 These destination/resource rules do not change managed release assets, local
 model policy, IPC result shape or persisted extension settings. See
 [Projects](projects.md#optional-local-voice-destination) for Project/Task authoring scope
-and the [composer voice lifetime regression](../../TESTING.md#composer-voice-lifetime-regression)
+and the [composer voice lifetime regression](../tests/e2e/composer-voice-lifetime-probe.mjs)
 for repeatable renderer/native-browser coverage and its evidence limits.
 
 ## Related Documentation

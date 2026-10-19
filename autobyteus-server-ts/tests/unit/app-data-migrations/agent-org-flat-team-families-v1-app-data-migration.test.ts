@@ -16,8 +16,7 @@ import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { getTaskDelegationRecordsV1Path } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
 import { getAgentOrgTaskDelegationRecordsV1Path } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
-import { getTeamCommunicationMessagesV1Path } from "../../../src/services/team-communication/team-communication-v1-store.js";
-import { getAgentOrgCommunicationMessagesV1Path } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { getAgentOrgCommunicationMessagesPath, getTeamCommunicationMessagesPath } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
 import {
@@ -57,7 +56,7 @@ const writeTeamPackage = async (directory: string, runId: string, tree: unknown,
   await fs.mkdir(directory, { recursive: true });
   await fs.writeFile(getTeamRunExecutionTreePath(directory), json(tree));
   await fs.writeFile(getTaskDelegationRecordsV1Path(directory), json({ schemaVersion: 1, rootTeamRunId: sidecarRunId, records: [] }));
-  await fs.writeFile(getTeamCommunicationMessagesV1Path(directory), json({ schemaVersion: 1, rootTeamRunId: sidecarRunId, messages: [] }));
+  await fs.writeFile(getTeamCommunicationMessagesPath(directory), json({ schemaVersion: 1, rootTeamRunId: sidecarRunId, messages: [] }));
 };
 const flatTree = (runId: string) => {
   const lead = testAgentNode("/lead", { agentRunId: `${runId}-lead`, workspaceRootPath: "/workspace" });
@@ -449,10 +448,10 @@ describe("AgentOrg flat-Team family startup migration", () => {
     const tree = JSON.parse(await fs.readFile(getAgentOrgRunExecutionTreePath(target), "utf8"));
     expect(tree).toMatchObject({ schemaVersion: 1, subjectKind: "agent_org", rootOrg: { orgRunId: runId, orgDefinitionId: "software-org" } });
     expect(JSON.parse(await fs.readFile(getAgentOrgTaskDelegationRecordsV1Path(target), "utf8"))).toEqual({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: runId, records: [] });
-    expect(JSON.parse(await fs.readFile(getAgentOrgCommunicationMessagesV1Path(target), "utf8"))).toEqual({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: runId, messages: [] });
+    expect(JSON.parse(await fs.readFile(getAgentOrgCommunicationMessagesPath(target), "utf8"))).toEqual({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: runId, messages: [] });
     await expect(fs.access(getTeamRunExecutionTreePath(target))).rejects.toMatchObject({ code: "ENOENT" });
     await expect(fs.access(getTaskDelegationRecordsV1Path(target))).rejects.toMatchObject({ code: "ENOENT" });
-    await expect(fs.access(getTeamCommunicationMessagesV1Path(target))).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(fs.access(getTeamCommunicationMessagesPath(target))).rejects.toMatchObject({ code: "ENOENT" });
     expect((await new TeamRunHistoryIndexStore(env.memoryDir).readIndexStrict()).rows).toEqual([]);
     expect(await new AgentOrgRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([expect.objectContaining({ orgRunId: runId, summary: "Preserved summary", terminatedAt: "2026-08-16T00:00:00.000Z" })]);
   });
@@ -516,7 +515,7 @@ describe("AgentOrg flat-Team family startup migration", () => {
   it("cleans retired Team authorities from a completely written current Org package on restart", async () => {
     const env = await createEnvironment(); const runId = "retry-run"; const source = env.layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
     await writeTeamPackage(source, runId, orgLikeTree(runId)); expect((await env.migration().execute()).status).toBe("SUCCEEDED");
-    const target = env.layout.getOrgDirPath(runId); await fs.writeFile(getTeamRunExecutionTreePath(target), json(orgLikeTree(runId))); await fs.writeFile(getTaskDelegationRecordsV1Path(target), json({ schemaVersion: 1, rootTeamRunId: runId, records: [] })); await fs.writeFile(getTeamCommunicationMessagesV1Path(target), json({ schemaVersion: 1, rootTeamRunId: runId, messages: [] }));
+    const target = env.layout.getOrgDirPath(runId); await fs.writeFile(getTeamRunExecutionTreePath(target), json(orgLikeTree(runId))); await fs.writeFile(getTaskDelegationRecordsV1Path(target), json({ schemaVersion: 1, rootTeamRunId: runId, records: [] })); await fs.writeFile(getTeamCommunicationMessagesPath(target), json({ schemaVersion: 1, rootTeamRunId: runId, messages: [] }));
     const retry = await env.migration().execute();
     expect(retry.status).toBe("SUCCEEDED"); expect(detailCount(retry, "CLEANED_CURRENT_ORG")).toBe(1);
     await expect(fs.access(getTeamRunExecutionTreePath(target))).rejects.toMatchObject({ code: "ENOENT" });

@@ -92,7 +92,7 @@ const createThread = (
 
 const createMemberExecutionContext = () =>
   new MemberExecutionContext({
-    teamScoped: true,
+    teamScoped: true, collaborationRole: "team_member",
     identity: {
       root: createTeamRootExecutionIdentity("team-1"),
       memberAddress: "/ping",
@@ -1066,13 +1066,14 @@ describe("CodexThread token usage readiness", () => {
         ingestion_kind: "codex_thread_token_usage",
         usage_scope: "cumulative_snapshot",
         snapshot_series_key: "codex_thread:thread-1",
-        idempotency_key: "codex_token_usage:run-auto:thread-1:turn-usage-1:cumulative_snapshot:100:x:50:x:150",
+        idempotency_key: "codex_token_usage:run-auto:thread-1:turn-usage-1:cumulative_snapshot:100:x:50:x:150:15",
+        reports_model_call: true,
         reported_input_tokens: 100,
         reported_output_tokens: 50,
         reported_total_tokens: 150,
         input_token_semantic: "gross_includes_cache",
         cache_state: "not_reported",
-        latest_prompt_tokens: 10,
+        latest_prompt_tokens: 15,
         effective_context_window_tokens: null,
         context_window_usage_percent: null,
         model_provider: "OPENAI",
@@ -1134,9 +1135,9 @@ describe("CodexThread token usage readiness", () => {
         cache_read_input_tokens: 60,
         cache_state: "positive",
         reasoning_output_tokens: 30,
-        latest_prompt_tokens: 16,
+        latest_prompt_tokens: 24,
         effective_context_window_tokens: 128000,
-        context_window_usage_percent: 0.0125,
+        context_window_usage_percent: 0.01875,
         raw_usage_json: {
           totalTokens: 240,
           inputTokens: 160,
@@ -1307,7 +1308,7 @@ describe("CodexThread token usage readiness", () => {
         reported_total_tokens: 180,
         input_token_semantic: "gross_includes_cache",
         cache_state: "not_reported",
-        latest_prompt_tokens: 11,
+        latest_prompt_tokens: 18,
         effective_context_window_tokens: null,
         context_window_usage_percent: null,
         raw_usage_json: { totalTokens: 180, inputTokens: 110, outputTokens: 70 },
@@ -1344,7 +1345,9 @@ describe("CodexThread token usage readiness", () => {
         turnId: "turn-usage-total-1",
         usage_scope: "cumulative_snapshot",
         snapshot_series_key: "codex_thread:thread-total-1",
-        idempotency_key: "codex_token_usage:codex-usage-event-total-1:run-auto:thread-total-1:turn-usage-total-1:cumulative_snapshot:1100:700:300:120:1400",
+        idempotency_key: "codex_token_usage:codex-usage-event-total-1:run-auto:thread-total-1:turn-usage-total-1:cumulative_snapshot:1100:700:300:120:1400:x",
+        // Without `last`, Codex reported no per-call figure: no model call, no context reading.
+        reports_model_call: false,
         reported_input_tokens: 1100,
         reported_output_tokens: 300,
         reported_total_tokens: 1400,
@@ -1352,9 +1355,9 @@ describe("CodexThread token usage readiness", () => {
         cache_read_input_tokens: 700,
         cache_state: "positive",
         reasoning_output_tokens: 120,
-        latest_prompt_tokens: 1100,
+        latest_prompt_tokens: null,
         effective_context_window_tokens: 200000,
-        context_window_usage_percent: 0.5499999999999999,
+        context_window_usage_percent: null,
         raw_usage_json: {
           totalTokens: 1400,
           inputTokens: 1100,
@@ -1623,5 +1626,177 @@ describe("Task-owned exact Codex input release", () => {
     expect(client.request.mock.calls.map(([method]) => method)).toEqual(["turn/interrupt", "turn/interrupt"]);
     await thread.releaseRuntimeInput();
     expect(client.request).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("CodexThread exact-turn rejection logging", () => {
+  const DETAILED = "[CodexSegmentTurnAdmissionRejected]";
+  const SUMMARY = "[CodexSegmentTurnAdmissionRejectedSummary]";
+  const spyOnRejectionLines = () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const lines = (tag: string) =>
+      warn.mock.calls.filter((call) => call[0] === tag).map((call) => call[1]);
+    return { warn, lines };
+  };
+  const lateCommandCompleted = (turnId: string) => ({
+    turnId,
+    item: { type: "commandExecution", id: `cmd-${turnId}`, status: "completed", command: "secret-cmd" },
+  });
+
+  it("writes one detailed line for a whole rejected turn and one count summary at the next turn start (AC-001)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      const messages: unknown[] = [];
+      thread.subscribeAppServerMessages((message) => messages.push(message));
+
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_STARTED, {
+        turnId: "turn-t", item: { type: "agentMessage", id: "m-1" },
+      });
+      for (let index = 0; index < 437; index += 1) {
+        thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+          turnId: "turn-t", itemId: "m-1", delta: "lost text",
+        });
+      }
+
+      expect(messages).toEqual([]);
+      expect(lines(DETAILED)).toEqual([{
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        runId: "run-auto",
+        nativeEventName: CodexThreadEventName.ITEM_STARTED,
+        reasonCode: "CODEX_SEGMENT_TURN_INACTIVE",
+        itemType: "agentMessage",
+        turnId: "turn-t",
+        activeTurnId: null,
+      }]);
+      expect(lines(SUMMARY)).toEqual([]);
+
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, { turn: { id: "turn-u" } });
+
+      expect(lines(DETAILED)).toHaveLength(1);
+      expect(lines(SUMMARY)).toEqual([{
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER, runId: "run-auto", turnId: "turn-t", count: 437,
+      }]);
+      expect(thread.activeTurnId).toBe("turn-u");
+      expect(JSON.stringify(warn.mock.calls)).not.toContain("lost text");
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("writes one detailed CONFLICT line per late tool item of distinct ended turns and no summary (AC-002, AC-006)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+      thread.subscribeAppServerMessages((message) => messages.push(message));
+      thread.markTurnStarted("turn-u");
+
+      for (const turnId of ["turn-t1", "turn-t2", "turn-t3"]) {
+        thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted(turnId));
+      }
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+        turnId: "turn-u", itemId: "m-u", delta: "admitted",
+      });
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, { turn: { id: "turn-u" } });
+
+      expect(lines(DETAILED)).toEqual(["turn-t1", "turn-t2", "turn-t3"].map((turnId) => ({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        runId: "run-auto",
+        nativeEventName: CodexThreadEventName.ITEM_COMPLETED,
+        reasonCode: "CODEX_SEGMENT_TURN_CONFLICT",
+        itemType: "commandExecution",
+        turnId,
+        activeTurnId: "turn-u",
+      })));
+      expect(lines(SUMMARY)).toEqual([]);
+      expect(JSON.stringify(warn.mock.calls)).not.toContain("secret-cmd");
+      expect(messages.some((message) =>
+        message.method === CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA &&
+        message.params.turn_id === "turn-u" &&
+        message.params.delta === "admitted"
+      )).toBe(true);
+      expect(messages.some((message) => message.params.turnId === "turn-t1")).toBe(false);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("logs itemType null for an item-less delta (AC-006)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      thread.markTurnStarted("turn-u");
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+        turnId: "turn-t", itemId: "m-t", delta: "x",
+      });
+      expect(lines(DETAILED)).toEqual([expect.objectContaining({
+        nativeEventName: CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA,
+        reasonCode: "CODEX_SEGMENT_TURN_CONFLICT",
+        itemType: null,
+        turnId: "turn-t",
+        activeTurnId: "turn-u",
+      })]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("uses one 'no turn id' account for rejected events without a turn id (AC-003)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      for (let index = 0; index < 3; index += 1) {
+        thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+          itemId: "m-1", delta: "x",
+        });
+      }
+      expect(lines(DETAILED)).toEqual([expect.objectContaining({
+        reasonCode: "CODEX_SEGMENT_TURN_INACTIVE", itemType: null, turnId: null, activeTurnId: null,
+      })]);
+
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, { turn: { id: "turn-u" } });
+      expect(lines(SUMMARY)).toEqual([expect.objectContaining({ turnId: null, count: 2 })]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("never writes a second detailed line for a turn whose account was already summarized (AC-008)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, { turn: { id: "turn-u" } });
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+
+      expect(lines(DETAILED)).toHaveLength(1);
+      expect(lines(SUMMARY)).toEqual([expect.objectContaining({ turnId: "turn-t", count: 1 })]);
+
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, { turn: { id: "turn-u" } });
+
+      expect(lines(DETAILED)).toHaveLength(1);
+      expect(lines(SUMMARY)).toEqual([
+        expect.objectContaining({ turnId: "turn-t", count: 1 }),
+        expect.objectContaining({ turnId: "turn-t", count: 2 }),
+      ]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("flushes pending counts when the app-server client closes", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleClientClosed(new Error("closed"));
+      expect(lines(SUMMARY)).toEqual([expect.objectContaining({ turnId: "turn-t", count: 1 })]);
+    } finally {
+      warn.mockRestore();
+    }
   });
 });

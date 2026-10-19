@@ -200,6 +200,21 @@ migration is `FAILED`; Memory Sync availability does not make that state
 successful. Delete propagation, remote corpus cleanup, and migration-status
 sync gating require separate product scope.
 
+### Task Agents As Their Own Runs
+
+Since `20261017_task_agent_own_run_v1`, a task agent (a delegated run) is a run of its own:
+`agents/<taskAgentRunId>/` or `agent_teams/<taskTeamRunId>/`. Memory Sync needs no change: those
+folders are exported like any run folder, now also the task agents of organization runs (whose
+memory used to sit inside `agent_orgs/`, which is not exported). The startup migration moves each
+task agent's folder once, so a node that synchronized before the upgrade re-exports the moved files
+once; the hub keeps the old nested copies as inert residue (no deletes are sent, as above).
+
+On the hub, imported memory shows a hub's task agents once the source node runs this release and
+syncs again; an import from a node not yet upgraded shows its hubs without task agents (there is no
+reader for the old layout). Task agents coordinated by an organization run are not listed in
+imported memory, because `agent_orgs/` is not exported and their link cannot be checked. Update
+every node together.
+
 ## Imported Memory Explorer
 
 The Memory page defaults to `Local Memory`. When imports exist, the Memory page

@@ -1,0 +1,17 @@
+{
+  "selected": {
+    "when": "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+    "recipient_address": "/software_engineering_team/implementation_engineer"
+  },
+  "singleMostSpecificOutcomeRecipient": true,
+  "basis": "CRR-003 Fail / implementation-owned Local Fix; API-F001 confirmed setup-boundary defect",
+  "deliveryStatus": "DELIVERED",
+  "receipt": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/implementation_engineer.",
+    "target_agent_run_id": "implementation_engineer_2c60a2b9fdf1490c818f25289337aa21"
+  },
+  "reviewCommit": "164e871e55",
+  "additionalOutcomeRecipients": []
+}

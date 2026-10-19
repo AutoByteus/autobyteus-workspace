@@ -1,0 +1,26 @@
+diff --git a/autobyteus-server-ts/tests/e2e/projects/task-closure-root-visibility.e2e.test.ts b/autobyteus-server-ts/tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
+index 031f4be9c3..6332a930ae 100644
+--- a/autobyteus-server-ts/tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
+@@ -268,15 +268,18 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
+     send(callTool("send_message_to", { target_agent_run_id: aAssigned.agentRunId, content: "Status of Task A?" }));
+     // ... and to the copy Task A's worker sub-delegated to (messaging a copy by its run ID).
+     const subCopy = aNodes.find((node) => node !== aAssigned && node.agentRunId)!;
+-    send(callTool("send_message_to", { target_agent_run_id: subCopy.agentRunId, content: "Status of the sub-work?" }));
++    setTimeout(() => send(callTool("send_message_to", { target_agent_run_id: subCopy.agentRunId, content: "Status of the sub-work?" })), 4_000); // PTS-API-E2E TEMP timing injection
+     const touchesTaskA = (message: Record<string, any>) => taskARefs.some((ref) => JSON.stringify(message).includes((ref as any).agentRunId));
+     let before = snapshotOf(view.frames);
+     await until(async () => {
+       view.socket.close();
+       view = await openView();
+       before = snapshotOf(view.frames);
+-      return before.messages.some((message) => touchesTaskA(message) && JSON.stringify(message).includes(managerRunId));
+-    }, "Manager message with Task A's worker", 60_000);
++      // Both messages above are separate Manager turns, so one can reach the root view before the other: wait for
++      // what the assertions below need, not only for the first message.
++      return before.messages.some((message) => touchesTaskA(message) && JSON.stringify(message).includes(managerRunId))
++        && before.messages.filter(touchesTaskA).length >= 2;
++    }, "Manager messages with Task A's worker and its sub-copy", 60_000);
+     expect(before.closed).toEqual([]);
+     const aMessageIdsBefore = before.messages.filter(touchesTaskA).map((m) => m.messageId);
+     expect(aMessageIdsBefore.length).toBeGreaterThanOrEqual(2);

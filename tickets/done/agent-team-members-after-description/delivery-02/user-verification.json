@@ -1,0 +1,25 @@
+{
+  "recordedAt": "2026-10-13T05:04:37.174447+00:00",
+  "package": "agent-team-members-after-description",
+  "scope": "R1 Members-order UI only",
+  "humanAcceptance": {
+    "source": "Direct user message to Delivery Engineer",
+    "quote": "i have verified. now finaliize, no need to release a new version.",
+    "date": "2026-10-13",
+    "verified": true
+  },
+  "additionalAcceptanceAndShutdown": {
+    "source": "API/E2E Engineer relay plus api-human-01/setup-and-cleanup.md",
+    "quote": "perfect. working now shutdown it. all good now. i verified"
+  },
+  "releaseDecision": "No release / no new version explicitly requested",
+  "acceptedRuntime": "iso-56609-2c4d/source-current macOS ARM64 worktree app, canonical package snapshot shown",
+  "instanceStopped": true,
+  "instanceCleanupAuthority": "api-human-01/isolated-stop.json and cleanup-check.json",
+  "scopeExclusions": "API-F001/API-F002 remain unresolved; historical expanded API-REV-002 Fail remains; no cache-fix review/acceptance",
+  "sourceAfterUserAcceptance": "Only API-owned cleanup/acceptance evidence commit a12318f4c2a07cd0c97179054fdcd7799cfdca9e; no runtime change",
+  "freshRemoteTargetAfterAcceptance": "dec0f562ce6f26a09d1e6f59d59e838142cb4865",
+  "targetAlreadyIntegrated": true,
+  "renewedVerificationRequired": false,
+  "candidateHead": "a12318f4c2a07cd0c97179054fdcd7799cfdca9e"
+}

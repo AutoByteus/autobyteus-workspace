@@ -1,0 +1,8 @@
+Started explicit start owned current node before native storage selection
+explicit start owned current node before native storage selection: Pass
+Started public detach existing no-node attachment before changing selected set
+public detach existing no-node attachment before changing selected set: Pass
+Started public native create selects existing current managed Docker client
+public native create selects existing current managed Docker client: Pass
+Linux native-storage managedDocker client actual public admission and current private/source/config preservation Pass; no peer/physical claim
+{"result": "Pass", "fatal": null}

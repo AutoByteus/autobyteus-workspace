@@ -1,5 +1,6 @@
 import type { ProjectTaskContextFile, ProjectTaskContextFileView, ProjectTaskContextDraft, ProjectTaskContextChanges } from "./project-task-context.js";
 import type { ProjectTaskStatus } from "./task-status.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 
 /** A workspace link as persisted inside a Project record. */
 export interface ProjectWorkspaceLink {
@@ -13,9 +14,15 @@ export type { ProjectTaskStatus } from "./task-status.js";
 /** A Task as persisted in `<projectId>/tasks/<taskId>/task.json` (which also records its `projectId`). It has no title; the description is the content. */
 export interface ProjectTask {
   taskId: string;
+  /** The readable key `<prefix>-<number>`, assigned at creation and never changed. */
+  taskKey: string;
   description: string;
   status: ProjectTaskStatus;
   contextFiles?: ProjectTaskContextFile[];
+  /** Other Tasks of the same Project this Task depends on (informs only); absent in a file means none. */
+  dependsOnTaskIds: string[];
+  /** The Task of the same Project this Task is part of (its parent, one level only); null (or absent in a file) means none. */
+  partOfTaskId: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,13 +30,21 @@ export interface ProjectTask {
 /** Where a Task lives: under its Project, or (`projectId: null`) as an ad-hoc Task with no Project. */
 export type TaskLocation = Readonly<{ projectId: string | null; taskId: string }>;
 
-/** The recorded identity and status of a Task after an update by its unique id. */
+/** The recorded identity and status of a Task after an update by its unique id or key. */
 export interface TaskAcknowledgementView {
   projectId: string | null;
   taskId: string;
+  /** The agent-facing Task ID: a Project Task's key, or a Task with no Project's ID. */
+  taskReference: string;
   status: ProjectTaskStatus;
+  /** A Project Task's dependencies (stored long IDs); absent for a Task with no Project. */
+  dependsOnTaskIds?: string[];
+  /** A Project Task's parent (stored long ID or null); absent for a Task with no Project. */
+  partOfTaskId?: string | null;
   /** The saved context files this update attached, in request order; present only when it attached any. */
   attachedContextFiles?: ProjectTaskContextFile[];
+  /** The keys of the open parts this update closed with their parent (DONE or CANCELLED); present only when it closed any. */
+  closedPartReferences?: string[];
 }
 
 /** A Project as persisted in `<appDataDir>/projects/<projectId>/project.json`; its Tasks live in their own folders. */
@@ -40,6 +55,14 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
   workspaces: ProjectWorkspaceLink[];
+  /** Task key allocation state; internal to the store and never returned by any API. */
+  taskKeys: ProjectTaskKeys;
+}
+
+/** A Project's key prefix (fixed when it was first keyed) and the highest Task number ever assigned in it. */
+export interface ProjectTaskKeys {
+  prefix: string;
+  lastNumber: number;
 }
 
 export type ProjectWorkspaceAvailability = "AVAILABLE" | "UNREGISTERED";
@@ -50,7 +73,7 @@ export interface ProjectWorkspaceView extends ProjectWorkspaceLink {
   availability: ProjectWorkspaceAvailability;
 }
 
-export interface ProjectView extends Omit<Project, "workspaces"> {
+export interface ProjectView extends Omit<Project, "workspaces" | "taskKeys"> {
   workspaces: ProjectWorkspaceView[];
   /** Number of open Tasks (status not `DONE` or `CANCELLED`); computed at read time. */
   openTaskCount: number;
@@ -97,6 +120,20 @@ export interface TaskWithoutProjectView {
   root: TaskRootView | null;
 }
 
+/** The current Task of a Task worker (the copy that is that Task's root); `projectId` null means a Temp task. */
+export interface TaskWorkerTaskView {
+  taskId: string;
+  projectId: string | null;
+  description: string;
+  status: ProjectTaskStatus;
+}
+
+/** One Task worker's answer: null when it is no Task's root, or its Task (or that Task's Project) no longer exists. */
+export interface TaskWorkerTaskResult {
+  execution: TaskExecutionReference;
+  task: TaskWorkerTaskView | null;
+}
+
 export interface ProjectWorkspaceInput { workspaceRootPath: string; description?: string | null }
 
 export interface CreateProjectCommand {
@@ -141,6 +178,10 @@ export interface CreateProjectTaskCommand {
   contextDraft?: ProjectTaskContextDraft | null;
   projectId: string;
   description: string;
+  /** Same-Project Task IDs; omitted or null means none. */
+  dependsOnTaskIds?: string[] | null;
+  /** The parent: a same-Project Task ID; omitted or null means none. */
+  partOfTaskId?: string | null;
 }
 
 export interface UpdateProjectTaskCommand {
@@ -149,6 +190,10 @@ export interface UpdateProjectTaskCommand {
   description?: string;
   status?: ProjectTaskStatus;
   contextChanges?: ProjectTaskContextChanges | null;
+  /** Replaces the stored list when supplied (`[]` clears it); omitted or null keeps it. */
+  dependsOnTaskIds?: string[] | null;
+  /** A same-Project Task ID replaces the parent, null clears it, omitted (undefined) keeps it. */
+  partOfTaskId?: string | null;
 }
 
 /**
@@ -160,10 +205,14 @@ export interface CreateTaskWithLocalContextFilesCommand {
   description: string;
   /** Normalized absolute node-local file paths; may be empty. */
   localContextFiles: string[];
+  /** Tasks of the same Project this one depends on, each by key or long ID; omitted means none. */
+  dependsOn?: string[];
+  /** The parent, a Task of the same Project by key or long ID; omitted means none. */
+  partOf?: string;
 }
 
 /**
- * A patch of any Task (Project or ad-hoc) by its unique id. `localContextFiles` (Project Tasks only)
+ * A patch of any Task (Project or ad-hoc) by its unique id, or a Project Task by its key. `localContextFiles` (Project Tasks only)
  * are copied in and appended to the saved context; existing saved context is never removed.
  */
 export interface UpdateTaskByIdCommand {
@@ -171,6 +220,10 @@ export interface UpdateTaskByIdCommand {
   description?: string;
   status?: ProjectTaskStatus;
   localContextFiles?: string[];
+  /** Replaces a Project Task's dependencies, each by key or long ID (`[]` clears); omitted keeps them. */
+  dependsOn?: string[];
+  /** Replaces a Project Task's parent, by key or long ID; "" or null clears it; omitted keeps it. */
+  partOf?: string | null;
 }
 
 export interface DeleteProjectTaskCommand {

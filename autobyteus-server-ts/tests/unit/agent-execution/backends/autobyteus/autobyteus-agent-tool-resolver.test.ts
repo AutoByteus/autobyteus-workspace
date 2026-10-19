@@ -43,7 +43,8 @@ describe('resolveAutoByteusAgentTools', () => {
     expect(resolution.tools).toHaveLength(1);
     expect(resolution.tools[0].definition?.name).toBe('read_file');
     expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('not found in registry'));
-    expect(logger.error).not.toHaveBeenCalled();
+    // delegate_task's own construction needs the real Task command port (not this test's subject).
+    expect(logger.error).not.toHaveBeenCalledWith(expect.stringMatching(/create_task|update_task|create_or_update_task/));
     expect(agentDefinition.toolNames).toBe(requestedToolNames);
     expect(agentDefinition.toolNames).toEqual([removedToolName, 'read_file']);
   });
@@ -70,39 +71,64 @@ describe('resolveAutoByteusAgentTools', () => {
     expect(agentDefinition.toolNames).toEqual([]);
   });
 
+  const memberContext = (teamScoped: boolean) => ({
+    teamScoped,
+    identity: { memberRunId: 'member-run', memberAddress: '/delegator' },
+    tasks: {},
+    collaboration: {},
+  }) as any;
+  const resolveFor = (toolNames: string[], teamScoped: boolean) => {
+    registerProjectTaskTools(); // The required project_tasks startup unit, as at server start.
+    const agentDefinition = new AgentDefinition({ name: 'Delegating agent', description: 'Task tool selection.', toolNames });
+    const memberExecutionContext = memberContext(teamScoped);
+    const logger = { warn: vi.fn(), error: vi.fn() };
+    // Only the member context's shape is a fixture; exposure, the registry and the Project tools are production.
+    const runtimeToolExposure = resolveAutoByteusRuntimeAgentToolExposure(agentDefinition, memberExecutionContext);
+    const resolution = resolveAutoByteusAgentTools({ agentDefinition, runtimeToolExposure, senderRunId: 'member-run', memberExecutionContext, logger });
+    return { runtimeToolExposure, resolution, logger };
+  };
+
   it.each([
     ['a standalone Agent-root host', false],
     ['a Team member', true],
-  ])('materializes create_or_update_task with delegate_task for %s that selected no tool (mention-delegation-dismissal AC-009)', (_label, teamScoped) => {
-    registerProjectTaskTools(); // The required project_tasks startup unit, as at server start.
-    const agentDefinition = new AgentDefinition({
-      name: 'Delegating agent',
-      description: 'Has no Project tool selected.',
-      toolNames: [],
-    });
-    // Only the member context's shape is a fixture; exposure, filtering, the registry and the Project tool are production.
-    const memberExecutionContext = {
-      teamScoped,
-      identity: { memberRunId: 'member-run', memberAddress: '/delegator' },
-      tasks: {},
-      collaboration: {},
-    } as any;
-    const logger = { warn: vi.fn(), error: vi.fn() };
+  ])('gives %s that selected no task tool neither create_task nor update_task (AC-001)', (_label, teamScoped) => {
+    const { runtimeToolExposure, resolution, logger } = resolveFor([], teamScoped);
+    expect(runtimeToolExposure.requestedToolNames).toEqual(expect.arrayContaining(['delegate_task']));
+    expect(runtimeToolExposure.requestedToolNames).not.toEqual(expect.arrayContaining(['create_task']));
+    expect(resolution.actualToolNames).not.toContain('create_task');
+    expect(resolution.actualToolNames).not.toContain('update_task');
+    expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('task'));
+  });
 
-    const runtimeToolExposure = resolveAutoByteusRuntimeAgentToolExposure(agentDefinition, memberExecutionContext);
-    const resolution = resolveAutoByteusAgentTools({
-      agentDefinition,
-      runtimeToolExposure,
-      senderRunId: 'member-run',
-      memberExecutionContext,
-      logger,
-    });
+  it.each([
+    ['a standalone Agent-root host', false],
+    ['a Team member', true],
+  ])('gives %s that selected create_task and update_task both native tools (ARCH-F-001)', (_label, teamScoped) => {
+    const { resolution, logger } = resolveFor(['create_task', 'update_task'], teamScoped);
+    expect(resolution.actualToolNames).toEqual(expect.arrayContaining(['create_task', 'update_task']));
+    expect(resolution.tools.map((tool) => tool.definition?.name)).toEqual(expect.arrayContaining(['create_task', 'update_task']));
+    expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining("'create_task'"));
+    expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining("'update_task'"));
+  });
 
+  it('launches an agent that still selects the removed create_or_update_task with no task tools and a warning (AC-007)', () => {
+    const { resolution, logger } = resolveFor(['create_or_update_task', 'read_file'], true);
+    expect(resolution.actualToolNames).toContain('read_file');
+    expect(resolution.actualToolNames).not.toContain('create_or_update_task');
+    expect(resolution.actualToolNames).not.toContain('create_task');
+    expect(resolution.actualToolNames).not.toContain('update_task');
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining("'create_or_update_task'"));
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('not found in registry'));
     // delegate_task's own construction needs the real Task command port (not this test's subject).
-    expect(runtimeToolExposure.requestedToolNames).toEqual(expect.arrayContaining(['delegate_task', 'create_or_update_task']));
-    expect(resolution.actualToolNames).toContain('create_or_update_task');
-    expect(resolution.tools.map((tool) => tool.definition?.name)).toContain('create_or_update_task');
-    expect(logger.warn).not.toHaveBeenCalledWith(expect.stringContaining('create_or_update_task'));
-    expect(agentDefinition.toolNames).toEqual([]);
+    expect(logger.error).not.toHaveBeenCalledWith(expect.stringMatching(/create_task|update_task|create_or_update_task/));
+  });
+
+  it('launches an agent that still selects the removed create_or_update_project without it and with its other tools, with a warning (remove-create-or-update-project AC-002)', () => {
+    const { resolution, logger } = resolveFor(['create_or_update_project', 'create_project', 'update_project', 'read_file'], true);
+    expect(resolution.actualToolNames).toEqual(expect.arrayContaining(['create_project', 'update_project', 'read_file']));
+    expect(resolution.actualToolNames).not.toContain('create_or_update_project');
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining("'create_or_update_project'"));
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('not found in registry'));
+    expect(logger.error).not.toHaveBeenCalledWith(expect.stringMatching(/project/));
   });
 });

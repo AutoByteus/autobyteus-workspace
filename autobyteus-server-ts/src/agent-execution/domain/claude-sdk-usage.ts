@@ -9,15 +9,6 @@ export interface ClaudeSdkModelUsage {
   cacheCreationInputTokens: number;
 }
 
-export interface ClaudeSdkMainLoopUsage {
-  inputTokens: number | null;
-  outputTokens: number | null;
-  cacheReadInputTokens: number | null;
-  cacheCreationInputTokens: number | null;
-  cacheCreation5mInputTokens: number | null;
-  cacheCreation1hInputTokens: number | null;
-}
-
 export type ClaudeSdkSelectedMatchState = "matched" | "missing" | "ambiguous";
 export interface ClaudeSdkSelectedBinding {
   selectedModelValue: string;
@@ -42,13 +33,6 @@ export const isClaudeSdkModelUsage = (value: unknown): value is ClaudeSdkModelUs
     countOf(row.cacheReadInputTokens) !== null && countOf(row.cacheCreationInputTokens) !== null);
 };
 
-export const isClaudeSdkMainLoopUsage = (value: unknown): value is ClaudeSdkMainLoopUsage => {
-  const row = recordOf(value);
-  return Boolean(row && ["inputTokens", "outputTokens", "cacheReadInputTokens", "cacheCreationInputTokens",
-    "cacheCreation5mInputTokens", "cacheCreation1hInputTokens"].every((field) =>
-    row[field] === null || countOf(row[field]) !== null));
-};
-
 export const isClaudeSdkModelUsageArray = (value: unknown): value is ClaudeSdkModelUsage[] => {
   if (!Array.isArray(value) || value.length > 32 || !value.every(isClaudeSdkModelUsage)) return false;
   const ids = value.map((row) => row.rawModelId);
@@ -62,12 +46,10 @@ export const isClaudeSdkResultIdentity = (value: {
   selected_resolved_raw_model_id?: unknown;
   selected_match_state?: unknown;
   claude_sdk_model_usage?: unknown;
-  claude_sdk_main_loop_usage?: unknown;
   model_identifier?: unknown;
 }): boolean => {
   if (value.runtime_kind !== "claude_agent_sdk" || value.ingestion_kind !== "claude_sdk_result" ||
-    !isClaudeSdkModelUsageArray(value.claude_sdk_model_usage) ||
-    !isClaudeSdkMainLoopUsage(value.claude_sdk_main_loop_usage)) return false;
+    !isClaudeSdkModelUsageArray(value.claude_sdk_model_usage)) return false;
   const rows = value.claude_sdk_model_usage;
   if (typeof value.selected_model_value !== "string" || !value.selected_model_value.trim()) return false;
   const rawId = value.selected_resolved_raw_model_id;

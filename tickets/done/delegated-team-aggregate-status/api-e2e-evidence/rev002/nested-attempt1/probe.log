@@ -1,0 +1,11 @@
+
+> autobyteus@1.5.5-beta.2 test:e2e:nested-team-aggregate-status /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web
+> node tests/e2e/nested-team-aggregate-status-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/api-e2e-evidence/rev002/nested
+
+Error: Unexpected browser runtime errors occurred
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:78:19)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:640:7
+    at runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:169:27)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:634:9
+Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/api-e2e-evidence/rev002/nested/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.

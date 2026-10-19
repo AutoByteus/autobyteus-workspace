@@ -103,19 +103,19 @@ async function harness(kind: RootSubjectKind, saved: { bindings?: Partial<Record
     }
   });
   const callbacks = { assertExecutionInputAllowed: () => undefined, publishAgentEvent: vi.fn(), commitPlatformBindingChange,
-    buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true,
+    buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true, collaborationRole: "team_member",
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
       tasks: { root: identity.root, delegateToNewCopy: async () => { throw Error('Not a dispatch witness.'); }, assignToExistingCopy: async () => { throw Error('Not a dispatch witness.'); } } as never }) };
   const factory = new FlatTeamExecutionFactory({ agentRunManager: manager as never,
     activityInspector: { inspect: ({ agentRunId }: { agentRunId: string }) => ({ kind: conversations.has(agentRunId) ? 'present' : 'none' }) } as never,
-    memoryLocator: { getLocation: (_scope: unknown, id: string) => ({ memoryDir: `/tmp/test-lazy-${id}` }) } as never });
+    memoryLocator: { getMemoryDir: (_placement: unknown, id: string) => `/tmp/test-lazy-${id}` } as never });
   const teams = new RootTeamExecutionDirectory(factory);
   const scope = () => createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [COPY] });
 
   // A Team root hosts its copies itself (Team-hosted registry); Agent and Org roots host them in the directory.
   let hostTeam: TeamRun | null = null;
   if (kind === 'agent_team') {
-    const prepared = await factory.beginMaterialization({ physicalScope: createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [] }),
+    const prepared = await factory.beginMaterialization({ teamKind: 'configured', physicalScope: createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [] }),
       teamNode: testAgentTeamNode({ address: '/', teamRunId: 'root', coordinatorAddress: '/Manager', children: [testAgentNode('/Manager', { agentRunId: 'manager' })] }),
       handoffs: [], activationMode: 'fresh', callbacks }).prepare();
     prepared.commitAfterDurability(); hostTeam = prepared.teamRun;

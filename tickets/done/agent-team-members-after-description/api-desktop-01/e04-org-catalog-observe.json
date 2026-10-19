@@ -1,0 +1,43 @@
+{
+  "startedAt": "2026-10-13T04:03:00.907Z",
+  "instanceId": "iso-52535-8486",
+  "events": [],
+  "operations": [
+    {
+      "name": "ListWorkspaceRunHistory",
+      "query": "listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {"
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "query": "listCollaborationRootHistory {"
+    }
+  ],
+  "pages": [
+    {
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-list"
+    }
+  ],
+  "details": {
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nAgent Orgs\nSearch Agent Orgs\nReload\nCreate Agent Org\n\nNo organizations found\n\nNo organizations matched “”",
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Reload",
+      "Create Agent Org"
+    ]
+  },
+  "result": "Pass",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-list",
+  "finishedAt": "2026-10-13T04:03:01.005Z"
+}

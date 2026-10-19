@@ -1,0 +1,17 @@
+# Case: REPO-11 (test-unit)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 4b3c8a08ef; Env: ENV-1; Date: 2026-10-18 15:45
+# ----
+
+# Excerpt: summary lines of REPO-11-test-unit.log
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thread-1","sameTurn":"owned-thread-1-turn","facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}]}
+TASK_ADOPTION_REVERT_FAILED {
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  727 passed | 4 skipped (731)
+      Tests  5950 passed | 7 skipped (5957)
+   Duration  455.40s (transform 10.67s, setup 4.91s, import 205.84s, tests 186.31s, environment 597ms)
+# exit 0

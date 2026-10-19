@@ -1,0 +1,8 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native Claude login streamed only into fresh private homes, no source edit
+PASS both native sessions discover different private plugin paths and preserved workspace skill
+FAIL A invokes private native Skill and publishes actual helper content to common project AssertionError(('ab-sf-fr013-2842d860-app-a', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7\n'))
+PROBE FAILURE AssertionError(('ab-sf-fr013-2842d860-app-a', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7\n'))
+{"run": "ab-sf-fr013-2842d860", "passes": 5, "fatal": "AssertionError(('ab-sf-fr013-2842d860-app-a', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7\\n'))", "cleanup_ok": true}

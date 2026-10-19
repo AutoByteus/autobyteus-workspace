@@ -22,7 +22,6 @@ import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { testMemberExecutionContext } from "../../../../fixtures/current-team-run-fixtures.js";
 import { registerTools } from "autobyteus-ts/tools/register-tools.js";
-import { DirectLlmCompressionStrategy } from "autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -295,7 +294,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
   });
 
-  it("filters mixed task-management tools, composes server team prompts, and injects primitive team context", async () => {
+  it("composes server team prompts, and injects primitive team context", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -303,7 +302,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             id: "agent-1",
             name: "Professor",
             description: "Coordinates work.",
-            toolNames: ["send_message_to", "assign_task_to"],
+            toolNames: ["send_message_to"],
           }),
         ),
       } as any,
@@ -356,7 +355,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.systemPrompt).toContain("## Agent Identity");
     expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
     expect(built.agentConfig.systemPrompt).toContain("## AgentTeam Addressing");
-    expect(built.agentConfig.systemPrompt).toContain("## AgentTeam Collaboration");
+    expect(built.agentConfig.systemPrompt).toContain("## Working With Other Agents");
     expect(built.agentConfig.systemPrompt).not.toContain("## Team Runtime");
     expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual({
@@ -432,12 +431,12 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).toContain("filesystem-like logical addresses");
-    expect(built.agentConfig.systemPrompt).toContain("\n/professor\n");
+    expect(built.agentConfig.systemPrompt).not.toContain("\n/professor\n");
     expect(built.agentConfig.systemPrompt).toContain(
-      "Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/`",
+      "Every Agent and AgentTeam you can reach by address has one canonical absolute address beginning with `/`",
     );
     expect(built.agentConfig.systemPrompt).toContain(
-      "Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.",
+      "Relative addresses, bare names, `../`, backslashes, and `/` itself are not valid recipients.",
     );
     expect(built.agentConfig.systemPrompt).not.toContain("`./architecture_reviewer`");
     const sendMessageTool = built.agentConfig.tools.find(
@@ -754,8 +753,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
   });
 
-  it("injects a lazy direct summarizer without a child AgentRun factory", async () => {
-    const compactionLlmFactory = vi.fn();
+  it("enables policy-only compaction: the core summarizer always uses the agent's own model", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -790,7 +788,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         hasEffectiveSkills: () => false,
         resolveConfiguredSkillsForAgent: () => [],
       } as any,
-      compactionLlmFactory,
     });
 
     const built = await (factory as any).buildAgentConfig(
@@ -803,16 +800,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "run-professor", () => undefined
     );
 
-    expect(compactionLlmFactory).not.toHaveBeenCalled();
-    expect(built.agentConfig.memoryCompaction).toMatchObject({
+    expect(built.agentConfig.memoryCompaction).toEqual({
       kind: "enabled",
       policy: expect.any(CompactionPolicy),
-      createCompressionStrategy: expect.any(Function),
     });
-    if (built.agentConfig.memoryCompaction.kind === "enabled") {
-      expect(built.agentConfig.memoryCompaction.createCompressionStrategy({ signal: new AbortController().signal, operationId: "factory", executionTurnId: "turn", getParentModelIdentifier: () => "parent" })).toBeInstanceOf(DirectLlmCompressionStrategy);
-    }
-    expect(compactionLlmFactory).not.toHaveBeenCalled();
     expect(built.agentConfig).not.toHaveProperty("compactionAgentRunner");
     expect(built.resolvedRunConfig.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
   });

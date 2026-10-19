@@ -1,0 +1,12 @@
+# cleanup 2026-10-11T11:04:28Z
+isolated instances: listed (see below)
+untracked in ticket worktree:
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+personal contains ticket branch:
+yes
+running isolated instances: 4, none from this worktree
+worktree removed: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-5-5-model-support
+pruned
+Deleted branch codex/claude-5-5-model-support (was 6530910b1).
+remote branch kept: origin/codex/claude-5-5-model-support

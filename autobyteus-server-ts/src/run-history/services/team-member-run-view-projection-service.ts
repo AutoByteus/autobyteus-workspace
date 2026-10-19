@@ -6,10 +6,17 @@ import type { EventMonitorActiveTracePage } from "../projection/event-monitor-ac
 import { AgentRunViewProjectionService, type RunProjection } from "./agent-run-view-projection-service.js";
 import { TeamRunExecutionTreeLocationService } from "./team-run-execution-tree-location-service.js";
 import {
-  catalogCopyExecutionSource,
-  collaboratorExecutionSource,
-  taskExecutionListsOf,
-} from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+  RunFileChangeProjectionService,
+  getRunFileChangeProjectionService,
+  type ResolvedRunFileChangeEntry,
+} from "./run-file-change-projection-service.js";
+import type { RunFileChangeEntry } from "../../services/run-file-changes/run-file-change-types.js";
+import {
+  locatedExecutionSource,
+  tagTeamAgentExecution,
+  type LocatedTeamCollaborationAgentExecution,
+} from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import { CollaborationMemberNotFoundError } from "../../agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
 import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
 
 const required = (value: string, field: string): string => {
@@ -30,15 +37,18 @@ export interface TeamMemberRunProjection {
 export class TeamMemberRunViewProjectionService {
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: TeamRunExecutionTreeLocationService;
+  private readonly injectedFileChanges: RunFileChangeProjectionService | null;
 
   constructor(options: {
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: TeamRunExecutionTreeLocationService;
+    runFileChangeProjectionService?: RunFileChangeProjectionService;
   } = {}) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
     this.locations = options.locations ?? new TeamRunExecutionTreeLocationService({ memoryDir });
+    this.injectedFileChanges = options.runFileChangeProjectionService ?? null;
   }
 
   async getProjection(rootTeamRunId: string, agentRunId: string): Promise<TeamMemberRunProjection> {
@@ -74,32 +84,41 @@ export class TeamMemberRunViewProjectionService {
     return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
   }
 
-  private async requireLocation(rootTeamRunId: string, agentRunId: string) {
+  /** The member's artifacts: live while the team runs, else its stored file changes. */
+  async getFileChanges(rootTeamRunId: string, agentRunId: string): Promise<RunFileChangeEntry[]> {
+    const location = await this.requireLocation(rootTeamRunId, agentRunId);
+    return this.fileChanges().getLocatedCollaborationMemberProjection(location);
+  }
+
+  /** One recorded file change of the member, resolved against its own launch workspace. */
+  async resolveFileChangeEntry(rootTeamRunId: string, agentRunId: string, filePath: string): Promise<ResolvedRunFileChangeEntry | null> {
+    const location = await this.requireLocation(rootTeamRunId, agentRunId);
+    return this.fileChanges().resolveLocatedCollaborationMemberEntry(location, filePath);
+  }
+
+  private fileChanges(): RunFileChangeProjectionService {
+    return this.injectedFileChanges ?? getRunFileChangeProjectionService();
+  }
+
+  private async requireLocation(rootTeamRunId: string, agentRunId: string): Promise<LocatedTeamCollaborationAgentExecution> {
     const root = required(rootTeamRunId, "rootTeamRunId");
     const run = required(agentRunId, "agentRunId");
-    const location = await this.locations.findAgent({ agentRunId: run });
-    if (!location || location.rootTeamRunId !== root) {
-      throw new Error(`AgentRun '${run}' was not found in root TeamRun '${root}'.`);
+    const found = await this.locations.findAgent({ rootTeamRunId: root, agentRunId: run });
+    if (!found || found.rootTeamRunId !== root) {
+      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' was not found in root TeamRun '${root}'.`);
     }
-    if (!location.configuredPlacement && !childSourceOf(location)) {
-      throw new Error(`AgentRun '${run}' has no configured launch placement, collaborator or catalog source.`);
+    const location = tagTeamAgentExecution(found);
+    if (!locatedExecutionSource(location)) {
+      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' has no configured launch placement or catalog source.`);
     }
     return location;
   }
 }
 
-const childSourceOf = (location: import("./team-run-execution-tree-location-service.js").LocatedTeamAgentExecution) =>
-  collaboratorExecutionSource(location.tree.rootTeam.collaborators, location.memberAddress)
-  ?? catalogCopyExecutionSource(taskExecutionListsOf({
-    taskExecutions: location.tree.rootTeam.taskExecutions, collaborators: location.tree.rootTeam.collaborators,
-  }), location.agentRunId);
-
-const metadataFor = (
-  location: import("./team-run-execution-tree-location-service.js").LocatedTeamAgentExecution,
-): AgentRunMetadata => {
+const metadataFor = (location: LocatedTeamCollaborationAgentExecution): AgentRunMetadata => {
   const configured = location.configuredPlacement;
-  // A collaborator or catalog-copy run has no configured placement: its entry or recorded source supplies it.
-  const source = configured ?? childSourceOf(location)!;
+  // A catalog-copy run has no configured placement: its recorded source supplies it.
+  const source = locatedExecutionSource(location)!;
   const launch = source.launchConfiguration;
   return {
     runId: location.agentRunId,

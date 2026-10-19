@@ -5,7 +5,6 @@ import { createCollaboratorAdmission } from "../../../src/agent-collaboration/co
 import type { CollaboratorDefinitionCatalog } from "../../../src/agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import { standaloneRootCollaboratorPortFor } from "../../../src/standalone-agent-run-root/services/standalone-root-collaborators.js";
 import { emptyStandaloneRootTree, type StandaloneRootTreeSnapshot } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
-import type { CollaboratorEntry } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -32,13 +31,11 @@ const launch = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: 
 const HOST = "pm-run";
 const CHILD = "reviewer-copy-run";
 
-const treeOf = (host: { address: string; agentDefinitionId: string }, collaborators: readonly CollaboratorEntry[] = []): StandaloneRootTreeSnapshot => ({
-  ...emptyStandaloneRootTree({ host: { address: host.address as never, agentRunId: HOST, agentDefinitionId: host.agentDefinitionId }, createdAt: "2026-10-09T00:00:00.000Z" }),
-  collaborators,
-});
-const pmTree = (collaborators: readonly CollaboratorEntry[] = []) => treeOf({ address: "/project_task_manager", agentDefinitionId: "pm" }, collaborators);
+const treeOf = (host: { address: string; agentDefinitionId: string }): StandaloneRootTreeSnapshot =>
+  emptyStandaloneRootTree({ host: { address: host.address as never, agentRunId: HOST, agentDefinitionId: host.agentDefinitionId }, createdAt: "2026-10-09T00:00:00.000Z" });
+const pmTree = () => treeOf({ address: "/project_task_manager", agentDefinitionId: "pm" });
 
-describe("Agent-root collaborator port per viewer (REQ-001..REQ-003)", () => {
+describe("Agent-root catalog port per viewer (REQ-001..REQ-003)", () => {
   const admission = createCollaboratorAdmission(catalog, runnable);
   const policy = admission.policy;
 
@@ -47,7 +44,7 @@ describe("Agent-root collaborator port per viewer (REQ-001..REQ-003)", () => {
     expect(hostView.ownDefinition()).toEqual({ kind: "agent", definitionId: "pm" });
     expect((await policy.listCandidates(hostView)).candidates.map((candidate) => candidate.definitionId))
       .toEqual(["reviewer", "lead", "designer", "product"]);
-    await expect(admission.resolveMentions(hostView, [{ kind: "agent", definitionId: "pm" }]))
+    await expect(admission.resolveMentions(hostView, [{ kind: "agent", definitionId: "pm" }], { relation: () => "other", ownTeam: null }))
       .resolves.toMatchObject({ admitted: false, collaboratorName: "Project Task Manager", message: "Project Task Manager is this run's own definition." });
     expect((await policy.listEligible(hostView)).map((entry) => entry.address))
       .toEqual(["/code_reviewer", "/lead", "/designer", "/product_team"]);
@@ -58,8 +55,8 @@ describe("Agent-root collaborator port per viewer (REQ-001..REQ-003)", () => {
     expect(childView.ownDefinition()).toBeNull();
     expect((await policy.listCandidates(childView)).candidates.map((candidate) => candidate.definitionId))
       .toEqual(["pm", "reviewer", "lead", "designer", "product"]);
-    await expect(admission.resolveMentions(childView, [{ kind: "agent", definitionId: "pm" }, { kind: "agent_team", definitionId: "product" }]))
-      .resolves.toEqual({ admitted: true, collaborators: [
+    await expect(admission.resolveMentions(childView, [{ kind: "agent", definitionId: "pm" }, { kind: "agent_team", definitionId: "product" }], { relation: () => "other", ownTeam: null }))
+      .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
         { name: "Project Task Manager", kind: "agent", address: "/project_task_manager", presence: "run_agent" },
         { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },
       ] });
@@ -72,7 +69,7 @@ describe("Agent-root collaborator port per viewer (REQ-001..REQ-003)", () => {
     ]);
   });
 
-  it("the host is never a second instance: not admissible, not a catalog address, so bring-in and catalog copies refuse it (AC-009)", async () => {
+  it("the host is never a second instance: not admissible, not a catalog address, so catalog copies refuse it (AC-009)", async () => {
     const childView = standaloneRootCollaboratorPortFor(pmTree(), launch, CHILD);
     await expect(policy.requireAdmissible(childView, { kind: "agent", definitionId: "pm" }))
       .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Project Task Manager is already in this run." });
@@ -91,24 +88,13 @@ describe("Agent-root collaborator port per viewer (REQ-001..REQ-003)", () => {
     expect(childMap.definitionFor("/code_reviewer")).toEqual(hostMap.definitionFor("/code_reviewer"));
   });
 
-  it("the run agent outranks another in-run placement of the same definition", async () => {
+  it("the run agent is the only in-run placement of its definition for every other viewer", async () => {
     const run = createCollaboratorAdmission(catalog, runnable);
-    let next = 0;
-    const added: CollaboratorEntry[] = [];
-    const leadHost = treeOf({ address: "/lead", agentDefinitionId: "lead" });
-    await run.ensure(standaloneRootCollaboratorPortFor(leadHost, launch, HOST), {
-      senderRunId: HOST,
-      definitions: [{ kind: "agent_team", definitionId: "product" }],
-      identities: {
-        agentRuns: { allocateForAgentDefinition: async (id) => `${id}-run-${++next}` },
-        taskTeams: { create: async ({ source }) => ({ teamNode: { ...source, teamRunId: `team-${++next}`,
-          children: source.children.map((child) => child.kind === "agent" ? { ...child, agentRunId: `${child.agentDefinitionId}-run-${++next}` } : child) } }) },
-      },
-      addEntries: async (entries) => { added.push(...entries); },
-    });
-    expect(added.map((entry) => entry.address)).toEqual(["/product_team"]);
-    const childView = standaloneRootCollaboratorPortFor({ ...leadHost, collaborators: added }, launch, "designer-run-3");
-    await expect(run.resolveMentions(childView, [{ kind: "agent", definitionId: "lead" }]))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Lead", kind: "agent", address: "/lead", presence: "run_agent" }] });
+    const childView = standaloneRootCollaboratorPortFor(treeOf({ address: "/lead", agentDefinitionId: "lead" }), launch, "designer-run-3");
+    await expect(run.resolveMentions(childView, [{ kind: "agent", definitionId: "lead" }, { kind: "agent_team", definitionId: "product" }], { relation: () => "other", ownTeam: null }))
+      .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
+        { name: "Lead", kind: "agent", address: "/lead", presence: "run_agent" },
+        { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },
+      ] });
   });
 });

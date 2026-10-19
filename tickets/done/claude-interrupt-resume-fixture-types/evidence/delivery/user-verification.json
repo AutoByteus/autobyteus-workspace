@@ -1,0 +1,21 @@
+{
+  "recordedUtc": "2026-10-13T05:13:01.386906+00:00",
+  "source": "new explicit user message for this independent fixture-types task",
+  "exactMessage": "verified. finalize and no need to release a new version.",
+  "package": "claude-interrupt-resume-fixture-types",
+  "projectTask": "project_task_11c75527-3875-4664-a49c-d1c871064d5c",
+  "verifiedHandoffRevision": "d9dad8fe1e6b65921a1efd07ebd9899fd009e061",
+  "verifiedBase": "dec0f562ce6f26a09d1e6f59d59e838142cb4865",
+  "postVerificationFetchedBase": "2614fc38c26248998e0eb563bfcd7ebe2f72fcbe",
+  "targetAdvancedAfterVerification": true,
+  "additionalBaseCommits": 28,
+  "deliveryEditsProtection": "Full exact ticket backup outside worktree; no shared state changed",
+  "releaseDecision": "No new version/release/tag/deployment",
+  "renewedVerificationRequired": false,
+  "oldTaskVerificationReused": false,
+  "reintegratedRevision": "13f4af7c402462d5c6dacd9f6f8a8465f09e6b0c",
+  "reintegratedBase": "2614fc38c26248998e0eb563bfcd7ebe2f72fcbe",
+  "relevantSourceConfigGraphChanged": false,
+  "materialTaskHandoffChanged": false,
+  "renewedVerificationRationale": "28 unrelated UI-ticket/base commits; net change only web/UI and their ticket docs. Server/core/lock/global testing/release guide unchanged; exact fixture type/check/runtime state unchanged. Required integrated checks rerun nonetheless."
+}

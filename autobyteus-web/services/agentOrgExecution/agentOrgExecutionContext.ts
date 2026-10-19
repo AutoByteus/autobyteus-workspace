@@ -19,6 +19,8 @@ import type {
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
 import { toAgentPresentationProjectionMessage } from '~/services/agentStreaming/teamStreamDtoAdapters'
 import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStreamMessageProjector'
+import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
+import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { AgentOrgExecutionViewIndex, type OrgWorkspaceSelection, type OrgAgentViewIdentity, type OrgTeamViewIdentity } from './agentOrgExecutionViewIndex'
 import {
@@ -26,11 +28,9 @@ import {
   projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
-import { collaboratorAgentSourceAt, collaboratorTeamSourceAt, catalogAgentSourceAt, catalogTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import { catalogAgentSourceAt, catalogTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { createAgentContext } from './agentOrgMemberContextFactory'
-import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
-import { collaboratorExecutionNodes } from '~/services/collaborators/agentSourceSelectors'
 import {
   agentRunKey,
   collaborationTreeWalk,
@@ -206,26 +206,18 @@ export class AgentOrgExecutionContext {
     return true
   }
 
-  applyEvent(changeSequence: number, event: AgentOrgExecutionEventDto): AgentOrgEventApplication {
+  /** Applies one root event, or a content batch covering `[changeSequence, changeSequenceThrough]`. */
+  applyEvent(changeSequence: number, event: AgentOrgExecutionEventDto, changeSequenceThrough = changeSequence): AgentOrgEventApplication {
     if (this.phase !== 'live') throw new Error('AgentOrg context is not accepting stream events.')
-    if (changeSequence !== this.nextChangeSequence) {
+    const following = advanceSequencedStream(this.nextChangeSequence, { first: changeSequence, through: changeSequenceThrough })
+    if (following === null) {
       this.requireReopen(`Expected change sequence ${this.nextChangeSequence}, received ${changeSequence}.`)
       throw new Error(this.error!)
     }
     if (event.kind === 'agent_presentation') {
-      const address = this.index.agents.get(event.agent_run_id)?.address
-      const context = this.contexts.get(event.agent_run_id)
-      if (!context || address !== event.member_address) {
-        this.requireReopen(`Agent presentation identity '${event.agent_run_id}' is not in the context.`)
-        throw new Error(this.error!)
-      }
-      dispatchAgentStreamMessage(
-        toAgentPresentationProjectionMessage(event.message, event.agent_run_id),
-        {
-          kind: 'agent_org_member', context, orgRunId: this.orgRunId,
-          agentRunId: event.agent_run_id, memberAddress: event.member_address,
-        },
-      )
+      this.dispatchPresentation([event])
+    } else if (event.kind === 'agent_presentation_batch') {
+      this.dispatchPresentation(event.items)
     } else if (event.kind === 'task_execution_started') {
       // A new delegated child needs new contexts; reload through a checkpoint.
       this.validateTaskExecutionStarted(event)
@@ -247,18 +239,12 @@ export class AgentOrgExecutionContext {
       }
       this.view = { ...this.view,
         closed_task_executions: removeReopenedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
-    } else if (event.kind === 'collaborator_added') {
-      // One hosted instance per entry: its executions get contexts now, Offline. Applied in
-      // place (no checkpoint) so the pending send that added it keeps its acknowledgement.
-      const root = this.view.execution_tree.rootOrg
-      if ((root.collaborators ?? []).some((entry) => entry.address === event.collaborator.address)
-        || this.index.configured.has(event.collaborator.address)) {
-        this.correlationFailure(`AgentOrg collaborator address '${event.collaborator.address}' is already in use.`)
+    } else if (event.kind === 'delegated_launch_selections_changed') {
+      // A Save on the live run (DS-001): reload so the records and the member contexts show the choice.
+      if (event.selections.some((entry) => 'agentRunId' in entry ? !this.index.agents.has(entry.agentRunId) : !this.index.teams.has(entry.teamRunId))) {
+        this.correlationFailure('A saved model choice names no agent or Team of this AgentOrg.')
       }
-      this.commitView({ ...this.view, execution_tree: { ...this.view.execution_tree,
-        rootOrg: { ...root, collaborators: [...(root.collaborators ?? []), event.collaborator] } } })
-      this.addContextsForNewAgents()
-      collaboratorCandidatesService.invalidate('agent_org', this.orgRunId)
+      return 'checkpoint_required'
     } else {
       try {
         assertAgentOrgCommunicationMessagesCorrelated(this.index, [event.message])
@@ -273,8 +259,31 @@ export class AgentOrgExecutionContext {
         },
       }
     }
-    this.nextChangeSequence += 1
+    this.nextChangeSequence = following
     return 'applied'
+  }
+
+  /** Every identity is checked before any message is dispatched; batch items apply in order. */
+  private dispatchPresentation(entries: readonly Readonly<{
+    agent_run_id: string; member_address: string; message: AgentPresentationMessage
+  }>[]): void {
+    const targets = entries.map((entry) => {
+      const context = this.contexts.get(entry.agent_run_id)
+      if (!context || this.index.agents.get(entry.agent_run_id)?.address !== entry.member_address) {
+        this.requireReopen(`Agent presentation identity '${entry.agent_run_id}' is not in the context.`)
+        throw new Error(this.error!)
+      }
+      return { entry, context }
+    })
+    for (const { entry, context } of targets) {
+      dispatchAgentStreamMessage(
+        toAgentPresentationProjectionMessage(entry.message, entry.agent_run_id),
+        {
+          kind: 'agent_org_member', context, orgRunId: this.orgRunId,
+          agentRunId: entry.agent_run_id, memberAddress: entry.member_address,
+        },
+      )
+    }
   }
 
   setActive(active: boolean): void {
@@ -291,7 +300,7 @@ export class AgentOrgExecutionContext {
     this.phase = 'reopen_required'
   }
 
-  /** Offline contexts for indexed agents without one (a collaborator's new executions). */
+  /** Offline contexts for indexed agents without one (a new delegated copy's executions). */
   private addContextsForNewAgents(): void {
     const workspaceFor = (rootPath: string | null) => rootPath
       ? [...this.index.agents.values()].map((agent) => this.contexts.get(agent.agentRunId)?.config.workspaceMetadata)
@@ -319,7 +328,7 @@ export class AgentOrgExecutionContext {
 
   private closedSubtrees() {
     const root = this.view.execution_tree.rootOrg
-    return collectClosedSubtrees<CollaborationTreeNode>([...root.members, ...collaboratorExecutionNodes(root.collaborators ?? []), ...root.taskExecutions],
+    return collectClosedSubtrees<CollaborationTreeNode>([...root.members, ...root.taskExecutions],
       this.view.closed_task_executions, collaborationTreeWalk)
   }
 
@@ -346,11 +355,8 @@ export class AgentOrgExecutionContext {
     const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
     const address = parseAgentTeamAddress(execution.address)
     const configured = this.index.configured.get(address)
-    const collaborators = this.view.execution_tree.rootOrg.collaborators ?? []
     // A catalog copy carries its own source (REQ-011).
     const source = configured
-      ?? collaboratorAgentSourceAt(collaborators, address)
-      ?? collaboratorTeamSourceAt(collaborators, address)
       ?? catalogAgentSourceAt([execution], address)
       ?? catalogTeamSourceAt([execution], address)
     const hostKnown = event.host_kind === 'root'

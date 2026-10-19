@@ -1,0 +1,48 @@
+{
+  "at": "2026-10-13T06:22:12.198471+00:00",
+  "instanceId": "iso-55097-2f31",
+  "pid": 14004,
+  "ports": {
+    "control": 55097,
+    "server": 55098
+  },
+  "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x",
+  "stopResult": {
+    "instanceId": "iso-55097-2f31",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-P0m63x",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  },
+  "independentChecks": {
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "processGroupAbsent": true,
+    "dataRootAbsent": true,
+    "ownRecordAbsent": true,
+    "embeddedServerPid15030Absent": true,
+    "internalBridgePort55156Released": true,
+    "ownedTemporaryLogSourceAbsent": true
+  },
+  "otherInstancesUntouched": true,
+  "activeResourceTransfer": "None",
+  "supplementalAt": "2026-10-13T06:28:02.196276+00:00",
+  "embeddedServerEvidence": {
+    "source": "desktop-runtime.log lines207\u2013208 actual owned process launch",
+    "pid": 15030,
+    "port": 55156,
+    "psExitCode": 1,
+    "psOutput": "",
+    "lsofExitCode": 1,
+    "lsofOutput": ""
+  },
+  "ownedLogCleanup": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-55097-2f31.log",
+    "ownedByInstance": "iso-55097-2f31",
+    "existedAfterStop": false,
+    "sourceAbsent": true
+  }
+}

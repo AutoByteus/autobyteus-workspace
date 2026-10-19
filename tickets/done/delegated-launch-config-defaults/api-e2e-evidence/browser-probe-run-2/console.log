@@ -1,0 +1,9 @@
+
+> autobyteus@1.5.1 test:e2e:delegated-launch-defaults /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/tickets/in-progress/delegated-launch-config-defaults/api-e2e-evidence/browser-probe-run-2
+
+DLP-001 Pass AC-011/AC-013: New chat for a Team seeds members from their defaults; root changes keep seeded rows; member change and reset; Run launches what is shown
+DLP-002 Pass AC-012: Org launch page seeds the placed team from its team default and agents from their agent defaults; Run launches what is shown
+DLP-003 Pass AC-010/AC-005: standalone Agent run with a Squad copy, Pair and Writer collaborators and an extra Pair copy: notes in the delegating conversation; read-only Settings rows
+DLP-004 Pass AC-010: Team run and Org run whose manager delegates the Squad (and brings in the Pair): Settings lists the rows
+Summary: 4 Pass, 0 Fail

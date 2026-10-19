@@ -1,0 +1,143 @@
+PASS Docker-managed NFS volume, no mount command or elevated client capabilities inside node
+PASS completed write A -> read/modify B -> read A
+PASS 1MiB binary exact cross-client content
+PASS mkdir, atomic replace, relative symlink, exclusive-create, executable mode
+PASS ordinary Linux OS NFS client
+PASS server allowlist denies an excluded reachable client
+PASS read-only client mount enforces write denial
+PASS cross-client advisory flock exclusion
+FAIL lock released after writer exits RuntimeError('(\'docker\', \'exec\', \'ab-sf-fr005-886b8333-native\'): rc=1: Traceback (most recent call last):\n  File "<string>", line 1, in <module>\nBlockingIOError: [Errno 11] Resource temporarily unavailable\n')
+PROBE FAILURE: RuntimeError('(\'docker\', \'exec\', \'ab-sf-fr005-886b8333-native\'): rc=1: Traceback (most recent call last):\n  File "<string>", line 1, in <module>\nBlockingIOError: [Errno 11] Resource temporarily unavailable\n')
+{
+  "run": "ab-sf-fr005-886b8333",
+  "cases": [
+    {
+      "name": "Docker-managed NFS volume, no mount command or elevated client capabilities inside node",
+      "result": {
+        "a": ":/ab-sf-fr005-886b8333 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=10001 gid=10001 groups=10001\nCapEff:\t0000000000000000\n",
+        "b": ":/ab-sf-fr005-886b8333 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=10001 gid=10001 groups=10001\nCapEff:\t0000000000000000\n"
+      },
+      "status": "PASS",
+      "seconds": 0.2
+    },
+    {
+      "name": "completed write A -> read/modify B -> read A",
+      "result": {
+        "write": "from-a",
+        "b": "from-b",
+        "a": "from-b"
+      },
+      "status": "PASS",
+      "seconds": 0.336
+    },
+    {
+      "name": "1MiB binary exact cross-client content",
+      "result": {
+        "write": "fbbab289f7f94b25736c58be46a994c441fd02552cc6022352e3d86d2fab7c83",
+        "read": "fbbab289f7f94b25736c58be46a994c441fd02552cc6022352e3d86d2fab7c83"
+      },
+      "status": "PASS",
+      "seconds": 0.219
+    },
+    {
+      "name": "mkdir, atomic replace, relative symlink, exclusive-create, executable mode",
+      "result": {
+        "a": "published",
+        "b": "exclusive-create denied, symlink and exec OK"
+      },
+      "status": "PASS",
+      "seconds": 0.213
+    },
+    {
+      "name": "ordinary Linux OS NFS client",
+      "result": {
+        "mount": "172.29.0.2:/ab-sf-fr005-886b8333 /Volumes/autobyteus-shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=172.29.0.10,local_lock=none,addr=172.29.0.2 0 0\n",
+        "roundtrip": "from-native-linux",
+        "a": "observed native Linux modification"
+      },
+      "status": "PASS",
+      "seconds": 0.483
+    },
+    {
+      "name": "server allowlist denies an excluded reachable client",
+      "result": {
+        "rc": 32,
+        "stderr": "mount.nfs: mounting 172.29.0.2:/ab-sf-fr005-886b8333 failed, reason given by server: No such file or directory\n",
+        "transport": "reachable from excluded IP",
+        "scope": "excluded client cannot mount an existing export; Ganesha may hide path as ENOENT; not per-user/tenant authentication"
+      },
+      "status": "PASS",
+      "seconds": 0.624
+    },
+    {
+      "name": "read-only client mount enforces write denial",
+      "result": "30",
+      "status": "PASS",
+      "seconds": 0.156
+    },
+    {
+      "name": "Mac ordinary native mounted-folder proof",
+      "status": "BLOCKED",
+      "reason": "Native NoUI mount did not succeed; no cached sudo/admin capability; not replaced with API-only reads."
+    },
+    {
+      "name": "cross-client advisory flock exclusion",
+      "result": "excluded",
+      "status": "PASS",
+      "seconds": 0.085
+    },
+    {
+      "name": "lock released after writer exits",
+      "status": "FAIL",
+      "error": "RuntimeError('(\\'docker\\', \\'exec\\', \\'ab-sf-fr005-886b8333-native\\'): rc=1: Traceback (most recent call last):\\n  File \"<string>\", line 1, in <module>\\nBlockingIOError: [Errno 11] Resource temporarily unavailable\\n')",
+      "seconds": 0.077
+    }
+  ],
+  "fatal": "RuntimeError('(\\'docker\\', \\'exec\\', \\'ab-sf-fr005-886b8333-native\\'): rc=1: Traceback (most recent call last):\\n  File \"<string>\", line 1, in <module>\\nBlockingIOError: [Errno 11] Resource temporarily unavailable\\n')",
+  "cleanup": [
+    {
+      "container": "ab-sf-fr005-886b8333-ro",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr005-886b8333-denied",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr005-886b8333-native",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr005-886b8333-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr005-886b8333-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr005-886b8333-server",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr005-886b8333-nfs-ro",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr005-886b8333-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr005-886b8333-nfs-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr005-886b8333-data",
+      "rc": 0
+    },
+    {
+      "network": "ab-sf-fr005-886b8333-net",
+      "rc": 0
+    }
+  ]
+}

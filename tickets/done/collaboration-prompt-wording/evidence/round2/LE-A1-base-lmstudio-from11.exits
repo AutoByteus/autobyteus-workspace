@@ -1,0 +1,11 @@
+base lmstudio run 11 exit 0
+base lmstudio run 12 exit 0
+base lmstudio run 13 exit 0
+base lmstudio run 14 exit 0
+base lmstudio run 15 exit 1
+base lmstudio run 16 exit 0
+base lmstudio run 17 exit 0
+base lmstudio run 18 exit 1
+base lmstudio run 19 exit 0
+base lmstudio run 20 exit 1
+done

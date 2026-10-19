@@ -3,8 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
-import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
@@ -60,7 +60,7 @@ describe("first mixed collaboration history after restart", () => {
     await fs.mkdir(teamPackagePath, { recursive: true });
     await Promise.all([
       new TeamRunExecutionTreeStore().write(teamPackagePath, teamTree),
-      new TeamCommunicationV1Store().write(teamPackagePath, {
+      new TeamCommunicationStore().write(teamPackagePath, {
         schemaVersion: 1,
         rootTeamRunId: teamRunId,
         messages: [],
@@ -85,7 +85,7 @@ describe("first mixed collaboration history after restart", () => {
     await fs.mkdir(orgPackagePath, { recursive: true });
     await Promise.all([
       new AgentOrgRunExecutionTreeStore().write(orgPackagePath, orgTree),
-      new AgentOrgCommunicationMessagesV1Store().write(orgPackagePath, {
+      new AgentOrgCommunicationMessagesStore().write(orgPackagePath, {
         schemaVersion: 1,
         subjectKind: "agent_org",
         orgRunId,

@@ -1,0 +1,12 @@
+{
+  "sourceAndDurableTestsUnmodified": true,
+  "priorHistoryPrefixPreserved": true,
+  "onlyPriorAuthorityChanges": [
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md"
+  ],
+  "canonicalReportLocalLinksExist": true,
+  "cumulativeReferencesExist": 409,
+  "ownedTemporaryRootAbsent": true,
+  "noReleaseOrDeployment": true
+}

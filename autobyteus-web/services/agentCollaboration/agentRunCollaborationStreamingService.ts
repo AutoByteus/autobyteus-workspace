@@ -10,7 +10,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport'
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth'
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
-import { stageAgentRunCollaborationContext } from './agentRunCollaborationHydration'
+import { buildAgentRunCollaborationContext } from './agentRunCollaborationHydration'
 import type { AgentRunCollaborationContext } from './agentRunCollaborationContext'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
@@ -30,8 +30,8 @@ const recoveryDelay = (attempt: number): number => attempt === 0 ? 0 : Math.min(
 /**
  * The live stream of a standalone run's collaboration root (`/ws/agent-collaboration/:hostRunId`).
  * Connecting makes the root command-ready, which restores a stopped host: callers attach it only
- * for an active host or when the user sends to a child. Each snapshot republishes the context;
- * a newly started child reloads through a fresh snapshot.
+ * for an active host or when the user sends to a child. Each snapshot republishes the context
+ * (tree and statuses only); a newly started child or a settings Save reloads through a fresh snapshot.
  */
 export class AgentRunCollaborationStreamingService {
   private socket: WebSocket | null = null
@@ -48,11 +48,9 @@ export class AgentRunCollaborationStreamingService {
   constructor(private readonly options: Readonly<{
     hostRunId: string
     isCurrent(): boolean
-    publish(context: AgentRunCollaborationContext, commit: () => void): void
+    publish(context: AgentRunCollaborationContext): void
     onInactive(): void
     reportError(message: string): void
-    /** A collaborator was added in place (its new Team opens once). */
-    onCollaboratorAdded?(context: AgentRunCollaborationContext): void
     /** Task executions were closed in place (Task DONE); a selected one leaves with its rows. */
     onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
   }>) {}
@@ -73,9 +71,9 @@ export class AgentRunCollaborationStreamingService {
       this.socket = null
       this.phase = 'disconnected'
       this.rejectPending('The Agent collaboration stream closed before command acknowledgement.')
-      // 4004: this run cannot host collaborators; retrying cannot help.
+      // 4004: this run cannot host delegated copies; retrying cannot help.
       if (!this.intentionalClose && event.code !== 4004) this.scheduleRecovery('The Agent collaboration stream closed.')
-      else if (event.code === 4004) this.settleReadiness(new Error('This run cannot host collaborators.'))
+      else if (event.code === 4004) this.settleReadiness(new Error('This run cannot host delegated copies.'))
     }
   }
 
@@ -181,12 +179,12 @@ export class AgentRunCollaborationStreamingService {
       if (this.phase !== 'awaiting_snapshot' || message.payload.root_subject_kind !== 'agent') {
         throw new Error('Agent collaboration snapshot arrived out of order.')
       }
-      const staged = await stageAgentRunCollaborationContext({
-        hostRunId: this.options.hostRunId, view: message.payload.root_agent, isCurrent: () => this.socket === socket && this.options.isCurrent(),
+      const context = await buildAgentRunCollaborationContext({
+        hostRunId: this.options.hostRunId, view: message.payload.root_agent,
       })
       if (this.socket !== socket || !this.options.isCurrent()) return
-      const candidate = shallowReactive(staged.context)
-      this.options.publish(candidate, staged.commit)
+      const candidate = shallowReactive(context)
+      this.options.publish(candidate)
       this.context = candidate
       this.phase = 'ready'
       this.recoveryAttempts = 0
@@ -201,12 +199,12 @@ export class AgentRunCollaborationStreamingService {
     }
     if (message.type === 'ROOT_EXECUTION_EVENT') {
       if (message.payload.root_subject_kind !== 'agent') throw new Error('Agent collaboration stream supplied a foreign event.')
-      if (this.context.applyEvent(message.payload.change_sequence, message.payload.event) === 'checkpoint_required') {
-        // A new child: reconnect for a fresh snapshot that includes its context.
+      if (this.context.applyEvent(
+        message.payload.change_sequence, message.payload.event, message.payload.change_sequence_through,
+      ) === 'checkpoint_required') {
+        // A new child or a settings Save: reconnect for a fresh snapshot (the view only).
         this.closeSocket('Agent collaboration reload')
         this.connect()
-      } else if (message.payload.event.kind === 'collaborator_added') {
-        this.options.onCollaboratorAdded?.(this.context)
       } else if (message.payload.event.kind === 'task_executions_closed') {
         this.options.onTaskExecutionsClosed?.(this.context)
       }

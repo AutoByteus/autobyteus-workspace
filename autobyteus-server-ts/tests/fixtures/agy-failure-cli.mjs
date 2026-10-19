@@ -87,6 +87,13 @@ if (arg === "--version") {
       catch (error) { return { path: file, error: error.code }; }
     });
   };
+  // linked_skills: `READ_AGENT_PROMPT` reports the agent prompt the server materialized for this run
+  // (`.agents/agents/<--agent>/agent.md` in the capsule, the file AGY loads), so a test can prove which
+  // definition instructions a run or a delegated copy actually received.
+  const readAgentPrompt = () => {
+    try { return readFileSync(path.join(process.cwd(), ".agents", "agents", argValue("--agent") ?? "", "agent.md"), "utf8"); }
+    catch (error) { return `UNREADABLE:${error.code}`; }
+  };
   const callAgentTool = async (name, args) => {
     const config = JSON.parse(readFileSync(path.join(process.cwd(), ".agents", "mcp_config.json"), "utf8"));
     const server = config.mcpServers?.autobyteus_agent_tools;
@@ -121,6 +128,40 @@ if (arg === "--version") {
     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
     const backgroundStep = /BACKGROUND_STEP:(\{[^}]*\})/.exec(content);
     if (backgroundStep && !content.includes("CALL_TOOL:")) { backgroundStepTurn(JSON.parse(backgroundStep[1])); return; }
+    // `GENERATE_IMAGE:<absolute path>` writes that file and streams the own-MCP generate_image call as AGY 1.2.14 does
+    // (same step shape as case mcp_calls), so any run, a delegated copy included, gets a real generated-output artifact.
+    const generateImage = /GENERATE_IMAGE:(\/\S+)/.exec(content);
+    if (generateImage && !content.includes("CALL_TOOL:")) {
+      const step_index = turns * 10 + 1;
+      const parameters = { Arguments: { prompt: "fixture image", output_file_path: generateImage[1] },
+        ServerName: "autobyteus_agent_tools", ToolName: "generate_image" };
+      const step = (state, extra = {}) => emit({ event: "step_update", step_update: { conversation_id, step_index, state,
+        step_type: "tool", tool_name: "call_mcp_tool", tool_info: { name: "call_mcp_tool", parameters, ...extra } } });
+      step("ACTIVE");
+      writeFileSync(generateImage[1], "fake image bytes");
+      step("DONE", { output: JSON.stringify({ file_path: generateImage[1] }) });
+      reply(turns * 10 + 2, "GENERATED");
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "GENERATED" } });
+      return;
+    }
+    // `WRITE_FILE_HOLD:<path>` starts an own-MCP write_file call for that path (step ACTIVE, nothing written yet) and
+    // leaves the turn running, so the run records a pending file change whose file does not exist until the run stops
+    // (a file still being written while its owner runs).
+    const writeFileHold = /WRITE_FILE_HOLD:(\S+)/.exec(content);
+    if (writeFileHold && !content.includes("CALL_TOOL:")) {
+      const parameters = { Arguments: { path: writeFileHold[1], content: "not written yet" },
+        ServerName: "autobyteus_agent_tools", ToolName: "write_file" };
+      emit({ event: "step_update", step_update: { conversation_id, step_index: turns * 10 + 1, state: "ACTIVE",
+        step_type: "tool", tool_name: "call_mcp_tool", tool_info: { name: "call_mcp_tool", parameters } } });
+      return;
+    }
+    // HOLD_TURN opens one long tool step and leaves the turn running (the agent reads Running) until the
+    // user stops it or its run is terminated. A message that also asks for a tool call is not held.
+    if (content.includes("HOLD_TURN") && !content.includes("CALL_TOOL:") && !content.includes("CALL_TOOLS:")) {
+      emit({ event: "step_update", step_update: { conversation_id, step_index: turns * 10, step_type: "tool",
+        state: "ACTIVE", tool_name: "run_command", tool_info: { parameters: { CommandLine: "sleep 600 # HOLD_TURN" } } } });
+      return;
+    }
     // `CALL_TOOLS:[{"name","arguments","delayMs"?}, …]` issues every call at once (parallel tool calls in one
     // turn, as a model batches them), each after its own optional delay, and replies `CALLED_ALL:[results]`.
     const parallelTools = /CALL_TOOLS:(\[.*\])/s.exec(content);
@@ -134,6 +175,10 @@ if (arg === "--version") {
       : call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`
       : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
       : content.includes("READ_REFERENCE_FILES") ? `REFERENCES:${JSON.stringify(readReferenceFiles(content))}`
+      : content.includes("READ_AGENT_PROMPT") ? `AGENT_PROMPT:${JSON.stringify(readAgentPrompt())}`
+      // `ECHO_INPUT` replies with the exact provider input of this turn (JSON string), so a test can see
+      // everything AGY received in one turn (for example a platform notice combined with the message).
+      : content.includes("ECHO_INPUT") ? `ECHO:${JSON.stringify(content)}`
       : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
         : "OK";
     reply(turns * 10, text);
@@ -185,6 +230,18 @@ if (arg === "--version") {
       // HOLD opens a long tool step and leaves the turn running until the user stops it; any other
       // message is answered with REPLY:<content>, so a test can tell which message each turn served.
       const content = String(JSON.parse(line)?.message?.content ?? "");
+      // HOLD_MS:<n> keeps one tool step open for n ms, then ends the turn normally with REPLY:<content>.
+      const holdMs = /HOLD_MS:(\d+)/.exec(content);
+      if (holdMs) {
+        const step = { conversation_id, step_index: turns * 10, step_type: "tool", tool_name: "run_command" };
+        emit({ event: "step_update", step_update: { ...step, state: "ACTIVE", tool_info: { parameters: { CommandLine: "sleep" } } } });
+        setTimeout(() => {
+          emit({ event: "step_update", step_update: { ...step, state: "DONE", tool_info: { output: "done" } } });
+          reply(turns * 10 + 1, `REPLY:${content}`);
+          emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: `REPLY:${content}` } });
+        }, Number(holdMs[1]));
+        return;
+      }
       if (content.includes("HOLD")) {
         emit({ event: "step_update", step_update: { conversation_id, step_index: turns * 10, step_type: "tool",
           state: "ACTIVE", tool_name: "run_command", tool_info: { parameters: { CommandLine: "sleep 600" } } } });
@@ -217,19 +274,29 @@ if (arg === "--version") {
       return;
     }
     if (usageReport) {
-      // Turn N replays the Nth `result` event verbatim from a real AGY 1.2.16 recording (cumulative `usage` per
-      // process; `input_tokens` excludes `cache_read_tokens`, `total_tokens = input + output`), rebound to this
-      // process's conversation. Beyond the recording the turn fails, so a test never reads invented usage.
+      // Turn N replays the Nth turn of a real AGY 1.2.16 recording, rebound to this process's conversation: its
+      // DONE `agent_response` step with that model call's `usage` (`input_tokens` excludes `cache_read_tokens`,
+      // `total_tokens = input + output`), then its `result` verbatim (cumulative `usage` per process, which the
+      // per-step usage sums to). Beyond the recording the turn fails, so a test never reads invented usage.
       const recording = new URL("./agy-compaction/agy-stream-auto-compaction-twice.stdout.jsonl", import.meta.url);
-      const recorded = readFileSync(recording, "utf8").split("\n").filter(Boolean).map((row) => JSON.parse(row))
-        .filter((row) => row.event === "result").map((row) => row.result);
-      const result = recorded[turns - 1];
-      if (!result) {
+      const rows = readFileSync(recording, "utf8").split("\n").filter(Boolean).map((row) => JSON.parse(row));
+      const recordedTurns = [];
+      let stepUsage = [];
+      for (const row of rows) {
+        const step = row.event === "step_update" ? row.step_update : null;
+        if (step?.step_type === "agent_response" && step.state === "DONE" && step.usage) stepUsage.push(step.usage);
+        if (row.event === "result") { recordedTurns.push({ result: row.result, stepUsage }); stepUsage = []; }
+      }
+      const recorded = recordedTurns[turns - 1];
+      if (!recorded) {
         emit({ event: "result", result: { conversation_id, status: "ERROR", error: "no recorded turn", response: "" } });
         return;
       }
-      reply(turns * 10, result.response);
-      emit({ event: "result", result: { ...result, conversation_id } });
+      recorded.stepUsage.forEach((usage, index) => emit({ event: "step_update", step_update: { conversation_id,
+        step_index: turns * 10 + index, step_type: "agent_response", state: "DONE",
+        ...(index === recorded.stepUsage.length - 1 ? { text_delta: recorded.result.response } : {}), usage } }));
+      if (!recorded.stepUsage.length) reply(turns * 10, recorded.result.response);
+      emit({ event: "result", result: { ...recorded.result, conversation_id } });
       return;
     }
     if (autoCompaction) {

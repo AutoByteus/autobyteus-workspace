@@ -1,0 +1,15 @@
+{
+  "review": "CRR007",
+  "decision": "Pass source only",
+  "input": "0d244f40496b368cbe1613f75d6cd21bb444c58d",
+  "revisionPrefixPreserved": true,
+  "tenScoreCategoriesPresent": true,
+  "allOwnCommandsExpected": true,
+  "upstreamAndCandidateUnchanged": true,
+  "productionAndTestUnmodified": true,
+  "localReportLinksExist": true,
+  "whitespacePass": true,
+  "retainedApiAuthority": "API002 Fail57.14% broaderRequired; API-F002 open",
+  "classification": "Large/High Reviewed",
+  "remaining": "Current CLI/metadata build before fresh public Ubuntu create/reconnect, then full approved matrix and independent physical/user/release gates"
+}

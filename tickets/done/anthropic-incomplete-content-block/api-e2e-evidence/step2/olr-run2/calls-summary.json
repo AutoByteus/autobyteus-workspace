@@ -1,0 +1,434 @@
+[
+  {
+    "index": 0,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 1,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 2,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 3,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 4,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 110,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 5,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 6,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 7,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 8,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 9,
+    "phase": "OLR-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 300,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 10,
+    "phase": "OLR-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 300,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 11,
+    "phase": "OLR-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 139,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 12,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 13,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 14,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 15,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 16,
+    "phase": "OLR-004-next",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 17,
+    "phase": "OLR-009",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 18,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 99,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 19,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 54,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 20,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 99,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 21,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 83,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 22,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 23,
+    "phase": "OLR-010-T1",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1024
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "errorBody": null
+  }
+]

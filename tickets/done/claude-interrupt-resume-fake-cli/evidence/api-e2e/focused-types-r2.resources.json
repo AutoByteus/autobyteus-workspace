@@ -1,0 +1,37 @@
+{
+  "seconds": 24.614,
+  "exit": 0,
+  "timedout": false,
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-claude-validation-2n7jjk6e",
+  "privateStateEntryCountBeforeRemoval": 2,
+  "privateTopLevelStateBeforeRemoval": [
+    "home",
+    "tmp"
+  ],
+  "privateTmpNonCacheStateBeforeRemoval": [],
+  "ownedGroupRemaining": [],
+  "fixtureChildrenObserved": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 69295,
+      "ppid": 68293,
+      "pgid": 69295,
+      "command": "node tickets/in-progress/claude-interrupt-resume-fake-cli/evidence/implementation/check-target-types.cjs"
+    },
+    {
+      "pid": 69480,
+      "ppid": 69295,
+      "pgid": 69295,
+      "command": "(git)"
+    },
+    {
+      "pid": 69485,
+      "ppid": 69480,
+      "pgid": 69295,
+      "command": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -license check"
+    }
+  ],
+  "privateRootRemoved": true,
+  "unhandledErrorMarker": false,
+  "testWorkspaceRemnants": []
+}

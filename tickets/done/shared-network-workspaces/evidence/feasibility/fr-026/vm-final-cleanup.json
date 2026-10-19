@@ -1,0 +1,21 @@
+{
+  "checkedUtc": "2026-10-13T09:13:49.997116+00:00",
+  "vm": "ab-sf-fr026-macos",
+  "stoppedBeforeDeletion": {
+    "CPU": 2,
+    "Memory": 4096,
+    "Display": "1024x768",
+    "OS": "darwin",
+    "DiskFormat": "raw",
+    "Running": false,
+    "Disk": 50,
+    "State": "stopped",
+    "Size": "32.803"
+  },
+  "changedVmDiskAndKeychainRemoved": true,
+  "exactVmAbsent": true,
+  "publicImmutableBaseCacheRetained": true,
+  "userHostMountsChanged": false,
+  "userCommandsRequiredForVmExperiments": false,
+  "noGlobalPrune": true
+}

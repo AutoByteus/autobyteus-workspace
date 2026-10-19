@@ -6,6 +6,7 @@ import { ApplicationCapabilityResolver } from './types/application-capability.js
 import { SkillResolver } from './types/skills.js';
 import { AgentRunResolver } from './types/agent-run.js';
 import { AgentTeamRunResolver } from './types/agent-team-run.js';
+import { DelegatedLaunchSelectionResolver } from './types/delegated-launch-selection.js';
 import { WorkspaceResolver } from './types/workspace.js';
 import { AgentDefinitionResolver } from './types/agent-definition.js';
 import { AgentTeamDefinitionResolver } from './types/agent-team-definition.js';
@@ -33,10 +34,13 @@ import { AppDataMigrationResolver } from './types/app-data-migrations.js';
 import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 import { SecretStorageResolver } from './types/secret-storage.js';
-import { DefinitionAdmissionResolver } from './types/definition-admission.js';
+import { DefinitionProblemsResolver } from './types/definition-problems.js';
+import { AgentPackageDefinitionsResolver } from './types/agent-package-definitions.js';
 import { CollaborationRootHistoryResolver } from './types/collaboration-root-history.js';
 import { ProjectResolver } from './types/projects.js';
 import { ProjectTaskResolver } from './types/project-tasks.js';
+import { ProjectTaskSearchResolver } from './types/project-task-search.js';
+import { EmbeddingModelResolver } from './types/embeddings.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -48,6 +52,7 @@ export async function buildGraphqlSchema() {
       SkillResolver,
       AgentRunResolver,
       AgentTeamRunResolver,
+      DelegatedLaunchSelectionResolver,
       WorkspaceResolver,
       AgentDefinitionResolver,
       AgentTeamDefinitionResolver,
@@ -74,10 +79,13 @@ export async function buildGraphqlSchema() {
       AppDataMigrationResolver,
       SkillImprovementResolver,
       SecretStorageResolver,
-      DefinitionAdmissionResolver,
+      DefinitionProblemsResolver,
+      AgentPackageDefinitionsResolver,
       CollaborationRootHistoryResolver,
       ProjectResolver,
       ProjectTaskResolver,
+      ProjectTaskSearchResolver,
+      EmbeddingModelResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

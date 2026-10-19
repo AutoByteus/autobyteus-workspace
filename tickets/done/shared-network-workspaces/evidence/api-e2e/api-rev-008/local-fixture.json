@@ -1,0 +1,8 @@
+{
+  "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/local-preview",
+  "files": {
+    "notes.txt": "API008 LOCAL clean reader\n",
+    "README.md": "# API008 LOCAL Markdown\n\n**Local preview preserved.**\n"
+  },
+  "purpose": "Proportionate ordinary local-workspace current renderer regression, not NFS proof"
+}

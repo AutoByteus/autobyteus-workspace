@@ -1,0 +1,6 @@
+{
+  "dockerContext": "desktop-linux",
+  "missingPreviousAppImage": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+  "presentAppImage": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+  "newProbeScope": "filesystem component, no agents/auth; new image not equivalent previous tested version"
+}

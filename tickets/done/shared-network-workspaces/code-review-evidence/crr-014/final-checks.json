@@ -1,0 +1,24 @@
+{
+  "headBeforeCommit": "f70912934b2a660a92574b777edc7e465a6d34df",
+  "priorRevisionPrefixPreserved": true,
+  "inputCount": 50,
+  "intentionallyUpdatedInputs": [
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md"
+  ],
+  "allOtherInputsUnchanged": true,
+  "baselineFilesIdentical": true,
+  "testExitCode": 1,
+  "expected3Pass1Fail": true,
+  "ownedScratchRemoved": true,
+  "missingReportReferences": [],
+  "reviewerSourceOrDurableTestChanges": "",
+  "rawEvidenceWhitespaceException": {
+    "path": "code-review-evidence/crr-014/unsaved-regression.log",
+    "lines": [
+      34,
+      54
+    ],
+    "reason": "Unmodified Vitest Received diagnostic output; initial staged whitespace check flagged these two lines. Preserve raw evidence; other staged files checked separately."
+  }
+}

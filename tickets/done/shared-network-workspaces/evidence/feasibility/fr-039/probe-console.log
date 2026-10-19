@@ -1,0 +1,9 @@
+PASS fresh native macOS nfsd serves a selected nonempty local APFS folder with exact peer allowlist
+PASS actual native Mac NFSv3 RPC NULL accepted after applying service configuration
+PASS native Mac mounts its selected APFS source through actual NFSv3 before Linux-client negotiation
+PASS Docker client reaches exact native Mac guest RPC/NFS/MOUNT ports through existing private route
+PASS native Mac and two unprivileged Docker clients mount same Mac-served storage at identical root
+PASS ordinary Mac source-folder write becomes exact mounted content on all clients
+PASS Linux mounted modification is read through Mac mount and original configured source folder
+PASS Mac-served source preserves existing data and supports shared rename/symlink/executable/exclusive-create
+{"run": "ab-sf-fr039-e703370a", "passes": 8, "fatal": null}

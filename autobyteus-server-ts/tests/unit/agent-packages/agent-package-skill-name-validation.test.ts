@@ -45,7 +45,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
 
   const createService = (installer?: GitHubAgentPackageInstaller, githubClient?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">) => new AgentPackageService({
     rootSettingsStore: new AgentPackageRootSettingsStore(
-      { getAppDataDir: () => defaultRoot, getAdditionalAgentPackageRoots: parseAdditionalRoots,
+      { getAppDataDir: () => defaultRoot, getRegisteredAgentPackageRoots: parseAdditionalRoots,
         get: (key: string, defaultValue?: string) => process.env[key] ?? defaultValue },
       { updateSetting: (key: string, value: string) => {
         if (value) process.env[key] = value; else delete process.env[key];
@@ -54,8 +54,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
     ),
     registryStore,
     installer, githubClient,
-    refreshAgentDefinitions: async () => { refreshes += 1; },
-    refreshAgentTeams: async () => undefined,
+    reloadAgentPackageDefinitions: async () => { refreshes += 1; },
     skillNames: skillService,
   });
 

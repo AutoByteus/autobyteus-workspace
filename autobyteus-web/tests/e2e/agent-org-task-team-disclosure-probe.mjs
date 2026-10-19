@@ -210,6 +210,8 @@ try {
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: graphQlData(operationName, query) }) });
   });
 
+  // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
+  await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="ttrc-disclosure-probe-root"]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => Boolean(window.__taskTeamDisclosureProbe));
@@ -223,7 +225,9 @@ try {
   const agentRow = (id) => page.locator(`[data-test="agent-org-agent-row-${id}"]`);
   const mountedTeam = (id) => page.locator(`[data-test="agent-org-team-row-${id}"]`);
   const MOUNTED_CHEVRON = '[data-test="agent-org-team-row-ssg-configured"] > :nth-child(2)';
-  const rowOrder = () => page.locator('[role="tree"] > [role="treeitem"]').evaluateAll((rows) => rows.map((row) => row.getAttribute('data-test')));
+  // Delegated rows sit in a wrapper beside their stop button (SR-007 of delegated-copy-model-change).
+  const rowOrder = () => page.locator('[role="tree"] > [role="treeitem"], [role="tree"] > div > [role="treeitem"]')
+    .evaluateAll((rows) => rows.map((row) => row.getAttribute('data-test')));
   const followingSibling = (locator) => locator.locator('[data-test="workspace-hierarchy-branches"] > [data-has-following-sibling]')
     .getAttribute('data-has-following-sibling');
   const rotation = (locator) => locator.evaluate((el) => {
@@ -268,7 +272,9 @@ try {
     assert(outer.x === mounted.x && second.x === mounted.x, 'Delegated chevron is not horizontally aligned with the mounted Team chevron', { mounted, outer, second });
     assert(outer.width === mounted.width && outer.height === mounted.height && outer.width === 14, 'Delegated chevron size differs from the mounted Team chevron', { mounted, outer });
     assert(Math.abs(nested.x - (outer.x + 14)) < 0.5, 'Nested delegated chevron is not indented by one level', { outer, nested });
-    assert(await taskTeam('ssg-task-1').getAttribute('aria-label') === 'StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1', 'Row label changed');
+    // The universal Team status (delegated-team-aggregate-status REQ-007) puts the Team status in words into the label.
+    const rowLabel = await taskTeam('ssg-task-1').getAttribute('aria-label');
+    assert(/^StudentStudyGroup\. Team status: (Running|Error|Idle|Offline), Started by Teacher, \/StudentStudyGroup, ssg-task-1$/.test(rowLabel ?? ''), 'Row label changed', { rowLabel });
     await screenshot('b01-default-open');
     return { order, geometry: { mounted, outer, second, nested }, chevronElement: outer.tag };
   });

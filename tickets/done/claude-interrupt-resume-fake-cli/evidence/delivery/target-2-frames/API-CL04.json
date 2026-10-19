@@ -1,0 +1,961 @@
+{
+  "expected": "Claude runtime returned an error result.",
+  "frames": [
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "recoverableBlock": null,
+        "agent_id": "claude-runtime-error-API-CL04"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 2,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": null,
+            "state": "queued",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "command_type": "SEND_MESSAGE",
+        "run_id": "claude-runtime-error-API-CL04",
+        "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+        "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+        "state": "accepted",
+        "accepted": true,
+        "duplicate": false,
+        "status": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "claude-runtime-error-API-CL04"
+        }
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "claude-runtime-error-API-CL04"
+      }
+    },
+    {
+      "type": "TURN_STARTED",
+      "payload": {
+        "turnId": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 3,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "queued",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "forwarded",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615:claude-text:msg-c4545bdd-18de-4764-88e3-1d4e8747e1fa:0",
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "segment_type": "text",
+        "metadata": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "forwarded",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615:claude-text:msg-c4545bdd-18de-4764-88e3-1d4e8747e1fa:0",
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "segment_type": "text",
+        "delta": "CLAUDE_PARTIAL_WORK"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "forwarded",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615:claude-text:msg-c4545bdd-18de-4764-88e3-1d4e8747e1fa:0",
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "metadata": null,
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "forwarded",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "toolu-long",
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "segment_type": "tool_call",
+        "metadata": {
+          "tool_name": "Bash",
+          "arguments": {
+            "command": "echo CLAUDE_COMPLETED_WORK"
+          }
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "forwarded",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "payload": {
+        "invocation_id": "toolu-long",
+        "tool_name": "Bash",
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "arguments": {
+          "command": "echo CLAUDE_COMPLETED_WORK"
+        }
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "forwarded",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "toolu-long",
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "metadata": {
+          "tool_name": "Bash",
+          "arguments": {
+            "command": "echo CLAUDE_COMPLETED_WORK"
+          },
+          "result": "CLAUDE_COMPLETED_WORK"
+        },
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "forwarded",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payload": {
+        "invocation_id": "toolu-long",
+        "tool_name": "Bash",
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "arguments": {
+          "command": "echo CLAUDE_COMPLETED_WORK"
+        },
+        "result": "CLAUDE_COMPLETED_WORK"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "forwarded",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "error",
+        "recoverableBlock": null,
+        "agent_id": "claude-runtime-error-API-CL04"
+      }
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "payload": {
+        "usage_event_id": "d252c028-690a-4116-832d-57758d6b71ff",
+        "idempotency_key": "claude_sdk_result:claude-runtime-error-API-CL04:9b490d11-c272-4889-8443-e887725eb2e5:claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "observed_at": "2026-10-13T03:49:42.273Z",
+        "run_id": "claude-runtime-error-API-CL04",
+        "root_team_run_id": null,
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "agent_definition_id": "agent-claude-ws",
+        "workspace_id": null,
+        "task_id": null,
+        "team_name": null,
+        "agent_name": null,
+        "run_summary": null,
+        "run_created_at": null,
+        "member_display_name": null,
+        "runtime_kind": "claude_agent_sdk",
+        "model_provider": "ANTHROPIC",
+        "provider_name": null,
+        "model_identifier": null,
+        "model_value": null,
+        "selected_match_state": "missing",
+        "selected_model_value": "claude-test-model",
+        "selected_resolved_raw_model_id": null,
+        "claude_sdk_model_usage": [],
+        "claude_sdk_session_id": "9b490d11-c272-4889-8443-e887725eb2e5",
+        "claude_sdk_query_kind": "create",
+        "ingestion_kind": "claude_sdk_result",
+        "usage_scope": "per_turn",
+        "reports_model_call": false,
+        "snapshot_series_key": null,
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "unknown",
+        "reported_input_tokens": null,
+        "reported_output_tokens": null,
+        "reported_total_tokens": null,
+        "accounting_input_tokens": null,
+        "accounting_output_tokens": null,
+        "accounting_total_tokens": null,
+        "standard_input_tokens": null,
+        "cache_miss_input_tokens": null,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "unknown",
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "claude_sdk_selected_price_unavailable",
+        "pricing_snapshot_json": null,
+        "pricing_policy_key": null,
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": null,
+        "meter_delta_output_tokens": null,
+        "meter_delta_total_tokens": null,
+        "run_summary_after_event": {
+          "run_id": "claude-runtime-error-API-CL04",
+          "root_team_run_id": null,
+          "agent_definition_id": "agent-claude-ws",
+          "workspace_id": null,
+          "gross_input_tokens": 0,
+          "standard_input_tokens": 0,
+          "cache_miss_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 0,
+          "total_tokens": 0,
+          "cache_read_input_token_rate": null,
+          "standard_input_token_rate": null,
+          "cache_creation_input_token_rate": null,
+          "cache_state": "unknown",
+          "estimated_api_input_cost": null,
+          "estimated_api_standard_input_cost": null,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": null,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": null,
+          "currency": null,
+          "api_cost_status": "price_missing",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": null,
+          "selected_pricing_tier_id": null,
+          "unit_prices": {
+            "standard_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_read_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_5m_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_1h_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "output": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "reasoning_output": {
+              "status": "not_applicable",
+              "price_per_million": null
+            }
+          },
+          "usage_report_count": 0,
+          "revision": 1,
+          "updated_at": "2026-10-13T03:49:42.273Z",
+          "latest_prompt_tokens": null,
+          "effective_context_window_tokens": null,
+          "context_window_usage_percent": null,
+          "context_compaction_threshold_tokens": null,
+          "latest_model_provider": null,
+          "latest_model_identifier": null,
+          "latest_runtime_kind": null,
+          "latest_selected_raw_model_id": null,
+          "has_cache_write_rate_assumption": false
+        },
+        "latest_prompt_tokens": null,
+        "effective_context_window_tokens": null,
+        "context_window_usage_percent": null,
+        "context_compaction_threshold_tokens": null,
+        "raw_usage_json": null,
+        "raw_event_json": null,
+        "quality_flags": [
+          "claude_sdk_model_usage_missing",
+          "claude_sdk_usage_unattributed",
+          "claude_sdk_selected_model_missing",
+          "reported_input_tokens_missing",
+          "reported_output_tokens_missing",
+          "reported_total_tokens_missing",
+          "input_token_semantic_unknown"
+        ]
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 4,
+        "entries": [
+          {
+            "sequence": 1,
+            "message_id": "e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "dedupe_key": "agent_run_input:e2e:e2e-d8985053-d643-41c8-a6ca-0edd01e9f74a",
+            "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615",
+            "state": "forwarded",
+            "content": "Ordinary work that fails.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "CLAUDE_RUNTIME_TURN_FAILED",
+        "message": "CLAUDE_RUNTIME_RESULT_ERROR: Claude runtime returned an error result.",
+        "error_scope": "turn",
+        "error_effect": "terminal",
+        "turn_id": "claude-runtime-error-API-CL04:turn:35ab7397-c375-4159-9530-baa9fda77615"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 5,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "recoverableBlock": null,
+        "agent_id": "claude-runtime-error-API-CL04"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 6,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "dedupe_key": "agent_run_input:e2e:e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "turn_id": null,
+            "state": "queued",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "payload": {
+        "command_type": "SEND_MESSAGE",
+        "run_id": "claude-runtime-error-API-CL04",
+        "message_id": "e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+        "dedupe_key": "agent_run_input:e2e:e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+        "state": "accepted",
+        "accepted": true,
+        "duplicate": false,
+        "status": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "claude-runtime-error-API-CL04"
+        }
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "claude-runtime-error-API-CL04"
+      }
+    },
+    {
+      "type": "TURN_STARTED",
+      "payload": {
+        "turnId": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+        "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 7,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "dedupe_key": "agent_run_input:e2e:e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+            "state": "queued",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 8,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "dedupe_key": "agent_run_input:e2e:e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+            "state": "forwarded",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a:claude-text:msg-75256116-3ec2-4847-a924-ce88c4d15020:0",
+        "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+        "segment_type": "text",
+        "metadata": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 8,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "dedupe_key": "agent_run_input:e2e:e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+            "state": "forwarded",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a:claude-text:msg-75256116-3ec2-4847-a924-ce88c4d15020:0",
+        "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+        "segment_type": "text",
+        "delta": "CLAUDE_NEXT_TURN_OK"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 8,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "dedupe_key": "agent_run_input:e2e:e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+            "state": "forwarded",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a:claude-text:msg-75256116-3ec2-4847-a924-ce88c4d15020:0",
+        "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+        "metadata": null,
+        "interrupted": false,
+        "reason": null,
+        "failed": false,
+        "error": null
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 8,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "dedupe_key": "agent_run_input:e2e:e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+            "state": "forwarded",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "payload": {
+        "usage_event_id": "e61a923f-a668-4a9c-9608-0f6bd5e72c00",
+        "idempotency_key": "claude_sdk_result:claude-runtime-error-API-CL04:9b490d11-c272-4889-8443-e887725eb2e5:claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+        "observed_at": "2026-10-13T03:49:42.280Z",
+        "run_id": "claude-runtime-error-API-CL04",
+        "root_team_run_id": null,
+        "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+        "llm_call_id": null,
+        "call_sequence": null,
+        "agent_definition_id": "agent-claude-ws",
+        "workspace_id": null,
+        "task_id": null,
+        "team_name": null,
+        "agent_name": null,
+        "run_summary": null,
+        "run_created_at": null,
+        "member_display_name": null,
+        "runtime_kind": "claude_agent_sdk",
+        "model_provider": "ANTHROPIC",
+        "provider_name": null,
+        "model_identifier": null,
+        "model_value": null,
+        "selected_match_state": "missing",
+        "selected_model_value": "claude-test-model",
+        "selected_resolved_raw_model_id": null,
+        "claude_sdk_model_usage": [],
+        "claude_sdk_session_id": "9b490d11-c272-4889-8443-e887725eb2e5",
+        "claude_sdk_query_kind": "create",
+        "ingestion_kind": "claude_sdk_result",
+        "usage_scope": "per_turn",
+        "reports_model_call": false,
+        "snapshot_series_key": null,
+        "previous_snapshot_event_id": null,
+        "input_token_semantic": "unknown",
+        "reported_input_tokens": null,
+        "reported_output_tokens": null,
+        "reported_total_tokens": null,
+        "accounting_input_tokens": null,
+        "accounting_output_tokens": null,
+        "accounting_total_tokens": null,
+        "standard_input_tokens": null,
+        "cache_miss_input_tokens": null,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "cache_creation_5m_input_tokens": null,
+        "cache_creation_1h_input_tokens": null,
+        "cache_state": "unknown",
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "cost_basis": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "pricing_source": null,
+        "pricing_status": "missing",
+        "pricing_missing_reason": "claude_sdk_selected_price_unavailable",
+        "pricing_snapshot_json": null,
+        "pricing_policy_key": null,
+        "selected_pricing_tier_id": null,
+        "missing_price_dimensions": [],
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "api_cost_status": "price_missing",
+        "meter_delta_input_tokens": null,
+        "meter_delta_output_tokens": null,
+        "meter_delta_total_tokens": null,
+        "run_summary_after_event": {
+          "run_id": "claude-runtime-error-API-CL04",
+          "root_team_run_id": null,
+          "agent_definition_id": "agent-claude-ws",
+          "workspace_id": null,
+          "gross_input_tokens": 0,
+          "standard_input_tokens": 0,
+          "cache_miss_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 0,
+          "total_tokens": 0,
+          "cache_read_input_token_rate": null,
+          "standard_input_token_rate": null,
+          "cache_creation_input_token_rate": null,
+          "cache_state": "unknown",
+          "estimated_api_input_cost": null,
+          "estimated_api_standard_input_cost": null,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": null,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": null,
+          "currency": null,
+          "api_cost_status": "price_missing",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": null,
+          "selected_pricing_tier_id": null,
+          "unit_prices": {
+            "standard_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_read_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_5m_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "cache_creation_1h_input": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "output": {
+              "status": "not_applicable",
+              "price_per_million": null
+            },
+            "reasoning_output": {
+              "status": "not_applicable",
+              "price_per_million": null
+            }
+          },
+          "usage_report_count": 0,
+          "revision": 2,
+          "updated_at": "2026-10-13T03:49:42.280Z",
+          "latest_prompt_tokens": null,
+          "effective_context_window_tokens": null,
+          "context_window_usage_percent": null,
+          "context_compaction_threshold_tokens": null,
+          "latest_model_provider": null,
+          "latest_model_identifier": null,
+          "latest_runtime_kind": null,
+          "latest_selected_raw_model_id": null,
+          "has_cache_write_rate_assumption": false
+        },
+        "latest_prompt_tokens": null,
+        "effective_context_window_tokens": null,
+        "context_window_usage_percent": null,
+        "context_compaction_threshold_tokens": null,
+        "raw_usage_json": null,
+        "raw_event_json": null,
+        "quality_flags": [
+          "claude_sdk_model_usage_missing",
+          "claude_sdk_usage_unattributed",
+          "claude_sdk_selected_model_missing",
+          "reported_input_tokens_missing",
+          "reported_output_tokens_missing",
+          "reported_total_tokens_missing",
+          "input_token_semantic_unknown"
+        ]
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 8,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "dedupe_key": "agent_run_input:e2e:e2e-bbc09cbb-8b6b-4f92-b89a-6d60b0ce4a50",
+            "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+            "state": "forwarded",
+            "content": "Continue the same work.",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": null
+      }
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "payload": {
+        "turnId": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a",
+        "turn_id": "claude-runtime-error-API-CL04:turn:16272fe5-e09c-4c31-a1bc-57a01520974a"
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "recoverableBlock": null,
+        "agent_id": "claude-runtime-error-API-CL04"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ca0cc6da-3756-44bf-a3c2-3aec28a7c44e",
+        "revision": 9,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    }
+  ],
+  "sessionId": "9b490d11-c272-4889-8443-e887725eb2e5",
+  "sdkCalls": 1
+}

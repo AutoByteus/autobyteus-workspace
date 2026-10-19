@@ -1,0 +1,48 @@
+# Recovery Handoff — IR-001 Baseline Disposition And D3 Test-Only Refinement
+
+## Identity / Outcome / Workspace
+- Package fix-legacy-docker-workspace-builds; original Project Task project_task_b2b611bb-9a5d-49da-b1dc-fc1c8f80d42a.
+- Result: Architecture Design Complete — design-only recovery D3 / SR-007; R2 Approved unchanged; Medium/High retained. Independent review required before the additional dependent test corrections.
+- Worktree / branch: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds / codex/fix-legacy-docker-workspace-builds.
+- Bootstrap base: origin/personal @ 2756d7b298ca5b203ebd2310d172b37a5d381b5c. Current received HEAD be48220fa includes source bf0d12776 and IR-001 evidence; D2 reviewed at ARCH-REV-001/828e727c3. Finalization remains origin/personal, isolated Delivery-owned merge/push; no release/tag requested. Current manager /project_task_manager (run project_task_manager_a5f6d9d306e54970bafdad895bdf731d).
+- Requester: /software_engineering_team/implementation_engineer, run implementation_engineer_a8c7b5673de342dfb980d1cb1c586562. Read implementation-handoff.md and implementation-revision-record.md before disposition; did not edit implementation/reviewer evidence or perform their validation.
+
+## Original Goal / Approval / Recovery Trigger
+User approved retiring both broken root Dockerfiles and dedicated personal-test stack instead of repairing them, while retaining monorepo pipeline/local-source/public-launcher operations and existing data. Exact approval R2/SR-005: 2026-10-12 “I also think so let's remove both because I think the current like a mono mono rapport was already enough right for all the purposes.” This remains approved; no product behavior or behavior-defining supplement changed by D3. Prior repair R1/D1 stays superseded.
+Implementation IR-001 completed exact approved source retirement but returned Unclear over broader baseline failures and TESTING Rule9. This recovery distinguishes genuine outside-scope product repair from small test-only corrections; it does not require repairing deleted images, modifying launcher runtime or certifying a fresh monorepo image.
+
+## Finding Dispositions / Accountable Owners
+### IMPL-BASE-001 — Separate product Task, open (not fixed or counted Pass)
+Existing public entry_shell_quote in scripts/public/docker/autobyteus-docker.sh emits invalid apostrophe shell quoting under supported native macOS Bash3.2 for custom installer paths. Supported installer test and isolated owner-function reproduction fail on both base/current. REQ-006/D3 continue to forbid any public launcher production edit in this retirement package.
+Registered via create_or_update_task as TODO: project_task_9599b2a7-3ae6-4e7f-9875-1e039f4db2e6, in project_a1377344-25db-482a-97cc-ecfdb0fb495a. Accountable backlog/intake /project_task_manager; public-launcher technical recovery entrypoint /software_engineering_team/solution_designer upon separate authorization. No dispatch/start/user approval for that separate repair is claimed. Tool confirmed durable context copies: baseline-launcher-quoting.md, baseline-triage.log, runtime-discrepancy.log. This is TESTING Rule9's separately reported product item, not abandonment/waiver.
+Current source review/API-E2E/Delivery must retain the known supported-installer defect as an unrelated open risk and not weaken/skip its assertion to obtain a globally green suite. Retirement does not introduce or alter it.
+
+### IMPL-ENV-001 / IMPL-ENV-002 — Local test-only baseline corrections, same branch
+TESTING Rule9 explicitly requires small test causes to be fixed as separately labelled baseline commits. D2's exact planned test-file list was overly narrow for these discovered test-owned prerequisites; D3 now permits a bounded addition in scripts/tests/test_public_docker_launcher_shared_workspace.py only (and strictly necessary test-local fixture support if reviewer agrees). Implementation Engineer owns the correction after D3 review; Code Reviewer/API-E2E validate its semantics. Do not defer these small local causes as unresolved separate product work.
+- Replace the lone zip(strict=True) use with Python3.9-compatible equivalent exact-length assertion plus zip. Preserve cardinality/mapping assertions; no interpreter installation or global TESTING.md change needed.
+- Hermetically control the external port-availability boundary for the two tests requiring preferred ports free, rather than relying on host 8001/5908/9228 or stopping current listeners. Existing fake-Docker tests validate preferred mapping/retry policy; uncontrolled real OS ports are an accidental fixture dependency.
+- Preserve actual supported launcher source, selector/reservation/retry logic and original expected mappings/record counts. No production test flag/hook, global monkeypatch of Python/socket, changed fixture names to avoid quoting defect, weakened/skipped assertions, or user-node operation.
+See D3 for concrete test-local shim shape and additional mutation/query-receipt proof. If correction cannot remain bounded/test-only, return evidence rather than extending runtime scope.
+
+## What Evidence Closes Retirement / What Does Not
+AC-007..011 remain unchanged; no universal green launcher suite was added by R2. Required proof: exact tracked-source absence; preserved runtime/source-build/release/launcher inputs and caller independence; saved-state exclusion and no operational resource actions; current docs/relative links; focused source/helper/contract/license/hygiene checks; mutation/fixture proof for changed retirement guards and new test-local isolation.
+Already-reported 9/9 source and 27/27 narrow checks, fake default/zh build-helper invocation and byte/source audits are implementation-local evidence, not independent API/E2E Pass or finalization. Downstream owners rerun proportionately and include local test corrections once reviewed.
+Broad original suite truthfully remains 60 run, 55 pass, 2 failures, 1 error, 2 skips in IR-001. Base/current Python3.11 triage has same three failing cases. After local test corrections, rerun the affected tests under system Python3.9 and newer available Python; rerun broad checks and retain exact remaining IMPL-BASE-001 failure/platform skips. The product follow-up/task and unchanged-input evidence permit retirement to progress through normal source review despite that unrelated open product defect; never summarize broad coverage as all-green. Any NEW failure/regression affecting this retirement or retained code, or shared runtime/input change, returns to the correct owner and may require actual current image proof.
+
+## Current Authoritative Package / Paths
+All absolute paths begin /Users/normy/autobyteus_org/autobyteus-worktrees/fix-legacy-docker-workspace-builds/tickets/in-progress/fix-legacy-docker-workspace-builds/:
+- requirements-doc.md — R2 unchanged user-approved retirement intent, REQ-005..008/AC-007..011.
+- design-spec.md — D3; adds bounded test-only baseline isolation/compatibility path, production byte-identity/data boundary unchanged.
+- investigation-notes.md — factual E/U/R/AR and IR-001 recovery observations, no competing authority.
+- solution-revision-record.md — cumulative SR-007, old approvals/reviews retained historically.
+- usage-investigation.md / solution-handoff.md — prior role/approval/context, append latest recovery pointers; no R1 implementation.
+- design-review-report.md / architecture-review-revision-record.md — ARCH-REV-001 Pass for R2/D2; D3 refinement needs next applicable independent round, not fabricated extension of old Pass.
+- implementation-handoff.md / implementation-revision-record.md — IR-001 source/evidence, still externally owned; follow-up IR records its own corrected readiness.
+- baseline-launcher-quoting.md — separately registered product item report.
+- baseline-disposition.md — this complete recovery/handoff.
+Relevant logs: implementation-evidence/ir-001/{baseline-triage.log,runtime-discrepancy.log,local-checks.log,focused-source-helper.log,source-audit.log,helper-and-gates.log}. Historical BAS-001/UD-002 supplements in original solution-handoff.md remain attached evidence, unmodified. Product/UI artifacts N/A. Code/API/Delivery artifacts N/A — not generated at this boundary; no such Pass claimed.
+
+## Design Risk / Expected Next Output / Routing
+D3 remains Medium/High because approved retirement removes documented operational support; test-only extra file does not create a new runtime/security/persistence/API owner. Approval R2 remains valid; ARCH-REV-001 still covers unchanged retirement rationale but next review covers D3 before dependent test fixes. No user decision needed for existing-contract, test-only correction; no new product policy.
+Expected output: independent architecture review of D3/R2 and focused baseline disposition; on Pass use configured primary handoff to the existing Implementation Engineer instance to complete test-only baseline fixes and its own readiness record, then normal code-review/API-E2E/Delivery routes. Do not send to Code Reviewer directly from this recovery or duplicate current primary forwarding.
+get_handoff_rules 2026-10-12: revised Architecture Design Complete with architectural_risk=High matches the single review rule. Exact recipient /software_engineering_team/architecture_reviewer. Medium/Low direct implementation and delivery-receipt gap rules do not match. Send this full recovery file plus cumulative R2/D3/IR/review evidence; do not bypass review or duplicate Implementation/manager dispatch. Pending tool-confirmed delivery; no D3 review/execution success claimed.

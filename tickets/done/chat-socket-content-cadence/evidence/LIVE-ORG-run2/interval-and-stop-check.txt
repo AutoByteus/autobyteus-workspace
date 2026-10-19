@@ -1,0 +1,23 @@
+# Case: LIVE-ORG run 2 — AC-003 interval change and Stop-mid-answer check (S1)
+# Command: computed from evidence/LIVE-ORG-run2/batches-S1.json and summary.json (marks)
+# Commit: e24ff6b333; Env: ENV-2
+interval changed to 1000 ms at t=21237.9 ms (GraphQL updateServerSetting AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS)
+batch at t=17140.5 seq 36..86 items=2 agents=2 closedBy=window gapFromPreviousBatch=501ms 
+batch at t=17675.7 seq 88..136 items=2 agents=2 closedBy=window gapFromPreviousBatch=535ms 
+batch at t=18199.9 seq 138..188 items=2 agents=2 closedBy=AGENT_STATUS gapFromPreviousBatch=524ms 
+batch at t=18704.3 seq 190..246 items=2 agents=2 closedBy=window gapFromPreviousBatch=504ms 
+batch at t=19259.5 seq 248..294 items=2 agents=2 closedBy=window gapFromPreviousBatch=555ms 
+batch at t=19787.3 seq 296..334 items=2 agents=2 closedBy=window gapFromPreviousBatch=528ms 
+batch at t=20343.6 seq 336..382 items=2 agents=2 closedBy=window gapFromPreviousBatch=556ms 
+batch at t=20871 seq 384..426 items=2 agents=2 closedBy=window gapFromPreviousBatch=527ms 
+batch at t=21398 seq 428..474 items=2 agents=2 closedBy=window gapFromPreviousBatch=527ms 
+batch at t=22443.7 seq 476..570 items=2 agents=2 closedBy=window gapFromPreviousBatch=1046ms (window opened after the change)
+batch at t=23524.5 seq 572..676 items=2 agents=2 closedBy=window gapFromPreviousBatch=1081ms (window opened after the change)
+batch at t=24576.8 seq 678..772 items=2 agents=2 closedBy=window gapFromPreviousBatch=1052ms (window opened after the change)
+batch at t=25618.4 seq 774..860 items=2 agents=2 closedBy=window gapFromPreviousBatch=1042ms (window opened after the change)
+batch at t=26640.4 seq 862..964 items=2 agents=2 closedBy=AGENT_STATUS gapFromPreviousBatch=1022ms (window opened after the change)
+batch at t=27644.6 seq 966..1054 items=2 agents=2 closedBy=window gapFromPreviousBatch=1004ms (window opened after the change)
+batch at t=28663.8 seq 1056..1138 items=2 agents=2 closedBy=window gapFromPreviousBatch=1019ms (window opened after the change)
+batch at t=29359 seq 1140..1194 items=2 agents=2 closedBy=window gapFromPreviousBatch=695ms (window opened after the change)
+stopCheck: {"lifecycleAt":29359,"framesAfterInactive":0,"previousSequencedFrame":{"type":"ROOT_EXECUTION_EVENT","at":29359,"gapMs":0,"batch":true}}
+lifecycle: [{"at":4163.7,"type":"ROOT_LIFECYCLE","payload":{"root_subject_kind":"agent_org","root_run_id":"abt139_org_cf7b90715a4c4801a4ae792875c61204","is_active":true}},{"at":29359,"type":"ROOT_LIFECYCLE","payload":{"root_subject_kind":"agent_org","root_run_id":"abt139_org_cf7b90715a4c4801a4ae792875c61204","is_active":false}}]

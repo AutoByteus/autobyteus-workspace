@@ -1,0 +1,89 @@
+# Check: IMP-02-core-integration-mcp
+# Command: env -i PATH=/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.bNax06kLVV TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ NO_COLOR=1 pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp
+# Commit: a8b849af79
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-19
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-run-session-cleanup/autobyteus-ts
+
+ ↓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts (1 test | 1 skipped)
+stdout | tests/integration/tools/mcp/http-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+Tool 'fail' failed: 'Error executing tool fail: dummy failure'
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts (6 tests) 4091ms
+     ✓ lists and calls tools with the token, which the server saw on every request  1867ms
+     ✓ fails to connect without a token  851ms
+     ✓ fails to connect with a wrong token  881ms
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts (6 tests) 4435ms
+     ✓ registers the server tools with prefix and argument schema  1609ms
+     ✓ executes a registered tool through the registry  1459ms
+     ✓ previews tools without registering them  753ms
+     ✓ executes a registered tool through the registry  307ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts (10 tests) 15850ms
+     ✓ lists the tools and calls echo, add, fail and slow  1926ms
+     ✓ delivers the configured env and cwd to the server  721ms
+     ✓ ends the server process when a connected server is closed  739ms
+     ✓ fails to connect, with an error, when the server exits at start  729ms
+     ✓ does not connect to a server that hangs at start, and closing it ends its process  5672ms
+     ✓ lists the tools and calls echo, add, fail and slow  475ms
+     ✓ does not connect to a server that hangs at start, and closing it ends its process  5166ms
+
+ Test Files  3 passed | 1 skipped (4)
+      Tests  22 passed | 1 skipped (23)
+   Start at  16:09:52
+   Duration  17.30s (transform 268ms, setup 62ms, import 4.06s, tests 24.38s, environment 0ms)
+

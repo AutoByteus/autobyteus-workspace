@@ -1,0 +1,36 @@
+--- FAIL: TestHostedConfigDetachPreflightsBeforeEffects (0.06s)
+    --- FAIL: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/old/saved (0.06s)
+panic: runtime error: invalid memory address or nil pointer dereference [recovered, repanicked]
+[signal SIGSEGV: segmentation violation code=0x2 addr=0x0 pc=0x10281c89c]
+
+goroutine 7 [running]:
+testing.tRunner.func1.2({0x102c29608, 0x102cc7bb0})
+	/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/src/testing/testing.go:2125 +0x1a0
+testing.tRunner.func1()
+	/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/src/testing/testing.go:2128 +0x2c8
+panic({0x102c29608?, 0x102cc7bb0?})
+	/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/src/runtime/panic.go:859 +0x120
+net/http.(*Client).do(0x0, 0x753a7e7b5040)
+	/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/src/net/http/client.go:620 +0x15c
+net/http.(*Client).Do(...)
+	/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/src/net/http/client.go:604
+github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker.(*Client).Call(0x753a7e7c42e8, {0x1028b58ac, 0x3}, {0x753a7e9a0000?, 0x753a7e7e8ec8?}, {0x0?, 0x0?}, {0x102bc3e08, 0x753a7e8640c0})
+	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-skip-detach/internal/docker/client.go:66 +0x1fc
+github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker.(*Client).Inspect(0x753a7e7c42e8, {0x753a7e84c380, 0x40})
+	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-skip-detach/internal/docker/client.go:92 +0xd0
+github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker.(*Client).removeProbe(0x753a7e7c42e8, {{0x753a7e84c380?, 0x0?}, {0x753a7e8682d0?, 0x198?}})
+	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-skip-detach/internal/docker/probe_cleanup.go:17 +0x74
+github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker.(*Client).ReapProbe(0x753a7e7c42e8, {{0x753a7e86a6e0?, 0x753a7e7e9328?}, 0x17?, 0x0?}, {0x753a7e96ed90, 0xe})
+	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-skip-detach/internal/docker/probe_cleanup.go:48 +0x170
+github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup.(*Service).detachNodes(0x753a7e7e9cc0, {{{0x753a7e8682d0, 0x24}, {0x753a7e96ed70, 0xc}, {0x753a7e868300, 0x30}, {0x753a7e96ed7c, 0x3}, {0x753a7e7df200, ...}}, ...})
+	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-skip-detach/internal/setup/detach_nodes.go:14 +0x78
+github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup.(*Service).Detach(0x753a7e7e9cc0, 0xe0?)
+	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-skip-detach/internal/setup/lifecycle.go:97 +0x27c
+github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup.TestHostedConfigDetachPreflightsBeforeEffects.func1(0x753a7e8746c8)
+	/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-skip-detach/internal/setup/hosted_config_test.go:127 +0x134
+testing.tRunner(0x753a7e8746c8, 0x753a7e843740)
+	/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/src/testing/testing.go:2195 +0xc4
+created by testing.(*T).Run in goroutine 6
+	/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/src/testing/testing.go:2260 +0x3b8
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	0.400s
+FAIL

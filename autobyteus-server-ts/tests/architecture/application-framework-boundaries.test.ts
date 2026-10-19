@@ -2980,7 +2980,9 @@ describe("application framework architecture boundaries", () => {
       "app-data-migrations/migrations/team-run-history-index-v2-migration.ts",
     ]) {
       const source = readServerSource(migration);
-      expect(source, migration).toContain("DefinitionPersistenceProvider");
+      // Migrations read definitions straight from their files (the file providers that replaced the persistence
+      // providers in 9777af682c), never through the cached definition services.
+      expect(source, migration).toMatch(/\bFile(?:Agent|AgentTeam)DefinitionProvider\b/);
       expect(source, migration).not.toMatch(/DefinitionService\.getInstance\s*\(/);
     }
     const cachePreloader = readServerSource("startup/cache-preloader.ts");
@@ -3002,7 +3004,6 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
-      "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
       "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
       "autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts",
       "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
@@ -3142,7 +3143,9 @@ describe("application framework architecture boundaries", () => {
       "utf8",
     );
     expect(factory).toContain("class FlatTeamExecutionFactory");
-    expect(factory).toContain("cannot contain a configured Team");
+    // Teams are flat by type: a team node's children are agents (remove-nested-task-team replaced the factory's runtime check).
+    const teamRunConfig = readFileSync(join(serverSourceRoot, "agent-team-execution/domain/team-run-config.ts"), "utf8");
+    expect(teamRunConfig).toContain("children: readonly TeamRunAgentNode[];");
     expect(factory).not.toMatch(/RootTeamRun|AgentOrgRun|ExecutionTreeStore|RunManager\.getInstance|registerRoot/);
   }, 15_000);
 });

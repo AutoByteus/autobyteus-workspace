@@ -9,7 +9,7 @@ selected agent tools can create or change text/status. Project Tasks remain
 business records, distinct from execution children. Saved-ID delegation starts
 fresh copies for a Task, and the server records them as the Task's agent run
 resources. Status is TODO, IN_PROGRESS, DONE or CANCELLED; only agents change it
-(through `create_or_update_task`), and the app only displays it. DONE means the
+(through `update_task`), and the app only displays it. DONE means the
 work is finished; CANCELLED means the Task was dropped as not needed, not
 completed. Explicit DONE or CANCELLED closes those runs and asks the platform to
 stop only them. Other status writes do not start work. Neither is engineering
@@ -54,8 +54,8 @@ redock and narrow transient-drawer interactions. Mobile support is not added.
 | `/projects/:id` | ProjectDetail, Tasks default; `?tab=workspaces` selects links |
 | `/projects/:id/edit` | ProjectEditor; return to originating Project tab |
 | `/projects/:id/tasks/new` | ProjectTaskEditor/ProjectTaskDraftEditor |
-| `/projects/:id/tasks/:taskId` | Concise ProjectTaskDetail |
-| `/projects/:id/tasks/:taskId/edit` | Ordinary Task edit page |
+| `/projects/:id/tasks/:taskId` | Concise ProjectTaskDetail; `:taskId` is a Task reference, canonically the key (see Key URLs) |
+| `/projects/:id/tasks/:taskId/edit` | Ordinary Task edit page (key URL) |
 | `/projects/temp-tasks` | TempTaskBoard: Tasks with no Project (Temp tasks), read only |
 | `/projects/temp-tasks/tasks/:taskId` | TempTaskDetail: one Temp task, read only |
 
@@ -109,7 +109,8 @@ context; workspace registrations/roots and unrelated run data remain untouched.
 The Tasks tab has search, **Refresh** and New task, then fixed To Do / In Progress /
 Done containers. Each has a continuous semantic list of anchor rows, a description
 summary and matching count; there are no floating cards. Ordering is server
-updatedAt descending then taskId. Empty lanes and whole-board no-match states
+updatedAt descending then taskId; while searching, each lane lists its matches
+best-first instead. Empty lanes and whole-board no-match states
 have explicit text/Clear search; status labels are not mutation controls.
 
 Cancelled Tasks stay out of those three lanes and are hidden by default. When the
@@ -134,10 +135,136 @@ accessible name and the Task delete confirmation) use the summary shortened to 1
 characters with "…". Search still matches the full description, and the Task page
 (and Temp task page) shows the full text. The Temp tasks board uses the same row.
 
-Search is a case-insensitive description substring across all statuses, transient
-per Project. Cancel/back/detail preserves it; successful creation clears it before
-returning to the full board. Refresh never clears search or navigates. Lane counts
-are filtered; Project all/open totals derive from the complete unfiltered snapshot.
+### Task keys and "Depends on"
+
+Every Project Task has a readable key (`autobyteus-42`, server-assigned,
+permanent; the long `taskId` stays the identity in requests and the change feed).
+The key is shown where it links to or refers to a Task: the Task page chip,
+dependency rows, the picker, badges and URLs. Board cards and the Workspaces-tree
+Task summary show no key.
+Temp tasks have no key and no dependencies.
+
+- **Key URLs**: Task page and Edit task URLs use the key
+  (`/projects/<projectId>/tasks/autobyteus-42`, `…/edit`); every in-app link to a
+  Project Task is built by `utils/projects/taskPagePath.ts`. The route parameter is
+  a Task reference: `useProjectTaskPage` is its only resolver (key in any letter
+  case, or long ID), and the page, its context client, delete and the editor use
+  the resolved Task's `taskId`. A long-ID URL (old links) opens the Task and is
+  replaced by the key URL, keeping the query. Temp-task URLs are unchanged.
+
+- **Card** (`ProjectTaskRow`): no key line; the card starts with the summary
+  (keys appear only where they link or refer to a Task, task-keys-declutter).
+  On To Do / In Progress cards with dependencies,
+  `TaskDependencyBadge` shows "Blocked by <key>" (amber, link icon) while any
+  dependency is To Do or In Progress (the lowest key, "+N" for the other open
+  ones), otherwise "Dependency cancelled: <key>" (grey, x-circle) when one was
+  cancelled, and nothing when all are Done. Done and Cancelled cards never show
+  one. The tooltip lists every dependency with its status.
+- **Task page / tab Task view**: `TaskKeyChip` (key with a copy button; "✓ Copied"
+  for 1.5 s; a failed clipboard write is logged like the app's other copy buttons)
+  sits after the status pill (in the tab, at the right of the Description label).
+  `TaskDependenciesSection` (labelled "Dependencies") lists **Depends on** (every
+  dependency, Done ones too, in key order: key · status pill, Done with ✓ ·
+  summary), the note "Only informs: work on this Task can start at any time."
+  while blocked, and **Required by** (the Tasks that depend on this one);
+  an empty list reads "None". Rows link to the Task page; in the tab they open
+  the Task inside the tab.
+- **New / Edit task**: `TaskDependencyPicker`, "Depends on (optional)" below the
+  description. A combobox search ("Add a Task · Search by key or text") lists at
+  most 8 Tasks of this Project, newest key first, never the Task itself or one
+  already chosen. A Task that already depends on this one, directly or not, is
+  greyed with "Depends on this Task" and cannot be chosen (arrows skip it).
+  Enter or a click adds; the list closes after a choice and focus stays in the
+  search; Esc closes; "No other Tasks in this Project match." when nothing
+  matches. Chosen Tasks are rows with a "Remove <key>" button. Edit starts from
+  the dependencies that still exist; Save sends the whole list. A server
+  rejection shows in the editor's existing error line.
+- **Long keys** (`TaskKey`): shown whole where they fit; otherwise the Project
+  part is shortened with "…" and the number stays visible. The full key is the
+  tooltip and copies as one string.
+- **Derivation** (`utils/projects/taskDependencies.ts`): only `dependsOnTaskIds`
+  is stored; the badge, Depends on, Required by and the loop set are computed
+  from the Project's Task list the store already holds, so they update live from
+  the change feed (a dependency becoming Done clears its dependents' badges). A
+  dependency ID that names no current Task is never shown or counted; deleting
+  a Task also removes it from its dependents on the server.
+- Dependencies only inform: nothing in the app stops starting, delegating or
+  finishing a blocked Task. Board search matches descriptions only.
+
+### "Part of"
+
+A Project Task can be part of one other Task of the same Project (its parent),
+one level only: a part has no parts and a Task with parts is no part. Only the
+part stores it (`partOfTaskId`); a parent's parts and progress are derived in
+`utils/projects/taskParts.ts` from the Project's Task list the store already
+holds, so they update live from the change feed. A parent ID that names no
+current Task is never shown or counted. Temp tasks show none of this.
+
+- **Card** (`ProjectTaskRow`): one wrapping relation line (after the summary and
+  preview) holds, in this order, the Blocked / Dependency-cancelled badge, a
+  parent's progress pill (`TaskPartsProgress`: "2 of 4 done", slate; emerald with
+  a check once every counted part is Done; hidden when no part counts; the hover
+  title adds "· 1 cancelled") and a part's quiet "↳ Part of <key>" line
+  (`TaskPartOfMarker`; hover: "Part of <key>: <summary> (<status>)"). The board
+  stays flat: lanes, order, search and the Cancelled toggle are unchanged.
+- **Task page / tab Task view** (`TaskPartsSection`, between Description and
+  Dependencies): a part shows **Part of** with its parent's row (key · status
+  pill · summary); any other Task shows **Parts**: every part in key order,
+  Done ones with ✓ and Cancelled ones included, with "N of M done · K cancelled"
+  in the header (M leaves out Cancelled parts; only "K cancelled" when no part
+  counts; "No parts yet." when there are none). While a To Do / In Progress
+  parent has an open part, a static line says that setting it to Done or
+  Cancelled also sets its open parts the same way (the server does that; the
+  app only displays status). The page offers **New part**, which opens New task
+  at `…/tasks/new?partOf=<task ID>` with this Task chosen; the tab has no New
+  part and its rows open inside the tab.
+- **New / Edit task**: `TaskPartOfPicker`, "Part of (optional)" above "Depends
+  on". It holds one Task: a chosen row (key, summary, status, "Remove <key>")
+  and a combobox search ("Choose a Task" / "Choose another Task" · "Search by key
+  or text") listing at most 8 Tasks of this Project, newest key first, never the
+  Task itself. Tasks that are parts are greyed with "Already part of a Task" and
+  cannot be chosen (arrows skip them). A Task that has parts shows "This Task has
+  parts, so it can't be part of another Task." instead of the search. Edit
+  starts from the parent that still exists and always sends it (`null` clears);
+  New task sends it only when chosen. `?partOf=` is used only while it names a
+  current Task of the Project. A server refusal shows in the editor's error line.
+- **Delete**: a parent's confirmation adds "Its 5 parts stay as separate Tasks."
+  ("Its part stays as a separate Task." for one); after deleting, its parts stay
+  without a parent.
+
+Search finds a Project's Tasks by meaning as well as by the words the user
+remembers (project-task-semantic-search). The placeholder invites a sentence
+("Describe the task you're looking for"). `useProjectTaskSearch` sends the query
+to the server (`searchProjectTasks`) about 250 ms after typing stops; the server
+decides the matches, and the board no longer filters on its own. Matches are
+every Task whose description contains the text (case-insensitive, the earlier
+rule), ranked first, then the Tasks closest in meaning (none when nothing is
+clearly relevant). Each lane lists its matches best-first; clearing the search
+restores the normal order. The latest request wins: an answer for an earlier
+query or Project is dropped, and the previous answer stays shown until the new
+one arrives. A Task added, edited or removed (live feed or Refresh) searches
+again. The server ranks over all of the Project's Tasks, Cancelled ones
+included; the board shows the matches in the lanes on show, so toggling
+Cancelled never searches again.
+
+One quiet status line under the toolbar appears only while meaning search is
+not ready: "Preparing meaning search… N of M Tasks" (or the model download in
+MB) while the server prepares it, during which exact matches show and the board
+asks again every 2 s until it is ready; or "Meaning search is unavailable:
+<reason>. Exact matches still work." with **Retry**, which asks the server to
+try the model again (`retryEmbeddingModel`) and searches again. After a Task
+edit the line may show for one 2 s interval while that Task is indexed again. A
+failed search request shows "Search failed: <reason>" with Retry. Temp tasks
+keep their own description-substring search.
+
+Models and indexes are managed in Settings -> Server Settings -> Embedding
+(`settings.md`): download a model ahead of time, choose the active one, and
+index or rebuild Projects on purpose.
+
+Search text is transient per Project. Cancel/back/detail preserves it; successful
+creation clears it before returning to the full board. Refresh never clears search
+or navigates. Lane counts are filtered; Project all/open totals derive from the
+complete unfiltered snapshot.
 
 Refresh always starts a new physical `projectTasks` query on the captured node
 client (`network-only`, queryDeduplication:false), not a cache read or reuse of an
@@ -160,7 +287,7 @@ Every Projects page (list, board, Task page, Temp tasks) retains the node's
 keeps one socket while any page retains it, reconnects with backoff (1 s, 2 s, …
 capped at 10 s) and reopens on the newly bound node. Messages (see the server's
 [Live Change Feed](../../autobyteus-server-ts/docs/modules/projects.md#live-change-feed-and-task-roots))
-go to both stores in arrival order:
+go to the stores in arrival order:
 - `projectStore`: Project upserts (with the server's counts) and removals, once
   the list was fetched.
 - `projectTaskStore`: Task upserts/removals/worker status for each **loaded**
@@ -173,6 +300,10 @@ go to both stores in arrival order:
   missed.
 - A Task that arrives, or moves to another lane, is highlighted for 2.4 s
   (`liveChanges`; reduced motion keeps only the tint).
+- `taskWorkerTaskStore`: the Workspaces tree's
+  [Task summaries](#task-summaries-in-the-workspaces-tree). It also retains the
+  feed while the tree shows any Task worker, so summaries stay live outside the
+  Projects pages.
 
 ### Task root line
 
@@ -226,6 +357,76 @@ conversation:
   context or reference files, and Assigned to, live. A back arrow returns to the
   board with its search kept, and **Open in Projects** opens the full Task page,
   where editing stays.
+
+### Delegated Team disclosure under Agent runs
+
+Teams beneath a standalone Agent run, including Project Task Manager, start
+collapsed. Startup/restart, selecting the host, collaboration refresh/reconnect,
+and newly appearing Teams do not automatically show their members. Team rows
+and Task summaries remain available while collapsed.
+
+The disclosure button opens or closes only that exact Team execution, without
+selecting it. Activating its row (click, Enter or Space) toggles that Team and
+selects its coordinator; member rows select the exact member conversation.
+Choices are independent across copies and hosts and survive same-session
+refresh/reselection, but reset after the frontend session restarts. Opening an
+explicit [Task root](#task-root-line) still reveals its target Team, not siblings.
+Collapsing is presentation only: it never stops workers or changes Task status.
+This default does not change Agent Team or Agent Org root disclosure policies.
+
+### Task summaries in the Workspaces tree
+
+Under Agent runs (`AgentRunTaskRows`) and Team runs
+(`WorkspaceTeamExecutionTree`), a delegated copy row that is a **Task worker**
+(its Task's root) shows a second line under its name: the summary of its current
+Task (`TaskWorkerTaskSummary`, text from `taskSummaryLabel`), gray, indigo when
+the row is selected or on hover. It shows no Task key; its tooltip and
+accessible name read "Show Task in Projects: <summary>". Team members, sub-work copies and converted
+unowned runs keep one line. Agent Org rows are unchanged (not in scope). The
+row's elbow and chevron align with the name line
+(`WorkspaceHierarchyBranches` `anchor="name-line"`). Summaries exist only where
+the Projects tab does (`isFeatureAvailableInRuntime('projects')`).
+
+- **Data** (`stores/taskWorkerTaskStore.ts`): the single client authority for
+  "which Task is this worker on". `useTaskWorkerTasks` maps a host's listed rows
+  to worker references (a task Agent row → its agent run, a task Team row → its
+  team run) and holds interest while they are listed. Newly listed workers are
+  read in one batched `GetTaskWorkerTasks` query per microtask (server
+  [`taskWorkerTasks`](../../autobyteus-server-ts/docs/modules/projects.md#current-task-of-a-task-worker));
+  components never run the query or scan Task lists. The feed decides who is
+  re-read: `connected` → every interested worker; `task_upserted` → the worker
+  its `root` names and any worker caching that Task (so a follow-up Task
+  replaces the summary, while a rename of an older Task does not steal it);
+  `task_removed` → workers caching that Task; `project_removed` → workers whose
+  Task is in that Project. A key's answer applies only when it answers that
+  key's latest read (per-key epochs), and a node rebinding clears and re-reads.
+  A failed read leaves no summary until the next successful read; there is no
+  fallback.
+- **Row behavior**: the summary is its own button. Click, Enter or Space shows
+  the Task in Projects and never opens, selects or toggles the row; a row click
+  still opens the copy. `aria-current` / `aria-selected` stay on the row, whose
+  accessible name adds "Task: …"; the summary's tooltip and accessible name are
+  "Show Task in Projects: …" (`workspace.history.copyTask.*`).
+- **Locate** (`stores/taskLocatorStore.ts`): one request at a time, advanced
+  `pending` → `revealed` → `visible` → done by the surface that owns each step.
+  `locate` saves the picker choice for the Task's Project or Temp tasks (as a
+  manual pick) and places the request. `WorkspaceToolShell` registers while
+  mounted and reveals the Projects tab like the strip does (docked, reopening a
+  hidden panel, or the drawer; a start surface opens its tools first).
+  `ProjectsPanel` leaves an open Task for the board. The compact board for that
+  scope waits until no read of its list and no search is in flight, then makes the Task
+  visible: shows the Cancelled lane for a Cancelled Task, clears a search whose
+  settled results do not include it, and on Temp tasks shows all Done when needed. The `select` card
+  then scrolls to the centre (instant under reduced motion), takes focus (Enter
+  opens the Task) and completes the request, which highlights only that card
+  for 2.4 s with the `task-live` styling. A newer request replaces the previous
+  one and its highlight; a request not done within 10 s (for example the Task is
+  not on its board) expires.
+- **Pages without a right panel** (for example Agents or Projects): with no
+  shell registered, the host opens its run first, the way a run-row click does
+  (Agent host: `selectAgentRun`, the run's own conversation; Team host:
+  `onOpenTeamRun`, which never collapses an already-selected team). The request
+  waits for the opened route's shell and continues from the reveal.
 
 ### Left panel task rows (F-006)
 
@@ -321,9 +522,9 @@ extension, microphone/permission/device or live transcription capability.
 
 ## Agent Tools / Scope Exclusions
 
-Exactly `list_projects`, `list_project_tasks`, `create_or_update_project`, `create_or_update_task` are selected
-independently per agent/node; `create_or_update_task` is also added automatically wherever `delegate_task` is. Project authoring uses a required name to create
-or a known project_id to patch: omitted fields persist, blank description clears.
+`list_projects`, `list_project_tasks`, `create_project`, `update_project`, `create_task`, `update_task` are selected
+independently per agent/node; none is added automatically (not even where `delegate_task` is). `create_project` creates a
+Project with a required name; `update_project` patches a known project_id: omitted fields persist, blank description clears.
 Optional workspaces [{workspace_path, description?}] reference absolute folder paths
 on the selected node: a supplied list replaces all links, [] unlinks only, omission
 preserves. Retained descriptions persist if omitted. Registration and folder
@@ -332,6 +533,12 @@ The saved acknowledgement contains Project metadata and workspaceRootPath/descri
 not workspace IDs, per-link timestamps, Task counts or availability. List requires explicit Project ID after discovery;
 create (`project_id` + text, no Task ID) makes a TODO Task with no status; update takes
 the Task ID alone (no `project_id`) and patches text and/or exact status; unknown ID fails.
+For a Project Task the agent-facing Task ID is its key: results show it as `taskId`, and
+`task_id` accepts the key (any letter case) or the long ID. Both create and update take
+optional `depends_on` (Tasks of the same Project, by key or ID); results show `dependsOn` as keys.
+They also take optional `part_of` (the parent, by key or ID; `""` clears it on update); results
+show `partOf`, list and search results also `parts`, and an `update_task` that closed a parent's
+open parts lists them in `closedParts`.
 Both modes take optional `context_files` (absolute node-local file paths). The server
 copies each file into the Task's saved context under the same upload policy as the
 Task page (allowed types by extension, 25 MiB), so agent-attached files appear in
@@ -349,7 +556,7 @@ fields and files persist. A mutation returns a compact recorded-status
 acknowledgement, not raw resource diagnostics or a work assessment (plus
 `attachedContextFiles` only when the call attached files). There is no batch tool
 and no separate attachment tool; files are never removed through agent tools. See the
-[server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-four-agent-tools).
+[server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#project-and-task-agent-tools).
 
 No Project manager agent is shipped with the app. Any Agent that selects the
 Project tools can manage Projects through existing Chat/`@`, for example the
@@ -467,6 +674,30 @@ paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 - the picker choice is remembered after reload;
 - at a constrained width, the collapsed strip and the drawer list Projects
   first, and the drawer board does not overflow.
+
+**PMU-018–019** cover the collapsed strip's Workspaces icon after a worker is
+opened from a Task card (Agent, Team and Org hosts), plus the other ways a run
+is opened while the panel is collapsed. See [Workspace Layout — Collapsed
+strip](./workspace_layout.md#collapsed-strip-pages-and-workspaces) and
+`TESTING.md`.
+
+**PMU-020–025** (`project-manager-ux-task-locator-cases.mjs`) cover the
+[Task summaries](#task-summaries-in-the-workspaces-tree):
+- summaries under Agent- and Team-hosted Task workers (agent, task Team and
+  Temp-task copies), one line for members, sub-work and converted unowned runs,
+  and batched reads with no Task-list reads;
+- locate docked: picker switch, centred/focused/highlighted card, search kept or
+  cleared, keyboard, only the latest highlighted, a row click still opening the
+  copy;
+- reveal variants: a hidden panel reopened, the 900×800 drawer with reduced
+  motion, and the New chat start surface;
+- pages with no right panel (Agents, Projects) opening the run first;
+- live rename, reconnect, follow-up Task, Cancelled lane, Task and Project
+  delete, without reload;
+- zh-CN names and tooltips.
+
+Fixture probes that render the Workspaces tree route the `taskWorkerTasks`
+query and `/ws/projects` through `tests/e2e/fixtures/task-worker-boundaries.mjs`.
 
 A raw `/ws/projects` client records message volume. The wire contract itself is
 covered by the server's `tests/e2e/projects/project-change-feed.e2e.test.ts`

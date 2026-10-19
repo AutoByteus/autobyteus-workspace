@@ -1,0 +1,1544 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:47231) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-skills-data-oS15nH
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-skills-data-oS15nH/.env
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mResolved skill 'autobyteus_single_1791798713363_2772bc259d106' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713363_2772bc259d106-Fe7VZK/agents/autobyteus-single-agent-1791798713363_2772bc259d106/skills/autobyteus_single_1791798713363_2772bc259d106
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mTool 'run_bash' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713421_07b76786855ba-V5Jbiy/agents/shared-single-1791798713421_07b76786855ba/skills/single_private_1791798713421_07b76786855ba' with max_depth=null
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mCreating on-demand SkillWorkspace for: single_private_1791798713421_07b76786855ba
+Creating on-demand SkillWorkspace for: single_private_1791798713421_07b76786855ba
+Creating on-demand SkillWorkspace for: tone_1791798713421_07b76786855ba
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713421_07b76786855ba-V5Jbiy/agents/shared-single-1791798713421_07b76786855ba/skills/single_private_1791798713421_07b76786855ba.
+Initialized SkillWorkspace for skill 'single_private_1791798713421_07b76786855ba' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713421_07b76786855ba-V5Jbiy/agents/shared-single-1791798713421_07b76786855ba/skills/single_private_1791798713421_07b76786855ba
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713421_07b76786855ba-V5Jbiy/agents/shared-single-1791798713421_07b76786855ba/skills/single_private_1791798713421_07b76786855ba.
+Initialized SkillWorkspace for skill 'single_private_1791798713421_07b76786855ba' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713421_07b76786855ba-V5Jbiy/agents/shared-single-1791798713421_07b76786855ba/skills/single_private_1791798713421_07b76786855ba
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713421_07b76786855ba-V5Jbiy/agents/shared-multi-1791798713421_07b76786855ba/skills/tone_1791798713421_07b76786855ba.
+Initialized SkillWorkspace for skill 'tone_1791798713421_07b76786855ba' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713421_07b76786855ba-V5Jbiy/agents/shared-multi-1791798713421_07b76786855ba/skills/tone_1791798713421_07b76786855ba
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mCreated WorkspaceFileExplorer for skill_ws_single_private_1791798713421_07b76786855ba (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_single_private_1791798713421_07b76786855ba (graphql-file-content).
+Created WorkspaceFileExplorer for skill_ws_tone_1791798713421_07b76786855ba (graphql-file-content).
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713421_07b76786855ba-V5Jbiy/agents/shared-single-1791798713421_07b76786855ba/skills/single_private_1791798713421_07b76786855ba' completed in 0.0100 seconds.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713465_fa8690610e8b2-5N4Nxp/agent-teams/team-1791798713465_fa8690610e8b2/skills/team_shared_1791798713465_fa8690610e8b2' with max_depth=null
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mCreating on-demand SkillWorkspace for: team_shared_1791798713465_fa8690610e8b2
+Creating on-demand SkillWorkspace for: team_shared_1791798713465_fa8690610e8b2
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713465_fa8690610e8b2-5N4Nxp/agent-teams/team-1791798713465_fa8690610e8b2/skills/team_shared_1791798713465_fa8690610e8b2.
+Initialized SkillWorkspace for skill 'team_shared_1791798713465_fa8690610e8b2' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713465_fa8690610e8b2-5N4Nxp/agent-teams/team-1791798713465_fa8690610e8b2/skills/team_shared_1791798713465_fa8690610e8b2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713465_fa8690610e8b2-5N4Nxp/agent-teams/team-1791798713465_fa8690610e8b2/skills/team_shared_1791798713465_fa8690610e8b2.
+Initialized SkillWorkspace for skill 'team_shared_1791798713465_fa8690610e8b2' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713465_fa8690610e8b2-5N4Nxp/agent-teams/team-1791798713465_fa8690610e8b2/skills/team_shared_1791798713465_fa8690610e8b2
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mCreated WorkspaceFileExplorer for skill_ws_team_shared_1791798713465_fa8690610e8b2 (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_team_shared_1791798713465_fa8690610e8b2 (graphql-file-content).
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791798713465_fa8690610e8b2-5N4Nxp/agent-teams/team-1791798713465_fa8690610e8b2/skills/team_shared_1791798713465_fa8690610e8b2' completed in 0.0070 seconds.
+
+ [31m❯[39m tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 257[2mms[22m[39m
+[31m     [31m×[31m materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime[39m[32m 48[2mms[22m[39m
+[31m     [31m×[31m passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config[39m[32m 57[2mms[22m[39m
+     [32m✓[39m imports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility[32m 44[2mms[22m[39m
+     [32m✓[39m imports team-local private and team-shared skills through the one catalog plus warn-and-skip guards[32m 53[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:47254) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent team definitions
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+
+ [31m❯[39m tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[32m 248[2mms[22m[39m
+[31m     [31m×[31m creates, updates, lists templates, and deletes agent team definitions[39m[32m 48[2mms[22m[39m
+[31m     [31m×[31m round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows[39m[32m 43[2mms[22m[39m
+[31m     [31m×[31m exposes team-local subteams in GraphQL with ownership metadata and local member scopes[39m[32m 20[2mms[22m[39m
+[31m     [31m×[31m exposes company-level team-local departments and their local agents without promoting departments to root catalog entries[39m[32m 49[2mms[22m[39m
+     [32m✓[39m exposes md-centric team GraphQL output contract[32m 19[2mms[22m[39m
+[31m     [31m×[31m returns validation error when coordinatorMemberName is not present in nodes[39m[32m 22[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:47266) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets
+[22m[39mRemote Access WebSocket rejected /ws/agent-package-definitions?access_token=%5BREDACTED%5D: REMOTE_ACCESS_AUTH_INVALID
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets
+[22m[39mRemote Access WebSocket rejected /ws/projects?access_token=%5BREDACTED%5D: REMOTE_ACCESS_AUTH_INVALID
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets
+[22m[39mRemote Access WebSocket rejected /ws/agent-package-definitions?access_token=%5BREDACTED%5D: REMOTE_ACCESS_DEVICE_REVOKED
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload
+[22m[39mAdded new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+[22m[39mAttempting to download file from: https://codeload.github.com/apar-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+[22m[39mURL has no extension. Defaulting to .bin for https://codeload.github.com/apar-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+[22m[39mSuccessfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/agent-packages/.staging/apar-e2e__agents-f6e25966-7426-466d-a63a-7b7bc1aadae4-x7UP4C/download/apar-e2e__agents/f81ed7c3-8340-412f-8aa8-5e4c20879e34.bin
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+[22m[39mAttempting to download file from: https://codeload.github.com/apar-e2e/agents/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+[22m[39mURL has no extension. Defaulting to .bin for https://codeload.github.com/apar-e2e/agents/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+[22m[39mSuccessfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/agent-packages/.staging/apar-e2e__agents-955870cd-4485-4a38-a368-fe73af3b984a-Qu6w68/download/apar-e2e__agents/7aa9d961-fa89-49b5-9d5e-d82c902dc24a.bin
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAgent Definition created successfully with ID: apar-manager-b86a98
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreated and registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_manager_b86a98_f3cbf06f2fe240e0909bc191f1ad3b85: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAgent websocket attached for run apar_manager_b86a98_f3cbf06f2fe240e0909bc191f1ad3b85
+Created agent session 8898e8c1-fcb0-4797-84e0-741f6393d7d1 for run apar_manager_b86a98_f3cbf06f2fe240e0909bc191f1ad3b85
+Agent WebSocket connected: session=8898e8c1-fcb0-4797-84e0-741f6393d7d1, run=apar_manager_b86a98_f3cbf06f2fe240e0909bc191f1ad3b85
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/memory/agents/apar_manager_b86a98_f3cbf06f2fe240e0909bc191f1ad3b85/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_fresh_scout_fd9adefe81874aebb58cb9290bcaef8f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_fresh_scout_a2c9512e22ec46e3a805c8a07a507af1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_editor_d0cc3e4b37434f5ba84cb305cb0f0e1f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+[22m[39mAGY compaction detection off for run apar_editor_77a6bb06da9e467fbb5bfa85b558ecab: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mServer setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mAGY compaction detection off for run apar_steady_be90df8a79f241e89a37922eb370e3b0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mAgent websocket attached for run apar_steady_be90df8a79f241e89a37922eb370e3b0
+Created agent session 12f777bd-d48b-4d67-bc0c-80e217286e18 for run apar_steady_be90df8a79f241e89a37922eb370e3b0
+Agent WebSocket connected: session=12f777bd-d48b-4d67-bc0c-80e217286e18, run=apar_steady_be90df8a79f241e89a37922eb370e3b0
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/memory/agents/apar_steady_be90df8a79f241e89a37922eb370e3b0/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mAGY compaction detection off for run apar_steady_7615431ec190437fbf21b61925d5a611: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mAgent websocket attached for run apar_steady_7615431ec190437fbf21b61925d5a611
+Created agent session a9150688-ddfd-444c-ad7a-3603d3d542c2 for run apar_steady_7615431ec190437fbf21b61925d5a611
+Agent WebSocket connected: session=a9150688-ddfd-444c-ad7a-3603d3d542c2, run=apar_steady_7615431ec190437fbf21b61925d5a611
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/server-data/memory/agents/apar_steady_7615431ec190437fbf21b61925d5a611/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-IXtqYO/workspace.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mReusing registered workspace ID: agent_ws_e34f2f392be9a4bb08363fb911a217aa61488f17a52aff723c6ff299d1d26bbd
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary[2m > [22m[2mDCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+[22m[39mError restoring agent run with ID apar_steady_be90df8a79f241e89a37922eb370e3b0: Error: AGY_AGENT_DEFINITION_MISSING: apar-steady
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mClosed agent session a9150688-ddfd-444c-ad7a-3603d3d542c2
+Agent WebSocket disconnected: a9150688-ddfd-444c-ad7a-3603d3d542c2
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mClosed agent session 12f777bd-d48b-4d67-bc0c-80e217286e18
+Agent WebSocket disconnected: 12f777bd-d48b-4d67-bc0c-80e217286e18
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts[2m > [22m[2mAgent package definitions live refresh at the real server/wire boundary
+[22m[39mClosed agent session 8898e8c1-fcb0-4797-84e0-741f6393d7d1
+Agent WebSocket disconnected: 8898e8c1-fcb0-4797-84e0-741f6393d7d1
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 21255[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets [33m 645[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload [33m 3283[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it [33m 5217[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list [33m 1077[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client [33m 1687[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED [33m 2050[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org [33m 1068[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools [33m 3909[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found [33m 1721[2mms[22m[39m
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:47660) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-manager-cd55a7
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-reviewer-cd55a7
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-helper-cd55a7
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-assistant-cd55a7
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-worker-cd55a7
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: aht-team-cd55a7
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreated and registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_manager_cd55a7_e12f3249022047c982e7af323483a631: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAgent websocket attached for run aht_manager_cd55a7_e12f3249022047c982e7af323483a631
+Created agent session 64ea525c-c569-4b65-b760-8ed5f1399f11 for run aht_manager_cd55a7_e12f3249022047c982e7af323483a631
+Agent WebSocket connected: session=64ea525c-c569-4b65-b760-8ed5f1399f11, run=aht_manager_cd55a7_e12f3249022047c982e7af323483a631
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory/agents/aht_manager_cd55a7_e12f3249022047c982e7af323483a631/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_reviewer_cd55a7_15d0329be4614b8f971c1d21d42fc403: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_helper_cd55a7_be95a8c305f4494aba2e17db1c852780: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_assistant_cd55a7_f6cc59013d74456083381ad4762b25c0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_reviewer_cd55a7_7a5cf95caf18410291b3859f3578654e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mClosed agent session 64ea525c-c569-4b65-b760-8ed5f1399f11
+Agent WebSocket disconnected: 64ea525c-c569-4b65-b760-8ed5f1399f11
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAgent websocket attached for run aht_manager_cd55a7_e12f3249022047c982e7af323483a631
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreated agent session 40d35071-0502-4b89-81f9-653e21c72f85 for run aht_manager_cd55a7_e12f3249022047c982e7af323483a631
+Agent WebSocket connected: session=40d35071-0502-4b89-81f9-653e21c72f85, run=aht_manager_cd55a7_e12f3249022047c982e7af323483a631
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_manager_cd55a7_e12f3249022047c982e7af323483a631: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_assistant_cd55a7_f6cc59013d74456083381ad4762b25c0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mClosed agent session 40d35071-0502-4b89-81f9-653e21c72f85
+Agent WebSocket disconnected: 40d35071-0502-4b89-81f9-653e21c72f85
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_manager_cd55a7_18146313b1a64c448156b617ef41200f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAgent websocket attached for run aht_manager_cd55a7_18146313b1a64c448156b617ef41200f
+Created agent session 06febd28-e292-4582-af61-aeef1f453bf5 for run aht_manager_cd55a7_18146313b1a64c448156b617ef41200f
+Agent WebSocket connected: session=06febd28-e292-4582-af61-aeef1f453bf5, run=aht_manager_cd55a7_18146313b1a64c448156b617ef41200f
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mClosed agent session 06febd28-e292-4582-af61-aeef1f453bf5
+Agent WebSocket disconnected: 06febd28-e292-4582-af61-aeef1f453bf5
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_reviewer_cd55a7_f6139baccc924210a36abd3af9f4fc79: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent team websocket attached for team run aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+Created agent session 2cb0f2d2-921c-4e53-b186-13fb15e25e69 for run aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent Team WebSocket connected: session=2cb0f2d2-921c-4e53-b186-13fb15e25e69, run=aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory/agent_teams/aht_team_cd55a7_562279612d694b658f1da34c0f7994f3/aht_manager_cd55a7_1ffaf465eba84615bfe58d57009589a9/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory/agent_teams/aht_team_cd55a7_562279612d694b658f1da34c0f7994f3/aht_manager_cd55a7_1ffaf465eba84615bfe58d57009589a9/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory/agent_teams/aht_team_cd55a7_562279612d694b658f1da34c0f7994f3/aht_manager_cd55a7_1ffaf465eba84615bfe58d57009589a9/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_manager_cd55a7_1ffaf465eba84615bfe58d57009589a9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory/agent_teams/aht_team_cd55a7_562279612d694b658f1da34c0f7994f3/aht_manager_cd55a7_1ffaf465eba84615bfe58d57009589a9/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_reviewer_cd55a7_35d9cc0dde8d4b8d990d2d46bb9d4988: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_helper_cd55a7_b92eb073033d4ff5831cebffe412fe3b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent team websocket attached for team run aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+Created agent session 3e0d99df-41b7-4901-9430-4331d9e408c6 for run aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent Team WebSocket connected: session=3e0d99df-41b7-4901-9430-4331d9e408c6, run=aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session 2cb0f2d2-921c-4e53-b186-13fb15e25e69
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent team websocket attached for team run aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+Created agent session 43a1e2fa-537c-4ded-a2a3-00bf18270817 for run aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent Team WebSocket connected: session=43a1e2fa-537c-4ded-a2a3-00bf18270817, run=aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session 3e0d99df-41b7-4901-9430-4331d9e408c6
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_assistant_cd55a7_771c2df7a0374090a3151898fbc6d4b9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session 43a1e2fa-537c-4ded-a2a3-00bf18270817
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent team websocket attached for team run aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreated agent session 08821ae5-4d94-4c5a-a796-918994cf05fd for run aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent Team WebSocket connected: session=08821ae5-4d94-4c5a-a796-918994cf05fd, run=aht_team_cd55a7_562279612d694b658f1da34c0f7994f3
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_manager_cd55a7_1ffaf465eba84615bfe58d57009589a9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_assistant_cd55a7_771c2df7a0374090a3151898fbc6d4b9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session 08821ae5-4d94-4c5a-a796-918994cf05fd
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_manager_cd55a7_50fe683b57bd4195b018e0a91d765658: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent websocket attached for run aht_manager_cd55a7_50fe683b57bd4195b018e0a91d765658
+Created agent session 5b76fe82-21e3-4ce1-be7a-e27d9b787689 for run aht_manager_cd55a7_50fe683b57bd4195b018e0a91d765658
+Agent WebSocket connected: session=5b76fe82-21e3-4ce1-be7a-e27d9b787689, run=aht_manager_cd55a7_50fe683b57bd4195b018e0a91d765658
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session 5b76fe82-21e3-4ce1-be7a-e27d9b787689
+Agent WebSocket disconnected: 5b76fe82-21e3-4ce1-be7a-e27d9b787689
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_reviewer_cd55a7_21fbccf85c39400bbce427e12bfa62e7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory/agent_orgs/aht_org_cd55a7_cf88e4241d71421fbabc71e44a2f42b7/aht_manager_cd55a7_b70c54177b2d4f62a4dbb71374836e3a/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory/agent_orgs/aht_org_cd55a7_cf88e4241d71421fbabc71e44a2f42b7/aht_manager_cd55a7_b70c54177b2d4f62a4dbb71374836e3a/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory/agent_orgs/aht_org_cd55a7_cf88e4241d71421fbabc71e44a2f42b7/aht_manager_cd55a7_b70c54177b2d4f62a4dbb71374836e3a/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_manager_cd55a7_b70c54177b2d4f62a4dbb71374836e3a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/memory/agent_orgs/aht_org_cd55a7_cf88e4241d71421fbabc71e44a2f42b7/aht_manager_cd55a7_b70c54177b2d4f62a4dbb71374836e3a/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_reviewer_cd55a7_f8cbbc1ba36e4d2dacc760e118751642: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_helper_cd55a7_39b61c15ca3f4e67b35918a392dabab0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_assistant_cd55a7_14f8c038887140898088ba19e8e92031: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_manager_cd55a7_b70c54177b2d4f62a4dbb71374836e3a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_assistant_cd55a7_14f8c038887140898088ba19e8e92031: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_manager_cd55a7_d33917530bea406e8ef5c2379bf84ea6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAgent websocket attached for run aht_manager_cd55a7_d33917530bea406e8ef5c2379bf84ea6
+Created agent session f72bf76a-82f9-4095-95c3-8374cd31e840 for run aht_manager_cd55a7_d33917530bea406e8ef5c2379bf84ea6
+Agent WebSocket connected: session=f72bf76a-82f9-4095-95c3-8374cd31e840, run=aht_manager_cd55a7_d33917530bea406e8ef5c2379bf84ea6
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-sRxQMZ/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_0bb926f0a3157d5a272e56d905788165bfc375a1f6f7809dd2e8d789bbfd5993
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mClosed agent session f72bf76a-82f9-4095-95c3-8374cd31e840
+Agent WebSocket disconnected: f72bf76a-82f9-4095-95c3-8374cd31e840
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_reviewer_cd55a7_58e3537b7212492c86fb9cd581bfb974: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+ [32m✓[39m tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 10814[2mms[22m[39m
+     [33m[2m✓[22m[39m standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete [33m 3763[2mms[22m[39m
+     [33m[2m✓[22m[39m Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED) [33m 3253[2mms[22m[39m
+     [33m[2m✓[22m[39m Agent Org root: same journey through the Org stream [33m 3462[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 3696[2mms[22m[39m
+     [33m[2m✓[22m[39m retains new native capture and exact resumed conversation binding with monotonically new step indices [33m 1743[2mms[22m[39m
+     [33m[2m✓[22m[39m retains ambiguous native plans and their normal summary stream/completion [33m 716[2mms[22m[39m
+     [33m[2m✓[22m[39m linked_skills BACKGROUND_STEP leaves a daemon step open at turn end, then writes an exit message the production reader parses [33m 367[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:48625) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-graphql-suite-Fgn7qk
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mInitialized server settings service with 20 predefined settings
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 318[2mms[22m[39m
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:48630) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-019: a tier 1–2 copy wins over the Codex runtime default copy; a Codex-only name is used from there
+[22m[39mSkill name 'shared-skill' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/data/agents/pkg-agent/skills/shared-skill', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias/shared-skill'.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill name 'shared-skill' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/data/skills/shared-skill', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills/shared-skill'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAR-013: skill(name), file tree, read, update, file upload/delete and delete act on the used copy; the ignored copy is untouched
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-iJQn59/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-iJQn59/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: adding a skill folder with a tier 1–3 duplicate is rejected with both paths; nothing is persisted
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: creating a skill whose name exists in a package is rejected; a name only in the runtime default folder is accepted and used
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill name 't4-only' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/data/skills/t4-only', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills/t4-only'.
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill name 'desk-beta' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/ok-package/agents/beta-helper/skills/desk-beta', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills/desk-beta'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a local package import with a duplicate is rejected; a package duplicating only a runtime default copy imports and wins
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-BeMLXT/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-BeMLXT/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+Skill name 'desk-alpha' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-BeMLXT/data/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-BeMLXT/local-package/agents/desk-helper/skills/desk-alpha'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020 / R-3 / AC-021: a reload that pulled a duplicate is rejected, the package stays registered, and the banner data lists the ignored copy
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-jZxEHX/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-jZxEHX/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+Skill name 'desk-alpha' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-jZxEHX/data/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-jZxEHX/github-data/agent-packages/github/autobyteus__upd-repo/agents/gh-helper/skills/desk-alpha'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mAC-020: a GitHub import with a duplicate is rejected and its download removed; a GitHub update adding a duplicate is rolled back
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Rgf4hy/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Rgf4hy/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+Skill name 'org-writer-skill' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Rgf4hy/data/skills/org-writer-skill', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Rgf4hy/data/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill'.
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a: Agent Org agents' own skills (org agent, org team shared, org team-local agent) are in the one catalog; a non-member folder is not
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstdout[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mCustom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-wL1xP2/data
+Config file not found in new data directory: Error: Configuration file not found: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-wL1xP2/data/.env
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+[90mstderr[2m | tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts[2m > [22m[2mSkill name catalog GraphQL e2e (D-19)[2m > [22m[2mDEC-017a / AC-020: importing a package whose Agent Org team-local agent duplicates an installed name is rejected; a clean org package imports and its skills load
+[22m[39mSkill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-Duskij/codex-skills-alias
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-YoTPiW/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-tG1LDb/codex-home/skills
+Skill path does not exist or is not a directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-name-catalog-e2e-v85TUY/codex-home/skills
+
+ [32m✓[39m tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 252[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:48633) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/json-file-persistence-suite-NfT5K5
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition created successfully with ID: professor-agent-ac-1791798760420-787034
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mInitialized server settings service with 20 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition with ID professor-agent-ac-1791798760420-787034 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition with ID professor-agent-ac-1791798760420-787034 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Team Definition created successfully with ID: professor-team-ac-1791798760420-787034
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Team Definition with ID professor-team-ac-1791798760420-787034 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: stdio_ac_1791798760420_787034
+Populating MCP server config cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mMCP server config cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mIn-memory cache: Added new MCP config stdio_ac_1791798760420_787034.
+
+ [32m✓[39m tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 144[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:48638) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mAgent Definition created successfully with ID: agent-agent-def-1791798761801-a7063290bcba5
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mInitialized server settings service with 20 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mAgent Definition with ID agent-agent-def-1791798761801-a7063290bcba5 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mcreates, updates, lists templates, and deletes agent definitions
+[22m[39mAgent Definition with ID agent-agent-def-1791798761801-a7063290bcba5 deleted successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mround-trips skillScope through GraphQL and agent-config.json, defaulting to CONFIGURED
+[22m[39mAgent Definition created successfully with ID: agent-agent-skill-scope-1791798761865-6e18bf14b0767
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mround-trips skillScope through GraphQL and agent-config.json, defaulting to CONFIGURED
+[22m[39mAgent Definition with ID agent-agent-skill-scope-1791798761865-6e18bf14b0767 updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mlists and updates team-local agent definitions with ownership metadata
+[22m[39mAgent Definition with ID team-local-agent:team_team_local_agent_1791798761910_88d9ef7dbddc8:agent_team_local_agent_1791798761910_88d9ef7dbddc8 updated successfully.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent definitions GraphQL e2e[2m > [22m[2mlists and updates team-local agent definitions with ownership metadata
+[22m[39mError deleting agent definition with ID team-local-agent:team_team_local_agent_1791798761910_88d9ef7dbddc8:agent_team_local_agent_1791798761910_88d9ef7dbddc8: Error: Deleting non-shared agent definitions is not supported.
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 188[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:48643) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/general-agent-api-drP1yT
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mInitialized server settings service with 20 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mpublishes fresh exact authored content and preserved config through current GraphQL readers
+[22m[39mInitialized server settings service with 20 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-auto-refresh/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/general-agent-api-OWOWmY
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mInitialized server settings service with 20 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts[2m > [22m[2mDaily Assistant bootstrap → GraphQL identity (AC-001–006)[2m > [22m[2mrefreshes old same-ID content while historical snapshots remain byte-identical and readable
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+ [32m✓[39m tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 104[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 7 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22mAgent package private skills GraphQL e2e[2m > [22mmaterializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'assertAccepting')[39m
+[36m [2m❯[22m CodexThreadBootstrapper.bootstrapInternal src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:[2m255:11[22m[39m
+    [90m253| [39m    })[33m;[39m
+    [90m254| [39m    const dynamicToolRegistrations: CodexDynamicToolRegistration[] | n…
+    [90m255| [39m    guard[33m.[39m[34massertAccepting[39m()[33m;[39m
+    [90m   | [39m          [31m^[39m
+    [90m256| [39m    [35mconst[39m codexThreadConfig [33m=[39m [35mthis[39m[33m.[39m[34mbuildThreadConfig[39m({
+    [90m257| [39m      agentRunConfig[33m:[39m runContext[33m.[39mconfig[33m,[39m
+[90m [2m❯[22m tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts:[2m492:30[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22mAgent package private skills GraphQL e2e[2m > [22mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[31m[1mTypeError[22m: ownLlm is not a function[39m
+[36m [2m❯[22m AutoByteusAgentRunBackendFactory.buildAgentConfig src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:[2m423:5[22m[39m
+    [90m421| [39m    )[33m;[39m
+    [90m422| [39m
+    [90m423| [39m    [34mownLlm[39m(llmInstance)[33m;[39m
+    [90m   | [39m    [31m^[39m
+    [90m424| [39m    [35mconst[39m effectiveRuntimeKind [33m=[39m
+    [90m425| [39m      runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEU…
+[90m [2m❯[22m AutoByteusAgentRunBackendFactory.createBackend src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:[2m174:19[22m[39m
+[90m [2m❯[22m tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts:[2m597:27[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22mAgent team definitions GraphQL e2e[2m > [22mcreates, updates, lists templates, and deletes agent team definitions
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22mAgent team definitions GraphQL e2e[2m > [22mround-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22mAgent team definitions GraphQL e2e[2m > [22mexposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[31m[1mGraphQLError[22m: Cannot query field "refType" on type "TeamMember". Did you mean "refScope"?[39m
+[90m [2m❯[22m Object.Field ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/FieldsOnCorrectTypeRule.js:[2m51:13[22m[39m
+[90m [2m❯[22m Object.enter ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/visitor.js:[2m298:32[22m[39m
+[90m [2m❯[22m Object.enter ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/TypeInfo.js:[2m391:27[22m[39m
+[90m [2m❯[22m visit ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/visitor.js:[2m194:21[22m[39m
+[90m [2m❯[22m validate ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/validate.js:[2m91:24[22m[39m
+[90m [2m❯[22m graphqlImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:[2m78:52[22m[39m
+[90m [2m❯[22m ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:[2m23:43[22m[39m
+[90m [2m❯[22m graphql ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:[2m23:10[22m[39m
+[36m [2m❯[22m execGraphql tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts:[2m159:26[22m[39m
+    [90m157| [39m    variables[33m?[39m[33m:[39m [33mRecord[39m[33m<[39mstring[33m,[39m unknown[33m>[39m[33m,[39m
+    [90m158| [39m  )[33m:[39m [33mPromise[39m[33m<[39m[33mT[39m[33m>[39m [33m=>[39m {
+    [90m159| [39m    [35mconst[39m result [33m=[39m [35mawait[39m [34mgraphql[39m({
+    [90m   | [39m                         [31m^[39m
+    [90m160| [39m      schema[33m,[39m
+    [90m161| [39m      source[33m:[39m query[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22mAgent team definitions GraphQL e2e[2m > [22mexposes team-local subteams in GraphQL with ownership metadata and local member scopes
+[31m[1mTypeError[22m: (0 , __vite_ssr_import_5__.buildTeamLocalTeamDefinitionId) is not a function[39m
+[36m [2m❯[22m tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts:[2m872:34[22m[39m
+    [90m870| [39m    [35mconst[39m parentTeamId [33m=[39m [32m`company_[39m[36m${[39munique[36m}[39m[32m`[39m[33m;[39m
+    [90m871| [39m    [35mconst[39m localTeamId [33m=[39m [32m`department_[39m[36m${[39munique[36m}[39m[32m`[39m[33m;[39m
+    [90m872| [39m    const canonicalLocalTeamId = buildTeamLocalTeamDefinitionId(parent…
+    [90m   | [39m                                 [31m^[39m
+    [90m873| [39m
+    [90m874| [39m    [35mconst[39m parentTeamDir [33m=[39m [35mawait[39m [34mwriteRootTeamFixture[39m({
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22mAgent team definitions GraphQL e2e[2m > [22mreturns validation error when coordinatorMemberName is not present in nodes
+[31m[1mAssertionError[22m: expected 'Variable "$input" got invalid value {…' to contain 'Coordinator member name must match'[39m
+
+Expected: [32m"Coordinator member name must match"[39m
+Received: [31m"Variable "$input" got invalid value { memberName: "helper", ref: "agent-1", refType: "AGENT", refScope: "SHARED" } at "input.nodes[0]"; Field "refType" is not defined by type "TeamMemberInput". Did you mean "refScope"?"[39m
+
+[36m [2m❯[22m tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts:[2m1388:41[22m[39m
+    [90m1386| [39m
+    [90m1387| [39m    [34mexpect[39m(result[33m.[39merrors[33m?.[39mlength [33m??[39m [34m0[39m)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m1388| [39m    expect(result.errors?.[0]?.message).toContain("Coordinator member …
+    [90m   | [39m                                        [31m^[39m
+    [90m1389| [39m  })[33m;[39m
+    [90m1390| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m8 passed[39m[22m[90m (10)[39m
+[2m      Tests [22m [1m[31m7 failed[39m[22m[2m | [22m[1m[32m60 passed[39m[22m[90m (67)[39m
+[2m   Start at [22m 11:51:47
+[2m   Duration [22m 56.04s[2m (transform 5.63s, setup 90ms, import 17.37s, tests 37.28s, environment 1ms)[22m
+
+exit=1

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import type { AgentRunCollaborationContext } from '../agentRunCollaborationContext'
+import { AgentStatus } from '~/types/agent/AgentStatus'
 
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 
@@ -25,7 +26,7 @@ describe('Agent root closed task executions', () => {
       expect(context.getAgentContext(hidden)).not.toBeNull()
     }
     expect(context.isListed('other-task-run')).toBe(true)
-    expect(context.view.execution_tree.taskExecutions).toHaveLength(3)
+    expect(context.view.execution_tree.taskExecutions).toHaveLength(5)
     expect(context.messagesView('host-run').listMessages().map((message) => message.messageId)).toContain('m-writer')
   })
 
@@ -55,6 +56,18 @@ describe('Agent root closed task executions', () => {
     expect(context.isListed('rp-run')).toBe(false)
   })
 
+  // delegated-team-aggregate-status REQ-002, AC-006: a Team counts only the work still shown under it.
+  it('does not count agents of closed work in a task Team status; reopening counts them again', () => {
+    const teamStatus = (context: AgentRunCollaborationContext) => context.listTaskRows(() => false)
+      .find((entry) => entry.row.rowKey === 'team:review-team')!.teamStatus
+    const context = buildClosureContext(closureView([{ agentRunId: 'helper-run' }]))
+    context.getAgentContext('helper-run')!.state.currentStatus = AgentStatus.Running
+    context.getAgentContext('rp-run')!.state.currentStatus = AgentStatus.Idle
+    expect(teamStatus(context)).toBe(AgentStatus.Idle)
+    expect(context.applyEvent(5, { kind: 'task_executions_reopened', task_executions: [{ agentRunId: 'helper-run' }] })).toBe('applied')
+    expect(teamStatus(context)).toBe(AgentStatus.Running)
+  })
+
   it('requires a fresh view when a reopened reference is not a task execution of the run', () => {
     const context = buildClosureContext(closureView([{ agentRunId: 'writer-run' }]))
     expect(() => context.applyEvent(5, { kind: 'task_executions_reopened', task_executions: [{ agentRunId: 'ghost-run' }] })).toThrow()
@@ -65,5 +78,20 @@ describe('Agent root closed task executions', () => {
     const context = buildClosureContext()
     expect(() => context.applyEvent(5, { kind: 'task_executions_closed', task_executions: [{ agentRunId: 'ghost-run' }] })).toThrow()
     expect(context.phase).toBe('reopen_required')
+  })
+
+  it('a live Save of a copy\'s model reloads the view; the reloaded index gives that copy the model it runs on (CR-001, CR-002)', () => {
+    const selection = { llmModelIdentifier: 'chosen', llmConfig: null, selectedAt: created }
+    expect(buildClosureContext().applyEvent(5, { kind: 'delegated_launch_selections_changed', selections: [{ agentRunId: 'writer-run', selection }] }))
+      .toBe('checkpoint_required')
+    const context = buildClosureContext()
+    expect(() => context.applyEvent(5, { kind: 'delegated_launch_selections_changed', selections: [{ agentRunId: 'ghost-run', selection }] })).toThrow()
+    expect(context.phase).toBe('reopen_required')
+    const view = closureView()
+    view.execution_tree = { ...view.execution_tree, taskExecutions: view.execution_tree.taskExecutions.map((task) =>
+      'agentRunId' in task && task.agentRunId === 'writer-run' ? { ...task, userLaunchSelection: selection } : task) }
+    const index = buildClosureContext(view).index
+    expect(index.requireAgent('writer-run').source.launchConfiguration.llmModelIdentifier).toBe('chosen')
+    expect(index.requireAgent('other-task-run').source.launchConfiguration.llmModelIdentifier).not.toBe('chosen')
   })
 })

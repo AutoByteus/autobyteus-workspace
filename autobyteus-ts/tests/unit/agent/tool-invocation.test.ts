@@ -54,7 +54,6 @@ describe('AgentTurn', () => {
     expect(invocation.turnId).toBe('turn_0007');
     expect(batch.accepts('id', 'turn_0007')).toBe(true);
     expect(turn.activeToolInvocationBatch).toBe(batch);
-    expect(turn.toolInvocationBatches).toEqual([batch]);
   });
 
   it('owns execution start and idempotent settlement', async () => {

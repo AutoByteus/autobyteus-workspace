@@ -5,7 +5,6 @@ import {
 } from '~/types/agent/AgentRunConfig'
 import type {
   AgentConfigOverride,
-  ResolvedTeamRunLaunchConfig,
   TeamScopeConfigOverride,
 } from '~/types/agent/TeamRunConfig'
 import { normalizeModelConfigRecord } from '~/types/launch/defaultLaunchConfig'
@@ -19,14 +18,6 @@ const hasOwn = (value: object, key: PropertyKey): boolean => Object.prototype.ha
 const modelConfigKey = (config: Record<string, unknown> | null | undefined): string => JSON.stringify(normalizeModelConfig(config) ?? null)
 export const modelConfigsEqual = (left: Record<string, unknown> | null | undefined, right: Record<string, unknown> | null | undefined): boolean =>
   modelConfigKey(left) === modelConfigKey(right)
-export const resolvedTeamRunLaunchConfigsEqual = (
-  left: Readonly<ResolvedTeamRunLaunchConfig>,
-  right: Readonly<ResolvedTeamRunLaunchConfig>,
-): boolean => left.runtimeKind === right.runtimeKind
-  && left.workspaceRootPath === right.workspaceRootPath
-  && left.llmModelIdentifier === right.llmModelIdentifier
-  && modelConfigsEqual(left.llmConfig, right.llmConfig)
-  && left.autoExecuteTools === right.autoExecuteTools
 export const hasExplicitRuntimeOverride = (override?: LaunchConfigOverride | null): boolean => Boolean((override?.runtimeKind || '').trim())
 export const hasExplicitLlmModelOverride = (override?: LaunchConfigOverride | null): boolean => Boolean((override?.llmModelIdentifier || '').trim())
 export const hasExplicitLlmConfigOverride = (override?: LaunchConfigOverride | null): boolean =>

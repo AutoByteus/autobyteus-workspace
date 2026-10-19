@@ -1,6 +1,7 @@
 import { vi } from "vitest";
 import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../src/agent-execution/backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../src/agent-execution/backends/agent-run-backend-factory.js";
+import { createBackendPreparation } from "../../src/agent-execution/backends/agent-run-backend-preparation.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunEventType } from "../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../src/agent-execution/services/agent-run-manager.js";
@@ -8,7 +9,7 @@ import { AgentRunActivationRegistry } from "../../src/agent-execution/runtime/ag
 import { AgentRunResourceManager } from "../../src/agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunMemoryRecorder } from "../../src/agent-memory/services/agent-run-memory-recorder.js";
 import { AgentConversationActivityInspector } from "../../src/agent-memory/services/agent-conversation-activity-inspector.js";
-import { RootedAgentMemoryLocator } from "../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { ActiveCollaborationRootDirectory } from "../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { FlatTeamExecutionFactory } from "../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { AgentOrgExecutionScopeBuilder } from "../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
@@ -63,7 +64,13 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     };
   });
   const unavailable = async (): Promise<never> => { throw new Error("Unexpected new provider conversation or task activation"); };
-  const factory: AgentRunBackendFactory = { restoreBackend, createBackend: unavailable };
+  // The scripted provider is reached through the current factory contract: restore only.
+  const factory: AgentRunBackendFactory = {
+    beginPreparation: (request) => createBackendPreparation({
+      prepare: async () => request.kind === "restore" ? restoreBackend(request.context) : unavailable(),
+      releaseResources: async () => undefined,
+    }),
+  };
   const recorder = new AgentRunMemoryRecorder();
   const sessions = createNoopAgentToolMcpRunSessionDeactivator();
   const noAttachment = { attachToRun: () => () => undefined };
@@ -74,9 +81,10 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     memoryRecorder: recorder, agentToolMcpRunSessionDeactivator: sessions,
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({ runSessions: sessions,
-      memoryRecorder: recorder, runFileChangeService: noAttachment as never, publishedArtifactRelayService: noAttachment as never })),
+      memoryRecorder: recorder, runFileChangeService: noAttachment as never, publishedArtifactRelayService: noAttachment as never, workJournalUpdater: noAttachment as never,
+      mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined } })),
   });
-  const dependencies = { agentRunManager: agentManager, memoryLocator: new RootedAgentMemoryLocator({ memoryDir }),
+  const dependencies = { agentRunManager: agentManager, memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
     activityInspector: new AgentConversationActivityInspector() };
   const manager = new AgentOrgRunManager({ memoryDir, tokenUsageRunStore: store,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),

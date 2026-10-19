@@ -1,0 +1,11 @@
+{
+  "command": [
+    "docker",
+    "cp",
+    "api-prisma-90067e31-699-audit:/app/autobyteus-server-ts/dist",
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-prisma-command-emk3dspj/tmp/api-prisma-docker-HBmlye/image-dist"
+  ],
+  "exit": 0,
+  "stdout": "",
+  "stderr": ""
+}

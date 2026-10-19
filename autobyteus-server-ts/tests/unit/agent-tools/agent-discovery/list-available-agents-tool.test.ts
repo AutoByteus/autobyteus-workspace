@@ -34,7 +34,7 @@ const withoutLister = () => testMemberExecutionContext();
 
 describe("list_available_agents (REQ-001/002)", () => {
   it("exposes actual Daily Assistant discovery through native and MCP bindings in a standalone host context", async () => {
-    const context = new MemberExecutionContext({ ...withLister(), teamScoped: false });
+    const context = new MemberExecutionContext({ ...withLister(), teamScoped: false, collaborationRole: "standalone_agent" });
     const exposure = buildRuntimeAgentToolExposure(generalAgentConfig.toolNames, context);
     expect(exposure.listAvailableAgentsEnabled).toBe(true);
     expect(exposure.sendMessageToEnabled).toBe(true);
@@ -79,7 +79,7 @@ describe("list_available_agents (REQ-001/002)", () => {
   it("keeps an empty eligible catalog a valid discovery result for Daily Assistant", async () => {
     const context = new MemberExecutionContext({
       ...testMemberExecutionContext({ listAvailableAgents: async () => [] }),
-      teamScoped: false,
+      teamScoped: false, collaborationRole: "standalone_agent",
     });
     expect(buildRuntimeAgentToolExposure(generalAgentConfig.toolNames, context).listAvailableAgentsEnabled).toBe(true);
     await expect(listAvailableAgentsFor(context.collaboration)).resolves.toEqual({ agents: [] });
@@ -90,9 +90,9 @@ describe("list_available_agents (REQ-001/002)", () => {
     expect(defaultToolRegistry.getToolDefinition(LIST_AVAILABLE_AGENTS_TOOL_NAME)).toBe(definition);
     expect(definition.origin).toBe(ToolOrigin.LOCAL);
     expect(definition.category).toBe(ToolCategory.AGENT_COMMUNICATION);
-    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("reaches the one instance at that address");
-    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("with an address spawns a new copy (with a copy's own ID it gives that copy a new Task)");
-    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("message a copy by its agent run ID (a Team copy's coordinator)");
+    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("List the agents and agent teams you can work with");
+    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("This read-only tool takes no arguments.");
+    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).not.toMatch(/\bcop(y|ies)\b|spawn|brings? it into the run/i);
   });
 
   it("is opt-in: never automatic, exposed only when the definition selects it", () => {

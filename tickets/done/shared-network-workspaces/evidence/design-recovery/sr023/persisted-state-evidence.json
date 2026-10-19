@@ -1,0 +1,302 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "--name-only",
+        "origin/personal",
+        "autobyteus-nfs"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "log",
+        "--oneline",
+        "--all",
+        "--",
+        "autobyteus-nfs/internal/platform/source.go"
+      ],
+      "rc": 0,
+      "stdout": "c57ab71c90 feat(nfs): implement shared workspace service and private runtime bindings\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "tag",
+        "--contains",
+        "c57ab71c90"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "python3",
+        "autobyteus-nfs/packaging/release.py",
+        "--check-publish"
+      ],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "No qualified release targets; publishing unavailable.\n"
+    }
+  ],
+  "observedReleasedData": "No supported released NFS predecessor established in task; old records inspected are unqualified test-owned candidates.",
+  "lock": {
+    "ubuntuBaseImage": "ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "qualifiedTargets": [],
+    "qualifiedSourceHash": "",
+    "physicalEvidence": [],
+    "userVerified": false,
+    "note": "SR020 corrected engine identities are populated from actual candidate artifacts by packaging/engine/manifest.py lock. No stock engine fallback, release or qualification. Changed artifact identities invalidate qualification.",
+    "engine": null
+  },
+  "installedMacObservation": {
+    "result": "Confirmed API-F005",
+    "initialSourceIdentity": "16777228:506781:501:20:755",
+    "bootTimes": [
+      "{ sec = 1792059333, usec = 771970 } Thu Oct 15 10:15:33 2026\n",
+      "{ sec = 1792059425, usec = 680665 } Thu Oct 15 10:17:05 2026\n",
+      "{ sec = 1792059646, usec = 771531 } Thu Oct 15 10:20:46 2026\n",
+      "{ sec = 1792059808, usec = 505721 } Thu Oct 15 10:23:28 2026\n"
+    ],
+    "observations": [
+      {
+        "round": "second",
+        "observation": 0,
+        "sourceIdentity": [
+          16777230,
+          506781,
+          501,
+          20,
+          755
+        ],
+        "storedIdentity": {
+          "device": 16777228,
+          "inode": 506781
+        },
+        "originalSHA256": "924b88c26e48449a10b52dc755f1888b994389d1cf2b34812de55f5bfba2ec7d",
+        "markerSHA256": "629c7f5cd6d4b1d27f0b84e8ec3d9ac5d96f363e5e1ed87f81de349373b4e393",
+        "recordSHA256": "a9148db38d10a1eb3694846c990cac97dc9df9c857a73220c767a0d558a8c5de",
+        "validVolumeProof": null,
+        "identityRefusalCount": 6,
+        "mountAbsent": true,
+        "nfsdRunning": true
+      },
+      {
+        "round": "second",
+        "observation": 1,
+        "sourceIdentity": [
+          16777227,
+          506781,
+          501,
+          20,
+          755
+        ],
+        "storedIdentity": {
+          "device": 16777228,
+          "inode": 506781
+        },
+        "originalSHA256": "924b88c26e48449a10b52dc755f1888b994389d1cf2b34812de55f5bfba2ec7d",
+        "markerSHA256": "629c7f5cd6d4b1d27f0b84e8ec3d9ac5d96f363e5e1ed87f81de349373b4e393",
+        "recordSHA256": "a9148db38d10a1eb3694846c990cac97dc9df9c857a73220c767a0d558a8c5de",
+        "validVolumeProof": null,
+        "identityRefusalCount": 8,
+        "mountAbsent": true,
+        "nfsdRunning": true
+      },
+      {
+        "round": "second",
+        "observation": 2,
+        "sourceIdentity": [
+          16777227,
+          506781,
+          501,
+          20,
+          755
+        ],
+        "storedIdentity": {
+          "device": 16777228,
+          "inode": 506781
+        },
+        "originalSHA256": "924b88c26e48449a10b52dc755f1888b994389d1cf2b34812de55f5bfba2ec7d",
+        "markerSHA256": "629c7f5cd6d4b1d27f0b84e8ec3d9ac5d96f363e5e1ed87f81de349373b4e393",
+        "recordSHA256": "a9148db38d10a1eb3694846c990cac97dc9df9c857a73220c767a0d558a8c5de",
+        "validVolumeProof": null,
+        "identityRefusalCount": 9,
+        "mountAbsent": true,
+        "nfsdRunning": true
+      },
+      {
+        "round": "second",
+        "observation": 3,
+        "sourceIdentity": [
+          16777227,
+          506781,
+          501,
+          20,
+          755
+        ],
+        "storedIdentity": {
+          "device": 16777228,
+          "inode": 506781
+        },
+        "originalSHA256": "924b88c26e48449a10b52dc755f1888b994389d1cf2b34812de55f5bfba2ec7d",
+        "markerSHA256": "629c7f5cd6d4b1d27f0b84e8ec3d9ac5d96f363e5e1ed87f81de349373b4e393",
+        "recordSHA256": "a9148db38d10a1eb3694846c990cac97dc9df9c857a73220c767a0d558a8c5de",
+        "validVolumeProof": null,
+        "identityRefusalCount": 10,
+        "mountAbsent": true,
+        "nfsdRunning": true
+      },
+      {
+        "round": "second",
+        "observation": 4,
+        "sourceIdentity": [
+          16777227,
+          506781,
+          501,
+          20,
+          755
+        ],
+        "storedIdentity": {
+          "device": 16777228,
+          "inode": 506781
+        },
+        "originalSHA256": "924b88c26e48449a10b52dc755f1888b994389d1cf2b34812de55f5bfba2ec7d",
+        "markerSHA256": "629c7f5cd6d4b1d27f0b84e8ec3d9ac5d96f363e5e1ed87f81de349373b4e393",
+        "recordSHA256": "a9148db38d10a1eb3694846c990cac97dc9df9c857a73220c767a0d558a8c5de",
+        "validVolumeProof": null,
+        "identityRefusalCount": 10,
+        "mountAbsent": true,
+        "nfsdRunning": true
+      },
+      {
+        "round": "third",
+        "observation": 0,
+        "sourceIdentity": [
+          16777227,
+          506781,
+          501,
+          20,
+          755
+        ],
+        "storedIdentity": {
+          "device": 16777228,
+          "inode": 506781
+        },
+        "originalSHA256": "924b88c26e48449a10b52dc755f1888b994389d1cf2b34812de55f5bfba2ec7d",
+        "markerSHA256": "629c7f5cd6d4b1d27f0b84e8ec3d9ac5d96f363e5e1ed87f81de349373b4e393",
+        "recordSHA256": "a9148db38d10a1eb3694846c990cac97dc9df9c857a73220c767a0d558a8c5de",
+        "validVolumeProof": {
+          "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+          "DiskUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+          "DeviceNode": "/dev/disk2s5",
+          "MountPoint": "/System/Volumes/Data",
+          "FilesystemType": "apfs"
+        },
+        "identityRefusalCount": 11,
+        "mountAbsent": true,
+        "nfsdRunning": true
+      },
+      {
+        "round": "third",
+        "observation": 1,
+        "sourceIdentity": [
+          16777230,
+          506781,
+          501,
+          20,
+          755
+        ],
+        "storedIdentity": {
+          "device": 16777228,
+          "inode": 506781
+        },
+        "originalSHA256": "924b88c26e48449a10b52dc755f1888b994389d1cf2b34812de55f5bfba2ec7d",
+        "markerSHA256": "629c7f5cd6d4b1d27f0b84e8ec3d9ac5d96f363e5e1ed87f81de349373b4e393",
+        "recordSHA256": "a9148db38d10a1eb3694846c990cac97dc9df9c857a73220c767a0d558a8c5de",
+        "validVolumeProof": {
+          "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+          "DiskUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+          "DeviceNode": "/dev/disk2s5",
+          "MountPoint": "/System/Volumes/Data",
+          "FilesystemType": "apfs"
+        },
+        "identityRefusalCount": 14,
+        "mountAbsent": true,
+        "nfsdRunning": true
+      },
+      {
+        "round": "third",
+        "observation": 2,
+        "sourceIdentity": [
+          16777230,
+          506781,
+          501,
+          20,
+          755
+        ],
+        "storedIdentity": {
+          "device": 16777228,
+          "inode": 506781
+        },
+        "originalSHA256": "924b88c26e48449a10b52dc755f1888b994389d1cf2b34812de55f5bfba2ec7d",
+        "markerSHA256": "629c7f5cd6d4b1d27f0b84e8ec3d9ac5d96f363e5e1ed87f81de349373b4e393",
+        "recordSHA256": "a9148db38d10a1eb3694846c990cac97dc9df9c857a73220c767a0d558a8c5de",
+        "validVolumeProof": {
+          "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+          "DiskUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+          "DeviceNode": "/dev/disk2s5",
+          "MountPoint": "/System/Volumes/Data",
+          "FilesystemType": "apfs"
+        },
+        "identityRefusalCount": 15,
+        "mountAbsent": true,
+        "nfsdRunning": true
+      },
+      {
+        "round": "third",
+        "observation": 3,
+        "sourceIdentity": [
+          16777230,
+          506781,
+          501,
+          20,
+          755
+        ],
+        "storedIdentity": {
+          "device": 16777228,
+          "inode": 506781
+        },
+        "originalSHA256": "924b88c26e48449a10b52dc755f1888b994389d1cf2b34812de55f5bfba2ec7d",
+        "markerSHA256": "629c7f5cd6d4b1d27f0b84e8ec3d9ac5d96f363e5e1ed87f81de349373b4e393",
+        "recordSHA256": "a9148db38d10a1eb3694846c990cac97dc9df9c857a73220c767a0d558a8c5de",
+        "validVolumeProof": {
+          "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+          "DiskUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+          "DeviceNode": "/dev/disk2s5",
+          "MountPoint": "/System/Volumes/Data",
+          "FilesystemType": "apfs"
+        },
+        "identityRefusalCount": 15,
+        "mountAbsent": true,
+        "nfsdRunning": true
+      }
+    ],
+    "actualStatusFailures": 5,
+    "explicitReconnectFailures": 2,
+    "scope": "Independent static/raw receipt audit, not reviewer reexecution. First210s is not an SLA. Only third-boot actual-disk plist supplies volume UUID proof."
+  },
+  "api005Cleanup": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/cleanup.json",
+  "sourceConventions": "data_migration_guideline.md read full + remove-global-skill-discovery-mode migration source incl skips/failures. No NFS released migration found; server history runner is not service config owner."
+}
