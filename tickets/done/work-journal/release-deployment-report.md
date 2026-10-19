@@ -51,22 +51,32 @@ Finalization of `codex/work-journal` into origin/personal per RELEASE.md (`--no-
 - Ticket moved to `tickets/done/work-journal`: `Yes` (`git mv`, before the final commit)
 
 ## Version / Tag / Release Commit
-Pending the user's decision.
+Beta via the RELEASE.md helper: `bash scripts/desktop-release.sh beta --branch finalize/work-journal --no-push` selected 1.5.6-beta.9 (next unused; Android versionCode 10050609 valid). Release commit 11dcf808d40be18aca4ed84e32e59addb4652f50 ("chore(release): bump workspace release version to 1.5.6-beta.9"); annotated tag v1.5.6-beta.9 peels to it.
 
 ## Repository Finalization
 - Bootstrap context source: the handoff (finalization target origin/personal); RELEASE.md
-- Ticket branch: codex/work-journal (local only)
-- Method (RELEASE.md): in the ticket worktree, `git checkout -b finalize/work-journal origin/personal`, `git merge --no-ff codex/work-journal`, then fetch and check that origin/personal is unchanged before `git push origin HEAD:personal`
-- Repository finalization status: `Blocked`
-- Blocker: user verification; revised package (SR-018: rule-doc change, no code change) pending through the reviewed route; the probes/ decision (SD recommends keeping it uncommitted)
+- Ticket branch: codex/work-journal at 4e284d91c1 (archive and DR-003), pushed as a new remote branch for provenance.
+- Method (RELEASE.md), in the ticket worktree: `git checkout -b finalize/work-journal origin/personal` (e2e21402b1); `git merge --no-ff codex/work-journal` → merge commit c203ba7975 (parents e2e21402b1, 4e284d91c1).
+- Checks on the merged state before tagging: `python3 scripts/check_licensing.py` "Licensing is consistent."; `python3 scripts/check_repository_artifact_hygiene.py` "passed"; no tracked dist/ or electron-dist; probes/ not tracked.
+- Clean tree for the release script: untracked */dist/ build output and probes/ deleted (probes: the stated default with no user objection, as SD recommended; never committed).
+- Target re-check before push: `git fetch origin personal` = e2e21402b1 (unchanged; ancestor of HEAD).
+- Push: `git push origin HEAD:personal` e2e21402b1..11dcf808d4 (merge plus release commit); `git push origin v1.5.6-beta.9`. No force push.
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
-- Applicable: pending the user's decision
-- If a release is requested: RELEASE.md "Cutting The Release" (`--branch finalize/work-journal --no-push`, then push the branch and the tag; watch all 4 workflows; 17 assets)
+- Applicable: `Yes` (the user requested a new beta)
+- Method: `Release Script` per RELEASE.md "Cutting The Release" (beta, --no-push, manual pushes after the target re-check)
+- Release/publication result: `Completed`
+- GitHub pre-release https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.6-beta.9: prerelease=true, draft=false; GitHub Latest unchanged at v1.5.5. 17 non-empty assets. latest.yml, latest-mac.yml, latest-linux.yml and latest-linux-arm64.yml all report version 1.5.6-beta.9, and every referenced asset exists. Android APK sha256 f6dd20b5f90be6a98185efeb9145a0bad49b23711c087759fb8b78ef87545958.
+- Workflows on 11dcf808d4, all Success on attempt 1: Desktop Release (5 platform builds and publish); Android APK Release; iOS App Store Connect Release (build/test, secrets, archive and TestFlight upload); Server Docker Release run 39206431264 (~37 min, within the recent 34–39 min range).
+- Docker Hub: `autobyteus/autobyteus-server:1.5.6-beta.9` and `:beta` share digest sha256:20cdbd9a09ca89d4…; `:latest` unchanged (sha256:1bdcb7c765c1…, stable).
+- Monitoring note: the background workflow watcher hit its time limit and was stopped while Docker was still building. Status was then checked directly, and Docker was watched to completion with `gh run watch --exit-status` (exit 0).
+- Release notes: the beta uses GitHub generated notes; tickets/done/work-journal/release-notes.md is the archived functional summary (not consumed).
 
 ## Post-Finalization Cleanup
 - Dedicated ticket worktree path: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal
-- All cleanup results: pending
+- Cleanup (worktree removal, local codex/work-journal and finalize/work-journal deletion) runs after this record is pushed; the outcome is reported in the terminal handoff. Remote codex/work-journal kept as provenance.
 
 ## Escalation / Reroute
 - Classification: `Design Impact` (rollback readability; RELEASE.md rule)
@@ -81,12 +91,18 @@ Pending the user's decision.
 - Evidence: API-07 and delivery rerun (migration removes recognized exports only; idempotent; symlinks and folders without a manifest kept).
 
 ## Rollback Criteria
-Revert the merge on personal and cut a new release (RELEASE.md). Accepted rollback effect (SR-018): the older build ignores improver_session.json files written by this build (no schemaVersion), so Skill Improvement starts a fresh improver session once per affected skill. There is no crash, and raw traces, journals and improver run history are unaffected. Deleted work_traces/ exports are derived; the older build regenerates them on demand.
+Revert the merge on personal and cut a new release (RELEASE.md). Rollback: revert the merge c203ba7975 on personal and cut a new release (RELEASE.md). Accepted rollback effect (SR-018): the older build ignores improver_session.json files written by this build (no schemaVersion), so Skill Improvement starts a fresh improver session once per affected skill. There is no crash, and raw traces, journals and improver run history are unaffected. Deleted work_traces/ exports are derived; the older build regenerates them on demand.
 
 ## Final Status
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment complete or not required: `No` (decision pending)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: user verification; the SD rollback decision; the probes/ decision
-- Successful terminal package eligible for return: `No`
+- Explicit user testing/verification complete: `Yes` (acceptance plus finalization and beta authorization, 2026-10-19; no manual verification result claimed)
+- Repository finalization complete: `Yes` (--no-ff merge c203ba7975; personal at 11dcf808d4 after the release commit)
+- Applicable release/deployment complete: `Yes` (v1.5.6-beta.9: 4/4 workflows Success on attempt 1; 17 assets; Docker :beta moved)
+- Applicable safe cleanup: after this record is pushed (reported in the terminal handoff)
+- Unresolved blocker: `None`
+- Terminal package: sent to /solution_designer after cleanup
+
+## Note — rollback rule changed after publication (2026-10-19)
+After v1.5.6-beta.9 was pushed, origin/personal received d6f2d6ceb5 and c64a45b871 (by the user): "migrations move forward; no engineered rollback support" and "point users to support when a release cannot be rolled back". Under that rule:
+- This ticket's migration only deletes derived `work_traces/` exports, and the older build regenerates them on demand (checked in DR-001). So rolling back is possible, with the accepted Skill Improvement effect (a fresh improver session once).
+- tickets/done/work-journal/release-notes.md already states this. The published beta uses GitHub generated notes and has no rollback statement. It was not edited, because the rule postdates publication and a published release body is not changed without the user's say.
+- The delivery receipt was rebased onto c64a45b871 (docs only; no overlap) before pushing.
