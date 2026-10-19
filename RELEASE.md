@@ -45,12 +45,14 @@ The user decides at verification. There are three options:
 
 ## Checks Before Tagging
 
-Run both checks on the merged `personal` state. The release workflows run them
-too, but by then the tag is already pushed.
+Run these checks on the merged `personal` state. The release workflows run the
+first two too, but by then the tag is already pushed. They do not run the
+release smoke check.
 
 ```bash
 python3 scripts/check_licensing.py
 python3 scripts/check_repository_artifact_hygiene.py
+python3 scripts/release_smoke.py
 ```
 
 The hygiene check rejects these tracked paths:
@@ -63,6 +65,30 @@ The hygiene check rejects these tracked paths:
 Ticket evidence is the usual source. For example, a log named after a script
 such as `web-audit:localization-literals.log` broke the `v1.5.2-beta.1`
 Windows build at checkout. Name evidence files with `-` instead of `:`.
+
+### Release smoke check
+
+`python3 scripts/release_smoke.py` starts agent runs with configured skills the
+way users do, on all five runtimes: Claude, Codex, Grok, Antigravity and
+AutoByteus. It covers a brand-new run, a brand-new team member with no memory
+folder yet, a run in a workspace whose `.claude/.codex/.grok/skills` link to
+the same skill, a restored run, and a different same-named skill. v1.5.6-beta.2
+shipped in two betas with runs in such a workspace, and every brand-new run,
+failing to start; no check before tagging started a run.
+
+- **When:** before every beta and stable tag, on the merged state you will
+  tag, after `pnpm install` and `pnpm -C autobyteus-server-ts prebuild`.
+- **Prerequisites:** `claude`, `codex` and `grok` on `PATH` and signed in on
+  this machine.
+- **Cost:** about five short turns per live runtime (Claude, Codex, Grok), each
+  on its cheapest model. Antigravity and AutoByteus run scripted, with no
+  provider calls. A few minutes in total.
+- **Pass:** exit 0. Put the printed summary in the delivery report.
+- **Failure, or a runtime that cannot run:** no tag. The summary names the
+  runtime, the scenario and the reason, and the step logs stay in the temp
+  folder it prints. Find the cause first (TESTING.md Rule 9). The only
+  exception is the user explicitly waiving a named runtime at the release
+  decision. Record the waiver and its reason in the delivery report.
 
 ## Cutting The Release
 
