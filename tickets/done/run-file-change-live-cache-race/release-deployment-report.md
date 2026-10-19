@@ -55,7 +55,7 @@
 - Note on the API-05 check: `warmUpBrowserErrors` holds Nuxt dev cold-start errors (`504 Outdated Optimize Dep`, failed dynamic import during warm-up). By design, the probe records these and does not assert them (probe header line 26: cold-start reloads). No journey had them.
 - More evidence requested: `None`
 - User check needed: `No`. This is a server cache rule proven deterministically (unit tests and probe) and on a real server and browser stack. Nothing depends on the user's accounts or nodes.
-- Re-verification after later re-integration: recorded in the Finalization Record.
+- Re-verification after later re-integration: `Not needed` (target unchanged after verification).
 
 ## Release Decision
 
@@ -70,7 +70,7 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/run-file-change-live-cache-race`: `Yes` (see Finalization Record)
+- Ticket moved to `tickets/done/run-file-change-live-cache-race`: `Yes` (commit `f8cb288ef7`)
 
 ## Version / Tag / Release Commit
 
@@ -115,14 +115,28 @@
 
 | Step | Result |
 | --- | --- |
-| Ticket archive | _recorded after the step_ |
+| Ticket archive | `git mv tickets/in-progress/run-file-change-live-cache-race tickets/done/run-file-change-live-cache-race`. 48 tracked files; the longest path is 108 characters; no Windows-hostile names; no build output |
+| Pre-commit checks (ticket branch) | Hygiene: `Repository artifact hygiene check passed.` Licensing: `Licensing is consistent.` |
+| Ticket branch commit | `f8cb288ef7` "docs(delivery): sync docs and archive run-file-change-live-cache-race (DR-001)" |
+| Ticket branch push | `origin/codex/run-file-change-live-cache-race` → `f8cb288ef7` (new remote branch) |
+| Target refresh after verification | Re-fetched `origin/personal`: still `fee828e9cf`, the verified integrated base. No re-integration or re-verification needed |
+| Finalize branch | `finalize/run-file-change-live-cache-race` from `origin/personal`, in the ticket worktree |
+| Merge | `git merge --no-ff codex/run-file-change-live-cache-race` → `6d8e1b3fda`. The tree is identical to the verified ticket branch |
+| Checks on the merged state | Hygiene check passed; licensing consistent |
+| Push target | Fetched before the push: `origin/personal` = `6d8e1b3fda^1` (`fee828e9cf`), unchanged. `git push origin HEAD:personal`: `fee828e9cf..6d8e1b3fda` |
+| Repository finalization status | `Completed` |
+| Release / publication / deployment | `Not required` (No release). No tag; no pipelines |
+| Delivery record commit | This record is committed on the finalize branch on top of `6d8e1b3fda` and pushed to `personal` after a fresh fetch shows the target unchanged |
+| Worktree cleanup | After the record push: `git worktree remove --force` (only untracked build output remains) and `git worktree prune`, run from the main repository's git dir. The main checkout's working tree is not touched |
+| Local branch cleanup | After the record push: `codex/run-file-change-live-cache-race` and `finalize/run-file-change-live-cache-race` are deleted once `origin/personal` contains them |
+| Remote branch cleanup | `Not required`. By repository practice, merged `codex/*` branches stay on `origin` |
 
 ## Final Status
 
 - Verification complete (from the evidence): `Yes`
-- Repository finalization complete: _recorded after the step_
+- Repository finalization complete: `Yes` (`origin/personal` @ `6d8e1b3fda`, followed by this record commit)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
-- Applicable safe cleanup complete or not required: _recorded after the step_
+- Applicable safe cleanup complete or not required: `Yes` (after the record push; see the Finalization Record)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: _recorded after the step_
-- Terminal package sent to `/software_engineering_team/solution_designer`: _recorded after the step_
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, after this record commit and cleanup (DR-001)

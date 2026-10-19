@@ -21,7 +21,8 @@ The latest docs sync report, handoff summary and release/deployment report remai
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: merged `origin/personal` @ `fee828e9cf` (the stable v1.5.6 cut; no code) as `0fac00e191`. Reran on the merge: DLV-01 typecheck, DLV-02 service unit tests (17/17) and DLV-03 gated E2E (2/2). All passed.
 - Verification and finalization state: verified from evidence. AC-001..AC-004 are proven; no user check was needed. Finalization steps are in the release/deployment report's Finalization Record.
-- Terminal return to `/software_engineering_team/solution_designer`: recorded in the release/deployment report's Final Status.
+- Finalization: ticket commit `f8cb288ef7`; `--no-ff` merge `6d8e1b3fda` pushed to `origin/personal` (`fee828e9cf..6d8e1b3fda`); no release; worktree and local branches cleaned up after the record push.
+- Terminal return to `/software_engineering_team/solution_designer`: `Sent` after the record commit and cleanup.
 - Why this baseline was recorded: first completed delivery-stage result.
 - Next recipient/action: Solution Designer verifies the receipt.
 - Remaining blockers, rollback concerns, or untested scope: none blocking. R-002: past losses cannot be restored (stated in the release notes). R-001 is contrived and untested.
