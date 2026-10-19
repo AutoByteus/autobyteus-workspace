@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report — project-task-semantic-search (autobyteus-71)
 
-Current delivery revision: `DR-002`. DR-001 (integration blocked, `Local Fix`) is kept in `delivery-revision-record.md`.
+Current delivery revision: `DR-003` — beta `v1.5.6-beta.8` published at the user's request (details in `delivery-revision-record.md` DR-003). DR-002's sections below stay authoritative for verification and finalization. DR-001 (integration blocked, `Local Fix`) is kept in `delivery-revision-record.md`.
 
 ## Release / Publication / Deployment Scope
 
@@ -153,3 +153,14 @@ Current delivery revision: `DR-002`. DR-001 (integration blocked, `Local Fix`) i
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, after this record was pushed.
 - Terminal message/reference: `send_message_to` → `/software_engineering_team/solution_designer` (Delivery Completed, DR-002).
+
+## DR-003 Release Addendum — `v1.5.6-beta.8`
+
+- Release decision: `Beta`, decided by the user ("finalize and release a new beta"; confirmed "a new beta please follow delivery principle").
+- Method: `Project Release Guide`, `bash scripts/desktop-release.sh beta --branch finalize/project-task-semantic-search-beta8 --no-push`, then push `personal` (`89d8d2f62f..cba6b85122`, fast-forward) and tag `v1.5.6-beta.8`.
+- Deviations from the guide: `None`.
+- Pipelines: Desktop `39192669074`, Android `39192668980`, iOS `39192668982`, Docker `39192669046`: all `success`.
+- Published artifacts: GitHub pre-release with 17/17 assets; Docker `1.5.6-beta.8` amd64+arm64, and `:beta` on the same digest; TestFlight upload done.
+- Release/publication/deployment result: `Completed`.
+- Re-verification on the release state: `Sufficient`. Product code equals the withdrawal's validated `a130f4a86f` plus the version bump; whole server E2E passed there; adoption absent and search wiring present (see DR-003).
+- Final status: all gates `Completed`; unresolved blocker `None`; terminal package sent to `/software_engineering_team/solution_designer`.
