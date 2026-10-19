@@ -66,8 +66,9 @@
 
 ## Release Decision
 
-- Decision: `No release`
-- Decided by: the release guide's default. Neither the request nor its clarifications ask for a release. The design spec's change sequence item "beta release (delivery)" is the designer's plan, not a user decision. A beta (next: `v1.5.6-beta.11` per `scripts/release_versions.py next-beta`; `v1.5.6-beta.10` is already tagged on origin) is available on request.
+- Decision (DR-002): `Beta` `v1.5.6-beta.11`
+- Decided by: the user, after finalization: "lets release a new beta then" (2026-10-19). They had found that their installed `1.5.6-beta.10` did not contain "part of".
+- DR-001 decision (superseded): `No release`, the release guide's default. Neither the request nor its clarifications ask for a release. The design spec's change sequence item "beta release (delivery)" is the designer's plan, not a user decision. A beta (next: `v1.5.6-beta.11` per `scripts/release_versions.py next-beta`; `v1.5.6-beta.10` is already tagged on origin) is available on request.
 
 ## Docs Sync Result
 
@@ -82,6 +83,11 @@
 - Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/done/task-part-of/`
 
 ## Version / Tag / Release Commit
+
+- DR-002: release commit `87732d5504` "chore(release): bump workspace release version to 1.5.6-beta.11" (`autobyteus-web/package.json` `1.5.6-beta.10` → `1.5.6-beta.11`), annotated tag `v1.5.6-beta.11` → `87732d5504`.
+- Command: `bash scripts/desktop-release.sh beta --branch finalize/task-part-of --no-push`, in a fresh worktree on `finalize/task-part-of` from `origin/personal` @ `436b85ce93` (clean, no untracked `dist/`), after `check_licensing.py` (consistent) and `check_repository_artifact_hygiene.py` (passed) on `436b85ce93`.
+- Push: fetched `origin/personal` (still `436b85ce93` = `87732d5504^`), then `git push origin HEAD:personal` (`436b85ce93..87732d5504`), then `git push origin v1.5.6-beta.11`.
+- Commit and tag identity: `normy <normy@macbookpro.speedport.ip>`, the same as the `v1.5.6-beta.10` release commit and tag.
 
 - None. There was no release. `autobyteus-web/package.json` stays at the base's `1.5.6-beta.9`.
 
@@ -122,13 +128,13 @@
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: N/A
-- Method reference / command: N/A
-- Pipelines triggered and their results: none
-- Published artifacts checked: N/A
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required` (notes archived for the next release)
+- Applicable: `Yes` (DR-002, at the user's request)
+- Method: `Project Release Guide` (RELEASE.md, Cutting The Release / Watching The Rollout)
+- Method reference / command: see Version / Tag / Release Commit
+- Pipelines triggered and their results: Desktop Release `39222279504` success; Android APK Release `39222279484` success; iOS App Store Connect Release `39222279519` success; Server Docker Release `39222279587` success (each watched with `gh run watch --exit-status`)
+- Published artifacts checked: GitHub pre-release `v1.5.6-beta.11` (`isPrerelease: true`) has 17/17 assets: macOS ARM64 and x64 `.dmg`/`.zip` plus blockmaps, Linux x64 and ARM64 AppImages, the Windows `.exe`, the Android APK and its `.sha256`, `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml`. Docker Hub `autobyteus/autobyteus-server:1.5.6-beta.11` and `:beta` share digest `sha256:aad12e749428…` (amd64, arm64); `:latest` is unchanged (stable, 2026-10-17). The tagged `autobyteus-web/package.json` is `1.5.6-beta.11`.
+- Release/publication/deployment result: `Completed` (DR-002; DR-001 was `Not required`)
+- Release notes handoff result: `Not required`. Pre-release tags always use GitHub generated notes (RELEASE.md). `release-notes.md` stays archived for the next stable release.
 - Blocker: none
 
 ## Post-Finalization Cleanup
@@ -172,9 +178,9 @@
 
 - Verification complete (from the evidence): `Yes`
 - Repository finalization complete: `Yes` (`origin/personal` @ `84d0c47e24`, followed by this record commit)
-- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`: no release)
+- Applicable release/deployment/rollout complete or not required: `Yes`. DR-001: `Not required`. DR-002: beta `v1.5.6-beta.11` `Completed` (4/4 workflows, 17/17 assets, Docker tags checked)
 - Applicable safe cleanup complete or not required: `Yes` (durable export, then the worktree and local branches are removed after the record push; see the Finalization Record; the outcome is confirmed in the terminal message)
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, sent after this record commit, the export and the cleanup (DR-001)
-- Terminal message/reference: the `send_message_to` "Delivery Completed" message for task-part-of (Project Task autobyteus-171)
+- Terminal message/reference: the `send_message_to` "Delivery Completed" message for task-part-of (Project Task autobyteus-171); the DR-002 beta update was sent after this record's push

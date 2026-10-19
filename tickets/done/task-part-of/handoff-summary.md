@@ -62,6 +62,8 @@ Project Task `autobyteus-171`: a "part of" relationship between Project Tasks.
 
 ## Release
 
+- **DR-002 update:** at the user's request, beta `v1.5.6-beta.11` was published from `87732d5504` (`436b85ce93` + version bump). All four workflows succeeded, the release has 17/17 assets, and Docker `:1.5.6-beta.11` = `:beta`. Details are in `release-deployment-report.md`. The DR-001 text below is kept as history.
+
 - Decision: **No release**. This is the RELEASE.md default. The user did not ask for a release in the request or its clarifications. The design spec's change sequence lists "beta release (delivery)" as a plan item, but it does not trace to a user decision. The change ships with the next release, and a beta is available on request.
 - `release-notes.md` is written and archived with the ticket for the next release.
 

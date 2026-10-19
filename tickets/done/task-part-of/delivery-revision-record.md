@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E test-code review Pass (CRR-002) from `/software_engineering_team/code_reviewer` | N/A | Delivery Completed (no release); finalized `origin/personal` @ `84d0c47e24` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `evidence/DEL-*` |
+| DR-002 | The user's request after finalization: "lets release a new beta then" | Delivery Completed, no release | Delivery Completed, beta `v1.5.6-beta.11` published (4/4 workflows, 17/17 assets, Docker `:1.5.6-beta.11` and `:beta`) | `release-deployment-report.md`, `handoff-summary.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -24,3 +25,13 @@
 - Why this baseline or delivery revision was recorded: the first delivery result for the ticket.
 - Next recipient/action: Solution Designer verifies the terminal receipt.
 - Remaining blockers, rollback concerns, or untested scope: none blocking. The cascade's partial-failure path is unit-only (accepted), and the Electron tab is inferred from the same renderer.
+
+### DR-002 — Beta `v1.5.6-beta.11` at the user's request
+
+- Delivery round and trigger: after DR-001 the user found that their installed `1.5.6-beta.10` does not contain "part of" (`v1.5.6-beta.10` → `b35259e5b5`, before the merge `84d0c47e24`) and asked: "lets release a new beta then".
+- Prior authoritative result: DR-001, Delivery Completed with no release.
+- Current authoritative result: beta `v1.5.6-beta.11` `Completed`. Release commit `87732d5504` on `origin/personal`; tag `v1.5.6-beta.11`; Desktop, Android, iOS and Server Docker workflows all succeeded; 17/17 GitHub assets; Docker `:1.5.6-beta.11` = `:beta` (amd64, arm64); `:latest` untouched.
+- Verification: unchanged from DR-001. The tag contains exactly the verified merge plus the version bump (`git diff 436b85ce93 87732d5504` = `autobyteus-web/package.json` version only).
+- Cleanup: the release worktree (`finalize/task-part-of`, recreated for the release) is removed after this record's push, and the durable export is refreshed.
+- Terminal return to `/software_engineering_team/solution_designer`: `Sent` (DR-002 update).
+- Remaining blockers, rollback concerns, or untested scope: none. Rollback means reverting on `personal` and cutting the next beta. There is no data migration. Users' Docker nodes should move to `:beta` / `1.5.6-beta.11` together with the desktop app (DEC-009).
