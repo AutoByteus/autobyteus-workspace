@@ -78,8 +78,26 @@ Repository finalization of `codex/mcp-real-server-test-fixtures` into `origin/pe
 
 | Step | Result |
 | --- | --- |
-| Ticket archive | pending |
+| Ticket archive | `git mv tickets/in-progress/mcp-real-server-test-fixtures tickets/done/mcp-real-server-test-fixtures`. 32 tracked files; longest ticket path 98 characters; no Windows-hostile names; no build output |
+| Pre-commit checks | `check_repository_artifact_hygiene.py` passed; `check_licensing.py` consistent |
+| Ticket branch commits | `90769ad9a2`: the archive move only. A failed `git add` pathspec left the new files unstaged, which I noticed after the push. `a707fe8776` adds the delivery records, the DR-01 evidence, the MCP module doc entry and the Solution Designer's scope note. Both commits are on the ticket branch |
+| Ticket branch push | `origin/codex/mcp-real-server-test-fixtures` → `a707fe8776` (new remote branch) |
+| Target refresh after verification | `origin/personal` still `df73618d78`, the verified base |
+| Merge | `finalize/mcp-real-server-test-fixtures` from `origin/personal`; `git merge --no-ff` → `f171032e88`; tree identical to the ticket branch; checks passed on the merged state |
+| Push target | `origin/personal` unchanged before the push; `df73618d78..f171032e88` |
+| Interruption | A power-off on the user's machine came after the target push. On resume, the worktree, the finalize branch and `origin/personal` @ `f171032e88` were intact, and nothing was redone |
+| Release / publication / deployment | `Not required` (No release); no tag, no pipelines |
+| Delivery record commit | Committed on top of `f171032e88` and pushed to `personal` after a fresh fetch |
+| Worktree cleanup | After the record push: `git worktree remove --force` (only untracked build output), `git worktree prune` |
+| Local branch cleanup | `codex/mcp-real-server-test-fixtures` and `finalize/mcp-real-server-test-fixtures` deleted once `origin/personal` contains them |
+| Remote branch cleanup | `Not required` (merged `codex/*` branches stay on `origin`) |
 
 ## Final Status
 
-- pending
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`f171032e88`, then this record)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
+- Applicable safe cleanup complete: `Yes` (after the record push)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, after this record commit and cleanup (DR-001)
