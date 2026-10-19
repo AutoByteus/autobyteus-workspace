@@ -1,0 +1,112 @@
+{
+  "probe": "API-08 parts-live-probe",
+  "startedAt": "2026-10-19T06:25:23.438Z",
+  "commit": "399303d03907d5d2b58c72ef05f6b363adf5a4e4",
+  "cases": {
+    "API-08": {
+      "result": "Pass",
+      "before": {
+        "boardParent": "1 of 3 done",
+        "boardPartLine": "Part of autobyteus-1",
+        "lanes": {
+          "P": "project-task-column-IN_PROGRESS",
+          "A": "project-task-column-IN_PROGRESS",
+          "B": "project-task-column-TODO"
+        },
+        "parentSummary": "1 of 3 done · 1 cancelled",
+        "parentRows": [
+          "autobyteus-2 In Progress Build the relay service",
+          "autobyteus-3 To Do Design the node handshake",
+          "autobyteus-4 Done Write the protocol docs",
+          "autobyteus-5 Cancelled Retire the old bridge"
+        ],
+        "hint": true,
+        "partRow": "autobyteus-1 In Progress Cross-node collaboration",
+        "tabBoardCard": "Cross-node collaboration Let agents on different nodes delegate to each other. 1 of 3 done",
+        "tabSummary": "1 of 3 done · 1 cancelled",
+        "tabRows": [
+          "autobyteus-2 In Progress Build the relay service",
+          "autobyteus-3 To Do Design the node handshake",
+          "autobyteus-4 Done Write the protocol docs",
+          "autobyteus-5 Cancelled Retire the old bridge"
+        ],
+        "tabNewPart": 0
+      },
+      "cancelled": {
+        "task": {
+          "projectId": "project_e0cd542d-d2b2-46c8-8db9-3e1eaa7cebcd",
+          "taskId": "autobyteus-1",
+          "status": "CANCELLED",
+          "dependsOn": [],
+          "partOf": null,
+          "closedParts": [
+            "autobyteus-2",
+            "autobyteus-3"
+          ]
+        }
+      },
+      "after": {
+        "lanes": {
+          "P": "project-task-column-CANCELLED",
+          "A": "project-task-column-CANCELLED",
+          "B": "project-task-column-CANCELLED",
+          "C": "project-task-column-DONE",
+          "D": "project-task-column-CANCELLED",
+          "plain": "project-task-column-TODO"
+        },
+        "boardParentInCancelledLane": "1 of 1 done",
+        "boardPartLine": "Part of autobyteus-1",
+        "parentSummary": "1 of 1 done · 3 cancelled",
+        "parentRows": [
+          "autobyteus-2 Cancelled Build the relay service",
+          "autobyteus-3 Cancelled Design the node handshake",
+          "autobyteus-4 Done Write the protocol docs",
+          "autobyteus-5 Cancelled Retire the old bridge"
+        ],
+        "hint": 0,
+        "partRow": "autobyteus-1 Cancelled Cross-node collaboration",
+        "tabSummary": "1 of 1 done · 3 cancelled",
+        "tabRows": [
+          "autobyteus-2 Cancelled Build the relay service",
+          "autobyteus-3 Cancelled Design the node handshake",
+          "autobyteus-4 Done Write the protocol docs",
+          "autobyteus-5 Cancelled Retire the old bridge"
+        ],
+        "tabStatus": "Cancelled",
+        "boardGraphqlRequestsDuringCascade": 0,
+        "tabPartOfRow": "autobyteus-1 Cancelled Cross-node collaboration"
+      }
+    }
+  },
+  "cleanup": {
+    "frontend": {
+      "pid": 24231,
+      "status": "terminated"
+    },
+    "backend": {
+      "pid": 23891,
+      "status": "terminated"
+    },
+    "dataRootRemoved": true,
+    "liveAgyOfThisRun": 0
+  },
+  "browserErrors": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:64918",
+    "frontendUrl": "http://127.0.0.1:64919",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/parts-live-probe-n2dx1j"
+  },
+  "seed": {
+    "projectId": "project_e0cd542d-d2b2-46c8-8db9-3e1eaa7cebcd",
+    "keys": {
+      "P": "autobyteus-1",
+      "A": "autobyteus-2",
+      "B": "autobyteus-3",
+      "C": "autobyteus-4",
+      "D": "autobyteus-5",
+      "plain": "autobyteus-6"
+    },
+    "worker": "relay_builder_2083_1dd92971eb254e1a8ab43113bcce7623"
+  },
+  "finishedAt": "2026-10-19T06:26:00.357Z"
+}

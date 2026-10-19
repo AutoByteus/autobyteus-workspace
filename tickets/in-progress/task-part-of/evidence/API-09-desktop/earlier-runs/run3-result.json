@@ -1,0 +1,45 @@
+{
+  "evidence": {
+    "renderer": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+    "results": [
+      [
+        "J9-long-keys",
+        "Pass",
+        null
+      ],
+      [
+        "J10-narrow-board",
+        "Fail",
+        "locator.click: Timeout 30000ms exceeded."
+      ],
+      [
+        "J11-step1-task",
+        "Fail",
+        "locator.click: Timeout 30000ms exceeded."
+      ]
+    ]
+  },
+  "results": [
+    {
+      "name": "J9-long-keys",
+      "result": "Pass",
+      "obs": {
+        "line": "Part of enterprise-customer-onboarding-experience-redesign-program -1",
+        "fits": true,
+        "row": "enterprise-customer-onboarding-experience-redesign-program -1 To Do Redesign the enterprise onboarding journey",
+        "key": "enterprise-customer-onboarding-experience-redesign-program-1"
+      }
+    },
+    {
+      "name": "J10-narrow-board",
+      "result": "Fail",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByText(/^(Back to workspace|返回工作区)$/i).first()\n\n    at openBoard (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:42:66)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:253:3\n    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:32:111)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:251:1"
+    },
+    {
+      "name": "J11-step1-task",
+      "result": "Fail",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByText(/^(Back to workspace|返回工作区)$/i).first()\n\n    at openBoard (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:42:66)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:262:3\n    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:32:111)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:261:1"
+    }
+  ],
+  "errors": []
+}

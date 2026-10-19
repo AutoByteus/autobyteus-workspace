@@ -1,0 +1,57 @@
+# Case: API-00 (ungated baseline, before any test edit)
+# Command: pnpm exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts tests/e2e/projects/projects-graphql.e2e.test.ts tests/e2e/projects/project-task-search.e2e.test.ts --no-watch (cwd autobyteus-server-ts)
+# Commit: 399303d039 (unchanged tests)
+# Environment: macOS darwin arm64, Node via corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR
+# Date: 2026-10-19
+
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts (13 tests | 4 failed) 2526ms
+     × API-MCP: selected default host executes equivalent compact mutations and detailed native reads 85ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  438ms
+     ✓ API-MCP collision: selected protected list_projects adapter wins over a configured MCP name 6ms
+     ✓ API-MCP collision: selected protected create_project adapter wins over a configured MCP name 22ms
+     ✓ API-MCP collision: selected protected update_project adapter wins over a configured MCP name 36ms
+     ✓ API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records 120ms
+     ✓ E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically 273ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  437ms
+     ✓ E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction 212ms
+     × CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011) 4ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  506ms
+     × CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012) 123ms
+     × TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027) 52ms
+ ❯ tests/e2e/projects/projects-graphql.e2e.test.ts (11 tests | 1 failed) 1149ms
+     ✓ API-001: Projects is always on: no capability API, and a stored retired flag (false) is not read (projects-always-on AC-002/003) 31ms
+     ✓ API-002: creates, lists, edits and rejects invalid or duplicate Project names 69ms
+     ✓ API-003: links paths with registry availability and rejects relative and duplicate links 82ms
+     ✓ PATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic 143ms
+     ✓ API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration 79ms
+     ✓ API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged 87ms
+     ✓ API-006: a restarted Projects subsystem reads the same persisted Projects 51ms
+     × API-007: creates, lists, edits and deletes Tasks through the real store without touching the Project or offering a status mutation 104ms
+     ✓ API-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged 170ms
+     ✓ API-010: Task keys and depends on: keys in creation order, never reused, kept on rename; dependencies validated, replaced, cleared and dropped on delete 224ms
+     ✓ API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value 58ms
+ ❯ tests/e2e/projects/project-task-search.e2e.test.ts (2 tests | 1 failed) 279ms
+     × answers exact matches at once, reports preparation, then adds meaning matches without a new query text 111ms
+     ✓ validates the active-model setting and offers Retry only for an unavailable model 11ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP: selected default host executes equivalent compact mutations and detailed native reads
+AssertionError: expected { …(5) } to deeply equal { …(4) }
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts:173:21
+ FAIL  tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011)
+AssertionError: expected [ 'context_files', 'depends_on', …(3) ] to deeply equal [ 'context_files', 'depends_on', …(2) ]
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts:482:67
+ FAIL  tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012)
+AssertionError: expected { …(5) } to deeply equal { …(4) }
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts:690:78
+ FAIL  tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)
+AssertionError: expected { …(5) } to deeply equal { …(4) }
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts:760:15
+ FAIL  tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > answers exact matches at once, reports preparation, then adds meaning matches without a new query text
+AssertionError: expected { …(3) } to deeply equal { …(3) }
+ ❯ tests/e2e/projects/project-task-search.e2e.test.ts:94:18
+ FAIL  tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-007: creates, lists, edits and deletes Tasks through the real store without touching the Project or offering a status mutation
+AssertionError: expected [ 'contextChanges', …(5) ] to deeply equal [ 'contextChanges', …(4) ]
+ ❯ tests/e2e/projects/projects-graphql.e2e.test.ts:540:38
+ Test Files  3 failed (3)
+      Tests  6 failed | 20 passed (26)
+exit=1
