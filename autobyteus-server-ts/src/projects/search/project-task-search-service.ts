@@ -1,5 +1,7 @@
-import type { CollectionIndexStatus, EmbeddingIndex, EmbeddingReadiness, EmbeddingSearchResult } from "../../embeddings/embedding-index.js";
-import type { ProjectTaskView } from "../domain/models.js";
+import type {
+  CollectionIndexStatus, EmbeddingIndex, EmbeddingReadiness, EmbeddingSearchResult, ItemFingerprints,
+} from "../../embeddings/embedding-index.js";
+import type { ProjectTaskView, TaskLocation } from "../domain/models.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { isTerminalTaskStatus } from "../domain/task-status.js";
 
@@ -22,17 +24,27 @@ export type ProjectTaskSearchCleanup = {
   forgetProject(projectId: string): void;
 };
 
+/** The post-commit Task marks search follows (a share of the Task service's `ProjectChangeMarks`). Never throw. */
+export type ProjectTaskSearchMarks = {
+  taskChanged(location: TaskLocation): void;
+  taskRemoved(location: TaskLocation): void;
+};
+
 type Dependencies = {
   /** Every Project (the Project service's authority). */
   listProjects: () => Promise<Array<{ projectId: string; name: string }>>;
   /** The Project's current Tasks (the Task service's authority); fails with PROJECT_NOT_FOUND for an unknown Project. */
   listTasks: (projectId: string) => Promise<ProjectTaskView[]>;
   /** The embedding index, resolved at use (nothing of the embedding layer is touched at startup). */
-  index: () => Pick<EmbeddingIndex, "search" | "sync" | "collectionStatus" | "removeItems" | "dropCollection">;
+  index: () => Pick<EmbeddingIndex, "search" | "sync" | "collectionStatus" | "removeItems" | "dropCollection"
+    | "fingerprintItems" | "fingerprintsAreCurrent" | "activeModelOnDisk">;
+  /** Wait after a Task write before its Project is indexed (writes inside the wait join that run). Default 3 s. */
+  indexAfterWriteMs?: number;
 };
 
 /** Up to this many meaning matches, as the relevance rule allows (REQ-003). */
 const MEANING_LIMIT = 20;
+const INDEX_AFTER_WRITE_MS = 3_000;
 const collectionOf = (projectId: string): string => `project-tasks/${projectId}`;
 const reasonOf = (error: unknown): string => error instanceof Error ? error.message : String(error);
 /** Open Tasks first, then most recently updated: the order the index embeds them in. */
@@ -46,8 +58,18 @@ const itemsOf = (tasks: readonly ProjectTaskView[]) => [...tasks].sort(indexingO
  * case-insensitive description containment, REQ-002), the meaning tier from the embedding index, their merge and
  * order, the bounded readiness wait for agents, and index cleanup after deletes. Every Task is read fresh from the
  * Task service, so deleted Tasks never appear and statuses are current.
+ *
+ * Settings' index status caches **inputs, never results**: per Project, the fingerprints of its Tasks for the active
+ * model, re-read when a post-commit mark makes the Project dirty, when it has none, or after a model switch. The
+ * status itself is computed fresh at every read. The same marks index a Project in the background a few seconds after
+ * a Task write, when the active model is already on disk (REQ-011).
  */
-export class ProjectTaskSearchService implements ProjectTaskSearchCleanup {
+export class ProjectTaskSearchService implements ProjectTaskSearchCleanup, ProjectTaskSearchMarks {
+  private readonly inputs = new Map<string, ItemFingerprints>();
+  private readonly dirty = new Set<string>();
+  private readonly pendingIndexing = new Map<string, ReturnType<typeof setTimeout>>();
+  private disposed = false;
+
   constructor(private readonly deps: Dependencies) {}
 
   async search(projectId: string, query: string, options: ProjectTaskSearchOptions = {}): Promise<ProjectTaskSearchResult> {
@@ -71,11 +93,17 @@ export class ProjectTaskSearchService implements ProjectTaskSearchCleanup {
     return { matches: options.limit === undefined ? matches : matches.slice(0, options.limit), meaningSearch: meaning.readiness };
   }
 
-  /** Every Project's index state for the active model, alphabetical. Read-only: nothing is scheduled. */
+  /**
+   * Every Project's index state for the active model, alphabetical, computed fresh. Read-only: nothing is scheduled.
+   * Only dirty Projects (or all of them after a model switch) read their Tasks; the others reuse their fingerprints.
+   */
   async indexStatus(): Promise<ProjectTaskIndexStatus[]> {
     const projects = [...await this.deps.listProjects()].sort((a, b) => a.name.localeCompare(b.name) || a.projectId.localeCompare(b.projectId));
+    const live = new Set(projects.map((project) => project.projectId));
+    for (const projectId of this.inputs.keys()) if (!live.has(projectId)) this.inputs.delete(projectId);
+    const index = this.deps.index();
     return Promise.all(projects.map(async ({ projectId, name }) => ({
-      projectId, name, ...this.deps.index().collectionStatus(collectionOf(projectId), itemsOf(await this.deps.listTasks(projectId))),
+      projectId, name, ...index.collectionStatus(collectionOf(projectId), await this.fingerprintsOf(projectId, index)),
     })));
   }
 
@@ -99,12 +127,77 @@ export class ProjectTaskSearchService implements ProjectTaskSearchCleanup {
     return due.length;
   }
 
+  /** A committed Task write: its Project's fingerprints are stale, and it is indexed soon if the model is on disk. */
+  taskChanged(location: TaskLocation): void {
+    if (location.projectId === null) return;
+    this.dirty.add(location.projectId);
+    this.scheduleIndexAfterWrite(location.projectId);
+  }
+
+  taskRemoved(location: TaskLocation): void {
+    if (location.projectId !== null) this.dirty.add(location.projectId);
+  }
+
+  /** Host shutdown: pending background runs are dropped. */
+  dispose(): void {
+    this.disposed = true;
+    for (const timer of this.pendingIndexing.values()) clearTimeout(timer);
+    this.pendingIndexing.clear();
+  }
+
   forgetTask(projectId: string, taskId: string): void {
     this.forget(() => this.deps.index().removeItems(collectionOf(projectId), [taskId]), { projectId, taskId });
   }
 
   forgetProject(projectId: string): void {
+    this.inputs.delete(projectId);
+    this.dirty.delete(projectId);
+    clearTimeout(this.pendingIndexing.get(projectId));
+    this.pendingIndexing.delete(projectId);
     this.forget(() => this.deps.index().dropCollection(collectionOf(projectId)), { projectId });
+  }
+
+  /** The Project's Tasks as fingerprints for the active model: kept unless dirty, missing, or for another model. */
+  private async fingerprintsOf(projectId: string, index: ReturnType<Dependencies["index"]>): Promise<ItemFingerprints> {
+    const kept = this.inputs.get(projectId);
+    if (kept && !this.dirty.has(projectId) && index.fingerprintsAreCurrent(kept)) return kept;
+    // Cleared before the read: a write committed during it marks the Project dirty again for the next read.
+    this.dirty.delete(projectId);
+    const fingerprints = index.fingerprintItems(itemsOf(await this.deps.listTasks(projectId)));
+    this.inputs.set(projectId, fingerprints);
+    return fingerprints;
+  }
+
+  /**
+   * REQ-011: index the Project in the background a few seconds after a write (writes meanwhile join the run), only when
+   * the active model's files are on disk, checked again when the run starts (a write never starts a download). The
+   * writer never waits and never sees a failure.
+   */
+  private scheduleIndexAfterWrite(projectId: string): void {
+    if (this.disposed || this.pendingIndexing.has(projectId)) return;
+    try {
+      if (!this.deps.index().activeModelOnDisk()) return;
+    } catch (error) {
+      console.warn("PROJECT_TASK_INDEX_AFTER_WRITE_FAILED", { projectId, error: reasonOf(error) });
+      return;
+    }
+    const timer = setTimeout(() => {
+      this.pendingIndexing.delete(projectId);
+      void this.indexAfterWrite(projectId);
+    }, this.deps.indexAfterWriteMs ?? INDEX_AFTER_WRITE_MS);
+    timer.unref?.();
+    this.pendingIndexing.set(projectId, timer);
+  }
+
+  private async indexAfterWrite(projectId: string): Promise<void> {
+    try {
+      if (this.disposed || !this.deps.index().activeModelOnDisk()) return;
+      await this.indexProject(projectId);
+    } catch (error) {
+      // A Project deleted inside the wait has nothing left to index.
+      if (error instanceof ProjectError && error.code === "PROJECT_NOT_FOUND") return;
+      console.warn("PROJECT_TASK_INDEX_AFTER_WRITE_FAILED", { projectId, error: reasonOf(error) });
+    }
   }
 
   /** Meaning search never fails a search: an index error leaves exact matches with an `unavailable` state. */
@@ -140,7 +233,10 @@ export const getProjectTaskSearchService = (): ProjectTaskSearchService => {
   if (!instance) throw new Error("The process ProjectTaskSearchService is not initialized.");
   return instance;
 };
-export const releaseProjectTaskSearchService = (): void => { instance = null; };
+export const releaseProjectTaskSearchService = (): void => {
+  instance?.dispose();
+  instance = null;
+};
 /**
  * The Task and Project services' default cleanup port: forwards to the process instance, and does nothing before the
  * composition initialized it (no index can hold the Project's Tasks then).
@@ -148,4 +244,9 @@ export const releaseProjectTaskSearchService = (): void => { instance = null; };
 export const processProjectTaskSearchCleanup: ProjectTaskSearchCleanup = {
   forgetTask: (projectId, taskId) => instance?.forgetTask(projectId, taskId),
   forgetProject: (projectId) => instance?.forgetProject(projectId),
+};
+/** The Task service's post-commit marks for search: forwards to the process instance; nothing before it exists. */
+export const processProjectTaskSearchMarks: ProjectTaskSearchMarks = {
+  taskChanged: (location) => instance?.taskChanged(location),
+  taskRemoved: (location) => instance?.taskRemoved(location),
 };

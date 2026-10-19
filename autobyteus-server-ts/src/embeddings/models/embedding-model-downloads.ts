@@ -8,7 +8,7 @@ export type EmbeddingModelFileState =
   | { state: "downloaded" }
   | { state: "failed"; reason: string };
 
-type Files = Pick<EmbeddingModelFiles, "ensure" | "remove" | "hasAllFiles">;
+type Files = Pick<EmbeddingModelFiles, "ensure" | "remove" | "removeIfEmpty" | "hasAllFiles">;
 type Flight = {
   promise: Promise<string>;
   done: number;
@@ -116,6 +116,8 @@ export class EmbeddingModelDownloads {
           throw new EmbeddingDownloadCancelled();
         }
         this.failures.set(definition.id, reasonOf(error));
+        // Verified files of the attempt stay for the next one; a folder left with nothing in it goes.
+        await this.files.removeIfEmpty(definition).catch(() => undefined);
         throw error;
       } finally {
         this.flights.delete(definition.id);

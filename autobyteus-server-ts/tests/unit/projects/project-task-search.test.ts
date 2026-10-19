@@ -8,7 +8,8 @@ import { ProjectTaskService, resetProjectTaskServiceForTests } from "../../../sr
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 import {
-  initializeProjectTaskSearchService, processProjectTaskSearchCleanup, ProjectTaskSearchService, releaseProjectTaskSearchService,
+  initializeProjectTaskSearchService, processProjectTaskSearchCleanup, processProjectTaskSearchMarks, ProjectTaskSearchService,
+  releaseProjectTaskSearchService,
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
 
@@ -32,8 +33,13 @@ describe("ProjectTaskSearchService", () => {
     reset();
     projectId = (await getProjectService().createProject({ name: "Search fixture" })).projectId;
     fake = await createFakeEmbeddingIndex();
-    tasks = new ProjectTaskService({ searchCleanup: processProjectTaskSearchCleanup });
-    search = initializeProjectTaskSearchService({ listProjects: () => getProjectService().listProjectSummaries(), listTasks: (id) => tasks.listTasks(id), index: () => fake.index });
+    // As composed in production: search follows the Task service's post-commit marks (index-after-write kept out of the way here).
+    tasks = new ProjectTaskService({ searchCleanup: processProjectTaskSearchCleanup, changes: {
+      ...processProjectTaskSearchMarks, workerStatusChanged: () => undefined, projectChanged: () => undefined, projectRemoved: () => undefined,
+    } });
+    search = initializeProjectTaskSearchService({
+      listProjects: () => getProjectService().listProjectSummaries(), listTasks: (id) => tasks.listTasks(id), index: () => fake.index, indexAfterWriteMs: 60_000,
+    });
   });
   afterEach(async () => {
     vi.restoreAllMocks();

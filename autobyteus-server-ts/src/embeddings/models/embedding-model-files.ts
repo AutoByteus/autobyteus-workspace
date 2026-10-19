@@ -75,6 +75,13 @@ export class EmbeddingModelFiles {
     await fs.rm(this.modelDir(definition), { recursive: true, force: true });
   }
 
+  /** Removes the model's folder when it holds no file (e.g. after a failed first download); otherwise keeps it. */
+  async removeIfEmpty(definition: Pick<EmbeddingModelDefinition, "id">): Promise<void> {
+    const dir = this.modelDir(definition);
+    const entries = await fs.readdir(dir, { recursive: true, withFileTypes: true }).catch(() => null);
+    if (entries && !entries.some((entry) => entry.isFile())) await fs.rm(dir, { recursive: true, force: true });
+  }
+
   /** Bytes of every file under the models folder, including partial downloads. */
   async diskUsage(): Promise<number> {
     const entries = await fs.readdir(this.rootDir, { recursive: true, withFileTypes: true }).catch(() => []);

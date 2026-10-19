@@ -16,6 +16,8 @@ export const BUSY_POLL_MS = 2000
 export const IDLE_POLL_MS = 10000
 
 export type EmbeddingAnnouncement = { kind: 'downloaded' | 'ready' | 'indexed'; name: string }
+/** A failed action: the server's message, or `unreachable` for a transport failure with no server message (DEC-013). */
+export type EmbeddingActionError = { kind: 'server'; message: string } | { kind: 'unreachable' }
 type GraphqlErrorLike = { message?: string }
 
 const isBusy = (status: Status) =>
@@ -45,9 +47,10 @@ const completionsBetween = (before: Status, after: Status): EmbeddingAnnouncemen
   return done
 }
 
-const messageOf = (cause: unknown): string => {
-  const graphqlError = (cause as { graphQLErrors?: GraphqlErrorLike[] } | null)?.graphQLErrors?.[0]
-  return graphqlError?.message || (cause instanceof Error ? cause.message : String(cause))
+/** The server's message carried by a failed request, if the server answered at all. */
+const serverMessageOf = (cause: unknown): string | null => {
+  const failure = cause as { graphQLErrors?: GraphqlErrorLike[]; networkError?: { result?: { errors?: GraphqlErrorLike[] } } } | null
+  return failure?.graphQLErrors?.[0]?.message || failure?.networkError?.result?.errors?.[0]?.message || null
 }
 
 /**
@@ -59,7 +62,7 @@ export const useEmbeddingSettings = () => {
   const node = useWindowNodeContextStore()
   const status = shallowRef<Status | null>(null)
   const loadStatus = ref<'loading' | 'error' | 'ready'>('loading')
-  const actionError = ref<string | null>(null)
+  const actionError = ref<EmbeddingActionError | null>(null)
   const announcements = shallowRef<EmbeddingAnnouncement[]>([])
   let latest = 0
   let timer: ReturnType<typeof setTimeout> | null = null
@@ -102,18 +105,25 @@ export const useEmbeddingSettings = () => {
     schedule(status.value && isBusy(status.value) ? BUSY_POLL_MS : IDLE_POLL_MS)
   }
 
-  /** Runs one action, then reads the status at once. False (with `actionError` set) when the server refused it. */
+  /**
+   * Runs one action and settles as soon as the server answered it (the caller's buttons come back then, O-2); the status
+   * is read again right after, in the background. False (with `actionError` set) when the action failed.
+   */
   const act = async (mutation: DocumentNode, variables?: Record<string, unknown>): Promise<boolean> => {
     actionError.value = null
     let ok = true
     try {
       const { errors } = await getApolloClient().mutate({ mutation, variables })
-      if (errors?.length) throw new Error(errors.map((entry: GraphqlErrorLike) => entry.message).join(', '))
+      if (errors?.length) {
+        actionError.value = { kind: 'server', message: errors.map((entry: GraphqlErrorLike) => entry.message).join(', ') }
+        ok = false
+      }
     } catch (cause) {
-      actionError.value = messageOf(cause)
+      const message = serverMessageOf(cause)
+      actionError.value = message ? { kind: 'server', message } : { kind: 'unreachable' }
       ok = false
     }
-    await refresh()
+    void refresh()
     return ok
   }
 

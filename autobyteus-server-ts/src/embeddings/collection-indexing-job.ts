@@ -14,10 +14,11 @@ export const fingerprintOf = (documentPrefix: string, text: string): string =>
   createHash("sha256").update(documentPrefix + text).digest("hex");
 
 /** Status from fingerprints only: items whose stored fingerprint matches their current text are indexed. */
-export const statusFromFingerprints = (current: ReadonlyArray<readonly [id: string, fingerprint: string]>,
+export const statusFromFingerprints = (current: ReadonlyMap<string, string>,
   storedFingerprintOf: (id: string) => string | undefined): CollectionIndexStatus => {
-  const total = current.length;
-  const fresh = current.filter(([id, fingerprint]) => storedFingerprintOf(id) === fingerprint).length;
+  const total = current.size;
+  let fresh = 0;
+  for (const [id, fingerprint] of current) if (storedFingerprintOf(id) === fingerprint) fresh++;
   if (fresh === total) return { state: "ready", total };
   return fresh === 0 ? { state: "notIndexed", total } : { state: "needsUpdate", changed: total - fresh, total };
 };
@@ -53,14 +54,14 @@ export class CollectionIndexingJob {
   }
 
   /**
-   * Read-only status for the consumer's current items: the running or waiting run, else freshness against this job's
-   * vectors (the active model's). Nothing is scheduled.
+   * Read-only status for the consumer's current items (`fingerprints`: id → fingerprint for this job's model): the
+   * running or waiting run, else freshness against this job's vectors. Nothing is scheduled.
    */
-  status(items: readonly CollectionItem[]): CollectionIndexStatus {
+  status(fingerprints: ReadonlyMap<string, string>): CollectionIndexStatus {
     if (this.pending.size) {
       return this.job ? { state: "indexing", done: this.runDone, total: this.runDone + this.pending.size } : { state: "waiting", total: this.pending.size };
     }
-    return statusFromFingerprints(items.map((item) => [item.id, this.fingerprint(item.text)] as const), (id) => this.vectors.get(id)?.fingerprint);
+    return statusFromFingerprints(fingerprints, (id) => this.vectors.get(id)?.fingerprint);
   }
 
   /** Takes the complete current item set: removes vectors of absent items and marks missing or changed items pending. */

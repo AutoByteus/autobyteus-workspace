@@ -318,7 +318,8 @@ describe('EmbeddingSettingsPanel', () => {
     io.mutate.mockRejectedValueOnce(new Error('Failed to fetch'))
     await wrapper!.get('[data-testid="embedding-project-p-billing-index"]').trigger('click')
     await flushPromises()
-    expect(wrapper!.get('[data-testid="embedding-action-error"]').text()).toBe('Failed to fetch')
+    // O-4 (DEC-013): a transport failure has no server message; the panel says the node can't be reached.
+    expect(wrapper!.get('[data-testid="embedding-action-error"]').text()).toBe('Couldn’t reach the server.')
     await wrapper!.get('[data-testid="embedding-index-all"]').trigger('click')
     await flushPromises()
     expect(wrapper!.find('[data-testid="embedding-action-error"]').exists()).toBe(false)
@@ -379,5 +380,19 @@ describe('EmbeddingSettingsPanel', () => {
     await vi.advanceTimersByTimeAsync(IDLE_POLL_MS * 3)
     expect(io.query).toHaveBeenCalledTimes(4)
     expect(io.mutate).not.toHaveBeenCalled()
+  })
+
+  it('gives the buttons back as soon as the action is answered, even while the follow-up read is still on its way (O-2)', async () => {
+    await mountPanel()
+    let answerRead!: () => void
+    io.query.mockImplementationOnce(() => new Promise((done) => { answerRead = () => done(respond()) }))
+    io.mutate.mockRejectedValueOnce(new Error('Failed to fetch'))
+    const download = () => wrapper!.get(`[data-testid="embedding-model-${GEMMA}-download"]`)
+    await download().trigger('click')
+    await flushPromises()
+    expect(wrapper!.get('[data-testid="embedding-action-error"]').text()).toBe('Couldn’t reach the server.')
+    expect((download().element as HTMLButtonElement).disabled).toBe(false)
+    answerRead()
+    await flushPromises()
   })
 })

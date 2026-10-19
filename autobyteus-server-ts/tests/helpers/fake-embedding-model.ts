@@ -112,6 +112,7 @@ export const createFakeEmbeddingIndex = async (options: {
       return path.join(rootDir, "models", model.id);
     }),
     remove: vi.fn(async (model: Pick<EmbeddingModelDefinition, "id">) => { removed.push(model.id); present.delete(model.id); }),
+    removeIfEmpty: vi.fn(async (_model: Pick<EmbeddingModelDefinition, "id">) => undefined),
     diskUsage: async () => present.size * 1_000_000,
   };
   const index = new EmbeddingIndex({

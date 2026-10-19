@@ -259,8 +259,10 @@ states.
   starts over with the new node. Reading never starts work. The actions
   (`graphql/mutations/embeddingSettingsMutations.ts` and the existing
   `retryEmbeddingModel`) read the status again at once. A refused or failed
-  action shows the server's message in one red `role="alert"` line above the
-  cards until the next action (REQ-010); Download failed, Unavailable and the
+  action shows the server's message (or "Couldn’t reach the server." when the
+  request got no server answer) in one red `role="alert"` line above the
+  cards until the next action (REQ-010); the pressed buttons come back as soon
+  as the action is answered; Download failed, Unavailable and the
   load error keep their own surfaces. Completions are announced in a polite
   live region ("<model> downloaded.", "<model> is ready.", "<Project> indexed.").
 - `components/settings/embedding/`: `EmbeddingSettingsPanel` (loading, load

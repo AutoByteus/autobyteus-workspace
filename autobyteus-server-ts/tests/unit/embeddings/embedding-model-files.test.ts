@@ -114,4 +114,14 @@ describe("EmbeddingModelFiles", () => {
     expect(left.filter((name) => name.endsWith(".part") || name === "onnx/model.onnx")).toEqual([]);
     await expect(files.ensure(model, () => undefined, AbortSignal.abort())).rejects.toBeInstanceOf(EmbeddingDownloadCancelled);
   });
+
+  it("removes a model folder only when it holds no file (O-1)", async () => {
+    const files = new EmbeddingModelFiles(root, { baseUrl });
+    await fs.mkdir(path.join(root, "empty-model", "onnx"), { recursive: true });
+    await files.removeIfEmpty({ id: "empty-model" });
+    await files.ensure(model);
+    await files.removeIfEmpty(model);
+    await files.removeIfEmpty({ id: "never-created" });
+    expect(await fs.readdir(root)).toEqual(["tiny"]);
+  });
 });

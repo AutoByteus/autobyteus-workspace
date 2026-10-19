@@ -2,7 +2,7 @@ import "reflect-metadata";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
@@ -187,4 +187,25 @@ describe("Embedding settings over the production GraphQL boundary", () => {
     expect((await ok<{ retryEmbeddingModel: boolean }>("mutation{retryEmbeddingModel}")).retryEmbeddingModel).toBe(true);
     await until((now) => now.embeddingModelsStatus.models[2]!.activeDisplay?.state === "READY");
   });
+
+  it("indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-011, AC-015)", async () => {
+    // The active model (prepared by the Retry above) is on disk.
+    expect((await status()).embeddingModelsStatus.models[2]!.activeDisplay?.state).toBe("READY");
+    const fresh = (await ok<{ createProject: { projectId: string } }>("mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", { i: { name: "Fresh" } })).createProject.projectId;
+    const search = vi.spyOn(fake.index, "search");
+    const started = Date.now();
+    const created = (await ok<{ createProjectTask: { taskId: string } }>("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}",
+      { i: { projectId: fresh, description: "Invoice PDF export fails for long names" } })).createProjectTask;
+    await ok("mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){taskId}}",
+      { i: { projectId: fresh, taskId: created.taskId, description: "Invoice PDF export fails for long customer names" } });
+    await ok("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}", { i: { projectId: fresh, description: "Refund flow for annual plans" } });
+    expect(Date.now() - started).toBeLessThan(1_000);
+    expect(indexOf(await status(), fresh).state).toBe("NOT_INDEXED");
+    for (const deadline = Date.now() + 10_000; Date.now() < deadline && indexOf(await status(), fresh).state !== "READY";) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    expect(indexOf(await status(), fresh)).toMatchObject({ state: "READY", total: 2 });
+    expect(search).not.toHaveBeenCalled();
+    search.mockRestore();
+  }, 20_000);
 });

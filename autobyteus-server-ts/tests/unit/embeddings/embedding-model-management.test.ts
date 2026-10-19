@@ -20,6 +20,9 @@ const make = async (options: Parameters<typeof createFakeEmbeddingIndex>[0] = {}
   roots.push(fake.rootDir);
   return { ...fake, use: (model: typeof MODEL_A) => { active = model; } };
 };
+/** The status the search service would serve: the current items' fingerprints, compared fresh. */
+const statusOf = (index: EmbeddingIndex, collection: string, items: Array<{ id: string; text: string }>) =>
+  index.collectionStatus(collection, index.fingerprintItems(items));
 const activeDisplayOf = async (index: EmbeddingIndex) => (await index.modelsStatus()).models.find((model) => model.activeDisplay)!.activeDisplay;
 const waitFor = async (check: () => Promise<boolean> | boolean) => {
   for (let tries = 0; tries < 200; tries++) {
@@ -52,8 +55,9 @@ describe("EmbeddingIndex model management", () => {
         { id: "fake-model-b", displayName: "Fake B", languages: ["multilingual"], downloadBytes: 2, file: { state: "notDownloaded" }, activeDisplay: null },
       ],
     });
-    expect(index.collectionStatus("tasks/p1", ITEMS)).toEqual({ state: "notIndexed", total: 3 });
-    expect(index.collectionStatus("tasks/empty", [])).toEqual({ state: "ready", total: 0 });
+    expect(statusOf(index, "tasks/p1", ITEMS)).toEqual({ state: "notIndexed", total: 3 });
+    expect(statusOf(index, "tasks/empty", [])).toEqual({ state: "ready", total: 0 });
+    expect(index.activeModelOnDisk()).toBe(false);
     await new Promise((resolve) => setTimeout(resolve, 10));
     for (const spy of [sync, search, prepare, activeModel]) expect(spy).not.toHaveBeenCalled();
     expect(files.ensure).not.toHaveBeenCalled();
@@ -81,7 +85,7 @@ describe("EmbeddingIndex model management", () => {
     index.prepareActiveModel();
     await waitFor(async () => (await activeDisplayOf(index))?.state === "unavailable");
     expect(await activeDisplayOf(index)).toEqual({ state: "unavailable", reason: "Could not reach huggingface.co" });
-    expect(index.collectionStatus("tasks/p1", ITEMS)).toEqual({ state: "unavailable" });
+    expect(statusOf(index, "tasks/p1", ITEMS)).toEqual({ state: "unavailable" });
     failure = null;
     expect(index.retryModel()).toBe(true);
     index.prepareActiveModel();
@@ -140,20 +144,20 @@ describe("EmbeddingIndex model management", () => {
     const { index, holdDownloads, releaseDownloads, runner } = await make();
     holdDownloads();
     index.sync("tasks/p1", ITEMS);
-    expect(index.collectionStatus("tasks/p1", ITEMS)).toEqual({ state: "waiting", total: 3 });
+    expect(statusOf(index, "tasks/p1", ITEMS)).toEqual({ state: "waiting", total: 3 });
     releaseDownloads();
     await settle(index, "tasks/p1", ITEMS);
-    expect(index.collectionStatus("tasks/p1", ITEMS)).toEqual({ state: "ready", total: 3 });
+    expect(statusOf(index, "tasks/p1", ITEMS)).toEqual({ state: "ready", total: 3 });
     const edited = [{ id: "a", text: "Docker container crashes on arm64" }, ITEMS[1]!, ITEMS[2]!];
-    expect(index.collectionStatus("tasks/p1", edited)).toEqual({ state: "needsUpdate", changed: 1, total: 3 });
-    expect(index.collectionStatus("tasks/p1", [...ITEMS, { id: "d", text: "new" }])).toEqual({ state: "needsUpdate", changed: 1, total: 4 });
+    expect(statusOf(index, "tasks/p1", edited)).toEqual({ state: "needsUpdate", changed: 1, total: 3 });
+    expect(statusOf(index, "tasks/p1", [...ITEMS, { id: "d", text: "new" }])).toEqual({ state: "needsUpdate", changed: 1, total: 4 });
     runner().holdDocuments();
     index.sync("tasks/p1", edited);
     await new Promise((resolve) => setTimeout(resolve, 5));
-    expect(index.collectionStatus("tasks/p1", edited)).toEqual({ state: "indexing", done: 0, total: 1 });
+    expect(statusOf(index, "tasks/p1", edited)).toEqual({ state: "indexing", done: 0, total: 1 });
     runner().release();
     await settle(index, "tasks/p1", edited);
-    expect(index.collectionStatus("tasks/p1", edited)).toEqual({ state: "ready", total: 3 });
+    expect(statusOf(index, "tasks/p1", edited)).toEqual({ state: "ready", total: 3 });
   });
 
   it("reads a collection's state from the stored fingerprints after a restart", async () => {
@@ -161,11 +165,36 @@ describe("EmbeddingIndex model management", () => {
     await settle(first.index, "tasks/p1", ITEMS);
     await first.index.shutdown();
     const second = await make({ rootDir: first.rootDir, filesPresent: ["fake-model-a"] });
-    expect(second.index.collectionStatus("tasks/p1", ITEMS)).toEqual({ state: "ready", total: 3 });
-    expect(second.index.collectionStatus("tasks/p1", ITEMS.slice(0, 2))).toEqual({ state: "ready", total: 2 });
-    expect(second.index.collectionStatus("tasks/p2", ITEMS)).toEqual({ state: "notIndexed", total: 3 });
+    expect(statusOf(second.index, "tasks/p1", ITEMS)).toEqual({ state: "ready", total: 3 });
+    expect(statusOf(second.index, "tasks/p1", ITEMS.slice(0, 2))).toEqual({ state: "ready", total: 2 });
+    expect(statusOf(second.index, "tasks/p2", ITEMS)).toEqual({ state: "notIndexed", total: 3 });
     second.use(MODEL_B);
-    expect(second.index.collectionStatus("tasks/p1", ITEMS)).toEqual({ state: "notIndexed", total: 3 });
+    expect(statusOf(second.index, "tasks/p1", ITEMS)).toEqual({ state: "notIndexed", total: 3 });
     expect(second.runners).toEqual([]);
+  });
+
+  it("tells whether the active model is on disk without loading it, and not while it is unavailable", async () => {
+    const { index, runners, use } = await make({ filesPresent: ["fake-model-a"] });
+    expect(index.activeModelOnDisk()).toBe(true);
+    use(MODEL_B);
+    expect(index.activeModelOnDisk()).toBe(false);
+    expect(runners).toEqual([]);
+
+    const failed = await make({ failDownload: () => new Error("damaged") });
+    failed.index.prepareActiveModel();
+    await waitFor(async () => (await activeDisplayOf(failed.index))?.state === "unavailable");
+    failed.present.add("fake-model-a");
+    expect(failed.index.activeModelOnDisk()).toBe(false);
+  });
+
+  it("counts fingerprints made for another model as not indexed for the active one, and says they are stale", async () => {
+    const { index, use } = await make({ filesPresent: ["fake-model-a"] });
+    await settle(index, "tasks/p1", ITEMS);
+    const madeForA = index.fingerprintItems(ITEMS);
+    expect(index.fingerprintsAreCurrent(madeForA)).toBe(true);
+    expect(index.collectionStatus("tasks/p1", madeForA)).toEqual({ state: "ready", total: 3 });
+    use(MODEL_B);
+    expect(index.fingerprintsAreCurrent(madeForA)).toBe(false);
+    expect(index.collectionStatus("tasks/p1", madeForA)).toEqual({ state: "notIndexed", total: 3 });
   });
 });

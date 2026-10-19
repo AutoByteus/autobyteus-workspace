@@ -3,6 +3,7 @@ import type { TranslationCatalog } from '../../runtime/types';
 /** Settings → Server Settings → Embedding (models and Project indexes). */
 const embeddingSettingsMessages = {
   "settings.search.loadError": "无法加载搜索状态。",
+  "settings.search.actionError.unreachable": "无法连接到服务器。",
   "settings.search.retry": "重试",
   "settings.search.models.title": "嵌入模型",
   "settings.search.models.description": "用于语义搜索。",

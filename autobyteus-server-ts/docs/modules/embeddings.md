@@ -44,7 +44,10 @@ index.retryModel();                  // clears "unavailable"; the next search (o
 
 // Settings → Server Settings → Embedding. The two status reads are read-only: they start no download, load or indexing.
 await index.modelsStatus();          // {activeModelId, defaultModelId, onDiskBytes, models: [{id, file, activeDisplay, ...}]}
-index.collectionStatus(collection, items); // notIndexed | waiting | indexing | ready | needsUpdate | unavailable
+index.fingerprintItems(items);       // opaque ItemFingerprints for the active model (no item text kept)
+index.collectionStatus(collection, fingerprints); // notIndexed | waiting | indexing | ready | needsUpdate | unavailable
+index.fingerprintsAreCurrent(fingerprints);       // false after a model switch: read the items again
+index.activeModelOnDisk();           // every active model file present and the model not unavailable
 index.prepareActiveModel();          // download (if needed) and load the active model now
 index.downloadModel(id);             // a download ahead; for the active model, its preparation (not cancellable)
 index.cancelDownload(id);            // a download ahead only; deletes what was downloaded
@@ -114,12 +117,21 @@ GraphQL error code: `EMBEDDING_MODEL_UNKNOWN`, `EMBEDDING_MODEL_ACTIVE` (the act
 no download). One download per model runs at a time: a preparation joins a running download ahead, which then can no
 longer be cancelled; a cancelled download deletes the model's folder.
 
-Each Project's index state comes from the Project's current Tasks and the stored fingerprints (no vectors are read, no
-job is created): `notIndexed` (nothing for the active model), `waiting` (Tasks to index, model not ready), `indexing`
+Each Project's index state is computed fresh at every read from the fingerprints of the Project's current Tasks: a job
+with pending work gives `indexing` or `waiting`; otherwise they are compared with the job's vectors, or with the stored
+fingerprints when there is no job (no vectors are read, no job is created). The search service caches only those
+**inputs**, never a status: a Project's fingerprints are read again when a post-commit Task mark makes it dirty, when it
+has none, or after a model switch, so a warm poll reads no Task. States: `notIndexed` (nothing for the active model), `waiting` (Tasks to index, model not ready), `indexing`
 (`done`/`total` of the current run), `ready` (every Task indexed; a Project without Tasks is ready with 0),
 `needsUpdate` (`changed` Tasks are new or edited since) or `unavailable` (the active model is unavailable).
 `indexProjectTasks`, `rebuildProjectTaskIndex` (drops the Project's vectors, then indexes every Task) and
 `indexAllProjectTasks` (every Project that is not indexed or needs an update) start indexing.
+
+**Index after writes (REQ-011).** A Task create or edit (by a user or an agent; any post-commit Task mark) indexes its
+Project in the background 3 s later, with writes in between joining that run, when `activeModelOnDisk()` holds both
+when the write commits and when the run starts. A write never waits for it, never fails because of it, and never starts
+a download; a Project deleted meanwhile is skipped, and host shutdown drops pending runs. Without the model on disk, the
+first search or a Settings action prepares it, and the search-time fingerprint check stays the safety net.
 
 ### Relevance
 

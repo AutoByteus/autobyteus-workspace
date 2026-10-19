@@ -607,7 +607,8 @@ current, and returns matches best-first in two tiers:
 
 Only the description is indexed (open Tasks first, then the most recently updated). The first search of a Project, or
 the first after a model change, indexes its Tasks in the background; meanwhile, and whenever meaning search is
-unavailable, the exact tier still answers. An edited Task is found by its new text at once by exact match and by
+unavailable, the exact tier still answers. Once the model is on disk, a created or edited Task's Project is also
+indexed in the background about 3 s after the write, with no search (see [embeddings.md](./embeddings.md)). An edited Task is found by its new text at once by exact match and by
 meaning when it is indexed again (a second or two for the default model); it is never matched by its old text.
 
 The tool returns at most `limit` Tasks: `taskId` is the Task's key, `status` its current status, `summary` the
@@ -1075,7 +1076,7 @@ Project queries and mutations keep their names; there is no Projects capability 
   meaningSearch: {state: READY | PREPARING | UNAVAILABLE, phase: DOWNLOADING | LOADING | INDEXING, done, total,
   reason}}` (see [Project Task Search](#project-task-search)); it never waits for meaning search. A blank query fails
   with `TASK_SEARCH_QUERY_REQUIRED`.
-- `retryEmbeddingModel` (mutation) clears an unavailable embedding model so the next search tries again; it returns
+- `retryEmbeddingModel` (mutation) clears an unavailable embedding model and prepares it again at once; it returns
   whether there was one to retry.
 - GraphQL context metadata includes the locator, not the native tool's
   `localPath`.

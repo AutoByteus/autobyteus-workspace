@@ -23,8 +23,8 @@
     </div>
 
     <template v-else>
-      <!-- A refused or failed action shows the server's reason; the next action clears it. -->
-      <p v-if="actionError" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700" role="alert" data-testid="embedding-action-error">{{ actionError }}</p>
+      <!-- REQ-010: a refused or failed action shows the server's message (or that the node can't be reached); the next action clears it. -->
+      <p v-if="actionError" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700" role="alert" data-testid="embedding-action-error">{{ actionError.kind === 'server' ? actionError.message : t('settings.search.actionError.unreachable') }}</p>
       <EmbeddingModelCard :status="status.models" :actions="settings" @use="switchTargetId = $event" />
       <ProjectIndexesCard
         :projects="status.projects"

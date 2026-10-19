@@ -9,10 +9,11 @@ const model = fakeModel("model-b", { files: [{ path: "model.onnx", sha256: "x", 
 const controllableFiles = () => {
   const present = new Set<string>();
   const removed: string[] = [];
+  const emptied: string[] = [];
   const pending = new Map<string, { resolve: () => void; reject: (error: Error) => void; progress: (done: number, total: number) => void }>();
   let calls = 0;
   return {
-    present, removed, pending,
+    present, removed, emptied, pending,
     calls: () => calls,
     files: {
       hasAllFiles: (definition: { id: string }) => present.has(definition.id),
@@ -27,6 +28,7 @@ const controllableFiles = () => {
         });
       },
       remove: async (definition: { id: string }) => { removed.push(definition.id); present.delete(definition.id); },
+      removeIfEmpty: async (definition: { id: string }) => { emptied.push(definition.id); },
     },
   };
 };
@@ -67,6 +69,8 @@ describe("EmbeddingModelDownloads", () => {
     fake.pending.get("model-b")!.reject(new Error("Could not reach huggingface.co"));
     await flush();
     expect(downloads.fileState(model)).toEqual({ state: "failed", reason: "Could not reach huggingface.co" });
+    // O-1: a folder the failed attempt left without files is removed (verified files would stay).
+    expect(fake.emptied).toEqual(["model-b"]);
     downloads.start(model);
     expect(downloads.fileState(model)).toMatchObject({ state: "downloading" });
   });

@@ -37,6 +37,15 @@ export type EmbeddingModelEntry = {
   id: string; displayName: string; languages: readonly string[]; downloadBytes: number;
   file: EmbeddingModelFileState; activeDisplay: EmbeddingActiveDisplay | null;
 };
+declare const OPAQUE: unique symbol;
+/**
+ * A collection's current items as fingerprints for one model (`fingerprintItems`): what `collectionStatus` compares
+ * with the indexed state. Opaque to consumers, who keep it and pass it back (no item text is kept).
+ */
+export type ItemFingerprints = { readonly [OPAQUE]: "ItemFingerprints" };
+type FingerprintSet = { modelId: string; entries: ReadonlyMap<string, string> };
+const fingerprintSet = (fingerprints: ItemFingerprints): FingerprintSet => fingerprints as unknown as FingerprintSet;
+
 export type EmbeddingModelsStatus = { activeModelId: string; defaultModelId: string; onDiskBytes: number; models: EmbeddingModelEntry[] };
 
 type ModelPhase =
@@ -54,7 +63,7 @@ type Dependencies = {
   catalog?: readonly EmbeddingModelDefinition[];
   defaultModelId?: string;
 };
-type ModelFiles = Pick<EmbeddingModelFiles, "hasAllFiles" | "ensure" | "remove" | "diskUsage">;
+type ModelFiles = Pick<EmbeddingModelFiles, "hasAllFiles" | "ensure" | "remove" | "removeIfEmpty" | "diskUsage">;
 
 const DEFAULT_LIMIT = 20;
 const reasonOf = (error: unknown): string => error instanceof Error ? error.message : String(error);
@@ -143,18 +152,41 @@ export class EmbeddingIndex {
     };
   }
 
+  /** The items' fingerprints for the active model (resolved from the setting; no switch, no model work). */
+  fingerprintItems(items: readonly CollectionItem[]): ItemFingerprints {
+    const active = this.resolveModel();
+    const set: FingerprintSet = { modelId: active.id, entries: new Map(items.map((item) => [item.id, fingerprintOf(active.documentPrefix, item.text)])) };
+    return set as unknown as ItemFingerprints;
+  }
+
+  /** Whether fingerprints were made for the current active model (false after a model switch: read the items again). */
+  fingerprintsAreCurrent(fingerprints: ItemFingerprints): boolean {
+    return fingerprintSet(fingerprints).modelId === this.resolveModel().id;
+  }
+
+  /** Read-only: every file of the active model is on disk and the model is not unavailable (so work needs no download). */
+  activeModelOnDisk(): boolean {
+    const active = this.resolveModel();
+    if (this.model?.definition.id === active.id && this.model.phase.kind === "unavailable") return false;
+    return this.files.hasAllFiles(active);
+  }
+
   /**
-   * A collection's index state for the active model, read-only: no job is created, no model work starts. Uses the
-   * collection's in-memory job when it belongs to the active model, else the stored fingerprints (no vectors).
+   * A collection's index state for the active model, computed fresh from the current items' fingerprints. Read-only: no
+   * job is created, no model work starts. A job with pending work gives indexing or waiting; otherwise the fingerprints
+   * are compared with the job's vectors, or with the stored fingerprints when there is no job (no vectors are read).
    */
-  collectionStatus(collection: string, items: readonly CollectionItem[]): CollectionIndexStatus {
+  collectionStatus(collection: string, fingerprints: ItemFingerprints): CollectionIndexStatus {
     const active = this.resolveModel();
     const current = this.model?.definition.id === active.id ? this.model : null;
     if (current?.phase.kind === "unavailable") return { state: "unavailable" };
+    const { modelId, entries } = fingerprintSet(fingerprints);
+    // Made for another model (a switch since they were read): nothing of it is indexed for the active model yet.
+    if (modelId !== active.id) return { state: "notIndexed", total: entries.size };
     const job = current ? this.collections.get(collection) : undefined;
-    if (job) return job.status(items);
+    if (job) return job.status(entries);
     const stored = this.store.readFingerprints(collection, active.id);
-    return statusFromFingerprints(items.map((item) => [item.id, fingerprintOf(active.documentPrefix, item.text)] as const), (id) => stored.get(id));
+    return statusFromFingerprints(entries, (id) => stored.get(id));
   }
 
   /** Prepares the active model now (download if needed, then load), without touching any collection. */
