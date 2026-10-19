@@ -255,7 +255,10 @@ states.
   GraphQL document (`embeddingModelsStatus` + `projectTaskIndexes`,
   `graphql/queries/embeddingSettingsQueries.ts`), read on open and polled every
   2 s while a download, a model preparation or indexing runs and every 10 s
-  otherwise, until the panel unmounts. The latest request wins; a rebinding
+  otherwise, until the panel unmounts. Indexing the server starts on its own
+  after a Task write (`embeddings.md`, Index after writes) shows at the next
+  10 s refresh and is then polled every 2 s (DEC-015); opening the section
+  shows the current state at once. The latest request wins; a rebinding
   starts over with the new node. Reading never starts work. The actions
   (`graphql/mutations/embeddingSettingsMutations.ts` and the existing
   `retryEmbeddingModel`) read the status again at once. A refused or failed

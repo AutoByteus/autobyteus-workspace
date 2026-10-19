@@ -7,6 +7,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery package from code review (CRR-005 Pass, API-REV-002 Pass, CRR-006 Pass) | N/A | Blocked at verification — `Unclear` (O-5 against REQ-007 / AC-015) | `release-deployment-report.md`, `delivery-revision-record.md` |
+| DR-002 | Solution Designer's SR-008 / DEC-015 clarification (option a) | Blocked (DR-001) | Delivery Completed — verified on SR-008, finalized to `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -31,3 +32,25 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Remaining blockers, rollback concerns, or untested scope:
   - O-5.
   - Residual risks from the package: the QR-001 desktop margin; untested Windows/Linux/macOS x64 and Docker amd64; the Project store's whole-backlog read (DEC-012 follow-up); `project-task-service.ts` near the size limit (autobyteus-147); `native-compaction-terminal-drain.test.ts` (autobyteus-103 Part 4).
+
+### DR-002 — Verified on the clarified requirements and finalized without a release
+
+- Delivery round and trigger: revisiting DR-001. The Solution Designer chose option (a): SR-008 / DEC-015 clarifies REQ-007 and AC-015 for server-started indexing seen on an open panel. The design is unchanged and there is no rework.
+- Prior authoritative result: DR-001 `Blocked` (`Unclear`, O-5).
+- Current authoritative result: `Delivery Completed`.
+- Docs sync report: `docs-sync-report.md`, `Updated`. Delivery added the DEC-015 cadence to `autobyteus-web/docs/settings.md` and "part of" to the no-model-load marks in `embeddings.md`.
+- Handoff summary: `handoff-summary.md`.
+- Release/publication/deployment report: `release-deployment-report.md`.
+- Integration and post-integration verification:
+  - `origin/personal` was still `fc93276e6f`.
+  - Merge `f9de3d57d7` and its DR-001 checks stand.
+  - Since then only ticket files and two doc sentences changed.
+- Verification: `Sufficient` on SR-008.
+  - AC-015: an open panel showed Ready about 7.4 s after the server finished, within 10 s; Settings opened after the writes shows Ready.
+  - Every other criterion as in DR-001.
+  - No user check needed.
+- Release decision: `No release` (the guide's default).
+- Finalization: see `release-deployment-report.md` § Repository Finalization.
+- Terminal return to `/solution_designer`: see § Final Status.
+- Next recipient/action: `/software_engineering_team/solution_designer` (terminal receipt).
+- Remaining blockers: none. Residual risks are listed in `handoff-summary.md`.
