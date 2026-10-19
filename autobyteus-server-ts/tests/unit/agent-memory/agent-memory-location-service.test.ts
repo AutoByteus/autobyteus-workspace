@@ -12,7 +12,7 @@ import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from 
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
-import { testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
+import { testAgentCopySource, testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
@@ -27,6 +27,7 @@ const withTaskAgent = (tree: TeamRunExecutionTreeSnapshot): TeamRunExecutionTree
       platformAgentRunId: null,
       delegatorAgentRunId: "writer-run",
       startedAt: "2026-08-15T00:01:00.000Z",
+      source: testAgentCopySource("writer"),
     }],
   },
 });

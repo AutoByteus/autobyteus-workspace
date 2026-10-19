@@ -109,15 +109,14 @@ export class TeamMemberRunViewProjectionService {
     }
     const location = tagTeamAgentExecution(found);
     if (!locatedExecutionSource(location)) {
-      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' has no configured launch placement or catalog source.`);
+      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' has no configured launch placement or recorded source.`);
     }
     return location;
   }
 }
 
 const metadataFor = (location: LocatedTeamCollaborationAgentExecution): AgentRunMetadata => {
-  const configured = location.configuredPlacement;
-  // A catalog-copy run has no configured placement: its recorded source supplies it.
+  // A configured member's placement, or a delegated copy's own recorded source (by execution kind).
   const source = locatedExecutionSource(location)!;
   const launch = source.launchConfiguration;
   return {
@@ -129,9 +128,8 @@ const metadataFor = (location: LocatedTeamCollaborationAgentExecution): AgentRun
     llmConfig: launch.llmConfig as Record<string, unknown> | null,
     autoExecuteTools: launch.autoExecuteTools,
     runtimeKind: launch.runtimeKind as AgentRunMetadata["runtimeKind"],
-    platformAgentRunId: configured
-      ? configured.platformAgentRunId
-      : new TeamExecutionIndex(location.tree).getAgent(location.agentRunId)?.source.platformAgentRunId ?? null,
+    // The execution's own runtime session: a copy never shows its placement's.
+    platformAgentRunId: new TeamExecutionIndex(location.tree).getAgent(location.agentRunId)?.source.platformAgentRunId ?? null,
   };
 };
 

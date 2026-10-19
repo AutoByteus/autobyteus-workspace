@@ -300,8 +300,9 @@ The rules are defined in the [Collaboration Model](../design/collaboration_model
   shared `MessageRecipientResolution` (sender instance, then run-wide placements; see
   [Agent Communication](./agent_communication.md#address-resolution-order-messagerecipientresolution))
   and `delegate_task(address)` with the shared `resolveDelegationPlacement` (CM-1 refusal,
-  configured placement, then catalog). A catalog copy records its `source`, which
-  `AgentOrgTaskSourceResolver` reads first on activation and restore.
+  configured placement, then catalog). Every placement carries the snapshot its copy starts
+  from (a configured placement's as it is now); the copy records it as its `source`, and
+  `AgentOrgTaskExecutionAdapter` projects only that `source` on activation and restore.
   `AgentOrgRun.listAvailableAgents(sender)` serves `list_available_agents`.
 - Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
   through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
@@ -361,8 +362,10 @@ memory/agent_teams/<task-team-run-id>/   # a task agent team of the org: its own
 Task agents are not part of the org's folder: the org tree keeps a link per task agent
 (`rootOrg.taskExecutions`, and older links under a configured team's `taskExecutions`), and
 `AgentOrgRunExecutionTreeStore` composes their records from their own files (task-agent-own-run,
-D-1). A task agent created from a configured place records `origin: "configured_place"` and
-keeps following that place. Messages with a task agent are stored in both logs.
+D-1). A task agent created from a configured place records the place's definition and launch as
+they were when it started (a Team copy also its members' handoff rules in the Org), and restores
+from its own file like any copy: a later edit of the place does not change it. Messages with a task
+agent are stored in both logs.
 
 `AgentOrgRunExecutionTreeFile` has `subjectKind: "agent_org"` and a
 coordinator-free `rootOrg`. It stores direct Agent placements, direct

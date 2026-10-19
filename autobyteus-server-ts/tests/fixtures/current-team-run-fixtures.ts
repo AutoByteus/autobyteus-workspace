@@ -1,5 +1,5 @@
 import { projectTaskTeamExecution } from "../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
-import type { TaskTeamExecutionSource } from "../../src/run-history/domain/run-execution-tree-shared-records.js";
+import type { TaskAgentExecutionSource, TaskTeamExecutionSource } from "../../src/run-history/domain/run-execution-tree-shared-records.js";
 import {
   assertAgentTeamAddress,
   getAgentTeamAddressBasename,
@@ -11,6 +11,7 @@ import type { MemberTaskCommandCapability } from "../../src/agent-collaboration/
 import { TeamBackendKind } from "../../src/agent-team-execution/domain/team-backend-kind.js";
 import {
   TeamRunConfig,
+  type AgentLaunchConfiguration,
   type TeamRunAgentNode,
   type TeamRunAgentTeamNode,
 } from "../../src/agent-team-execution/domain/team-run-config.js";
@@ -81,15 +82,30 @@ export const testAgentTeamNode = (input: {
   };
 };
 
+/** A launch for test copies (the 5 launch keys). */
+export const testCopyLaunch = (workspaceRootPath: string | null = "/workspace"): AgentLaunchConfiguration => ({
+  runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "test-model", llmConfig: null, autoExecuteTools: true, workspaceRootPath,
+});
+
+/** The recorded source of an Agent copy (every copy records the snapshot it started from). */
+export const testAgentCopySource = (agentDefinitionId: string, launchConfiguration: AgentLaunchConfiguration = testCopyLaunch()): TaskAgentExecutionSource => ({
+  kind: "agent", agentDefinitionId, launchConfiguration,
+});
+
+const launchOf = (node: TeamRunAgentNode): AgentLaunchConfiguration => ({
+  runtimeKind: node.runtimeKind, llmModelIdentifier: node.llmModelIdentifier, llmConfig: node.llmConfig,
+  autoExecuteTools: node.autoExecuteTools, workspaceRootPath: node.workspaceRootPath,
+});
+
 /**
  * The recorded source of a Team copy started from the catalog: in a flat team run every Team copy is one
- * (its configured places are agents). A source-less copy is a copy of a configured place (U-4).
+ * (its configured places are agents). Every member records its complete launch and follows the Team.
  */
 export const testCatalogTeamSource = (node: TeamRunAgentTeamNode): TaskTeamExecutionSource => ({
   kind: "agent_team",
   teamDefinitionId: node.teamDefinitionId,
   coordinatorAddress: node.coordinatorAddress,
-  members: node.children.map((child) => ({ address: child.address, agentDefinitionId: child.agentDefinitionId })),
+  members: node.children.map((child) => ({ address: child.address, agentDefinitionId: child.agentDefinitionId, launchConfiguration: launchOf(child), followsTeam: true })),
   handoffs: [],
   defaultLaunchConfiguration: node.defaultLaunchConfiguration,
 });

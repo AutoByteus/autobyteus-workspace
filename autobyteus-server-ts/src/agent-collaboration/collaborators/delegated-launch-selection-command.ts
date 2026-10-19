@@ -13,7 +13,6 @@ import {
   type DelegatedLaunchSelections,
   type DelegatedLaunchTarget,
   type DelegatedRunReference,
-  type DelegatedTaskSourceReader,
 } from "../domain/delegated-launch-selection.js";
 import { delegatedStopSet } from "../domain/delegated-stop-set.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
@@ -43,7 +42,6 @@ export type DelegatedLaunchSelectionPublisher = (records: readonly DelegatedLaun
 /** What a live root lends the command: its tree's lists, sources, task lifecycle and persistence. */
 export type DelegatedLaunchRootPort = Readonly<{
   forest(): DelegatedLaunchForest;
-  readTaskSource: DelegatedTaskSourceReader;
   isClosed(reference: DelegatedRunReference): boolean;
   /** The root's task lifecycle (`RootTaskExecutionLifecycle`). */
   tasks: Readonly<{
@@ -85,7 +83,6 @@ export type DelegatedLaunchValidationPlan =
 export const planDelegatedLaunchValidation = (input: Readonly<{
   forest: DelegatedLaunchForest;
   changes: readonly DelegatedLaunchChange[];
-  readTaskSource: DelegatedTaskSourceReader;
   isClosed?: (reference: DelegatedRunReference) => boolean;
 }>): DelegatedLaunchValidationPlan => {
   if (!input.changes.length) return refused("VALIDATION_FAILED", "No delegated model change was requested.");
@@ -183,7 +180,7 @@ export class DelegatedLaunchSelectionCommand {
    */
   async update(changes: readonly DelegatedLaunchChange[], validator: RunModelSelectionValidator): Promise<DelegatedLaunchUpdateResult> {
     const validation = await validateDelegatedLaunchChanges({
-      forest: this.port.forest(), changes, readTaskSource: this.port.readTaskSource,
+      forest: this.port.forest(), changes,
       isClosed: (reference) => this.port.isClosed(reference), validator,
     });
     if (validation.kind === "refused") return validation.result;
@@ -193,7 +190,7 @@ export class DelegatedLaunchSelectionCommand {
       const step = await this.port.tasks.whileTaskExecutionsStopped(taskUnits, async () => {
         // The targets must still be the validated ones (nothing closed or removed meanwhile).
         try {
-          resolveDelegatedLaunchTargets({ forest: this.port.forest(), changes, readTaskSource: this.port.readTaskSource,
+          resolveDelegatedLaunchTargets({ forest: this.port.forest(), changes,
             isClosed: (reference) => this.port.isClosed(reference) });
         } catch (error) {
           if (error instanceof DelegatedLaunchTargetError) return result("NOT_FOUND", error.message);
@@ -236,7 +233,6 @@ export type DelegatedLaunchModelOptions = RunModelOptions & Readonly<{
 /** Model options of every editable copy (agent and Team level), one shared catalog read. */
 export const listDelegatedLaunchModelOptions = async (input: Readonly<{
   forest: DelegatedLaunchForest;
-  readTaskSource: DelegatedTaskSourceReader;
   isClosed?: (reference: DelegatedRunReference) => boolean;
   modelOptions: Pick<RunModelSelectionService, "listOptionsMany">;
 }>): Promise<readonly DelegatedLaunchModelOptions[]> => {

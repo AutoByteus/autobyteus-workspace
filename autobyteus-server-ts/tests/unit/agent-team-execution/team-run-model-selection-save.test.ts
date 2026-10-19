@@ -28,13 +28,15 @@ afterEach(async () => { await Promise.all(memoryDirs.splice(0).map((dir) => fs.r
 const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKind = 'codex_app_server') => {
   let saved: any = testExecutionTree({ rootTeamRunId: 'root', coordinatorAddress: '/member', children: [testAgentNode('/member', { platformAgentRunId: 'retained-provider-id' })] });
   saved = structuredClone(saved);
-  // A source-less task agent is a copy of the configured place at its address (U-4).
+  // A copy of the configured member: it records the member's snapshot from when it started (set below).
   saved.rootTeam.taskExecutions = [{ address: '/member', agentRunId: 'retained-task', platformAgentRunId: 'platform-task',
     delegatorAgentRunId: 'run-member', startedAt: '2026-09-01T00:00:00.000Z' }];
   const root = saved.rootTeam.defaultLaunchConfiguration;
   root.runtimeKind = runtimeKind; root.llmModelIdentifier = 'small'; root.workspaceRootPath = '/workspace'; root.llmConfig = null;
   const member = saved.rootTeam.members[0].launchConfiguration;
   Object.assign(member, root, { llmModelIdentifier: 'large' });
+  saved.rootTeam.taskExecutions[0].source = { kind: 'agent', agentDefinitionId: saved.rootTeam.members[0].agentDefinitionId,
+    launchConfiguration: { ...member }, launchSource: { origin: 'configured', fallbacks: [] } };
   let attempted = false;
   const read = vi.fn(async () => {
     if (attempted && readback === 'throws') throw new Error('post-write read unavailable');

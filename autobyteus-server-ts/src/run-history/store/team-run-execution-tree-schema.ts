@@ -21,7 +21,7 @@ import {
   requiredArray,
   requiredString,
   requireKeys,
-  validateCatalogCopyLayouts,
+  validateCopyLayouts,
   validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
 
@@ -77,7 +77,7 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
     if (!byAddress.has(to)) throw new Error(`Handoff recipient '${to}' is not a configured Agent.`);
   }
   validateTaskExecutionDelegators(tree.rootTeam.members.map((member) => member.agentRunId), [tree.rootTeam]);
-  validateCatalogCopyLayouts([tree.rootTeam]);
+  validateCopyLayouts([tree.rootTeam]);
 };
 
 /**

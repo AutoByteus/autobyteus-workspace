@@ -8,8 +8,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { TeamExecutionIndex } from "../../../src/agent-team-execution/services/team-execution-index.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
-import { address, testAgentNode, testAgentTeamNode, testExecutionTree, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { address, testAgentCopySource, testAgentNode, testAgentTeamNode, testCatalogTeamCopy, testExecutionTree, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 describe("TeamRunPhysicalScope", () => {
   it("builds immutable root, child, and deep scopes without mutating a parent", () => {
@@ -90,11 +89,12 @@ describe("TeamExecutionIndex physical scope", () => {
       execution: {
         address: address("/lead"), agentRunId: "task-agent", platformAgentRunId: null,
         delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:00:00.000Z",
+        source: testAgentCopySource("lead"),
       },
     });
     withTasks = addTaskExecutionToTree({
       tree: withTasks,
-      execution: projectTaskTeamExecution({
+      execution: testCatalogTeamCopy({
         node: testAgentTeamNode({
           address: "/task-team", coordinatorAddress: "/task-team/worker", teamRunId: "task-team-run",
           children: [testAgentNode("/task-team/worker", { agentRunId: "task-team-agent" })],
@@ -104,7 +104,7 @@ describe("TeamExecutionIndex physical scope", () => {
     });
     // A task team nested in a task team: no longer created (task agents are linked at the top level, U-5),
     // but the index still derives its released physical scope (the frozen location derivation reads it).
-    const deep = projectTaskTeamExecution({
+    const deep = testCatalogTeamCopy({
       node: testAgentTeamNode({
         address: "/task-team/deep", coordinatorAddress: "/task-team/deep/worker", teamRunId: "deep-run",
         children: [testAgentNode("/task-team/deep/worker", { agentRunId: "deep-agent" })],

@@ -19,7 +19,7 @@ import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.j
 import { registerContextFileRoutes } from "../../../src/api/rest/context-files.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { testAgentOrgExecutionTree, testOrgAgentCopySource, testOrgAgentNode, testOrgTeamCopySource, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { testExecutionTree, testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { createStoredCollaborationExecutionLocationService } from "../../../src/agent-collaboration/execution/services/collaboration-execution-location-service.js";
@@ -53,8 +53,10 @@ beforeEach(async () => {
   const team = testOrgTeamNode({ address: "/team", teamRunId: "team", coordinatorAddress: lead.address, members: [lead] });
   const tree = structuredClone(testAgentOrgExecutionTree({ orgRunId: "org", members: [direct, team] })) as any;
   tree.rootOrg.taskExecutions = [
-    { address: direct.address, agentRunId: "repeat", platformAgentRunId: null, delegatorAgentRunId: "direct", startedAt: "2026-09-01T00:00:01.000Z" },
-    { address: "/team", teamRunId: "task-team", members: [{ address: lead.address, agentRunId: "task-lead", platformAgentRunId: null }], taskExecutions: [], delegatorAgentRunId: "direct", startedAt: "2026-09-01T00:00:01.000Z" },
+    { address: direct.address, agentRunId: "repeat", platformAgentRunId: null, delegatorAgentRunId: "direct", startedAt: "2026-09-01T00:00:01.000Z",
+      source: testOrgAgentCopySource(direct.agentDefinitionId) },
+    { address: "/team", teamRunId: "task-team", members: [{ address: lead.address, agentRunId: "task-lead", platformAgentRunId: null }], taskExecutions: [], delegatorAgentRunId: "direct", startedAt: "2026-09-01T00:00:01.000Z",
+      source: testOrgTeamCopySource({ teamDefinitionId: team.teamDefinitionId, coordinatorAddress: lead.address, memberAddresses: [lead.address] }) },
   ];
   await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org"), tree);
   await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "standalone-team", ancestorTeamRunIds: [] }),

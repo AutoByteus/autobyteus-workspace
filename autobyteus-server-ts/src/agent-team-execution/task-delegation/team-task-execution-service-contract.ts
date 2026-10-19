@@ -5,7 +5,6 @@ import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import type { TeamRunConfig } from "../domain/team-run-config.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRun } from "../domain/team-run.js";
 import type { TeamExecutionIndex } from "../services/team-execution-index.js";
@@ -20,7 +19,6 @@ import type { TaskExecutionIdentityCapabilities } from "./task-execution-identit
 export type TeamTaskExecutionServiceOptions = Readonly<{
   rootTeamRunId: string;
   taskExecutionResources?: TaskExecutionResourcePort;
-  config: TeamRunConfig;
   getTree(): TeamRunExecutionTreeSnapshot;
   getIndex(): TeamExecutionIndex;
   isRootOpen(): boolean;

@@ -8,7 +8,7 @@ import {
   parseTaskExecutions,
   requiredString,
   requireKeys,
-  validateCatalogCopyLayouts,
+  validateCopyLayouts,
   validateTaskExecutionDelegators,
 } from "../../run-history/store/run-execution-tree-shared-record-schemas.js";
 
@@ -20,7 +20,7 @@ const validateInvariants = (tree: StandaloneRootTreeFile): void => {
     // An Agent root has no configured placement besides its host: every copy carries its catalog source.
     if (!task.source) throw new Error(`Task execution at '${task.address}' has no catalog source.`);
   }
-  validateCatalogCopyLayouts([tree]);
+  validateCopyLayouts([tree]);
   validateTaskExecutionDelegators(
     [tree.host.agentRunId],
     [{ members: [], taskExecutions: tree.taskExecutions }],

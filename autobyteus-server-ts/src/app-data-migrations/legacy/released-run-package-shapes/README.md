@@ -29,6 +29,13 @@ layout read through these copies (contract §5.4):
 - `released-memory-locations-before-task-agent-own-run.ts`: today's runtime memory location
   classifier and stored location derivation. Used by both `20260731` working-context snapshot migrations.
 
+These modules (and `20260905` directly) keep using the current execution indexes, state-package
+validators and Org history-row projector on these released trees: their results are unchanged by
+task-agent-own-run and by delegated-copy-own-file-complete (which makes a copy's `source` required). The
+released tree reaches them only through `asSourceIndependentIndexInput` in
+`released-trees-before-task-agent-own-run.ts`, whose comment lists the calls that may be made with it; none
+reads a copy's `source`. Whoever makes one of them read `source` must first freeze it for these migrations.
+
 Current runtime code must never import this module.
 
 ## Message logs before and after append-only message logs (as of `origin/personal@65cf41c6b4`)

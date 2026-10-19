@@ -36,7 +36,9 @@ const copyNode = (bindings: Partial<Record<Member, string>> = {}) => testAgentTe
 /** A catalog copy, as `delegate_task` records it (an Agent root accepts only collaborators or catalog copies). */
 const catalogSource = (node: ReturnType<typeof copyNode>) => ({ kind: 'agent_team', teamDefinitionId: node.teamDefinitionId,
   coordinatorAddress: node.coordinatorAddress, defaultLaunchConfiguration: node.defaultLaunchConfiguration, handoffs: [],
-  members: node.children.map(child => ({ address: child.address, agentDefinitionId: (child as { agentDefinitionId: string }).agentDefinitionId })) });
+  members: node.children.map(child => ({ address: child.address, agentDefinitionId: child.agentDefinitionId, followsTeam: true,
+    launchConfiguration: { runtimeKind: child.runtimeKind, llmModelIdentifier: child.llmModelIdentifier, llmConfig: child.llmConfig,
+      autoExecuteTools: child.autoExecuteTools, workspaceRootPath: child.workspaceRootPath } })) });
 
 function hostTree(kind: RootSubjectKind, bindings: Partial<Record<Member, string>>) {
   const node = copyNode(bindings);

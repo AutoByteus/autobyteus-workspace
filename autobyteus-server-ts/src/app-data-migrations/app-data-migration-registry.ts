@@ -30,6 +30,7 @@ import { TaskAgentOwnRunV1AppDataMigration } from "./migrations/task-agent-own-r
 import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
 import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports-migration.js";
+import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "./migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -97,6 +98,8 @@ export class AppDataMigrationRegistry {
       new AppendOnlyMessageLogsV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
       // Deletes the retired work-trace export folders once run folders are in their current place.
       new RemoveWorkTraceExportsMigration(appConfigProvider.config.getMemoryDir()),
+      // Completes delegated copies' own files so each restores on its own, and removes their origin field.
+      new DelegatedCopyOwnFileCompleteV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
     ];
     this.validateDefinitions();
   }

@@ -438,9 +438,10 @@ own team: its own address, a teammate, or in a Team root any configured root
 placement, for a configured member; `COLLABORATION_SELF_TARGET_REJECTED` with
 `send_message_to` guidance, raised before any placement or Task link), then a
 configured member, then a listed catalog definition (see
-[Agent Communication](./agent_communication.md#delegated-catalog-copies)). Task sources
-come from `TeamTaskSourceResolver`: the copy's recorded `source`, else the
-configured placement at its address. An address that is none of these returns
+[Agent Communication](./agent_communication.md#delegated-catalog-copies)). Every
+placement carries the snapshot its copy starts from (a configured member's as it is
+now); the copy records it as its `source`, and `TeamTaskExecutionAdapter` projects only
+that `source` on activation and restore. An address that is none of these returns
 `{ delegated: false, message }` rather than failing the call. Input and
 admission failures (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`,
 `ROOT_RUN_NOT_ACTIVE`) are tool errors raised before any preparation.

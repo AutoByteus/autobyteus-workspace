@@ -7,9 +7,7 @@ import {
   type DelegatedLaunchUpdateResult,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
-import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { delegatedLaunchSelections } from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import { AgentOrgTaskSourceResolver } from "./agent-org-task-source-resolver.js";
 import { agentOrgDelegatedLaunchForest, applyAgentOrgDelegatedLaunchSelections } from "./agent-org-run-execution-tree-mutator.js";
 import type { UpdateStoppedAgentOrgRunConfig } from "../domain/agent-org-run-config.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -342,10 +340,8 @@ export class AgentOrgRunManager {
 
   private delegatedLaunchReader(orgRunId: string, tree: AgentOrgRunExecutionTreeFile) {
     const closed = new Set(this.closedTaskExecutionsFor(orgRunId, tree).map(taskExecutionReferenceKey));
-    const sources = new AgentOrgTaskSourceResolver(() => tree);
     return {
       forest: agentOrgDelegatedLaunchForest(tree),
-      readTaskSource: (address: AgentTeamAddress, recorded: Parameters<AgentOrgTaskSourceResolver["resolve"]>[1]) => sources.resolve(address, recorded ?? null),
       isClosed: (reference: TaskExecutionReference) => closed.has(taskExecutionReferenceKey(reference)),
     };
   }

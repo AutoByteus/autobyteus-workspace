@@ -8,7 +8,7 @@ import { AgentMemoryLayout } from '../../../src/agent-memory/store/agent-memory-
 import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
 import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
 import { createAgentOrgRootExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from '../../fixtures/current-agent-org-run-fixtures.js';
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode, testOrgAgentCopySource, testOrgTeamCopySource } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { applyAgentOrgRunModelConfigPatches, listAgentOrgRunModelConfigScopes, resolveAgentOrgRunModelConfigTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
 
@@ -166,7 +166,7 @@ describe('stopped AgentOrg Team workspace composition', () => {
       launchConfiguration: { ...team.members[0].launchConfiguration, workspaceRootPath: '/distinct', llmModelIdentifier: 'larger', llmConfig: { enabled: false } } });
     tree.rootOrg.members.push(testOrgTeamNode({ address: '/sibling', teamRunId: 'sibling', coordinatorAddress: '/sibling/lead', members: [testOrgAgentNode('/sibling/lead', 'sibling-lead')] }));
     team.taskExecutions = [{ address: '/team/lead', agentRunId: 'old-task', platformAgentRunId: null,
-      delegatorAgentRunId: 'lead', startedAt: '2026-09-01T00:00:00.000Z' }];
+      delegatorAgentRunId: 'lead', startedAt: '2026-09-01T00:00:00.000Z', source: testOrgAgentCopySource('lead') }];
     await h.store.write(h.dir, tree);
     const write = vi.spyOn(h.store, 'write'), validate = vi.spyOn(h.validator, 'validateMany');
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org',
@@ -261,6 +261,9 @@ describe('stopped AgentOrg Save with delegated copies (AR-004, AR-003)', () => {
     const tree = { ...h.tree, rootOrg: { ...h.tree.rootOrg, taskExecutions: [{
       address: '/team', teamRunId: 'team-copy', startedAt: '2026-10-13T00:00:00.000Z', delegatorAgentRunId: 'worker', taskExecutions: [],
       members: [{ address: '/team/lead', agentRunId: 'copy-lead', platformAgentRunId: null }],
+      source: { ...testOrgTeamCopySource({ teamDefinitionId: 'team', coordinatorAddress: '/team/lead', memberAddresses: ['/team/lead'],
+        launchConfiguration: (h.tree.rootOrg.members[1] as { defaultLaunchConfiguration: never }).defaultLaunchConfiguration }),
+        defaultLaunchSource: { origin: 'configured', fallbacks: [] } },
     }] } };
     await h.store.write(h.dir, tree as never);
     return tree;

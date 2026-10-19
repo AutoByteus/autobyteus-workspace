@@ -3,39 +3,27 @@ import {
   DelegatedLaunchSelectionCommand,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import type { TeamRun } from "../domain/team-run.js";
-import type { TeamRunConfig } from "../domain/team-run-config.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { TeamTaskExecutionService } from "../task-delegation/team-task-execution-service.js";
-import { TeamTaskSourceResolver } from "../task-delegation/team-task-source-resolver.js";
-import type { TeamExecutionIndex } from "./team-execution-index.js";
 import { applyTeamDelegatedLaunchSelections, teamDelegatedLaunchForest } from "./team-run-execution-tree-mutator.js";
 import type { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
 import { TeamRunPersistenceFinalizationIndeterminateError } from "./team-run-persistence-contract.js";
-import type { TeamRunResolver } from "./team-run-resolver.js";
 
 /**
  * The Team root's port for the user Stop and model choice of its delegated copies (DS-001,
- * DS-002): its tree, task sources and lifecycle, and one tree write per Save.
+ * DS-002): its tree (each copy's started launch is its own source), its lifecycle, and one tree write per Save.
  */
 export const createTeamDelegatedLaunchCommand = (options: Readonly<{
-  rootTeamRunId: string;
-  config: TeamRunConfig;
-  rootRun: TeamRun;
-  teamRunResolver: TeamRunResolver;
   taskExecutions: TeamTaskExecutionService;
   persistence: Pick<TeamRunPersistenceCoordinator, "commitExecutionTreeMutation">;
   getTree(): TeamRunExecutionTreeSnapshot;
-  getIndex(): TeamExecutionIndex;
   assertAdmitting(): void;
   replaceTree(tree: TeamRunExecutionTreeSnapshot): void;
   publish(event: TeamRunEvent): void;
 }>): DelegatedLaunchSelectionCommand => {
-  const sources = new TeamTaskSourceResolver({ config: options.config });
   return new DelegatedLaunchSelectionCommand({
     forest: () => teamDelegatedLaunchForest(options.getTree()),
-    readTaskSource: (address, recorded) => sources.resolve(address, recorded ?? null),
     isClosed: (reference) => options.taskExecutions.closedTaskExecutions()
       .some((closed) => taskExecutionReferenceKey(closed) === taskExecutionReferenceKey(reference)),
     tasks: options.taskExecutions,

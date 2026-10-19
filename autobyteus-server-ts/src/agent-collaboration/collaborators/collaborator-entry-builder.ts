@@ -28,11 +28,16 @@ export type CollaboratorDefinitionPlan =
       teamDefault: DefaultLaunchConfig | null;
     }>);
 
-/** A resolved Team member: its own launch only when it runs on its agent default (see `RecordedMemberLaunch`). */
+/**
+ * A resolved Team member (see `RecordedMemberLaunch`, D-5): its complete launch (its own agent default when
+ * usable, else the Team's) and whether it follows the Team (it does iff it does not run on its own default).
+ * `launchSource` is present only when its agent definition had a default (used or skipped).
+ */
 export type CollaboratorEntryPlanMember = Readonly<{
   address: AgentTeamAddress;
   agentDefinitionId: string;
-  launchConfiguration?: AgentLaunchConfiguration;
+  launchConfiguration: AgentLaunchConfiguration;
+  followsTeam: boolean;
   launchSource?: LaunchConfigurationSource;
 }>;
 

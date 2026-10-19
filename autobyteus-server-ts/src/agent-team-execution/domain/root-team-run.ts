@@ -19,7 +19,6 @@ import {
   createTeamRootExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
-import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunEvent } from "./team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
 import type { TeamRun } from "./team-run.js";
@@ -98,7 +97,6 @@ export class RootTeamRun {
 
   constructor(private readonly options: {
     rootRun: TeamRun;
-    config: TeamRunConfig;
     tree: TeamRunExecutionTreeSnapshot;
     messages: TeamCommunicationMessagesSnapshot;
     persistence: TeamRunPersistenceCoordinator;
@@ -130,7 +128,6 @@ export class RootTeamRun {
     });
     this.taskExecutions = new TeamTaskExecutionService({
       rootTeamRunId: this.teamRunId,
-      config: options.config,
       getTree: () => this.tree,
       getIndex: () => this.index,
       isRootOpen: () => this.isAdmitting(),
@@ -179,14 +176,9 @@ export class RootTeamRun {
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
     });
     this.delegatedLaunches = createTeamDelegatedLaunchCommand({
-      rootTeamRunId: this.teamRunId,
-      config: options.config,
-      rootRun: options.rootRun,
-      teamRunResolver: this.teamRunResolver,
       taskExecutions: this.taskExecutions,
       persistence: options.persistence,
       getTree: () => this.tree,
-      getIndex: () => this.index,
       assertAdmitting: () => this.assertAdmitting(),
       replaceTree: (tree) => this.replaceTree(tree),
       publish: (event) => options.publisher.publish(event),

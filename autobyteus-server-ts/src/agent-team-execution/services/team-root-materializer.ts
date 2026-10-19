@@ -115,7 +115,6 @@ export const materializeTeamRoot = async (
     });
     root = new RootTeamRun({
       rootRun: prepared.teamRun,
-      config: input.config,
       tree,
       messages: input.messages,
       persistence,

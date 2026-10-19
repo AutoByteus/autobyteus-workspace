@@ -111,18 +111,8 @@ describe("20261017_task_agent_own_run_v1 over every released shape", () => {
     const rawOrg = await readJson(path.join(memory, "agent_orgs/org-o/agent_org_run_execution_tree.json"));
     expect(rawOrg.rootOrg.taskExecutions).toEqual([org.c5, org.c5team, org.ns].map(linkOf));
     expect(rawOrg.rootOrg.members[1].taskExecutions).toEqual([linkOf(org.c6)]);
-
-    // The current stores compose today's records back (the nested copy now at the top level).
-    const hubTree = (await new StandaloneRootPackageStore().readTree(path.join(memory, "agents/hub/collaboration"), "hub"))!;
-    expect(hubTree.taskExecutions).toEqual(validateStandaloneRootTreePayload({ subjectKind: "agent", createdAt: hubTree.createdAt, host: hubTree.host,
-      taskExecutions: [hub.c1, withoutNested(hub.c2a), hub.c2b, hub.neverRan, hub.c2a.taskExecutions[0]] }, "hub").taskExecutions);
-    const team = teamRunRecords();
-    expect((await new TeamRunExecutionTreeStore().read(path.join(memory, "agent_teams/team-r"), "team-r"))!.rootTeam.taskExecutions)
-      .toEqual(validateTeamRunExecutionTreePayload(await readJson(path.join(memory, "agent_teams/team-r/team_run_execution_tree.json")).then((raw) =>
-        ({ ...raw, rootTeam: { ...raw.rootTeam, taskExecutions: [team.c3, team.nd, team.c4] } })), "team-r").rootTeam.taskExecutions);
-    const orgTree = (await new AgentOrgRunExecutionTreeStore().read(path.join(memory, "agent_orgs/org-o"), "org-o"))!;
-    expect(orgTree).toEqual(validateAgentOrgRunExecutionTreePayload({ ...rawOrg, rootOrg: { ...rawOrg.rootOrg, taskExecutions: [org.c5, org.c5team, org.ns],
-      members: rawOrg.rootOrg.members.map((member: any) => member.teamRunId ? { ...member, taskExecutions: [org.c6] } : member) } }, "org-o"));
+    // The current stores read these own files after `20261019_delegated_copy_own_file_complete_v1` converted them
+    // (same start): that read-back is the combined test in its suite (design Change Sequence step 1.3).
 
     // Each task agent's own log holds the coordinating log's messages that belong to it (F-MSG, contract §7).
     expect(await logIds(path.join(memory, "agents/c1-reviewer/communication_messages.json"))).toEqual(["m1", "m3"]);
@@ -198,15 +188,13 @@ describe("a stopped start is continued by the next start (F-RERUN, F-RERUN-MSG)"
     vi.spyOn(fs, "rename").mockImplementationOnce(async () => { throw new Error("stopped before the move"); });
     expect((await migrate(memory)).status).toBe("FAILED");
     vi.restoreAllMocks();
-    // The app ran in between: a moved task agent got a new message in its own log, and the hub's tree was saved.
+    // The app ran in between: a moved task agent got a new message in its own log. (The app's load and save of
+    // the hub's tree in between needs the own-file completion of the same start; it is in that migration's suite.)
     const own = await readJson(path.join(memory, "agents/c7-helper/run_metadata.json"));
     expect(own.taskAgent.coordinatingRun).toEqual({ kind: "agent", runId: "hub" });
     const between = { messageId: "m-between", senderAgentRunId: "hub", receiverAgentRunId: "c7-helper", content: "between", messageType: "agent_message",
       referenceFiles: [], createdAt: "2026-10-01T09:00:00.000Z" };
     await new TaskAgentMessageLogs(memory).append({ kind: "task_agent", agentRunId: "c7-helper" }, between);
-    const store = new StandaloneRootPackageStore();
-    const loaded = (await store.readTree(path.join(memory, "agents/hub/collaboration"), "hub"))!;
-    await store.writeTree(path.join(memory, "agents/hub/collaboration"), loaded);
 
     expect((await migrate(memory)).status).toBe("SUCCEEDED");
     // The app writes its own log in the append-only layout; own-run merges the coordinating log's messages

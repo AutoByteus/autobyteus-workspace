@@ -120,9 +120,12 @@ export class CollaboratorLaunchResolver {
       const members = plan.members.map((member): CollaboratorEntryPlanMember => {
         const own = verdictOf(member);
         const layout = { address: member.address, agentDefinitionId: member.agentDefinitionId };
-        if (own?.usable) return Object.freeze({ ...layout, launchConfiguration: own.launch, launchSource: source("agent_default") });
-        if (!teamLevel.launch) requireInherited(plan.name);
-        return Object.freeze(own ? { ...layout, launchSource: source(teamLevel.source.origin, [own.fallback]) } : layout);
+        if (own?.usable) {
+          return Object.freeze({ ...layout, launchConfiguration: own.launch, followsTeam: false, launchSource: source("agent_default") });
+        }
+        const teamLaunch = teamLevel.launch ?? requireInherited(plan.name);
+        const follower = { ...layout, launchConfiguration: teamLaunch, followsTeam: true };
+        return Object.freeze(own ? { ...follower, launchSource: source(teamLevel.source.origin, [own.fallback]) } : follower);
       });
       return Object.freeze({
         kind: "agent_team", ...identity,
