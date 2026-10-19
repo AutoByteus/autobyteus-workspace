@@ -7,6 +7,7 @@ The latest coverage investigation (`api-e2e-coverage-investigation.md`) and exec
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer / `code-review-report.md` (CRR-001 Pass) / round 1 | SR-003, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 95.4% |
+| API-REV-002 | Code Reviewer / `api-e2e-test-review-report.md` (CRR-002, Local Fix TR-001) / round 2 | CRR-002 | Pass / 95.4% | Pass / 95.4% |
 
 ## Revision Entries
 
@@ -35,3 +36,30 @@ None.
 - New or remaining failure IDs: none for this ticket
 - Recommended owner: `/software_engineering_team/code_reviewer` (proportional test-code review)
 - Remaining risks, blocked evidence, or untested scope: FU-C, a pre-existing `RunFileChangeService.load` live-cache race outside the Change Scope (API-08), sent to `/project_task_manager`. The pending state is emulated by the scripted runtime. Timing ran on synthetic trees, not the user's data (forbidden by TESTING.md). The Electron shell is not exercised (unchanged).
+
+### API-REV-002 — The browser probe fails journeys on browser errors (TR-001)
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `api-e2e-test-review-report.md` (CRR-002), round 2
+- Triggering finding or case IDs: TR-001 (`Local Fix`, API/E2E). The probe recorded browser errors but never failed on them (TESTING.md "Browser probes")
+- Related revision IDs: CRR-002 (source review CRR-001 still stands)
+- Why this revision was recorded: an API/E2E-owned Local Fix of durable test code and its rerun
+- Coverage decisions or durable test paths changed: `autobyteus-web/tests/e2e/owner-scoped-file-reads-probe.mjs` (commit `ae178ebe39`).
+  - Errors are recorded with kind and resource URL.
+  - Each journey fails on any page exception or console error raised during it.
+  - Only B-005 may log Chrome's 404 resource lines for `/file-change-content`, at most one per 404 content response it received.
+  - Warm-up errors are recorded, not asserted.
+- Cases added, changed, removed, or rechecked: API-05 and API-06 rerun on fresh small (10) and large (680) seeds. API-05c added: a mutation check that injects a page exception and a console error. All other cases still valid (`git diff --name-only 2486c8b7c4 ae178ebe39` = the probe only)
+- Commands, environment, fixture, or broader-validation delta: ENV-5 (`ae178ebe39`); new evidence folders with the `-r2` suffix; round-1 evidence kept
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| CRR-002 TR-001 (probe does not fail on browser errors) | Local Fix / api_e2e_engineer | Fixed in `ae178ebe39`. Round 2 passes on both seeds: only B-005 logs errors (2 allowed 404 lines = 2 content 404 responses), and the warm-up logs none | API-05 (round 2), API-05c |
+
+- Canonical artifacts and sections updated: execution report (Round, environments, API-05/API-05c/API-06 rows, durable coverage, cleanup, result notes), coverage investigation (meta, planned cases, durable coverage to update, decision notes), test progress log
+- Prior result and confidence: Pass / 95.4%
+- Current result and confidence: Pass / 95.4%
+- New or remaining failure IDs: none
+- Recommended owner: `/software_engineering_team/code_reviewer` (test-code review of the probe change)
+- Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001. FU-C is recorded as Task autobyteus-180

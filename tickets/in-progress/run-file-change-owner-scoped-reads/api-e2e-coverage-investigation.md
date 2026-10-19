@@ -18,11 +18,11 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code review pass CRR-001 from `/software_engineering_team/code_reviewer`
-- Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: this file, round 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: round 2: test-code review CRR-002 Local Fix TR-001 (`api-e2e-test-review-report.md`); round 1: code review pass CRR-001
+- Prior Investigation Reviewed: round 1 (this file)
+- Latest Authoritative Investigation: this file, round 2
 
 All paths are relative to the ticket folder `/Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-owner-scoped-reads/tickets/in-progress/run-file-change-owner-scoped-reads/` unless written in full.
 
@@ -132,6 +132,7 @@ Implementation `03f2d4da05` (server `5d6127cee4`, web `03f2d4da05`); ticket docs
 | API-05 | AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, AC-012, REQ-007 | Browser on a probe-owned real stack (desktop and mobile viewports) | Durable (new browser probe) | New `autobyteus-web/tests/e2e/owner-scoped-file-reads-probe.mjs` (package script `test:e2e:owner-scoped-file-reads`): seed through public APIs, then open files from the Artifacts tab for a copy, a team member and team task agent, an org member and org task agent, a standalone run; deleted copy file; mobile Artifacts for an agent run and a team member; record each content request URL and the shown content | Only real stores produce the subject the viewer gets; the web has no typecheck; repeatable for regressions |
 | API-06 | AC-010, QR-001 (and QR-002 at system level) | Real server HTTP timing | Durable (same probe, timing cases) | Same probe on a small seed (few unrelated team runs) and a large seed (≥ 600 unrelated saved team runs): median server time of each owner list and content read; a still-scanning control (FU-A team-member context-file read) shows the seed size matters | QR-001 needs timing on a changed build |
 | API-07 | REQ-007 (web types) | Web sources changed by the ticket | Temporary Probe | `vue-tsc --noEmit` (ad hoc, not installed in the repo) on the head and on the base; compare errors in the changed web files | The web has no typecheck script; a durable script would be a project-wide change outside the ticket |
+| API-05c | TR-001 (probe validity) | Browser probe | Temporary Probe | Temp copy of the probe injecting a page exception (B-004) and a console error (B-005) | Round 2: proves the TR-001 rule fails journeys on browser errors; a durable injected failure would break the probe |
 | API-03c | AC-013 (assertion validity) | Containment E2E | Temporary Probe | Temp copy of the API-03b test with a non-scanning read in place of the scanning one | Added during the run: proves the API-03b assertion fails when the read does not scan; a durable mutation copy would duplicate the suite |
 | API-04b | AC-008 (stability) | New gated E2E | Existing Test (repeated) | 9 runs of the first version, 10 runs after the stored-record wait | Added during the run after an intermittent failure (Rule 9) |
 | API-08 | AC-008 / AC-003 (risk) | `RunFileChangeService.load` | Temporary Probe | Temp vitest probe, real service, delayed first stored read | Added during the run: deterministic cause of the API-04 intermittent failure; the code is outside the Change Scope (follow-up FU-C), so no durable test here |
@@ -153,6 +154,7 @@ Implementation `03f2d4da05` (server `5d6127cee4`, web `03f2d4da05`); ticket docs
 | --- | --- | --- | --- |
 | API-02b | `autobyteus-server-ts/tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts` | Copy content route checks; hub's own id list/content | Same roots; adds a hub-own `GENERATE_IMAGE` |
 | API-03b | `autobyteus-server-ts/tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts` | Warnings captured per scanning read | Keeps the rest unchanged |
+| API-05 (round 2) | `autobyteus-web/tests/e2e/owner-scoped-file-reads-probe.mjs` | Fail each journey on browser errors; allow only B-005's 404 resource lines for `/file-change-content`, at most one per 404 content response (CRR-002 TR-001) | Commit `ae178ebe39` |
 
 ## Durable Coverage To Remove
 
@@ -198,4 +200,5 @@ None.
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (added and updated; none removed)
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
+- Round 2 (TR-001): the probe now fails each journey on browser errors (only B-005's 404 resource lines for `/file-change-content`, at most one per 404 content response, are allowed). Rerun by impact: API-05, API-06 and the new API-05c; all other cases still valid (the diff changes only the probe).
 - Notes: API-02 and API-03 ran first, on the files as reviewed (both Pass), before the durable updates. During the run, the mobile journeys were added to API-05 (B-006/B-007), and API-03c, API-04b, API-08 and API-09 were added (rows above).

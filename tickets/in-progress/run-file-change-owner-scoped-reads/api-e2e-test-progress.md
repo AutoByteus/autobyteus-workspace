@@ -44,3 +44,14 @@ Your own progress log while tests run. The conversation can be compacted in the 
 | 2026-10-19T06:06:58Z | API-09 | Started | — | agy fixture routing unit test |
 | 2026-10-19T06:07:03Z | API-09 | Completed | Pass | exit=0, evidence/API-09-agy-fixture-routing-unit.log |
 | 2026-10-19T06:07:49Z | (all) | Checkpoint | — | All planned and added cases complete; temp data removed; reports written; committing ticket docs and evidence |
+| 2026-10-19T06:11:40Z | API-05 | Checkpoint | — | Round 2 (CRR-002 TR-001): probe now fails journeys on browser errors (uncommitted). Reseeding small (10) into /tmp/rfcosr-api/seed-small |
+| 2026-10-19T06:11:50Z | API-05c | Started | — | Mutation check of the TR-001 rule (temp probe copy autobyteus-web/tests/e2e/zz-tmp-tr001-mutation-probe.mjs, cases B-001,B-004,B-005 on seed-small) |
+| 2026-10-19T06:12:55Z | API-05c | Completed | Pass | Expected failures observed: B-004 pageerror, B-005 extra console error; B-001 Pass; temp copy removed; evidence/API-05c-* |
+| 2026-10-19T06:13:08Z | API-06 | Started | — | Round 2 seed-small (10 unrelated) on ae178ebe39 |
+| 2026-10-19T06:13:18Z | API-06 | Started | — | Round 2 seed-large (680 unrelated) on ae178ebe39 |
+| 2026-10-19T06:16:35Z | API-06 | Checkpoint | — | Round 2 seeds done |
+| 2026-10-19T06:16:35Z | API-05 | Started | — | Round 2 probe check seed-small → evidence/API-05-06-small-seed-check-r2 |
+| 2026-10-19T06:17:49Z | API-05 | Completed | Pass | Round 2 seed-small exit=0 (API-05 + API-06) |
+| 2026-10-19T06:17:49Z | API-05 | Started | — | Round 2 probe check seed-large → evidence/API-05-06-large-seed-check-r2 |
+| 2026-10-19T06:19:29Z | API-05 | Completed | Pass | Round 2 seed-large exit=0 (API-05 + API-06) |
+| 2026-10-19T06:20:54Z | (all) | Checkpoint | — | Round 2 complete (API-05, API-05c, API-06 Pass); temp data removed; committing |
