@@ -4,10 +4,13 @@ import { RootExecutionEventDtoSchema, RootExecutionViewDtoSchema } from "../dist
 
 const launch = { runtimeKind: "autobyteus", llmModelIdentifier: "model", llmConfig: null, autoExecuteTools: false, workspaceRootPath: null };
 const at = "2026-10-06T00:00:00.000Z";
-const taskAgent = (address, agentRunId) => ({ address, agentRunId, platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: at });
+const taskAgent = (address, agentRunId) => ({ address, agentRunId, platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: at,
+  source: { kind: "agent", agentDefinitionId: "agent", launchConfiguration: launch } });
 const taskTeam = (address, teamRunId, memberRunId, taskExecutions = []) => ({
   address, teamRunId, startedAt: at, delegatorAgentRunId: "host-run",
   members: [{ address: `${address}/lead`, agentRunId: memberRunId, platformAgentRunId: null }], taskExecutions,
+  source: { kind: "agent_team", teamDefinitionId: "team", coordinatorAddress: `${address}/lead`, handoffs: [], defaultLaunchConfiguration: launch,
+    members: [{ address: `${address}/lead`, agentDefinitionId: "lead", launchConfiguration: launch, followsTeam: true }] },
 });
 
 const agentView = (closed) => ({

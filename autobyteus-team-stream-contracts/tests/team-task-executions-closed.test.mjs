@@ -13,7 +13,7 @@ const snapshot = (closed) => ({
         address: "/", team_definition_id: "se", team_definition_name: "SE", team_run_id: "team-run",
         coordinator_address: "/lead", default_launch_configuration: launch, members: [],
         task_executions: [{ kind: "task_agent", address: "/writer", agent_run_id: "writer-run", platform_agent_run_id: null,
-          delegator_agent_run_id: "lead-run", started_at: "t" }],
+          delegator_agent_run_id: "lead-run", started_at: "t", source: { kind: "agent", agent_definition_id: "writer", launch_configuration: launch } }],
       },
     },
     closed_task_executions: closed,

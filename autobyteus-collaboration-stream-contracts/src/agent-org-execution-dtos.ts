@@ -29,10 +29,11 @@ type LaunchConfigurationDto = Readonly<z.infer<typeof agentOrgLaunchConfiguratio
 
 /**
  * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
- * it. Absent on records written before sources existed ("not recorded").
+ * it; `configured` marks a copy started from a configured placement of the coordinating run. Absent on
+ * records written before sources existed ("not recorded").
  */
 export const collaborationLaunchConfigurationSourceDtoSchema = z.object({
-  origin: z.enum(["agent_default", "team_default", "inherited"]),
+  origin: z.enum(["agent_default", "team_default", "inherited", "configured"]),
   fallbacks: z.array(z.object({
     layer: z.enum(["agent_default", "team_default"]),
     runtimeKind: nullableText,
@@ -43,9 +44,13 @@ export const collaborationLaunchConfigurationSourceDtoSchema = z.object({
 }).strict();
 export type CollaborationLaunchConfigurationSourceDto = Readonly<z.infer<typeof collaborationLaunchConfigurationSourceDtoSchema>>;
 
-/** A recorded Team member's own launch: present only when it runs on its own agent default. */
+/**
+ * A Team copy member's launch: the complete launch it started with, and whether a Team-level choice
+ * reaches it (`followsTeam`). `launchSource` is present only when its agent definition had a default.
+ */
 type MemberLaunchDto = Readonly<{
-  launchConfiguration?: LaunchConfigurationDto;
+  launchConfiguration: LaunchConfigurationDto;
+  followsTeam: boolean;
   launchSource?: CollaborationLaunchConfigurationSourceDto;
 }>;
 type TeamLaunchDto = Readonly<{
@@ -53,19 +58,10 @@ type TeamLaunchDto = Readonly<{
   defaultLaunchSource?: CollaborationLaunchConfigurationSourceDto;
 }>;
 
-/**
- * The launch a catalog-Team-copy member runs with: its own, else its Team's.
- * Every reader of such a member's launch uses this, never the Team's value directly.
- */
-export const collaborationMemberLaunchConfiguration = (
-  team: Pick<TeamLaunchDto, "defaultLaunchConfiguration">,
-  member: MemberLaunchDto,
-): LaunchConfigurationDto => member.launchConfiguration ?? team.defaultLaunchConfiguration;
-
-/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
+/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
 export const collaborationMemberLaunchSource = (
   team: Pick<TeamLaunchDto, "defaultLaunchSource">,
-  member: MemberLaunchDto,
+  member: Pick<MemberLaunchDto, "launchSource">,
 ): CollaborationLaunchConfigurationSourceDto | null => member.launchSource ?? team.defaultLaunchSource ?? null;
 
 /**
@@ -98,10 +94,7 @@ export const collaborationCopyAgentLaunch = (input: Readonly<{
   };
 };
 
-/** A recorded Team member follows its Team's launch (and choice) iff it records no own launch. */
-export const collaborationMemberFollowsTeam = (member: MemberLaunchDto): boolean => member.launchConfiguration === undefined;
-
-/** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
+/** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
 export type TaskAgentExecutionSourceDto = Readonly<{
   kind: "agent";
   agentDefinitionId: string;
@@ -122,7 +115,7 @@ type TaskAgentExecutionDto = Readonly<{
   /** Absent for children recorded before the delegator was stored. */
   delegatorAgentRunId?: string;
   startedAt: string;
-  source?: TaskAgentExecutionSourceDto;
+  source: TaskAgentExecutionSourceDto;
   userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
@@ -139,14 +132,14 @@ type TaskTeamExecutionDto = Readonly<{
   /** Absent for children recorded before the delegator was stored. */
   delegatorAgentRunId?: string;
   startedAt: string;
-  source?: TaskTeamExecutionSourceDto;
+  source: TaskTeamExecutionSourceDto;
   userTeamLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 const launchSource = collaborationLaunchConfigurationSourceDtoSchema.optional();
-const memberLaunch = { launchConfiguration: agentOrgLaunchConfigurationDtoSchema.optional(), launchSource };
+const memberLaunch = { launchConfiguration: agentOrgLaunchConfigurationDtoSchema, followsTeam: z.boolean(), launchSource };
 const agentSelection = { userLaunchSelection: userLaunchSelectionDtoSchema.optional() };
 const teamSelection = { userTeamLaunchSelection: userLaunchSelectionDtoSchema.optional() };
 const taskAgentSource: z.ZodType<TaskAgentExecutionSourceDto> = z.object({
@@ -161,7 +154,7 @@ const taskTeamSource: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
 }).strict();
 const taskAgent: z.ZodType<TaskAgentExecutionDto> = z.object({
   address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource.optional(), ...agentSelection,
+  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource, ...agentSelection,
 }).strict();
 const taskTeamMember: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
   address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...agentSelection,
@@ -169,7 +162,7 @@ const taskTeamMember: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
 const taskTeam: z.ZodType<TaskTeamExecutionDto> = z.lazy(() => z.object({
   address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
   taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
-  source: taskTeamSource.optional(), ...teamSelection,
+  source: taskTeamSource, ...teamSelection,
 }).strict());
 const taskExecution: z.ZodType<TaskExecutionDto> = z.lazy(() => z.union([taskAgent, taskTeam]));
 /** Shared by every collaboration root view (Org and Agent roots). */

@@ -41,10 +41,11 @@ export type ConfiguredAgentExecutionDto = Readonly<{
 
 /**
  * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
- * it. Absent on records written before sources existed ("not recorded").
+ * it; `configured` marks a copy started from a configured placement of the coordinating run. Absent on
+ * records written before sources existed ("not recorded").
  */
 export type LaunchConfigurationSourceDto = Readonly<{
-  origin: "agent_default" | "team_default" | "inherited";
+  origin: "agent_default" | "team_default" | "inherited" | "configured";
   fallbacks: readonly Readonly<{
     layer: "agent_default" | "team_default";
     runtime_kind: string | null;
@@ -54,9 +55,13 @@ export type LaunchConfigurationSourceDto = Readonly<{
   }>[];
 }>;
 
-/** A recorded Team member's own launch: present only when it runs on its own agent default. */
+/**
+ * A Team copy member's launch: the complete launch it started with, and whether a Team-level choice
+ * reaches it (`follows_team`). `launch_source` is present only when its agent definition had a default.
+ */
 type MemberLaunchDto = Readonly<{
-  launch_configuration?: AgentLaunchConfigurationDto;
+  launch_configuration: AgentLaunchConfigurationDto;
+  follows_team: boolean;
   launch_source?: LaunchConfigurationSourceDto;
 }>;
 type TeamLaunchDto = Readonly<{
@@ -64,19 +69,10 @@ type TeamLaunchDto = Readonly<{
   default_launch_source?: LaunchConfigurationSourceDto;
 }>;
 
-/**
- * The launch a catalog-Team-copy member runs with: its own, else its Team's.
- * Every reader of such a member's launch uses this, never the Team's value directly.
- */
-export const teamMemberLaunchConfiguration = (
-  team: Pick<TeamLaunchDto, "default_launch_configuration">,
-  member: MemberLaunchDto,
-): AgentLaunchConfigurationDto => member.launch_configuration ?? team.default_launch_configuration;
-
-/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
+/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
 export const teamMemberLaunchSource = (
   team: Pick<TeamLaunchDto, "default_launch_source">,
-  member: MemberLaunchDto,
+  member: Pick<MemberLaunchDto, "launch_source">,
 ): LaunchConfigurationSourceDto | null => member.launch_source ?? team.default_launch_source ?? null;
 
 /**
@@ -108,10 +104,7 @@ export const teamCopyAgentLaunch = (input: Readonly<{
   };
 };
 
-/** A recorded Team member follows its Team's launch (and choice) iff it records no own launch. */
-export const teamMemberFollowsTeam = (member: MemberLaunchDto): boolean => member.launch_configuration === undefined;
-
-/** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
+/** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
 export type TaskAgentExecutionSourceDto = Readonly<{
   kind: "agent";
   agent_definition_id: string;
@@ -135,7 +128,7 @@ export type TaskAgentExecutionDto = Readonly<{
   platform_agent_run_id: string | null;
   delegator_agent_run_id: string | null;
   started_at: string;
-  source?: TaskAgentExecutionSourceDto;
+  source: TaskAgentExecutionSourceDto;
   user_launch_selection?: UserLaunchSelectionDto;
 }>;
 
@@ -156,7 +149,7 @@ export type TaskTeamExecutionDto = Readonly<{
   task_executions: readonly TaskExecutionDto[];
   delegator_agent_run_id: string | null;
   started_at: string;
-  source?: TaskTeamExecutionSourceDto;
+  source: TaskTeamExecutionSourceDto;
   user_team_launch_selection?: UserLaunchSelectionDto;
 }>;
 
@@ -171,7 +164,7 @@ const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.obje
 }).strict();
 
 const launchSourceSchema: z.ZodType<LaunchConfigurationSourceDto> = z.object({
-  origin: z.enum(["agent_default", "team_default", "inherited"]),
+  origin: z.enum(["agent_default", "team_default", "inherited", "configured"]),
   fallbacks: z.array(z.object({
     layer: z.enum(["agent_default", "team_default"]),
     runtime_kind: nullableNonEmptyStringSchema,
@@ -180,7 +173,9 @@ const launchSourceSchema: z.ZodType<LaunchConfigurationSourceDto> = z.object({
     detail: nonEmptyStringSchema,
   }).strict()),
 }).strict();
-const memberLaunchSchema = { launch_configuration: launchConfigurationSchema.optional(), launch_source: launchSourceSchema.optional() };
+const memberLaunchSchema = {
+  launch_configuration: launchConfigurationSchema, follows_team: z.boolean(), launch_source: launchSourceSchema.optional(),
+};
 export const userLaunchSelectionDtoSchema: z.ZodType<UserLaunchSelectionDto> = z.object({
   llm_model_identifier: nonEmptyStringSchema,
   llm_config: z.record(z.string(), jsonValueSchema).nullable(),
@@ -215,7 +210,7 @@ const taskTeamSourceSchema: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
 export const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto> = z.object({
   kind: z.literal("task_agent"), address: agentTeamAddressDtoSchema, agent_run_id: nonEmptyStringSchema,
   platform_agent_run_id: nullableNonEmptyStringSchema, delegator_agent_run_id: nullableNonEmptyStringSchema,
-  started_at: nonEmptyStringSchema, source: taskAgentSourceSchema.optional(), ...agentSelectionSchema,
+  started_at: nonEmptyStringSchema, source: taskAgentSourceSchema, ...agentSelectionSchema,
 }).strict();
 
 const taskTeamAgentSchema: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
@@ -228,7 +223,7 @@ export const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto> = z.laz
   members: z.array(taskTeamAgentSchema),
   task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
   delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
-  source: taskTeamSourceSchema.optional(), ...teamSelectionSchema,
+  source: taskTeamSourceSchema, ...teamSelectionSchema,
 }).strict());
 
 export type TeamRunExecutionTreeDto = Readonly<{
