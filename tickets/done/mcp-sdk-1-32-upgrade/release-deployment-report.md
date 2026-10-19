@@ -60,7 +60,7 @@ Repository finalization of `codex/mcp-sdk-1-32-upgrade` into `origin/personal`. 
 
 - More evidence requested: `None`
 - User check needed: `No`. All proof uses local servers and dummy values; nothing needs the user's accounts.
-- Re-verification after later re-integration: see Finalization Record
+- Re-verification after later re-integration: `Not needed` (target unchanged after verification)
 
 ## Release Decision
 
@@ -129,13 +129,28 @@ Repository finalization of `codex/mcp-sdk-1-32-upgrade` into `origin/personal`. 
 
 | Step | Result |
 | --- | --- |
-| Ticket archive | pending |
+| Ticket archive | `git mv tickets/in-progress/mcp-sdk-1-32-upgrade tickets/done/mcp-sdk-1-32-upgrade`. 51 tracked files; longest ticket path 100 characters; no Windows-hostile names; no build output |
+| Pre-commit checks (ticket branch) | `check_repository_artifact_hygiene.py`: `Repository artifact hygiene check passed.` `check_licensing.py`: `Licensing is consistent.` |
+| Ticket branch commit | `bbac99d34b` "docs(delivery): sync docs and archive mcp-sdk-1-32-upgrade (DR-001)" |
+| Ticket branch push | `origin/codex/mcp-sdk-1-32-upgrade` → `bbac99d34b` (new remote branch) |
+| Target refresh after verification | Re-fetched `origin/personal`: still `bf3c550c18`, the integrated and verified base. No re-integration needed |
+| Finalize branch | `finalize/mcp-sdk-1-32-upgrade` from `origin/personal`, in the ticket worktree (`RELEASE.md`) |
+| Merge | `git merge --no-ff codex/mcp-sdk-1-32-upgrade` → `6990940b8d`. Tree identical to the verified ticket branch (`git diff --quiet` passes) |
+| Checks on the merged state | Hygiene check passed; licensing consistent |
+| Push target | Fetched before the push: `origin/personal` = `6990940b8d^1` (`bf3c550c18`), unchanged. `git push origin HEAD:personal`: `bf3c550c18..6990940b8d` |
+| Repository finalization status | `Completed` |
+| Release / publication / deployment | `Not required` (No release, the `RELEASE.md` default). No tag; no pipelines triggered |
+| Delivery record commit | This record is committed on `finalize/mcp-sdk-1-32-upgrade` on top of `6990940b8d` and pushed to `personal` after a fresh fetch shows the target unchanged (rebased onto any newer `personal` if it moved, touching only this ticket's folder) |
+| Worktree cleanup | After the record push: `git worktree remove --force` (only untracked build output remains: `*/dist/`, `autobyteus-web/electron-dist/`) and `git worktree prune`, from the main repository's git dir; the main checkout's working tree is not touched |
+| Local branch cleanup | After the record push: `codex/mcp-sdk-1-32-upgrade` and `finalize/mcp-sdk-1-32-upgrade` deleted once `origin/personal` contains them |
+| Remote branch cleanup | `Not required`. By repository practice, merged `codex/*` ticket branches stay on `origin` |
 
 ## Final Status
 
 - Verification complete (from the evidence): `Yes`
-- Repository finalization complete: pending
+- Repository finalization complete: `Yes` (`origin/personal` @ `6990940b8d`, followed by this record commit)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
-- Applicable safe cleanup complete or not required: pending
+- Applicable safe cleanup complete or not required: `Yes` (worktree and local branches removed after the record push; see the Finalization Record)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: pending
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, sent after this record commit and cleanup (DR-001)
