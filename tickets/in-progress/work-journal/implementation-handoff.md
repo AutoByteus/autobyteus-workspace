@@ -6,6 +6,7 @@ Commits, oldest first:
 - `d98c213afc` feat(server): Work Journal replaces the work-trace export
 - `b19714658c` test(server): baseline fix for two stale skill-improvement tests (TESTING.md Rule 9; not caused by this change)
 - `ea867f9708` feat(server): Work Journal content scope D5 (SR-014)
+- `8f5bb563b1` fix(server): keep in-hunk `--- `/`+++ ` lines in Work Journal patches (CRR-001 F-001, IR-002)
 - the ticket-folder commit that carries this handoff and `evidence/` (see the handoff message)
 
 ## Upstream Artifact Package
@@ -18,21 +19,21 @@ Commits, oldest first:
 - Supplemental task artifacts: `work-journal-contract.md` (format specification), `work-journal-builtin-tools.json` (built-in table oracle, copied verbatim to `autobyteus-server-ts/tests/fixtures/agent-work-journal/`), `probes/`
 - Design review report: `tickets/in-progress/work-journal/design-review-report.md`
 - Architecture review revision record: `tickets/in-progress/work-journal/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial implementation; ARCH-REV-003 arrived during it and is included in IR-001)
+- Triggering rework report: `code-review-report.md` CRR-001 (Fail — Local Fix F-001), recorded in `code-review-revision-record.md`. ARCH-REV-003 arrived during the initial implementation and is included in IR-001.
 
 ## Current Implementation Summary
 
 A new subsystem `autobyteus-server-ts/src/agent-work-journal/` renders each run's raw traces into `<run memory folder>/work_journal/`. It writes one Markdown file per raw-trace file and a manifest. A per-run updater keeps live runs current, and skill improvement consumes the package. The old `src/agent-work-traces` export and its replay-projection options are removed. A startup migration deletes the retired `work_traces/` folders.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, Local Fix)
 - Implementation revision record: `tickets/in-progress/work-journal/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (baseline `IR-001`)
 - Related solution revision IDs: `SR-010`, `SR-012`, `SR-014`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (non-blocking notes N1–N7 applied; see the trace)
+- Triggering finding IDs: `F-001` (CRR-001). NB-1 and NB-2 need no action. N1–N7 were applied in IR-001.
 
 ## Routing Classification (Mandatory)
 
@@ -185,8 +186,8 @@ Evidence files are in `tickets/in-progress/work-journal/evidence/`. Each log sta
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IMP-01 | `pnpm typecheck` (autobyteus-server-ts) | ea867f9708 | macOS 26 arm64, node 22.23.1 | all of `src` | — | Pass | IMP-01-typecheck.log | `# Exit status: 0` with no `error TS` lines |
-| IMP-02 | `pnpm exec vitest run tests/agent-work-journal --no-watch` | ea867f9708 | same | `src/agent-work-journal/**`, resource-manager attach order, run updater | BEH-W1–W4, AC-W1–W7, N1, N3, N4 | Pass | IMP-02-work-journal-unit.log | `Tests  75 passed \| 2 skipped (77)` (the 2 skipped are the gated N2 probe) |
+| IMP-01 | `pnpm typecheck` (autobyteus-server-ts) | 8f5bb563b1 | macOS 26 arm64, node 22.23.1 | all of `src` | — | Pass | IMP-01-typecheck.log | `# Exit status: 0` with no `error TS` lines |
+| IMP-02 | `pnpm exec vitest run tests/agent-work-journal --no-watch` | 8f5bb563b1 | same | `src/agent-work-journal/**`, resource-manager attach order, run updater | BEH-W1–W4, AC-W1–W7, N1, N3, N4, F-001 | Pass | IMP-02-work-journal-unit.log | `Tests  76 passed \| 2 skipped (78)` (the 2 skipped are the gated N2 probe); the F-001 case `inside a hunk, \`--- x\` and \`+++ x\` are a removed \`-- x\` and an added \`++ x\`` |
 | IMP-03 | `RUN_WORK_JOURNAL_PERF=1 WORK_JOURNAL_PERF_OUT=… pnpm exec vitest run tests/agent-work-journal/perf --no-watch`, run 4 times | ea867f9708 | same | `WorkJournalService.ensureCurrent` on a 5.2 MB and a 28 MB synthetic open file | N2 | Within threshold per turn; 1 cold breach (see Known Risks) | IMP-03-n2-main-thread-cost{,-repeat-2,-3,-4}.{json,log} | `"worstBlockMs"`, `"withinThreshold"`, `warm[].longestBlockMs` |
 | IMP-04 | `pnpm exec vitest run tests/unit/app-data-migrations --no-watch` | ea867f9708 | same | removal migration, registry order | BEH-W6, N7 | Pass | IMP-04-app-data-migrations.log | `Tests  403 passed (403)` |
 | IMP-05 | `pnpm exec vitest run tests/skill-improvement --no-watch` | ea867f9708 | same | skill-improvement service, session store/service, trigger builder (real journal generation) | BEH-W5, AC-W8, N5 | Pass | IMP-05-skill-improvement.log | `Tests  27 passed (27)` |
@@ -197,6 +198,7 @@ Evidence files are in `tickets/in-progress/work-journal/evidence/`. Each log sta
 | IMP-10 | `NUXT_TEST=true pnpm exec vitest run services/runHydration/__tests__/runProjectionConversation.spec.ts` (autobyteus-web) | ea867f9708 | same | renamed spec (N6) | AC-W8 | Pass | IMP-10-web-run-projection-conversation.log | `Tests  14 passed (14)` |
 | IMP-11 | `git grep -n -i -E "work.?trace" -- autobyteus-server-ts/src autobyteus-server-ts/docs autobyteus-web` | ea867f9708 | same | names in code and docs | AC-W8 | Pass | IMP-11-work-trace-term-search.log | `files: …agent_work_journal.md …app-data-migration-registry.ts …remove-work-trace-exports-migration.ts` (the migration, its registry entry and one historical doc line only) |
 
+- IMP-03 to IMP-11 ran at `ea867f9708`. IR-002 changes only `rendering/text-diff.ts` (`readPatch`) and its unit test, which IMP-02 covers; the other results are reused unchanged.
 - Not run, and why:
   - server E2E (`tests/e2e/**`) and live runtime runs: left to API/E2E. This covers one live run per runtime, Grok kept to one small run with a temporary `GROK_HOME`, AutoByteus native write ordering, and AC-W6 on a live run.
   - The e2e files whose fixtures I changed (codex-live-memory-persistence, codex-interrupted-compaction) only gained a no-op `workJournalUpdater`; they need live Codex.
