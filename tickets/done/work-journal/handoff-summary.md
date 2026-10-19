@@ -48,3 +48,6 @@ You corrected the rule: rollback compatibility is needed only for releases whose
 
 ## DR-002 — Round 2 ready for user verification
 Round 2 (SR-018) is integrated and audited at 8186b9fd9e. The rule docs are committed; the product code is identical to round 1; the base is unchanged; the hygiene and licensing checks pass. The candidate is ready for your verification (same checklist as above) and your release decision (none, beta or stable). probes/ stays uncommitted unless you decide otherwise.
+
+## DR-003 — Finalization and beta authorized
+The user replied "fianlize and release a new beta" (2026-10-19). origin/personal is unchanged at e2e21402b1, so no re-integration is needed. Ticket archived. Beta v1.5.6-beta.9 is to be cut per RELEASE.md. probes/ is not committed (the default; deleted before the release, which needs a clean tree).

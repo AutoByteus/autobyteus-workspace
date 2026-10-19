@@ -8,6 +8,7 @@ The latest docs-sync-report.md, handoff-summary.md and release-deployment-report
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-003 Pass (after API-REV-001 Pass) | N/A | Integrated, verified and audited; Blocked: user verification, SD rollback decision, probes decision | docs-sync-report.md, delivery-evidence-audit.md, handoff-summary.md, release-deployment-report.md |
 | DR-002 | CRR-005 Pass (round 2: SR-018, IR-003 docs only, API-REV-002) | DR-001 Blocked | Round 2 integrated and audited; rule docs reviewed; Blocked: user verification and release decision | delivery-evidence-audit.md, handoff-summary.md, release-deployment-report.md, docs-sync-report.md |
+| DR-003 | User finalization + beta authorization | DR-002 Blocked on verification | Archived, finalized (--no-ff) into origin/personal, beta v1.5.6-beta.9 | handoff-summary.md, release-deployment-report.md, release-notes.md |
 
 ## Revision Entries
 
@@ -46,3 +47,14 @@ The latest docs-sync-report.md, handoff-summary.md and release-deployment-report
 - Commit: all uncommitted ticket artifacts (review, design and delivery records, the evidence JSON) checkpointed; probes/ excluded (user data). Evidence files keep exact journal bytes (whitespace not normalized, to preserve recorded hashes).
 - User verification/finalization state: pending (verification, release decision; the probes default is to keep it out).
 - Terminal return: `Not yet eligible`.
+
+### DR-003 — User-authorized finalization and beta release
+
+- Trigger: on 2026-10-19 the user said "fianlize and release a new beta". This is explicit acceptance plus finalization and beta authorization; no manual verification result is claimed.
+- Prior authoritative result: DR-002, Blocked on verification and the release decision.
+- Target: origin/personal unchanged at e2e21402b1 (already merged), so no re-integration and no renewed verification are needed.
+- probes/: the user gave no instruction; the stated default applies (not committed; deleted, because RELEASE.md requires a clean worktree including untracked files before the release script). SD recommended the same.
+- Ticket archived; release-notes.md added (functional summary; the beta uses generated notes).
+- Method (RELEASE.md): in the ticket worktree, `finalize/work-journal` from origin/personal, `git merge --no-ff codex/work-journal`, licensing and hygiene checks on the merged state, then `desktop-release.sh beta --branch finalize/work-journal --no-push`. Then fetch, check that origin/personal has not moved, push the branch, push the tag, and watch all 4 workflows plus 17 assets.
+- Observed results: release-deployment-report.md.
+- Terminal return: after release verification and cleanup.
