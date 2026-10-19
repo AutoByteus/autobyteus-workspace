@@ -1,0 +1,29 @@
+{
+  "atTurnCompleted": [
+    "system_instruction:rt_1792384546325_a7caa810-4f86-44ae-9a07-1a2ce1800708",
+    "user:rt_1792384546367",
+    "reasoning:rt_1792384552488_b1c47b00-84fe-4417-881f-fbdb36575873",
+    "assistant:\n\n",
+    "tool_call:rt_1792384552490_turn_0001_964191838_call",
+    "tool_result:rt_1792384552650_turn_0001_964191838_result",
+    "reasoning:rt_1792384554649_e56fd725-06aa-4a15-92b8-af3a3a2e2465",
+    "assistant:\n\n",
+    "tool_call:rt_1792384554650_turn_0001_842568959_call",
+    "tool_result:rt_1792384554657_turn_0001_842568959_result",
+    "reasoning:rt_1792384557859_5cf37e0a-f5dd-40d9-bf27-521b9fa3fd86",
+    "assistant:\n\n",
+    "tool_call:rt_1792384557860_turn_0001_152911587_call",
+    "tool_result:rt_1792384557865_turn_0001_152911587_result",
+    "reasoning:rt_1792384563633_b69ef433-bff6-4e22-b5c3-16feb9ffa11c",
+    "assistant:\n\n",
+    "tool_call:rt_1792384563634_turn_0001_144498851_call",
+    "tool_result:rt_1792384563637_turn_0001_144498851_result",
+    "reasoning:rt_1792384567842_ad1fc316-d439-4583-b83a-25b39704b9e5",
+    "assistant:\n\n",
+    "tool_call:rt_1792384567843_turn_0001_851183822_call",
+    "tool_result:rt_1792384567851_turn_0001_851183822_result",
+    "reasoning:rt_1792384570259_dc71b534-8949-4944-ac55-983e1f8657ab",
+    "assistant:\n\nDONE"
+  ],
+  "finalRecordCount": 24
+}

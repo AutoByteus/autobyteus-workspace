@@ -1519,7 +1519,7 @@ manual start calls. Run-history rows do not expose Skill Improvement controls.
 Starting Skill Improvement from the composer CTA calls `startAgentRunSkillImprovement`
 or `startTeamMemberSkillImprovement` without run-time overrides. The backend uses
 current global Skill Improvement settings, current target state, and current
-configured writable skill roots; it first ensures work trace files are current
+configured writable skill roots; it first ensures the target's Work Journal files are current
 for the selected target, then activates or reuses a visible target-scoped
 improver `AgentRun`. The returned record summary is stored only internally and
 the UI may show at most a short transient toast/status after start. It must not
@@ -2003,7 +2003,7 @@ turn.
 
 ## Related Documentation
 
-- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, shared work-trace package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
+- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, Work Journal evidence package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

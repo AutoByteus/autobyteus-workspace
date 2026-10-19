@@ -1,0 +1,20 @@
+Skill Improvement requested for the target run/agent.
+
+Use the listed Work Journal files as the evidence package.
+The task message and Work Journal manifest provide the target identity.
+
+Work Journal manifest: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-41DCgq/memory/agents/journal_skill_target_3ff28130_817b_4494_942f_eb9_9113ad4a8cc74ad6ad1c085845551a8a/work_journal/work_journal_manifest.json
+Work Journal root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-41DCgq/memory/agents/journal_skill_target_3ff28130_817b_4494_942f_eb9_9113ad4a8cc74ad6ad1c085845551a8a/work_journal
+Work Journal files:
+1. /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-41DCgq/memory/agents/journal_skill_target_3ff28130_817b_4494_942f_eb9_9113ad4a8cc74ad6ad1c085845551a8a/work_journal/work_journal_active.md
+
+Editable skill packages:
+1. journal_probe_2bd8f4d5
+   Root directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-skill-improvement-41DCgq/skills/journal_probe_2bd8f4d5
+   Package tree:
+   .
+   └── SKILL.md [entry]
+
+Completion target:
+- target_agent_run_id: journal_skill_target_3ff28130_817b_4494_942f_eb9_9113ad4a8cc74ad6ad1c085845551a8a
+- message_type: skill_update

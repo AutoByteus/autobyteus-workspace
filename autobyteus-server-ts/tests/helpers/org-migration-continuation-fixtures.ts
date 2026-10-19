@@ -81,7 +81,7 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     memoryRecorder: recorder, agentToolMcpRunSessionDeactivator: sessions,
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({ runSessions: sessions,
-      memoryRecorder: recorder, runFileChangeService: noAttachment as never, publishedArtifactRelayService: noAttachment as never })),
+      memoryRecorder: recorder, runFileChangeService: noAttachment as never, publishedArtifactRelayService: noAttachment as never, workJournalUpdater: noAttachment as never })),
   });
   const dependencies = { agentRunManager: agentManager, memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
     activityInspector: new AgentConversationActivityInspector() };

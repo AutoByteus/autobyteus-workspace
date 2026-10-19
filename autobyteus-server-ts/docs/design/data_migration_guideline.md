@@ -153,6 +153,22 @@ that ordinary evolution is absorbed by the reader.
 - Availability comes from scoped admission, never from restoring an old-runtime
   compatibility path.
 
+### Rolling back after a migration
+
+A rollback means reverting the merge and releasing the older code again (see
+`RELEASE.md`, "Rollback"). Users keep their data as the newer build left it.
+
+- **Applies only to migrations.** A migration converts every user's existing
+  data in place, so the older build meets converted data it cannot undo. For a
+  release with a migration, decide one of two outcomes in the design:
+  - the older build can still read the converted data;
+  - rolling back past this release is not supported, and the release notes say
+    so.
+- **Not needed for ordinary writer changes.** Changing what new code writes
+  touches only data saved after the upgrade. Do not keep fields, dual writes or
+  old-format writers for older builds. After a rollback, the older build may
+  ignore files written in the newer shape.
+
 ## 5. Operating Assumptions and Reachability
 
 A normal attempt may assume:

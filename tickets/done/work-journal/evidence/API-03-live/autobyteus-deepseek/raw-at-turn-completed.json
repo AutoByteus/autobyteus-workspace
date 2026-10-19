@@ -1,0 +1,20 @@
+{
+  "atTurnCompleted": [
+    "system_instruction:rt_1792386630630_e6446902-23fd-47ee-9c3f-07103d8fc083",
+    "user:rt_1792386630670",
+    "assistant:",
+    "tool_call:rt_1792386631991_turn_0001_call_00_ET_NSYmoelL58AVYvgCxMvm2252_call",
+    "tool_result:rt_1792386632142_turn_0001_call_00_ET_NSYmoelL58AVYvgCxMvm2252_result",
+    "assistant:",
+    "tool_call:rt_1792386633164_turn_0001_call_00_ET_oQlUf3WAPYFcC6FTYqnz2999_call",
+    "tool_result:rt_1792386633166_turn_0001_call_00_ET_oQlUf3WAPYFcC6FTYqnz2999_result",
+    "assistant:",
+    "tool_call:rt_1792386634433_turn_0001_call_00_ET_vN0eBofnzXWZCWUnvLFX0689_call",
+    "tool_result:rt_1792386634435_turn_0001_call_00_ET_vN0eBofnzXWZCWUnvLFX0689_result",
+    "assistant:",
+    "tool_call:rt_1792386635643_turn_0001_call_00_ET_uMLgnatklatHpy1T53Gr0460_call",
+    "tool_result:rt_1792386635646_turn_0001_call_00_ET_uMLgnatklatHpy1T53Gr0460_result",
+    "assistant:DONE"
+  ],
+  "finalRecordCount": 15
+}

@@ -9,14 +9,14 @@ describe("SkillImprovementTargetNotificationService", () => {
     RuntimeKind.CODEX_APP_SERVER,
     RuntimeKind.CLAUDE_AGENT_SDK,
   ])("emits a runtime-neutral local notification event for active idle %s runs", async (runtimeKind) => {
-    const emitLocalEvent = vi.fn();
+    const publishEvent = vi.fn(async () => undefined);
     const postUserMessage = vi.fn(async () => ({ accepted: true }));
     const service = new SkillImprovementTargetNotificationService({
       getActiveRun: vi.fn(() => ({
         runId: `target-run-${runtimeKind}`,
         runtimeKind,
         getStatusSnapshot: () => ({ status: "idle" }),
-        emitLocalEvent,
+        publishEvent,
         postUserMessage,
       })),
     } as any);
@@ -34,8 +34,8 @@ describe("SkillImprovementTargetNotificationService", () => {
 
     expect(result.status).toBe("sent_active_idle");
     expect(postUserMessage).not.toHaveBeenCalled();
-    expect(emitLocalEvent).toHaveBeenCalledTimes(1);
-    const emittedEvent = emitLocalEvent.mock.calls[0][0];
+    expect(publishEvent).toHaveBeenCalledTimes(1);
+    const emittedEvent = publishEvent.mock.calls[0][0];
     expect(emittedEvent).toEqual({
       eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
       runId: `target-run-${runtimeKind}`,

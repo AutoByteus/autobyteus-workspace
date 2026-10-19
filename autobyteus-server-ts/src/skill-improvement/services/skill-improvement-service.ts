@@ -18,8 +18,9 @@ import { SkillImprovementRecordLifecycle } from "./skill-improvement-record-life
 import { SkillImprovementStrategyCatalogService } from "./strategies/skill-improvement-strategy-catalog.js";
 import { ManualTriggerStrategy } from "./triggers/manual-trigger-strategy.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { SkillImprovementEffectiveConfigResolver } from "./skill-improvement-effective-config-resolver.js";
-import { AgentWorkTraceProjectionService } from "../../agent-work-traces/services/agent-work-trace-projection-service.js";
+import { getWorkJournalService, type WorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
 import { SkillImprovementImproverSessionService } from "./improver-session/skill-improvement-improver-session-service.js";
 
 export type StartSkillImprovementForAgentRunInput = { runId: string; requestedByUserId?: string | null; requestedFrom?: "run_detail" | "api"; };
@@ -36,7 +37,7 @@ type SkillImprovementServiceDeps = {
   recordLifecycle?: SkillImprovementRecordLifecycle;
   agentRunManager?: Pick<AgentRunManager, "getActiveRun">;
   effectiveConfigResolver?: SkillImprovementEffectiveConfigResolver;
-  workTraceProjectionService?: AgentWorkTraceProjectionService;
+  workJournalService?: Pick<WorkJournalService, "ensureCurrent">;
   improverSessionService?: SkillImprovementImproverSessionService;
 };
 
@@ -101,7 +102,7 @@ export class SkillImprovementService {
     try {
       record = await this.recordLifecycle.patchRecord(record, { status: "resolving_target" });
       const context = await this.resolveRequestContext(request);
-      this.requireLiveTarget(context.target);
+      const liveTarget = this.requireLiveTarget(context.target);
       const skillTargets = await this.skillTargetResolver.resolveForAgentDefinition(context.targetAgentDefinition);
       const editableTargets = skillTargets.filter((target) => target.isWritable);
       if (editableTargets.length === 0) {
@@ -113,14 +114,15 @@ export class SkillImprovementService {
         workspaceRootPath: context.workspaceRootPath,
       });
 
-      const workTracePackage = await this.workTraceProjectionService.ensureCurrent({
-        target: context.target,
+      // The runtime is the live run's (N5): it selects the journal's built-in tool translation.
+      const workJournalPackage = await this.workJournalService.ensureCurrent({
+        runId: liveTarget.runId,
         memoryDir: context.memoryDir,
-        targetDisplayName: context.agentName,
+        runtimeKind: liveTarget.runtimeKind,
       });
       record = await this.recordLifecycle.patchRecord(record, {
         status: "launching_improver",
-        evidenceSummaryHash: workTracePackage.summaryHash,
+        evidenceSummaryHash: workJournalPackage.evidenceHash,
       });
 
       const session = await this.improverSessionService.activateOrGet(context);
@@ -136,7 +138,7 @@ export class SkillImprovementService {
         improvementRunId: request.improvementRunId,
         requestedAt: request.requestedAt,
         target: request.target,
-        workTracePackage,
+        workJournalPackage,
         editableSkillTargets: editableTargets,
       });
       const result = await this.improverSessionService.postSkillImprovementRequest(session, triggerRequest, context);
@@ -199,11 +201,13 @@ export class SkillImprovementService {
     return snapshot;
   }
 
-  private requireLiveTarget(target: SkillImprovementTargetRef): void {
+  private requireLiveTarget(target: SkillImprovementTargetRef): Pick<AgentRun, "runId" | "runtimeKind"> {
     const runId = target.kind === "agent_run" ? target.runId : target.agentRunId;
-    if (!this.agentRunManager.getActiveRun(runId)) {
+    const run = this.agentRunManager.getActiveRun(runId);
+    if (!run) {
       throw new Error(`Skill Improvement target run '${runId}' is not active.`);
     }
+    return run;
   }
 
   private normalizeRequired(value: string, fieldName: string): string {
@@ -229,6 +233,6 @@ export class SkillImprovementService {
   private get recordLifecycle(): SkillImprovementRecordLifecycle { return this.deps.recordLifecycle ?? new SkillImprovementRecordLifecycle(); }
   private get agentRunManager(): Pick<AgentRunManager, "getActiveRun"> { return this.deps.agentRunManager ?? AgentRunManager.getInstance(); }
   private get effectiveConfigResolver(): SkillImprovementEffectiveConfigResolver { return this.deps.effectiveConfigResolver ?? new SkillImprovementEffectiveConfigResolver(); }
-  private get workTraceProjectionService(): AgentWorkTraceProjectionService { return this.deps.workTraceProjectionService ?? new AgentWorkTraceProjectionService(); }
+  private get workJournalService(): Pick<WorkJournalService, "ensureCurrent"> { return this.deps.workJournalService ?? getWorkJournalService(); }
   private get improverSessionService(): SkillImprovementImproverSessionService { return this.deps.improverSessionService ?? new SkillImprovementImproverSessionService(); }
 }

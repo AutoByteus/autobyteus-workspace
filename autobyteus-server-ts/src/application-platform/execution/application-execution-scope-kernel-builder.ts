@@ -1,6 +1,8 @@
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
+import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
 import { AgentRunActivationRegistry } from "../../agent-execution/runtime/agent-run-activation-registry.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
@@ -99,6 +101,7 @@ export const buildApplicationExecutionScopeKernel = (
       runFileChangeService,
       publishedArtifactRelayService: relay,
       memoryRecorder,
+      workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
     });
     const activationRegistry = new AgentRunActivationRegistry(resourceManager);
     const projectionStore = new PublishedArtifactProjectionStore();

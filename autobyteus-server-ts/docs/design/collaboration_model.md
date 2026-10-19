@@ -75,7 +75,8 @@ are given to every collaborating agent.
 ## 3. Run Storage Shape
 
 Every run has the same shape: its own folder, its own memory (raw traces,
-snapshots, file changes, context files) and its own message log. A delegated
+snapshots, file changes, context files, the Work Journal rendered from its raw
+traces) and its own message log. A delegated
 run is a run like any other, plus a back-link to its coordinating run.
 
 ```text

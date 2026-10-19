@@ -1,0 +1,14 @@
+{
+  "run_id": "work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10",
+  "runtime_kind": "autobyteus",
+  "renderer_revision": 1,
+  "files": [
+    {
+      "journal_file": "work_journal_active.md",
+      "source_file": "raw_traces_active.jsonl",
+      "source_record_count": 24,
+      "state": "open",
+      "content_sha256": "3a5275b1f77ff5c7b1156d011f6aad757275b15c959f2679812df11c173045f8"
+    }
+  ]
+}

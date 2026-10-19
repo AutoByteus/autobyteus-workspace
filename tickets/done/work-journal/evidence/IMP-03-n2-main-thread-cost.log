@@ -1,0 +1,207 @@
+# Check: IMP-03
+# Command: (cd autobyteus-server-ts && pnpm exec vitest run tests/agent-work-journal/perf --no-watch)
+# Commit: ea867f9708 (branch codex/work-journal)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T03:54:41Z
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/agent-work-journal/perf/work-journal-open-file-cost.perf.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/agent-work-journal/perf/work-journal-open-file-cost.perf.test.ts > N2: main-thread cost of one journal update on a large open file
+{
+  "thresholdsMs": {
+    "p90": 100,
+    "max": 1000
+  },
+  "node": "v22.23.1",
+  "platform": "darwin arm64",
+  "p90": {
+    "fixture": {
+      "mb": 5.2,
+      "records": 2100,
+      "turns": 140
+    },
+    "cold": {
+      "wallMs": 291,
+      "longestBlockMs": 269,
+      "eventLoopMaxDelayMs": 269,
+      "journalBytes": 2075586
+    },
+    "warm": [
+      {
+        "wallMs": 80,
+        "longestBlockMs": 69,
+        "eventLoopMaxDelayMs": 69,
+        "journalBytes": 2090353
+      },
+      {
+        "wallMs": 71,
+        "longestBlockMs": 64,
+        "eventLoopMaxDelayMs": 64,
+        "journalBytes": 2090353
+      },
+      {
+        "wallMs": 74,
+        "longestBlockMs": 68,
+        "eventLoopMaxDelayMs": 68,
+        "journalBytes": 2090353
+      }
+    ],
+    "warmBreakdownMs": {
+      "listFilesMs": 5,
+      "readAndNormalizeMs": 12,
+      "renderMs": 48,
+      "hashMs": 3
+    },
+    "worstBlockMs": 269,
+    "thresholdMs": 100,
+    "withinThreshold": false
+  },
+  "max": {
+    "fixture": {
+      "mb": 28,
+      "records": 11265,
+      "turns": 751
+    },
+    "cold": {
+      "wallMs": 394,
+      "longestBlockMs": 349,
+      "eventLoopMaxDelayMs": 349,
+      "journalBytes": 11093518
+    },
+    "warm": [
+      {
+        "wallMs": 377,
+        "longestBlockMs": 333,
+        "eventLoopMaxDelayMs": 333,
+        "journalBytes": 11108285
+      },
+      {
+        "wallMs": 379,
+        "longestBlockMs": 350,
+        "eventLoopMaxDelayMs": 350,
+        "journalBytes": 11108285
+      },
+      {
+        "wallMs": 389,
+        "longestBlockMs": 361,
+        "eventLoopMaxDelayMs": 361,
+        "journalBytes": 11108285
+      }
+    ],
+    "warmBreakdownMs": {
+      "listFilesMs": 25,
+      "readAndNormalizeMs": 68,
+      "renderMs": 242,
+      "hashMs": 18
+    },
+    "worstBlockMs": 361,
+    "thresholdMs": 1000,
+    "withinThreshold": true
+  }
+}
+
+ ✓ tests/agent-work-journal/perf/work-journal-open-file-cost.perf.test.ts (2 tests) 2971ms
+     ✓ p90 open file (5.2 MB)  774ms
+     ✓ max open file (28.0 MB)  2191ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  05:54:41
+   Duration  5.60s (transform 1.45s, setup 27ms, import 2.11s, tests 2.97s, environment 0ms)
+
+# Exit status: 0

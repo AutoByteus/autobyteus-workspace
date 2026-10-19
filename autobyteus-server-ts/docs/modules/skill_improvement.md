@@ -5,11 +5,10 @@
 `src/skill-improvement` is the current source/API module for the manual, skill-first Skill Improvement workflow for
 AutoByteus runs. It is a runtime/run capability: a user can activate a visible
 Retrospective Skill Improver for an active standalone run or selected team member run.
-The backend uses the shared Agent Work Trace Projection capability to convert
-that target's raw trace corpus into readable work trace files, keeps those files
-current before every manual trigger, and asks the Retrospective Skill Improver to inspect the work
-trace paths and improve configured skill packages when a reusable improvement is
-warranted.
+The backend uses the target's Work Journal (readable, runtime-neutral Markdown
+rendered from its raw traces), makes it current before every manual trigger, and
+asks the Retrospective Skill Improver to read the journal files and improve
+configured skill packages when a reusable improvement is warranted.
 
 Skill Improvement does not train a model, mutate agent/team definitions, run a
 post-edit audit service, automatically edit source code, or claim downstream
@@ -78,48 +77,35 @@ resolved from launch-time run overrides.
 Run/team launch input types no longer expose `skillImprovement`. Agent/team
 definition create and update inputs must not accept it.
 
-## Work Trace Projection
+## Work Journal Evidence
 
-Raw trace storage remains backend-internal. The Retrospective Skill Improver-facing format is a
-shared Agent Work Trace package, not raw JSONL and not a large inline prompt
-digest.
+Raw trace storage remains backend-internal. The Retrospective Skill Improver-facing format is the
+target run's Work Journal package, not raw JSONL and not a large inline prompt
+digest. See [agent_work_journal.md](./agent_work_journal.md) for the journal itself.
 
-- `AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir, targetDisplayName })`
-  is the correctness path. Every manual Skill Improvement request calls it before
-  Retrospective Skill Improver messaging, passing the resolved target agent display name as metadata only. Work-trace
-  body labels remain canonical `user`, `assistant`, `tool`, and `trace_event`.
-- The shared `agent-work-traces` capability reads authoritative archived and
-  active raw trace sources through `RawTraceFileSourceService` and the
-  agent-memory/run-history boundary. Skill Improvement does not own the projection
-  source reader, renderer, redactor, store, or manifest policy.
-- The first request for a target backfills the current archived and active raw
-  traces into work trace files. Later requests regenerate current work trace files and rewrite the manifest; there is no generated-file compatibility cache keyed by renderer or source fingerprints.
-- Work traces are stored under `<target memoryDir>/work_traces/` with a
-  `work_traces_manifest.json`, numbered archive files such as
-  `work_trace_000001.md`, and `work_trace_active.md` for the active segment.
-- The former generated cache root
-  `<target memoryDir>/skill_improvement/work_traces/` is obsolete. Runtime does not
-  dual-write or fallback-read that path because work traces are derived from
-  canonical raw traces and can be regenerated on demand.
-- Work trace content is readable, timestamped, and semantically complete for
-  evidence replay: visible user messages, visible assistant messages, tool calls,
-  arguments, results/errors, retries, corrections, feedback signals, and neutral
-  trace events are preserved. Separate assistant/internal reasoning records are omitted.
-- Backend-only/protocol fields are hidden from the visible evidence content by
-  default, including raw trace ids, `turn_id`, `seq`, `source_event`,
-  `correlation_id`, `tool_call_id`, provider ids, raw JSON envelopes, and raw
-  trace paths.
-
-A background projection worker is not part of this pass. Freshness is guaranteed
-on trigger by the shared `ensureCurrent()` call. See
-`agent_work_traces.md` for the shared projection contract.
+- `getWorkJournalService().ensureCurrent({ runId, memoryDir, runtimeKind })` is
+  the correctness path. Every manual Skill Improvement request calls it before
+  Retrospective Skill Improver messaging. `runtimeKind` is the live target
+  AgentRun's runtime, which selects the journal's built-in tool translation.
+- Skill Improvement does not own the journal's source reading, rendering, store
+  or manifest. The journal of a live run is also kept current at every turn end
+  by `WorkJournalRunUpdater`; the request call adds any file still missing (for
+  example the closed files of an older run).
+- The journal lives under `<target memoryDir>/work_journal/`:
+  `work_journal_manifest.json`, one `work_journal_NNNNNN.md` per closed raw
+  segment, and `work_journal_active.md` for the open raw file.
+- Journal entries are plain actions with outcomes and output (`User:`,
+  `Message from <sender>:`, `Agent:`, `Command:`, `Write file:`, `Edit file:`,
+  `Search web:`, `Tool:`, `Notice:`), each linked to its raw record. Model
+  reasoning is omitted; long output is shortened visibly with a link to the raw
+  record.
 
 ## Prompt And Static Guidance Separation
 
 Skill Improvement separates dynamic request facts from stable Retrospective Skill Improver guidance.
 
 - Runtime task packet: `SkillImprovementImproverTriggerMessageBuilder` (source boundary) supplies the
-  work trace manifest/root/files, optional prior improver run ids, editable skill
+  Work Journal manifest/root/files, optional prior improver run ids, editable skill
   package roots, bounded relative package trees, target AgentRun id, and final
   message type.
 - Package tree rendering: `SkillImprovementSkillPackageTreeRenderer` lists each
@@ -159,8 +145,9 @@ The manual action activates or reuses a target-scoped improver session.
    target `AgentRun` is active before improver activation.
 4. `SkillImprovementSkillTargetResolver` resolves the target's currently configured
    skills to exact writable skill roots and `SKILL.md` entry files.
-5. `AgentWorkTraceProjectionService.ensureCurrent()` produces the shared work
-   trace package and manifest under `<target memoryDir>/work_traces/`.
+5. `WorkJournalService.ensureCurrent()` makes the target's Work Journal current
+   under `<target memoryDir>/work_journal/` and returns its package (file paths
+   and evidence hash).
 6. `SkillImprovementImproverSessionService` (source boundary) loads target-scoped improver session
    state from `<target memoryDir>/skill_improvement/improver_session.json`.
    If the recorded improver run is active, it is reused. If it is unavailable,
@@ -169,20 +156,21 @@ The manual action activates or reuses a target-scoped improver session.
    improver run ids are retained, and a replacement improver run is launched with
    continuity metadata.
 7. `SkillImprovementImproverTriggerMessageBuilder` (source boundary) sends a concise runtime task
-   packet to the Retrospective Skill Improver. The packet lists the work trace manifest path, work
-   trace root path, individual work trace file paths, editable skill roots,
+   packet to the Retrospective Skill Improver. The packet says "Use the listed Work Journal files as
+   the evidence package" and lists the Work Journal manifest path, root path,
+   individual journal file paths, editable skill roots,
    bounded package trees with `SKILL.md [entry]`, target run id, message type,
    and continuity context when prior improver runs exist. It does not inline the
-   work trace body and does not repeat stable improvement policy or backend-rationale
+   journal body and does not repeat stable improvement policy or backend-rationale
    wording.
-8. The Retrospective Skill Improver may inspect work trace files and edit only the listed skill
+8. The Retrospective Skill Improver may read the Work Journal files and edit only the listed skill
    roots. After meaningful durable skill package file changes, it may call
    `send_message_to({ target_agent_run_id, message_type: "skill_update", ... })`
    exactly once. The shared agent-communication router re-checks grant scope,
    reference paths, target liveness, and delivery limits.
 9. `SkillImprovementRunStore` persists request provenance: source run ids, target
    identity, improver run id/status, target skill roots, click-time
-   effective config, work-trace summary hash stored in the legacy
+   effective config, the Work Journal evidence hash in the
    `evidenceSummaryHash` field, timestamps, errors, and improver-authored
    skill-update delivery summary.
 
@@ -209,23 +197,24 @@ constraints.
 - Git-backed manual inspection/revert remains the testing and rollback workflow
   outside the product service boundary.
 
-## Work Trace Privacy And Records
+## Work Journal Contents And Records
 
-Work trace files are purpose-built improvement records. They are derived from raw
-traces but are not raw traces.
+Work Journal files are derived from raw traces but are not raw traces.
 
-- The renderer preserves useful conversation facts, tool outcomes, corrections,
-  review feedback, and reusable improvement signals.
-- Explicit durable-skill update markers such as `DURABLE_SKILL_UPDATE:` /
-  `SKILL_UPDATE:` remain high-signal feedback for the Retrospective Skill Improver, while ordinary
-  one-off exact-answer task instructions must not be inflated into durable
-  update requests.
-- Raw bookkeeping fields, provider event ids, private home paths, credentials,
-  tokens, private messages, and raw trace envelopes are omitted or redacted.
-- Exact editable skill root paths and work trace file paths remain visible
-  because the Retrospective Skill Improver needs them to read evidence and edit allowed skills.
-- Improvement records store source run ids, click-time effective config, and a
-  work-trace summary hash; they do not expose raw trace JSONL as prompt content.
+- The journal shows conversation facts, tool outcomes, corrections, review
+  feedback and reusable improvement signals as plain actions. Explicit
+  durable-skill update markers such as `DURABLE_SKILL_UPDATE:` /
+  `SKILL_UPDATE:` remain high-signal feedback for the Retrospective Skill
+  Improver, while ordinary one-off exact-answer task instructions must not be
+  inflated into durable update requests.
+- Runtime result envelopes and bookkeeping fields are removed; media data is
+  never reproduced (a marker such as `[image image/png, 2.9 KB, not reproduced]`
+  stands for it). The journal does not redact text: it shows what the raw traces
+  recorded.
+- Each entry links to its raw record (`[↗](../raw_traces_….jsonl#<id>)`) so the
+  full evidence can be checked; the trigger message lists only journal paths.
+- Improvement records store source run ids, click-time effective config, and the
+  journal's evidence hash; they do not expose raw trace JSONL as prompt content.
 
 ## Metrics And Benefit Reporting
 
@@ -248,12 +237,12 @@ after the manual loop proves useful.
 
 - Only manual trigger plus single-agent Retrospective Skill Improver execution is implemented.
 - No scheduled, signal-based, or improver-team execution is implemented.
-- Work trace freshness is guaranteed on trigger; continuous background work
-  trace projection is not implemented.
+- Work Journal freshness is guaranteed on trigger and kept at each turn end of a
+  live run.
 - Direct editing remains instruction-constrained and manually reviewable, not
   service-audited.
-- The Retrospective Skill Improver reads work trace files through existing file/tool capability; a
-  dedicated read-only work-trace tool remains future hardening.
+- The Retrospective Skill Improver reads Work Journal files through existing file/tool capability; a
+  dedicated read-only journal tool remains future hardening.
 - Team-member live reload remains next-run-only in the MVP; improver-authored
   `skill_update` messages may still be delivered to an active selected member
   run by exact `memberRunId`, but they do not create Team Communication
