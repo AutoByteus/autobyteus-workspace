@@ -33,6 +33,16 @@ describe("diffs", () => {
     });
     expect(readPatch("plain\ntext").hasHunks).toBe(false);
   });
+
+  it("inside a hunk, `--- x` and `+++ x` are a removed `-- x` and an added `++ x` (CRR-001 F-001)", () => {
+    expect(readPatch("--- a/schema.sql\n+++ b/schema.sql\n@@ -1,3 +1,3 @@\n CREATE TABLE t (\n--- old comment\n+-- new comment\n );\n@@ -9 +9 @@\n+++ x"))
+      .toEqual({
+        lines: [" CREATE TABLE t (", "--- old comment", "+-- new comment", " );", "…", "+++ x"],
+        added: 2,
+        removed: 1,
+        hasHunks: true,
+      });
+  });
 });
 
 describe("lines, outcomes and envelopes", () => {

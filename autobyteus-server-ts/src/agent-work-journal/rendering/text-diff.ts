@@ -81,7 +81,8 @@ export const readPatch = (patch: string): PatchDiff => {
       if (hunks > 1) lines.push("…");
       continue;
     }
-    if (line.startsWith("+++ ") || line.startsWith("--- ")) continue;
+    // File headers come only before the first hunk; inside a hunk `--- x` removes the line `-- x`.
+    if (hunks === 0 && (line.startsWith("+++ ") || line.startsWith("--- "))) continue;
     if (line.startsWith("+")) added += 1;
     else if (line.startsWith("-")) removed += 1;
     lines.push(line);
