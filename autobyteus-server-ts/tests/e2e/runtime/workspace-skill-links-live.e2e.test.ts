@@ -22,8 +22,12 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
  * Package, workspace and app data are test-owned temp folders (QR-101); the CLIs use the host sign-in.
  *
  * Gates (one per runtime; paid inference, one short turn per step): RUN_CLAUDE_E2E=1, RUN_CODEX_E2E=1,
- * RUN_GROK_E2E=1. Optional models: CLAUDE_E2E_MODEL (default haiku), CODEX_E2E_MODEL, GROK_E2E_MODEL.
+ * RUN_GROK_E2E=1. Models: each runtime's cheapest, pinned below (Claude haiku, Codex gpt-5.6-luna, Grok grok-4.7,
+ * at low reasoning effort where the runtime has one). CLAUDE_E2E_MODEL, CODEX_E2E_MODEL and GROK_E2E_MODEL override
+ * the pin. A model the runtime does not offer fails the run with the available list; there is no fallback.
  * Codex runs under a throwaway CODEX_HOME holding only a link to the host `auth.json`.
+ * The release smoke check (`python3 scripts/release_smoke.py`, RELEASE.md) runs this suite and names its test titles:
+ * keep them stable, or update the runner's required-case list with them.
  * Command (clean environment, real HOME for the CLI logins):
  *   env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 \
  *     RUN_GROK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts --no-watch
@@ -38,15 +42,15 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
  */
 type RuntimeName = "claude" | "codex" | "grok";
 const commandReady = (command: string) => spawnSync(command, ["--version"], { stdio: "ignore" }).status === 0;
-const RUNTIMES: Record<RuntimeName, { kind: string; enabled: boolean; preferredModels: Array<string | undefined>;
+const RUNTIMES: Record<RuntimeName, { kind: string; enabled: boolean; model: string;
   llmConfig: Record<string, unknown> | null }> = {
   claude: { kind: "claude_agent_sdk", enabled: process.env.RUN_CLAUDE_E2E === "1" && commandReady("claude"),
-    preferredModels: [process.env.CLAUDE_E2E_MODEL?.trim(), "haiku", "sonnet"], llmConfig: null },
+    model: process.env.CLAUDE_E2E_MODEL?.trim() || "haiku", llmConfig: null },
   codex: { kind: "codex_app_server", enabled: process.env.RUN_CODEX_E2E === "1" && commandReady("codex"),
-    preferredModels: [process.env.CODEX_E2E_MODEL?.trim(), "gpt-5.4-mini", "gpt-5.5-mini"], llmConfig: { reasoning_effort: "low" } },
+    model: process.env.CODEX_E2E_MODEL?.trim() || "gpt-5.6-luna", llmConfig: { reasoning_effort: "low" } },
   grok: { kind: "grok_build", enabled: process.env.RUN_GROK_E2E === "1"
       && commandReady(process.env.GROK_BUILD_COMMAND?.trim() || "grok"),
-    preferredModels: [process.env.GROK_E2E_MODEL?.trim(), "grok-4.7"], llmConfig: { reasoning_effort: "low" } },
+    model: process.env.GROK_E2E_MODEL?.trim() || "grok-4.7", llmConfig: { reasoning_effort: "low" } },
 };
 const enabledRuntimes = (Object.keys(RUNTIMES) as RuntimeName[]).filter((name) => RUNTIMES[name].enabled);
 const describeLive = enabledRuntimes.length > 0 ? describe : describe.skip;
@@ -133,9 +137,9 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
         "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }",
         { r: RUNTIMES[name].kind });
       const available = catalog.providerModelCatalogSnapshots.flatMap((snapshot) => snapshot.llmModels.map((m) => m.modelIdentifier));
-      const model = RUNTIMES[name].preferredModels.find((candidate) => candidate && available.includes(candidate)) ?? available[0];
-      expect(model, `${name} model`).toBeTruthy();
-      models.set(name, model!);
+      const model = RUNTIMES[name].model;
+      if (!available.includes(model)) throw new Error(`${name} model ${model} is not offered; available: ${available.join(", ")}`);
+      models.set(name, model);
     }
     console.info("SKILL_LINKS_LIVE_MODELS", JSON.stringify(Object.fromEntries(models)));
   }, 300_000);
@@ -213,7 +217,9 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
 
   const runtimeLink = (name: RuntimeName, workspace: string) => path.join(workspace, `.${name}`, "skills", skillName);
 
+  // The runner reads each runtime's results under this per-runtime title (claude, codex, grok).
   describe.each(enabledRuntimes)("%s", (name) => {
+    // Named by scripts/release_smoke.py
     it("starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)", async () => {
       const workspace = await linkedWorkspace(`${name}-run`);
       const created = await createRun(configuredAgentId, name, workspace);
@@ -248,6 +254,7 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       stream.socket.close();
     }, 900_000);
 
+    // Named by scripts/release_smoke.py
     it("starts a brand-new team member with configured skills on its first message (AC-105)", async () => {
       const workspace = await linkedWorkspace(`${name}-team`);
       const team = await graphql<{ createAgentTeamDefinition: { id: string } }>(
@@ -290,6 +297,7 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       stream.socket.close();
     }, 900_000);
 
+    // Named by scripts/release_smoke.py
     it("refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)", async () => {
       const workspace = await fs.mkdtemp(path.join(root, `${name}-collision-ws-`));
       const ownSkill = runtimeLink(name, workspace);
