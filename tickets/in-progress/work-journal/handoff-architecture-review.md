@@ -82,3 +82,20 @@ design-spec.md, status Ready. Key decisions:
   - design-spec.md: BEH-W2 and the non-tool-record-lines responsibility.
 - **Unchanged:** structure, interfaces, persistence decisions and classification (Large/High).
 - **Implementation impact:** only the contract §8 rendering rules and their tests.
+
+## Revision SR-016 (Design Impact from delivery: rollback readability)
+- **Finding:** RELEASE.md requires data written by a newer build to stay readable after a rollback. The released improver-session reader accepts only `schemaVersion === 1` files; the SR-010 design dropped that field.
+- **Change:** design-spec.md Persisted Data item 3 and the improver-session.ts File Mapping row. The writer keeps the existing `schemaVersion: 1` (same name, value and meaning); the current tolerant reader ignores it; no branching.
+- **Rationale:** the guideline forbids introducing version fields; it does not require dropping one a released reader needs.
+- **Retirement:** the field can go once no supported rollback target has the strict reader.
+- **Unchanged:** requirements and their approval, contract, structure, interfaces and classification (Large/High).
+- **Implementation impact:** one writer constant plus its tests (the written key set includes `schemaVersion: 1`, and an old-reader compatibility test reads a new file with the released strict check).
+
+## Revision SR-018 (rollback rule corrected by the user; SR-016 withdrawn)
+- **User decision (U29–U31):** rollback data compatibility applies only to releases with an app-data migration that converts existing data. Ordinary writer changes need none. The user asked for the fix in this change.
+- **Repository docs changed** (uncommitted, in the ticket worktree):
+  - RELEASE.md "Rollback";
+  - autobyteus-server-ts/docs/design/data_migration_guideline.md §4, "Rolling back after a migration".
+- **Design:** Persisted Data item 3 is restored to SR-010 (no `schemaVersion`), with the accepted rollback effect. Migration checklist item 10 says the older build stays readable. File Mapping gains the docs rows.
+- **Unchanged:** requirements other than DEC-W12, the contract, structure and classification (Large/High).
+- **Implementation impact:** none beyond SR-014. The SR-016 constant is not added; if it was already added, it is removed.

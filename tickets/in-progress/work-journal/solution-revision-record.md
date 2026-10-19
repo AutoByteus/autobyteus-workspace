@@ -113,3 +113,46 @@
 ## SR-015 — architecture review Pass on SR-014 recorded
 - ARCH-REV-003 Pass on SR-014 (design-review-report.md, architecture-review-revision-record.md). Large/High unchanged. The reviewer forwarded the §8 rendering change to /implementation_engineer.
 - No further solution work. Next: implementation.
+
+## SR-016 — rollback readability of improver_session.json (Design Impact from delivery)
+- **Trigger:** /delivery_engineer Design Impact (DR on SR-014 / IR-002 / API-REV-001 / CRR-003). The RELEASE.md rollback rule is violated by dropping `schemaVersion` from improver_session.json.
+- **Decision:** option (a). The writer keeps the existing `schemaVersion: 1`, and the tolerant current reader ignores it.
+- **Requirements:** unchanged (REQ-W9 "no regression" is served; no intended-behavior change); approval unaffected.
+- **Design:** design-spec.md Persisted Data item 3 and the File Mapping row for improver-session.ts updated. Classification Large/High unchanged.
+- **Routing:**
+  - the revised package goes to /architecture_reviewer (rule 1), then to /implementation_engineer for a small implementation revision;
+  - delivery re-integrates afterwards;
+  - the delivery engineer is informed of the decision.
+
+## SR-017 — architecture review Pass on SR-016 recorded
+- ARCH-REV-004 Pass on SR-016 (design-review-report.md, architecture-review-revision-record.md). Large/High unchanged. The reviewer forwarded the implementation revision to /implementation_engineer.
+- Non-blocking residual risks recorded by the reviewer:
+  - after a rollback and a re-upgrade, a `work_traces/` folder written by the old build stays as inert residue, because the migration ran once;
+  - an out-of-scope follow-up could add rollback readability to data_migration_guideline.md §3.
+- Both are candidates for the follow-up list at receipt time. No solution work now.
+
+## SR-018 — rollback rule corrected; SR-016 withdrawn
+- **Trigger:** U29–U31. User decision: rollback compatibility applies only when a release includes an app-data migration; fix the rule now.
+- **Repository docs changed by the Solution Designer on the user's instruction:**
+  - RELEASE.md (Rollback);
+  - autobyteus-server-ts/docs/design/data_migration_guideline.md §4, new subsection "Rolling back after a migration".
+- **Requirements:** DEC-W12 added; status Approved.
+- **Design:**
+  - Persisted Data item 3 is back to SR-010: no `schemaVersion`, with the accepted rollback effect (a fresh improver session once). SR-016 is withdrawn.
+  - Migration checklist item 10 gives the rollback outcome: the older build stays readable.
+  - File Mapping gains the two docs rows.
+  - Follow-up 5 is removed (done).
+  - Classification Large/High unchanged.
+- **Routing:**
+  - /architecture_reviewer (rule 1) for the revised package;
+  - /implementation_engineer told directly to stop the SR-016 change;
+  - /delivery_engineer told the decision is now (b) under the corrected rule, with the two doc files to include.
+
+## SR-019 — architecture review Pass on SR-018 recorded
+- ARCH-REV-005 Pass on SR-018 (design-review-report.md, architecture-review-revision-record.md). Large/High unchanged. ARCH-REV-004 and SR-016 are superseded.
+- The reviewer confirmed:
+  - the RELEASE.md and guideline §4 edits are consistent with each other and with §3;
+  - the accepted rollback effect holds at origin/personal (null load, one replacement session);
+  - checklist item 10 holds.
+- The ARCH-REV-004 guideline recommendation is resolved, and the work_traces residue remains accepted.
+- Forwarded by the reviewer to /implementation_engineer. No further solution work.

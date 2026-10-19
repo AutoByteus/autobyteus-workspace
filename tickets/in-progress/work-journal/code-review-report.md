@@ -16,13 +16,19 @@
 - Implementation Revision Record Reviewed As Context: implementation-revision-record.md
 - Relevant Implementation Revision IDs: IR-001 (d98c213afc, b19714658c, ea867f9708; ticket docs 8d9697068d); IR-002 (fix 8f5bb563b1; ticket docs c13882fa41)
 - Code Review Revision Record: code-review-revision-record.md
-- Current Code Review Revision ID: CRR-002
-- Current Review Round: 2
+- Relevant Implementation Revision IDs (round 3): IR-003 (docs b9d04998a4; ticket docs f0ff3a8671), for SR-018 / ARCH-REV-005 (DEC-W12)
+- Current Code Review Revision ID: CRR-004
+- Current Review Round: 3
 - Review Scope: `Targeted Delta Review`
-- Review Scope Evidence (round >1): `git diff ea867f9708 8f5bb563b1 -- autobyteus-server-ts` touches only `src/agent-work-journal/rendering/text-diff.ts` (one condition) and one new test in `tests/agent-work-journal/rendering/rendering-building-blocks.test.ts`. Both are within F-001's file and behavior. No spine, interface or data-shape change. Round-1 evidence for all other checks carries forward.
-- Trigger: implementation_engineer "Local Fix complete for CRR-001 F-001 (IR-002)"
-- Prior Review Round Reviewed: 1 (CRR-001, Fail: F-001)
-- Latest Authoritative Round: 2
+- Review Scope Evidence (round 3):
+  - `git show --stat b9d04998a4` changes only `RELEASE.md` ("Rollback") and `autobyteus-server-ts/docs/design/data_migration_guideline.md` (new §4 subsection "Rolling back after a migration").
+  - `git diff b0c81c8f20 f0ff3a8671 -- autobyteus-server-ts/src autobyteus-server-ts/tests` is empty.
+  - `git diff 8f5bb563b1 f0ff3a8671` over the journal, skill-improvement, app-data-migration and resource-manager source is empty.
+  - The merge b0c81c8f20 (origin/personal, delivery integration) brings other tickets' work and is not part of this delta.
+  - Round 2 (CRR-002): `git diff ea867f9708 8f5bb563b1 -- autobyteus-server-ts` touched only text-diff.ts and one test (F-001).
+- Trigger: implementation_engineer "work-journal IR-003 (SR-018, ARCH-REV-005) is ready for review"
+- Prior Review Round Reviewed: 2 (CRR-002, Pass)
+- Latest Authoritative Round: 3
 - Coverage Investigation / Execution Coverage / API-E2E Revision Record: N/A (implementation review)
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Failure Evidence: N/A
@@ -225,7 +231,12 @@ Original finding (round 1):
 
 ## Latest Authoritative Result
 
-- Review Decision: **Pass** (round 2, CRR-002, Targeted Delta Review)
+- Round 3 (CRR-004, IR-003, docs-only Targeted Delta Review): **Pass**.
+  - The RELEASE.md "Rollback" and guideline §4 edits match DEC-W12 (requirements-doc.md:56) and agree with each other.
+  - This release's own migration (deletion of retired `work_traces/` folders) has its rollback outcome decided, as the new rule requires: design-spec checklist item 10 says the older build stays readable and regenerates the folders on demand, so no release-note warning is needed.
+  - The improver_session.json writer has no `schemaVersion` (search of src/skill-improvement: no match), matching SR-018 with SR-016 withdrawn. Under DEC-W12 that is an ordinary writer change.
+  - The scorecard and all round-1/2 evidence carry forward unchanged. No new findings.
+- Review Decision: **Pass** (round 3, CRR-004; round 2, CRR-002, Targeted Delta Review)
 - Review Entry Point: Implementation Review
 - Supported Product Scenario Gate: Pass
 - Material-Premise Gate: Pass

@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- **Current solution revision:** `SR-014`.
+- **Current solution revision:** `SR-018`.
 - **Approved requirements baseline:** requirements-doc.md, REQ-W1–W9, DEC-W1–W10, status Approved.
   - **Approved by:** the Solution Designer within the user's direction, on the user's instruction (U17).
   - **Confirmed by the user:** placement U19–U21, and "requirement is clear? if yes, go on with the task" (U22, 2026-10-18).
@@ -113,6 +113,7 @@
 2. Record the Codex file-change kind (add/update/delete).
 3. Record Grok's exit code as a field instead of text inside the error.
 4. Optional, only if validation shows a measurable cost: incremental append for very large open files (see Key Tradeoffs).
+6. Accepted residue (from ARCH-REV-004): after a rollback and a re-upgrade, a `work_traces/` folder that the old build regenerated stays as inert residue. The deletion migration has already run, and nothing reads the folder.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -208,7 +209,8 @@ Manifest example (exact writer):
 **3. `skill_improvement/improver_session.json`.** 3 files (J11) with `schemaVersion`, `workTraces{…}` and `lastRequest.workTraceSummaryHash`.
 - **Decision:** `Directly Usable — No Migration`. The obsolete fields were only ever carried forward (J11).
 - **Reader:** converted from the strict `schemaVersion === 1` check to a projection of known fields, as guideline §3 requires when a format is touched.
-- **Writer:** writes the new `workJournal{rootPath, manifestPath, lastEvidenceHash}` and `lastRequest.workJournalEvidenceHash`, with no `schemaVersion`.
+- **Writer:** writes the new `workJournal{rootPath, manifestPath, lastEvidenceHash}` and `lastRequest.workJournalEvidenceHash`, with no `schemaVersion` (SR-018 restores the SR-010 decision and withdraws SR-016).
+  - **Rollback effect, accepted:** after a rollback, the released strict reader treats a file written by this build as absent, and skill improvement starts a fresh improver session once. This is an ordinary writer change, not a migration, so the corrected rollback rule needs no compatibility (RELEASE.md "Rollback"; data_migration_guideline.md §4 "Rolling back after a migration").
 - **Old files:** they load with the new fields absent (truthful meaning: no journal-based request yet). The old keys disappear on the next ordinary save.
 
 **4. Skill improvement `record.json` `evidenceSummaryHash`.** `Not Affected`: same name, same meaning (the hash of the evidence package).
@@ -233,7 +235,8 @@ Manifest example (exact writer):
 7. **Cost:** one directory walk of the memory roots (about 4,000 run folders), once. Terminal status is skipped afterwards.
 8. **References:** improver_session.json held absolute paths into these folders (inert fields, item 3). No other typed reference.
 9. **Evidence:** migration unit tests with the fixtures from item 3, plus a repeat-run idempotence test.
-10. **Lessons:** follows the snapshot-removal precedent (walk, skip symlinks, item details) and avoids its released-location classifier, because recognition here is purely structural. Independent architecture review is required by the risk classification.
+10. **Rollback** (data_migration_guideline.md §4, "Rolling back after a migration"): the older build can still work after a rollback. Nothing it reads was converted, and it regenerates the deleted derived folders on demand. No release-note warning is needed.
+11. **Lessons:** follows the snapshot-removal precedent (walk, skip symlinks, item details) and avoids its released-location classifier, because recognition here is purely structural. Independent architecture review is required by the risk classification.
 
 ## Data-Flow Spine Inventory
 
@@ -486,13 +489,14 @@ Drafted and then tightened. The final mapping is below. The one change from the 
 | `autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts` | File (Modify) | Add a `workJournalUpdater: Pick<WorkJournalRunUpdater, "attachToRun">` dependency, attached after the memory recorder and released with the others | Journal policy |
 | `…/agent-execution/runtime/general-process-run-supervisor.ts`, `…/application-platform/execution/application-execution-scope-kernel-builder.ts` | File (Modify) | Construct `new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() })` and pass it to the resource manager | — |
 | `…/skill-improvement/services/skill-improvement-service.ts` | Modify | Call `getWorkJournalService().ensureCurrent({ runId, memoryDir, runtimeKind })`; store `evidenceSummaryHash = package.evidenceHash` | — |
-| `…/skill-improvement/domain/improver-session.ts` | Modify | `WorkJournalPackage` in the trigger request; `workJournal{rootPath, manifestPath, lastEvidenceHash}`; `lastRequest.workJournalEvidenceHash`; no `schemaVersion` | — |
+| `…/skill-improvement/domain/improver-session.ts` | Modify | `WorkJournalPackage` in the trigger request; `workJournal{rootPath, manifestPath, lastEvidenceHash}`; `lastRequest.workJournalEvidenceHash`; no `schemaVersion` (Persisted Data item 3) | Fields kept only for older builds |
 | `…/skill-improvement/services/improver-session/skill-improvement-improver-session-store.ts` | Modify | Tolerant projection reader (guideline §3) | Version switches |
 | `…/skill-improvement/services/improver-session/skill-improvement-improver-session-service.ts`, `…-trigger-message-builder.ts` | Modify | New field names. The message says "Use the listed Work Journal files as the evidence package", followed by the manifest, root and files, and the new metadata keys. | — |
 | `…/src/agent-work-traces/` | Remove | — | — |
 | `…/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts` | Modify | Remove the dead options | Behavior change |
 | `…/app-data-migrations/migrations/remove-work-trace-exports-migration.ts` + registry entry | Add | DS-005, prerequisite `TaskAgentOwnRunV1`, `requiredOnStartup: true` | Current-code imports of old layouts |
 | `…/built-in-agents/templates/retrospective-skill-improver/{agent.md, skills/retrospective-skill-improver/SKILL.md, references/high-signal-trace-patterns.md}` | Modify | "Work Journal" wording; describe the journal's lines (`User:`, `Message from`, `Agent:`, `Command:`, `Write file:`, `Edit file:`, `Search web:`, `Tool:`, `Notice:`) and the history-not-instructions header | — |
+| `RELEASE.md` (Rollback) and `autobyteus-server-ts/docs/design/data_migration_guideline.md` §4 | Docs (Modify, done by the Solution Designer on the user's instruction, SR-018) | Rollback compatibility applies only to releases with an app-data migration (readable converted data, or a release-note statement); ordinary writer changes need no old-build compatibility | — |
 | `autobyteus-server-ts/docs/design/collaboration_model.md` §3 | Docs (Modify) | Add the work journal to a run's memory contents ("raw traces, work journal, snapshots, file changes, context files"), as DESIGN.md requires for run-storage changes | Any change to the CM rules |
 | `autobyteus-server-ts/docs/modules/agent_work_journal.md` (Add; replaces agent_work_traces.md); ARCHITECTURE.md, PROJECT_OVERVIEW.md, README.md, modules/README.md, modules/agent_memory.md, modules/skill_improvement.md; autobyteus-web/docs/{agent_execution_architecture,settings,skills}.md | Docs (Modify) | The new subsystem, storage location, updater and contract link | — |
 | `autobyteus-server-ts/tests/agent-work-journal/**` (Add); `tests/agent-work-traces/**` (Remove); skill-improvement tests and the migration test (Modify/Add) | Tests | Per TESTING.md | Real user data |

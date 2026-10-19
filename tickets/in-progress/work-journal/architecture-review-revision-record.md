@@ -9,6 +9,8 @@ The latest design-review-report.md is authoritative.
 | ARCH-REV-001 | Round 1: Architecture Design Complete | SR-010 | N/A | Pass | None blocking. Non-blocking notes N1–N7. |
 | ARCH-REV-002 | Round 2: documentation-only delta | SR-011, SR-012 | Pass | Pass | None blocking. N1–N7 remain; the editorial part of N5 is resolved. |
 | ARCH-REV-003 | Round 3: user-approved content-scope change | SR-013, SR-014 | Pass | Pass | None new. N1–N7 unchanged. |
+| ARCH-REV-004 | Round 4: delivery Design Impact (rollback readability) | SR-015, SR-016 | Pass | Pass | None new. N1–N7 unchanged. |
+| ARCH-REV-005 | Round 5: rollback rule corrected by the user; SR-016 withdrawn | SR-017, SR-018 | Pass | Pass | None new. N1–N7 unchanged. |
 
 ## Revision Entries
 
@@ -104,3 +106,74 @@ None.
 - Material classification changes: none.
 - Recommended recipient: /implementation_engineer (only the §8 rendering rules and their tests change), with an informational notice to /solution_designer.
 - Remaining risks or uncertainty: unchanged.
+
+### ARCH-REV-004 — Rollback readability of improver_session.json (SR-016)
+
+- Canonical design review report: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/tickets/in-progress/work-journal/design-review-report.md
+- Review round and trigger: round 4. /solution_designer sent Architecture Design Complete (revised) for SR-016, answering a /delivery_engineer Design Impact (see release-deployment-report.md and the "Revision SR-016" section of handoff-architecture-review.md).
+- Triggering role, report path, and finding IDs: /solution_designer, after delivery's Design Impact; design-spec.md Persisted Data item 3 and the improver-session.ts File Mapping row.
+- Relevant solution revision IDs: SR-015 (ARCH-REV-003 recorded) and SR-016.
+- Prior authoritative decision: Pass (ARCH-REV-003)
+- Current authoritative decision: Pass
+- What changed in the review result:
+  - **Governing contract:** RELEASE.md Rollback (line 151) requires that data written by a newer build stays readable by the build a user rolls back to.
+  - **Verified at origin/personal:**
+    - the released store rejects any file without `schemaVersion === 1` (store:31-32);
+    - the released service either falls back on the other fields (`workTraces`, `lastRequest`, service:169-174) or spreads the loaded state forward (:99-100).
+  - **Result:** keeping `schemaVersion: 1` is necessary and sufficient for rollback readability. The current reader ignores the field and nothing branches on it. The persisted-data decision stays `Directly Usable — No Migration`.
+  - **Recorded, non-blocking:**
+    - a `work_traces/` folder written after a rollback and upgrade becomes inert residue;
+    - an out-of-scope guideline clarification is recommended.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| N1–N4, N6, N7, and the code part of N5 | Open, non-blocking | Unchanged (implementation notes) | — | Not affected by SR-016 |
+
+- New or remaining finding IDs: none new.
+- Material classification changes: none (Large/High).
+- Recommended recipient: /implementation_engineer, for the implementation revision:
+  - the writer constant;
+  - a test that the written key set includes `schemaVersion: 1`;
+  - a test that the released strict check accepts a newly written file.
+
+  Also an informational notice to /solution_designer.
+- Remaining risks or uncertainty: the inert `work_traces/` residue after a rollback and upgrade (acceptable).
+
+### ARCH-REV-005 — Rollback rule corrected by the user; SR-016 withdrawn (SR-018)
+
+- Canonical design review report: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/tickets/in-progress/work-journal/design-review-report.md
+- Review round and trigger: round 5. /solution_designer sent Architecture Design Complete (revised) for SR-018 (see the "Revision SR-018" section of handoff-architecture-review.md).
+- Triggering role, report path, and finding IDs: /solution_designer, on the user's decision U29–U31 (DEC-W12); design-spec.md Persisted Data item 3, checklist item 10 and File Mapping; RELEASE.md and data_migration_guideline.md §4 (uncommitted).
+- Relevant solution revision IDs: SR-017 (ARCH-REV-004 recorded) and SR-018.
+- Prior authoritative decision: Pass (ARCH-REV-004 on SR-016)
+- Current authoritative decision: Pass
+- What changed in the review result:
+  - **Not reopened:** the rollback-rule change is the user's own decision, recorded as DEC-W12.
+  - **Doc diffs checked:**
+    - RELEASE.md "Rollback" and the new guideline §4 subsection agree with each other and with guideline §3, which allows no version fields in new or changed formats.
+    - Both diffs are scoped to rollback after a migration.
+  - **Rollback effect verified at origin/personal:**
+    - the strict load returns null;
+    - the service builds a replacement session, which is null-safe and writes `schemaVersion: 1` again;
+    - so the older build starts one fresh improver session, and later loads succeed.
+  - **Checklist item 10 verified:** the old export regenerates the deleted derived folders on every call.
+  - **Superseded:** the ARCH-REV-004 conclusion to keep `schemaVersion: 1` is withdrawn with SR-016.
+  - **Residual items:** the guideline recommendation from ARCH-REV-004 is done in this change, and the `work_traces/` residue after a rollback and re-upgrade remains accepted.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-REV-004 out-of-scope recommendation (guideline rollback wording) | Open, non-blocking | Resolved | SR-018 | data_migration_guideline.md §4 "Rolling back after a migration" (git diff in the ticket worktree) |
+| N1–N4, N6, N7, and the code part of N5 | Open, non-blocking | Unchanged (implementation notes) | — | Not affected |
+
+- New or remaining finding IDs: none new.
+- Material classification changes: none (Large/High).
+- Recommended recipient: /implementation_engineer, with an informational notice to /solution_designer. Implementation impact:
+  - remove or don't add the SR-016 `schemaVersion` constant and its tests;
+  - include the two doc edits in the change.
+- Remaining risks or uncertainty:
+  - one fresh improver session per target after a rollback (accepted);
+  - the inert `work_traces/` residue after a rollback and re-upgrade (accepted).

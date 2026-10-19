@@ -1,7 +1,7 @@
 # Work Journal — requirements
 
 ## Status
-- Package work-journal; revision SR-014; status **Approved**. The SR-008 corrections stay within the approved direction. The SR-014 content scope change (DEC-W11) was approved by the user on 2026-10-19 (U23–U28). The user delegated the remaining decisions (U17); approved by the Solution Designer within the user's stated direction.
+- Package work-journal; revision SR-014; status **Approved**. The SR-008 corrections stay within the approved direction. The SR-014 content scope change (DEC-W11) was approved by the user on 2026-10-19 (U23–U28). DEC-W12 (rollback rule) is the user's decision (U29–U31). The user delegated the remaining decisions (U17); approved by the Solution Designer within the user's stated direction.
 - Workspace /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal; branch codex/work-journal; base origin/personal @ 55bff1f5e (refreshed 2026-10-18); finalization target origin/personal.
 - Program: Step 1B of runtime-independent agent memory (Step 1A per-runtime compaction rotation complete for all five runtimes). Step 2 (work notes: one note per journal file, then combined notes) follows and is out of scope here.
 - Evidence: investigation-notes.md J01, U01–U03; earlier findings in the archived runtime-work-transfer-analysis (E16–E21, E28, E41, E45–E49) re-checked on 2026-10-07: the existing work-trace export (autobyteus-server-ts/src/agent-work-traces) is used only by skill improvement; its renderer still drops reasoning, system notices and system instructions, labels teammate messages as "user", ignores attachments, and caps values at 20,000 characters without a marker or pointer.
@@ -53,6 +53,7 @@ Raw traces record each runtime's own vocabulary (shell = run_bash / Bash / run_c
 - DEC-W2 Edits: change size plus a short diff (first 40 lines), longer diffs linked.
 - DEC-W3 Long outputs: first and last 20 lines, cut marked and linked.
 - DEC-W4 Model reasoning (thinking) is omitted from the journal (it records what the agent said and did).
+- DEC-W12 Rollback rule (user, U29–U31, 2026-10-19): the user judged the RELEASE.md rule "newer data must stay readable by the rollback build" too broad and asked for an immediate fix in this change. The rule now applies only to releases with an app-data migration that converts existing data: the converted data stays readable by the older build, or the release notes say rollback past the release is unsupported. Ordinary writer changes need no rollback compatibility. As a consequence, the improver_session.json writer drops `schemaVersion` as originally designed (SR-016 withdrawn).
 - DEC-W11 Content scope (U23–U28, user approval 2026-10-19; recommendation by the Solution Designer, accepted by the user).
   - **Rule:** include what was said to the agent, what the agent said, and what the agent did; exclude what the runtime does to manage the agent.
   - **Included:** `User:`, `Message from <teammate>:`, `Agent:`, every tool call with its result, `Notice:` (messages delivered to the agent, e.g. background-task results and platform notices) and `Turn interrupted by the user.`

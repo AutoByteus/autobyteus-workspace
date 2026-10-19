@@ -9,6 +9,8 @@ The latest `code-review-report.md` / `api-e2e-test-review-report.md` remains aut
 | CRR-001 | code-review-report.md | Implementation Review, round 1 / IR-001 | N/A | Fail — Local Fix → implementation_engineer | F-001 |
 | CRR-002 | code-review-report.md | Implementation Review, round 2 (Targeted Delta Review) / IR-002 | Fail (F-001) | Pass → api_e2e_engineer | F-001 (resolved) |
 | CRR-003 | api-e2e-test-review-report.md | Proportional API/E2E test-code review / API-REV-001 | Pass (CRR-002, source) | Pass → delivery_engineer | None |
+| CRR-004 | code-review-report.md | Implementation Review, round 3 (Targeted Delta Review, docs only) / IR-003 | Pass (CRR-002 source; CRR-003 tests) | Pass → api_e2e_engineer | None |
+| CRR-005 | api-e2e-test-review-report.md | Proportional API/E2E test-code review, round 2 / API-REV-002 | Pass (CRR-003) | Not Applicable (no durable test changed); cumulative Pass → delivery_engineer | None |
 
 ## Revision Entries
 
@@ -107,3 +109,61 @@ None (no prior test-review findings; F-001 was resolved in CRR-002).
   - Live Grok not covered (user decision).
   - N2 on slower hardware.
   - The full server E2E suite was not re-run after the AOML-1 fix.
+
+### CRR-004 — Docs-only delta for the corrected rollback rule (IR-003, SR-018): Pass
+
+- Canonical review report updated: code-review-report.md
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`.
+  - b9d04998a4 changes only RELEASE.md "Rollback" and data_migration_guideline.md §4 "Rolling back after a migration".
+  - No source or test change since the merge b0c81c8f20.
+  - Journal, skill-improvement, migration and resource-manager source is unchanged since 8f5bb563b1.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; implementation-handoff.md (IR-003); DEC-W12
+- Relevant solution revision IDs: SR-016 (withdrawn), SR-017, SR-018
+- Relevant architecture-review revision IDs: ARCH-REV-004, ARCH-REV-005
+- Relevant implementation revision IDs: IR-003 (b9d04998a4; docs f0ff3a8671)
+- Relevant API/E2E revision IDs: API-REV-001 (evidence carried forward)
+- Relevant delivery revision IDs: the delivery Design Impact that triggered SR-016 (see delivery-revision-record.md)
+- Prior authoritative result: Pass (CRR-002 source; CRR-003 tests)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The docs match DEC-W12 (requirements-doc.md:56). The two documents agree with each other.
+  - This release's deletion migration has its rollback outcome decided (design-spec checklist item 10: the older build stays readable).
+  - No `schemaVersion` exists in src/skill-improvement, consistent with SR-016 being withdrawn.
+- Supported product scenario / material-premise basis changes: None. The rollback effects (one fresh improver session per target; inert `work_traces/` residue after a rollback and re-upgrade) are accepted by the user's decision and ARCH-REV-005. No machinery is required.
+
+#### Prior Finding Resolution
+
+None open (F-001 resolved in CRR-002).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None (the scorecard carries forward at 9.4/10)
+- Recommended recipient: api_e2e_engineer (primary); implementation_engineer gets an informational notice
+- Remaining risks or uncertainty: unchanged from CRR-003.
+
+### CRR-005 — Test review after API/E2E round 2 (API-REV-002): Not Applicable, cumulative Pass
+
+- Canonical review report updated: api-e2e-test-review-report.md
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review). `git diff f0ff3a8671 6a4209ea75 --stat -- autobyteus-server-ts autobyteus-web` is empty; 6a4209ea75 holds only reports and evidence. Tests that came with the merge b0c81c8f20 belong to origin/personal (other tickets), not this ticket's API/E2E.
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; api-e2e-execution-coverage-report.md (API-REV-002); API-03c Codex rerun
+- Relevant solution revision IDs: SR-018
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-003)
+- Current authoritative result: Not Applicable for the round-2 delta; cumulative Pass
+- What changed in the review result and why:
+  - No durable test changed, so the round-1 review stands.
+  - The Codex rerun on f0ff3a8671 (after the merged Codex backend changes) gave 5 calls and 5 Command entries, out.txt == beta, so NB-T1's claim still holds.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None (no open test-review findings).
+
+- New or remaining finding IDs: None (NB-T1, NB-T2 non-blocking; FU-T1, FU-T2 follow-ups)
+- Material score or classification changes: None
+- Recommended recipient: delivery_engineer
+- Remaining risks or uncertainty: unchanged (live Grok, N2 on slower hardware, full suite not re-run after the AOML-1 fix).

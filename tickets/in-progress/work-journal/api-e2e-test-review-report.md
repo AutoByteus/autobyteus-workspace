@@ -2,7 +2,12 @@
 
 ## Review Meta
 
-- Review Round: 1
+- Review Round: 2 (CRR-005). Trigger: api_e2e_engineer "round 2 (API-REV-002, after CRR-004): Pass, 93.5%", tested at f0ff3a8671; docs and evidence in 6a4209ea75.
+  - **No durable test changed in round 2.** `git diff f0ff3a8671 6a4209ea75 --stat -- autobyteus-server-ts autobyteus-web` is empty; 6a4209ea75 holds only reports and evidence.
+  - The tests that arrived with the merge b0c81c8f20 (Codex turn-rejection tests) come from origin/personal and other tickets. They are not API/E2E changes of this ticket.
+  - Round-2 delta result: `Not Applicable`. The round-1 review of the 5 durable files stands as is.
+  - The Codex rerun (API-03c on f0ff3a8671, after the merged Codex backend changes) keeps NB-T1's claim exact: 5 run_bash calls give 5 Command entries (a failed `sed -i`, then a python retry), and out.txt == beta. Evidence: evidence/API-03-live-round2/codex/summary.json and API-03c-codex-round2.log (`1 passed | 3 skipped`).
+- Review Round (original): 1
 - Trigger: api_e2e_engineer "API/E2E validation passed (API-REV-001, 93.5%) … proportional test-code review"
 - Requirements Doc Reviewed As Context: requirements-doc.md (SR-014)
 - Investigation Notes Reviewed As Context: investigation-notes.md (as needed)
@@ -74,8 +79,8 @@ Non-blocking notes (no action required for delivery):
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: the 5 files above
+- Result: `Pass` (cumulative). Round 2 (CRR-005, API-REV-002): `Not Applicable`, because no durable test changed; the round-1 Pass (CRR-003) stands.
+- Changed durable test paths reviewed: the 5 files above (round 1); none in round 2
 - Unresolved finding IDs: None
 - Recommended Recipient: `delivery_engineer`
 - Notes:

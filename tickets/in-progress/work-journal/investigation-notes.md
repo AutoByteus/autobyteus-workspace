@@ -177,3 +177,24 @@ Authorities read:
 - **U25–U27:** discussed notices. Recommended keeping `Notice:` lines (389 Claude background-task notices plus 8 platform skill-update notices are delivered into the agent's conversation and acted on) and the user-interrupted turn.
 - **U28:** the user accepted the recommendation ("you have a good judgment based on your reasoning").
 - **Recorded as requirements DEC-W11 and contract D5.** Omitted: system_instruction, provider_compaction_boundary, llm_request_recovery, output_limit_recovery. Kept: Notice and Turn interrupted by the user.
+
+## Rollback readability (2026-10-19, delivery Design Impact)
+- **Source:** /delivery_engineer finding (docs-sync-report.md, release-deployment-report.md).
+  - RELEASE.md Rollback: "Data written by a newer build must stay readable by the build you roll back to."
+  - Rollback means reverting the merge and cutting a new release from the old code (desktop never downgrades), so the released strict reader runs again.
+- **Released reader:** origin/personal skill-improvement-improver-session-store.ts:31-32 (`parsed.schemaVersion === 1 ? parsed : null`).
+- **Effect without the field:** files written without `schemaVersion` would be treated as absent after a rollback. The improver session would restart and lose `currentImproverRunId` continuity. There is no crash and no raw-trace or journal impact.
+- **Other fields:** read with fallbacks in the released code, as delivery verified.
+- **Other rollback paths:** checked by delivery and fine (the migration runner, `work_journal/`, the derived `work_traces/`).
+- **Decision (Solution Designer, within direction):** keep writing the existing `schemaVersion: 1`. RELEASE.md is mandatory, and the guideline's rule forbids introducing version fields, not keeping an existing one that a released reader requires.
+
+## Rollback rule corrected (2026-10-19)
+- **U29 (User):** asked what rollback is and whether the rule adds strange logic.
+  - The rule was one line, added 2026-10-12 with RELEASE.md (commit 0fcad239f9). The guideline it pointed to had no rollback section.
+- **U30 (User):** the session-file changes are good, so the rule is the problem. It should apply only when a data migration exists.
+  - Answer: this ticket has one migration (it deletes derived work_traces folders, which the older build regenerates). The session-file change is not a migration.
+- **U31 (User):** fix the rule immediately in this change; no follow-up Task.
+- **Done:**
+  - RELEASE.md "Rollback" now limits data compatibility to releases with an app-data migration (readable converted data, or a release-note statement) and states that ordinary writer changes need none.
+  - data_migration_guideline.md §4 gains "Rolling back after a migration".
+  - SR-016 is withdrawn; requirements DEC-W12 records the decision.

@@ -19,11 +19,24 @@
 - Supplemental Task Artifacts Reviewed: work-journal-contract.md (Approved; §3.3 edited in SR-011), work-journal-builtin-tools.json; the probes are listed as evidence only
 - Relevant Solution Revision IDs: SR-010 (architecture design); SR-011 (pass recorded, contract §3.3 edit); SR-012 (authorities-read correction and collaboration_model.md §3 docs row); basis SR-007–SR-009
 - Architecture Review Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal/tickets/in-progress/work-journal/architecture-review-revision-record.md
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
+- Round 4 (ARCH-REV-004, SR-016): a delivery Design Impact on rollback readability. The improver_session.json writer keeps the existing `schemaVersion: 1`, and the tolerant reader ignores it.
+  - Verified at origin/personal (released): the store accepts only `schemaVersion === 1` (skill-improvement-improver-session-store.ts:31-32). The service either falls back on the other fields when absent (`existing?.workTraces ?? {…}`, `existing?.lastRequest ?? null`, :169-174) or spreads the loaded state forward (`...session.state`, :99-100). A newly written file therefore loads in the rolled-back build.
+  - RELEASE.md, Rollback section (line 151), states the governing contract.
+  - Keeping a field the released reader requires, with the same name, value and meaning and without branching on it, is proportionate. It does not reintroduce versioning.
+  - Persisted Data item 3 keeps the decision `Directly Usable — No Migration`. No other section changed.
+- Round 5 (ARCH-REV-005, SR-018): the user corrected the rollback rule (DEC-W12, U29–U31), and SR-016 is withdrawn.
+  - RELEASE.md "Rollback" and data_migration_guideline.md §4 "Rolling back after a migration" now limit rollback data compatibility to releases with an app-data migration that converts existing data. Ordinary writer changes need none. Both edits are uncommitted in the ticket worktree and in File Mapping scope.
+  - Persisted Data item 3 is back to SR-010 (no `schemaVersion`). Its accepted rollback effect is verified at origin/personal:
+    - the strict `load` returns null (store:31-32);
+    - the service then builds a replacement session (`createReplacementSession(context, existing)` with null-safe `existing?.…`, service:66, 137-174), which writes `schemaVersion: 1` again;
+    - so the older build starts one fresh improver session, and later loads succeed.
+  - Checklist item 10 is verified: the old export regenerates the deleted derived folders on every call (J10; agent-work-trace-projection-service.ts:27-63), and nothing it reads was converted.
+  - The ARCH-REV-004 entry about writing `schemaVersion: 1` is superseded. The guideline recommendation is now done in this change.
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
 - Trigger: Architecture Design Complete (revised), SR-012, a documentation-only delta, sent by /solution_designer
 - Prior Review Round Reviewed: ARCH-REV-001 (Pass on SR-010)
-- Latest Authoritative Round: 3
+- Latest Authoritative Round: 5
 - Round 2 delta check:
   - The design-spec "Authorities read" entry now records collaboration_model.md as read in full.
   - The new File Mapping row for collaboration_model.md §3 is justified:
@@ -214,7 +227,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | `<run>/work_journal/` (new) | Not Affected (new, disposable) | Pass | Pass | N/A | Pass | Exact writer, tolerant reader, rebuildable. Atomic `.tmp` files are excluded from memory sync. |
 | `work_traces/` folders (7) | Discard or Rebuild, deleted by migration | Pass | Pass | Pass | Pass | Shapes (a), (b), (c) plus a decoy fixture. MIGRATED, SKIPPED or FAILED dispositions with a warning aggregate. A retry finds the remaining folders. No backup, because the folders are regenerable and deletion is approved (DEC-W10). |
-| improver_session.json (3) | Directly Usable | Pass | Pass | N/A | Pass | The old fields are inert (J11). The reader becomes a projection, and old keys drop on the next save. |
+| improver_session.json (3) | Directly Usable | Pass | Pass | N/A | Pass | The old fields are inert (J11). The reader becomes a projection, and old keys drop on the next save. SR-018: no `schemaVersion` (SR-016 withdrawn). Under the corrected rollback rule (DEC-W12), this is an ordinary writer change. The accepted rollback effect, one fresh improver session in the older build, is verified. |
 | record.json `evidenceSummaryHash` | Not Affected | Pass | Pass | N/A | Pass | Same meaning |
 | Raw traces and manifests | Not Affected | Pass | Pass | N/A | Pass | Read only |
 
@@ -310,9 +323,17 @@ N/A (Pass).
 - **Per-turn re-render cost on large open files** (p90 5.2 MB, max 28 MB). It is bounded, measured in step 8 and escalated by the design's trigger (N2).
 - **Grok coverage** rests on documentation and one small live run.
 - **Memory sync carries `work_journal/`**, which adds derived bytes. This is accepted by DEC-W10.
+- **Rollback and upgrade again.** If a rolled-back build runs Skill Improvement, it writes a fresh `<run>/work_traces/` folder. On the next upgrade, the cleanup migration has already succeeded and doesn't run again, so that folder stays as inert residue: nothing reads it, and the guideline allows inert residue (§6). This is accepted (SR-018) and needs no machinery.
+- **Rollback effect on improver sessions.** After a rollback, the older build starts one fresh improver session for each target whose session file this build wrote. This is accepted under DEC-W12.
+- The guideline clarification recommended in ARCH-REV-004 is now done in this change (data_migration_guideline.md §4).
 
 ## Latest Authoritative Result
 
 - Review Decision: Pass
 - Material-Premise Gate: Pass
-- Notes: ARCH-REV-003 on SR-014, a user-approved content-scope change that affects only the contract §8 rendering rules and their tests. Pass. Before that, ARCH-REV-002 on SR-012 was a documentation-only delta. The ARCH-REV-001 Pass stands, and the collaboration_model.md §3 docs row is added to implementation scope. Non-blocking notes N1–N7 still apply; the editorial part of N5 is resolved. None changes approved behavior.
+- Notes: ARCH-REV-005 on SR-018: rollback rule corrected by the user (DEC-W12), SR-016 withdrawn. Pass.
+  - No `schemaVersion` constant is added, and any SR-016 constant or tests already written are removed.
+  - The two repository doc edits are part of the change.
+  - Implementation scope is otherwise as of SR-014.
+
+  Earlier rounds: ARCH-REV-004 (SR-016, superseded) and, before that, ARCH-REV-003 on SR-014, a user-approved content-scope change that affects only the contract §8 rendering rules and their tests. Pass. Before that, ARCH-REV-002 on SR-012 was a documentation-only delta. The ARCH-REV-001 Pass stands, and the collaboration_model.md §3 docs row is added to implementation scope. Non-blocking notes N1–N7 still apply; the editorial part of N5 is resolved. None changes approved behavior.
