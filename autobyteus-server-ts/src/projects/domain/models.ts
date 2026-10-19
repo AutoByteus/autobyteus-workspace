@@ -21,6 +21,8 @@ export interface ProjectTask {
   contextFiles?: ProjectTaskContextFile[];
   /** Other Tasks of the same Project this Task depends on (informs only); absent in a file means none. */
   dependsOnTaskIds: string[];
+  /** The Task of the same Project this Task is part of (its parent, one level only); null (or absent in a file) means none. */
+  partOfTaskId: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -37,8 +39,12 @@ export interface TaskAcknowledgementView {
   status: ProjectTaskStatus;
   /** A Project Task's dependencies (stored long IDs); absent for a Task with no Project. */
   dependsOnTaskIds?: string[];
+  /** A Project Task's parent (stored long ID or null); absent for a Task with no Project. */
+  partOfTaskId?: string | null;
   /** The saved context files this update attached, in request order; present only when it attached any. */
   attachedContextFiles?: ProjectTaskContextFile[];
+  /** The keys of the open parts this update closed with their parent (DONE or CANCELLED); present only when it closed any. */
+  closedPartReferences?: string[];
 }
 
 /** A Project as persisted in `<appDataDir>/projects/<projectId>/project.json`; its Tasks live in their own folders. */
@@ -174,6 +180,8 @@ export interface CreateProjectTaskCommand {
   description: string;
   /** Same-Project Task IDs; omitted or null means none. */
   dependsOnTaskIds?: string[] | null;
+  /** The parent: a same-Project Task ID; omitted or null means none. */
+  partOfTaskId?: string | null;
 }
 
 export interface UpdateProjectTaskCommand {
@@ -184,6 +192,8 @@ export interface UpdateProjectTaskCommand {
   contextChanges?: ProjectTaskContextChanges | null;
   /** Replaces the stored list when supplied (`[]` clears it); omitted or null keeps it. */
   dependsOnTaskIds?: string[] | null;
+  /** A same-Project Task ID replaces the parent, null clears it, omitted (undefined) keeps it. */
+  partOfTaskId?: string | null;
 }
 
 /**
@@ -197,6 +207,8 @@ export interface CreateTaskWithLocalContextFilesCommand {
   localContextFiles: string[];
   /** Tasks of the same Project this one depends on, each by key or long ID; omitted means none. */
   dependsOn?: string[];
+  /** The parent, a Task of the same Project by key or long ID; omitted means none. */
+  partOf?: string;
 }
 
 /**
@@ -210,6 +222,8 @@ export interface UpdateTaskByIdCommand {
   localContextFiles?: string[];
   /** Replaces a Project Task's dependencies, each by key or long ID (`[]` clears); omitted keeps them. */
   dependsOn?: string[];
+  /** Replaces a Project Task's parent, by key or long ID; "" or null clears it; omitted keeps it. */
+  partOf?: string | null;
 }
 
 export interface DeleteProjectTaskCommand {

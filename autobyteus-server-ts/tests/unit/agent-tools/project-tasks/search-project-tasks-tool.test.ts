@@ -86,8 +86,8 @@ describe("search_project_tasks tool", () => {
     expect(result).toEqual({
       projectId,
       tasks: [
-        { taskId: first.taskKey, status: "TODO", summary: `${long.split("\n")[0]!.trim().slice(0, 159)}…`, match: "exact" },
-        { taskId: expect.stringMatching(/-\d+$/), status: "TODO", summary: "Publish the container image to the registry", match: "meaning" },
+        { taskId: first.taskKey, status: "TODO", partOf: null, parts: [], summary: `${long.split("\n")[0]!.trim().slice(0, 159)}…`, match: "exact" },
+        { taskId: expect.stringMatching(/-\d+$/), status: "TODO", partOf: null, parts: [], summary: "Publish the container image to the registry", match: "meaning" },
       ],
       meaningSearch: { state: "ready" },
     });

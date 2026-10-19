@@ -196,7 +196,7 @@ describe("Project Task keys and dependencies (services)", () => {
       const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
       vi.spyOn(store, "updateTask").mockRejectedValueOnce(new Error("disk full"));
       await expect(tasks.deleteTask({ projectId, taskId: a.taskId })).resolves.toBe(true);
-      expect(warn).toHaveBeenCalledWith("TASK_DEPENDENCY_CLEANUP_FAILED", expect.objectContaining({ taskId: a.taskId }));
+      expect(warn).toHaveBeenCalledWith("TASK_RELATION_CLEANUP_FAILED", expect.objectContaining({ taskId: a.taskId }));
     });
 
     it("task_upserted carries taskKey and dependsOnTaskIds (AC-011)", async () => {
