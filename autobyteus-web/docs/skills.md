@@ -331,10 +331,10 @@ composer-adjacent **Improve skills** CTA lazy-loads backend eligibility for the
 selected active run or team member and stays hidden when the backend says the
 current target is ineligible. Run-history rows and start surfaces do not own
 Skill Improvement actions. Before messaging the visible improver, the backend
-projects the target's raw trace corpus into readable work trace files and sends
+makes the target's Work Journal (readable Markdown rendered from its raw traces) current and sends
 the improver a concise task packet with paths, editable skill roots, and a
 bounded relative package tree that marks each `SKILL.md` as `[entry]`; it does
-not inline the work trace body or ask the improver to read raw trace JSONL. The
+not inline the journal body or ask the improver to read raw trace JSONL. The
 backend records minimal provenance and does not compute changed paths or
 policy-violation metrics in the MVP. After launch, the workspace may show only a
 short transient start status. Only after meaningful durable skill package file
@@ -356,6 +356,6 @@ separate proposal/apply UI or product audit service.
 
 ## Related Documentation
 
-- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, shared work-trace package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
+- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, Work Journal evidence package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Skills are attached to agents to provide capabilities.
 - **[File Explorer](./file_explorer.md)**: Skills use the generic, workspace-agnostic File Explorer.

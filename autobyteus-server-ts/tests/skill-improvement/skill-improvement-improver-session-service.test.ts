@@ -29,35 +29,15 @@ const fakeRun = (runId: string, active = true) => ({
   subscribeToEvents: vi.fn(() => () => undefined),
 });
 
-const buildWorkTracePackage = (input: {
-  workTraceRootPath: string;
+const buildWorkJournalPackage = (input: {
+  rootPath: string;
   manifestPath: string;
-  workTraceFilePath: string;
+  journalFilePath: string;
 }) => ({
-  target: { kind: "agent_run" as const, runId: "target-run-1" },
-  targetDisplayName: "Target",
-  workTraceRootPath: input.workTraceRootPath,
+  rootPath: input.rootPath,
   manifestPath: input.manifestPath,
-  summaryHash: "summary-hash",
-  manifest: {
-    schemaVersion: 3 as const,
-    target: { kind: "agent_run" as const, runId: "target-run-1" },
-    targetDisplayName: "Target",
-    generatedAt: "2026-01-01T00:00:00.000Z",
-    workTraceRootPath: input.workTraceRootPath,
-    manifestPath: input.manifestPath,
-    files: [{
-      sourceId: "active",
-      sourceKind: "active" as const,
-      sourceDisplayName: "active raw traces",
-      fileName: "work_trace_active.md",
-      filePath: input.workTraceFilePath,
-      recordCount: 2,
-      firstTimestamp: "2026-01-01T00:00:00.000Z",
-      lastTimestamp: "2026-01-01T00:00:01.000Z",
-      generatedAt: "2026-01-01T00:00:02.000Z",
-    }],
-  },
+  files: [{ path: input.journalFilePath, sourceFile: "raw_traces_active.jsonl", state: "open" as const }],
+  evidenceHash: "evidence-hash",
 });
 
 describe("SkillImprovementImproverSessionService", () => {
@@ -129,10 +109,54 @@ describe("SkillImprovementImproverSessionService", () => {
     await expect(fs.stat(path.join(context.memoryDir, "skill_improvement", "targets"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 
+  it("loads a session file of an earlier version by its known fields; the old fields disappear on the next save", async () => {
+    const store = new SkillImprovementImproverSessionStore();
+    const statePath = store.getImproverSessionPath(context);
+    await fs.mkdir(path.dirname(statePath), { recursive: true });
+    // Hand-built in the released shape: a schema version, the old evidence folder fields and request hash.
+    await fs.writeFile(statePath, JSON.stringify({
+      schemaVersion: 1,
+      target: context.target,
+      status: "active",
+      currentImproverRunId: "improver-old",
+      priorImproverRunIds: ["older"],
+      improverAgentDefinitionId: "retrospective-skill-improver",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      llmModelIdentifier: "old-model",
+      workspaceRootPath: tempRoot,
+      memoryRootPath: context.memoryDir,
+      workTraces: { rootPath: "/old", manifestPath: "/old/manifest.json", lastSummaryHash: "old-hash" },
+      lastRequest: { improvementRunId: "previous", requestedAt: "2026-01-01T00:00:00.000Z", workTraceSummaryHash: "old-hash" },
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    }), "utf-8");
+
+    const loaded = await store.load(context);
+    expect(loaded).toEqual({
+      target: context.target,
+      status: "active",
+      currentImproverRunId: "improver-old",
+      priorImproverRunIds: ["older"],
+      improverAgentDefinitionId: "retrospective-skill-improver",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      llmModelIdentifier: "old-model",
+      workspaceRootPath: tempRoot,
+      memoryRootPath: context.memoryDir,
+      workJournal: { rootPath: null, manifestPath: null, lastEvidenceHash: null },
+      lastRequest: { improvementRunId: "previous", requestedAt: "2026-01-01T00:00:00.000Z", postedAt: null, workJournalEvidenceHash: null },
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    });
+    await store.write(context, loaded!);
+    expect(await fs.readFile(statePath, "utf-8")).not.toMatch(/schemaVersion|workTrace/);
+
+    await fs.writeFile(statePath, JSON.stringify({ status: "active" }), "utf-8");
+    expect(await store.load(context)).toBeNull();
+    await fs.writeFile(statePath, "{broken", "utf-8");
+    expect(await store.load(context)).toBeNull();
+  });
+
   it("restores an inactive improver run when the runtime supports restore", async () => {
     const store = new SkillImprovementImproverSessionStore();
     await store.write(context, {
-      schemaVersion: 1,
       target: context.target,
       status: "active",
       currentImproverRunId: "restorable-improver",
@@ -142,10 +166,10 @@ describe("SkillImprovementImproverSessionService", () => {
       llmModelIdentifier: "old-model",
       workspaceRootPath: tempRoot,
       memoryRootPath: context.memoryDir,
-      workTraces: {
-        rootPath: "/work-traces",
-        manifestPath: "/work-traces/work_traces_manifest.json",
-        lastSummaryHash: "hash-old",
+      workJournal: {
+        rootPath: "/work-journal",
+        manifestPath: "/work-journal/work_journal_manifest.json",
+        lastEvidenceHash: "hash-old",
       },
       lastRequest: { improvementRunId: "previous", requestedAt: "2026-01-01T00:00:00.000Z" },
       updatedAt: "2026-01-01T00:00:00.000Z",
@@ -176,8 +200,8 @@ describe("SkillImprovementImproverSessionService", () => {
       status: "active",
       currentImproverRunId: "restorable-improver",
       priorImproverRunIds: [],
-      workTraces: {
-        manifestPath: "/work-traces/work_traces_manifest.json",
+      workJournal: {
+        manifestPath: "/work-journal/work_journal_manifest.json",
       },
     });
   });
@@ -185,7 +209,6 @@ describe("SkillImprovementImproverSessionService", () => {
   it("records unavailable prior improver and creates a replacement", async () => {
     const store = new SkillImprovementImproverSessionStore();
     await store.write(context, {
-      schemaVersion: 1,
       target: context.target,
       status: "active",
       currentImproverRunId: "dead-improver",
@@ -195,10 +218,10 @@ describe("SkillImprovementImproverSessionService", () => {
       llmModelIdentifier: "old-model",
       workspaceRootPath: tempRoot,
       memoryRootPath: context.memoryDir,
-      workTraces: {
-        rootPath: "/work-traces",
-        manifestPath: "/work-traces/work_traces_manifest.json",
-        lastSummaryHash: "hash-old",
+      workJournal: {
+        rootPath: "/work-journal",
+        manifestPath: "/work-journal/work_journal_manifest.json",
+        lastEvidenceHash: "hash-old",
       },
       lastRequest: { improvementRunId: "previous", requestedAt: "2026-01-01T00:00:00.000Z" },
       updatedAt: "2026-01-01T00:00:00.000Z",
@@ -229,16 +252,16 @@ describe("SkillImprovementImproverSessionService", () => {
       status: "active",
       currentImproverRunId: "replacement-improver",
       priorImproverRunIds: ["dead-improver"],
-      workTraces: {
-        manifestPath: "/work-traces/work_traces_manifest.json",
+      workJournal: {
+        manifestPath: "/work-journal/work_journal_manifest.json",
       },
     });
   });
 
   it("posts the concise Skill Improvement task packet through the improver request path and registers the final-message grant", async () => {
-    const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "work_traces", "work_traces_manifest.json");
-    const workTraceRootPath = path.dirname(manifestPath);
-    const workTraceFilePath = path.join(workTraceRootPath, "work_trace_active.md");
+    const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "work_journal", "work_journal_manifest.json");
+    const journalRootPath = path.dirname(manifestPath);
+    const journalFilePath = path.join(journalRootPath, "work_journal_active.md");
     const skillRootPath = path.join(tempRoot, "skills", "durable-skill");
     const skillMdPath = path.join(skillRootPath, "SKILL.md");
     await fs.mkdir(path.join(skillRootPath, "references"), { recursive: true });
@@ -289,7 +312,6 @@ describe("SkillImprovementImproverSessionService", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       llmModelIdentifier: "model",
       state: {
-        schemaVersion: 1,
         target: { kind: "agent_run", runId: "target-run-1" },
         status: "active",
         currentImproverRunId: "improver-run-1",
@@ -299,10 +321,10 @@ describe("SkillImprovementImproverSessionService", () => {
         llmModelIdentifier: "model",
         workspaceRootPath: tempRoot,
         memoryRootPath: context.memoryDir,
-        workTraces: {
+        workJournal: {
           rootPath: null,
           manifestPath: null,
-          lastSummaryHash: null,
+          lastEvidenceHash: null,
         },
         lastRequest: null,
         updatedAt: "2026-01-01T00:00:00.000Z",
@@ -311,7 +333,7 @@ describe("SkillImprovementImproverSessionService", () => {
       improvementRunId: "improvement-integrated-post",
       requestedAt: "2026-01-01T00:00:00.000Z",
       targetAgentRunId: "target-run-1",
-      workTracePackage: buildWorkTracePackage({ workTraceRootPath, manifestPath, workTraceFilePath }),
+      workJournalPackage: buildWorkJournalPackage({ rootPath: journalRootPath, manifestPath, journalFilePath }),
       editableSkillTargets: [{
         skillName: "durable-skill",
         skillRootPath,
@@ -332,10 +354,14 @@ describe("SkillImprovementImproverSessionService", () => {
     expect(improverRun.subscribeToEvents).toHaveBeenCalledOnce();
     expect(improverRun.postUserMessage).toHaveBeenCalledOnce();
     expect(agentRunService.recordRunActivity).toHaveBeenCalledOnce();
+    expect(await new SkillImprovementImproverSessionStore().load(context)).toMatchObject({
+      workJournal: { rootPath: journalRootPath, manifestPath, lastEvidenceHash: "evidence-hash" },
+      lastRequest: { improvementRunId: "improvement-integrated-post", workJournalEvidenceHash: "evidence-hash" },
+    });
 
     const postedMessage = postedMessages[0] as { content: string; metadata: Record<string, unknown> };
-    expect(postedMessage.content).toContain(`Work trace manifest: ${manifestPath}`);
-    expect(postedMessage.content).toContain(`1. ${workTraceFilePath}`);
+    expect(postedMessage.content).toContain(`Work Journal manifest: ${manifestPath}`);
+    expect(postedMessage.content).toContain(`1. ${journalFilePath}`);
     expect(postedMessage.content).toContain(`Root directory: ${skillRootPath}`);
     expect(postedMessage.content).toContain("Package tree:\n   .");
     expect(postedMessage.content).toContain("SKILL.md [entry]");
@@ -383,9 +409,9 @@ describe("SkillImprovementImproverSessionService", () => {
   });
 
   it("builds a concise path-only improver trigger with package tree metadata", async () => {
-    const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "work_traces", "work_traces_manifest.json");
-    const workTraceRootPath = path.dirname(manifestPath);
-    const workTraceFilePath = path.join(workTraceRootPath, "work_trace_active.md");
+    const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "work_journal", "work_journal_manifest.json");
+    const journalRootPath = path.dirname(manifestPath);
+    const journalFilePath = path.join(journalRootPath, "work_journal_active.md");
     const skillRootPath = path.join(tempRoot, "skills", "durable-skill");
     const skillMdPath = path.join(skillRootPath, "SKILL.md");
     await fs.mkdir(path.join(skillRootPath, "references"), { recursive: true });
@@ -396,7 +422,7 @@ describe("SkillImprovementImproverSessionService", () => {
       improvementRunId: "improvement-path-only",
       requestedAt: "2026-01-01T00:00:00.000Z",
       targetAgentRunId: "target-run-1",
-      workTracePackage: buildWorkTracePackage({ workTraceRootPath, manifestPath, workTraceFilePath }),
+      workJournalPackage: buildWorkJournalPackage({ rootPath: journalRootPath, manifestPath, journalFilePath }),
       editableSkillTargets: [{
         skillName: "durable-skill",
         skillRootPath,
@@ -410,7 +436,6 @@ describe("SkillImprovementImproverSessionService", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       llmModelIdentifier: "model",
       state: {
-        schemaVersion: 1,
         target: { kind: "agent_run", runId: "target-run-1" },
         status: "active",
         currentImproverRunId: "improver-run-1",
@@ -420,22 +445,22 @@ describe("SkillImprovementImproverSessionService", () => {
         llmModelIdentifier: "model",
         workspaceRootPath: tempRoot,
         memoryRootPath: context.memoryDir,
-        workTraces: {
-          rootPath: workTraceRootPath,
+        workJournal: {
+          rootPath: journalRootPath,
           manifestPath,
-          lastSummaryHash: "summary-hash",
+          lastEvidenceHash: "evidence-hash",
         },
         lastRequest: null,
         updatedAt: "2026-01-01T00:00:00.000Z",
       },
     });
 
-    expect(message.content).toContain(`Work trace manifest: ${manifestPath}`);
-    expect(message.content).toContain(`Work trace root: ${workTraceRootPath}`);
-    expect(message.content).toContain(`1. ${workTraceFilePath}`);
+    expect(message.content).toContain(`Work Journal manifest: ${manifestPath}`);
+    expect(message.content).toContain(`Work Journal root: ${journalRootPath}`);
+    expect(message.content).toContain(`1. ${journalFilePath}`);
     expect(message.content).toContain("Skill Improvement requested for the target run/agent.");
-    expect(message.content).toContain("Use the listed work trace files as the evidence package.");
-    expect(message.content).toContain("The task message and work trace manifest provide the target identity.");
+    expect(message.content).toContain("Use the listed Work Journal files as the evidence package.");
+    expect(message.content).toContain("The task message and Work Journal manifest provide the target identity.");
     expect(message.content).toContain("Editable skill packages:");
     expect(message.content).toContain(`Root directory: ${skillRootPath}`);
     expect(message.content).toContain("Package tree:\n   .");
@@ -458,8 +483,8 @@ describe("SkillImprovementImproverSessionService", () => {
     expect(message.content).not.toContain("worker:\n");
     expect(message.content).not.toContain("target worker");
     expect(message.metadata).toMatchObject({
-      skill_improvement_work_trace_manifest_path: manifestPath,
-      skill_improvement_work_trace_root_path: workTraceRootPath,
+      skill_improvement_work_journal_manifest_path: manifestPath,
+      skill_improvement_work_journal_root_path: journalRootPath,
       skill_improvement_target_agent_run_id: "target-run-1",
       skill_improvement_target_message_type: SKILL_IMPROVEMENT_TARGET_MESSAGE_TYPE,
     });

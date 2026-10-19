@@ -139,9 +139,6 @@ const createCompactionEvent = (
 
 export type HistoricalReplayBuildOptions = {
   callContextByIdentity?: ReadonlyMap<string, ToolCallContext>;
-  interactionByIdentity?: ReadonlyMap<string, ToolInteraction>;
-  traceById?: ReadonlyMap<string, MemoryTurnTraceEvent>;
-  includedToolIdentityKeys?: ReadonlySet<string>;
 };
 
 export const buildHistoricalReplayEvents = (
@@ -151,13 +148,13 @@ export const buildHistoricalReplayEvents = (
   const turnTraces = rawTraces.filter(
     (trace): trace is MemoryTurnTraceEvent => trace.scope !== "run",
   );
-  const interactionByIdentity = options.interactionByIdentity ?? new Map(
+  const interactionByIdentity = new Map(
     buildToolInteractions(turnTraces, options).map((interaction) => [
       toolCallIdentityKey({ turnId: interaction.turnId!, toolCallId: interaction.toolCallId }),
       interaction,
     ]),
   );
-  const traceById = options.traceById ?? new Map(
+  const traceById = new Map(
     turnTraces.flatMap((trace) => trace.id ? [[trace.id, trace] as const] : []),
   );
   const emittedToolIdentities = new Set<string>();
@@ -240,7 +237,6 @@ export const buildHistoricalReplayEvents = (
       continue;
     }
     const key = toolCallIdentityKey(identity);
-    if (options.includedToolIdentityKeys && !options.includedToolIdentityKeys.has(key)) continue;
     if (emittedToolIdentities.has(key)) continue;
     const interaction = interactionByIdentity.get(key);
     if (!interaction) continue;

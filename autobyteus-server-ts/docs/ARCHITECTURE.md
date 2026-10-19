@@ -193,19 +193,18 @@ See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md),
 and [frontend activity/recovery](../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity)
 for the authoritative ownership and limitations.
 
-## Agent Work Trace Projection
+## Agent Work Journal
 
-The shared work-trace subsystem lives under `src/agent-work-traces`. It owns the
-raw-trace-to-readable-Markdown projection boundary for target run memory
-directories. Consumers call
-`AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir, targetDisplayName })`;
-the capability reads canonical raw traces through
-`RawTraceFileSourceService`, writes derived files under
-`<memoryDir>/work_traces/`, and returns a clean manifest/package with target metadata, file paths, and a summary hash over rendered evidence. The older skill-improvement-owned
-generated cache root `<memoryDir>/skill_improvement/work_traces/` is not a runtime
-fallback or dual-write target because work traces are regenerable from canonical
-raw traces.
-See `modules/agent_work_traces.md` for the detailed shared contract.
+The Work Journal subsystem lives under `src/agent-work-journal`. It renders a run's raw traces
+into deterministic, runtime-neutral Markdown under `<memoryDir>/work_journal/`: one journal file
+per raw-trace file (closed segments are written once, the open file is rendered again at each
+turn end) plus `work_journal_manifest.json`. Built-in tools of each runtime read as plain actions
+(`Command:`, `Write file:`, `Edit file:`, `Search web:`), every other tool as `Tool: <name>`.
+`WorkJournalRunUpdater`, attached to every AgentRun after the memory recorder, keeps live runs
+current; consumers call `getWorkJournalService().ensureCurrent({ runId, memoryDir, runtimeKind })`
+and receive the file paths and an evidence hash. Raw traces stay the only authority: the journal
+is regenerable and never feeds back into recording, restore or run history.
+See `modules/agent_work_journal.md` for the detailed contract.
 
 ## Skill Improvement Runtime
 
@@ -214,10 +213,10 @@ It is globally disabled by default through `ENABLE_SKILL_IMPROVEMENT`. Manual st
 resolve eligibility from current global Skill Improvement settings and the current
 live target state, not from launch-time run overrides or stored launch snapshots.
 Agent/team definitions and launch inputs do not own Skill Improvement eligibility.
-Manual starts consume the shared Agent Work Trace Projection package for the
+Manual starts consume the Work Journal package of the
 selected standalone run or team member, then activate or reuse a visible
 target-scoped Retrospective Skill Improver `AgentRun` and send it a small path-based trigger. The
-Retrospective Skill Improver reads work trace files, may edit only exact configured skill roots, and
+Retrospective Skill Improver reads Work Journal files, may edit only exact configured skill roots, and
 can report a meaningful durable skill update through the grant-scoped
 `send_message_to` contract. A required startup migration removes obsolete
 `skillImprovementEffective` fields from existing run and team-member metadata. The

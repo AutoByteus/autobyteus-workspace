@@ -29,6 +29,7 @@ import { RemoveBuiltInProjectTaskManagerMigration } from "./migrations/remove-bu
 import { TaskAgentOwnRunV1AppDataMigration } from "./migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
 import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
+import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -91,9 +92,11 @@ export class AppDataMigrationRegistry {
       new CollaboratorsToDelegatedRunsV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
       // On every start each pending or failed predecessor runs before it (contract §5.4).
       new TaskAgentOwnRunV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
-      // Registered last: converts every JSON message log after each released migration that may still
-      // write one, on the same start (append-only message logs, DS-005).
+      // Registered after every released migration that may still write a JSON message log: converts
+      // each one on the same start (append-only message logs, DS-005).
       new AppendOnlyMessageLogsV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
+      // Deletes the retired work-trace export folders once run folders are in their current place.
+      new RemoveWorkTraceExportsMigration(appConfigProvider.config.getMemoryDir()),
     ];
     this.validateDefinitions();
   }
