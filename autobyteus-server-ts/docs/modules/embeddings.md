@@ -129,7 +129,8 @@ has none, or after a model switch, so a warm poll reads no Task. States: `notInd
 
 **Index after writes (REQ-011).** A Task create or edit (by a user or an agent; any post-commit Task mark) indexes its
 Project in the background 3 s later, with writes in between joining that run, when `activeModelOnDisk()` holds both
-when the write commits and when the run starts. A write never waits for it, never fails because of it, and never starts
+when the write commits and when the run starts. The run reads the Project's Tasks and syncs only when something is
+not indexed or changed (or a run is pending), so status, dependency and assignment marks load no model. A write never waits for it, never fails because of it, and never starts
 a download; a Project deleted meanwhile is skipped, and host shutdown drops pending runs. Without the model on disk, the
 first search or a Settings action prepares it, and the search-time fingerprint check stays the safety net.
 

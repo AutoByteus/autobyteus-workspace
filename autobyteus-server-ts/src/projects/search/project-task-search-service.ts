@@ -161,11 +161,17 @@ export class ProjectTaskSearchService implements ProjectTaskSearchCleanup, Proje
   private async fingerprintsOf(projectId: string, index: ReturnType<Dependencies["index"]>): Promise<ItemFingerprints> {
     const kept = this.inputs.get(projectId);
     if (kept && !this.dirty.has(projectId) && index.fingerprintsAreCurrent(kept)) return kept;
+    return (await this.readProject(projectId, index)).fingerprints;
+  }
+
+  /** Reads the Project's Tasks and keeps their fingerprints (the Project is clean afterwards). */
+  private async readProject(projectId: string, index: ReturnType<Dependencies["index"]>) {
     // Cleared before the read: a write committed during it marks the Project dirty again for the next read.
     this.dirty.delete(projectId);
-    const fingerprints = index.fingerprintItems(itemsOf(await this.deps.listTasks(projectId)));
+    const items = itemsOf(await this.deps.listTasks(projectId));
+    const fingerprints = index.fingerprintItems(items);
     this.inputs.set(projectId, fingerprints);
-    return fingerprints;
+    return { items, fingerprints };
   }
 
   /**
@@ -191,8 +197,15 @@ export class ProjectTaskSearchService implements ProjectTaskSearchCleanup, Proje
 
   private async indexAfterWrite(projectId: string): Promise<void> {
     try {
-      if (this.disposed || !this.deps.index().activeModelOnDisk()) return;
-      await this.indexProject(projectId);
+      const index = this.deps.index();
+      if (this.disposed || !index.activeModelOnDisk()) return;
+      // Most marks change no description (status, dependency and assignment commits): with nothing to index, nothing
+      // is synced, so no job is made and no model is loaded (CR-003). Unlike Index now, which prepares on purpose.
+      const { items, fingerprints } = await this.readProject(projectId, index);
+      const collection = collectionOf(projectId);
+      const { state } = index.collectionStatus(collection, fingerprints);
+      if (state === "ready" || state === "unavailable") return;
+      index.sync(collection, items);
     } catch (error) {
       // A Project deleted inside the wait has nothing left to index.
       if (error instanceof ProjectError && error.code === "PROJECT_NOT_FOUND") return;

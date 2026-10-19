@@ -162,6 +162,32 @@ describe("Project index status and index after writes", () => {
     expect(fake.runner().documents.sort()).toEqual(["Docker container crashes on arm64", "Sidebar collapse state is lost after restart"]);
   });
 
+  it("loads no model for a write that changes no description (CR-003), and indexes a description edit", async () => {
+    const alpha = await project("Alpha");
+    const task = await tasks.createTask({ projectId: alpha, description: "Docker image fails on ARM servers" });
+    await search.indexProject(alpha);
+    await until(async () => (await status(alpha)).state === "ready");
+    // A restart: the model files are on disk, the model is idle (not loaded), and nothing is pending.
+    await fake.index.shutdown();
+    start(40);
+    const runnersBefore = fake.runners.length;
+    const sync = vi.spyOn(fake.index, "sync");
+    const prepare = vi.spyOn(fake.index, "prepareActiveModel");
+    await tasks.updateTask({ projectId: alpha, taskId: task.taskId, status: "IN_PROGRESS" });
+    await sleep(150);
+    expect(sync).not.toHaveBeenCalled();
+    expect(prepare).not.toHaveBeenCalled();
+    expect(fake.runners).toHaveLength(runnersBefore);
+    expect((await fake.index.modelsStatus()).models[0]!.activeDisplay).toEqual({ state: "ready" });
+    expect(await status(alpha)).toMatchObject({ state: "ready", total: 1 });
+
+    await tasks.updateTask({ projectId: alpha, taskId: task.taskId, description: "Docker container crashes on arm64" });
+    await until(async () => sync.mock.calls.length === 1);
+    await until(async () => (await status(alpha)).state === "ready");
+    expect(fake.runners).toHaveLength(runnersBefore + 1);
+    expect(fake.runner().documents).toEqual(["Docker container crashes on arm64"]);
+  });
+
   it("never starts a download after a write: nothing is scheduled when the model is not on disk, nor run after a switch to one", async () => {
     start(40);
     const alpha = await project("Alpha");
