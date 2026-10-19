@@ -275,7 +275,10 @@ finish retryable. An accepted provider/runtime finish is not returned to the
 caller until the run is inactive, exact-current removal succeeds, and the
 activation registry's cleanup result is successful. That removal releases the
 same run's resources once: it deactivates the deterministic Agent Tools MCP
-run-session and detaches file-change, artifact-relay, and memory observers.
+run-session, starts closing the external MCP server instances opened for the
+run (in the background, never failing the release; see
+[MCP Server Management](./mcp_server_management.md#server-instance-lifetime)),
+and detaches file-change, artifact-relay, and memory observers.
 Replacement runs are never released by stale cleanup. Thrown finalization,
 identity mismatch, or accepted-but-active outcomes are terminal for the
 committed attempt rather than being converted into success.

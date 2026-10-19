@@ -11,6 +11,7 @@ import { AgentRunManager } from "../services/agent-run-manager.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
 import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
+import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
 import { AgentRunResourceManager } from "../services/agent-run-resource-manager.js";
 import { AgentRunActivationRegistry } from "../runtime/agent-run-activation-registry.js";
 import { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
@@ -210,6 +211,7 @@ export class GeneralProcessRunSupervisor {
         memoryRecorder,
         workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
         lifecycleObserver: input.platformInputNotices ?? null,
+        mcpServerInstances: McpServerInstanceManager.getInstance(),
       });
       const activationRegistry = new AgentRunActivationRegistry(resourceManager);
       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({

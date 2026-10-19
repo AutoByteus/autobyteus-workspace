@@ -100,6 +100,7 @@ const createManagerFixture = (input: {
       runFileChangeService,
       publishedArtifactRelayService,
       memoryRecorder, workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
+      mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     }),
   );
   const autoByteusDefinition = input.autoByteusBackendFactory ?? unavailableBackendFactory;

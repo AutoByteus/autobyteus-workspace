@@ -67,29 +67,26 @@ export class McpServerInstanceManager extends Singleton {
     }
   }
 
+  /**
+   * Closes every MCP server instance of `agentId`. The entries are detached first, so a request for the agent's
+   * instances while they close gets new ones. A failed close is logged with the agent and server ids.
+   */
   async cleanupMcpServerInstancesForAgent(agentId: string): Promise<void> {
     const agentMap = this.activeServers.get(agentId);
     if (!agentMap) {
       return;
     }
-
-    const servers = Array.from(agentMap.values());
-    for (const server of servers) {
-      try {
-        await server.close();
-      } catch {
-        // ignore close errors
-      }
-    }
-
     this.activeServers.delete(agentId);
-  }
 
-  async cleanupAllMcpServerInstances(): Promise<void> {
-    const agentIds = Array.from(this.activeServers.keys());
-    for (const agentId of agentIds) {
-      await this.cleanupMcpServerInstancesForAgent(agentId);
-    }
+    const entries = Array.from(agentMap.entries());
+    const results = await Promise.allSettled(entries.map(([, server]) => server.close()));
+    results.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        console.warn(
+          `Closing MCP server '${entries[index]![0]}' for agent '${agentId}' failed: ${String(result.reason)}`
+        );
+      }
+    });
   }
 
   private createServerInstance(serverConfig: BaseMcpConfig): BaseManagedMcpServer {
