@@ -39,6 +39,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Server typecheck | Production `src` under the build type policy | `pnpm -C autobyteus-server-ts typecheck` |
 | Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`) | `pnpm test:e2e`, or one file with `vitest run` as above |
 | Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
+| Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
 | Core library tests | `autobyteus-ts` runtime, tools, LLM layer | `pnpm -C autobyteus-ts exec vitest run tests/unit` |
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` |
 | Browser probes | Renderer journeys in headless Chrome, against fixture pages or a probe-owned real stack | `pnpm -C autobyteus-web test:e2e:<name>` (sources in `autobyteus-web/tests/e2e/`) |
