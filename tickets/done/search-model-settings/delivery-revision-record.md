@@ -9,6 +9,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | DR-001 | Delivery package from code review (CRR-005 Pass, API-REV-002 Pass, CRR-006 Pass) | N/A | Blocked at verification — `Unclear` (O-5 against REQ-007 / AC-015) | `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-002 | Solution Designer's SR-008 / DEC-015 clarification (option a) | Blocked (DR-001) | Delivery Completed — verified on SR-008, finalized to `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-003 | The user asked for a new beta | Delivery Completed, no release (DR-002) | Delivery Completed — beta `v1.5.7-beta.2` published completely | `release-deployment-report.md`, `delivery-revision-record.md` |
+| DR-004 | The user's field note | Delivery Completed (DR-003) | Delivery Completed — the user runs `v1.5.7-beta.2` | `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -84,3 +85,11 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Cleanup: release worktree and local branch removed after this record was pushed.
 - Terminal return to `/solution_designer`: `Sent` (Delivery Completed, DR-003).
 - Remaining blockers: none.
+
+### DR-004 — The user runs `v1.5.7-beta.2`
+
+- Trigger: after DR-003 the user wrote: "now i am runnign the latest version now".
+- Checked: `v1.5.7-beta.2` was still the newest tag (`origin/personal` @ `c638a6205d`), so the user's build contains this ticket.
+- Current authoritative result: `Delivery Completed`; the release is installed by the user. The user did not report on the Embedding section specifically, and no issue was reported.
+- Delivery action: record only. No code, release or deployment change.
+- Remaining follow-ups: unchanged (`handoff-summary.md`).
