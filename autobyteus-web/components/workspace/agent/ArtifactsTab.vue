@@ -19,7 +19,7 @@
     </div>
 
     <div class="flex-grow min-w-0 h-full overflow-hidden bg-white">
-      <ArtifactContentViewer :artifact="selectedArtifact" :refresh-signal="viewerRefreshSignal" />
+      <ArtifactContentViewer :artifact="selectedArtifact" :read-subject="readSubject" :refresh-signal="viewerRefreshSignal" />
     </div>
   </div>
 </template>
@@ -39,6 +39,8 @@ const runFileChangesStore = useRunFileChangesStore();
 const activeContextStore = useActiveContextStore();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId || '');
+/** The owner subject of the shown agent run, through which its file content is read. */
+const readSubject = computed(() => activeContextStore.activeWorkspaceTarget?.browse ?? null);
 const artifacts = computed<ArtifactViewerItem[]>(() =>
   [...runFileChangesStore.getArtifactsForRun(currentAgentRunId.value)]
     .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))

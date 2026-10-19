@@ -62,6 +62,18 @@ how to apply them; they do not replace user-approved product requirements.
    number. Renaming code never renames a file or value on disk. Product or
    external names that contain a number (a model name, an external API version)
    are not schema versions.
+9. **No compatibility between different software versions.** The desktop app, its
+   web UI, its embedded server and any server node the user connects are built
+   from one release and are expected to run the same version. When one of them
+   is older or newer than another (an old desktop app against an updated server
+   node, or an updated desktop app against an old server node), updating is the
+   user's responsibility; making it work is not ours. Do not design for that case:
+   no version checks or negotiation, no old and new APIs side by side, no fallback
+   for a client or server that does not know a new route or field. Change
+   contracts between them as a clean cut. Reviewers do not raise a mismatched
+   version as a finding, risk or open question. This is about running software,
+   not saved data: data written by an older version must still be read, as rule 7
+   and the Data Migration Guideline require.
 
 ## Work in two phases: clean functionality, then evidence-led refinement
 

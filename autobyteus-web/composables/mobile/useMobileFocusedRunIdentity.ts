@@ -3,6 +3,7 @@ import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
+import { agentRunIdOf } from '~/types/agent/agentRunReadSubject';
 
 export function useMobileFocusedRunIdentity(context: Ref<MobileWorkContext | null>) {
   const activeContextStore = useActiveContextStore();
@@ -52,8 +53,15 @@ export function useMobileFocusedRunIdentity(context: Ref<MobileWorkContext | nul
     return '';
   });
 
+  /** The owner subject of the focused run (the active workspace target's), when it is that run's. */
+  const focusedReadSubject = computed(() => {
+    const subject = activeContextStore.activeWorkspaceTarget?.browse ?? null;
+    return subject && focusedRunId.value && agentRunIdOf(subject) === focusedRunId.value ? subject : null;
+  });
+
   return {
     focusedRunId,
+    focusedReadSubject,
     focusedAgentContext,
     isRunContext,
   };

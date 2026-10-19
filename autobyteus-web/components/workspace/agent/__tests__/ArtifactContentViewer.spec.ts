@@ -8,6 +8,7 @@ import {
   type ArtifactViewerItem,
 } from '../artifactViewerItem';
 import { useFileContentDisplayModeStore } from '~/stores/fileContentDisplayMode';
+import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
 
 const {
   determineFileTypeMock,
@@ -64,9 +65,11 @@ describe('ArtifactContentViewer', () => {
     return toAgentArtifactViewerItem(artifact);
   };
 
-  const mountComponent = (artifact: any, refreshSignal = 0) =>
+  const runSubject: AgentRunReadSubject = { kind: 'run', runId: 'agent-1' };
+
+  const mountComponent = (artifact: any, refreshSignal = 0, readSubject: AgentRunReadSubject | null = runSubject) =>
     mountedWrappers[mountedWrappers.length] = mount(ArtifactContentViewer, {
-      props: { artifact: toViewerItem(artifact), refreshSignal },
+      props: { artifact: toViewerItem(artifact), readSubject, refreshSignal },
       global: {
         stubs: {
           Icon: true,
@@ -74,9 +77,10 @@ describe('ArtifactContentViewer', () => {
       },
     });
 
-  const mountReactiveHost = (artifact: any, refreshSignal = 0) => {
+  const mountReactiveHost = (artifact: any, refreshSignal = 0, readSubject: AgentRunReadSubject | null = runSubject) => {
     const state = reactive({
       artifact: toViewerItem(artifact),
+      readSubject,
       refreshSignal,
     });
 
@@ -86,6 +90,7 @@ describe('ArtifactContentViewer', () => {
       template: `
         <ArtifactContentViewer
           :artifact="state.artifact"
+          :read-subject="state.readSubject"
           :refresh-signal="state.refreshSignal"
         />
       `,
@@ -201,6 +206,49 @@ describe('ArtifactContentViewer', () => {
       { cache: 'no-store', headers: expect.any(Headers) },
     );
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('downloads file content');
+  });
+
+  it.each([
+    [{ kind: 'teamMember', teamRunId: 'team-1', memberAddress: '/lead', agentRunId: 'agent-1' },
+      'http://localhost:3000/rest/team-runs/team-1/agent-runs/agent-1/file-change-content?path=docs%2Fa.md'],
+    [{ kind: 'agentOrgMember', orgRunId: 'org-1', memberAddress: '/research/writer', agentRunId: 'agent-1' },
+      'http://localhost:3000/rest/agent-org-runs/org-1/agent-runs/agent-1/file-change-content?memberAddress=%2Fresearch%2Fwriter&path=docs%2Fa.md'],
+    [{ kind: 'standaloneMember', hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: 'agent-1' },
+      'http://localhost:3000/rest/agent-collaborations/hub-1/agent-runs/agent-1/file-change-content?memberAddress=%2Freviewer&path=docs%2Fa.md'],
+  ] as Array<[AgentRunReadSubject, string]>)('reads a %o member artifact through its owner route', async (subject, url) => {
+    const fetchMock = vi.mocked(global.fetch);
+    fetchMock.mockResolvedValue({ ok: true, status: 200, text: async () => 'member content' } as Response);
+
+    const wrapper = mountComponent({ ...defaultArtifact, path: 'docs/a.md', status: 'available', sourceTool: 'edit_file' }, 0, subject);
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledExactlyOnceWith(url, { cache: 'no-store', headers: expect.any(Headers) });
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('member content');
+  });
+
+  it('requests nothing while the owner subject names another run or is missing, then reads once it matches', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    const { wrapper, state } = mountReactiveHost(
+      { ...defaultArtifact, path: 'docs/a.md', status: 'available', sourceTool: 'edit_file' },
+      0,
+      { kind: 'teamMember', teamRunId: 'team-1', memberAddress: '/other', agentRunId: 'agent-2' },
+    );
+    await flushPromises();
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    state.readSubject = null;
+    await flushPromises();
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    fetchMock.mockResolvedValue({ ok: true, status: 200, text: async () => 'matched content' } as Response);
+    state.readSubject = { kind: 'teamMember', teamRunId: 'team-1', memberAddress: '/lead', agentRunId: 'agent-1' };
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledExactlyOnceWith(
+      'http://localhost:3000/rest/team-runs/team-1/agent-runs/agent-1/file-change-content?path=docs%2Fa.md',
+      { cache: 'no-store', headers: expect.any(Headers) },
+    );
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('matched content');
   });
 
   it('keeps edit_file blank until a server-backed fetch URL is available, then refetches after path updates', async () => {

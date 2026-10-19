@@ -702,7 +702,8 @@ report for the exact acceptance scope.
 - `services/agentOrgExecution/agentOrgStreamingService.ts`: stream protocol.
 - `services/agentOrgExecution/agentOrgContextHydration.ts`: initial/reopen
   hydration. Each member's projection and its recorded Agent Artifacts
-  (`getRunFileChanges`) are fetched and committed together through
+  (`getAgentOrgMemberFileChanges(orgRunId, memberAddress, agentRunId)`, read
+  inside that org run only) are fetched and committed together through
   `services/runHydration/memberRunStateHydration.ts`. This includes members of
   nested Teams, so member Artifacts lists are complete after a reload and on
   historical runs. An artifact fetch failure fails the Org open, as a

@@ -160,4 +160,34 @@ describe('useMobileFocusedRunIdentity', () => {
       .toBe('applied');
     expect(focusedRunId.value).toBe('');
   });
+
+  it('reads the focused agent run through its own run subject (AC-012)', () => {
+    useAgentContextsStore().runs.set('run-1', makeAgentContext('run-1'));
+    useAgentSelectionStore().selectRunWithoutShellNavigation('run-1', 'agent');
+    const context = ref<MobileWorkContext | null>(makeAgentRunMobileContext('run-1'));
+
+    const { focusedReadSubject } = useMobileFocusedRunIdentity(context);
+
+    expect(focusedReadSubject.value).toEqual({ kind: 'run', runId: 'run-1' });
+    context.value = makeAgentRunMobileContext('other-run');
+    expect(focusedReadSubject.value).toBeNull();
+  });
+
+  it('reads the focused team member through its team-member subject, and nothing for a stale route (AC-012)', () => {
+    const team = seedTeamRun();
+    const context = ref<MobileWorkContext | null>(makeTeamRunMobileContext('lead-run'));
+
+    const { focusedReadSubject } = useMobileFocusedRunIdentity(context);
+
+    expect(focusedReadSubject.value).toEqual({
+      kind: 'teamMember', teamRunId: 'team-run-1', memberAddress: '/lead', agentRunId: 'lead-run',
+    });
+
+    expect(team.view.focusAgent('reviewer-run').disposition).toBe('applied');
+    expect(focusedReadSubject.value).toBeNull();
+    context.value = makeTeamRunMobileContext('reviewer-run');
+    expect(focusedReadSubject.value).toEqual({
+      kind: 'teamMember', teamRunId: 'team-run-1', memberAddress: '/reviewer', agentRunId: 'reviewer-run',
+    });
+  });
 });

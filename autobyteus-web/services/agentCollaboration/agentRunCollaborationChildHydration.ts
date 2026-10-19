@@ -5,11 +5,8 @@ import { reconcileTeamMemberToolState } from '~/services/runHydration/teamMember
 import { commitMemberRunStates, fetchMemberRunState, type MemberRunState } from '~/services/runHydration/memberRunStateHydration'
 import { primeRecentEventMonitorBaseline, resetRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator'
 import { overlayPendingUserMessages } from '~/services/agentStreaming/handlers/userMessageProjection'
-import {
-  GetAgentRunCollaborationMemberFileChanges,
-  GetAgentRunCollaborationMemberProjection,
-} from '~/graphql/queries/collaboratorQueries'
-import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore'
+import { GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
+import { fetchRunFileChanges } from '~/services/runHydration/runFileChangeHydrationService'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { getApolloClient } from '~/utils/apolloClient'
 import type { AgentRootChildAgent } from './agentRunCollaborationIndex'
@@ -45,17 +42,6 @@ const fetchProjection = async (hostRunId: string, child: AgentRootChildAgent): P
   return projection
 }
 
-/** The child's artifacts, read inside its hub only (never the run-id lookup across every stored root). */
-const fetchFileChanges = async (hostRunId: string, child: AgentRootChildAgent): Promise<RunFileChangeArtifact[]> => {
-  const result = await getApolloClient().query<{ agentRunCollaborationMemberFileChanges: RunFileChangeArtifact[] | null }>({
-    query: GetAgentRunCollaborationMemberFileChanges,
-    variables: { hostRunId, memberAddress: child.address, agentRunId: child.agentRunId },
-    fetchPolicy: 'network-only', context: { queryDeduplication: false },
-  })
-  queryErrors(result.errors)
-  return result.data?.agentRunCollaborationMemberFileChanges ?? []
-}
-
 /**
  * Loads one child's stored conversation, activities and artifacts into one published collaboration
  * context (the `collaboration` input) and commits them there.
@@ -88,7 +74,10 @@ export const hydrateAgentRunCollaborationChild = async (input: Readonly<{
     try {
       fetched = await fetchMemberRunState({
         fetchProjection: () => fetchProjection(input.hostRunId, child),
-        fetchFileChanges: () => fetchFileChanges(input.hostRunId, child),
+        // The child's artifacts, read inside its hub only.
+        fetchFileChanges: () => fetchRunFileChanges({
+          kind: 'standaloneMember', hostRunId: input.hostRunId, memberAddress: child.address, agentRunId: child.agentRunId,
+        }),
       })
     } catch (cause) {
       if (!input.isPublished()) return 'superseded'

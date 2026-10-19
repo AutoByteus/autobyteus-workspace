@@ -278,5 +278,5 @@ export const startCollaborationHarness = async (label: string) => {
     if (priorCase === undefined) delete process.env["AGY_FAKE_CASE"]; else process.env["AGY_FAKE_CASE"] = priorCase;
     expect(errors, "owned cleanup").toEqual([]);
   };
-  return { graphql, config, agentDefinition, teamDefinition, orgDefinition, startRoot, reopenRoot, terminate, stopServer, promptOf, mcpCall, close, dataDir, workspace };
+  return { graphql, config, agentDefinition, teamDefinition, orgDefinition, startRoot, reopenRoot, terminate, stopServer, promptOf, mcpCall, close, dataDir, workspace, url };
 };

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { GetRunFileChanges } from '~/graphql/queries/runHistoryQueries';
+import { GetAgentOrgMemberFileChanges, GetRunFileChanges, GetTeamMemberFileChanges } from '~/graphql/queries/runHistoryQueries';
+import { GetAgentRunCollaborationMemberFileChanges } from '~/graphql/queries/collaboratorQueries';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunFileChangesStore, type RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { commitMemberRunStates, fetchMemberRunState } from '../memberRunStateHydration';
@@ -24,18 +25,42 @@ const deferred = <T>() => {
 
 describe('fetchRunFileChanges', () => {
   beforeEach(() => vi.clearAllMocks());
+  const read = (document: unknown, variables: Record<string, string>) => ({
+    query: document, variables, fetchPolicy: 'network-only', context: { queryDeduplication: false },
+  });
 
-  it('reads the run artifacts network-only and treats a missing payload as no artifacts', async () => {
+  it('reads a standalone run\'s artifacts by run id, network-only, and treats a missing payload as no artifacts', async () => {
     query.mockResolvedValueOnce({ data: { getRunFileChanges: [artifact('a.png')] } });
-    await expect(fetchRunFileChanges(RUN)).resolves.toEqual([artifact('a.png')]);
-    expect(query).toHaveBeenCalledWith({ query: GetRunFileChanges, variables: { runId: RUN }, fetchPolicy: 'network-only' });
+    await expect(fetchRunFileChanges({ kind: 'run', runId: RUN })).resolves.toEqual([artifact('a.png')]);
+    expect(query).toHaveBeenCalledWith(read(GetRunFileChanges, { runId: RUN }));
     query.mockResolvedValueOnce({ data: {} });
-    await expect(fetchRunFileChanges(RUN)).resolves.toEqual([]);
+    await expect(fetchRunFileChanges({ kind: 'run', runId: RUN })).resolves.toEqual([]);
+  });
+
+  it('reads each member kind through its owner\'s query', async () => {
+    query.mockResolvedValueOnce({ data: { getTeamMemberFileChanges: [artifact('t.png')] } });
+    await expect(fetchRunFileChanges({ kind: 'teamMember', teamRunId: 'team-1', memberAddress: '/lead', agentRunId: RUN }))
+      .resolves.toEqual([artifact('t.png')]);
+    expect(query).toHaveBeenLastCalledWith(read(GetTeamMemberFileChanges, { teamRunId: 'team-1', agentRunId: RUN }));
+
+    query.mockResolvedValueOnce({ data: { getAgentOrgMemberFileChanges: [artifact('o.png')] } });
+    await expect(fetchRunFileChanges({ kind: 'agentOrgMember', orgRunId: 'org-1', memberAddress: '/team/lead', agentRunId: RUN }))
+      .resolves.toEqual([artifact('o.png')]);
+    expect(query).toHaveBeenLastCalledWith(read(GetAgentOrgMemberFileChanges, { orgRunId: 'org-1', memberAddress: '/team/lead', agentRunId: RUN }));
+
+    query.mockResolvedValueOnce({ data: { agentRunCollaborationMemberFileChanges: [artifact('c.png')] } });
+    await expect(fetchRunFileChanges({ kind: 'standaloneMember', hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: RUN }))
+      .resolves.toEqual([artifact('c.png')]);
+    expect(query).toHaveBeenLastCalledWith(read(GetAgentRunCollaborationMemberFileChanges, { hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: RUN }));
+    expect(query).not.toHaveBeenCalledWith(expect.objectContaining({ query: GetRunFileChanges }));
   });
 
   it('throws on GraphQL errors', async () => {
     query.mockResolvedValueOnce({ data: null, errors: [{ message: 'run unknown' }] });
-    await expect(fetchRunFileChanges(RUN)).rejects.toThrow('run unknown');
+    await expect(fetchRunFileChanges({ kind: 'run', runId: RUN })).rejects.toThrow('run unknown');
+    query.mockResolvedValueOnce({ data: null, errors: [{ message: 'not in team' }] });
+    await expect(fetchRunFileChanges({ kind: 'teamMember', teamRunId: 'team-1', memberAddress: '/lead', agentRunId: RUN }))
+      .rejects.toThrow('not in team');
   });
 });
 

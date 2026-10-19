@@ -77,7 +77,7 @@
       </div>
 
       <div class="min-h-0 flex-1 overflow-hidden bg-white" data-testid="mobile-artifacts-viewer">
-        <ArtifactContentViewer :artifact="selectedArtifact" :refresh-signal="viewerRefreshSignal" />
+        <ArtifactContentViewer :artifact="selectedArtifact" :read-subject="focusedReadSubject" :refresh-signal="viewerRefreshSignal" />
       </div>
     </div>
   </section>
@@ -103,7 +103,7 @@ defineEmits<{
 }>();
 
 const runFileChangesStore = useRunFileChangesStore();
-const { focusedRunId, isRunContext } = useMobileFocusedRunIdentity(toRef(props, 'context'));
+const { focusedRunId, focusedReadSubject, isRunContext } = useMobileFocusedRunIdentity(toRef(props, 'context'));
 
 const selectedArtifactId = ref<string | null>(null);
 const viewerRefreshSignal = ref(0);

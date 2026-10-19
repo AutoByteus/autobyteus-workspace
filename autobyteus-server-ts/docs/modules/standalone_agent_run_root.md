@@ -186,15 +186,18 @@ each. Deleting the host's run keeps its copies' folders (detached). The location
   child's Agent Artifacts. Like the other two, it locates the child inside the named run's
   tree only, so its cost does not depend on how many other team, org or standalone runs are
   stored. It then reads through `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection`,
-  the same active-versus-stored rule the run-id `getRunFileChanges` uses for collaboration
-  members:
+  the same active-versus-stored rule Team and Org member reads use:
   - While the host's root is active, the result is the child's live projection, as for Team
     members.
   - Otherwise it is the child's stored `file_changes.json`.
 
-  The run-id path still finds a copy through the stored-only cross-family lookup, so for
-  copies it always read the stored file. The web client opens a copy's artifacts through the
-  scoped query.
+  A child's file content is served the same way, hub-scoped, by
+  `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...`
+  (`StandaloneRootMemberViewProjectionService.resolveFileChangeEntry`); a child the hub does
+  not hold answers 404 `File change not found`. The run-id `getRunFileChanges` and
+  `/runs/:runId/file-change-content` serve the host's own files only: a child's run id gets an
+  empty list or 404, with no search of other trees. The web client opens a copy's list and
+  content through the hub-scoped reads.
   `collaboratorMentionCandidates(rootSubjectKind: "agent", rootRunId, focusedAgentRunId)` lists
   the `@` options for one focused agent (the host or a child). `focusedAgentRunId` is required
   for Agent roots, and the stored root answers per focused agent too.

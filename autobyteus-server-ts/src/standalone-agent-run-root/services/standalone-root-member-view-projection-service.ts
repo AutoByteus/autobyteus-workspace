@@ -2,16 +2,15 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { resolveActiveTracePageSenderAddresses } from "../../run-history/projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../../run-history/projection/run-projection-types.js";
 import { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
-import {
-  catalogCopyExecutionSource,
-  taskExecutionListsOf,
-} from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+import { locatedExecutionSource } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import { CollaborationMemberNotFoundError } from "../../agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { EventMonitorActiveTracePage } from "../../run-history/projection/event-monitor-active-trace-page-types.js";
 import { AgentRunViewProjectionService, type RunProjection } from "../../run-history/services/agent-run-view-projection-service.js";
 import {
   RunFileChangeProjectionService,
   getRunFileChangeProjectionService,
+  type ResolvedRunFileChangeEntry,
 } from "../../run-history/services/run-file-change-projection-service.js";
 import type { RunFileChangeEntry } from "../../services/run-file-changes/run-file-change-types.js";
 import {
@@ -38,7 +37,7 @@ export interface StandaloneRootMemberRunProjection {
 
 /**
  * Views of one Agent-root child (task Agent or task-Team member) by its exact identity inside one
- * hub: stored conversation projection, event-monitor pages and artifact list. Only the named hub's
+ * hub: stored conversation projection, event-monitor pages, artifact list and artifact content. Only the named hub's
  * tree is read.
  */
 export class StandaloneRootMemberViewProjectionService {
@@ -91,28 +90,40 @@ export class StandaloneRootMemberViewProjectionService {
   /** The child's artifacts: live while the hub is active, else its stored file changes. */
   async getFileChanges(hostRunId: string, memberAddress: string, agentRunId: string): Promise<RunFileChangeEntry[]> {
     const location = await this.requireLocation(hostRunId, memberAddress, agentRunId);
-    return (this.injectedFileChanges ?? getRunFileChangeProjectionService()).getLocatedCollaborationMemberProjection(location);
+    return this.fileChanges().getLocatedCollaborationMemberProjection(location);
   }
 
-  private async requireLocation(hostRunId: string, memberAddress: string, agentRunId: string) {
+  /** One recorded file change of the child, resolved against its own launch workspace. */
+  async resolveFileChangeEntry(
+    hostRunId: string,
+    memberAddress: string,
+    agentRunId: string,
+    filePath: string,
+  ): Promise<ResolvedRunFileChangeEntry | null> {
+    const location = await this.requireLocation(hostRunId, memberAddress, agentRunId);
+    return this.fileChanges().resolveLocatedCollaborationMemberEntry(location, filePath);
+  }
+
+  private fileChanges(): RunFileChangeProjectionService {
+    return this.injectedFileChanges ?? getRunFileChangeProjectionService();
+  }
+
+  private async requireLocation(hostRunId: string, memberAddress: string, agentRunId: string): Promise<LocatedStandaloneRootAgentExecution> {
     const root = required(hostRunId, "hostRunId");
     const address = required(memberAddress, "memberAddress");
     const run = required(agentRunId, "agentRunId");
     const location = await this.locations.findAgent({ rootRunId: root, memberAddress: address, agentRunId: run });
     if (!location || location.rootRunId !== root || location.memberAddress !== address
-      || !childSourceOf(location)) {
-      throw new Error(`AgentRun '${run}' at '${address}' was not found among the delegated copies of Agent run '${root}'.`);
+      || !locatedExecutionSource(location)) {
+      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' at '${address}' was not found among the delegated copies of Agent run '${root}'.`);
     }
     return location;
   }
 }
 
-/** A delegated copy's definition and launch, from its recorded catalog source. */
-const childSourceOf = (location: LocatedStandaloneRootAgentExecution) =>
-  catalogCopyExecutionSource(taskExecutionListsOf(location.tree), location.agentRunId);
-
 const metadataFor = (location: LocatedStandaloneRootAgentExecution): AgentRunMetadata => {
-  const source = childSourceOf(location)!;
+  // A delegated copy's definition and launch come from its recorded catalog source.
+  const source = locatedExecutionSource(location)!;
   const launch = source.launchConfiguration;
   return {
     runId: location.agentRunId,
