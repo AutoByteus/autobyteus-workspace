@@ -1,0 +1,73 @@
+# Check: IMP-03-core-integration-mcp
+# Command: env -i PATH=/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.hvg3zReDmO TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp
+# Commit: 4923d179c1
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-19
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade/autobyteus-ts[39m
+
+[90mstderr[2m | tests/integration/tools/mcp/tool-registrar.test.ts[2m > [22m[2mMcpToolRegistrar integration (pdf_mcp)[2m > [22m[2mloads and registers tools from pdf_mcp
+[22m[39mOverwriting existing MCP config with server_id 'pdf-mcp'.
+
+ [31m❯[39m tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 156[2mms[22m[39m
+[31m     [31m×[31m lists tools and executes image_to_pdf_page[39m[32m 156[2mms[22m[39m
+[90mstderr[2m | tests/integration/tools/mcp/tool-registrar.test.ts[2m > [22m[2mMcpToolRegistrar integration (pdf_mcp)[2m > [22m[2mexecutes a registered MCP tool via the registry
+[22m[39mOverwriting existing MCP config with server_id 'pdf-mcp-exec'.
+
+ [31m❯[39m tests/integration/tools/mcp/tool-registrar.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 104[2mms[22m[39m
+[31m     [31m×[31m loads and registers tools from pdf_mcp[39m[32m 99[2mms[22m[39m
+[31m     [31m×[31m executes a registered MCP tool via the registry[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m previews tools without registering them[39m[32m 2[2mms[22m[39m
+ [31m❯[39m tests/integration/tools/mcp/http-managed-mcp-server.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m[33m 32327[2mms[22m[39m
+     [2m[90m↓[39m[22m lists tools and calls echo_text + server_time
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/tools/mcp/http-managed-mcp-server.test.ts[2m > [22mHttpManagedMcpServer integration (streamable_http_mcp_toy)
+[31m[1mError[22m: Streamable HTTP MCP server did not become ready: TypeError: fetch failed[39m
+[36m [2m❯[22m waitForServerReady tests/integration/tools/mcp/http-managed-mcp-server.test.ts:[2m81:9[22m[39m
+    [90m 79| [39m  }
+    [90m 80| [39m
+    [90m 81| [39m  throw new Error(`Streamable HTTP MCP server did not become ready: ${…
+    [90m   | [39m        [31m^[39m
+    [90m 82| [39m}
+    [90m 83| [39m
+[90m [2m❯[22m tests/integration/tools/mcp/http-managed-mcp-server.test.ts:[2m98:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts[2m > [22mStdioManagedMcpServer integration (pdf_mcp)[2m > [22mlists tools and executes image_to_pdf_page
+[41m[1m FAIL [22m[49m tests/integration/tools/mcp/tool-registrar.test.ts[2m > [22mMcpToolRegistrar integration (pdf_mcp)[2m > [22mloads and registers tools from pdf_mcp
+[41m[1m FAIL [22m[49m tests/integration/tools/mcp/tool-registrar.test.ts[2m > [22mMcpToolRegistrar integration (pdf_mcp)[2m > [22mexecutes a registered MCP tool via the registry
+[41m[1m FAIL [22m[49m tests/integration/tools/mcp/tool-registrar.test.ts[2m > [22mMcpToolRegistrar integration (pdf_mcp)[2m > [22mpreviews tools without registering them
+[31m[1mError[22m: spawn /opt/homebrew/bin/uv ENOENT[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Unhandled Errors [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+[31m[1m
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+
+[31m⎯⎯⎯⎯⎯[39m[1m[41m Uncaught Exception [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: spawn /opt/homebrew/bin/uv ENOENT[39m
+[90m [2m❯[22m Process.ChildProcess._handle.onexit node:internal/child_process:[2m285:19[22m[39m
+[90m [2m❯[22m onErrorNT node:internal/child_process:[2m483:16[22m[39m
+[90m [2m❯[22m processTicksAndRejections node:internal/process/task_queues:[2m89:21[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errno: -2, code: 'ENOENT', syscall: 'spawn /opt/homebrew/bin/uv', path: '/opt/homebrew/bin/uv', spawnargs: [ 'run', 'python', 'src/streamable_http_mcp_toy/server.py', '--host', '127.0.0.1', '--port', '8764' ] }[39m
+[31mThis error originated in "[1mtests/integration/tools/mcp/http-managed-mcp-server.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+
+
+[2m Test Files [22m [1m[31m3 failed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[33m1 skipped[39m[90m (5)[39m
+[2m     Errors [22m [1m[31m1 error[39m[22m
+[2m   Start at [22m 10:26:12
+[2m   Duration [22m 32.55s[2m (transform 368ms, setup 54ms, import 407ms, tests 32.59s, environment 0ms)[22m
+

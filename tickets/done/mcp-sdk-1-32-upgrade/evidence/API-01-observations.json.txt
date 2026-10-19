@@ -1,0 +1,260 @@
+# Case: API-01 + API-02 value-free observations (per request: HTTP method, path, JSON-RPC method, tool, auth=expected/other/none) and the server-output scan of both built-server runs
+# Command: as API-01 (MCP_REDIRECT_E2E_EVIDENCE_DIR output)
+# Commit: c7f0c18fdc (source = 4923d179c1) + the API/E2E test changes (committed on this branch in the API/E2E commit)
+# Environment: macOS 26 (Darwin 25.5.0), node 22, pnpm 10.28.2; core + server rebuilt at c7f0c18fdc; built server dist/app.js on owned 127.0.0.1 ports, owned runtime roots under autobyteus-server-ts/tests/.tmp and owned SQLite dbs (removed by the test)
+# Date: 2026-10-19
+
+{
+  "observations": {
+    "other": [],
+    "crossOrigin": [
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      }
+    ],
+    "moved": [
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp-new",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp-new",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "path": "/mcp",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "path": "/mcp-new",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp-new",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp-new",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp-new",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "path": "/mcp",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "path": "/mcp-new",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp-new",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp-new",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp-new",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "path": "/mcp",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "path": "/mcp-new",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp-new",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ],
+    "plain": [
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "path": "/mcp",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "tools/list",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "initialize",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "notifications/initialized",
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "GET",
+        "path": "/mcp",
+        "rpcMethod": null,
+        "toolName": null,
+        "auth": "expected"
+      },
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ]
+  },
+  "serverOutputScan": {
+    "outputBytes": 28443,
+    "containsDummy": false,
+    "containsCanary": false
+  }
+}

@@ -8,6 +8,9 @@
  *
  * The server has one tool, `auth_probe`, which returns `marker`, so a caller can tell this server's
  * result from any other text.
+ *
+ * Optional `redirects` maps a request path to a redirect response (status and `Location`), answered before
+ * the credential check, as an endpoint that has moved answers every client.
  */
 import http from "node:http";
 import type { AddressInfo } from "node:net";
@@ -18,6 +21,8 @@ export const AUTH_PROBE_TOOL = "auth_probe";
 
 export type AuthObservation = {
   httpMethod: string;
+  /** Request path without the query string. */
+  path: string;
   rpcMethod: string | null;
   toolName: string | null;
   auth: "expected" | "other" | "none";
@@ -51,6 +56,7 @@ const asRecord = (value: unknown): Record<string, unknown> | null =>
 export const startAuthRequiredMcpServer = async (input: {
   requiredAuthorization: string | null;
   marker: string;
+  redirects?: Record<string, { status: 301 | 302 | 307 | 308; location: string }>;
 }): Promise<AuthRequiredMcpServer> => {
   const observations: AuthObservation[] = [];
   const httpServer = http.createServer(async (req, res) => {
@@ -66,12 +72,19 @@ export const startAuthRequiredMcpServer = async (input: {
     const params = asRecord(envelope?.["params"]);
     const received = req.headers.authorization;
     const accepted = input.requiredAuthorization === null || received === input.requiredAuthorization;
+    const path = (req.url ?? "/").split("?")[0] ?? "/";
     observations.push({
       httpMethod: req.method ?? "",
+      path,
       rpcMethod: typeof envelope?.["method"] === "string" ? envelope["method"] : null,
       toolName: typeof params?.["name"] === "string" ? params["name"] : null,
       auth: received === undefined ? "none" : received === input.requiredAuthorization ? "expected" : "other",
     });
+    const redirect = input.redirects?.[path];
+    if (redirect) {
+      res.writeHead(redirect.status, { location: redirect.location }).end();
+      return;
+    }
     if (!accepted) {
       res.writeHead(401, { "content-type": "text/plain" }).end("unauthorized");
       return;

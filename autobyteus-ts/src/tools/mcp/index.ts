@@ -2,7 +2,6 @@ export {
   BaseMcpConfig,
   StdioMcpServerConfig,
   StreamableHttpMcpServerConfig,
-  WebsocketMcpServerConfig,
   McpTransportType,
   McpServerInstanceKey
 } from './types.js';

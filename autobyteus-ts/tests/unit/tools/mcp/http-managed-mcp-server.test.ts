@@ -45,16 +45,39 @@ const rpcMethodOf = (body: unknown): string | null =>
     ? (body as { method: string }).method
     : null;
 
+const listenOnLocalPort = async (httpServer: http.Server): Promise<{ origin: string; close: () => Promise<void> }> => {
+  await new Promise<void>((resolve) => httpServer.listen(0, '127.0.0.1', resolve));
+  const { port } = httpServer.address() as AddressInfo;
+  return {
+    origin: `http://127.0.0.1:${port}`,
+    close: () =>
+      new Promise<void>((resolve) => {
+        httpServer.closeAllConnections();
+        httpServer.close(() => resolve());
+      })
+  };
+};
+
 /**
  * Starts a stateless MCP server with one `echo` tool. When `requiredHeader` is set,
- * every request without exactly that header value is answered with 401.
+ * every request without exactly that header value is answered with 401. A request
+ * whose path is a key of `redirects` is answered with a 307 to the mapped location.
  */
-const startLocalMcpServer = async (requiredHeader?: { name: string; value: string }): Promise<LocalMcpServer> => {
+const startLocalMcpServer = async (
+  requiredHeader?: { name: string; value: string },
+  redirects: Record<string, string> = {}
+): Promise<LocalMcpServer> => {
   const received: ReceivedRequest[] = [];
   const httpServer = http.createServer(async (req, res) => {
     const rawBody = await readBody(req);
     const body = rawBody ? JSON.parse(rawBody) : undefined;
     received.push({ httpMethod: req.method ?? '', rpcMethod: rpcMethodOf(body), headers: req.headers });
+
+    const redirectTo = redirects[req.url ?? ''];
+    if (redirectTo) {
+      res.writeHead(307, { location: redirectTo }).end();
+      return;
+    }
 
     if (requiredHeader && req.headers[requiredHeader.name.toLowerCase()] !== requiredHeader.value) {
       res.writeHead(401, { 'content-type': 'text/plain' }).end('unauthorized');
@@ -72,18 +95,20 @@ const startLocalMcpServer = async (requiredHeader?: { name: string; value: strin
     await transport.handleRequest(req, res, body);
   });
 
-  await new Promise<void>((resolve) => httpServer.listen(0, '127.0.0.1', resolve));
-  const { port } = httpServer.address() as AddressInfo;
+  const { origin, close } = await listenOnLocalPort(httpServer);
+  return { url: `${origin}/mcp`, received, close };
+};
 
-  return {
-    url: `http://127.0.0.1:${port}/mcp`,
-    received,
-    close: () =>
-      new Promise<void>((resolve) => {
-        httpServer.closeAllConnections();
-        httpServer.close(() => resolve());
-      })
-  };
+/** Starts a plain HTTP server that answers every request with a 307 to `target`. */
+const startRedirector = async (target: string): Promise<LocalMcpServer> => {
+  const received: ReceivedRequest[] = [];
+  const httpServer = http.createServer(async (req, res) => {
+    const rawBody = await readBody(req);
+    received.push({ httpMethod: req.method ?? '', rpcMethod: rpcMethodOf(rawBody ? JSON.parse(rawBody) : undefined), headers: req.headers });
+    res.writeHead(307, { location: target }).end();
+  });
+  const { origin, close } = await listenOnLocalPort(httpServer);
+  return { url: `${origin}/mcp`, received, close };
 };
 
 const rpcMethods = (received: ReceivedRequest[]): string[] =>
@@ -179,5 +204,57 @@ describe('HttpManagedMcpServer with a real streamable HTTP MCP server', () => {
     expect((error as Error).message).not.toContain('test-wrong');
     expect(client.connectionState).toBe(ServerState.FAILED);
     expect(localServer.received[0]?.headers.authorization).toBe('Bearer test-wrong');
+  });
+
+  describe('redirects', () => {
+    let redirector: LocalMcpServer | null = null;
+
+    afterEach(async () => {
+      await redirector?.close();
+      redirector = null;
+    });
+
+    it('does not follow a redirect to another origin, so the credential never reaches it', async () => {
+      // Server B is a working MCP server on a different port, so a different origin.
+      localServer = await startLocalMcpServer();
+      redirector = await startRedirector(localServer.url);
+      client = new HttpManagedMcpServer(
+        new StreamableHttpMcpServerConfig({ server_id: 'cross-origin', url: redirector.url, token: 'test-dummy' })
+      );
+
+      const error = await client.connect().then(
+        () => null,
+        (caught: unknown) => caught
+      );
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toMatch(/redirect/i);
+      expect((error as Error).message).not.toContain('test-dummy');
+      expect(client.connectionState).toBe(ServerState.FAILED);
+      expect(redirector.received.length).toBeGreaterThan(0);
+      expect(localServer.received).toHaveLength(0);
+    });
+
+    it('follows a redirect within the same origin', async () => {
+      localServer = await startLocalMcpServer(
+        { name: 'Authorization', value: 'Bearer test-dummy' },
+        { '/old': '/mcp' }
+      );
+      client = new HttpManagedMcpServer(
+        new StreamableHttpMcpServerConfig({
+          server_id: 'same-origin',
+          url: localServer.url.replace(/\/mcp$/, '/old'),
+          token: 'test-dummy'
+        })
+      );
+
+      const { tools, result } = await connectListAndCall(client);
+
+      expect(tools.map((tool) => tool.name)).toEqual(['echo']);
+      expect(result.content[0]?.text).toBe('pong');
+      expect(rpcMethods(localServer.received)).toEqual(
+        expect.arrayContaining(['initialize', 'tools/list', 'tools/call'])
+      );
+    });
   });
 });

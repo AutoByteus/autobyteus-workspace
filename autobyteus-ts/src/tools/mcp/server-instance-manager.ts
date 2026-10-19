@@ -8,7 +8,6 @@ import {
 import { BaseManagedMcpServer } from './server/base-managed-mcp-server.js';
 import { StdioManagedMcpServer } from './server/stdio-managed-mcp-server.js';
 import { HttpManagedMcpServer } from './server/http-managed-mcp-server.js';
-import { WebsocketManagedMcpServer } from './server/websocket-managed-mcp-server.js';
 
 type WorkspacePathProvider = (agentId: string) => string | null;
 
@@ -99,8 +98,6 @@ export class McpServerInstanceManager extends Singleton {
         return new StdioManagedMcpServer(serverConfig as StdioMcpServerConfig);
       case McpTransportType.STREAMABLE_HTTP:
         return new HttpManagedMcpServer(serverConfig);
-      case McpTransportType.WEBSOCKET:
-        return new WebsocketManagedMcpServer(serverConfig);
       default:
         throw new Error(
           `No ManagedMcpServer implementation for transport type '${serverConfig.transport_type}'.`
