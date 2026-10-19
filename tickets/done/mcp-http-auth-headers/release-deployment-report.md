@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`. No release, tag or deployment in this delivery (Release Decision below). `task_size=Small`, `architectural_risk=Low`, direct low-risk route; architecture, source and test-code review artifacts `Not Applicable`.
+Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`, then beta `v1.5.6-beta.10` at the user's request (DR-002). No deployment (the repository deploys no hosted service). `task_size=Small`, `architectural_risk=Low`, direct low-risk route; architecture, source and test-code review artifacts `Not Applicable`.
 
 ## Project Release Guide
 
@@ -63,8 +63,8 @@ Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`.
 
 ## Release Decision
 
-- Decision: `No release`
-- Decided by: `RELEASE.md` default (no release requested). The Task states the fix ships with the next beta; a beta (`python3 scripts/release_versions.py next-beta`) is available on request.
+- Decision: `Beta` (`v1.5.6-beta.10`)
+- Decided by: the user, in the Delivery Engineer conversation on 2026-10-19 after finalization: "i guess we could release a beta version for this ticket". DR-001 had finalized with `No release` (the `RELEASE.md` default); DR-002 records the beta.
 
 ## Docs Sync Result
 
@@ -79,7 +79,10 @@ Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`.
 
 ## Version / Tag / Release Commit
 
-- None (no release).
+- Version: `1.5.6-beta.10` (`python3 scripts/release_versions.py next-beta`; base 1.5.6, after `v1.5.6-beta.9`)
+- Release commit: `b35259e5b5` "chore(release): bump workspace release version to 1.5.6-beta.10" (`autobyteus-web/package.json`), on `finalize/mcp-http-auth-headers` on top of `e90a16f3ab`
+- Tag: annotated `v1.5.6-beta.10` → `b35259e5b5`
+- Command: `bash scripts/desktop-release.sh beta --branch finalize/mcp-http-auth-headers --no-push`, after deleting the untracked `*/dist/` build output and passing `check_licensing.py` and `check_repository_artifact_hygiene.py` on `e90a16f3ab`
 
 ## Repository Finalization
 
@@ -89,9 +92,21 @@ Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required` (notes archived for the next stable release)
+- Applicable: `Yes` (beta)
+- Method: `Project Release Guide` (`RELEASE.md` "Cutting The Release", beta)
+- Method reference / command: see Version / Tag; then `git fetch origin personal` (unchanged at `e90a16f3ab`), `git push origin HEAD:personal` (`e90a16f3ab..b35259e5b5`), `git push origin v1.5.6-beta.10`
+- Pipelines triggered and their results (watched with `gh run watch --exit-status`):
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Server Docker Release | `39213327894` | success |
+| Android APK Release | `39213327974` | success |
+| iOS App Store Connect Release | `39213328072` | success |
+| Desktop Release | `39213327997` | success |
+
+- Published artifacts checked: GitHub release `v1.5.6-beta.10` is a pre-release with 17 assets, matching `RELEASE.md`: macOS ARM64 and x64 `.dmg`/`.zip` with blockmaps (8), Linux x64 and ARM64 AppImages (2), Windows `.exe` (1), `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml` (4), Android APK + `.sha256` (2). Docker Hub `autobyteus/autobyteus-server:1.5.6-beta.10` and `:beta` both at `sha256:37cb8f8c3c63…b90d`; `:latest` not moved (prerelease). TestFlight upload: iOS workflow succeeded.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` (betas use GitHub generated notes; `release-notes.md` stays archived for the next stable release)
 
 ## Post-Finalization Cleanup
 
@@ -120,6 +135,8 @@ Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`.
 
 ## Rollback Criteria
 
+- Beta users: revert the merge on `personal` and cut the next beta; desktop updates never downgrade, and `:beta` only moves forward (`RELEASE.md` Rollback).
+
 - If remote MCP servers fail to connect or tool calls fail in the field, revert the merge on `personal` and ship with the next release (`RELEASE.md` Rollback).
 - Rolling back is possible: checked in the base `file-provider.ts`/`types.ts`, an earlier build accepts a `token` string when loading, and simply does not send credentials; it drops the token on its next save of that server. No data conversion.
 - Web, server and core move together (DESIGN.md: no mixed-version compatibility); the desktop app ships all three.
@@ -138,8 +155,8 @@ Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`.
 | Checks on the merged state | Hygiene check passed; licensing consistent |
 | Push target | Fetched before the push: `origin/personal` = `3a6aa85e28^1` (`8d40ba3b6c`), unchanged. `git push origin HEAD:personal`: `8d40ba3b6c..3a6aa85e28` |
 | Repository finalization status | `Completed` |
-| Release / publication / deployment | `Not required` (No release, the `RELEASE.md` default). No tag; no pipelines triggered |
-| Delivery record commit | This record is committed on `finalize/mcp-http-auth-headers` on top of `3a6aa85e28` and pushed to `personal` after a fresh fetch shows the target unchanged |
+| Release / publication / deployment | DR-001: `Not required`. DR-002 (user request): beta `v1.5.6-beta.10`, release commit `b35259e5b5` pushed to `personal` (`e90a16f3ab..b35259e5b5`), tag pushed; all four workflows succeeded; 17 assets; Docker `:1.5.6-beta.10` and `:beta` published |
+| Delivery record commits | DR-001 record `e90a16f3ab` on top of `3a6aa85e28`, pushed (`3a6aa85e28..e90a16f3ab`). The DR-002 beta record's first push was rejected: `task-part-of` had merged onto `personal` (`84d0c47e24`) after `b35259e5b5`. The record commit (this ticket's folder only) was rebased onto `84d0c47e24` and pushed. `task-part-of` is not in `v1.5.6-beta.10`, whose tag stays at `b35259e5b5` |
 | Worktree cleanup | After the record push: `git worktree remove --force` (only untracked build output remains) and `git worktree prune`, from the main repository's git dir; the main checkout's working tree is not touched |
 | Local branch cleanup | After the record push: `codex/mcp-http-auth-headers` and `finalize/mcp-http-auth-headers` deleted once `origin/personal` contains them |
 | Remote branch cleanup | `Not required`. By repository practice, merged `codex/*` ticket branches stay on `origin` |
@@ -148,8 +165,8 @@ Repository finalization of `codex/mcp-http-auth-headers` into `origin/personal`.
 
 - Verification complete (from the evidence): `Yes`
 - Repository finalization complete: `Yes` (`origin/personal` @ `3a6aa85e28`, followed by this record commit)
-- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta `v1.5.6-beta.10` `Completed`: 4/4 workflows, 17/17 assets, Docker tags checked)
 - Applicable safe cleanup complete or not required: `Yes` (worktree and local branches removed after the record push; see the Finalization Record)
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
-- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, sent after this record commit and cleanup (DR-001)
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, sent after the DR-002 record commit and cleanup

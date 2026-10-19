@@ -34,7 +34,9 @@
 
 ## Release
 
-- Decision: `No release` (RELEASE.md default; the Task says the fix ships with the next beta). A beta can be cut on request; `release-notes.md` holds user-facing notes for the next stable release.
+- Decision: `Beta`, requested by the user after finalization. Published `v1.5.6-beta.10` (release commit `b35259e5b5`): GitHub pre-release with 17 assets, Android APK, TestFlight upload, Docker `autobyteus/autobyteus-server:1.5.6-beta.10` and `:beta`; all four workflows succeeded.
+- Beta users get it with **Settings > Updates > Receive beta updates** on, or `autobyteus-docker upgrade --all --tag beta`. The Task's user check can be done on this beta.
+- `release-notes.md` holds user-facing notes for the next stable release (betas use generated notes).
 
 ## Residual Risks And Follow-ups
 
