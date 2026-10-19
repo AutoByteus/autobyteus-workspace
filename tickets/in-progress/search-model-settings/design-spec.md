@@ -2,13 +2,51 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005` (DEC-011 integrated after code review CRR-001; SR-004 after ARCH-REV-001; SR-003 first round) on the approved SR-005 requirements
+- Current solution revision ID: `SR-007` (fingerprint-input status and index-after-writes after ARCH-REV-004 and the user's REQ-011; SR-006 status cache; SR-005 DEC-011; SR-004 after ARCH-REV-001; SR-003 first round) on the approved SR-007 requirements
 - Approved requirements baseline: `requirements-doc.md` at `SR-004` (SR-002 + DEC-009/DEC-010 gap decisions), approved by the Solution Designer within the direction. DEC-005 and the whole visible design were decided and confirmed by the user through Product Design ("done", 2026-10-19).
 - Behavior-defining supplements: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md` (design `4e4ac06`, integration `cb384e3`) with VIS-001…VIS-021. Normative except its stated illustrative content and mock mechanisms (spec § Implementation Fidelity Boundary).
 - Design status: `Ready`
 - Canonical investigation notes: `investigation-notes.md` (this folder)
 - Authorities read (2026-10-19; read in this conversation for autobyteus-71 and unchanged since): `references/architecture-design.md`, `references/design-principles.md`, `references/design-examples.md`, project `DESIGN.md`, `autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md`, `data_migration_guideline.md` §1–4; `references/handoff-references.md` (re-read after its 2026-10-18 update).
 - Conflicts or discrepancies: none.
+
+## Revision SR-007 (ARCH-REV-004 AR-005 + user-approved REQ-011)
+
+**Supersedes** the SR-006 status *result* cache and `collectionJobStatus`, which are removed. The SR-006 invalidation wiring, DEC-012/DEC-013, O-1/O-2/O-4 and FU-1 stay.
+
+**Rule (AR-005):** the served status of a Project always equals `collectionStatus(collection, currentItems)` for the active model. The search service caches **inputs, never results**.
+
+| Element | Design |
+| --- | --- |
+| Input cache | `ProjectTaskSearchService` keeps `Map<projectId, ItemFingerprints>`. `ItemFingerprints` is an **opaque** value from `EmbeddingIndex.fingerprintItems(items)`: `{modelId, entries: id → fingerprint}`, computed with the resolved active model's document prefix, without `activeModel()`. About 100 bytes per Task, ≈ 2 MB at 20,000 Tasks. The consumer never interprets it. |
+| Invalidation | A Project is re-read (`listTasks` + `fingerprintItems`) when: it is in `dirty` (set by the composed `ProjectChangeMarks` fan-out: Task create, update, `updateById`, dependency and resource commits, delete; R-12 over-invalidation kept); it has no entry; or its entry's `modelId` ≠ the resolved active model (a switch). `forgetProject` drops the entry. Projects absent from `listProjects` are dropped. |
+| Status each poll | `EmbeddingIndex.collectionStatus(collection, fingerprints)` is computed **fresh every time** from (1) the collection's in-memory job if it exists and has pending work: `indexing {done, total}` when a run is active, `waiting` when the model isn't ready; else (2) a comparison of the current fingerprints with the stored ones (the in-memory job's vectors if the job exists, else `store.readFingerprints`): `ready` / `needsUpdate {changed}` / `notIndexed`; and `unavailable` when the model is unavailable. No status is cached, so finished jobs (MP-005, MP-006) and search-triggered indexing (MP-007) show correctly on the next poll. `collectionJobStatus` is dropped. |
+| Index after writes (REQ-011, DEC-014) | The same change-mark listener schedules `indexProject(projectId)` per Project, debounced 3 s (rapid writes → one run), **only if** `EmbeddingIndex.activeModelOnDisk()` (read-only: all active model files present, model not unavailable). It runs in the background and never throws to the writer. `indexProject` = `listTasks` + `index.sync`; an unchanged fingerprint set schedules nothing, so marks that aren't description changes cost one `listTasks` of that Project. Deletes keep the existing `forgetTask` / `forgetProject` hooks. |
+| Interface changes | **Add** `EmbeddingIndex.fingerprintItems(items)` and `EmbeddingIndex.activeModelOnDisk()`. **Change** `collectionStatus(collection, fingerprints: ItemFingerprints)` to fingerprints instead of items. **Remove** `collectionJobStatus`. |
+
+Tests (G8 extended):
+
+- **MP-005:** index, then edit a Task, then the next two polls both show Needs update, and Index all includes the Project.
+- **MP-006:** the poll after the job finishes shows Ready; polling drops to 10 s.
+- **MP-007:** a board search indexes the Project between polls, and the next poll shows Ready.
+- **Write trigger:** create or edit → indexed within the debounce with no search; a burst → one run; model not on disk → no download and nothing scheduled.
+- **Warm poll:** no `listTasks` for clean Projects.
+- **Cost:** QR-001's 300 ms warm refresh at 20 × 1,000 Tasks (the fingerprint comparison reads the stored fingerprint maps; measure, R-13 with host load).
+
+## Failure-Origin Resolution (FO-001 → SR-006)
+
+API/E2E API-L02 (code review CRR-003, `Design Impact`): on a Docker node with 24 Projects and 20,039 Tasks, the panel status took 1.8–2.0 s median.
+- `embeddingModelsStatus` takes 4 ms; `projectTaskIndexes` takes 1.8 s.
+- DS-001 re-read every Task of every Project on each poll: every 2 s while work runs.
+- The existing `projects` list on that node also takes 1.8 s.
+
+| Change | Detail | Sections |
+| --- | --- | --- |
+| ~~Project index status cache~~ (**superseded by SR-007**: inputs cached, not status) in `ProjectTaskSearchService` | `Map<projectId, {modelId, status}>` plus a `dirty` set. `indexStatus()` reads `listProjects()` (cheap) and, per Project: (1) a dirty Project, or one with no entry for the resolved active model id: `listTasks` + `index.collectionStatus(collection, items)`, then cache it and clear dirty; (2) otherwise, if the index has a live job for the collection under the active model: `index.collectionJobStatus(collection)` (new read-only boundary method; progress from the in-memory job; `null` when none); (3) otherwise the cached status. Projects that disappear from `listProjects` are dropped from the cache. | Interface, DS-001, Final File Mapping |
+| **Invalidation from the existing post-commit change marks** | The composition passes `ProjectTaskService` a fan-out of `ProjectChangeMarks`: the existing publisher plus the search service's `markTaskChanged(location)` / `markTaskRemoved(location)` (Project locations only), which add the Project to `dirty`. This covers create, update, `updateById`, dependency writes and delete. `forgetProject` (existing hook) drops the cache entry. The index actions (`indexProject`, `rebuildProject`, `indexAllProjects`) mark their Projects dirty. Model switch: entries are keyed by model id, so they miss automatically. | Dependency Rules, Final File Mapping |
+| QR-001 refined (DEC-012) | Later refreshes ≤ 300 ms. First load ≤ 1 s on the desktop host; on Docker no slower than the `projects` list (Project store floor) | Risks |
+| **Follow-up FU-1** | The Project store's whole-backlog read (1.8 s for 20,039 Tasks on Docker; it affects the Projects list too) → Project Task Manager at the receipt | Change Scope |
+| O-1 / O-2 / O-4 | O-1: remove an empty model folder after a failed download. O-2: in `useEmbeddingSettings.act()`, release `working` once the mutation settles, before the follow-up refresh. O-4: a transport failure with no server message shows "Couldn’t reach the server." (DEC-013; en and zh-CN) | G8 |
 
 ## Architecture Review Resolution (ARCH-REV-001 → SR-004)
 
@@ -89,7 +127,8 @@ Extend the embedding layer's boundary with model management (status, download ah
   - Web: `pages/settings.vue`, `components/settings/ServerSettingsManager.vue`, new `components/settings/embedding/*`, `composables/settings/useEmbeddingSettings.ts`, GraphQL documents, `localization/messages/{en,zh-CN}/settings.ts`, `types/`.
   - Docs: `autobyteus-server-ts/docs/modules/embeddings.md`, web `docs/` Settings description.
 - **Deliberately left alone:** the board and its status line; the agent tool; search ranking and calibration; the Advanced settings table; the catalog contents (except the size text fix); proxy support (`autobyteus-168`); the Docker image (`autobyteus-169`).
-- **Follow-ups:** none new at design time.
+- **Follow-ups:** FU-1 (SR-006): the Project store's whole-backlog read is slow at large backlogs on Docker (`projects` list 1.8 s median for 24 Projects / 20,039 Tasks; API-L02 evidence). It affects the Projects list and this section's first load. To be sent to the Project Task Manager at the delivery receipt.
+  - FU-2 (user request, 2026-10-19: "lets create a follow up for the waiting ticket"): merge the Project states "Waiting to start…" and "Waiting for the model…" into one "Waiting…". With indexing after writes (REQ-011), jobs start at once, so "Waiting to start…" can appear only for a moment. **Sent** to `/project_task_manager` on 2026-10-19.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -229,6 +268,10 @@ Extend the embedding layer's boundary with model management (status, download ah
 | `EmbeddingIndex.downloadModel(id)` / `cancelDownload(id)` / `removeModel(id)` | One catalog model | Background download; cancel; remove (refused for active or downloading) | catalog id |
 | `EmbeddingIndex.prepareActiveModel()` | Active model | Prepare now (no collection) | — |
 | `EmbeddingIndex.collectionStatus(collection, items)` → `{state, done, total, changed}` | One collection | Read-only (no job, no model work) | collection key + current items |
+| `EmbeddingIndex.fingerprintItems(items)` → opaque `ItemFingerprints` | Item set under the resolved active model | Read-only; no `activeModel()` | items |
+| `EmbeddingIndex.collectionStatus(collection, fingerprints)` (SR-007 signature) | One collection | Fresh status every call (job if pending, else fingerprint comparison) | collection + `ItemFingerprints` |
+| `EmbeddingIndex.activeModelOnDisk()` | Active model | Read-only gate for write-triggered indexing | — |
+| `ProjectTaskSearchService.markTaskChanged(location)` / `markTaskRemoved(location)` | One Project's input cache entry | Mark it dirty **and** (SR-007, REQ-011) schedule a debounced background `indexProject` when the active model is on disk (called through the composed `ProjectChangeMarks` fan-out; never throws, never waits) | `TaskLocation` |
 | `ProjectTaskSearchService.indexStatus()` → `[{projectId, name, state, done, total, changed}]` | All Projects | Read-only; alphabetical | — |
 | `ProjectTaskSearchService.indexProject(id)` / `rebuildProject(id)` / `indexAllProjects()` | Project(s) | Start indexing | projectId |
 | GraphQL query `embeddingModelsStatus { activeModelId, defaultModelId, onDiskBytes, models {…, activeDisplay} }` (`embeddings.ts`) and `projectTaskIndexes { projectId, name, state, done, total, changed }` (`project-task-search.ts`); the web fetches both in **one document** | Models / Projects (one owner each) | Read-only | — |
@@ -305,6 +348,15 @@ Extend the embedding layer's boundary with model management (status, download ah
 - G4: Remove is refused (error code) for the active model and a downloading model. The UI hides it anyway.
 - G5: Index all chooses Projects from a fresh `indexStatus()` on the server, not from client state.
 - G6: Keep each file under 500 lines.
+- G8 (SR-006, FO-001):
+  - Implement the status cache and invalidation exactly as in "Failure-Origin Resolution". Keep `indexStatus()` free of `sync`, `search` and model work (G3).
+  - Tests:
+    - a warm refresh does no `listTasks`;
+    - a Task create, edit or delete marks only its Project;
+    - a model switch recomputes;
+    - live job progress is reported without `listTasks`.
+  - Also apply O-1, O-2 and O-4 (DEC-013).
+  - API/E2E reruns API-L02 (first load and warm refresh, with the `projects` list as reference, recording host load).
 - G7 (SR-005, code review CRR-001):
   - Keep the action error line as built (REQ-010, DEC-011).
   - Remove the dead code from CR-001: `EmbeddingIndex.modelStatus()`, `EmbeddingModelState` / `EmbeddingModelStatus`, `EmbeddingModelDownloads.isRunning()`. Move their assertions to `modelsStatus().activeDisplay`, `fileState()` and `progress()`.

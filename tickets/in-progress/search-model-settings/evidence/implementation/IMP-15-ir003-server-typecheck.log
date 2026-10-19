@@ -1,0 +1,29 @@
+# Check: IMP-15
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings && pnpm -C autobyteus-server-ts typecheck)
+# Commit tested: 70bb03632c (branch codex/search-model-settings, IR-003)
+# Environment: Darwin arm64, Apple M1 Max, node v22.23.1, pnpm 10.28.2
+# Host load average at start: { 9.26 10.22 9.71 }
+# Date: 2026-10-19T11:51:49Z
+
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+# Host load average at end: { 13.32 11.03 10.00 }
+# Exit code: 0

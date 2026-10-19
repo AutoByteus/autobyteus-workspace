@@ -2,27 +2,40 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-004; DEC-001…DEC-010)
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 3). Round 2 (`CRR-002`, Pass) is the latest implementation-review result; its sections below are carried forward.
+- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-005; DEC-001…DEC-011; REQ-010, AC-014 added for CR-002)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (as indexed by the design)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md`
-- Design Spec Reviewed As Context: `design-spec.md` (SR-004; DS-001…DS-006, G1–G6, AR-001…AR-004, R-1…R-7)
+- Design Spec Reviewed As Context: `design-spec.md` (SR-005; DS-001…DS-006, G1–G7, AR-001…AR-004, R-1…R-7)
 - Supplemental Task Artifacts Reviewed As Context: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md` (behavior-defining; § Implementation Fidelity Boundary, journeys UXJ-*, transitions TR-*, state table)
-- Relevant Solution Revision IDs: SR-004
+- Relevant Solution Revision IDs: SR-004, SR-005
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-002, Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
+- Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Trigger: implementation engineer handoff for IR-001
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings`, branch `codex/search-model-settings`, `8d40ba3b6c..e48806b035` (server `9c73c22672`, web `8469d4bcf5`, E2E `56cb7be36a`, ticket `e48806b035`)
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 3 (failure-origin; Review Scope `N/A`)
+- Review Scope: `Targeted Delta Review` (round 1: `Full Review`)
+- Review Scope Evidence: the delta `e48806b035..d2bcb95d3a` touches 8 files, all within the prior findings:
+  - removals in `embedding-index.ts` and `embedding-model-downloads.ts` (CR-001), with their tests;
+  - one line in `embedding-model-files.ts` (the optional C-06 note);
+  - an extended web spec case and two docs (CR-002 → DEC-011).
+
+  No spine, interface used by a caller, or data shape changed, so round-1 evidence for unaffected checks is carried forward.
+- Trigger: implementation engineer handoff for IR-002 (after the Solution Designer's SR-005 / DEC-011 and ARCH-REV-003 Pass)
+- Prior Review Round Reviewed: round 2 (`CRR-002`, Pass)
+- Latest Authoritative Round: 3
+- Failure-origin context (round 3):
+  - trigger: API-REV-001 (`/software_engineering_team/api_e2e_engineer`), F-001 / case API-L02, QR-001 on a Docker node (the round-1 hold C-07);
+  - validated code: `d2bcb95d3a`; API/E2E commits `c02a54bc3e` (test) and `671a1e596b` (reports);
+  - reports: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`;
+  - evidence: `evidence/api-e2e/API-L02-01-qr001-status-timing.txt`, `API-L02-03-status-breakdown.txt`, `probes/API-PROBE-status-timing.mjs`, `probes/API-PROBE-status-breakdown.mjs`, `API-R04-qr001-host-load.log`;
+  - testing guideline: the worktree `TESTING.md`.
+- Code reviewed (round 2): `e48806b035..d2bcb95d3a`; IR-002 handoff and evidence `8cbbf9afe8`
+- Code reviewed (round 1): worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings`, branch `codex/search-model-settings`, `8d40ba3b6c..e48806b035` (server `9c73c22672`, web `8469d4bcf5`, E2E `56cb7be36a`, ticket `e48806b035`)
 - Coverage / API/E2E / delivery artifacts: N/A (implementation review)
 
 ## Routing Classification Review
@@ -40,7 +53,67 @@
 - Checks: the implementer's Checks Run (IMP-01…IMP-08) were recorded on the code under review. None was rerun (skill rule: no rerun to confirm).
 - Explicit exclusions: the Docker node run (AC-008) and the desktop run, which are downstream; the probe's screenshots, which were compared by the implementer and are owned by API/E2E for the visual sign-off.
 
-## Upstream Behavior And Production-Path Basis Confirmation
+## API/E2E Failure-Origin Review (Round 3, CRR-003)
+
+### The failing scenario represents approved behavior
+
+- QR-001: "The section's status loads within 1 s, up to 20 Projects with 1,000 Tasks each". QR-004: "Same behavior on desktop and Docker nodes". REQ-008 / AC-008: a Docker node works from a browser.
+- So opening Embedding on a Docker node with a large backlog is a supported scenario (SCN-001/SCN-003). API-L02 used the panel's real status document over GraphQL and real page opens on a test-owned container built from `d2bcb95d3a`, with no bind mount (data in the container's overlay file system), and 24 Projects / 20,039 Tasks seeded through GraphQL.
+- This is not an invalid or stale test. One part of the environment needs care, though: the host was under heavy load while measuring (load averages 9.7 / 17.6 / 44.0 on 10 CPUs). The minimums are still well above 1 s: `projectTaskIndexes` 1,588 ms and the panel document 1,614 ms. The miss is therefore credible, but its true size on an unloaded node is not yet known.
+
+### Origin analysis
+
+- **Where the time goes:**
+  - `embeddingModelsStatus` takes 4 ms; the embedding layer is not the cost.
+  - `projectTaskIndexes` takes a 1,797 ms median: `ProjectTaskSearchService.indexStatus()` → `listProjects` → `listTasks` for every Project (reading about 20,000 `task.json` files and building views) → `collectionStatus` (fingerprints only).
+  - The **existing** `projects` list query on the same node takes 1,805 ms (minimum 1,519). The Project store's whole-backlog file read already costs that much there, independent of this ticket.
+- **The code does what was reviewed:** DS-001 specifies `indexStatus() → listProjects + listTasks → collectionStatus` on every read, and RSK-001 anticipated this cost.
+  - On the host disk, the same path passes (626 ms; API-R04).
+  - Source review recorded the margin as `Hold for Evidence` (C-07) for exactly this measurement. It was not detectable as a code defect.
+- **Origin: the design basis.** The design reads every Task of every Project on every status read (polled every 2 s while work runs, 10 s otherwise) and relies on the Project store being fast enough. On a Docker node at the full QR-001 size, it isn't. The remedy needs a design decision, and the evidence shows two possible owners:
+  - **In this ticket's functionality:** a cheaper read of Task state for the status. For example, Task fingerprints cached per Project in the search service and invalidated by the existing change marks or delete hooks. This is the deferred "fingerprint cache" in the IR-001 handoff.
+  - **A prerequisite in other functionality** (prerequisite test in `references/ticket-scope.md`: it blocks QR-001, and it belongs to the Project store, whose existing `projects` list is equally slow): make the Project store's whole-backlog read cheaper. That would also speed up the Projects list.
+- **A requirement question:** must QR-001 hold at the full 20 × 1,000 size on Docker nodes (QR-004 suggests yes), and on which reference hardware or load?
+- **Classification:** `Design Impact`, with a possible prerequisite and a requirement question, all for the Solution Designer.
+  - Not an implementation defect: the code follows DS-001.
+  - Not a test, fixture or environment problem: the scenario and setup are valid. The host load inflates the numbers, but even the best cases miss the target.
+  - Not an earlier review gap: the risk was held (C-07) for runtime measurement.
+- **Recommendation for the evidence basis:** before choosing, have API/E2E re-measure API-L02 on an unloaded host (load average near idle), so the decision rests on the true margin. If it still misses, measure the `projects` list too: that decides whether a store-level prerequisite is warranted.
+
+### Candidate gate updates (round 3)
+
+| Candidate ID | Observation | Disposition | Scope | Reason |
+| --- | --- | --- | --- | --- |
+| C-07 | QR-001 is missed on a Docker node: 2,017 ms median, minimum 1,588 ms, at 20 × 1,000 | Promote (was Hold for Evidence) → FO-001 | This ticket (Design Impact), or a prerequisite, as decided upstream | See the origin analysis |
+| O-1 (API/E2E) | An empty model folder stays after a failed download | Reject (as a finding) | — | Not a partial file (REQ-002 holds); "On disk" counts files only. Cosmetic; can join the rework |
+| O-2 (API/E2E) | While the node is unreachable, the row whose action failed keeps its buttons disabled until a read succeeds (`act()` awaits `refresh()`, which waits for the node) | Note | — | The approved alert line shows (AC-014). The rework may release `working` after the mutation instead of after the follow-up read; the Solution Designer decides whether to include it |
+| O-3 (API/E2E) | Settings reads `section`/`mode` only on mount | Reject | — | Base behavior for every mode; outside this entry point |
+| O-4 (API/E2E) | The unreachable-node alert text is the browser's "Failed to fetch" | Reject (as a finding) | — | REQ-010 says "the server's message"; with no server reachable, the transport message is what exists. The Solution Designer may want friendlier copy |
+
+The durable test change API-D01 (`projects-graphql.e2e.test.ts`, commit `c02a54bc3e`) is not reviewed in this failure-origin round. It is listed for the next proportional test review.
+
+The full scorecard is not repeated (round 2: 9.4/10); no implementation category changes.
+
+## Round 2 (CRR-002): targeted delta review of IR-002
+
+| Prior finding | Resolution | Verification |
+| --- | --- | --- |
+| CR-001 (dead code) | **Resolved** | `modelStatus()`, `EmbeddingModelState`, `EmbeddingModelStatus` and `isRunning()` are removed. `grep` finds no reference in `src/embeddings`, `tests/unit/embeddings`, `docs/modules/embeddings.md` or the web. The two index tests assert through `modelsStatus().…activeDisplay`; the downloads test asserts through `progress()`. The assertions keep their meaning (switch → Active READY on model B; embed failure → UNAVAILABLE with the reason) |
+| CR-002 (undefined action-error state) | **Resolved upstream** as DEC-011, REQ-010 and AC-014 (SR-005, Solution Designer within the direction; ARCH-REV-003 Pass) | The code is unchanged and matches REQ-010: one red `role="alert"` line above the cards with the server's message, cleared by the next action. The approved surfaces (Download failed, Unavailable, load error) are untouched. The web spec now also asserts `role="alert"`, an unreachable-node failure, and clearing by the next action (AC-014). `docs/settings.md` states the rule |
+| C-06 (optional note) | Applied | `EmbeddingModelFiles.download` calls `cancel()` right after adding the listener when the signal is already aborted, so the fetch is aborted at once and the `.part` path is cleaned as before |
+
+- Checks: IMP-09 (typecheck), IMP-10 (server unit suite on `d2bcb95d3a`: 6,060 passed, 1 failed), IMP-11 (GraphQL E2E, 9) and IMP-12 (web settings tests, 44 files / 253) cover the changed code, so none was rerun. IMP-13 (dead-code grep) matches my own grep.
+- The one IMP-10 failure is outside this change. In `tests/unit/agent-execution/native-compaction-terminal-drain.test.ts`, the assertion `expected [ 'failed', 'started', 'stopped' ] to deeply equal [ 'started', 'stopped' ]` failed under full-suite load. `git diff 8d40ba3b6c..d2bcb95d3a -- src/agent-execution` is empty, and the test passed 5/5 in isolation (IMP-10b). The same test failed intermittently in autobyteus-71 (its C-14). Recorded as follow-up FU-CR-1.
+- The web source is unchanged in round 2, so the full web suite, guards and probe from round 1 still apply.
+
+### Score update (round 2)
+
+- Cleanup Completeness 8.4 → 9.4: dead code removed.
+- API/E2E Readiness 8.6 → 9.3: no undecided state; AC-014 is covered.
+- Runtime Correctness 9.0 → 9.3: the implementation is now aligned with the approved basis (REQ-010), and the early-cancel window is closed.
+- Other categories unchanged. Overall 9.4/10; every category ≥ 9.0.
+
+## Upstream Behavior And Production-Path Basis Confirmation (round 1)
 
 - Approved requirements basis understood: Yes. The ticket adds a Server Settings → Embedding sub-section. Users can see the catalog models, download a model ahead with Cancel, remove a model, choose the active model, and see each Project's index state with Index now, Rebuild and Index all. Status reads never start work. Downloaded files are kept until the user removes them.
 - Design-spec behavior map verified against the implementation: Yes.
@@ -198,17 +271,24 @@ Non-blocking note: C-06, the abort-listener window in `EmbeddingModelFiles.downl
 | --- | --- | --- | --- | --- |
 | — | — | — | — | — |
 
-- Sent to: `None`. The implementer's own follow-up (a Task-fingerprint cache if QR-001 is tight) is in the handoff; I have no new follow-up.
+- Round 1: `None`.
+- Round 2: FU-CR-1 sent to `/project_task_manager` (the requirements doc's "Requested by"). It is recorded as Part 4 of the existing Task `autobyteus-103` (load-sensitive tests; TODO, flagged as a possible product race in native compaction shutdown):
+
+| Follow-up ID | What is wrong, where | Evidence | Why it is outside this ticket | Suggested Task description |
+| --- | --- | --- | --- | --- |
+| FU-CR-1 | `autobyteus-server-ts/tests/unit/agent-execution/native-compaction-terminal-drain.test.ts` ("drains stopped through the real dispatch queue before returning…") fails intermittently under full-suite load: the observed compaction phases include an extra `'failed'` before `'started'`/`'stopped'` (L19) | This ticket's IMP-10 log (`evidence/implementation/IMP-10-ir002-server-unit-suite.log`, the FAIL block); 5/5 isolated passes (IMP-10b); the same intermittent failure in autobyteus-71 IR-004 (its C-14), on different base commits | This ticket changes nothing in `agent-execution` (empty diff), and everything it delivers works without the fix | "Investigate the intermittent failure of `native-compaction-terminal-drain.test.ts` under full server unit-suite load (an extra `failed` compaction phase). Decide whether it is a product race in native compaction shutdown or test timing, and fix the owner so the full suite is reliably green." |
 
 ## Classification
 
-- `Requirement Gap` (CR-002): the approved basis lacks a state the implementation needs.
-- `Local Fix` (CR-001): bounded dead-code cleanup, to be done by the implementation engineer in the same rework round after the Solution Designer's decision.
+- Round 3: `Design Impact` (FO-001), with a possible prerequisite (Project store read cost) and a requirement question (the QR-001 scope on Docker nodes).
+- Round 2: N/A — `Pass` (CR-001 resolved; CR-002 resolved upstream as DEC-011).
+- Round 1: `Requirement Gap` (CR-002) and `Local Fix` (CR-001).
 
 ## Recommended Recipient
 
-- `/software_engineering_team/solution_designer`, for the CR-002 decision. It then routes the rework, including CR-001, to the implementation engineer.
-- Afterwards: a targeted code review of CR-001/CR-002, then API/E2E.
+- Round 3: `/software_engineering_team/solution_designer` (`Design Impact` FO-001).
+- Round 2: `/software_engineering_team/api_e2e_engineer` (primary pass handoff); `/software_engineering_team/implementation_engineer` (informational).
+- Round 1: `/software_engineering_team/solution_designer`.
 
 ## Residual Risks
 
@@ -219,11 +299,15 @@ Non-blocking note: C-06, the abort-listener window in `EmbeddingModelFiles.downl
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review` (round 1, full review)
-- Supported Product Scenario Gate: `Pass`
+- Review Decision: `Fail` (failure-origin review of API-REV-001)
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 3)
+- Supported Product Scenario Gate: `Pass` (QR-001 with QR-004 / REQ-008 on a Docker node)
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.1/10. Below 9.0: API/E2E Readiness 8.6, Cleanup Completeness 8.4.
-- Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/solution_designer` (`Requirement Gap` CR-002; `Local Fix` CR-001 to follow in the same rework)
-- Notes: the implementation is otherwise well structured and faithful to SR-004 and the approved spec. Decisions 1 and 3–9 are sound.
+- Score Summary: no new scorecard for a failure-origin round (round 2: 9.4/10, unchanged)
+- Failure Origin: `Design Impact`, FO-001. The status design reads every Task of every Project per read (DS-001). That misses QR-001 on a Docker node at 20 × 1,000 Tasks (median 2,017 ms, minimum 1,588 ms). The cost is the Project store's file reads; the existing `projects` list is equally slow there. It is not an implementation defect, not a test problem, and not a review gap (it was held as C-07)
+- Recommended Recipient: `/software_engineering_team/solution_designer`
+- Notes for the Solution Designer:
+  - choose the remedy owner: this ticket (a status fingerprint cache), or a prerequisite (Project store read cost);
+  - settle the QR-001 scope on Docker;
+  - consider having API/E2E re-measure on an unloaded host first, since the measurement ran under a host load average of 9.7 to 44;
+  - API/E2E's O-1, O-2 and O-4 can optionally join the rework.

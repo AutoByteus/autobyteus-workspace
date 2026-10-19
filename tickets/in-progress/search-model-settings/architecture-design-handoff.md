@@ -4,7 +4,7 @@
 - From: Solution Designer, 2026-10-19
 - Result: `Architecture Design Complete`, `task_size=Medium`, `architectural_risk=High`
 - Route: handoff rule "Large or High → independent architecture review" → `/software_engineering_team/architecture_reviewer`
-- Revisions: requirements `SR-005` (approved), design `SR-005`
+- Revisions: requirements `SR-007` (approved; REQ-011 approved by the user), design `SR-007`
 
 ## Request And Approval
 
@@ -66,6 +66,20 @@ Re-review scope: AR-001…AR-004 and the UI-basis change from AR-002. See "Archi
 - **CR-001 (`Local Fix`, implementation-owned):** remove the dead code listed in design G7.
 - **Unchanged:** architecture, boundaries and contracts. Re-review scope: REQ-010 / DEC-011 and G7 only.
 - **Code:** `codex/search-model-settings` @ `e48806b035`.
+
+## SR-006 Revision (failure origin FO-001)
+
+- **Status cache:** the Project index status no longer re-reads every Task on each poll. Per-Project status is cached for the active model and marked dirty by the composed `ProjectChangeMarks` fan-out. Live job progress comes from memory (`collectionJobStatus`). See the design spec's "Failure-Origin Resolution".
+- **QR-001 refined (DEC-012):** first load on Docker no slower than the `projects` list. **DEC-013:** "Couldn’t reach the server.".
+- **Follow-up FU-1:** the Project store's whole-backlog read.
+- **Re-review scope:** the FO-001 resolution section, DEC-012/DEC-013, G8.
+- **Code:** `codex/search-model-settings` @ `671a1e596b` (validated `d2bcb95d3a`).
+
+## SR-007 Revision (ARCH-REV-004 AR-005; user-approved REQ-011)
+
+- **AR-005:** inputs cached (opaque fingerprints per Project), status computed fresh each poll, `collectionJobStatus` removed. Tests for MP-005…MP-007.
+- **REQ-011 / DEC-014 (approved by the user 2026-10-19):** after a Task create or edit, a debounced background `indexProject` runs when the active model is on disk. Same change-mark listener; the search-time check is kept as a safety net. AC-015.
+- **Re-review scope:** the design spec's "Revision SR-007" section, REQ-011 / AC-015 / DEC-014.
 
 ## Expected Next Action
 

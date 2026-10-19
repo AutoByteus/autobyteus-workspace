@@ -2,21 +2,21 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/tickets/in-progress/search-model-settings/requirements-doc.md` (SR-005, Approved: the SR-004 basis plus DEC-011 / REQ-010 / AC-014 (Solution Designer within the direction, user informed); SR-004 = the SR-002 baseline, where DEC-005 and the UI were decided by the user via Product, plus DEC-009/DEC-010, which the Solution Designer decided within the direction; user informed 2026-10-19)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings/tickets/in-progress/search-model-settings/requirements-doc.md` (SR-007, Approved: the SR-006 basis plus REQ-011 / AC-015 / DEC-014, index after Task writes, **approved by the user** 2026-10-19; SR-006 = the SR-005 basis plus DEC-012 (QR-001 refined) and DEC-013 ("Couldn’t reach the server."), Solution Designer within the direction, user informed; SR-005 = the SR-004 basis plus DEC-011 / REQ-010 / AC-014 (Solution Designer within the direction, user informed); SR-004 = the SR-002 baseline, where DEC-005 and the UI were decided by the user via Product, plus DEC-009/DEC-010, which the Solution Designer decided within the direction; user informed 2026-10-19)
 - Upstream Investigation Notes: `.../investigation-notes.md`
-- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-005)
-- Reviewed Design Spec: `.../design-spec.md` (SR-005: G7; the rest unchanged from SR-004, incl. "Architecture Review Resolution (ARCH-REV-001 → SR-004)")
+- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-007)
+- Reviewed Design Spec: `.../design-spec.md` (SR-007: "Revision SR-007 (ARCH-REV-004 AR-005 + user-approved REQ-011)", the interface rows and G8 tests; it supersedes the SR-006 result cache and `collectionJobStatus`)
 - Supplemental Task Artifacts Reviewed:
   - the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md` (design `4e4ac06`): State Behavior, Journeys, TR-001…TR-020, Data/Contract/Mock Boundaries, Implementation Fidelity Boundary, D-1…D-5;
   - `product-design-request.md` (history);
   - `architecture-design-handoff.md`.
-- Relevant Solution Revision IDs: SR-002, SR-003, SR-004, SR-005 (code review CRR-001: DEC-011 + G7)
+- Relevant Solution Revision IDs: SR-002…SR-006, SR-007 (AR-005 resolution and the user-approved REQ-011)
 - Architecture Review Revision Record: `.../architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
-- Trigger: Solution Designer narrow re-review request for SR-005, which answers code review CRR-001 (CR-001 `Local Fix`, CR-002 `Requirement Gap`), 2026-10-19. Scope: REQ-010 / DEC-011 / AC-014 and G7
-- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, Pass); round 1 (`ARCH-REV-001`, Fail)
-- Latest Authoritative Round: 3
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
+- Trigger: Solution Designer re-review request for SR-007 (2026-10-19). Scope: "Revision SR-007", REQ-011, AC-015, DEC-014
+- Prior Review Round Reviewed: round 4 (`ARCH-REV-004`, Fail: AR-005)
+- Latest Authoritative Round: 5
 - Current-State Evidence Basis: worktree `codex/search-model-settings` @ `8d40ba3b6c` (only the ticket folder is uncommitted). Read:
   - `autobyteus-server-ts/src/embeddings/embedding-index.ts`: `activeModel()` switch side effects; `prepareModel`; `retryModel()` only resets to `idle`; `readinessOf` maps every non-ready, non-downloading phase, including `idle`, to `preparing/loading`; `removeOtherModels`;
   - `collection-indexing-job.ts`, `store/embedding-vector-store.ts` (`read` loads vectors), `catalog/embedding-model-catalog.ts` (`languages` `["en"]` / `["multilingual"]`; the LEAF-IR description says "About 23 MB");
@@ -246,34 +246,93 @@
 
 None. The round 1 gap (MP-002) is resolved by DEC-009 / AC-011.
 
-## Round 3 Basis And Code Evidence (SR-005)
+## Round 4 Basis And Code Evidence (SR-006)
 
-- Code: `codex/search-model-settings` @ `e48806b035` (implementation IR-001).
-  - `EmbeddingSettingsPanel.vue` L27: `role="alert"` red line `embedding-action-error`, with its web test.
-  - `EmbeddingIndex.modelStatus()` and the types `EmbeddingModelState` / `EmbeddingModelStatus` (`embedding-index.ts` L35–36, L129), and `EmbeddingModelDownloads.isRunning()` (L79), are called only by their own tests (`embedding-index.test.ts` L111, L135; `embedding-model-downloads.test.ts` L44, L48).
-  - `grep` over the server `src`/`tests` and the web finds no production caller. The other `isRunning()` hits belong to unrelated classes.
-- **REQ-010 / DEC-011 / AC-014:**
-  - The gap is the one the code reviewer named (CR-002): the approved UI spec gives a failed or refused action no surface.
-  - It is reachable through a supported user action whose request fails: the connection drops mid-click, or the server refuses a racing action such as Cancel just as a download completes (`EMBEDDING_DOWNLOAD_NOT_CANCELLABLE`).
-  - The Solution Designer decided it within the direction, following the DEC-009 precedent: options and reasoning recorded, user informed. This technical review does not reopen that decision.
-  - The decision keeps each existing failure surface (Download failed, Unavailable, the panel load error). It uses the spec's existing error treatment, adds no component and changes no contract: the server's message is already the error message of the GraphQL mutation.
-- **G7:**
-  - The dead-code removal is within the ticket: dead code in touched files, Core Principle 7.
-  - Its evidence holds, and its tests move to the live status surfaces (`activeDisplay`, `fileState()`, `progress()`).
-  - The optional `signal.aborted` check after adding the listener is a bounded refinement of DS-002. It doesn't change REQ-002, which already holds (code review C-06).
-- No change to architecture, boundaries, interfaces, persistence or classification. The round 2 structural verdicts stand.
+- Code: `codex/search-model-settings` @ `671a1e596b`. Evidence: `evidence/api-e2e/API-L02-03-status-breakdown.txt`. Key facts:
+  - `EmbeddingIndex.collectionStatus(collection, items)` (`embedding-index.ts` L150–158) returns `job.status(items)` when a job exists for the collection, else a fingerprint-only store read.
+  - Jobs stay in `EmbeddingIndex.collections` **after they finish**. Entries are removed only by `dropCollection` (L123) and by a model switch or shutdown (`collections.clear()`, L204, L216). A Project that was indexed or searched once keeps a finished job for the life of the process.
+  - `CollectionIndexingJob.status(items)` (L63) compares the *given current items* with its vectors. Without items, a job only knows the item set of its last `sync`.
+  - Task writers: `ProjectTaskService` create (L424/429), update (L447/459), delete (L196/197), dependency writes (`task-dependency-writes.ts` L64), and resource commits (L82) all emit `ProjectChangeMarks`. The fan-out claim holds; `reclaim` (L482) rewrites the Task unchanged.
+- **DEC-012** (QR-001: warm refresh ≤ 300 ms; first load ≤ 1 s on desktop; on Docker no slower than the `projects` list) and **DEC-013** ("Couldn’t reach the server.") are Solution Designer decisions within the direction, with the user informed. This review does not reopen them.
+- **Follow-up FU-1** (the Project store's whole-backlog read) is correctly a follow-up, not a prerequisite. Under DEC-012 the ticket reaches its goal without it, and the slowness belongs to the Project store, which the `projects` list shares.
+- **O-1, O-2, O-4 (G8):** bounded and coherent. O-1: an empty folder after a failed download, consistent with REQ-002's no partial files. O-2: release `working` once the mutation settles. O-4 is DEC-013.
+- The cache structure is sound in principle: it lives in the subject owner, is invalidated through the existing post-commit marks, and needs no new store. It adds one read-only boundary method. Its invalidation rule, however, is incomplete (AR-005).
+
+### `MP-005` — A Task is edited after its Project was indexed (finished job present), and Settings shows that Project
+
+- Related requirement: REQ-005 (Needs update · K changed), REQ-006 / D-4 (Index all = every Not indexed or Needs update Project), AC-005, AC-006.
+- Initiating basis kind: `User`. A supported sequence:
+  - the user presses Index now (or searches the board) on a Project; its job completes and stays in the index;
+  - later the user edits a Task's description on the board, or the Project Task Manager edits one with `update_task`;
+  - the user opens Settings → Embedding, or it is already open and polling.
+- Forward path in the SR-006 design:
+  - The edit's `taskChanged` mark sets dirty. The next poll takes the dirty path: `listTasks` + `collectionStatus(collection, items)` → `job.status(items)` → `needsUpdate {changed: 1}`; it caches that and clears dirty.
+  - The next poll takes case (2): the index has a job for the collection under the active model, so `collectionJobStatus(collection)` reports from the job's own item set. All of that set is fresh, so it reports **Ready**.
+- Consequence:
+  - The Project flips from "Needs update · 1 changed" to "Ready" one poll later, against REQ-005 and AC-005.
+  - `indexAllProjects()` selects from `indexStatus()`, so Index all skips the Project (REQ-006, D-4, AC-006).
+  - The state stays wrong until another Task write.
+- Reachability: `Reachable`. The jobs persist (L123/L204/L216), and both the edit and the Index action are supported.
+
+### `MP-006` — The cache serves a transient state after the job settles
+
+- Initiating basis kind: `User`: Index now / Rebuild / Index all with the section open.
+- Path:
+  - The action marks the Project dirty.
+  - The next poll's dirty path computes `indexing {done, total}` (or `waiting`) and caches it.
+  - If case (2) is read as "a job that still has pending work", then once the job finishes the Project falls to case (3) and gets the cached `indexing`.
+- Consequence: the Project stays "Indexing N of M" indefinitely, and polling stays at 2 s because a Project "is indexing" (R-1).
+- Reachability: `Reachable` under that reading of "live job". Under the other reading, MP-005 applies. Either way the rule is incomplete.
+
+### `MP-007` — A board search indexes a Project between two polls
+
+- Initiating basis kind: `User`: a board search on a Project that Settings showed as Needs update. That is the existing first-search behavior, BEH-002.
+- Path:
+  - `ProjectTaskSearchService.search` syncs the collection, and the job indexes the changed Task in about 0.5 s.
+  - `search` is not an invalidation source.
+  - With polling at 10 s, the job can start and finish between two polls.
+  - Under the "pending job only" reading, the cache keeps `needsUpdate`.
+- Consequence: Settings shows Needs update for a Project that is Ready, and Index all re-runs it. The re-run is a no-op sync, harmless but untruthful.
+- Reachability: `Reachable`
+
+## Round 5 Basis And Verification (SR-007)
+
+- **AR-005 is resolved (option b).** Rule: "the served status of a Project always equals `collectionStatus(collection, currentItems)` for the active model. The search service caches inputs, never results."
+  - The input cache is an opaque `ItemFingerprints` from `EmbeddingIndex.fingerprintItems`, computed with the resolved active model's document prefix, without `activeModel()`.
+  - It is re-read when the Project is dirty (the composed `ProjectChangeMarks` fan-out, all Task writers verified in round 4), has no entry, or has a `modelId` that differs from the active model. `forgetProject` drops it.
+  - The status is computed fresh every poll: a job *with pending work* gives `indexing` or `waiting`; otherwise the current fingerprints are compared with the job's vectors or `store.readFingerprints`; `unavailable` when the model is unavailable.
+  - Against the round-4 premises:
+    - MP-005: finished jobs carry no status;
+    - MP-006: nothing transient is cached;
+    - MP-007: search-triggered indexing shows on the next poll.
+  - `collectionJobStatus` is removed. G8 has a test for each premise, plus "warm poll: no `listTasks` for clean Projects" and a cost test against DEC-012's 300 ms warm target.
+  - The boundary stays clean: the fingerprints are produced and interpreted only by `EmbeddingIndex`, and the consumer holds them as an opaque value.
+- **REQ-011 / DEC-014 / AC-015** (index after Task writes) were approved by the user on 2026-10-19. This review does not reopen the decision. The design maps it with no new owner:
+  - the same change-mark listener schedules a 3 s debounced `indexProject` (`listTasks` + `sync`) per Project;
+  - it runs only if the read-only `activeModelOnDisk()` holds, so a write starts no download;
+  - it runs in the background and never throws to the writer, so a save never waits (autobyteus-71 QR-006 preserved);
+  - deletes keep `forgetTask` / `forgetProject`, and the search-time fingerprint check stays as the safety net;
+  - nothing runs at startup, so autobyteus-71 AC-012 is preserved.
+- Classification `Medium` / `High` is unchanged and confirmed.
+
+### `MP-008` — The active model changes during a write's debounce window
+
+- Initiating basis kind: `Operational`: an operator sets `AUTOBYTEUS_EMBEDDING_MODEL` in Advanced or an env file to a not-downloaded model (REQ-009), within 3 s of a Task write.
+- Path: the gate `activeModelOnDisk()` was true for the old model when the run was scheduled. When the debounce fires, `indexProject` → `sync` → `syncCollection` → `activeModel()` → `prepareModel` downloads the new model.
+- Consequence: a download starts without a user Download, against REQ-011's "a write never starts a download". The window is a 3 s coincidence of two independent actions, and the outcome is the same download the next search would start.
+- Reachability: `Reachable` but needs coincidental timing. It drives a recommendation only (R-14), with no new machinery.
 
 ## Review Decision
 
-`Pass`. The SR-005 delta is coherent with the approved basis and the design. The rework (CR-001, kept error line) can proceed to implementation.
+`Pass`. AR-005 is resolved by a rule that makes the served status correct by construction. The user-approved REQ-011 is mapped onto the existing owner and marks, within its constraints. The design is ready for implementation.
 
 ## Findings
 
-None open. AR-001…AR-004 remain resolved (ARCH-REV-002). Round 3 verification is above and in `ARCH-REV-003`.
+None open. AR-001…AR-004 stay resolved (ARCH-REV-002). AR-005 is resolved (ARCH-REV-005).
 
 ## Classification
 
-N/A — `Pass`. Ticket scope: CR-001 and the error line belong to this ticket. No prerequisite or follow-up.
+N/A — `Pass`. Ticket scope: no prerequisite; FU-1 stays a follow-up.
 
 ## Recommended Recipient
 
@@ -281,16 +340,22 @@ N/A — `Pass`. Ticket scope: CR-001 and the error line belong to this ticket. N
 
 ## Residual Risks
 
-- **R-10 — Docs reference to removed code (implementation note).** `autobyteus-server-ts/docs/modules/embeddings.md` L43 still shows `index.modelStatus(); // {activeModelId, state, reason?}`. G7 removes that method, so update the doc line in the same rework (describe `modelsStatus()`), or the docs point at code that no longer exists.
-- **R-11 — One alert line for every action.** The next action clears it (REQ-010). A failure from an action on one row, for example Remove, appears above the cards, not on that row. That is as decided.
+- **R-14 — Re-check the gate when the debounce fires (MP-008).** Evaluate `activeModelOnDisk()` again when the debounced run fires, not only when it is scheduled. It is a cheap read-only call and closes the window.
+- **R-15 — Background run hygiene.** Make the debounced callback catch everything; for example `listTasks` throws `PROJECT_NOT_FOUND` when the Project is deleted inside the window. Clear or `unref` pending timers at shutdown, so they never keep the process alive or run against a closed store.
+- **R-16 — Requirements bookkeeping (Solution Designer's document, before code review).** In `requirements-doc.md`:
+  - the Scope Guardrail's Out Of Scope still lists "Automatic pre-indexing at startup **or after Task writes**", which contradicts the approved REQ-011;
+  - the baseline line (L13) still says "this document at `SR-005`" while Status says SR-007.
+
+  Narrow the line to "at startup" and correct the baseline, so the code review judges against a consistent Scope Guardrail.
+- **R-17 — Background model load after writes.** Under REQ-011 a Task write by the user or an agent can load the model worker (≈ 0.3–0.7 GB), which the runner's idle stop releases (autobyteus-71 QR-004). This is accepted by the user's decision; just observe it in API/E2E.
 - Carried forward:
-  - R-8 and R-9 (implemented per code review: `activeDisplay`, the flight-aware display);
-  - RSK-001 / code review C-07: the QR-001 margin is 626 ms median at 20 × 1,000; measure in API/E2E on Docker;
-  - RSK-002, RSK-003, ASM-001;
-  - the design's escalation triggers.
+  - R-12 (keep over-invalidation);
+  - R-13 (record host load in the API-L02 rerun);
+  - the cost of the fingerprint comparison (20 `readFingerprints` per poll) against the 300 ms warm target;
+  - R-10, R-11; RSK-002, RSK-003, ASM-001; FU-1.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. The CR-002 trigger is a supported user action whose request fails, so it is reachable, and the response is the approved REQ-010. MP-001…MP-004 are as in round 2.
-- Notes: a narrow round-3 review of REQ-010 / DEC-011 / AC-014 and G7 against the SR-005 artifacts and the code at `e48806b035`.
+- Material-Premise Gate: `Pass`. MP-005…MP-007 are resolved by construction. MP-008 is `Reachable` with coincidental timing and drives only R-14.
+- Notes: round 5 checked "Revision SR-007", REQ-011, AC-015 and DEC-014 against the SR-007 artifacts and the round-4 code facts at `671a1e596b`. Other verdicts stand.

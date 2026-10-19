@@ -4,12 +4,12 @@
 
 - Ticket: `search-model-settings` (Project Task `autobyteus-146`, follow-up FU-1 of `autobyteus-71`).
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings`, `codex/search-model-settings`, base `origin/personal` @ `8d40ba3b6c`.
-- Requirements: `requirements-doc.md` at `SR-005` (DEC-009, DEC-010, DEC-011 → REQ-010 / AC-014).
-- Design: `design-spec.md` at `SR-005` (G7 added) (DS-001…DS-006, Final File Responsibility Mapping, Change Sequence 1–7, G1–G6); `architecture-design-handoff.md`; `investigation-notes.md`; `solution-revision-record.md`.
-- Architecture review: `design-review-report.md` (ARCH-REV-002, then ARCH-REV-003 Pass after code review CRR-001); `architecture-review-revision-record.md`.
+- Requirements: `requirements-doc.md` at `SR-007` (DEC-009…DEC-014; REQ-010 / AC-014; user-approved REQ-011 / AC-015; QR-001 refined by DEC-012).
+- Design: `design-spec.md` at `SR-007` ("Revision SR-007", G7, G8) (DS-001…DS-006, Final File Responsibility Mapping, Change Sequence 1–7, G1–G6); `architecture-design-handoff.md`; `investigation-notes.md`; `solution-revision-record.md`.
+- Architecture review: `design-review-report.md` (ARCH-REV-002; ARCH-REV-003 after CRR-001; ARCH-REV-005 Pass after API-REV-001 / FO-001); `architecture-review-revision-record.md`.
 - Behavior-defining supplement: approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md` (design `4e4ac06`) with VIS-001…VIS-021.
 - Classification carried: task size **Medium**, architectural risk **High** (unchanged; see Routing Classification).
-- Commits: `9c73c22672` (server: embedding layer, search service, GraphQL, server tests, docs), `8469d4bcf5` (web sub-section, web tests, browser probe, QR-001 load check, docs), `56cb7be36a` (server E2E: Advanced setting → Active · Not downloaded), then the ticket-folder commit with this handoff and the evidence. Implementation round **IR-001**; rework round **IR-002** (`d2bcb95d3a`, see § IR-002 below).
+- Commits: `9c73c22672` (server: embedding layer, search service, GraphQL, server tests, docs), `8469d4bcf5` (web sub-section, web tests, browser probe, QR-001 load check, docs), `56cb7be36a` (server E2E: Advanced setting → Active · Not downloaded), then the ticket-folder commit with this handoff and the evidence. Implementation round **IR-001**; rework round **IR-002** (`d2bcb95d3a`, see § IR-002 below); rework round **IR-003** (`70bb03632c`, `1b24f59009`, see § IR-003 below).
 
 ## Current Implementation Summary
 
@@ -172,6 +172,49 @@ Owned downstream: the scenarios above, the Docker run, and a re-run of the probe
 | IMP-13 | No references left to the removed code | `d2bcb95d3a` | — | server `src`/`tests`/`docs`, web | `evidence/implementation/IMP-13-ir002-dead-code-grep.log` | Pass: no references left |
 
 Not rerun in IR-002, and why: the full web suite, guards and the browser probe (no web source changed; only a web test and a doc); the QR-001 load check (status reads unchanged; API/E2E measures it on target environments, C-07).
+
+## IR-003 (FO-001 → SR-006 / SR-007, ARCH-REV-005, design G8)
+
+- Trigger: `/software_engineering_team/architecture_reviewer`, ARCH-REV-005 (Pass, AR-005 resolved), after API/E2E API-REV-001 (F-001: QR-001 missed on Docker) and code review CRR-003 (FO-001, `Design Impact`).
+- Commits: `70bb03632c` (code, tests, docs); `1b24f59009` (browser probe case EMB-006 for AC-015).
+- The SR-006 status-result cache and `collectionJobStatus` were never implemented: SR-007 superseded them before this round, so there was nothing to remove.
+
+What changed:
+
+- **Inputs cached, never status (AR-005).** `ProjectTaskSearchService` keeps `Map<projectId, ItemFingerprints>` and a `dirty` set. `indexStatus()` reads `listProjects()`, drops entries of Projects no longer listed, and per Project reuses the kept fingerprints unless the Project is dirty, has none, or they were made for another model; then `collectionStatus(collection, fingerprints)` computes the status fresh. A warm poll reads no Task.
+- **Embedding boundary.** New `fingerprintItems(items)` (opaque `ItemFingerprints`: model id + id → fingerprint, made with the resolved active model's prefix, no `activeModel()`), `fingerprintsAreCurrent(fingerprints)` and `activeModelOnDisk()` (all active files present and not unavailable; read-only). `collectionStatus(collection, fingerprints)` replaces the items parameter: a job with pending work → `indexing` / `waiting`; else the fingerprints against the job's vectors or `store.readFingerprints`; `unavailable` when the model is. `CollectionIndexingJob.status` and `statusFromFingerprints` take the fingerprint map.
+- **Marks.** The composition gives the Task service a fan-out of `ProjectChangeMarks` (`taskChangeMarks`): the `/ws/projects` publisher plus `processProjectTaskSearchMarks` (`taskChanged`, `taskRemoved`). Every Project Task mark (create, update, `updateById`, dependency and resource commits; R-12 over-invalidation kept) makes the Project dirty; ad-hoc Tasks and worker-status marks are ignored. `forgetProject` drops the Project's entry and pending run.
+- **Index after writes (REQ-011, DEC-014).** A `taskChanged` mark schedules `indexProject(projectId)` 3 s later when `activeModelOnDisk()` holds; writes inside the window join that run. The gate is checked again when the run starts (R-14). The callback catches everything (`PROJECT_NOT_FOUND` silently, others logged as `PROJECT_TASK_INDEX_AFTER_WRITE_FAILED`); timers are `unref`'d and cleared by `dispose()`, which `releaseProjectTaskSearchService()` calls at host shutdown (R-15). Deletes keep `forgetTask` / `forgetProject`.
+- **O-1:** `EmbeddingModelFiles.removeIfEmpty()`, called by `EmbeddingModelDownloads` after a failed (not cancelled) download: a folder left without files is removed; verified files of the attempt stay.
+- **O-2:** `useEmbeddingSettings.act()` settles when the mutation is answered and reads the status in the background, so the pressed row's buttons come back at once.
+- **O-4 (DEC-013):** a failure with no server message shows "Couldn’t reach the server." (zh-CN 无法连接到服务器。); server messages are shown as before (also from a network error's GraphQL body).
+- **QR-001 check** (gated integration test) now measures a cold first load (fresh service, no kept fingerprints, no in-memory jobs) against 1 s and ten warm refreshes against 300 ms, with the host load average.
+- Docs: server `embeddings.md` (status from fingerprint inputs; index after writes; new boundary calls), `projects.md` (indexing after writes; Retry prepares); web `settings.md` (O-2, O-4).
+- G7 items (R-10 and the rest) were done in IR-002.
+
+### Implementation decisions within the design (IR-003)
+
+1. **`fingerprintsAreCurrent(fingerprints)`** is one more read-only boundary call than the design lists. It keeps `ItemFingerprints` opaque (a branded type) while the consumer applies the design's "entry's modelId ≠ active model → re-read" rule.
+2. **Stale-model fingerprints in `collectionStatus`** (a switch between the read and the status, a tiny window) answer `notIndexed` with their total; the next poll re-reads.
+3. **Grouping writes:** the 3 s window starts at the first write and is not extended by later writes, so a steady stream of writes still indexes every 3 s (bounded latency) instead of never; a write after the run started schedules the next run.
+4. **Gate at schedule time is synchronous** (`activeModelOnDisk()` = a few `stat` calls of the model files), and only when no run is pending for that Project. The marks contract's "never reads" concerns Project state; flagged in case the reviewer prefers a deferred check (the fire-time check already exists).
+5. **`taskRemoved` only marks dirty** (no index run): deletes already remove index entries at once.
+6. **Every Task mark schedules a run** when the model is on disk (R-12); for marks that change no description, the run costs one `listTasks` and a no-op `sync`.
+7. In the browser probe, EMB-006 now proves AC-015 on the real stack (a new Task becomes Ready with no search within 10 s) instead of showing Needs update, which index-after-write now resolves within 3 s.
+
+### Checks Run (IR-003)
+
+| Check ID | What | Commit Tested | Environment | Code It Exercises | Evidence Files | Result / Look For |
+| --- | --- | --- | --- | --- | --- | --- |
+| IMP-14 | QR-001 load check, 20 Projects × 1,000 Tasks: cold first load and ten warm refreshes, host load recorded | `70bb03632c` | M1 Max host, node 22 | `indexStatus` + `modelsStatus` over real Project files and store | `evidence/implementation/IMP-14-ir003-qr001-status-load.log`, `.json` | Pass: cold first load 773 ms (budget 1,000); warm refresh median 25 ms, max 26 ms (budget 300); host load average ≈ 9.5 (other work on the machine) |
+| IMP-15 | Server typecheck | `70bb03632c` | macOS arm64, node 22 | all server `src` | `evidence/implementation/IMP-15-ir003-server-typecheck.log` | Pass |
+| IMP-16 | Server unit suite (incl. new `project-task-index-status.test.ts`: warm poll, MP-005/006/007, write trigger, R-14, R-15) | `70bb03632c` | macOS arm64, node 22 | whole server | `evidence/implementation/IMP-16-ir003-server-unit-suite.log` | Pass: 741 files passed, 4 skipped; 6,071 tests passed, 7 skipped |
+| IMP-17 | Server GraphQL E2E: `tests/e2e/projects` (incl. AC-015 over the real composition) and server settings | `70bb03632c` | macOS arm64, node 22, Studio HTTP | resolvers, composition marks, write trigger | `evidence/implementation/IMP-17-ir003-server-graphql-e2e.log` | Pass: 8 files passed (17 gated files skipped); 52 tests; AC-015 Ready about 3 s after the writes, no search |
+| IMP-18 | Web Nuxt suite (incl. O-2, O-4) | `70bb03632c` | macOS arm64, node 22 | whole web app | `evidence/implementation/IMP-18-ir003-web-nuxt-suite.log` | Pass: 637 files passed, 2 skipped; 4,539 tests passed, 3 skipped |
+| IMP-19 | Web guards | `70bb03632c` | macOS arm64 | new copy key | `evidence/implementation/IMP-19-ir003-web-guards.log` | Pass |
+| IMP-20 | Real-stack browser probe, clean env (EMB-006 = AC-015) | `1b24f59009` | built server on a fresh data root, Nuxt dev, headless Chrome, real huggingface.co | whole feature | `evidence/implementation/IMP-20-ir003-browser-probe/` | Pass: 8/8; AC-015 indexed 3,106 ms after the save with no search; no browser errors |
+
+Not run in IR-003, and why: a Docker-node rerun of API-L02 and the AC-015 real-app run on Docker belong to API/E2E (R-13: with host load recorded).
 
 ## Packaging, Licensing And Final Local Results
 

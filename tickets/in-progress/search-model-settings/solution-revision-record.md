@@ -111,3 +111,42 @@
 - 2026-10-19: `/software_engineering_team/architecture_reviewer` reported **Pass**, ARCH-REV-003, on SR-005 (REQ-010 / DEC-011 / AC-014 and G7), with no new findings.
 - Implementation note R-10 (`docs/modules/embeddings.md` still references `modelStatus()`) went to the implementation engineer.
 - The reviewer delivered the primary handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer does not repeat it.
+
+### SR-006 — Failure origin FO-001: Project index status cache
+
+- Trigger: `/software_engineering_team/code_reviewer` (run `code_reviewer_cbd4eb1d7fd64728ac4114c14a22416d`), CRR-003 / FO-001 `Design Impact`, from API/E2E API-REV-001 F-001 (API-L02, `evidence/api-e2e/API-L02-01…03`, `API-R04-qr001-host-load.log`). Validated code `d2bcb95d3a`; API/E2E commits `c02a54bc3e`, `671a1e596b`.
+- Evidence reading:
+  - the Project status re-read the whole backlog on every poll: 1.8 s per read on Docker;
+  - the existing `projects` list costs the same;
+  - the host was heavily loaded (load average about 32 at re-check, 13:12), so a clean re-measure wasn't possible now; API/E2E re-measures after the change.
+- Ticket-scope: the remedy is **this ticket** (the repeated read is this ticket's design). The Project store's slowness is **a follow-up**, not a prerequisite: the ticket works without it.
+- Requirements (within the direction; user informed 2026-10-19):
+  - DEC-012: QR-001 refined (later refreshes ≤ 300 ms; first load ≤ 1 s on the desktop host, and on Docker no slower than the `projects` list);
+  - DEC-013: a transport failure shows "Couldn’t reach the server.".
+- Design: per-Project status cache, invalidated through the composed `ProjectChangeMarks` fan-out; `EmbeddingIndex.collectionJobStatus`; O-1, O-2 and O-4 guidance (G8); follow-up FU-1 recorded.
+- Classification unchanged (Medium / High).
+- Next action: the handoff rules (revised Medium/High package → architecture reviewer), then rework, a targeted code review, and API/E2E reruns (API-L02 and the affected cases; the pending test review of API-D01).
+
+### SR-007 — AR-005 fingerprint-input status; user-approved indexing after Task writes
+
+- Triggers:
+  - `/software_engineering_team/architecture_reviewer` ARCH-REV-004 Fail, AR-005 (`Design Impact`): the status-result cache diverges (MP-005, MP-006, MP-007).
+  - The user's question (2026-10-19) why indexing is search-triggered. After the Solution Designer explained and recommended indexing after writes in this Task, the user approved: *"Anyway, I'll agree with you… Like your suggestion."*
+- Requirements: REQ-011 (index after Task writes; background, grouped, only with the model on disk; search-time check kept), AC-015, DEC-014 (decided by the user), BEH-002 updated. Approved by the **user**. Scope addition to this Task.
+- Design:
+  - the input cache (opaque per-Project `ItemFingerprints`) replaces the SR-006 result cache;
+  - status computed fresh each poll;
+  - `collectionJobStatus` removed;
+  - `fingerprintItems`, `activeModelOnDisk` and the `collectionStatus` signature added;
+  - the change-mark listener also schedules a debounced `indexProject`;
+  - tests for MP-005…MP-007 and the write trigger.
+- Classification unchanged (Medium / High).
+- Next action: the handoff rules → architecture reviewer (scope: AR-005 and REQ-011), then rework, a targeted code review, and API/E2E reruns (API-L02 and new AC-015 runs).
+
+### Review receipt — ARCH-REV-005 (informational, no new SR round)
+
+- 2026-10-19: `/software_engineering_team/architecture_reviewer` reported **Pass**, ARCH-REV-005, on SR-007 (AR-005 resolved, REQ-011 mapped). It delivered the primary handoff to the implementation engineer; the Solution Designer does not repeat it.
+- R-16 bookkeeping corrected as factual fixes:
+  - the baseline line now names SR-007;
+  - Out Of Scope no longer contradicts REQ-011 (startup pre-indexing stays out of scope).
+- R-14 and R-15 went to the implementation engineer.

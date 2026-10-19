@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer pass, ARCH-REV-002 (`design-review-report.md`) | N/A | `Initial Baseline` | SR-004 (requirements and design), ARCH-REV-002 | Implemented (commits `9c73c22672`, `8469d4bcf5`, `56cb7be36a`); local checks in `implementation-handoff.md` § Checks Run; ready for code review |
 | IR-002 | Architecture reviewer pass ARCH-REV-003 after code review CRR-001 (`code-review-report.md`, round 1) | CR-001, CR-002 (→ DEC-011, REQ-010, AC-014), R-10, C-06 | `Local Fix` (CR-001) + approved Requirement Gap (CR-002) | SR-005, ARCH-REV-003, CRR-001 | Dead code removed; action error line kept and tested for AC-014; doc updated; early-cancel check added; back to code review |
+| IR-003 | Architecture reviewer pass ARCH-REV-005 after API/E2E API-REV-001 (F-001) and code review CRR-003 (FO-001) | FO-001, AR-005, REQ-011 / AC-015, R-14, R-15, O-1, O-2, O-4 | `Design Impact` (resolved upstream as SR-006 → SR-007; implemented here) | SR-007, ARCH-REV-005, CRR-003, API-REV-001 | Status from cached fingerprint inputs (computed fresh); index after Task writes; O-1/O-2/O-4; back to code review |
 
 ## Revision Entries
 
@@ -48,4 +49,20 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Related delivery revision IDs: N/A
 - Implementation delta: removed `EmbeddingIndex.modelStatus()`, `EmbeddingModelState`, `EmbeddingModelStatus`, `EmbeddingModelDownloads.isRunning()`; moved their test assertions to `modelsStatus().activeDisplay` and `progress()`; server doc R-10; AC-014 web test; web doc line for REQ-010; early-abort check in `EmbeddingModelFiles.download`.
 - Local validation and result: `implementation-handoff.md` § IR-002 → Checks Run (IR-002).
+- Downstream handoff: `/software_engineering_team/code_reviewer`.
+
+### IR-003 — Fingerprint-input status, index after writes, O-1 / O-2 / O-4 (SR-007, G8)
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `design-review-report.md` (ARCH-REV-005, Pass), after `api-e2e-execution-coverage-report.md` (API-REV-001, Fail: F-001) and `code-review-report.md` (CRR-003, FO-001).
+- Triggering finding IDs: FO-001 / F-001 (QR-001 on Docker), AR-005, REQ-011 / AC-015 (DEC-014, user-approved), R-14, R-15, O-1, O-2, O-4 (DEC-013).
+- Classification: `Design Impact`, resolved upstream (SR-007); implemented here.
+- Prior authoritative result: IR-002 at `8cbbf9afe8` (code `d2bcb95d3a`).
+- Current authoritative result: `70bb03632c` and `1b24f59009` (probe), plus the ticket-folder commit recording this round.
+- Related solution revision IDs: SR-006, SR-007
+- Related architecture-review revision IDs: ARCH-REV-004, ARCH-REV-005
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: N/A
+- Implementation delta: `EmbeddingIndex.fingerprintItems` / `fingerprintsAreCurrent` / `activeModelOnDisk`; `collectionStatus(collection, fingerprints)`; job status and `statusFromFingerprints` over fingerprint maps; `ProjectTaskSearchService` input cache, dirty marks, fresh status, index-after-write timers, `dispose()`; composition fan-out of `ProjectChangeMarks`; `EmbeddingModelFiles.removeIfEmpty` + downloads failure path; web `act()` (O-2) and the unreachable message (O-4); tests (new `project-task-index-status.test.ts`, AC-015 E2E, O-1/O-2/O-4); load check targets; docs. The never-implemented SR-006 cache needed no removal.
+- Local validation and result: `implementation-handoff.md` § IR-003 → Checks Run (IR-003).
 - Downstream handoff: `/software_engineering_team/code_reviewer`.
