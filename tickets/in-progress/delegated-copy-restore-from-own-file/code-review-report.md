@@ -1,6 +1,6 @@
 # Code Review Report
 
-Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file`, branch `codex/delegated-copy-restore-from-own-file`, base `origin/personal` @ `f171032e88`, head reviewed `0a303d3a5d`.
+Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file`, branch `codex/delegated-copy-restore-from-own-file`, base `origin/personal` @ `f171032e88`, head reviewed `da1d7f5524` (round 2; fix commit `96de77efb3`). Round 1 reviewed `0a303d3a5d`.
 
 ## Review Round Meta
 
@@ -16,15 +16,19 @@ Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Worktree `/Users
 - Relevant Architecture Review Revision IDs: ARCH-REV-003..ARCH-REV-007
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation handoff IR-001 from `/software_engineering_team/implementation_engineer`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): `git diff 0a303d3a5d..da1d7f5524` changes two source lines-of-concern only:
+  - `standalone-root-tree-schema.ts`: the CR-001 loop is removed;
+  - `teamExecutionTreeSelectors.ts:162`: the same kind of dead absent-source fallback, removed.
+
+  The rest of the diff is ticket documents and evidence. No spine, interface or data shape changed, and no new fixes are stacked on earlier fixes. Round-1 evidence for every other check carries forward.
+- Trigger: implementation handoff IR-002 (CR-001 Local Fix) from `/software_engineering_team/implementation_engineer`
+- Prior Review Round Reviewed: 1 (`CRR-001`, Fail, CR-001)
+- Latest Authoritative Round: 2
 - Failure-origin fields: N/A
 
 ## Routing Classification Review
@@ -118,7 +122,7 @@ Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Worktree `/Users
 | Naming quality | Pass | `copyExecutionSource`, `validateCopyLayouts`, `configuredPlacementSource`, `copyAgentSourceOf`, `readReleasedOwnFileOwnership` | — |
 | No unjustified duplication | Pass | See CAND-06 | — |
 | Patch-on-patch complexity control | Pass | D-9 is one narrow reader used at the two ownership checks only | — |
-| Dead code removed in touched files and modules | **Fail** | CR-001: the unreachable `!task.source` check in `standalone-root-tree-schema.ts` | Remove (CR-001) |
+| Dead code removed in touched files and modules | Pass (round 2) | CR-001 resolved in `96de77efb3`. The same commit removes `team.source?.coordinator_address ?? team.address` in `teamExecutionTreeSelectors.ts` (`TaskTeamExecutionDto.source` is required). Round 1 missed this second instance because its sweep output was truncated. A fresh sweep of current server and web code for `source?.`, `!task.source`, `!team.source` and `.source ??` finds no copy-related hit; the remaining "has no catalog source" is in the frozen released schema, as released | — |
 | Test scenarios and assertions clear and requirement-aligned | Pass | The migration suite names each fixture (F-A1..F-X3c) and AC, and asserts raw output, dispositions, byte-identity, write counts and store composition | — |
 | Test fixtures/helpers reusable and coherent | Pass | `released-delegated-copy-own-file-fixtures.ts` is shared by the migration, memory-sync and D-9 suites | — |
 | No stale, duplicated, or compatibility-only tests | Pass | Resolver tests removed with the resolvers; the 10-17 current-store read-back moved to the combined test, as planned (Change Sequence 1.3) | — |
@@ -146,16 +150,19 @@ Effective non-empty lines. Only files over 400 lines or with deltas over 100 are
 | --- | --- | --- |
 | No backward-compatibility mechanisms in changed scope | Pass | DTO `source` required (clean cut, DESIGN rule 9); the current reader rejects old own-file shapes |
 | No legacy old-behavior retention in changed scope | Pass | No slot fallback remains for copies (sweep: `configured_place`, `resolvePlace`, `readTaskSource`, `TaskSourceResolver`, `configuredFollows`, `catalog*SourceAt`, `memberFollowsTeam`, `effectiveMemberLaunchConfiguration` appear only in migration-owned code and its tests) |
-| Dead code removed in the touched files and modules | **Fail** | CR-001 |
+| Dead code removed in the touched files and modules | Pass (round 2) | CR-001 resolved |
 | Approved persisted-data transition decision followed | Pass | `Migration Required`, implemented as M0..M5 |
 | No version-specific dual reads/writes or request-time old-shape fallback | Pass | Old shapes are read only by the migration, the frozen file and the D-8 bridge |
 | Approved transition mechanics match the reviewed design | Pass | Atomic write + read-back per file; idempotent by shape; non-terminal predecessor gate; `imports/` never discovered; dispositions as designed, plus `PRESERVED_UNSUPPORTED` for a file that matches neither shape (left untouched, warning) |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+None remaining (round 2).
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Status |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/standalone-agent-run-root/persistence/standalone-root-tree-schema.ts:19-22`: the `for` loop with `if (!task.source) throw new Error("… has no catalog source.")` and its comment | DeadCode / LegacyBranch | `parseTaskExecutions` (line 48 of the same file) now requires `source` on every task execution (`run-execution-tree-shared-record-schemas.ts:184,195`); the record type makes `source` required; no test reaches the message | Core Principle 7 (dead code in a touched file) and AC-009 ("no … absent source … branch for copies remains in current server code") | Delete the loop and its comment; `validateCopyLayouts([tree])` stays |
+| `standalone-root-tree-schema.ts:19-22`: the `if (!task.source) throw … "has no catalog source"` loop | DeadCode / LegacyBranch | `parseTaskExecutions` requires `source` | Core Principle 7; AC-009 | Removed in `96de77efb3` |
+| `teamExecutionTreeSelectors.ts:162`: `team.source?.coordinator_address ?? team.address` | DeadCode / LegacyBranch | `TaskTeamExecutionDto.source` is required by the contract | Core Principle 7; AC-009 | Removed in `96de77efb3` (found by the implementer's sweep) |
 
 ## Docs-Impact Verdict
 
@@ -177,8 +184,8 @@ New or reclassified premises: none.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.3
-- Overall score (`/100`): 93
+- Overall score (`/10`): 9.45
+- Overall score (`/100`): 94.5
 - Score calculation note: simple average; the decision follows the findings and the per-category floor.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
@@ -191,14 +198,17 @@ New or reclassified premises: none.
 | 6 | Naming Quality and Local Readability | 9.5 | Names follow the widened meaning (`copy*`); doc comments rewritten | — | — |
 | 7 | API/E2E Readiness | 9.0 | Strong unit, migration and startup e2e coverage; clear hints for the next stage | AC-001/AC-003 journeys and the rendered "As configured in this run" label are not yet exercised at the system boundary | API/E2E covers them as the handoff lists |
 | 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | Equivalence checked: configured snapshot = the slot values the old resolvers used; D-7 names unchanged for every Team-root address; migration follows M1..M5, including D-9 | — | — |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.0 | Clean cut throughout current code | One leftover absent-source branch (CR-001), unreachable, which AC-009 names | Remove it |
-| 10 | Cleanup Completeness | 8.5 | Thorough removal (resolvers, port, helpers, contract helpers, web inputs, tree-shape members) | CR-001: dead code in a touched file, while the handoff states the touched files are free of dead code | Remove it, and add `!task.source` / `task.source)` to the sweep |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut throughout current code; round 2 removed the last two absent-source branches for copies (server and web) | — | — |
+| 10 | Cleanup Completeness | 9.5 | Thorough removal (resolvers, port, helpers, contract helpers, web inputs, tree-shape members), with CR-001 and its web twin removed; a fresh sweep is clean | — | — |
 
 ## Findings
 
-### CR-001 — Dead absent-source check in the Agent-root tree schema
+No open findings (round 2).
 
-- Severity: Low. A bounded `Local Fix`.
+### CR-001 — Dead absent-source check in the Agent-root tree schema — **Resolved (round 2)**
+
+- Resolution: `96de77efb3` deletes the loop and its comment and keeps `validateCopyLayouts` and `validateTaskExecutionDelegators`. The same commit removes the equivalent web fallback in `teamExecutionTreeSelectors.ts`. IMP-01, IMP-02 (6111 passed) and IMP-07 (4549 passed) were rerun on `96de77efb3`, per `IMP-00-summary.txt`, which records exit 0 for all three.
+- Severity (round 1): Low. A bounded `Local Fix`.
 - Scope: this ticket (Core Principle 7: dead code in a touched file; AC-009 / REQ-005).
 - Where: `autobyteus-server-ts/src/standalone-agent-run-root/persistence/standalone-root-tree-schema.ts:19-22`.
 - Evidence: CAND-01. `validateInvariants` runs only on the tree that `validateStandaloneRootTreePayload` builds with `parseTaskExecutions`. That parser now rejects a task execution without `source`, so `!task.source` is never true, and the error text "has no catalog source" can never be produced. No test exercises it.
@@ -212,11 +222,11 @@ None new. F-1 (skill-improvement launch of a copy at a configured address) is al
 
 ## Classification
 
-- `Local Fix` (implementation-owned): CR-001.
+- None (round 2 passes). Round 1: `Local Fix` CR-001, resolved.
 
 ## Recommended Recipient
 
-- `/software_engineering_team/implementation_engineer`. After the fix: Targeted Delta Review of CR-001, then API/E2E.
+- `/software_engineering_team/api_e2e_engineer` (pass); informational notification to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
@@ -233,11 +243,11 @@ None new. F-1 (skill-improvement launch of a copy at a configured address) is al
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`. One bounded Local Fix; everything else is ready for API/E2E.
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.3 / 10 (93 / 100). Cleanup Completeness 8.5 (CR-001); every other category ≥ 9.0.
+- Score Summary: 9.45 / 10 (94.5 / 100); every category ≥ 9.0.
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: `CRR-001`, against IR-001 @ `0a303d3a5d`. The classification Large / High is preserved.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: `CRR-002`, against IR-002 @ `da1d7f5524`. CR-001 is resolved. The classification Large / High is preserved. API/E2E focus: the Residual Risks above.
