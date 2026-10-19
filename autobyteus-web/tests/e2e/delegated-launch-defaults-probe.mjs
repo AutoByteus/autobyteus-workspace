@@ -56,6 +56,9 @@
 //           after it has run, gets its own model in Settings: only its row changes; its next turn resumes its
 //           conversation on that model while the coordinator keeps its own.
 //   DCP-001..DCP-005 alone: pnpm -C autobyteus-web test:e2e:delegated-copy-model-change
+//   DCR-001..DCR-003 (delegated-copy-restore-from-own-file AC-001..AC-004, AC-011(a)): copies of configured placements in
+//           Team and Org runs restore from their own files after the slot is edited; see delegated-copy-own-file-cases.mjs.
+//           Alone: pnpm -C autobyteus-web test:e2e:delegated-copy-own-file
 // Settings rows (SR-006) are the read-only member rows, collapsed until opened, with the same look as the Members list
 // (`model · runtime · approval · source`, Coordinator chip, an opened Team's card then its Members, "Notes: N" on a
 // collapsed Team); DLP-003 (running) and DLP-007 (stopped and running again) also read them as Settings opens them.
@@ -76,6 +79,7 @@
 // Focused SSR-001..004 cases are opt-in via test:e2e:settings-saved-model-refresh (see its case-module header).
 import { desktopAdapter } from './fixtures/settings-refresh-desktop.mjs'
 import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.mjs'
+import { registerDelegatedCopyOwnFileCases } from './delegated-copy-own-file-cases.mjs'
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
@@ -1514,6 +1518,11 @@ if (onlyCases?.some(id => id.startsWith('SSR-'))) registerSavedRefreshCases({ de
   agentTree, objectsIn, pick, teamCopies, membersOf, openSettings, backToConversation,
   openMember, chooseCopyModel, saveSettings, saveBarText, shot, agyLaunchDetailsOf, MODEL, ALT, MODEL_LABEL, ALT_LABEL,
   modelLocked, conversationText, typeAndSend })
+registerDelegatedCopyOwnFileCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, callTool, objectsIn, pick,
+  newChatFor, chooseModel, typeAndSend, callFromComposer, conversationText, openSidebarAgent, openTeamRun, openSettings,
+  backToConversation, delegatedRows, rowsAt, openDrawer, closeDrawer, openMember, memberRow, saveSettings, saveBarText,
+  agyLaunchDetailsOf, teamTree, teamRunIds, AGY, GROK, MODEL, ALT, GROK_MODEL, MODEL_LABEL, ALT_LABEL,
+  env: () => ({ frontUrl, dataRoot, outDir }) })
 const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })
 let exitCode = 0
 try {
