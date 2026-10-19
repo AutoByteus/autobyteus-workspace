@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved` (SR-006). The user approved the direction on 2026-10-19: one environment variable selects the vault like a database, normal logic is unchanged, and production uses its own vault when the variable is unset.
-- Current solution revision ID: `SR-006`
+- Current solution revision ID: `SR-007`
 - Package identifier: `test-vault-developer-experience`
 - Request / ticket: Project Task `c15a77b2-18b8-4ac6-b3de-8afcba81211e` from `/project_task_manager`; user concern 2026-10-10; user update 2026-10-17; user refinement 2026-10-19 ("use the vault like an API service")
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) for the user. The user decides directly in the Solution Designer conversation.
@@ -19,6 +19,7 @@
   - No decision remains `Needs user`.
   - The user was informed in this conversation's reply of 2026-10-19; that reply is the approval reference.
   - SR-006: the user then approved the "like a database" direction in this conversation (2026-10-19): "I think we should go into this direction". That is the current approval reference.
+  - SR-007: the user's own instruction (2026-10-19), "I think we should write in TESTING.md to set the test vault environment variable. That's important in the requirement", is reflected in REQ-013/AC-012.
   - SR-001 and SR-002 were never approved.
 - Exact approved requirements baseline / solution revision: this document @ SR-004
 - Behavior-defining supplements and their approved versions: `test-vault-evaluation-report.md` @ SR-004
@@ -130,7 +131,7 @@
 | REQ-014 | Investigation and test code uses the test vault with no extra code: with the variable set, autobyteus-ts clients and `LLMFactory.createLLM(id)` resolve keys from it when the caller passes no key resolver. Server code resolves exactly as in production. A missing key is a clear missing-capability error naming the provider and `pnpm test-vault setup`. | BEH-009 | Must | "Your normal logic will automatically use the test vault" | User 2026-10-19 |
 | REQ-015 | The global agent instructions file (`AGENTS.md`), which every agent loads, states in a few lines where the test vault is and how to use it, linking to the TESTING.md section. | All | Must | Knowledge available to all team members | User 2026-10-19 |
 | REQ-016 | When `AUTOBYTEUS_TEST_VAULT` is not set, behavior is exactly today's: each application uses the vault inside its own database (production default). A server running on the user's real app data (`~/.autobyteus/server-data`) ignores the variable even if inherited, and every server logs which vault it uses (location only). | All | Must | Production safety | User 2026-10-19 ("if you don't set this, it by default uses the production") |
-| REQ-013 | TESTING.md holds one section saying where the test vault is, how to create it and how tests select it. secret_management.md, server README, isolated-app guide, isolated-app skill and the test-running skills point to it. Per-database import instructions for tests and stale statements are removed. | All | Must | One message | User update |
+| REQ-013 | TESTING.md holds one "Test vault" section that tells every developer and agent who runs tests needing real provider keys to **set `AUTOBYTEUS_TEST_VAULT`**. It gives the exact line (`export AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault`, as printed by `pnpm test-vault setup`), the one-time setup and status commands, and states that keys are never taken from `.env` files or environment variables. TESTING.md's **Rules** list states the same as a rule, replacing Rule 4 ("Credentials go through the importer"). Every command example in TESTING.md that needs real keys includes the variable. secret_management.md, server README, isolated-app guide, isolated-app skill and the test-running skills point to that section. Per-database import instructions for tests and stale statements are removed. | All | Must | One message; the user: "write in TESTING.md to set the test vault environment variable. That's important in the requirement" | User update; user 2026-10-19 |
 
 ## Acceptance Criteria
 
@@ -151,7 +152,7 @@
 | AC-014 | REQ-015 | All | `AGENTS.md` | Contains a short test-vault entry (location rule, status command, link) consistent with TESTING.md | — | Doc review |
 | AC-015 | REQ-016 | All | (a) variable unset; (b) variable set while the server's data dir is `~/.autobyteus/server-data` | (a) the server uses its own DB vault, as today; (b) the server ignores the variable, uses its own vault and logs that it ignored it | — | Automated (location guard) |
 | AC-016 | REQ-005, REQ-012 | SCN-004, SCN-005, SCN-007 | Variable set; no import anywhere | A built test server, an in-process server suite and an isolated instance each report the test vault's providers as configured. A Settings save is refused with the read-only error. The standing vault's bytes are unchanged. | Variable set but no vault there → startup fails with `TEST_VAULT_NOT_FOUND` naming `pnpm test-vault setup` | Automated + isolated-instance smoke |
-| AC-012 | REQ-013 | All | Docs and skills | One TESTING.md section; others link to it; `script`/per-DB import instructions for tests and the `.env.test` API-key statement are gone | — | Doc review |
+| AC-012 | REQ-013 | All | Docs and skills | TESTING.md has the "Test vault" section with the `export AUTOBYTEUS_TEST_VAULT=…` instruction; its Rules list contains the set-the-variable rule in place of the importer rule; every real-key command example in TESTING.md (real-provider E2E, Anthropic caching, DeepSeek collaborators, autobyteus-ts live tests, isolated instances) includes `AUTOBYTEUS_TEST_VAULT`; other docs link to the section; `script`/per-DB import instructions for tests and the `.env.test` API-key statement are gone | — | Doc review (grep for `secrets:import` in test instructions and for `AUTOBYTEUS_TEST_VAULT` in each real-key example) |
 
 ## Relevant Scenarios And Journeys
 

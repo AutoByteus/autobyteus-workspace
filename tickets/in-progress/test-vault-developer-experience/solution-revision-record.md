@@ -10,6 +10,7 @@
 | SR-004 | Requirements (approval) | User 2026-10-19 ("why do we need this [ask]?" … "your code automatically uses a test vault … a few lines of code"); updated solution-designer skill (approval within direction) | N/A | Ready for Approval (SR-003) | Approved | BEH-009, UC-008, SCN-008, REQ-014, AC-013, DEC-001..009 | `ask` CLI dropped; code-first API; all decisions decided within direction; requirements approved |
 | SR-005 | Requirement change (user) | User 2026-10-19: "set one environment variable … your normal logic will automatically use the test vault … like a database" | N/A | Approved @ SR-004; design drafted | Ready for Approval; design Needs Revision | REQ-005, REQ-014, DS-003..006, DEC-010, DEC-011 | Usage model changes from helper calls to env-selected automatic use; handoff held |
 | SR-006 | Requirements (approval) + Design | User 2026-10-19: answers on production default and the "like a database" direction ("I think we should go into this direction") | N/A | Ready for Approval @ SR-005 | Approved; design reworked | REQ-001, 005, 007, 012, 014, 016; AC-015, AC-016; DEC-010, DEC-011 | Selector env var; read-only vault selected by the normal vault runtime; production default; autobyteus-ts default resolver |
+| SR-007 | Requirements (user) | User 2026-10-19: "write in TESTING.md to set the test vault environment variable … important in the requirement" | N/A | Approved @ SR-006; design under architecture review | Approved; design updated (docs guidance only) | REQ-013, AC-012 | TESTING.md must instruct setting `AUTOBYTEUS_TEST_VAULT` (section, rule, every real-key example) |
 
 ## Revision Entries
 
@@ -129,3 +130,12 @@
 - Evidence added: Electron production launches pass the full caller environment to the server (`autobyteus-web/electron/server/serverRuntimeEnv.ts` `inherit-caller`), so the server-side guard on `~/.autobyteus/server-data` is required. Isolated launches pass only baseline variables (`isolated-baseline`), so isolated-app must hand the selector to the instance.
 - Design impact: the transfer, run-copy, `provision` subcommand and `useTestVault` helper are removed from the design. The vault runtime selects the read-only test vault store when configured.
 - Next action: classify and hand off for architecture review
+
+### SR-007 — TESTING.md must tell test runners to set the selector
+
+- Classification: user-directed requirement refinement (documentation obligation); the user's own words are the approval
+- Trigger: user 2026-10-19, in the Solution Designer conversation
+- Prior status: Approved @ SR-006; design `Ready`, sent to architecture review (commit 4bda51cb6d)
+- Current status: Approved @ SR-007; design-spec updated in Guidance For Implementation (docs only); no structural design change
+- IDs affected: REQ-013, AC-012
+- Review impact: architecture reviewer informed of the revised basis (same review; no structural change)

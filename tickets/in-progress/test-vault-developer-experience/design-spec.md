@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-006`
+- Current solution revision ID: `SR-007`
 - Approved requirements baseline / revision, who approved, and approval reference:
   - Baseline: `requirements-doc.md` @ SR-006.
   - Approved by the **user** in the Solution Designer conversation on 2026-10-19: "I think we should go into this direction because the industry has set up a very good standard". Also: "if you don't set this, it by default uses the production itself".
@@ -520,6 +520,10 @@ N/A
 - Stable, value-free codes: `TEST_VAULT_NOT_FOUND`, `TEST_VAULT_LOCATION_INVALID`, `TEST_VAULT_LOCATION_FORBIDDEN`, `TEST_VAULT_UNAVAILABLE`, `TEST_VAULT_IGNORED_ON_REAL_APP_DATA`, `SECRET_VAULT_READ_ONLY`, and the missing-capability skip reason naming the SecretId and `pnpm test-vault setup`.
 - When the selector names a missing or invalid vault, server startup fails clearly with `SECRET_VAULT_INITIALIZATION_FAILED` + `TEST_VAULT_NOT_FOUND`. A selected test vault must never silently fall back to the application vault.
 - Add `AUTOBYTEUS_TEST_VAULT`, `RUN_LIVE_PROVIDER_TESTS` and `AUTOBYTEUS_LIVE_STRICT` to the unit/integration `TEST_ENVIRONMENT_ALLOWLIST` only where a test needs them. Deterministic unit/integration suites should not inherit the selector.
+- TESTING.md (REQ-013, SR-007):
+  - a "Test vault" section whose first instruction is to set `AUTOBYTEUS_TEST_VAULT` (exact `export` line, setup and status commands, "never from `.env` or env vars");
+  - Rule 4 replaced by "Real provider keys come only from the test vault: set `AUTOBYTEUS_TEST_VAULT`";
+  - every real-key command example includes the variable.
 - The `AGENTS.md` entry (about 4 lines):
   - "Real provider keys for tests and investigation come from the test vault. Set `AUTOBYTEUS_TEST_VAULT` (see `pnpm test-vault status`) and run as usual; normal code uses it automatically.
   - Never read keys from `.env` or the environment.
