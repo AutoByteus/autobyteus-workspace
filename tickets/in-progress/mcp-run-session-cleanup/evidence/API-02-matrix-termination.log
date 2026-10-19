@@ -1,0 +1,28 @@
+# Case: API-02 runtime x MCP matrix with the per-cell termination check (stdioProcessGoneAfterTermination)
+# Commands: (a) env -i PATH HOME=$HOME USER LOGNAME TMPDIR CODEX_HOME=<L>/codex-home RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs fixture> RUN_CODEX_MCP_E2E=1 MCP_MATRIX_E2E_EVIDENCE_DIR=<L>/matrix pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts --no-watch
+#           (b) same with RUN_LMSTUDIO_E2E=1 RUN_CLAUDE_E2E=1 RUN_GROK_E2E=1 (LM Studio model unloaded afterwards)
+# Commit: 7fa2819630 (fix a8b849af79; later commits are ticket files only)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; <L> = test-owned scratch $TMPDIR/mcp193-api (removed after the round)
+# Date: 2026-10-19
+
+== (a) model-free cells ==
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 4 skipped) 2604ms
+     ✓ agy (scripted CLI): all three tool kinds through autobyteus_agent_tools  723ms
+     ✓ codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools  1396ms
+      Tests  2 passed | 4 skipped (6)
+
+== (b) live cells ==
+     ✓ native: an agent calls all three tool kinds  52425ms
+     ✓ claude: an agent calls all three tool kinds  10957ms
+     × grok: an agent calls all three tool kinds 20334ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 2 passed | 3 skipped (6)
+grok failure (environment): ERROR ACP_PROMPT_FAILED "Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted …" after its create_task, update_task and stdio tool calls had succeeded
+
+== per-cell summaries (MCP_MATRIX_E2E_EVIDENCE_DIR) ==
+agy.json: {"runtime":"agy","taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"],"dummyOnWire":false,"stdioProcessGoneAfterTermination":true}
+claude.json: {"runtime":"claude","taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"],"dummyOnWire":false,"model":"haiku","stdioProcessGoneAfterTermination":true}
+codex-mcp-client.json: {"runtime":"codex-mcp-client","taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"],"dummyOnWire":false,"stdioProcessGoneAfterTermination":true}
+native.json: {"runtime":"native","taskStatus":"DONE","stdioEnvDelivered":true,"stdioCwdDelivered":true,"httpMarker":true,"httpToolCalls":["expected"],"dummyOnWire":false,"model":"qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234","stdioProcessGoneAfterTermination":true}
+
+After both runs: no fixture process left.
