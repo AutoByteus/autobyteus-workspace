@@ -88,11 +88,18 @@
 
 - Bootstrap context source: code reviewer handoff (branch `codex/unclean-shutdown-delegated-run-restore`, base `origin/personal`) and RELEASE.md Finalization Target
 - Ticket branch: `codex/unclean-shutdown-delegated-run-restore`
-- Ticket branch commit result: (recorded in `delivery-revision-record.md` DR-001)
-- Ticket branch push result: (recorded in DR-001)
+- Ticket branch commit result: `Completed` — `f5d1f1d4f9` (docs sync, archive, delivery records) on top of `af350d65ee`
+- Ticket branch push result: `Completed` — `origin/codex/unclean-shutdown-delegated-run-restore` @ `f5d1f1d4f9`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Repository finalization status: (recorded in DR-001)
+- Target advanced after verification / acceptance: `No` (`origin/personal` still `8b15c5a274` at merge and at push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed` — `git fetch origin personal`; `git checkout -b finalize/unclean-shutdown-delegated-run-restore origin/personal`
+- Merge into target result: `Completed` — `git merge --no-ff codex/unclean-shutdown-delegated-run-restore` → `e591b13c2e`; its tree is identical to the verified ticket branch; `check_licensing.py` and `check_repository_artifact_hygiene.py` pass on it
+- Push target branch result: `Completed` — `8b15c5a274..e591b13c2e  HEAD -> personal` (fetched and checked that `origin/personal` had not moved first)
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
 
 ## Release / Publication / Deployment
 
@@ -103,7 +110,8 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore`
-- Cleanup results: (recorded in DR-001)
+- Cleanup: the worktree, the local branches `codex/unclean-shutdown-delegated-run-restore` and `finalize/unclean-shutdown-delegated-run-restore`, and `git worktree prune` run after this record commit is pushed (this file is committed from that worktree). The result is stated in the terminal message to `/solution_designer`.
+- Remote branch cleanup result: `Not required` (the pushed ticket branch is kept, as for earlier tickets)
 
 ## Release Notes Summary
 
@@ -131,4 +139,10 @@
 
 ## Final Status
 
-- Recorded in `delivery-revision-record.md` DR-001 after finalization.
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `e591b13c2e`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, no release)
+- Applicable safe cleanup complete or not required: run after this record commit; reported in the terminal message
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: after cleanup (see `delivery-revision-record.md` DR-001)

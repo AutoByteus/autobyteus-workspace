@@ -28,4 +28,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 
 #### Finalization
 
-- Pending at the time of the archive commit; filled in by the finalization record commit.
+- Ticket branch: `f5d1f1d4f9` pushed to `origin/codex/unclean-shutdown-delegated-run-restore`.
+- `personal`: `--no-ff` merge `e591b13c2e` pushed (`8b15c5a274..e591b13c2e`); target had not moved since verification; licensing and artifact-hygiene checks pass.
+- Release: `Not required` (no release). `release-notes.md` is ready for the next beta/stable.
+- Cleanup (worktree, local ticket and finalize branches, prune) runs after this record commit; its result and the terminal message go to `/solution_designer` via `get_handoff_rules`.
