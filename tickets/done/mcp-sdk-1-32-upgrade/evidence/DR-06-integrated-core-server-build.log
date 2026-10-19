@@ -1,0 +1,22 @@
+# Case: DR-06 core + server build
+# Command: pnpm -C autobyteus-ts build; pnpm -C autobyteus-server-ts build
+# Commit: cec8ccdf89 (codex/mcp-sdk-1-32-upgrade-parity merged with origin/personal f33dacc994)
+# Environment: macOS 26 (Darwin 25.5.0), node 22, pnpm 10.28.2; tests under env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-19 (delivery round 2, integrated state)
+
+## core build (exit 0), last 8 lines
+
+> autobyteus-ts@1.0.0 build ~/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+
+## server build (exit 0), last 8 lines
+
+
+> autobyteus-server-ts@0.1.1 build:full ~/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade-parity/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
