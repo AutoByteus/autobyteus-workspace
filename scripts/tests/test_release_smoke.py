@@ -160,6 +160,13 @@ class SummaryTest(unittest.TestCase):
         self.assertFalse(row.passed)
         self.assertEqual(row.reason, "git status changed: ?? b")
 
+    def test_failed_suite_error_from_log(self) -> None:
+        output = ("\x1b[31m⎯⎯⎯ Failed Suites 1 ⎯⎯⎯\x1b[39m\n\n FAIL  tests/e2e/runtime/x.e2e.test.ts > suite\n"
+                  "\x1b[31mError: codex model bogus is not offered; available: gpt-5.6-luna\x1b[39m\n ❯ x.ts:141:45\n")
+        self.assertEqual(MODULE.failed_suite_error(output),
+                         "Error: codex model bogus is not offered; available: gpt-5.6-luna")
+        self.assertIsNone(MODULE.failed_suite_error(" ✓ all passed\n"))
+
     def test_models_line(self) -> None:
         output = 'stdout | x\n\x1b[2mSKILL_LINKS_LIVE_MODELS {"claude":"haiku","codex":"gpt-5.6-luna"}\x1b[22m\n'
         self.assertEqual(MODULE.read_models(output), {"claude": "haiku", "codex": "gpt-5.6-luna"})

@@ -203,6 +203,22 @@ def worktree_row(before: str, after: str) -> Row | None:
     return Row("worktree", "left unchanged", False, "git status changed: " + "; ".join(changed[:5]))
 
 
+def failed_suite_error(output: str) -> str | None:
+    """The first error under vitest's "Failed Suites" heading, e.g. a `beforeAll` that threw.
+
+    The JSON report marks such a suite's tests `skipped` and carries no message, so the step log is read for it.
+    """
+    lines = ANSI_RE.sub("", output).splitlines()
+    start = next((index for index, line in enumerate(lines) if "Failed Suites" in line), None)
+    if start is None:
+        return None
+    for line in lines[start + 1:]:
+        text = line.strip()
+        if text and not text.startswith("FAIL"):
+            return text[:300]
+    return None
+
+
 def read_models(output: str) -> dict[str, str] | None:
     match = MODELS_LINE_RE.search(ANSI_RE.sub("", output))
     return json.loads(match.group(1)) if match else None
@@ -274,8 +290,9 @@ def main() -> int:
             started = time.monotonic()
             exit_code = _run_step(step, step_environment(step, os.environ, str(scripted_home)), report, log)
             durations[step.label] = time.monotonic() - started
+            output = log.read_text(errors="replace")
             if step.suite == LIVE_SUITE:
-                models = read_models(log.read_text(errors="replace"))
+                models = read_models(output)
             if not report.exists():
                 suite_errors[step.suite] = f"no report (vitest exited {exit_code})"
                 continue
@@ -284,7 +301,8 @@ def main() -> int:
             if file_errors:
                 suite_errors[step.suite] = file_errors[0]
             elif exit_code != 0 and not any(result.status == "failed" for result in step_results):
-                suite_errors[step.suite] = f"vitest exited {exit_code} without a failed test"
+                suite_errors[step.suite] = (failed_suite_error(output)
+                                            or f"vitest exited {exit_code} without a failed test")
         rows = evaluate(REQUIRED_CASES, results, unavailable, suite_errors)
         guard = worktree_row(status_before, _git("status", "--porcelain"))
         if guard:
