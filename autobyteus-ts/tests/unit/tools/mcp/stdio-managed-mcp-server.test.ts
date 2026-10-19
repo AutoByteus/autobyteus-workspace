@@ -52,7 +52,7 @@ describe('StdioManagedMcpServer with a real stdio MCP server', () => {
     };
 
     expect(client.connectionState).toBe(ServerState.CONNECTED);
-    expect(tools.map((tool) => tool.name)).toEqual(['report_env_and_cwd']);
+    expect(tools.map((tool) => tool.name).sort()).toEqual(['add', 'echo', 'fail', 'report_env_and_cwd', 'slow']);
     expect(JSON.parse(result.content[0]?.text ?? '{}')).toEqual({ value: 'test-dummy', cwd: workDir });
 
     await client.close();

@@ -1,0 +1,9 @@
+[project]
+name = "autobyteus-mcp-test-server"
+version = "0.1.0"
+description = "Tiny MCP server used by the autobyteus-ts MCP integration tests (see server.py)."
+requires-python = ">=3.10"
+dependencies = ["mcp>=2.3,<3"]
+
+[tool.uv]
+package = false
