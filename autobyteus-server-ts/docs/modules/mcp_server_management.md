@@ -54,6 +54,32 @@ effective request headers are derived in one place,
 client passes them to the MCP SDK as `requestInit.headers`. Both values are
 currently stored in plain text, like stdio `env` values.
 
+### Redirects
+
+Remote requests follow redirects only within the configured URL's origin. This
+is the default `redirectPolicy: 'same-origin'` of `@modelcontextprotocol/sdk`
+1.32.x, and AutoByteus does not override it. So a credential never leaves the
+configured origin:
+
+- A same-origin redirect (for example 307/308 from `/mcp` to `/mcp-new`) is
+  followed, and the credentials are sent to the new path.
+- A redirect to another origin is not followed. Preview, connect or the tool
+  call fails with `Redirect to <url> not followed (redirectPolicy:
+  'same-origin')`, and the other origin receives no request. Configure the
+  final URL instead.
+- 301/302 on a POST are not followed even within the origin; this is the
+  SDK's contract.
+
+## Supported Transports
+
+External MCP servers use `stdio` or `streamable_http` (GraphQL offers only
+`STDIO` and `STREAMABLE_HTTP`). Any other `transport_type` in MCP JSON, such as
+`websocket`, is rejected when the core config parser reads it, as in bulk
+import, with `… Valid types are: stdio, streamable_http.`. A bulk import reports such
+entries in its failed count, and the per-entry reason is in the server log. At
+startup, a stored entry that does not parse as one of these transports is
+skipped, and the other entries still register.
+
 ## Codex Example
 
 - See `docs/modules/codex_integration.md`

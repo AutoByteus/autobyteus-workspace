@@ -1,0 +1,25 @@
+# Delivery Revision Record — mcp-sdk-1-32-upgrade
+
+## Revision Index
+
+| Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
+| --- | --- | --- | --- | --- |
+| DR-001 | API/E2E Pass `API-REV-001` (direct low-risk route) | N/A | Delivery Completed; finalized to `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
+
+## Revision Entries
+
+### DR-001 — Integrated, verified from evidence, finalized without a release
+
+- Delivery round and trigger: round 1; API/E2E Pass from `/software_engineering_team/api_e2e_engineer`, `API-REV-001`, commit `53ef702bd3`
+- Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` (95.6%), evidence API-01..09 and reused IMP-00..09
+- Prior authoritative result: N/A
+- Current authoritative result: `Delivery Completed`
+- Docs sync report: `docs-sync-report.md` (Updated: `autobyteus-server-ts/docs/modules/mcp_server_management.md`)
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: merged `origin/personal` @ `bf3c550c18` into the ticket branch (`7d02301c3a`), no conflicts; DR-01..05 passed on the integrated state
+- Verification and finalization state: verified from the evidence, no user check needed; finalization per `RELEASE.md` (see the report's Finalization Record)
+- Terminal return to `/solution_designer`: `Sent` after finalization and cleanup, via `send_message_to` `/software_engineering_team/solution_designer` (rule "Delivery Completed …" from `get_handoff_rules`)
+- Why this baseline was recorded: first completed delivery result
+- Next recipient/action: Solution Designer verifies the receipt
+- Remaining blockers, rollback concerns, or untested scope: none blocking; rollback possible; follow-ups O-002, unused `cert.pem`, external-toy integration tests (IMP-03), import per-entry reasons, `https`-upgrade redirect untested locally
