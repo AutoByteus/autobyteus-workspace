@@ -68,7 +68,9 @@ const attemptHydration = async (
   const expectedActivityRevision = activityStore.getActivityContentRevision(agentRunId);
   const { projection, fileChanges } = await fetchMemberRunState({
     fetchProjection: () => fetchExactTeamMemberProjection(rootTeamRunId, agentRunId),
-    fetchFileChanges: () => fetchRunFileChanges(agentRunId),
+    fetchFileChanges: () => fetchRunFileChanges({
+      kind: 'teamMember', teamRunId: rootTeamRunId, memberAddress: location.memberAddress, agentRunId,
+    }),
   });
   let conversation = buildConversationFromProjection(
     agentRunId,

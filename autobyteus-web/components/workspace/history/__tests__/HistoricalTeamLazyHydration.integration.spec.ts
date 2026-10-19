@@ -239,6 +239,8 @@ vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   GetWorkspaceRunHistory: 'GetWorkspaceRunHistory',
   GetRunProjection: 'GetRunProjection',
   GetRunFileChanges: 'GetRunFileChanges',
+  GetTeamMemberFileChanges: 'GetTeamMemberFileChanges',
+  GetAgentOrgMemberFileChanges: 'GetAgentOrgMemberFileChanges',
   GetAgentRunResumeConfig: 'GetAgentRunResumeConfig',
   GetTeamRunResumeConfig: 'GetTeamRunResumeConfig',
   GetTeamMemberRunProjection: 'GetTeamMemberRunProjection',
@@ -406,8 +408,8 @@ describe('Historical team lazy hydration integration', () => {
         };
       }
 
-      if (query === 'GetRunFileChanges') {
-        return { data: { getRunFileChanges: [] }, errors: [] };
+      if (query === 'GetTeamMemberFileChanges') {
+        return { data: { getTeamMemberFileChanges: [] }, errors: [] };
       }
 
       throw new Error(`Unexpected query: ${String(query)}`);

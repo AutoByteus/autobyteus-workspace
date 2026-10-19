@@ -105,23 +105,27 @@ export const fetchExactTeamMemberProjection = async (
 
 type TeamMemberRunState = MemberRunState<TeamMemberRunProjectionPayload>;
 
+type TeamMember = Readonly<{ agentRunId: string; memberAddress: string }>;
+
 const fetchExactTeamMemberRunState = (
   teamRunId: string,
-  agentRunId: string,
+  member: TeamMember,
 ): Promise<TeamMemberRunState> => fetchMemberRunState({
-  fetchProjection: () => fetchExactTeamMemberProjection(teamRunId, agentRunId),
-  fetchFileChanges: () => fetchRunFileChanges(agentRunId),
+  fetchProjection: () => fetchExactTeamMemberProjection(teamRunId, member.agentRunId),
+  fetchFileChanges: () => fetchRunFileChanges({
+    kind: 'teamMember', teamRunId, memberAddress: member.memberAddress, agentRunId: member.agentRunId,
+  }),
 });
 
 /** A member whose projection or artifacts cannot be loaded is left unhydrated (null) as a whole. */
 const fetchBestEffortTeamMemberRunState = async (
   teamRunId: string,
-  agentRunId: string,
+  member: TeamMember,
 ): Promise<TeamMemberRunState | null> => {
   try {
-    return await fetchExactTeamMemberRunState(teamRunId, agentRunId);
+    return await fetchExactTeamMemberRunState(teamRunId, member);
   } catch (error) {
-    console.warn(`[teamRunContextHydration] Failed to fetch AgentRun state '${agentRunId}'.`, error);
+    console.warn(`[teamRunContextHydration] Failed to fetch AgentRun state '${member.agentRunId}'.`, error);
     return null;
   }
 };
@@ -274,8 +278,8 @@ const hydrateCurrentTeamRunContext = async (
   const stateByAgentRunId = new Map<string, TeamMemberRunState | null>();
   await Promise.all(locations.map(async (agent) => {
     const state = projectionPolicy === 'exact' || agent.agentRunId === initialFocusedAgentRunId
-      ? await fetchExactTeamMemberRunState(input.teamRunId, agent.agentRunId)
-      : await fetchBestEffortTeamMemberRunState(input.teamRunId, agent.agentRunId);
+      ? await fetchExactTeamMemberRunState(input.teamRunId, agent)
+      : await fetchBestEffortTeamMemberRunState(input.teamRunId, agent);
     stateByAgentRunId.set(agent.agentRunId, state);
   }));
   // A member whose state could not be loaded keeps a null projection: it is not marked authoritative,

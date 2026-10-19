@@ -12,16 +12,8 @@ import {
   GetAgentRunCollaborationMemberEventMonitorActiveTracePage,
 } from '~/graphql/queries/runHistoryQueries';
 import { getApolloClient } from '~/utils/apolloClient';
+import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
 
-/**
- * Whose active trace a page reads. A standalone run's host is a top-level run (`run`); its
- * delegated copies and copy-Team members live in its package (`standaloneMember`).
- */
-export type EventMonitorActiveTraceBrowseSubject =
-  | { kind: 'run'; runId: string }
-  | { kind: 'teamMember'; teamRunId: string; memberAddress: string; agentRunId: string }
-  | { kind: 'agentOrgMember'; orgRunId: string; memberAddress: string; agentRunId: string }
-  | { kind: 'standaloneMember'; hostRunId: string; memberAddress: string; agentRunId: string };
 export type EventMonitorActiveTracePageDto = EventMonitorActiveTracePageFieldsFragment;
 export type EventMonitorActiveTracePageEventDto = EventMonitorActiveTracePageDto['events'][number];
 export type EventMonitorActiveTracePageVisualDto = EventMonitorActiveTracePageEventDto['visuals'][number];
@@ -33,7 +25,7 @@ const query = async <T>(document: unknown, variables: Record<string, unknown>): 
 };
 
 export const fetchEventMonitorActiveTracePage = async (
-  subject: EventMonitorActiveTraceBrowseSubject,
+  subject: AgentRunReadSubject,
   beforeCursor: string | null,
 ): Promise<EventMonitorActiveTracePageDto> => {
   switch (subject.kind) {

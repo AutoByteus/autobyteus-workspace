@@ -99,9 +99,13 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
 import FileViewer from '~/components/fileExplorer/FileViewer.vue';
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
+import { agentRunIdOf, type AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
+import { runFileChangeContentPath } from '~/services/runFileChanges/runFileChangeContentPath';
 
 const props = defineProps<{
   artifact: ArtifactViewerItem | null;
+  /** The owner subject of the agent run whose artifacts are shown; content is read through it. */
+  readSubject: AgentRunReadSubject | null;
   refreshSignal?: number;
 }>();
 
@@ -134,12 +138,19 @@ const usesBufferedWriteContent = computed(() => {
 });
 const normalizedArtifactPath = computed(() => props.artifact?.path?.replace(/\\/g, '/') ?? '');
 const displayPath = computed(() => normalizedArtifactPath.value || props.artifact?.path || '');
+// Only the subject of the artifact's own run reads it: while the selection changes, a subject of
+// another run gives no URL rather than a request for another run's file.
+const contentReadSubject = computed(() => {
+  const subject = props.readSubject;
+  const runId = props.artifact?.runId;
+  return subject && runId && agentRunIdOf(subject) === runId ? subject : null;
+});
 const artifactContentUrl = computed(() => {
   const artifact = props.artifact;
-  if (!artifact || !artifact.path) return null;
+  const subject = contentReadSubject.value;
+  if (!artifact || !artifact.path || !subject) return null;
   const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '');
-  if (!artifact.runId) return null;
-  return `${restBaseUrl}/runs/${encodeURIComponent(artifact.runId)}/file-change-content?path=${encodeURIComponent(displayPath.value)}`;
+  return `${restBaseUrl}${runFileChangeContentPath(subject, displayPath.value)}`;
 });
 const displayContent = computed(() => {
   if (!props.artifact) return null;
@@ -320,7 +331,8 @@ onBeforeUnmount(() => {
 });
 
 watch(
-  () => [props.artifact?.itemId, props.artifact?.path, props.artifact?.type, props.artifact?.status, props.artifact?.updatedAt, props.refreshSignal ?? 0],
+  () => [props.artifact?.itemId, props.artifact?.path, props.artifact?.type, props.artifact?.status, props.artifact?.updatedAt, props.refreshSignal ?? 0,
+    artifactContentUrl.value],
   () => {
     void syncArtifactView();
   },
