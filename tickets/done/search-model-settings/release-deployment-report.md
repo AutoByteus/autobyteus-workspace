@@ -67,7 +67,7 @@ Current delivery revision: `DR-002`. DR-001 (verification blocked on O-5, `Uncle
 
 - More evidence requested: `None`.
 - User check needed: `No`. Everything was proven through the real Docker node, the packaged desktop and the browser.
-- Re-verification after later re-integration: recorded in Repository Finalization.
+- Re-verification after later re-integration: `Not needed` (the target did not advance).
 
 ## Release Decision
 
@@ -89,7 +89,22 @@ Current delivery revision: `DR-002`. DR-001 (verification blocked on O-5, `Uncle
 
 ## Repository Finalization
 
-Recorded after finalization in DR-002.
+- Bootstrap context source: incoming package (base `origin/personal`, branch `codex/search-model-settings`) and `RELEASE.md` § Finalization Target.
+- Ticket branch: `codex/search-model-settings` @ `14eecc59b3` (archive commit). Commit: `Completed`; no build output committed.
+- Ticket branch push: `Completed` (`origin/codex/search-model-settings`, new).
+- Finalization target: `origin` / `personal`.
+- Target advanced after verification: `No` (`fc93276e6f` before the merge and again before the push).
+- Re-integration before final merge: `Not needed`.
+- Merge into target: `git checkout -b finalize/search-model-settings origin/personal` then `git merge --no-ff` → `d20d9b9d92`. The merge tree equals the ticket tree.
+- Push target branch: `Completed` (`fc93276e6f..d20d9b9d92 HEAD -> personal`).
+- Checks before the final commit: `check_licensing.py` → `Licensing is consistent.`; `check_repository_artifact_hygiene.py` → passed (exit 0).
+- Repository finalization status: `Completed`.
+
+## Post-Finalization Cleanup
+
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/search-model-settings`: removed after this record was pushed, with its untracked build output. Prune `Completed`.
+- Local branches `codex/search-model-settings` and `finalize/search-model-settings`: deleted.
+- Remote ticket branch: kept as a reference (`Not required`).
 
 ## Release / Publication / Deployment
 
@@ -106,4 +121,10 @@ Recorded after finalization in DR-002.
 
 ## Final Status
 
-Recorded after finalization in DR-002.
+- Verification complete (from the evidence, on SR-008): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `d20d9b9d92`)
+- Release/deployment: `Not required` (no release decided)
+- Safe cleanup complete: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, after this record was pushed (Delivery Completed, DR-002).

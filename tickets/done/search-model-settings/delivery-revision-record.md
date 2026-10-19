@@ -50,7 +50,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
   - Every other criterion as in DR-001.
   - No user check needed.
 - Release decision: `No release` (the guide's default).
-- Finalization: see `release-deployment-report.md` § Repository Finalization.
-- Terminal return to `/solution_designer`: see § Final Status.
+- Finalization: ticket branch pushed; `--no-ff` merge `d20d9b9d92` pushed to `origin/personal`; worktree and local branches removed.
+- Terminal return to `/solution_designer`: `Sent` (Delivery Completed).
 - Next recipient/action: `/software_engineering_team/solution_designer` (terminal receipt).
 - Remaining blockers: none. Residual risks are listed in `handoff-summary.md`.
