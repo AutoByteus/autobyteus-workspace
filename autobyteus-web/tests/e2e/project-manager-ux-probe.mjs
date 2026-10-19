@@ -326,7 +326,9 @@ const agentRootOnBoard = async () => {
     await row(page, s.taskA).waitFor({ timeout: 30000 });
     const workerAddress = `/${segment(s.names.worker)}`;
     s.input.send(callTool('delegate_task', { recipient_address: workerAddress, task_id: s.taskA }));
-    const live = await until('root line appears live', async () => { const r = await rootState(page, s.taskA); return r && r.state !== 'initializing' ? r : null; }, 60000);
+    // Openable also needs the hosting run listed in the left panel, which loads on its own; wait for that, not the first live frame.
+    const live = await until('root line appears live and openable', async () => { const r = await rootState(page, s.taskA); return r && r.state !== 'initializing' && r.openable === 'true' ? r : null; }, 60000)
+      .catch(async (error) => { throw Object.assign(error, { details: await rootState(page, s.taskA) }); });
     assert(live.name === displayName(workerAddress), 'root shows the delegated address display name', live);
     assert(['idle', 'running'].includes(live.state) && live.openable === 'true' && live.tag === 'BUTTON', 'live started root is an openable button', live);
     await shot(page, 'pmu-002-board-agent-root');
