@@ -1,8 +1,23 @@
-import { describe, expect, it, vi } from "vitest";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GitHubRepositoryClient } from "../../../../src/integrations/github/github-repository-client.js";
 import { parseGitHubSkillRepository } from "../../../../src/integrations/github/github-repository-source.js";
+import { GitHubRateLimitGate, setGitHubRateLimitGateForTests } from "../../../../src/integrations/github/github-rate-limit-gate.js";
 
 describe("shared GitHub metadata transport", () => {
+  let gateDir: string;
+  // Each case gets its own rate-limit gate, so a learned limit never leaks between cases.
+  beforeEach(() => {
+    gateDir = fs.mkdtempSync(path.join(os.tmpdir(), "github-client-gate-"));
+    setGitHubRateLimitGateForTests(new GitHubRateLimitGate(() => path.join(gateDir, "rate-limit.json")));
+  });
+  afterEach(() => {
+    setGitHubRateLimitGateForTests(null);
+    fs.rmSync(gateDir, { recursive: true, force: true });
+  });
+
   it("resolves canonical public identity then its default-branch revision without downloading an archive", async () => {
     const fetch = vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({
       owner: { login: "Acme" }, name: "Skills", default_branch: "next/version", html_url: "https://github.com/Acme/Skills", private: false,

@@ -15,6 +15,8 @@ import {
 export const ELECTRON_LAUNCH_PROFILE_ENV = 'AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE'
 export const ELECTRON_SERVER_PORT_ENV = 'AUTOBYTEUS_ELECTRON_SERVER_PORT'
 export const ELECTRON_DATA_ROOT_ENV = 'AUTOBYTEUS_ELECTRON_DATA_ROOT'
+/** e2e only: the app checks this local test update feed instead of staying quiet (REQ-019). */
+export const ELECTRON_TEST_UPDATE_FEED_URL_ENV = 'AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL'
 
 export type E2EElectronPathPlan = Readonly<{
   root: string
@@ -42,6 +44,8 @@ export type ProductionElectronLaunchProfile = BaseElectronLaunchProfile & Readon
 export type E2EElectronLaunchProfile = BaseElectronLaunchProfile & Readonly<{
   name: 'e2e'
   updaterEnabled: false
+  /** The explicit test update feed; null keeps the quiet disabled update state. */
+  testUpdateFeedUrl: string | null
   safeDataRoot: ResolvedSafeE2EDataRoot
   paths: E2EElectronPathPlan
 }>
@@ -70,6 +74,24 @@ function parseE2EPort(rawPort: string | undefined): number {
     )
   }
   return port
+}
+
+/** A loopback `http` feed with an explicit port, for example `http://127.0.0.1:8123`. */
+function parseTestUpdateFeedUrl(raw: string | undefined): string | null {
+  if (raw === undefined || raw.trim() === '') return null
+  let url: URL
+  try {
+    url = new URL(raw.trim())
+  } catch {
+    throw new Error(`${ELECTRON_TEST_UPDATE_FEED_URL_ENV} must be a URL`)
+  }
+  if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost'].includes(url.hostname) || !url.port
+    || url.username || url.password || url.search || url.hash) {
+    throw new Error(
+      `${ELECTRON_TEST_UPDATE_FEED_URL_ENV} must be http://127.0.0.1:<port> or http://localhost:<port>`,
+    )
+  }
+  return url.toString()
 }
 
 export function buildE2EElectronPathPlan(
@@ -104,9 +126,10 @@ export function resolveElectronLaunchProfile({
     if (
       Object.prototype.hasOwnProperty.call(env, ELECTRON_SERVER_PORT_ENV)
       || Object.prototype.hasOwnProperty.call(env, ELECTRON_DATA_ROOT_ENV)
+      || Object.prototype.hasOwnProperty.call(env, ELECTRON_TEST_UPDATE_FEED_URL_ENV)
     ) {
       throw new Error(
-        `${ELECTRON_SERVER_PORT_ENV} and ${ELECTRON_DATA_ROOT_ENV} are valid only when ${ELECTRON_LAUNCH_PROFILE_ENV}=e2e`,
+        `${ELECTRON_SERVER_PORT_ENV}, ${ELECTRON_DATA_ROOT_ENV} and ${ELECTRON_TEST_UPDATE_FEED_URL_ENV} are valid only when ${ELECTRON_LAUNCH_PROFILE_ENV}=e2e`,
       )
     }
     return Object.freeze({
@@ -129,6 +152,7 @@ export function resolveElectronLaunchProfile({
   }
 
   const port = parseE2EPort(rawPort)
+  const testUpdateFeedUrl = parseTestUpdateFeedUrl(env[ELECTRON_TEST_UPDATE_FEED_URL_ENV])
   const safeDataRoot = resolveExistingSafeE2EDataRoot({
     selectedPath: rawRoot,
     protectedPaths,
@@ -137,6 +161,7 @@ export function resolveElectronLaunchProfile({
   return Object.freeze({
     name: 'e2e' as const,
     updaterEnabled: false as const,
+    testUpdateFeedUrl,
     clientEndpoint: createEmbeddedServerClientEndpoint(port),
     baseDataRoot: paths.baseDataRoot,
     safeDataRoot,

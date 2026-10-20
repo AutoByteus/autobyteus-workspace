@@ -107,16 +107,26 @@ describe('SkillSourceRow', () => {
       ['NOT_CHECKED', 'Not checked', { update: false, tryAgain: false, retryRemoval: false, trash: true }],
       ['UP_TO_DATE', 'Up to date', { update: false, tryAgain: false, retryRemoval: false, trash: true }],
       ['UPDATE_AVAILABLE', 'Update available', { update: true, tryAgain: false, retryRemoval: false, trash: true }],
-      ['CHECK_FAILED', 'Check failed — installed skills retained', { update: false, tryAgain: true, retryRemoval: false, trash: true }],
+      // REQ-006: a failed later check keeps a known newer revision updatable.
+      ['CHECK_FAILED', 'Check failed — installed skills retained', { update: true, tryAgain: true, retryRemoval: false, trash: true }],
       ['UPDATE_FAILED', 'Update failed — previous version retained', { update: true, tryAgain: false, retryRemoval: false, trash: true }],
       ['REMOVING', 'Removal incomplete', { update: false, tryAgain: false, retryRemoval: true, trash: false }],
     ])('%s shows "%s" with only its own actions', (status, label, actions) => {
-      const wrapper = mountRow(githubSource(status))
+      // Revisions as the server reports each status: never checked has no latest; up to date has latest = installed.
+      const revisions = status === 'NOT_CHECKED' ? { latestRevision: null, latestCheckedAt: null }
+        : status === 'UP_TO_DATE' ? { latestRevision: 'a'.repeat(40) } : {}
+      const wrapper = mountRow(githubSource(status, revisions))
       expect(wrapper.get('[role="status"]').text()).toBe(label)
       expect(!!button(wrapper, 'Update')).toBe(actions.update)
       expect(!!button(wrapper, 'Check acme/docs-skills again')).toBe(actions.tryAgain)
       expect(!!button(wrapper, 'Retry removal')).toBe(actions.retryRemoval)
       expect(!!button(wrapper, 'Remove acme/docs-skills')).toBe(actions.trash)
+    })
+
+    it('a failed check with no known newer revision offers only Try again', () => {
+      const wrapper = mountRow(githubSource('CHECK_FAILED', { latestRevision: 'a'.repeat(40) }))
+      expect(!!button(wrapper, 'Update')).toBe(false)
+      expect(!!button(wrapper, 'Check acme/docs-skills again')).toBe(true)
     })
 
     it.each<[GitHubStatus, string]>([

@@ -32,9 +32,16 @@
 - `.gitignore`, agreed by the user: ignores `.env`, `.env.*`, `*.env`, `*.db`, `*.db-journal`, `*.db-wal`, `*.db-shm`, `*.sqlite` and `*.sqlite3`, and re-allows `*.example`. Already-tracked files stay tracked.
 - Ticket folder:
   - `secret-scan-report.md`;
-  - `gitleaks-allowlist.toml` (confirmed false-positive classes, plus the revoked SF-001 files in that one commit);
+  - `gitleaks-allowlist.toml` (confirmed false-positive classes, plus the revoked SF-001 files in that one commit). DR-002 moved it to the root as `.gitleaks.toml`;
   - `follow-ups.md`;
   - the delivery documents.
+
+- DR-002, at the user's request: the **Secret Gate**.
+  - `RELEASE.md` "Secret Gate" section, plus the gate in the finalize steps
+    and in Checks Before Tagging.
+  - `scripts/check_secrets.sh`.
+  - Root `.gitleaks.toml`: default rules, an `env-style-secret` rule and a
+    `password-in-url` rule; shape allowlists scoped to `generic-api-key`.
 
 ## Integration
 

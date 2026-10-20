@@ -40,6 +40,7 @@ import { ProjectResolver } from './types/projects.js';
 import { ProjectTaskResolver } from './types/project-tasks.js';
 import { ProjectTaskSearchResolver } from './types/project-task-search.js';
 import { EmbeddingModelResolver } from './types/embeddings.js';
+import { UpdateNotificationResolver } from './types/update-notifications.js';
 import { AgentRuntimesResolver } from './types/agent-runtimes.js';
 
 export async function buildGraphqlSchema() {
@@ -77,6 +78,7 @@ export async function buildGraphqlSchema() {
       AgentPackageResolver,
       ApplicationPackageResolver,
       AppDataMigrationResolver,
+      UpdateNotificationResolver,
       SecretStorageResolver,
       DefinitionProblemsResolver,
       AgentPackageDefinitionsResolver,

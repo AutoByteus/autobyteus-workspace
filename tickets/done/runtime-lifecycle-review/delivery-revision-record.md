@@ -4,7 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | Code reviewer handoff after CRR-003 Pass (API-REV-001 Pass, reviewed route) | N/A | Delivery Completed: verified from the evidence after the real-account round API-REV-002; finalized to `personal`; beta `v1.5.8-beta.2` (outcome in the release report) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `autobyteus-web/docs/settings.md`, `autobyteus-server-ts/docs/modules/agent_runtimes.md` |
+| DR-001 | Code reviewer handoff after CRR-003 Pass (API-REV-001 Pass, reviewed route) | N/A | Delivery Completed: verified from the evidence after the real-account round API-REV-002; finalized to `personal` (merge `a808c45b77`); beta `v1.5.8-beta.2` published, all 4 workflows succeeded (iOS after a re-run of a runner-capacity failure) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `autobyteus-web/docs/settings.md`, `autobyteus-server-ts/docs/modules/agent_runtimes.md` |
 
 ## Revision Entries
 
@@ -13,7 +13,7 @@
 - Delivery round and trigger: first delivery round, from the code reviewer (CRR-003 Pass, 2026-10-20).
 - Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` (API-REV-001, 95.3%), `api-e2e-test-review-report.md` (CRR-003).
 - Prior authoritative result: N/A.
-- Current authoritative result: Delivery Completed (see the release report's Final Status).
+- Current authoritative result: Delivery Completed. Merge `a808c45b77` and release commit `7f41314aa8` are on `personal`. Beta `v1.5.8-beta.2` is published: GitHub pre-release with 17/17 assets, Docker `:1.5.8-beta.2` and `:beta`, the Android APK and the TestFlight upload.
 - Docs sync report: `docs-sync-report.md` (Updated).
 - Handoff summary: `handoff-summary.md`.
 - Release/publication/deployment report: `release-deployment-report.md`.
@@ -25,7 +25,7 @@
   - The user directed that API/E2E use his real accounts with no custom vendor homes. Delivery sent this to API/E2E, which returned API-REV-002 Pass at 97.1%.
   - Delivery verified from that evidence; no separate user check.
   - The user then asked for a beta.
-- Terminal return to the Solution Designer: see the release report's Final Status.
+- Terminal return to the Solution Designer: `Sent` after the cleanup (`send_message_to` /software_engineering_team/solution_designer).
 - Why this baseline was recorded: first completed delivery round.
 - Next recipient/action: the Solution Designer verifies the receipt and sends FU-001…FU-007.
 - Remaining blockers, rollback concerns, or untested scope:

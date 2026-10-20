@@ -77,25 +77,87 @@ Finalize Settings → Agent Runtimes to `personal`. Release only as the user dec
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/runtime-lifecycle-review`: `No` (after verification)
+- Ticket moved to `tickets/done/runtime-lifecycle-review`: `Yes` (commit `8bf7f4eeb3`)
+- Archived ticket path: `tickets/done/runtime-lifecycle-review/`
+
+## Version / Tag / Release Commit
+
+- `bash scripts/desktop-release.sh beta --branch finalize/runtime-lifecycle-review --no-push`. The untracked `*/dist/` build output was deleted first; `python3 scripts/release_versions.py next-beta` → `1.5.8-beta.2`.
+- Release commit `7f41314aa8` ("chore(release): bump workspace release version to 1.5.8-beta.2", `autobyteus-web/package.json` only); annotated tag `v1.5.8-beta.2` on it.
 
 ## Repository Finalization
 
-- Bootstrap context source: code reviewer handoff + RELEASE.md (`origin`/`personal`)
-- Ticket branch: `codex/runtime-lifecycle-design-review`. The worktree folder is `runtime-lifecycle-design-review`, and the ticket name differs from the branch name. Finalization uses `finalize/runtime-lifecycle-review`.
-- Repository finalization status: not started (waiting for verification)
+- Bootstrap context source: code reviewer handoff and RELEASE.md (`origin`/`personal`, `--no-ff`, finalize branch)
+- Ticket branch: `codex/runtime-lifecycle-design-review`
+- Ticket branch commit result: `Completed` (`8bf7f4eeb3`)
+- Ticket branch push result: `Completed` (`origin/codex/runtime-lifecycle-design-review`, kept)
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification: `Yes`, once: `5de6a698b9` → `66d834b0ac` before finalization. Re-integrated (`6f0c4eaea9`) and rechecked (DEL-06 Pass). It had not moved again at push time.
+- Delivery-owned edits protected before re-integration: `Completed` (committed first)
+- Re-integration before final merge result: `Completed`
+- Target branch update result: `finalize/runtime-lifecycle-review` from `origin/personal` `66d834b0ac`
+- Merge into target result: `Completed`. `--no-ff` merge `a808c45b77`; `check_licensing.py` and `check_repository_artifact_hygiene.py` pass on the merged state.
+- Push target branch result: `Completed` (`66d834b0ac..7f41314aa8 HEAD -> personal`; `origin/personal` fetched and unchanged right before)
+- Repository finalization status: `Completed`
+
+## Release / Publication / Deployment
+
+- Applicable: `Yes` (Beta, the user's decision)
+- Method: `Project Release Guide` (RELEASE.md "Cutting The Release" and "Watching The Rollout")
+- Method reference / command: see Version / Tag / Release Commit; then `git push origin HEAD:personal` and `git push origin v1.5.8-beta.2`.
+- Pipelines triggered and their results:
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | 39428624743 | success (26m27s) |
+| Android APK Release | 39428625103 | success (5m28s) |
+| Server Docker Release | 39428624956 | success (28m24s) |
+| iOS App Store Connect Release | 39428625095 | attempt 1 failure: "Archive And Upload To App Store Connect" was cancelled after 15 min with "The job was not acquired by Runner of type hosted even after multiple attempts" (macOS arm64 runner capacity). A transient failure, so per RELEASE.md Recovery only the failed jobs were re-run (`gh run rerun 39428625095 --failed`). Attempt 2: success (build/test, secrets, archive + upload) |
+
+- Published artifacts checked:
+  - GitHub release `v1.5.8-beta.2`: `isPrerelease: true` with 17/17 assets. These are the macOS arm64/x64 dmg+zip with blockmaps, the Linux x64/arm64 AppImages, the Windows exe, the 4 `latest*.yml` files, and the Android APK + `.sha256`.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.8-beta.2` and `:beta` share digest `sha256:38459c845e31…` (amd64, arm64). `:latest` is unchanged (1.5.7, 05:08Z).
+  - TestFlight upload: completed by the iOS attempt 2.
+- Release/publication/deployment result: `Completed` (all four workflows succeeded; no partial release remains)
+- Release notes handoff result: `Not required`. Beta tags use GitHub generated notes (RELEASE.md). The curated `release-notes.md` is archived for the next stable release.
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-design-review`
+- Before cleanup, the API/E2E isolated desktop instance `iso-56551-47f6`, which runs from this worktree's build, was stopped with `pnpm --silent isolated-app stop iso-56551-47f6` after the user said "Its done". Its data root was removed and its ports released.
+- Worktree, prune and local branch cleanup run right after this record commit is pushed, because this record is committed from that worktree. Results are in the terminal message to the Solution Designer.
+- Remote branch cleanup result: `Not required` (`origin/codex/runtime-lifecycle-design-review` kept, as for earlier tickets)
+
+## Release Notes Summary
+
+- Release notes artifact created before verification: `tickets/done/runtime-lifecycle-review/release-notes.md`
+- Archived release notes artifact used for release/publication: not used (beta uses generated notes); ready for the next stable release
+- Release notes status: `Updated`
+
+## Deployment Steps
+
+- No hosted deployment (RELEASE.md). Desktop beta users get it with **Settings > Updates > Receive beta updates**; Docker users with `autobyteus-docker upgrade --all --tag beta`.
 
 ## Environment Or Persisted-Data Transition Notes
 
-- Approved persisted-data decision: no new AutoByteus data (requirements "Data Continuity"). All state is in server memory.
+- Approved persisted-data decision: no new AutoByteus data; all state is in server memory.
 - Delivery action required: `None`
+
+## Verification Checks
+
+- DEL-01…DEL-06 (integration reruns), API-REV-002 real-account round, and the release checks above.
 
 ## Rollback Criteria
 
-- Revert the merge on `personal` and cut a new release (RELEASE.md). No data migration, so an older build works unchanged.
+- If the page misreports runtimes or Update/Sign in misbehaves: revert merge `a808c45b77` on `personal` and cut the next beta. There is no data migration, so an older build works unchanged; desktop updates never downgrade, and Docker users pin an earlier tag.
 
 ## Final Status
 
-- Verification complete: `No` (waiting for the user's check)
-- Repository finalization complete: `No`
-- Successful terminal package eligible for return: `No`
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta `v1.5.8-beta.2`, all four workflows succeeded)
+- Applicable safe cleanup complete or not required: `Yes` (instance stopped; worktree and local branches removed right after this commit; confirmed in the terminal message)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes` (right after this commit and the cleanup)

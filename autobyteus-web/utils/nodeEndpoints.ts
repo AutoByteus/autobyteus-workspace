@@ -77,6 +77,7 @@ export function deriveNodeEndpoints(baseUrl: string): NodeEndpoints {
     agentCollaborationWs: `${wsBase}/ws/agent-collaboration`,
     projectsWs: `${wsBase}/ws/projects`,
     agentPackageDefinitionsWs: `${wsBase}/ws/agent-package-definitions`,
+    updateNotificationsWs: `${wsBase}/ws/update-notifications`,
     terminalWs: `${wsBase}/ws/terminal`,
     fileExplorerWs: `${wsBase}/ws/file-explorer`,
     health: `${httpBase}/rest/health`,

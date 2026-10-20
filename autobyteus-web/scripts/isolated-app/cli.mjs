@@ -11,8 +11,10 @@ export const USAGE = `Usage: pnpm isolated-app <command> [options]
 Commands:
   start     Start an isolated AutoByteus instance and wait until it is ready
             [--app <path>] [--from-worktree] [--build] [--control-port <n>]
-            [--server-port <n>] [--data-root <path>] [--keep]
+            [--server-port <n>] [--data-root <path>] [--keep] [--test-update-feed <url>]
             Control and server ports default to free ports; read them from the result.
+            --test-update-feed checks a local test update feed (http://127.0.0.1:<port>)
+            instead of keeping app updates disabled.
   list      List recorded isolated instances and whether they are running
   stop      Stop an instance [<instanceId>] [--keep]
   restart   Stop and start an instance again with the same settings [<instanceId>]
@@ -74,6 +76,11 @@ export function parseArgs(argv, env = process.env) {
     } else if (arg === '--data-root') {
       allowed(arg, ['start'])
       options.dataRoot = resolveUserPath(arg, rest[++index], env)
+    } else if (arg === '--test-update-feed') {
+      allowed(arg, ['start'])
+      const raw = rest[++index]
+      if (!raw) throw usageError('USAGE_ERROR', `${arg} requires a URL`)
+      options.testUpdateFeedUrl = raw
     } else if (arg === '--keep') {
       allowed(arg, ['start', 'stop'])
       options.keep = true

@@ -76,6 +76,7 @@ export function describeInstance(record) {
     dataRoot: record.dataRoot,
     ownsDataRoot: record.ownsDataRoot,
     keepDataRoot: record.keepDataRoot,
+    testUpdateFeedUrl: record.testUpdateFeedUrl ?? null,
     databaseUrl: `file:${path.join(record.dataRoot, 'server-data', 'db', 'production.db')}`,
     logPath: record.logPath,
   }
@@ -224,7 +225,7 @@ export function createInstanceLifecycle({
     const args = buildInstanceArgs({ instanceId: plan.id, controlPort: plan.controlPort })
     const env = buildIsolatedLaunchEnvironment({
       sourceEnv,
-      launch: { port: plan.serverPort, dataRoot: plan.dataRoot },
+      launch: { port: plan.serverPort, dataRoot: plan.dataRoot, testUpdateFeedUrl: plan.testUpdateFeedUrl },
     })
     fs.mkdirSync(registry.dir, { recursive: true, mode: 0o700 })
 
@@ -247,6 +248,7 @@ export function createInstanceLifecycle({
       dataRoot: plan.dataRoot,
       ownsDataRoot: plan.ownsDataRoot,
       keepDataRoot: plan.keepDataRoot,
+      testUpdateFeedUrl: plan.testUpdateFeedUrl,
       logPath,
       startedAt: new Date().toISOString(),
     })
@@ -315,6 +317,7 @@ export function createInstanceLifecycle({
       dataRoot,
       ownsDataRoot,
       keepDataRoot: Boolean(options.keep),
+      testUpdateFeedUrl: options.testUpdateFeedUrl ?? null,
     }
     return launchRecord(plan, {
       onFailure: (record) => {
@@ -407,6 +410,7 @@ export function createInstanceLifecycle({
       dataRoot: record.dataRoot,
       ownsDataRoot: record.ownsDataRoot,
       keepDataRoot: record.keepDataRoot,
+      testUpdateFeedUrl: record.testUpdateFeedUrl ?? null,
     }, {
       // The record stays (not running) so a later `stop` still applies the data-root rule.
       onFailure: () => undefined,

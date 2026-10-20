@@ -1,5 +1,6 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
+import { UPDATE_CHECKS_SETTING_KEY } from "../update-notifications/domain/settings.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
@@ -128,6 +129,11 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       APPLICATIONS_CAPABILITY_SETTING_KEY,
       "Controls whether the Applications module is available for this node at runtime.",
+    );
+
+    this.registerPredefinedSetting(
+      UPDATE_CHECKS_SETTING_KEY,
+      "Controls whether this node checks its imported GitHub agent packages and skill sources for updates in the background. Defaults to enabled.",
     );
 
     this.registerPredefinedSetting(

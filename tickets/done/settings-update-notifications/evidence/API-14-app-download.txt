@@ -1,0 +1,62 @@
+# API-14 — app Download from the notification through MacUpdater + Squirrel.Mac (AC-007, RUS-004)
+# macOS 26.5.2 arm64; 2026-10-20
+# Why a copy: the worktree build has the installed app's bundle id com.autobyteus.app and updater cache autobyteus-updater; the user's ~/Library/Caches/com.autobyteus.app.ShipIt/ShipItState.plist and autobyteus-updater/pending hold a staged real update (2026-10-20 12:59). A download with that identity would overwrite them (TESTING Rule 2).
+# Copy: ditto electron-dist/mac-arm64/AutoByteus.app → /tmp/sun-api-e2e/copy; CFBundleIdentifier=com.autobyteus.app.apie2e; app-update.yml updaterCacheDirName=autobyteus-updater-apie2e; codesign --force --deep -s - (verify --deep --strict: valid). App code unchanged.
+# Feed B (loopback 61163): latest-mac.yml 1.5.8 → zip of the same re-signed copy (529270970 bytes, sha512 in yml).
+# isolated-app start --app /tmp/sun-api-e2e/copy/AutoByteus.app --test-update-feed http://127.0.0.1:61163 → iso-61168-d979
+
+## before any press
+{"pills": [{"text": "1 update", "className": ""}], "status": "available", "notification": {"version": "1.5.8", "fromVersion": "1.5.7-beta.4", "foundAt": "2026-10-20T14:08:16.890Z", "read": false, "state": "waiting", "handledVersion": null, "releasePageUrl": null}, "toasts": [], "card": false}
+
+## press time (UTC)
+2026-10-20T14:08:27.3NZ
+## row transitions after the Download press (100 ms polling)
+{
+  "transitions": [
+    {
+      "atMs": 5,
+      "key": "waiting | New: AutoByteus1.5.7-beta.41.5.8·this minuteDownload"
+    },
+    {
+      "atMs": 638,
+      "key": "downloading | New: AutoByteus1.5.7-beta.41.5.8·this minuteDownloading 0%"
+    },
+    {
+      "atMs": 1261,
+      "key": "downloading | New: AutoByteus1.5.7-beta.41.5.8·this minuteDownloading 100%"
+    },
+    {
+      "atMs": 1781,
+      "key": "downloaded | New: AutoByteus1.5.7-beta.41.5.8·this minuteInstall and restartDownloaded. Restart AutoByteus to install it."
+    }
+  ]
+}
+
+## state after
+{"status": "downloaded", "message": "Update downloaded. Restart to install.", "updateStaged": true, "downloadPercent": 100, "availableVersion": "1.5.8"}
+
+## feed request log
+{"at":"2026-10-20T14:08:16.878Z","method":"GET","url":"/latest-mac.yml?noCache=1k5cq8dv2","range":null,"ua":"electron-builder","status":200}
+{"at":"2026-10-20T14:08:27.962Z","method":"GET","url":"/AutoByteus-1.5.8-mac.zip","range":null,"ua":"electron-builder","status":200}
+
+## updater log
+[updater] Found version 1.5.8 … 14:08:16.890Z; Downloading update … 14:08:27.945Z; New version 1.5.8 has been downloaded to ~/Library/Caches/autobyteus-updater-apie2e/pending/AutoByteus-1.5.8-mac.zip 14:08:28.593Z; Squirrel proxy '/…zip requested' 14:08:29.144Z
+
+## Install and restart NOT pressed (ShipIt would relaunch the app outside the e2e profile against the user's data).
+## isolated-app stop after the download (preserved autoInstallOnAppQuit=true):
+{'instanceId': 'iso-61168-d979', 'wasRunning': True, 'forced': False, 'dataRoot': '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-ZA04NN', 'dataRootRemoved': True, 'controlPortReleased': True, 'serverPortReleased': True, 'logPath': None}
+no relaunch within 20 s; ~/Library/Caches/com.autobyteus.app.apie2e.ShipIt: only update.6Cqa3z7/ (no ShipItState.plist); copy Info.plist mtime unchanged (1792505185) → nothing installed on quit
+
+## the user's caches: stat listing before and after (identical)
+/Users/normy/Library/Caches/com.autobyteus.app.ShipIt 160 1792493989
+/Users/normy/Library/Caches/com.autobyteus.app.ShipIt/ShipIt_stdout.log 0 1772304383
+/Users/normy/Library/Caches/com.autobyteus.app.ShipIt/ShipItState.plist 283 1792493971
+/Users/normy/Library/Caches/com.autobyteus.app.ShipIt/ShipIt_stderr.log 925119 1792493996
+/Users/normy/Library/Caches/autobyteus-updater 160 1772304372
+/Users/normy/Library/Caches/autobyteus-updater/update.zip 523183527 1792493953
+/Users/normy/Library/Caches/autobyteus-updater/current.blockmap 537613 1792493953
+/Users/normy/Library/Caches/autobyteus-updater/pending 160 1792493952
+/Users/normy/Library/Caches/autobyteus-updater/pending/update-info.json 194 1792493952
+/Users/normy/Library/Caches/autobyteus-updater/pending/current.blockmap 537613 1792493927
+/Users/normy/Library/Caches/autobyteus-updater/pending/AutoByteus_personal_macos-arm64-1.5.8-beta.1.zip 523183527 1792493952
+(identical after the download and after the stop)

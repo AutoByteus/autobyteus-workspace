@@ -1,5 +1,6 @@
 import path from "node:path";
 import type { GitHubRepositoryRevisionMetadata } from "../../integrations/github/types.js";
+import type { GitHubSourceUpdateState } from "../../integrations/github/github-source-update-state.js";
 import type { AgentPackage, AgentPackageAutoRefresh, AgentPackageGitHubSourceMetadata, AgentPackageRecord, AgentPackageSourceMetadata, AgentPackageUpdateInfo } from "../types.js";
 import {
   buildGitHubPackageId,
@@ -95,10 +96,12 @@ const buildGitHubUpdateInfo = (record: AgentPackageRecord): AgentPackageUpdateIn
   const latestRevision = metadata?.latestRevision ?? null;
   const lastError = metadata?.lastError ?? null;
 
+  // A known newer revision stays updatable after a failed later check (REQ-006).
   const canUpdate =
     status === "UPDATE_AVAILABLE" ||
     status === "UPDATE_FAILED" ||
-    installedRevision === null;
+    installedRevision === null ||
+    (latestRevision !== null && latestRevision !== installedRevision);
   const messageByStatus: Record<typeof status, string> = {
     NOT_APPLICABLE: "GitHub update status is not applicable.",
     RELOAD_AVAILABLE: "GitHub package can be refreshed by update check.",
@@ -173,3 +176,16 @@ export const mapGitHubPackage = (
   updateInfo: buildGitHubUpdateInfo(record),
   autoRefresh,
 });
+
+export const mapGitHubSourceUpdateState = (record: AgentPackageRecord): GitHubSourceUpdateState => {
+  const metadata = record.sourceMetadata?.github ?? null;
+  return {
+    sourceId: record.packageId,
+    displayName: getGitHubPackageDisplayName(record),
+    repositoryUrl: record.source,
+    defaultBranch: metadata?.defaultBranch ?? null,
+    installedRevision: metadata?.installedRevision ?? null,
+    latestRevision: metadata?.latestRevision ?? null,
+    lastCheckedAt: metadata?.latestCheckedAt ?? null,
+  };
+};

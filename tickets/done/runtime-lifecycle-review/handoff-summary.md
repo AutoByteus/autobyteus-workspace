@@ -40,7 +40,16 @@
 
 ## Release
 
-- Decision: `Beta`, decided by the user on 2026-10-20 in the Delivery Engineer conversation ("lets release a new beta by teh way"). Beta `v1.5.8-beta.2`; the outcome is recorded in `release-deployment-report.md`.
+- Decision: `Beta`, decided by the user on 2026-10-20 in the Delivery Engineer conversation ("lets release a new beta by teh way"). Beta `v1.5.8-beta.2`:
+  - release commit `7f41314aa8`;
+  - all four workflows succeeded (iOS after re-running a runner-capacity failure);
+  - GitHub pre-release with 17/17 assets;
+  - Docker `:1.5.8-beta.2` and `:beta` published, `:latest` stays on 1.5.7.
+
+## Final State
+
+- `origin/personal`: merge `a808c45b77`, release commit `7f41314aa8`, delivery record on top.
+- The ticket worktree and local branches are removed; `origin/codex/runtime-lifecycle-design-review` is kept.
 
 ## Residual Risks And Follow-ups
 
