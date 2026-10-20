@@ -1,0 +1,11 @@
+# Check: IMP-01-core-build
+# Command: pnpm -C autobyteus-ts build
+# Commit: df15c4385d
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-20
+
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-bulk-import-errors/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK

@@ -154,6 +154,16 @@ export class DiscoverAndRegisterMcpServerToolsResult {
 }
 
 @ObjectType()
+export class ImportMcpServerConfigFailure {
+  @Field(() => String)
+  serverId!: string;
+
+  /** Why the entry was not imported; names fields, never env, header or token values. */
+  @Field(() => String)
+  reason!: string;
+}
+
+@ObjectType()
 export class ImportMcpServerConfigsResult {
   @Field(() => Boolean)
   success!: boolean;
@@ -166,4 +176,7 @@ export class ImportMcpServerConfigsResult {
 
   @Field(() => Int)
   failedCount!: number;
+
+  @Field(() => [ImportMcpServerConfigFailure])
+  failures!: ImportMcpServerConfigFailure[];
 }

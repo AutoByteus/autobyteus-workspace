@@ -318,9 +318,14 @@ payload through the existing store and GraphQL actions.
 
 Import multiple MCP servers from JSON:
 
-- Accepts JSON array of server configs
-- Shows import results (success/failure counts)
-- Useful for sharing configurations across environments
+- Accepts an object with a top-level `mcpServers` key, one entry per server id (the shape of the app's own
+  `mcps.json`, so that file's content can be pasted to move servers between installs).
+- An entry without `transport_type` (or `transportType`) is HTTP when it has a `url` and stdio when it has a
+  `command`; this is the same rule the server uses when it loads `mcps.json`.
+- Each entry is imported on its own. Entries that fail are listed under the Import button with their server id and
+  reason (reasons name fields, never env, header or token values), and the view stays open so they can be fixed.
+- The server list refreshes when at least one entry was imported; the view returns to the list only when all entries
+  were imported. The toast tells full, partial and no import apart.
 
 ## GraphQL API
 
