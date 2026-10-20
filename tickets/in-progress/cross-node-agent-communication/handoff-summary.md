@@ -1,16 +1,16 @@
 # Handoff Summary — cross-node-agent-communication (autobyteus-191, slice 1: remote delegation, text only)
 
-Status: **verification open** (DR-001). Integrated, docs synced and checked; not finalized. Two open items: your AC-113 check, and an RC-10 test race that has been sent back to API/E2E.
+Status: **verification open** (DR-003). Integrated with `origin/personal` `d9439919e2`, docs synced and checked; not finalized, not pushed. One open item: your AC-113 check (desktop ↔ Docker). The RC-10 test race is fixed (API-REV-004, CRR-008), and the autobyteus-205 integration is reviewed (IR-005, CRR-009, API-REV-005).
 
 ## Ticket
 
 - Package: `cross-node-agent-communication`, Project Task `autobyteus-191`, slice S1 of `slice-plan.md`. An agent on one node delegates a text task to an Agent another node publishes, and the two runs message each other by run ID, also after idle shutdown and restarts. Trusted private network only: no authentication between nodes, and no credential crosses them.
 - Classification: `task_size=Large`, `architectural_risk=High`. Route: reviewed:
   - architecture review ARCH-REV-002 … ARCH-REV-007, Pass;
-  - code review CRR-006, Pass;
-  - API/E2E API-REV-003, Pass, 95%;
-  - test-code review CRR-007, Pass.
-- Revisions: SR-001 … SR-017, ARCH-REV-001 … 007, IR-001 … IR-004, CRR-001 … CRR-007, API-REV-001 … 003, DR-001.
+  - code review CRR-006, Pass; the integration merges reviewed in CRR-009, Pass;
+  - API/E2E API-REV-003, Pass, 95%; API-REV-004 (RC-10 fix, API-23b) and API-REV-005 (integration), Pass, 95%;
+  - test-code review CRR-007 and CRR-008, Pass; CRR-010 Not Applicable.
+- Revisions: SR-001 … SR-017, ARCH-REV-001 … 007, IR-001 … IR-005, CRR-001 … CRR-010, API-REV-001 … 005, DR-001 … DR-003.
 - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`, branch `codex/cross-node-agent-communication-r2`; finalization target `origin/personal`.
 
 ## What Changed
@@ -27,7 +27,7 @@ Status: **verification open** (DR-001). Integrated, docs synced and checked; not
 - **Views:** messages with a remote endpoint are kept out of the root views, with no sequence gaps.
 - **Package validators:** the Team and Org validators accept remote message endpoints (SR-017).
 - **Web:** a Nodes → Remote Collaboration tab, in en and zh-CN.
-- **Tests:** the new gated two-server E2E `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` (20 cases), plus unit tests.
+- **Tests:** the new gated two-server E2E `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` (20 cases), plus unit tests. These include `delegated-run-metadata-across-migrations.test.ts` (IR-005): a peer-delegated run survives the Skill Improvement data removal byte for byte.
 - **Docs:** see `docs-sync-report.md`.
   - The implementation already carried `remote_collaboration.md` (new), `collaboration_model.md`, `agent_tools.md`, `standalone_agent_run_root.md` and `autobyteus-web/docs/settings.md`.
   - Delivery added the package-admission rule to `remote_collaboration.md` and the remote link to `agent_team_execution.md`.
@@ -56,16 +56,39 @@ Status: **verification open** (DR-001). Integrated, docs synced and checked; not
 | DEL-06 | two-server E2E (API/E2E command, clean env) | 19/20. RC-10 failed at `receives(remote, "PROJECT-PACKET")`: beta's `getRunProjection` answered "Run package … is unavailable" for the remote run the test found by scanning beta's run folders, and the test's `until` helper fails on a thrown error instead of retrying. Sent to API/E2E as a race in the test. | `DEL-06-two-server-e2e-run1.log`, `DEL-06-run1/remote-two-server-receipt.json` |
 | DEL-07 | the same, rerun | Pass, 20/20, at load average 130–157. RC-06/07 `gaps: []`; RC-10 `role: delegated`, `TASK_AGENT_RESOURCE_CLOSED`; RC-13 Team/Org `inAlphaLog: true`; RC-20 header names unchanged; cleanup clean | `DEL-07-two-server-e2e-run2.log`, `DEL-07-run2/remote-two-server-receipt.json` |
 
+### Second and third integration rounds
+
+- **DR-002:** `origin/personal` `3b9014215e` (autobyteus-205 Skill Improvement removal with its data migration; `1.5.8-beta.4`) conflicted in five server source files. Delivery aborted the merge and routed it to implementation.
+  - The merge `c59c6f7359` (IR-005) keeps `delegatedFrom` and the remote-collaboration setting, and drops `launchPurpose` and Skill Improvement.
+  - The test `300bf4c09a` covers the interaction with the migration.
+  - CRR-009 reviewed this merge and delivery's `4f03cce09d`.
+  - API-REV-005 ran the two-server E2E 20/20 twice on a rebuilt dist.
+- **DR-003:** `origin/personal` advanced again, to `d9439919e2`. It brings dependency-security-and-unused-cleanup: Electron 42.11.16, 17 unused dependencies removed, and a `download-media-tool` change.
+  - The checkpoint `8183e45665` committed the reviewer's CRR-009/010 documents.
+  - The merge `a58fbab73c` was clean; no file is changed on both sides.
+  - Rerun after `pnpm install --frozen-lockfile` and prebuild:
+
+| ID | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| DEL-08 | `pnpm -C autobyteus-server-ts typecheck` | Pass, exit 0 | `DEL-08-server-typecheck.log` |
+| DEL-09 | `pnpm -C autobyteus-server-ts test:unit` | 6392 passed, 7 skipped, 1 failed: `project-task-index-status.test.ts` "one run per burst". Its debounce timer fired during the parallel suite run; the file passes 5/5 alone, and this branch does not touch Project indexing (FU-009). FU-006's import test passed at this load. | `DEL-09-server-unit-full.excerpt.log` |
+| DEL-10 | web guards; `pnpm -C autobyteus-web test:nuxt` | Pass; 648 files, 4628 passed, 3 skipped | `DEL-10-web-guards-and-unit.excerpt.log` |
+| DEL-11 | `pnpm -C autobyteus-server-ts build` | Pass, bootstrap smoke checks passed | `DEL-11-server-build.log` |
+| DEL-12 | two-server E2E (clean env) | Pass, 20/20. RC-05 `delegatedFrom` exact; RC-06/07 `gaps: []`; RC-13 Team/Org `inAlphaLog: true`; RC-20 header names unchanged; cleanup clean | `DEL-12-two-server-e2e.log`, `DEL-12-run/remote-two-server-receipt.json` |
+
 ## Verification
 
-- **Judged from the evidence:** every critical acceptance criterion except AC-113 is directly proven (see `release-deployment-report.md` § Verification). The proof comes from API-REV-003's receipts and screenshots and from DEL-07 on the integrated state.
-- **AC-110 evidence defect (non-blocking):** the two API-23 screenshots are the same file (identical MD5). The composer message and Stop are proven by the DOM text and server state recorded in `API-23-browser-journey.log` ("OWNER-COMPOSER-MSG" in beta's projection; `status: ["Offline"]`, 0 live processes after Stop), not by a second screenshot.
+- **Judged from the evidence:** every critical acceptance criterion except AC-113 is directly proven (see `release-deployment-report.md` § Verification). The proof comes from:
+  - the receipts of API-REV-003 … 005;
+  - API-23b, the integrated build in two isolated desktop instances with a real model, watched by the user;
+  - DEL-12 on the final integrated state.
+- **AC-110:** the duplicate round-2 screenshot was replaced by `API-23b-isolated-beta-composer-message.png`, which shows the run in B's history, its reply to A, and the owner's composer message with its answer.
 - **AC-113 needs your check.** It is the desktop node and a Docker node, set up in the node windows, running AC-104 … AC-106 in both directions with real runtimes. API/E2E tried a test-owned Docker node (API-24) and TESTING did not allow it: the published image differs from this branch in 31 unrelated files. The check needs your desktop, nodes and runtime sign-ins.
-- **RC-10 test race** (DEL-06): sent to API/E2E. The product path passed in DEL-07 and in API-REV-003's four runs.
+- **RC-10 test race** (DEL-06): fixed in API-REV-004. RC-10 takes the remote run from the `delegate_task` result; CRR-008 passed it. Every run since is 20/20 (r4-1, r4-2, r5-1, r5-2, DEL-12).
 
 ## Release
 
-- Not decided yet. `RELEASE.md` defaults to finalize only. A beta (`1.5.8-beta.4`) is one way to give AC-113 a desktop build and a Docker image that contain this change; that is your decision.
+- Not decided yet. `RELEASE.md` defaults to finalize only. A beta (`1.5.8-beta.5`; `beta.4` was taken by autobyteus-205) is one way to give AC-113 a desktop build and a Docker image that contain this change; that is your decision.
 
 ## Residual Risks And Follow-ups
 
@@ -76,5 +99,8 @@ Status: **verification open** (DR-001). Integrated, docs synced and checked; not
   - FU-003, a stale DLC suite;
   - FU-004, a migration that imports the current Org validator;
   - FU-005, a Task race timeout that also fails on the base. It was renumbered from a duplicate FU-004; the API/E2E and code-review documents call it "FU-004".
-  - FU-006, the import-timing unit test.
+  - FU-006, the import-timing unit test;
+  - FU-007, remote collaboration without per-Agent publishing (already sent at the user's request);
+  - FU-008, the autobyteus-205 removal migration's `server_helper` rule may also delete old compaction helper runs (unconfirmed);
+  - FU-009, the debounce-timed Project index test.
 - Not applied (optional, reviewer-marked): C-9 import ordering in `root-task-execution-lifecycle.ts`; the CRR-007 test-file notes.

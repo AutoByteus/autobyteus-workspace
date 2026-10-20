@@ -1,0 +1,5 @@
+# DEL-11 server build | integrated a58fbab73c
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit=0

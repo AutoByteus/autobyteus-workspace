@@ -8,6 +8,7 @@ The latest docs sync report, handoff summary and release/deployment report remai
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-007 Pass (after API-REV-003 Pass), from the code reviewer | N/A | Integrated and docs synced. Verification open: AC-113 user check, RC-10 test race sent to API/E2E | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `follow-ups.md` (FU-005 renumbered, FU-006 added), `evidence/delivery/` |
 | DR-002 | CRR-008 Pass on API-REV-004 (RC-10 fix, API-23b), from the code reviewer | DR-001: verification open | RC-10 race closed and AC-110 evidence replaced (accepted). Second integration refresh blocked: merging `origin/personal` `3b9014215e` conflicts in five server source files; merge aborted, sent to implementation | `delivery-revision-record.md`, `release-deployment-report.md` |
+| DR-003 | CRR-009 Pass / API-REV-005 Pass / CRR-010 N/A on the IR-005 integration, from the code reviewer | DR-002: integration blocked | Integrated with `origin/personal` `d9439919e2` (clean merge `a58fbab73c`); DEL-08 … DEL-12 pass apart from FU-009 (outside the ticket); verification open only for AC-113 | `handoff-summary.md`, `release-deployment-report.md`, `follow-ups.md` (FU-009), `evidence/delivery/DEL-08…12` |
 
 ## Revision Entries
 
@@ -68,3 +69,25 @@ The latest docs sync report, handoff summary and release/deployment report remai
   - Implementation engineer: integrate `origin/personal` (Local Fix, integration), then code review of the merge. API/E2E reruns as the reviewers decide, then back to delivery.
   - The user: AC-113 and the release decision.
 - Remaining blockers, rollback concerns, or untested scope: the integration conflicts; AC-113.
+
+### DR-003 — autobyteus-205 integration accepted; latest base merged cleanly
+
+- Delivery round and trigger: CRR-009 (source review of both merges, Pass), API-REV-005 (Pass, 95%) and CRR-010 (Not Applicable), from the code reviewer.
+- Triggering upstream report, verification, or evidence: `code-review-report.md`, `api-e2e-execution-coverage-report.md` (r5-1 and r5-2 20/20), `implementation-handoff.md` (IR-005).
+- Prior authoritative result: DR-002, integration blocked by source conflicts.
+- Current authoritative result:
+  - IR-005's merge `c59c6f7359` and its test `300bf4c09a` are accepted.
+  - `origin/personal` had advanced again, to `d9439919e2` (dependency cleanup, Electron 42.11.16). Checkpoint `8183e45665`; clean merge `a58fbab73c`.
+  - DEL-08 … DEL-12 pass, apart from one unit-suite failure outside the ticket (FU-009; passes 5/5 alone).
+  - Docs: no change needed.
+  - Verification: AC-101 … AC-112 proven; AC-113 pending with the user.
+- Docs sync report: unchanged (no impact from these merges; recorded in `release-deployment-report.md` § DR-003 Addendum).
+- Handoff summary: `handoff-summary.md` (updated).
+- Release/publication/deployment report: `release-deployment-report.md` § DR-003 Addendum.
+- Integration and post-integration verification: merge `a58fbab73c`; DEL-08 … DEL-12.
+- Verification (evidence judgement or user check) and finalization state: AC-113 user check pending; not finalized, not pushed.
+- Terminal return to the Solution Designer: `Not yet eligible`
+- Terminal return message/reference: —
+- Why this baseline or delivery revision was recorded: the integration blocker closed and the latest base was integrated.
+- Next recipient/action: the user. AC-113, and the choice between a local desktop build plus Docker image before merge, and a beta `1.5.8-beta.5` after merge.
+- Remaining blockers, rollback concerns, or untested scope: AC-113.

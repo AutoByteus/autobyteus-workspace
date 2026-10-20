@@ -163,3 +163,14 @@ Revert the merge on `personal` and cut a new release (`RELEASE.md` § Rollback).
 - **Second integration refresh: `Blocked`.** `origin/personal` `3b9014215e` (autobyteus-205 Skill Improvement removal with its data migration; `1.5.8-beta.4`) conflicts with this branch in five server source files: the run metadata types, store, provisioning and run service (`launchPurpose` removed beside `delegatedFrom`), and the settings service. The merge was aborted, and the branch is clean at `daff010bd7`.
   - Classification: `Local Fix` (integration).
   - Recipient: the implementation engineer, then code review (including DR-001's delivery-resolved conflict in `4f03cce09d`), then API/E2E as needed, then delivery.
+
+## DR-003 Addendum (2026-10-20)
+
+- **Integration with autobyteus-205:** done by implementation (IR-005, merge `c59c6f7359`, test `300bf4c09a`), with CRR-009 Pass covering it and delivery's `4f03cce09d`, API-REV-005 Pass (95%; r5-1 and r5-2 20/20) and CRR-010 Not Applicable. Delivery read the new test: the real `RemoveSkillImprovementDataMigration` leaves a peer-delegated run's `run_metadata.json` and history row byte-identical, and the store still reads `delegatedFrom`.
+- **Latest base:** `origin/personal` advanced from `3b9014215e` to `d9439919e2` (dependency-security-and-unused-cleanup: Electron 42.11.16, 17 unused dependencies removed, a `download-media-tool` change).
+  - Checkpoint `8183e45665` (the reviewer's CRR-009/010 documents).
+  - Merge `a58fbab73c`: no conflicts and no file changed on both sides.
+- **Post-integration checks DEL-08 … DEL-12** (`handoff-summary.md` § Second and third integration rounds): typecheck, web guards, web suite, build and the two-server E2E (20/20) pass. The server unit suite has one failure, outside this ticket (FU-009): a debounce-timed Project index test that passes 5/5 alone, in code this branch does not touch.
+- **Docs sync:** no change needed for these merges. The ticket's long-lived docs do not mention `launchPurpose`, `server_helper` or Skill Improvement, and the base's own docs changes (`content_rendering.md`, `electron_packaging.md`) do not overlap.
+- **Handoff state current with latest tracked remote base:** `Yes`, as of `d9439919e2`. It is refetched before finalization.
+- **Verification:** AC-101 … AC-112 proven; AC-113 `User Check`, pending. Repository finalization: `Blocked` on AC-113 only.
