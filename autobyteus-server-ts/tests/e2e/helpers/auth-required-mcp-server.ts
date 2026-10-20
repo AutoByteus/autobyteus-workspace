@@ -10,6 +10,8 @@
  * The server has one tool, `auth_probe`, which returns `marker`, so a caller can tell this server's
  * result from any other text.
  *
+ * `setRequiredAuthorization` changes the accepted value while the server runs, as a server that revokes a token does.
+ *
  * Optional `redirects` maps a request path to a redirect response (status and `Location`), answered before
  * the credential check, as an endpoint that has moved answers every client.
  */
@@ -35,6 +37,8 @@ export type AuthRequiredMcpServer = {
   observations: AuthObservation[];
   /** Observations of `tools/call` requests for `auth_probe`. */
   toolCalls: () => AuthObservation[];
+  /** Accept only `value` from now on (`null`: accept every request). */
+  setRequiredAuthorization: (value: string | null) => void;
   close: () => Promise<void>;
 };
 
@@ -60,6 +64,7 @@ export const startAuthRequiredMcpServer = async (input: {
   redirects?: Record<string, { status: 301 | 302 | 307 | 308; location: string }>;
 }): Promise<AuthRequiredMcpServer> => {
   const observations: AuthObservation[] = [];
+  let requiredAuthorization = input.requiredAuthorization;
   const httpServer = http.createServer(async (req, res) => {
     const rawBody = await readBody(req);
     let body: unknown;
@@ -72,14 +77,14 @@ export const startAuthRequiredMcpServer = async (input: {
     const envelope = asRecord(body);
     const params = asRecord(envelope?.["params"]);
     const received = req.headers.authorization;
-    const accepted = input.requiredAuthorization === null || received === input.requiredAuthorization;
+    const accepted = requiredAuthorization === null || received === requiredAuthorization;
     const path = (req.url ?? "/").split("?")[0] ?? "/";
     observations.push({
       httpMethod: req.method ?? "",
       path,
       rpcMethod: typeof envelope?.["method"] === "string" ? envelope["method"] : null,
       toolName: typeof params?.["name"] === "string" ? params["name"] : null,
-      auth: received === undefined ? "none" : received === input.requiredAuthorization ? "expected" : "other",
+      auth: received === undefined ? "none" : received === requiredAuthorization ? "expected" : "other",
     });
     const redirect = input.redirects?.[path];
     if (redirect) {
@@ -109,6 +114,7 @@ export const startAuthRequiredMcpServer = async (input: {
     marker: input.marker,
     observations,
     toolCalls: () => observations.filter((entry) => entry.rpcMethod === "tools/call" && entry.toolName === AUTH_PROBE_TOOL),
+    setRequiredAuthorization: (value) => { requiredAuthorization = value; },
     close: () => new Promise<void>((resolve) => {
       httpServer.closeAllConnections();
       httpServer.close(() => resolve());
