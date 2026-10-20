@@ -1,0 +1,13 @@
+# DEL-05 — Electron main tests on the integrated state (excerpt; full log not kept)
+# Command: pnpm -C autobyteus-web test:electron --run
+# State: merge 6c34ce51d2 (ticket code c42bf2abc4 + origin/personal e0df0bfd05); macOS 26 arm64, Node v22.23.1; 2026-10-20
+
+ ✓ updater/__tests__/appUpdater.spec.ts (34 tests) 54ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (7 tests) 11ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 22ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 4ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 6ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ Test Files  38 passed | 1 skipped (39)
+      Tests  215 passed | 1 skipped (216)
+exit 0
