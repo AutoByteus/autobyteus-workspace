@@ -32,11 +32,20 @@
 ## Verification
 
 - Judged from the evidence: sufficient. Every critical acceptance criterion is proven directly (details in `release-deployment-report.md`). Final confidence is 95.4% against the 95% target, with no category below 90%.
-- The user's check: required by REQ-012 / AC-011 after the beta. Status and result: `release-deployment-report.md`.
+- The user's check: not needed. The user dropped it on 2026-10-20 ("Yeah, I think you should practice what the skill told you, right?"), after delivery explained that the skill asks for a user check only when the evidence can't reach something or when the user asked to check. REQ-012 / AC-011 still state the check; the Solution Designer is told.
 
 ## Release
 
-- Decision: `Beta`, required by the approved requirements (REQ-012, the Task's Done-when). Version and outcome: `release-deployment-report.md`.
+- Decision: `Beta`, required by the approved requirements (REQ-012, the Task's Done-when).
+- Outcome: `v1.5.8-beta.1`, release commit `89ce6ba93c`.
+  - All 4 workflows succeeded (Desktop, Android, iOS/TestFlight, Server Docker).
+  - GitHub pre-release with 17/17 assets.
+  - Docker `:1.5.8-beta.1` and `:beta` published; `:latest` stays on 1.5.7.
+  - Beta desktop users get it with **Settings > Updates > Receive beta updates**; Docker users with `autobyteus-docker upgrade --all --tag beta`.
+
+## Final State
+
+- `origin/personal`: merge `cb88162c0c`, release commit `89ce6ba93c`, delivery records on top. The ticket worktree and local branches are removed; `origin/codex/mcp-sdk-v2-migration` is kept.
 
 ## Residual Risks And Follow-ups
 

@@ -54,11 +54,15 @@
 | AC-009 parity report | coverage report summary, API-01…19 | every check `Same` or approved DEC-003/DEC-004; not-run items named with cause | Proven |
 | AC-010 docs | docs sync | v2 package names and wording in `mcp_server_management.md`, including the stdio texts | Proven (delivery) |
 | AC-012 protocol era | API-14 (`API-14-outputschema-dialects.txt`), API-10/11 | 7/7 real servers answer `"protocolVersion": "2025-11-25"`; no draft-04 schema; no server failed on either side; REQ-013 not triggered | Proven |
-| AC-011 beta and the user's check | this report | the beta is below; the user's check is pending | User Check |
+| AC-011 beta and the user's check | this report | beta `v1.5.8-beta.1` published (below). The user's check was dropped by the user on 2026-10-20 (see below): the evidence already proves the change | Proven (beta); user check waived by the user |
 
 - More evidence requested: `None`
-- User check needed: `Yes`. REQ-012 / AC-011 (the approved requirements and the Task's Done-when) require the user's check of the beta. The evidence itself is sufficient; this check is the user's acceptance of the released build.
-- User check reference: pending
+- User check needed: `No`.
+  - Delivery first asked the user to check the beta, citing REQ-012 / AC-011. Those come from the Task's Done-when, not from any gap in the evidence.
+  - The user asked why. Delivery answered: under the delivery skill, a change the evidence proves needs no repeat check. The user is asked only when something can't be reached without them or when they asked to check. Neither applies here.
+  - The user decided, in the Delivery Engineer conversation on 2026-10-20: "Yeah, I think you should practice what the skill told you, right?" So the user's check was dropped, and verification rests on the evidence.
+  - The requirements doc still states the check in REQ-012 / AC-011. That doc belongs to the Solution Designer, who is told in the terminal message.
+- User check reference: not needed (the user's decision above)
 - Re-verification after later re-integration: see Repository Finalization
 
 ## Release Decision
@@ -75,7 +79,7 @@
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/mcp-sdk-v2-migration`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/tickets/done/mcp-sdk-v2-migration/` (on `personal` after the merge)
+- Archived ticket path: `tickets/done/mcp-sdk-v2-migration/` on `origin/personal` (the ticket worktree was removed after finalization)
 
 ## Version / Tag / Release Commit
 
@@ -117,7 +121,13 @@
 
 ## Post-Finalization Cleanup
 
-- Pending (after the user's check)
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration`
+- Worktree cleanup result: `Completed`. Removed with `git worktree remove --force`; it held only ignored build output, and everything tracked was pushed (`4352f23f0c` = `origin/personal`).
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. Deleted `codex/mcp-sdk-v2-migration` (`5ec52d84a8`, contained in `origin/personal`) and `finalize/mcp-sdk-v2-migration` (`4352f23f0c`).
+- Remote branch cleanup result: `Not required`. `origin/codex/mcp-sdk-v2-migration` is kept as the reviewed ticket branch, as on earlier tickets.
+- The API/E2E before-worktree, isolated instances, Docker containers and images were already removed by API/E2E.
+- This record was written from a temporary detached checkout of `origin/personal` (`/tmp/mcp182-record`), which is removed after the push.
 
 ## Release Notes Summary
 
@@ -145,10 +155,11 @@
 
 ## Final Status
 
-- Verification complete: evidence `Yes`; the user's check pending
+- Verification complete (from the evidence, or the user's check where needed): `Yes` (from the evidence; the user dropped the check)
 - Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (beta `v1.5.8-beta.1`, 4/4 workflows, 17/17 assets, Docker `:1.5.8-beta.1` and `:beta`)
-- Applicable safe cleanup complete or not required: pending
+- Applicable safe cleanup complete or not required: `Yes`
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: `No` (awaiting the user's check)
-- Terminal package sent to the Solution Designer: `No`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record's push, via `send_message_to` `/software_engineering_team/solution_designer` (the "Delivery Completed" rule from `get_handoff_rules`)
+- Terminal message/reference: Delivery Completed for `mcp-sdk-v2-migration` (`autobyteus-182`), DR-001
