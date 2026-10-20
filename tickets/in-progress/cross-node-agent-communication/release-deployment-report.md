@@ -154,3 +154,12 @@ Revert the merge on `personal` and cut a new release (`RELEASE.md` § Rollback).
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to the Solution Designer: `No`
 - Terminal message/reference: —
+
+## DR-002 Addendum (2026-10-20)
+
+- **RC-10 test race:** closed by API-REV-004 / CRR-008 (`a777af6b1d`). The test takes the remote run from the `delegate_task` result. r4-1 and r4-2 passed 20/20 at load average 100–157.
+- **AC-110:** now proven also by `API-23b-isolated-beta-composer-message.png`, from the integrated build in two isolated desktop instances with a real model. The duplicate PNG is removed.
+- **AC-113:** still `User Check` (desktop ↔ Docker, both directions, real runtimes).
+- **Second integration refresh: `Blocked`.** `origin/personal` `3b9014215e` (autobyteus-205 Skill Improvement removal with its data migration; `1.5.8-beta.4`) conflicts with this branch in five server source files: the run metadata types, store, provisioning and run service (`launchPurpose` removed beside `delegatedFrom`), and the settings service. The merge was aborted, and the branch is clean at `daff010bd7`.
+  - Classification: `Local Fix` (integration).
+  - Recipient: the implementation engineer, then code review (including DR-001's delivery-resolved conflict in `4f03cce09d`), then API/E2E as needed, then delivery.
