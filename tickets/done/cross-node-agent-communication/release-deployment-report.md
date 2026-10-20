@@ -186,3 +186,53 @@ Revert the merge on `personal` and cut a new release (`RELEASE.md` § Rollback).
 - **Release notes:** `Not required` (no stable release).
 - **Ticket state:** moved to `tickets/done/cross-node-agent-communication/`.
 - **Repository finalization:** recorded in the Finalization Record below.
+
+## Finalization Record (DR-004)
+
+### Project Release Guide
+
+- `RELEASE.md` at `origin/personal` `1f5e0bf028`.
+- Deviations:
+  - DR-001: delivery resolved one additive conflict itself, in `server-settings-service.ts` (merge `4f03cce09d`); CRR-009 reviewed it afterwards. Later source conflicts (DR-002) went to implementation.
+  - AC-113 rests on the user's confirmation, without an artifact.
+- Proposed guide fixes: none.
+
+### Repository Finalization
+
+- Ticket branch `codex/cross-node-agent-communication-r2`, final commit `930112e7b2`:
+  - Secret Gate on `origin/personal..HEAD`: 45 commits, PASS.
+  - Pushed to `origin` as a new branch.
+- Hygiene before the final commit:
+  - `check_repository_artifact_hygiene.py` passed (longest tracked path 200 characters, in another ticket);
+  - `check_licensing.py`: "Licensing is consistent.";
+  - no untracked build output committed (`*/dist/` left untracked).
+- Finalization branch `finalize/cross-node-agent-communication` from `origin/personal` `1f5e0bf028`:
+  - `git merge --no-ff` gives `d51ef843f6`, with a tree identical to the ticket branch;
+  - Secret Gate on the merged state: 46 commits, PASS.
+- Target not advanced after verification: `origin/personal` was refetched and was still `1f5e0bf028` before the push.
+- `git push origin HEAD:personal`: `1f5e0bf028..d51ef843f6`. Repository finalization: `Completed`.
+- This record is pushed to `personal` as a follow-up commit on the finalize branch, after its own Secret Gate and refetch.
+
+### Release / Publication / Deployment
+
+- Applicable: `No`. Decision: `No release` (the user asked only to finalize; `RELEASE.md` default). No tag, version bump or workflow.
+- Result: `Not required`. The change ships with the next beta or stable release; a beta `1.5.8-beta.5` can be cut on request.
+
+### Post-Finalization Cleanup
+
+- Dedicated ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`: removed after this record's push with `git worktree remove --force`. Everything tracked is pushed; no process was running from it; the untracked `*/dist/` build output goes with it. Prune: `Completed`.
+- Local branches `codex/cross-node-agent-communication-r2` and `finalize/cross-node-agent-communication`: deleted after the record's push.
+- Remote ticket branch: kept on `origin`, as on earlier tickets (`Not required`).
+- Delivery temporaries:
+  - `/tmp/dr001-base` and `/tmp/dr001-branch` were removed and pruned during DR-001;
+  - `/tmp/dr001` and `/tmp/dr003` are removed with the cleanup.
+
+### Final Status
+
+- Verification complete: `Yes`. AC-101 … AC-112 from the evidence; AC-113 by the user's confirmation, 2026-10-20.
+- Repository finalization complete: `Yes` (`d51ef843f6` on `personal`).
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`).
+- Applicable safe cleanup complete or not required: `Yes`, after this record's push (see the terminal message).
+- Unresolved blocker: `None`.
+- Successful terminal package eligible for return: `Yes`.
+- Terminal package sent to the Solution Designer: sent after this record's push.
