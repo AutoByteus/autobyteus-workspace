@@ -127,7 +127,7 @@ Running codegen against this branch's server also produced about 400 lines of **
   - `autobyteus-web/generated/graphql.ts` lags the server schema by about 400 lines of unrelated types (found when running codegen). Regenerate it in its own change.
   - `McpBulkImportView.vue` still has hard-coded English labels ("Back", "Cancel", "Importing...", "Import Configurations"). These were already there before this change, and the localization audit passes with them.
 - Shared structures remain tight: `Yes`
-- Size guardrails: `Yes`. All touched source files are well under 500 lines; `McpBulkImportView.vue` is 145.
+- Size guardrails: `Yes`. All touched source files are well under 500 lines; `McpBulkImportView.vue` is 130.
 
 ## Persisted Data Transition Check
 
