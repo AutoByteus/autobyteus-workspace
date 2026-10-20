@@ -79,15 +79,41 @@
 
 ## Version / Tag / Release Commit
 
-- Pending
+- Version: `1.5.8-beta.1` (`python3 scripts/release_versions.py next-beta`; highest stable `v1.5.7`)
+- Release commit: `89ce6ba93c` `chore(release): bump workspace release version to 1.5.8-beta.1` (`autobyteus-web/package.json` only)
+- Tag: annotated `v1.5.8-beta.1` → `89ce6ba93c`, pushed
 
 ## Repository Finalization
 
-- Pending
+- Bootstrap context source: code reviewer handoff (worktree, branch `codex/mcp-sdk-v2-migration`, base `origin/personal` @ `dc530fdcb0`) and `RELEASE.md` Finalization Target
+- Ticket branch: `codex/mcp-sdk-v2-migration`
+- Ticket branch commit result: `3f8d471fbd` (docs sync, delivery artifacts), `5ec52d84a8` (archive)
+- Ticket branch push result: pushed to `origin/codex/mcp-sdk-v2-migration` @ `5ec52d84a8`
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No` (`origin/personal` still `b7ea243953` at merge and before each push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/mcp-sdk-v2-migration` created from `origin/personal` @ `b7ea243953`
+- Merge into target result: `--no-ff` merge `cb88162c0c`; tree identical to the ticket branch (`git diff codex/mcp-sdk-v2-migration HEAD` empty)
+- Push target branch result: `b7ea243953..cb88162c0c`, then `cb88162c0c..89ce6ba93c` (release commit)
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-- Pending
+- Applicable: `Yes`
+- Method: `Project Release Guide`
+- Method reference / command: `bash scripts/desktop-release.sh beta --branch finalize/mcp-sdk-v2-migration --no-push`; `git fetch origin personal` (still `cb88162c0c`); `git push origin HEAD:personal`; `git push origin v1.5.8-beta.1`
+- Pipelines triggered and their results (all `gh run watch --exit-status` exit 0):
+  - Android APK Release `39401278483`: success (4m26s)
+  - Desktop Release `39401278482`: success (27m49s)
+  - iOS App Store Connect Release `39401278481`: success (17m12s; TestFlight upload)
+  - Server Docker Release `39401278477`: success (33m36s)
+- Published artifacts checked against what the release should produce:
+  - GitHub release `v1.5.8-beta.1`: `isPrerelease: true`, 17/17 assets. These are macOS arm64/x64 `.dmg`, `.zip` and blockmaps (8), Linux x64/arm64 AppImages (2), the Windows `.exe` (1), the Android APK and `.sha256` (2), and `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml` (4).
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.8-beta.1` and `:beta` have the same digest `sha256:cc4588834bd3…`; `:latest` stays on `1.5.7` (`sha256:821e777d8e88…`).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` for the beta (GitHub generated notes); the curated file is archived for the next stable
 
 ## Post-Finalization Cleanup
 
@@ -110,7 +136,7 @@
 
 ## Verification Checks
 
-- `python3 scripts/check_licensing.py` and `python3 scripts/check_repository_artifact_hygiene.py` on the merged state: pending
+- `python3 scripts/check_licensing.py` → `Licensing is consistent.`; `python3 scripts/check_repository_artifact_hygiene.py` → `Repository artifact hygiene check passed.` (74,897 tracked files, longest path 200 chars). Run on the archived ticket state, whose tree equals the merged `personal` tree.
 
 ## Rollback Criteria
 
@@ -120,9 +146,9 @@
 ## Final Status
 
 - Verification complete: evidence `Yes`; the user's check pending
-- Repository finalization complete: pending
-- Applicable release/deployment/rollout complete or not required: pending
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta `v1.5.8-beta.1`, 4/4 workflows, 17/17 assets, Docker `:1.5.8-beta.1` and `:beta`)
 - Applicable safe cleanup complete or not required: pending
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: `No` (awaiting the beta and the user's check)
+- Successful terminal package eligible for return: `No` (awaiting the user's check)
 - Terminal package sent to the Solution Designer: `No`
