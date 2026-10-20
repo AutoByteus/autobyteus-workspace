@@ -258,11 +258,7 @@ export class AgentRuntimeStatusService {
   }
 
   private runningAgents(row: Row): number {
-    try {
-      return this.dependencies.countRunningAgents(row.strategy.runtimeKind);
-    } catch {
-      return 0;
-    }
+    return this.dependencies.countRunningAgents(row.strategy.runtimeKind);
   }
 
   private requireRow(runtimeKind: AgentRuntimeKind): Row {

@@ -29,7 +29,10 @@ if (args === '--version') {
   else out(process.env.FAKE_RUNTIME_VERSION_TEXT + '\\n');
 } else if (args === 'auth status --json') {
   if (mode === 'json-in') out(JSON.stringify({ loggedIn: true, authMethod: 'claude.ai' }));
-  else if (mode === 'json-out') out(JSON.stringify({ loggedIn: false, authMethod: 'none' }));
+  // Real Claude 2.1.302 signed out: the JSON on stdout and exit 1 (CR-001).
+  else if (mode === 'json-out') { out(JSON.stringify({ loggedIn: false, authMethod: 'none' })); process.exitCode = 1; }
+  else if (mode === 'json-no-field') out(JSON.stringify({ authMethod: 'none' }));
+  else if (mode === 'text-in-exit-1') { out('Not logged in.\\n'); process.exitCode = 1; }
   else if (mode === 'text-in') out('Logged in using a subscription.\\n');
   else if (mode === 'text-other') out('Something else.\\n');
   else { process.stderr.write('auth status broke\\n'); process.exitCode = 1; }
@@ -146,8 +149,11 @@ describe("Codex sign-in (account/read, the rule application readiness has always
 describe("Claude sign-in (claude auth status --json)", () => {
   it.each([
     ["json-in", { state: "signedIn" }],
-    // Today's text: describeFailure gives the empty stderr after "unavailable: ".
+    // Signed out exits 1 with the JSON; describeFailure gives the empty stderr after "unavailable: " (today's text).
     ["json-out", { state: "signedOut", detail: "" }],
+    ["json-no-field", { state: "signedOut", detail: "" }],
+    // The plain-text fallback applies only to a successful exit.
+    ["text-in-exit-1", { state: "unknown", detail: "" }],
     // Plain-text "logged in" fallback kept from application readiness.
     ["text-in", { state: "signedIn" }],
     ["text-other", { state: "unknown", detail: "" }],

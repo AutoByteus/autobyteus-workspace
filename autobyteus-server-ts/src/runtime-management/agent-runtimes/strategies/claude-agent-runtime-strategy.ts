@@ -18,6 +18,21 @@ const describeFailure = (result: RuntimeCommandResult): string =>
   ?? result.stdout.trim()
   ?? `exit code ${String(result.exitCode)}`;
 
+/**
+ * `loggedIn` from the status JSON: true/false when it says so; "absent" for a JSON object without a boolean
+ * `loggedIn`; null when the output is not a JSON object.
+ */
+const readLoggedIn = (stdout: string): boolean | "absent" | null => {
+  try {
+    const payload = JSON.parse(stdout) as unknown;
+    if (!payload || typeof payload !== "object") return null;
+    const loggedIn = (payload as { loggedIn?: unknown }).loggedIn;
+    return typeof loggedIn === "boolean" ? loggedIn : "absent";
+  } catch {
+    return null;
+  }
+};
+
 /** The user's Claude update channel (`autoUpdatesChannel` in Claude's settings.json); `latest` by default. */
 const readUpdateChannel = async (): Promise<"latest" | "stable"> => {
   const configDir = process.env.CLAUDE_CONFIG_DIR?.trim() || path.join(os.homedir(), ".claude");
@@ -43,20 +58,20 @@ export const createClaudeAgentRuntimeStrategy = (): AgentRuntimeStrategy => ({
     if (!version) throw new Error("Claude release source has no version.");
     return version;
   },
-  /** `claude auth status --json`, with the plain-text "logged in" fallback application readiness has always accepted. */
+  /**
+   * `claude auth status --json`. Signed out prints `{"loggedIn": false, …}` and exits 1, so the JSON is read whatever
+   * the exit code. Without JSON, the plain-text "logged in" fallback application readiness has always accepted.
+   */
   async readSignIn(executable): Promise<SignInReading> {
     const result = await runRuntimeCommand(executable, ["auth", "status", "--json"]);
-    if (result.exitCode !== 0) return { state: "unknown", detail: describeFailure(result) };
-    try {
-      const payload = JSON.parse(result.stdout) as { loggedIn?: unknown };
-      return payload.loggedIn === true
-        ? { state: "signedIn" }
-        : { state: "signedOut", detail: describeFailure(result) };
-    } catch {
-      return /\blogged\s+in\b/i.test(`${result.stdout}\n${result.stderr}`)
-        ? { state: "signedIn" }
-        : { state: "unknown", detail: describeFailure(result) };
+    const loggedIn = readLoggedIn(result.stdout);
+    if (loggedIn === true) return { state: "signedIn" };
+    if (loggedIn === false || (loggedIn === "absent" && result.exitCode === 0)) {
+      return { state: "signedOut", detail: describeFailure(result) };
     }
+    return result.exitCode === 0 && /\blogged\s+in\b/i.test(`${result.stdout}\n${result.stderr}`)
+      ? { state: "signedIn" }
+      : { state: "unknown", detail: describeFailure(result) };
   },
   updateArgv: (executable) => [executable, "update"],
 });

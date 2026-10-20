@@ -239,6 +239,19 @@ describe("AgentRuntimeStatusService update", () => {
     expect(codeOf(() => notInstalled.service.startUpdate(GROK))).toBe("AGENT_RUNTIME_NOT_INSTALLED");
   });
 
+  it("never starts an update when the running-agent count cannot be read (CR-002)", async () => {
+    const createProcess = vi.fn();
+    const failing = new AgentRuntimeStatusService({
+      strategies: [strategy(CLAUDE)],
+      signInReader: { read: async () => ({ state: "signedIn" }) },
+      countRunningAgents: () => { throw new Error("count unavailable"); },
+      createProcess,
+    });
+    await failing.checkAll();
+    expect(() => failing.startUpdate(CLAUDE)).toThrow("count unavailable");
+    expect(createProcess).not.toHaveBeenCalled();
+  });
+
   it("does not re-check a runtime whose update is running", async () => {
     const { service, strategies } = await readyToUpdate(["2.1.302", "2.1.304"]);
     const claude = strategies.find((entry) => entry.runtimeKind === CLAUDE)!;
