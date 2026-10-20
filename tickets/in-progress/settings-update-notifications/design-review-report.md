@@ -2,18 +2,18 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications/tickets/in-progress/settings-update-notifications/requirements-doc.md` (SR-003, Approved)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications/tickets/in-progress/settings-update-notifications/requirements-doc.md` (SR-004, Approved)
 - Upstream Investigation Notes: `.../investigation-notes.md` (AF-01..AF-14)
-- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001..SR-003)
-- Reviewed Design Spec: `.../design-spec.md` (SR-003, status Ready), at worktree commit `0946bd3c10`
+- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001..SR-004)
+- Reviewed Design Spec: `.../design-spec.md` (SR-004, status Ready, revised), at worktree commit `9cc7894936`; round 1 reviewed SR-003 at `0946bd3c10`
 - Supplemental Task Artifacts Reviewed: Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/settings-update-notifications/ui-ux-spec.md` (Approved, design repository `288ef06`); `follow-ups.md` (FU-001, FU-002); `handoff-architecture-review.md`
-- Relevant Solution Revision IDs: SR-003 (design), SR-001/SR-002 (requirements basis)
+- Relevant Solution Revision IDs: SR-004 (revision for AR-001..003, DEC-017), SR-003 (design), SR-001/SR-002 (requirements basis)
 - Architecture Review Revision Record: `.../architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: Architecture Design Complete (Large / High) from the Solution Designer, 2026-10-20
-- Prior Review Round Reviewed: N/A (first review)
-- Latest Authoritative Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: SR-004 revision for the recheck of ARCH-REV-001 (handoff section "Round 2 (SR-004)"), 2026-10-20
+- Prior Review Round Reviewed: round 1 (ARCH-REV-001, Fail, Design Impact; AR-001..AR-003)
+- Latest Authoritative Round: 2
 - Current-State Evidence Basis: code read at `origin/personal` `3d4d9d0a95` in the worktree:
   - server: `agent-package-service.ts` (528 lines), `agent-package-mappers.ts`, `skill-source-service.ts`, `skill-source.ts`, `public-github-request.ts`, `github-repository-client.ts`, `build-studio-server.ts`, `agent-package-definition-feed-composition.ts`, `studio-application-api-services.ts`, `skill-improvement-capability-service.ts`, `store-utils.ts`;
   - shell: `appUpdater.ts` (437 lines), `electronLaunchProfile.ts`;
@@ -43,17 +43,17 @@
 - Scope guardrail confirmed: Yes (UC-001..UC-007; Out of Scope; Preserved Behavior Boundary BEH-001..007 and REQ-015; Review Authority).
 - Approved change, preserved behavior and outside scope understood: Yes.
 - Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion or preserved-behavior ID: `Yes` (AR-001 → REQ-003, AC-013, QR-001; AR-002 → REQ-004, REQ-019, AC-003).
-- Remaining material ambiguity: AR-001 and AR-002 (below).
+- Remaining material ambiguity: None. AR-001..AR-003 are resolved in SR-004 (see the revision record, ARCH-REV-002).
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-008 | System | Pass | Pass | Pass, except the rate-limit stop across a restart (AR-001) | Confirmed | AR-001 |
+| BEH-008 | System | Pass | Pass | Pass (AR-001 resolved: the gate's blocked-until time is persisted) | Confirmed | — |
 | BEH-009 | User | Pass | Pass | Pass | Confirmed | — |
 | BEH-010 | System | Pass | Pass | Pass | Confirmed | — |
 | BEH-001, BEH-003 (on-open checks) | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-002, BEH-003 (update) | User | Pass | Pass | Pass (see AR-003 on the serialized re-read) | Confirmed | AR-003 (non-blocking) |
+| BEH-002, BEH-003 (update) | User | Pass | Pass | Pass (AR-003 resolved: re-read inside `serialize(id, …)`) | Confirmed | — |
 | BEH-004, BEH-005, BEH-006 | System/User | Pass | Pass | Pass | Confirmed | — |
-| BEH-007 | Operational | Pass | Pass | Unclear for the release link under a test feed (AR-002) | Confirmed | AR-002 |
+| BEH-007 | Operational | Pass | Pass | Pass (AR-002 resolved: `releasePageUrl = null` under the e2e test feed; DEC-017; AC-003 updated) | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -63,7 +63,7 @@
 | `follow-ups.md` | Pass | Pass | Pass | Pass | Pass | — |
 | `handoff-product-design-request.md` | Pass | Pass | Pass | Pass (historical context) | Pass | — |
 
-Note: the investigation notes' Supplemental Artifact Inventory still lists the UI/UX spec as `Pending`. The requirements doc, the design spec and the Product Design Findings section record it as Approved. This is stale wording only; fix it with the revision.
+The investigation notes' Supplemental Artifact Inventory now lists the UI/UX spec as Approved (fixed in SR-004).
 
 ## Task Design Health Assessment Verdict
 
@@ -83,7 +83,7 @@ Note: the investigation notes' Supplemental Artifact Inventory still lists the U
 | DS-003 panel read/act/clear | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-004 app update | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-005 live feed | Return/Event | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-006 scheduler loop | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass (AR-001 concerns the gate's lifetime, not the loop) |
+| DS-006 scheduler loop | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass (setting and gate are checked before every source, SR-004) |
 | DS-007 reconcile table | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-008 setting | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
@@ -104,7 +104,7 @@ Every reachable transition has one row. The only uncovered combination (waiting,
 | --- | --- | --- | --- | --- | --- |
 | `AgentPackageService` | Pass | Pass (`github-agent-package-updates.ts` internal) | Pass | Pass | Scheduler and notification service use only public methods and the projection |
 | `SkillSourceService` | Pass | Pass | Pass | Pass | — |
-| `UpdateNotificationService` | Pass | Pass (store, hub) | Pass | Pass | See residual note R-1 on how the resolver reaches the composed instance |
+| `UpdateNotificationService` | Pass | Pass (store, hub) | Pass | Pass | Resolver and composition share `getInstance()` singletons (SR-004, R-1 resolved) |
 | `publicGitHubRequest` / `GitHubRateLimitGate` | Pass | Pass | Pass | Pass | Scheduler reads `isBlocked` only |
 | `AppUpdater` / `AppUpdateNotificationRecord` | Pass | Pass | Pass | Pass | Renderer sends intents only |
 | Web `updateNotificationsStore` | Pass | Pass | Pass | Pass | Components never call GraphQL or IPC for notifications |
@@ -127,8 +127,8 @@ Every reachable transition has one row. The only uncovered combination (waiting,
 | `UpdateNotificationService.listNotifications / markAllRead / clear(kind, sourceId) / reconcile` | Pass | Pass | Pass (compound identity) | Low | Pass |
 | GraphQL query and mutations; capability query and mutation | Pass | Pass | Pass | Low | Pass |
 | `/ws/update-notifications` | Pass | Pass | N/A | Low | Pass |
-| `GitHubRateLimitGate.isBlocked`, `GitHubRateLimitError` | Pass | Pass | N/A | Low | Pass (lifetime: AR-001) |
-| IPC `mark-notification-read`, `clear-notification`; `AppUpdateState.notification` | Pass | Pass | N/A | Low | Pass (`releasePageUrl` under a test feed: AR-002) |
+| `GitHubRateLimitGate.isBlocked`, `GitHubRateLimitError` | Pass | Pass | N/A | Low | Pass (blocked-until persisted in `<app-data>/github/rate-limit.json`) |
+| IPC `mark-notification-read`, `clear-notification`; `AppUpdateState.notification` | Pass | Pass | N/A | Low | Pass (`releasePageUrl` null under the e2e test feed, DEC-017) |
 | `AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL` | Pass | Pass | Pass (loopback only; e2e profile only) | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
@@ -213,6 +213,7 @@ Every reachable transition has one row. The only uncovered combination (waiting,
 | --- | --- | --- | --- | --- | --- | --- |
 | Node `update-notifications/notifications.json` (new) | Not Affected; tolerant read, exact write | Pass | Pass | N/A | Pass | Malformed file reads as empty with a warning; acceptable loss per the Data Continuity section |
 | Shell `app-update-notification.json` (new) | Same | Pass | Pass | N/A | Pass | — |
+| Node `github/rate-limit.json` (new, SR-004) | Not Affected; one timestamp, tolerant read once per process, atomic write when a later time is learned | Pass | Pass | N/A | Pass | Missing, malformed or past time means not blocked; losing it costs at most one request |
 | Package / skill registries | No shape change | Pass | Pass | N/A | Pass | Existing installs with `latest ≠ installed` get waiting records at the first reconcile, which is the intended outcome |
 | `ENABLE_UPDATE_CHECKS` | Absent = on | Pass | Pass | N/A | Pass | — |
 
@@ -229,7 +230,8 @@ Every reachable transition has one row. The only uncovered combination (waiting,
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Change signal, reconcile cases, rate limit, app download after restart | Yes | Pass | Pass | Pass | — |
-| Serialized package check | Yes | Partial | N/A | Pass | AR-003 asks for one sentence |
+| Serialized package check | Yes | Pass | Pass | Pass | SR-004 example (AR-003) |
+| Rate limit across a restart | Yes | Pass | Pass | Pass | SR-004 example (AR-001) |
 
 ## Material Premise Validation
 
@@ -248,7 +250,7 @@ Every reachable transition has one row. The only uncovered combination (waiting,
   5. One automatic `api.github.com` request is made before T.
 - Lifecycle preconditions and consequence: one automatic request (a 403) before the reset time, contrary to the literal REQ-003/AC-013 contract. Practical harm is small: the gate closes again at once.
 - Reachability: `Reachable`.
-- Review consequence: AR-001 (Minor). The design must make the restart behavior an explicit decision.
+- Review consequence: AR-001 (Minor). Resolved in SR-004: the gate persists its blocked-until time and loads it on first use, so the literal REQ-003 holds across restarts.
 
 ### `MP-002` — Release-page link when the app checks a test feed
 
@@ -267,79 +269,40 @@ Every reachable transition has one row. The only uncovered combination (waiting,
   - AC-003 expects a release link in exactly this scenario.
   - Implementation and API/E2E cannot tell which outcome is correct.
 - Reachability: `Reachable`.
-- Review consequence: AR-002 (Minor).
+- Review consequence: AR-002 (Minor). Resolved in SR-004: `releasePageUrl = null` under the e2e test feed (DEC-017); AC-003 states that the link is verified with the real GitHub feed configuration (Electron tests, the user's beta check); AF-10, the Off-Spine row and the Interface table agree.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| Investigation notes' supplement inventory lists the UI/UX spec as `Pending` | Stale wording that disagrees with the approved status elsewhere | Update with the revision | Open (non-blocking) |
+| Investigation notes' supplement inventory listed the UI/UX spec as `Pending` | Stale wording | Updated in SR-004 | Resolved |
 
 ## Review Decision
 
-`Fail`. The design is sound in structure, ownership, boundaries, persistence and removal. Two small, bounded decisions are missing against approved requirements (AR-001, AR-002). Both need a short Solution Designer decision before implementation. No other section needs rework; the next round needs to recheck only these items.
+`Pass`. The behavior basis is confirmed. AR-001..AR-003 are resolved in the SR-004 design spec, requirements doc and investigation notes (verified against the canonical text at `9cc7894936`, not only the revision record). Every structural verdict passes, and no in-scope machinery depends on an unsupported premise. The design is ready for implementation.
 
 ## Findings
 
-### AR-001 — Rate-limit stop is lost on restart (Design Impact, Minor, blocking)
-
-- Protects: REQ-003, AC-013, QR-001.
-- Scope status: `Within Approved Scope`.
-- Changes approved behavior: No.
-- Affected behavior: BEH-008 / SCN-005; DS-006; `GitHubRateLimitGate` lifetime.
-- Evidence: the design defines the gate as a process-wide in-memory singleton (`getGitHubRateLimitGate()`) with no persistence, and the scheduler's first pass runs 60 s after start. REQ-002 shows restarts are inside the approved cadence contract.
-- Material premise: MP-001 (Reachable).
-- Required update: state the gate's restart behavior explicitly. One of:
-  - (a) Persist the gate's blocked-until time in node app data, read it at start, and record it with a tolerant reader. This is a tiny file or a field next to the notification store; the gate stays the owner.
-  - (b) If the Solution Designer reads REQ-003 as limited to a running process, record that reading with its accepted cost (at most one automatic request after a restart inside the window). Inform the user, as with DEC-014..016.
-- Why proportionate: a small, explicit decision. No new mechanism is required beyond (a)'s single timestamp.
-- Recommended recipient: Solution Designer.
-
-### AR-002 — The test feed's release link contradicts AF-10 (Design Impact, Minor, blocking)
-
-- Protects: REQ-004, REQ-019, AC-003.
-- Scope status: `Within Approved Scope`.
-- Changes approved behavior: No (it chooses how the approved AC is met).
-- Affected behavior: BEH-004 / BEH-007 / SCN-008; `appReleasePage.ts`; `AppUpdateNotification.releasePageUrl`.
-- Evidence:
-  - AF-10 and the Off-Spine table say a test feed has no release page.
-  - `appReleasePage.ts` derives the link only from the packaged `app-update.yml`, which in an isolated packaged build is the real GitHub publish config.
-  - AC-003 lists "release link" as an expected outcome under the test-feed opt-in.
-- Material premise: MP-002 (Reachable).
-- Required update: decide and write down the rule for the test feed, and how AC-003's "release link" is verified. Then make AF-10, the Off-Spine row and the Interface table agree. For example:
-  - `releasePageUrl = null` when a test feed is set; AC-003's link is verified by an Electron unit test of `appReleasePage.ts` with a GitHub publish config; or
-  - the link is always derived from the publish config, and AC-003 checks its shape only.
-- Why proportionate: one rule plus text alignment; it removes an ambiguity API/E2E would otherwise hit.
-- Recommended recipient: Solution Designer.
-
-### AR-003 — Serialized package check must re-read inside the lock (Design Impact, Minor, non-blocking on its own)
-
-- Protects: BEH-002 preserved outcome (an update's new installed revision is never overwritten); AF-05.
-- Scope status: `Within Approved Scope`.
-- Changes approved behavior: No.
-- Evidence: `checkAgentPackageUpdates` reads all records before the loop, and `checkGitHubPackageUpdate(record)` writes `installedRevision` from that earlier read. Serializing each id while still passing the pre-read record leaves the AF-05 race open. `updateAgentPackage` also reads its record before any lock. `SkillSourceService` shows the correct shape: it re-reads `current` inside `serialize`.
-- Required update: one sentence in the Ownership Map or Examples. Inside `serialize(id, …)`, each check and update re-reads its record before calling GitHub and writes from that fresh record. The Change Sequence test (check concurrent with update keeps the new installed revision) already states the outcome.
-- Why proportionate: a one-line clarification of the key concurrency decision; include it with the AR-001/AR-002 revision.
-- Recommended recipient: Solution Designer.
+None open. Round 1 findings AR-001 (rate-limit stop across a restart), AR-002 (test-feed release link) and AR-003 (serialized re-read) are resolved; see the prior-finding table in `architecture-review-revision-record.md`, ARCH-REV-002.
 
 ## Classification
 
-`Design Impact` (AR-001, AR-002, AR-003).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`).
+Implementation engineer (`/software_engineering_team/implementation_engineer`), per the pass rule.
 
 ## Residual Risks
 
-- R-1 (implementation note, no finding): the design does not say how the GraphQL resolver reaches the composed `UpdateNotificationService` and `UpdateChecksCapabilityService`. `registerGraphql(app)` takes no services. Use one existing pattern: `getInstance()` singletons wired by the composition, or the `configureStudioApplicationApiServices`-style configure/close handle. Do not create a second instance in the resolver.
-- R-2: the scheduler checks the capability only at the start of a pass. Turning the switch off during a running pass lets that pass finish (seconds). Cheap to re-check per source next to the gate check; not required by an AC.
-- R-3: application packages fetch GitHub through their own installer, not `publicGitHubRequest`, so the gate does not cover them. Out of scope (application packages are out of scope); "process-wide" means package and skill traffic.
-- R-4: known risks the design records: generic-provider check in a packaged isolated build (escalation trigger); macOS install of a test build (Electron harness fallback); live row order (Product question).
-- R-5: the gate also refuses manual requests until the reset. This is within the approved external contract ("honour reset/retry headers"). The user's outcome is the same as today (the check fails) but with a clearer message and no request.
+- R-1, R-2 (round 1): resolved in SR-004 (`getInstance()` wiring; setting and gate checked before every source).
+- R-3: application packages fetch GitHub through their own installer, not `publicGitHubRequest`, so the gate does not cover them. Out of scope; the gate covers package and skill-source traffic.
+- R-4: known risks the design records: the generic-provider check in a packaged isolated build (escalation trigger); macOS install of a test build (Electron harness fallback); live row order (Product question); the Release page link verified outside the isolated test feed (DEC-017).
+- R-5: the gate also refuses manual requests until the reset. This is within the approved external contract ("honour reset/retry headers"); the outcome matches today's failure, with a clearer message and no request.
+- Implementation note: the gate trusts GitHub's `x-ratelimit-reset` and `retry-after` values. Since the time now persists, take it as GitHub sends it and add no extra policy; a past time simply means not blocked.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (Design Impact; AR-001, AR-002 blocking; AR-003 non-blocking clarification)
-- Material-Premise Gate: `Pass` (MP-001 and MP-002 are Reachable and drive AR-001 and AR-002; no machinery depends on an unsupported premise)
-- Notes: task_size `Large`, architectural_risk `High` confirmed. Every other structural verdict passes and keeps its evidence for the next round.
+- Review Decision: `Pass` (ARCH-REV-002, SR-004)
+- Material-Premise Gate: `Pass` (MP-001 and MP-002 are Reachable; the SR-004 design addresses both)
+- Notes: task_size `Large`, architectural_risk `High` confirmed. Next: implementation.
