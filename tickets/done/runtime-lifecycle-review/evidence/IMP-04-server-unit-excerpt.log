@@ -1,0 +1,21 @@
+# IMP-04-server-unit-full
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 8a2db203dc (branch codex/runtime-lifecycle-design-review)
+# Environment: macOS darwin arm64, node v22.23.1, server test isolation per TESTING.md
+# Date: 2026-10-20T09:06:33Z
+
+# Excerpt of IMP-04-server-unit-full.log: the files this ticket added or changed, and the totals
+
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts (22 tests) 1401ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts (5 tests) 62ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts (15 tests) 41ms
+ ✓ tests/unit/application-platform/application-execution-scope.test.ts (9 tests) 21ms
+ ✓ tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts (14 tests) 6ms
+ ✓ tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts (6 tests) 11ms
+ ✓ tests/unit/api/graphql/agent-runtimes-resolver.test.ts (2 tests) 8ms
+ ✓ tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts (2 tests) 3ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-process-operation.test.ts (6 tests) 3579ms
+
+ Test Files  756 passed | 4 skipped (760)
+      Tests  6252 passed | 7 skipped (6259)
+EXIT 0

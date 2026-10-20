@@ -48,6 +48,8 @@ import type {
 import type { ApplicationAvailabilityStateRegistry } from "./application-availability-state-registry.js";
 import { ApplicationDefinitionRuntimeReadiness } from "./application-definition-runtime-readiness.js";
 import { ApplicationProviderCredentialReadinessAdapter } from "../launch-configuration/application-provider-credential-readiness-adapter.js";
+import { AgentRuntimeSignInReader } from "../../runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
+import { createAgentRuntimeStrategies } from "../../runtime-management/agent-runtimes/strategies/create-agent-runtime-strategies.js";
 import { ApplicationCurrentModelSelectionPolicy } from "../launch-configuration/application-current-model-selection-policy.js";
 import { ApplicationLaunchConfigurationService } from "../launch-configuration/application-launch-configuration-service.js";
 import { ApplicationLaunchHostCapabilityValidator } from "../launch-configuration/application-launch-host-capability-validator.js";
@@ -161,7 +163,9 @@ export const createApplicationOrchestrationServices = (
       currentModelSelectionPolicy,
       providerCredentialReadiness: new ApplicationProviderCredentialReadinessAdapter({
         llmProviderService: input.llmProviderService,
-        codexClientManager: input.codexClientManager,
+        signInReader: new AgentRuntimeSignInReader(
+          createAgentRuntimeStrategies({ codexClientManager: input.codexClientManager }),
+        ),
       }),
     }),
   });

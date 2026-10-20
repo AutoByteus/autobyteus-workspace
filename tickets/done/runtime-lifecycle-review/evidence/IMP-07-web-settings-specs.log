@@ -1,0 +1,755 @@
+# IMP-07-web-settings-specs
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run components/settings pages/__tests__/settings.spec.ts localization
+# Commit: 8a2db203dc (branch codex/runtime-lifecycle-design-review)
+# Environment: macOS darwin arm64, node v22.23.1, Nuxt test env
+# Date: 2026-10-20T09:06:47Z
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-design-review/autobyteus-web
+
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/AgentPackagesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/embedding/__tests__/EmbeddingSettingsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/AboutSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/settings.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/settings.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/AgentPackagesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/AboutSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/embedding/__tests__/EmbeddingSettingsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts (10 tests) 31ms
+ ✓ components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts (3 tests) 59ms
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (26 tests) 82ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts (4 tests) 77ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (11 tests) 112ms
+ ✓ components/settings/__tests__/AgentPackagesManager.spec.ts (12 tests) 150ms
+ ✓ components/settings/embedding/__tests__/EmbeddingSettingsPanel.spec.ts (14 tests) 312ms
+ ✓ components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts (11 tests) 453ms
+stderr | components/settings/__tests__/ServerSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ pages/__tests__/settings.spec.ts (24 tests) 184ms
+stderr | components/settings/__tests__/VoiceInputExtensionCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/TokenUsageRunDetailsView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/MediaDefaultModelsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/MemorySyncCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ServerSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/VoiceInputExtensionCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ServerSettingsManager.spec.ts (9 tests) 290ms
+stdout | components/settings/__tests__/TokenUsageRunDetailsView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts (9 tests) 76ms
+ ✓ components/settings/__tests__/VoiceInputExtensionCard.spec.ts (8 tests) 51ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts (7 tests) 108ms
+stdout | components/settings/__tests__/MemorySyncCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/MediaDefaultModelsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/TokenUsageRunDetailsView.spec.ts (5 tests) 129ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts (4 tests) 85ms
+stdout | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/MediaDefaultModelsCard.spec.ts (4 tests) 105ms
+stderr | components/settings/__tests__/PhoneAccessCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders the canonical provider group and ordinary editor
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="OPENAI" selected-provider-label="OpenAI"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: [32m'gpt-4.1'[39m,
+    name: [32m'GPT 4.1'[39m,
+    providerType: [32m'OPENAI'[39m
+  }
+] audio-models= [] image-models= []  ... > 
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="OPENAI" selected-provider-label="OpenAI"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders the draft custom-provider path without credential-status gating
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'__new_custom_provider__'[39m,
+    name: [32m'New Provider'[39m,
+    label: [32m'New Provider'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mtrue[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mfalse[39m,
+    catalogMode: [32m'STATIC'[39m,
+    isDraft: [33mtrue[39m
+  }
+] selected-provider-id="__new_custom_provider__" selected-provider-label="New Provider"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: [32m'gpt-4.1'[39m,
+    name: [32m'GPT 4.1'[39m,
+    providerType: [32m'OPENAI'[39m
+  }
+] audio-models= [] image-models= []  ... > 
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'__new_custom_provider__'[39m,
+    name: [32m'New Provider'[39m,
+    label: [32m'New Provider'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mtrue[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mfalse[39m,
+    catalogMode: [32m'STATIC'[39m,
+    isDraft: [33mtrue[39m
+  }
+] selected-provider-id="__new_custom_provider__" selected-provider-label="New Provider"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders custom details and wires exact-provider delete
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="provider_gateway" selected-provider-label="Gateway"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: [32m'gpt-4.1'[39m,
+    name: [32m'GPT 4.1'[39m,
+    providerType: [32m'OPENAI'[39m
+  }
+] audio-models= [] image-models= []  ... > 
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="provider_gateway" selected-provider-label="Gateway"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders tight Gemini state and wires the specialized UI action
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="GEMINI" selected-provider-label="Gemini"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: [32m'gpt-4.1'[39m,
+    name: [32m'GPT 4.1'[39m,
+    providerType: [32m'OPENAI'[39m
+  }
+] audio-models= [] image-models= []  ... > 
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="GEMINI" selected-provider-label="Gemini"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders the dedicated Qwen pair form instead of the generic key editor
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="QWEN" selected-provider-label="Qwen"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: [32m'gpt-4.1'[39m,
+    name: [32m'GPT 4.1'[39m,
+    providerType: [32m'OPENAI'[39m
+  }
+] audio-models= [] image-models= []  ... > 
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="QWEN" selected-provider-label="Qwen"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders post-commit refresh warnings distinctly from save failures
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="OPENAI" selected-provider-label="OpenAI"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "hasStaleResult". Expected Boolean, got Undefined  
+  at <ProviderModelSection llm-models= [
+  {
+    modelIdentifier: [32m'gpt-4.1'[39m,
+    name: [32m'GPT 4.1'[39m,
+    providerType: [32m'OPENAI'[39m
+  }
+] audio-models= [] image-models= []  ... > 
+  at <ProviderModelBrowser providers= [
+  {
+    id: [32m'OPENAI'[39m,
+    name: [32m'OpenAI'[39m,
+    label: [32m'OpenAI'[39m,
+    totalModels: [33m1[39m,
+    isCustom: [33mfalse[39m,
+    providerType: [32m'OPENAI'[39m,
+    baseUrl: [1mnull[22m,
+    apiKeyConfigured: [33mtrue[39m,
+    catalogMode: [32m'STATIC'[39m
+  }
+] selected-provider-id="OPENAI" selected-provider-label="OpenAI"  ... > 
+  at <ProviderAPIKeyManager ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts (6 tests) 61ms
+stdout | components/settings/__tests__/PhoneAccessCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/PhoneAccessCard.spec.ts (3 tests) 44ms
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsSummaryCards.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ApplicationPackagesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | scripts/__tests__/localizationLiteralAudit.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts > split provider credential/catalog Apollo contract > joins credential facts to credential-free local snapshots by provider ID
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22selectionPresentation%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22ModelDetail%5C%22%2C%5Cn%20%20%5C%22modelIdentifier%5C%22%3A%20%5C%22gpt-4.1%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22gpt-4.1%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20null%2C%5Cn%20%20%5C%22value%5C%22%3A%20%5C%22gpt-4.1%5C%22%2C%5Cn%20%20%5C%22canonicalName%5C%22%3A%20%5C%22gpt-4.1%5C%22%2C%5Cn%20%20%5C%22providerId%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerName%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerType%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22runtime%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%5C%22hostUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22configSchema%5C%22%3A%20null%2C%5Cn%20%20%5C%22maxContextTokens%5C%22%3A%20null%2C%5Cn%20%20%5C%22activeContextTokens%5C%22%3A%20null%2C%5Cn%20%20%5C%22maxInputTokens%5C%22%3A%20null%2C%5Cn%20%20%5C%22maxOutputTokens%5C%22%3A%20null%2C%5Cn%20%20%5C%22metadataProvenance%5C%22%3A%20null%5Cn%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts (3 tests) 51ms
+stdout | components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsSummaryCards.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ApplicationPackagesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | scripts/__tests__/localizationLiteralAudit.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts (4 tests) 206ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsSummaryCards.spec.ts (5 tests) 89ms
+ ✓ components/settings/__tests__/ApplicationPackagesManager.spec.ts (5 tests) 63ms
+ ✓ components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts (2 tests) 68ms
+stderr | components/settings/__tests__/ServerSettingsEndpointCards.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts (1 test) 34ms
+ ✓ components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts (3 tests) 286ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts (6 tests) 45ms
+stdout | components/settings/__tests__/ServerSettingsEndpointCards.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ServerSettingsEndpointCards.spec.ts (5 tests) 270ms
+stderr | components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/runtime/__tests__/localizationRuntime.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/QwenSetupForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CompactionConfigCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CodexFullAccessCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerMigrationsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/DisplaySettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts (3 tests) 88ms
+stdout | components/settings/providerApiKey/__tests__/QwenSetupForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/runtime/__tests__/localizationRuntime.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/runtime/__tests__/localizationRuntime.spec.ts (4 tests) 98ms
+ ✓ components/settings/providerApiKey/__tests__/QwenSetupForm.spec.ts (4 tests) 129ms
+ ✓ components/settings/__tests__/WebSearchConfigurationCard.spec.ts (7 tests) 339ms
+stdout | components/settings/__tests__/CompactionConfigCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/CodexFullAccessCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerMigrationsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/CodexFullAccessCard.spec.ts (10 tests) 84ms
+stderr | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/DisplaySettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/CompactionConfigCard.spec.ts (6 tests) 166ms
+ ✓ components/settings/__tests__/DisplaySettingsManager.spec.ts (3 tests) 50ms
+ ✓ components/settings/__tests__/ServerMigrationsManager.spec.ts (3 tests) 137ms
+stderr | localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (3 tests) 117ms
+stderr | components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/SkillImprovementFeatureToggleCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/projectsCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts (3 tests) 6ms
+stdout | components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts (3 tests) 22ms
+stdout | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/SkillImprovementFeatureToggleCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/SkillImprovementFeatureToggleCard.spec.ts (3 tests) 36ms
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (2 tests) 66ms
+stdout | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/projectsCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | localization/messages/__tests__/runSettingsCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts (6 tests) 4ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts (8 tests) 55ms
+ ✓ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts (2 tests) 143ms
+ ✓ components/settings/__tests__/PhoneSetupGuideCard.spec.ts (2 tests) 73ms
+stderr | localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/runSettingsCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/__tests__/LanguageSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ localization/messages/__tests__/runSettingsCatalog.spec.ts (3 tests) 6ms
+stderr | components/settings/__tests__/TokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/NfsGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LanguageSettingsManager.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/runtime/__tests__/systemLocaleResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts (1 test) 2ms
+stdout | components/settings/__tests__/LanguageSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/LanguageSettingsManager.spec.ts (2 tests) 15ms
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NfsGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts (1 test) 14ms
+ ✓ components/settings/__tests__/NfsGuideCard.spec.ts (3 tests) 42ms
+stdout | components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts (2 tests) 34ms
+stdout | components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/LanguageSettingsManager.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/runtime/__tests__/systemLocaleResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/LanguageSettingsManager.integration.spec.ts (1 test) 48ms
+ ✓ localization/runtime/__tests__/systemLocaleResolver.spec.ts (4 tests) 4ms
+ ✓ components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts (1 test) 43ms
+stderr | components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/app/__tests__/AppLocalizationGate.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts (2 tests) 6ms
+stderr | localization/messages/__tests__/workspaceHistorySkillImprovementCleanup.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts (1 test) 21ms
+stderr | localization/messages/__tests__/shellCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/app/__tests__/AppLocalizationGate.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/app/__tests__/AppLocalizationGate.spec.ts (2 tests) 17ms
+stdout | localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/workspaceHistorySkillImprovementCleanup.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts (1 test) 2ms
+ ✓ localization/messages/__tests__/workspaceHistorySkillImprovementCleanup.spec.ts (1 test) 3ms
+stdout | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts (1 test) 1ms
+stdout | localization/messages/__tests__/shellCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/shellCatalog.spec.ts (1 test) 2ms
+
+ Test Files  60 passed (60)
+      Tests  303 passed (303)
+   Start at  11:06:51
+   Duration  41.93s (transform 11.34s, setup 287.25s, collect 15.21s, tests 5.40s, environment 27.21s, prepare 16.07s)
+
+EXIT 0

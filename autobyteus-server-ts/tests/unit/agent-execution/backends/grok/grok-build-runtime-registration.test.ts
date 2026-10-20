@@ -58,7 +58,7 @@ describe("grok_build runtime registration", () => {
   });
 
   it("has no AutoByteus credential authority (provider-owned auth, DEC-002)", () => {
-    const adapter = new ApplicationProviderCredentialReadinessAdapter({ llmProviderService: {} as never, codexClientManager: {} as never });
+    const adapter = new ApplicationProviderCredentialReadinessAdapter({ llmProviderService: {} as never, signInReader: {} as never });
     expect(adapter.resolveAuthority({ runtimeKind: RuntimeKind.GROK_BUILD, model: "grok-4.7", workspaceRootPath: "/w" } as never))
       .toEqual({ kind: "unsupported", runtime: "grok_build" });
   });

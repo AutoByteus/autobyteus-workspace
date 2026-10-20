@@ -5,7 +5,7 @@ import {
   ApplicationProviderCredentialReadinessAdapter,
   type ApplicationCredentialAuthority,
 } from "../../../src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.js";
-import { testCodexLeaseManager } from "../../fixtures/agent-run-preparation-fixtures.js";
+import type { SignInReading } from "../../../src/runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const model = (runtime: string, providerId = "provider-a") => ({
@@ -13,31 +13,26 @@ const model = (runtime: string, providerId = "provider-a") => ({
   provider_id: providerId,
 }) as never;
 
-const buildAdapter = (input?: { apiKeyConfigured?: boolean }) => {
+const buildAdapter = (input?: {
+  apiKeyConfigured?: boolean;
+  codex?: SignInReading;
+  claude?: SignInReading;
+}) => {
   const getProviderCredentialSetting = vi.fn(async (providerId: string) => ({
     provider: { id: providerId, name: `Provider ${providerId}` },
     apiKeyConfigured: input?.apiKeyConfigured ?? true,
   }));
-  const request = vi.fn(async () => ({ requiresOpenaiAuth: false }));
-  const acquireClient = vi.fn(async () => ({ request }));
-  const releaseClient = vi.fn(async () => undefined);
-  const commandRunner = vi.fn(async () => ({
-    exitCode: 0,
-    stdout: JSON.stringify({ loggedIn: true }),
-    stderr: "",
-    error: null,
-  }));
+  const read = vi.fn(async (runtimeKind: RuntimeKind): Promise<SignInReading> =>
+    runtimeKind === RuntimeKind.CODEX_APP_SERVER
+      ? input?.codex ?? { state: "notRequired" }
+      : input?.claude ?? { state: "signedIn" });
   return {
     adapter: new ApplicationProviderCredentialReadinessAdapter({
       llmProviderService: { getProviderCredentialSetting },
-      codexClientManager: testCodexLeaseManager({ acquireClient, releaseClient }) as never,
-      commandRunner,
+      signInReader: { read },
     }),
-    acquireClient,
-    commandRunner,
     getProviderCredentialSetting,
-    releaseClient,
-    request,
+    read,
   };
 };
 
@@ -108,8 +103,8 @@ describe("ApplicationProviderCredentialReadinessAdapter", () => {
     expect(getProviderCredentialSetting).toHaveBeenCalledOnce();
   });
 
-  it("normalizes Codex workspace authority and performs the native account check", async () => {
-    const { adapter, acquireClient, releaseClient, request } = buildAdapter();
+  it("normalizes Codex workspace authority and reads its sign-in in that workspace", async () => {
+    const { adapter, read } = buildAdapter();
     const authority = adapter.resolveAuthority({
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       model: model(LLMRuntime.API),
@@ -128,13 +123,38 @@ describe("ApplicationProviderCredentialReadinessAdapter", () => {
       configured: true,
       reason: null,
     });
-    expect(acquireClient).toHaveBeenCalledExactlyOnceWith(resolvePath("./relative-workspace"));
-    expect(request).toHaveBeenCalledExactlyOnceWith("account/read", { refreshToken: false });
-    expect(releaseClient).toHaveBeenCalledExactlyOnceWith(resolvePath("./relative-workspace"));
+    expect(read).toHaveBeenCalledExactlyOnceWith(RuntimeKind.CODEX_APP_SERVER, {
+      cwd: resolvePath("./relative-workspace"),
+    });
   });
 
-  it("keys Claude once per process and retains its native authentication command", async () => {
-    const { adapter, commandRunner } = buildAdapter();
+  it.each([
+    [{ state: "signedIn" } as const, { configured: true, reason: null }],
+    [{ state: "notRequired" } as const, { configured: true, reason: null }],
+    [
+      { state: "signedOut", detail: "no logged-in account." } as const,
+      { configured: false, reason: "Codex authentication is unavailable: no logged-in account." },
+    ],
+    [
+      { state: "unknown", detail: "spawn codex ENOENT" } as const,
+      { configured: false, reason: "Codex authentication is unavailable: spawn codex ENOENT" },
+    ],
+  ])("maps the Codex reading %o to launch readiness", async (reading, expected) => {
+    const { adapter } = buildAdapter({ codex: reading });
+    await expect(adapter.getReadiness({ kind: "codex_workspace", workspaceRootPath: "/w" }))
+      .resolves.toEqual(expected);
+  });
+
+  it("keeps Claude's failure text in its reason", async () => {
+    const { adapter } = buildAdapter({ claude: { state: "unknown", detail: "Command timed out after 10000ms." } });
+    await expect(adapter.getReadiness({ kind: "claude_process" })).resolves.toEqual({
+      configured: false,
+      reason: "Claude authentication is unavailable: Command timed out after 10000ms.",
+    });
+  });
+
+  it("keys Claude once per process and reads its sign-in through the reader", async () => {
+    const { adapter, read } = buildAdapter();
     const authority = adapter.resolveAuthority({
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       model: model(LLMRuntime.API),
@@ -147,7 +167,8 @@ describe("ApplicationProviderCredentialReadinessAdapter", () => {
       configured: true,
       reason: null,
     });
-    expect(commandRunner).toHaveBeenCalledOnce();
+    expect(read).toHaveBeenCalledOnce();
+    expect(read.mock.calls[0]?.[0]).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
   });
 
   it("fails unknown runtimes closed without caching or reading provider credentials", async () => {
