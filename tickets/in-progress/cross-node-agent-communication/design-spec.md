@@ -455,6 +455,7 @@ Naming rule (the user, SR-012):
 - **remote** is anything that lives on a peer;
 - the feature and its subsystem are **remote collaboration**;
 - **"cross-node" is not used in names.**
+- **"Peer" names are always compound** (`PeerNode`, `PeerClient`, `PeerGateway`, `PeerDirectory`), never a bare `Peer` type. Existing uses of the word mean other things (checked 2026-10-20): `peerAddress` / `isLoopbackPeerAddress` in the server is the TCP caller's address; `peerId`, `peerType` and `PeerCandidate` in `autobyteus-message-gateway` are a chat counterpart in external channels; the web has only test fixture names and Tailwind's `peer` class.
 
 `PeerNode` is chosen over `RemoteNode`, because "remote node" already means a server the desktop app opens a window to (Manage Nodes, `nodeType: "remote"`).
 
