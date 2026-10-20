@@ -17,6 +17,7 @@ import {
 } from "./collaboration-communication-message-schema.js";
 import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
 import { buildRemoteCommunicationInputMessage } from "./root-communication-runtime-builder.js";
+import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
 
 const DELIVERY_REFUSAL_CODES: ReadonlySet<string> = new Set(["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT"]);
 const NOT_HERE = "The agent with that run id is not running here, so the message was not sent. Use an exact run id you were given.";
@@ -111,8 +112,7 @@ export class RootCommunicationEngine {
     const content = input.content.trim();
     if (!content) return { accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." };
     if (input.referenceFiles?.some((file) => file.trim())) {
-      return { accepted: false, code: "REMOTE_ATTACHMENTS_NOT_SUPPORTED",
-        message: "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent." };
+      return { accepted: false, code: REMOTE_REFUSAL.ATTACHMENTS_NOT_SUPPORTED, message: REMOTE_ROOT_REFUSAL_TEXT.attachments };
     }
     const createdAt = new Date().toISOString();
     const message = validateCollaborationCommunicationMessage({
