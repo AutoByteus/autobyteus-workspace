@@ -1,0 +1,324 @@
+# API-05 before (grok rerun pinned) commit=dc530fdcb0 2026-10-20T09:12:52Z cmd: env -i PATH HOME USER LOGNAME TMPDIR RUN_GROK_E2E=1 GROK_E2E_MODEL=grok-4.7 MCP_MATRIX_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts --no-watch --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:28776) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/.env
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: matrix_stdio
+Populating MCP server config cache for the first time...
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+MCP server config cache populated with 0 items.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+In-memory cache: Added new MCP config matrix_stdio.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Attempting to discover and register tools for server ID: matrix_stdio
+
+stderr | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Overwriting existing MCP config with server_id 'matrix_stdio'.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'matrix_stdio_echo'
+Successfully registered tool definition: 'matrix_stdio_add'
+Successfully registered tool definition: 'matrix_stdio_fail'
+Successfully registered tool definition: 'matrix_stdio_slow'
+Successfully registered tool definition: 'matrix_stdio_report_env_and_cwd'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully discovered and registered 5 tools for server ID: matrix_stdio
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Configuring MCP server with ID: matrix_http
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+In-memory cache: Added new MCP config matrix_http.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Attempting to discover and register tools for server ID: matrix_http
+
+stderr | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Overwriting existing MCP config with server_id 'matrix_http'.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'matrix_http_auth_probe'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully discovered and registered 1 tools for server ID: matrix_http
+
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex: an agent calls all three tool kinds
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Agent Definition created successfully with ID: mcp-matrix-grok-de5580
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/workspace-grok
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/workspace-grok.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Created and registered workspace ID: agent_ws_83fefb61ddbba887a6dc223aa099632726f592add88b01393d812d8781af1165
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/workspace-grok
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-5D3taA/workspace-grok.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Reusing registered workspace ID: agent_ws_83fefb61ddbba887a6dc223aa099632726f592add88b01393d812d8781af1165
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Agent websocket attached for run mcp_matrix_grok_de5580_8d361f486d364099ab4e1faeaf20eb2f
+Created agent session f207aca9-1f68-462d-860f-970f72401a95 for run mcp_matrix_grok_de5580_8d361f486d364099ab4e1faeaf20eb2f
+Agent WebSocket connected: session=f207aca9-1f68-462d-860f-970f72401a95, run=mcp_matrix_grok_de5580_8d361f486d364099ab4e1faeaf20eb2f
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+prisma:info Starting a sqlite pool with 21 connections.
+
+ × tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds 11474ms
+   → TOOL_EXECUTION_STARTED:{"invocation_id":"call-977be449-8603-4045-9cee-b4c0db56e011-2","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"search_tool","arguments":{"query":" | SEGMENT_END:{"id":"call-977be449-8603-4045-9cee-b4c0db56e011-2","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":{"tool_name":"search_tool","arguments":{"query": | TOOL_EXECUTION_SUCCEEDED:{"invocation_id":"call-977be449-8603-4045-9cee-b4c0db56e011-2","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"search_tool","arguments":{"query":" | TOOL_EXECUTION_STARTED:{"invocation_id":"call-977be449-8603-4045-9cee-b4c0db56e011-3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"search_tool","arguments":{"query":" | SEGMENT_END:{"id":"call-977be449-8603-4045-9cee-b4c0db56e011-3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":{"tool_name":"search_tool","arguments":{"query": | TOOL_EXECUTION_SUCCEEDED:{"invocation_id":"call-977be449-8603-4045-9cee-b4c0db56e011-3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"search_tool","arguments":{"query":" | SEGMENT_START:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:reasoning:3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"reasoning","metadata":null} | SEGMENT_CONTENT:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:reasoning:3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"reasoning","delta":"I have the schemas | SEGMENT_END:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:reasoning:3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":null,"interrupted":false,"reason":null,"fai | SEGMENT_START:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:text:4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"text","metadata":null} | SEGMENT_CONTENT:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:text:4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"text","delta":"Schemas are in. Creating the | SEGMENT_END:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:text:4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":null,"interrupted":false,"reason":null,"failed": | SEGMENT_START:{"id":"call-127492f2-af88-4f82-bf4d-5aca20414294-4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"tool_call","metadata":{"tool_name":"create_ | TOKEN_USAGE_UPDATED:{"usage_event_id":"47a3df6e-0f30-464e-9abf-166c873a0117","idempotency_key":"grok_build:01a15895-f691-7ea0-aa67-db8a2bafb77c:e2dce070-bd18-4ba8-99a8-e1a0701d28e2 | TOOL_EXECUTION_STARTED:{"invocation_id":"call-127492f2-af88-4f82-bf4d-5aca20414294-4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"create_task","arguments":{"project_ | SEGMENT_END:{"id":"call-127492f2-af88-4f82-bf4d-5aca20414294-4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":{"tool_name":"create_task","arguments":{"project | TOOL_EXECUTION_SUCCEEDED:{"invocation_id":"call-127492f2-af88-4f82-bf4d-5aca20414294-4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"create_task","arguments":{"project_ | ERROR:{"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included f | AGENT_STATUS:{"status":"error","recoverableBlock":null,"agent_id":"mcp_matrix_grok_de5580_8d361f486d364099ab4e1faeaf20eb2f"} | AGENT_INPUT_STATE:{"run_instance_id":"9c5c8200-46ce-4ad0-a6a0-af0d04716b4d","revision":5,"entries":[],"recoverableBlock":null}: expected true to be false // Object.is equality
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Closed agent session f207aca9-1f68-462d-860f-970f72401a95
+Agent WebSocket disconnected: f207aca9-1f68-462d-860f-970f72401a95
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+AssertionError: TOOL_EXECUTION_STARTED:{"invocation_id":"call-977be449-8603-4045-9cee-b4c0db56e011-2","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"search_tool","arguments":{"query":" | SEGMENT_END:{"id":"call-977be449-8603-4045-9cee-b4c0db56e011-2","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":{"tool_name":"search_tool","arguments":{"query": | TOOL_EXECUTION_SUCCEEDED:{"invocation_id":"call-977be449-8603-4045-9cee-b4c0db56e011-2","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"search_tool","arguments":{"query":" | TOOL_EXECUTION_STARTED:{"invocation_id":"call-977be449-8603-4045-9cee-b4c0db56e011-3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"search_tool","arguments":{"query":" | SEGMENT_END:{"id":"call-977be449-8603-4045-9cee-b4c0db56e011-3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":{"tool_name":"search_tool","arguments":{"query": | TOOL_EXECUTION_SUCCEEDED:{"invocation_id":"call-977be449-8603-4045-9cee-b4c0db56e011-3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"search_tool","arguments":{"query":" | SEGMENT_START:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:reasoning:3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"reasoning","metadata":null} | SEGMENT_CONTENT:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:reasoning:3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"reasoning","delta":"I have the schemas | SEGMENT_END:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:reasoning:3","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":null,"interrupted":false,"reason":null,"fai | SEGMENT_START:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:text:4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"text","metadata":null} | SEGMENT_CONTENT:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:text:4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"text","delta":"Schemas are in. Creating the | SEGMENT_END:{"id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2:text:4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":null,"interrupted":false,"reason":null,"failed": | SEGMENT_START:{"id":"call-127492f2-af88-4f82-bf4d-5aca20414294-4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","segment_type":"tool_call","metadata":{"tool_name":"create_ | TOKEN_USAGE_UPDATED:{"usage_event_id":"47a3df6e-0f30-464e-9abf-166c873a0117","idempotency_key":"grok_build:01a15895-f691-7ea0-aa67-db8a2bafb77c:e2dce070-bd18-4ba8-99a8-e1a0701d28e2 | TOOL_EXECUTION_STARTED:{"invocation_id":"call-127492f2-af88-4f82-bf4d-5aca20414294-4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"create_task","arguments":{"project_ | SEGMENT_END:{"id":"call-127492f2-af88-4f82-bf4d-5aca20414294-4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","metadata":{"tool_name":"create_task","arguments":{"project | TOOL_EXECUTION_SUCCEEDED:{"invocation_id":"call-127492f2-af88-4f82-bf4d-5aca20414294-4","turn_id":"e2dce070-bd18-4ba8-99a8-e1a0701d28e2","tool_name":"create_task","arguments":{"project_ | ERROR:{"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included f | AGENT_STATUS:{"status":"error","recoverableBlock":null,"agent_id":"mcp_matrix_grok_de5580_8d361f486d364099ab4e1faeaf20eb2f"} | AGENT_INPUT_STATE:{"run_instance_id":"9c5c8200-46ce-4ad0-a6a0-af0d04716b4d","revision":5,"entries":[],"recoverableBlock":null}: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ turn tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts:145:75
+    143|       while (Date.now() < deadline && !messages.slice(start).some((m) …
+    144|       const tail = messages.slice(-20).map((m) => `${m.type}:${JSON.st…
+    145|       expect(messages.slice(start).some((m) => m.type === "ERROR"), ta…
+       |                                                                           ^
+    146|       expect(messages.slice(start).some((m) => m.type === "TURN_COMPLE…
+    147|     };
+ ❯ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts:246:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 skipped (6)
+   Start at  11:12:53
+   Duration  23.02s (transform 5.93s, setup 38ms, import 8.43s, tests 14.06s, environment 0ms)
+

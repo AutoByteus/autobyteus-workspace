@@ -1,0 +1,128 @@
+# API-08
+# Command: /tmp/abyt199-api/api08.sh (script below): pnpm -C autobyteus-server-ts build; snapshot = git status --ignored --porcelain --untracked-files=all, minus node_modules and '?? tickets/'; then pnpm -C autobyteus-ts test, pnpm -C autobyteus-server-ts test:unit, pnpm test:e2e, each under env -i PATH HOME=<resolved temp> TMPDIR=<run-owned /private/tmp/a8.*> UV_CACHE_DIR=<existing uv cache>; snapshot after each; run-owned TMPDIR listed after each suite
+# Commit: 7c9cadba2f
+# Env: ENV-2 (macOS Darwin 25.5.0, node v22.23.1, uv 0.10.2)
+# Date: 2026-10-20
+
+## exits, durations, temp leftovers
+commit 7c9cadba2f
+build exit 0 (19s)
+core TMPDIR=/private/tmp/a8.Bjrp5o HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.9xgzrdri50
+core exit 0 (28s)
+core tmpdir entries left: 7; touched-prefix entries left: 0
+server-unit TMPDIR=/private/tmp/a8.vaUOQz HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.egC7Nb9u94
+server-unit exit 0 (690s)
+server-unit tmpdir entries left: 135; touched-prefix entries left: 0
+e2e TMPDIR=/private/tmp/a8.ZD1QI6 HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.TxoQZbfKoK
+e2e exit 0 (710s)
+e2e tmpdir entries left: 12; touched-prefix entries left: 0
+diff before vs 1-after-core exit 0 (0 lines)
+diff before vs 2-after-unit exit 0 (0 lines)
+diff before vs 3-after-e2e exit 1 (2 lines)
+DONE
+
+## suite summaries
+### core
+ Test Files  387 passed | 26 skipped (413)
+      Tests  2356 passed | 78 skipped (2434)
+   Duration  26.49s (transform 11.50s, setup 8.14s, import 75.29s, tests 94.69s, environment 36ms)
+### server-unit
+ Test Files  752 passed | 4 skipped (756)
+      Tests  6201 passed | 7 skipped (6208)
+   Duration  688.86s (transform 18.47s, setup 8.81s, import 355.38s, tests 248.45s, environment 1.60s)
+### e2e
+ Test Files  93 passed | 91 skipped (184)
+      Tests  386 passed | 410 skipped (796)
+   Duration  702.63s (transform 16.94s, setup 2.47s, import 323.29s, tests 355.22s, environment 16ms)
+
+## snapshot sizes
+    6718 /tmp/abyt199-api/api08/snap-0-before.txt
+    6718 /tmp/abyt199-api/api08/snap-1-after-core.txt
+    6718 /tmp/abyt199-api/api08/snap-2-after-unit.txt
+    6717 /tmp/abyt199-api/api08/snap-3-after-e2e.txt
+   26871 total
+
+## entries outside */dist/ in the before snapshot
+!! autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+!! autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+
+## diff before vs 1-after-core (empty = no new or removed entry)
+(end of diff)
+
+## diff before vs 2-after-unit (empty = no new or removed entry)
+(end of diff)
+
+## diff before vs 3-after-e2e (empty = no new or removed entry)
+4834d4833
+< !! autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+(end of diff)
+
+## run-owned TMPDIR leftovers per suite (touched-file prefixes: mcp-config-, tmp-edit-file-, tmp-read-file-, tmp-write-file-, agent-runtime-memory-, *-appdata-)
+### core
+autobyteus-mcp-test-server-venv-c0cbb4480f4e
+autobyteus_audio
+autobyteus_video
+node-compile-cache
+prompt-builder-ZkvEQD
+prompt-builder-kPjY8G
+uv-835989c2c60c3a91.lock
+### server-unit
+  20 acp-fixture
+  19 autobyteus-registry
+  16 agy-capsule-test
+  16 agy-capsule-home
+  15 acp-record
+  13 autobyteus-ws
+  13 acp-memory
+  12 acp-ws
+   5 fake-grok
+   5 autobyteus-temp-ws
+   1 node-compile-cache
+### e2e
+autobyteus_audio
+node-compile-cache
+skill-name-catalog-e2e-6DDsf8
+skill-name-catalog-e2e-FpUXEz
+skill-name-catalog-e2e-HMCGCG
+skill-name-catalog-e2e-LRc1cf
+skill-name-catalog-e2e-ODr2bF
+skill-name-catalog-e2e-aI6cIO
+skill-name-catalog-e2e-h9WcBA
+skill-name-catalog-e2e-l9qWUn
+skill-name-catalog-e2e-u6PdEL
+unleash-repo-schema-v1-codeium-language-server.json
+
+## script
+#!/bin/bash
+# API-08: AC-005 / AC-006 / REQ-004 / REQ-005 / REQ-006 residue run on the final commit.
+set -u
+W=/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue
+O=/tmp/abyt199-api/api08
+UVCACHE=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-uv-cache
+PREFIXES='^(mcp-config-|tmp-edit-file-|tmp-read-file-|tmp-write-file-|agent-runtime-memory-|file-explorer-graphql-appdata-|path-boundary-e2e-appdata-|file-explorer-ws-e2e-appdata-|file-ops-graphql-appdata-|workspaces-graphql-appdata-)'
+cd "$W"
+snap() { git status --ignored --porcelain --untracked-files=all | grep -v node_modules | grep -v '^?? tickets/' | sort; }
+: > $O/exits.txt
+echo "commit $(git rev-parse --short HEAD)" >> $O/exits.txt
+s=$(date +%s); pnpm -C autobyteus-server-ts build > $O/build.log 2>&1; echo "build exit $? ($(( $(date +%s)-s ))s)" >> $O/exits.txt
+snap > $O/snap-0-before.txt
+suite() { # name, then command words
+  local name=$1; shift
+  local TD H s
+  TD="$(cd "$(mktemp -d /tmp/a8.XXXXXX)" && pwd -P)"; H="$(cd "$(mktemp -d)" && pwd -P)"
+  echo "$name TMPDIR=$TD HOME=$H" >> $O/exits.txt
+  s=$(date +%s)
+  env -i PATH="$PATH" HOME="$H" TMPDIR="$TD" UV_CACHE_DIR="$UVCACHE" "$@" > $O/$name.log 2>&1
+  echo "$name exit $? ($(( $(date +%s)-s ))s)" >> $O/exits.txt
+  ls -A "$TD" | sort > $O/tmpdir-left-$name.txt
+  echo "$name tmpdir entries left: $(wc -l < $O/tmpdir-left-$name.txt | tr -d ' '); touched-prefix entries left: $(grep -cE "$PREFIXES" $O/tmpdir-left-$name.txt)" >> $O/exits.txt
+  rm -rf "$TD" "$H"
+}
+suite core pnpm -C autobyteus-ts test
+snap > $O/snap-1-after-core.txt
+suite server-unit pnpm -C autobyteus-server-ts test:unit
+snap > $O/snap-2-after-unit.txt
+suite e2e pnpm test:e2e
+snap > $O/snap-3-after-e2e.txt
+for i in 1-after-core 2-after-unit 3-after-e2e; do diff $O/snap-0-before.txt $O/snap-$i.txt > $O/diff-$i.txt; echo "diff before vs $i exit $? ($(wc -l < $O/diff-$i.txt | tr -d ' ') lines)" >> $O/exits.txt; done
+echo DONE >> $O/exits.txt

@@ -1,0 +1,31 @@
+# IMP-04
+# Command: env -i PATH HOME TMPDIR UV_OFFLINE=1 UV_CACHE_DIR=<empty temp> UV_PROJECT_ENVIRONMENT=<fresh temp> pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts --reporter=verbose
+# Commit: 33fc5f4e16 (pre-rebase; base dc530fdcb0)
+# Env: macOS (Darwin 25.5.0), node v22.23.1, uv 0.10.2; env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-20
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts
+
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`
+[mcp-test-server] node: used: node v22.23.1
+
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > lists the tools and calls echo, add, fail and slow
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > delivers the configured env and cwd to the server
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > ends the server process when a connected server is closed
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > fails to connect, with an error, when the server exits at start
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > does not connect to a server that hangs at start, and closing it ends its process
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > lists the tools and calls echo, add, fail and slow 576ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > delivers the configured env and cwd to the server 152ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > ends the server process when a connected server is closed 143ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > fails to connect, with an error, when the server exits at start 152ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > does not connect to a server that hangs at start, and closing it ends its process 5159ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 5 skipped (10)
+   Start at  10:07:40
+   Duration  6.59s (transform 67ms, setup 45ms, import 257ms, tests 6.18s, environment 0ms)
+

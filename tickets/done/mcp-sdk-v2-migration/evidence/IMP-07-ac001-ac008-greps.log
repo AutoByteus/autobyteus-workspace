@@ -1,0 +1,53 @@
+# IMP-07 — AC-001 and AC-008 greps, manifest pins and lockfile placement
+# Commit: ae7e907bf2
+# Environment: macOS 26.5.2
+# Date: 2026-10-20T08:33:16Z
+
+$ grep -rn "@modelcontextprotocol/sdk" --include=*.ts --include=*.mts --include=*.js --include=*.mjs --include=*.cjs --include=*.vue --include=package.json --exclude-dir=node_modules --exclude-dir=tickets --exclude-dir=dist .
+AC-001 grep exit=1 (1 = no match)
+
+$ grep -n "@modelcontextprotocol" autobyteus-ts/package.json autobyteus-server-ts/package.json
+autobyteus-ts/package.json:23:    "@modelcontextprotocol/node": "2.1.1",
+autobyteus-ts/package.json:24:    "@modelcontextprotocol/server": "2.3.1",
+autobyteus-ts/package.json:36:    "@modelcontextprotocol/client": "2.3.1",
+autobyteus-server-ts/package.json:57:    "@modelcontextprotocol/client": "2.3.1",
+autobyteus-server-ts/package.json:58:    "@modelcontextprotocol/core": "2.3.1",
+autobyteus-server-ts/package.json:59:    "@modelcontextprotocol/node": "2.1.1",
+autobyteus-server-ts/package.json:60:    "@modelcontextprotocol/server": "2.3.1",
+
+$ grep -n "@modelcontextprotocol/sdk" pnpm-lock.yaml   (importer specifiers vs. peer resolutions)
+154:        version: 0.3.280(@anthropic-ai/sdk@0.132.1(zod@4.3.6))(@modelcontextprotocol/sdk@1.32.1(zod@4.3.6))(zod@4.3.6)
+303:        version: 2.24.0(@modelcontextprotocol/sdk@1.32.1(zod@4.3.6))
+671:      '@modelcontextprotocol/sdk': ^1.29.0
+1369:      '@modelcontextprotocol/sdk': ^1.25.2
+1371:      '@modelcontextprotocol/sdk':
+1914:  '@modelcontextprotocol/sdk@1.32.1':
+8737:  '@anthropic-ai/claude-agent-sdk@0.3.280(@anthropic-ai/sdk@0.132.1(zod@4.3.6))(@modelcontextprotocol/sdk@1.32.1(zod@4.3.6))(zod@4.3.6)':
+8740:      '@modelcontextprotocol/sdk': 1.32.1(zod@4.3.6)
+9543:  '@google/genai@2.24.0(@modelcontextprotocol/sdk@1.32.1(zod@4.3.6))':
+9550:      '@modelcontextprotocol/sdk': 1.32.1(zod@4.3.6)
+10324:  '@modelcontextprotocol/sdk@1.32.1(zod@4.3.6)':
+
+$ pnpm -C autobyteus-ts why @modelcontextprotocol/sdk ; pnpm -C autobyteus-server-ts why @modelcontextprotocol/sdk
+Legend: production dependency, optional only, dev only
+
+autobyteus-ts@1.0.0 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-ts
+
+dependencies:
+@google/genai 2.24.0
+└── @modelcontextprotocol/sdk 1.32.1 peer
+Legend: production dependency, optional only, dev only
+
+autobyteus-server-ts@0.1.1 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts (PRIVATE)
+
+dependencies:
+@anthropic-ai/claude-agent-sdk 0.3.280
+└── @modelcontextprotocol/sdk 1.32.1 peer
+autobyteus-ts link:../autobyteus-ts
+└─┬ @google/genai 2.24.0
+  └── @modelcontextprotocol/sdk 1.32.1 peer
+
+$ grep -rn "createMcpServer\|createSdkMcpServer\|callSdkFunction" autobyteus-server-ts/src autobyteus-server-ts/tests
+AC-008a exit=1 (1 = no match)
+$ grep -rn "createToolDefinition" autobyteus-server-ts/src/runtime-management autobyteus-server-ts/tests/integration/runtime-management
+AC-008b exit=1 (1 = no match)

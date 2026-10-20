@@ -135,8 +135,7 @@ export const startCollaborationHarness = async (label: string) => {
     const config = JSON.parse(await fs.readFile(path.join(await capsuleOf(agentRunId), ".agents", "mcp_config.json"), "utf8")) as Rec;
     const server = config.mcpServers?.autobyteus_agent_tools;
     if (!server) throw new Error(`autobyteus_agent_tools is not configured for run ${agentRunId}`);
-    const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
-    const { StreamableHTTPClientTransport } = await import("@modelcontextprotocol/sdk/client/streamableHttp.js");
+    const { Client, StreamableHTTPClientTransport } = await import("@modelcontextprotocol/client");
     const client = new Client({ name: "collaboration-prompt-e2e", version: "1.0.0" });
     await client.connect(new StreamableHTTPClientTransport(new URL(server.serverUrl), { requestInit: { headers: server.headers ?? {} } }));
     try {

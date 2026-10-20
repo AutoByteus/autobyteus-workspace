@@ -1,0 +1,75 @@
+# API-10..API-13 harness console output, both sides; command: H_V1=<sdk 1.32.1 dir> H_PORT_BASE=47110|47210 node parity-harness.mjs <side> <backendUrl> servers,gateway | matrix,cancel native,claude
+== harness-before-servers
+08:54:17 preview python_fixture: 5 tools in 2695 ms
+08:54:19 preview VideoAudioServer: 32 tools in 2051 ms
+08:54:22 preview media-downloader: 2 tools in 2064 ms
+08:54:23 preview ssh_remote: 4 tools in 1728 ms
+08:54:23 preview fs_v1: 14 tools in 241 ms
+08:54:24 preview fs_v2: 14 tools in 181 ms
+08:54:24 preview token_http: 2 tools in 72 ms
+08:54:24 preview same_origin_redirect_http: 2 tools in 15 ms
+08:54:24 preview paging_http: 2 tools in 21 ms
+08:54:24 preview unauthorized_http: error Failed to preview tools for MCP server: Error: Streamable HTTP error: Error POSTing to endpoint: unauthorized-parity in 10 ms
+08:54:24 preview cross_origin_redirect_http: error Failed to preview tools for MCP server: Error: Streamable HTTP error: Error POSTing to endpoint: Redirect to http://127.0.0.1:47113/mcp not followed (redirectPolicy: 'same-origin') in 6 ms
+08:54:24 preview exit_at_start: error Failed to preview tools for MCP server: McpError: MCP error -32000: Connection closed in 40 ms
+08:55:24 preview hang_at_start: error Failed to preview tools for MCP server: McpError: MCP error -32001: Request timed out in 60008 ms
+08:55:24 import {"success":true,"message":"Import complete. Imported: 13, Failed: 0","importedCount":13,"failedCount":0}
+08:55:25 discover python_fixture: {"ms":880,"success":true,"toolCount":5,"tools":["pyfix_echo","pyfix_add","pyfix_fail","pyfix_slow","pyfix_report_env_and_cwd"],"message":"Successfully discovered and registered 5 tools."}
+08:55:25 discover VideoAudioServer: {"ms":658,"success":true,"toolCount":32,"tools":["video_editing_get_media_duration","video_editing_convert_audio_properties","video_editing_convert_video_properties","video_editing_change_aspect_ratio","video_editing_con
+08:55:26 discover media-downloader: {"ms":707,"success":true,"toolCount":2,"tools":["download_audio","download_video"],"message":"Successfully discovered and registered 2 tools."}
+08:55:27 discover ssh_remote: {"ms":592,"success":true,"toolCount":4,"tools":["ssh_health_check","ssh_open_session","ssh_session_exec","ssh_close_session"],"message":"Successfully discovered and registered 4 tools."}
+08:55:27 discover fs_v1: {"ms":217,"success":true,"toolCount":14,"tools":["fsv1_read_file","fsv1_read_text_file","fsv1_read_media_file","fsv1_read_multiple_files","fsv1_write_file","fsv1_edit_file","fsv1_create_directory","fsv1_list_directory","
+08:55:27 discover fs_v2: {"ms":173,"success":true,"toolCount":14,"tools":["fsv2_read_file","fsv2_read_text_file","fsv2_read_media_file","fsv2_read_multiple_files","fsv2_write_file","fsv2_edit_file","fsv2_create_directory","fsv2_list_directory","
+08:55:27 discover token_http: {"ms":11,"success":true,"toolCount":2,"tools":["parity_http_auth_probe","parity_http_slow_probe"],"message":"Successfully discovered and registered 2 tools.","httpRequests":["token POST initialize pv=- auth=expected path
+08:55:27 discover same_origin_redirect_http: {"ms":11,"success":true,"toolCount":2,"tools":["moved_http_auth_probe","moved_http_slow_probe"],"message":"Successfully discovered and registered 2 tools.","httpRequests":["token POST initialize pv=- auth=expected path=/
+08:55:27 discover paging_http: {"ms":8,"success":true,"toolCount":2,"tools":["paging_page_one_a","paging_page_one_b"],"message":"Successfully discovered and registered 2 tools.","httpRequests":["paging POST initialize pv=- auth=none path=/mcp","paging
+08:55:27 discover unauthorized_http: {"ms":5,"success":false,"toolCount":0,"tools":[],"message":"Error: Streamable HTTP error: Error POSTing to endpoint: unauthorized-parity","httpRequests":["unauth POST initialize pv=- auth=expected path=/mcp"]}
+08:55:27 discover cross_origin_redirect_http: {"ms":5,"success":false,"toolCount":0,"tools":[],"message":"Error: Streamable HTTP error: Error POSTing to endpoint: Redirect to http://127.0.0.1:47113/mcp not followed (redirectPolicy: 'same-origin')","httpRequests":["r
+08:55:27 discover exit_at_start: {"ms":35,"success":false,"toolCount":0,"tools":[],"message":"McpError: MCP error -32000: Connection closed"}
+08:56:27 discover hang_at_start: {"ms":60069,"success":false,"toolCount":0,"tools":[],"message":"McpError: MCP error -32001: Request timed out"}
+08:56:30 gateway v1_1_32_1: tools 77 negotiated null 
+08:56:30 gateway v2_default: tools 77 negotiated 2025-03-26 
+08:56:30 gateway v2_auto: tools 77 negotiated 2025-03-26 
+08:56:30 done /tmp/mcp182/results/before-servers+gateway.json
+== harness-after-servers
+08:56:36 preview python_fixture: 5 tools in 855 ms
+08:56:36 preview VideoAudioServer: 32 tools in 785 ms
+08:56:37 preview media-downloader: 2 tools in 827 ms
+08:56:38 preview ssh_remote: 4 tools in 673 ms
+08:56:38 preview fs_v1: 14 tools in 185 ms
+08:56:38 preview fs_v2: 14 tools in 160 ms
+08:56:38 preview token_http: 2 tools in 54 ms
+08:56:38 preview same_origin_redirect_http: 2 tools in 17 ms
+08:56:38 preview paging_http: 4 tools in 15 ms
+08:56:38 preview unauthorized_http: error Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: unauthorized-parity in 6 ms
+08:56:38 preview cross_origin_redirect_http: error Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: Redirect to http://127.0.0.1:47213/mcp not followed; use that URL as the endpoint if it is the intended server (redirec in 6 ms
+08:56:38 preview exit_at_start: error Failed to preview tools for MCP server: SdkError: Connection closed in 39 ms
+08:57:38 preview hang_at_start: error Failed to preview tools for MCP server: SdkError: Request timed out in 60006 ms
+08:57:38 import {"success":true,"message":"Import complete. Imported: 13, Failed: 0","importedCount":13,"failedCount":0}
+08:57:39 discover python_fixture: {"ms":788,"success":true,"toolCount":5,"tools":["pyfix_echo","pyfix_add","pyfix_fail","pyfix_slow","pyfix_report_env_and_cwd"],"message":"Successfully discovered and registered 5 tools."}
+08:57:40 discover VideoAudioServer: {"ms":676,"success":true,"toolCount":32,"tools":["video_editing_get_media_duration","video_editing_convert_audio_properties","video_editing_convert_video_properties","video_editing_change_aspect_ratio","video_editing_con
+08:57:41 discover media-downloader: {"ms":709,"success":true,"toolCount":2,"tools":["download_audio","download_video"],"message":"Successfully discovered and registered 2 tools."}
+08:57:41 discover ssh_remote: {"ms":633,"success":true,"toolCount":4,"tools":["ssh_health_check","ssh_open_session","ssh_session_exec","ssh_close_session"],"message":"Successfully discovered and registered 4 tools."}
+08:57:42 discover fs_v1: {"ms":232,"success":true,"toolCount":14,"tools":["fsv1_read_file","fsv1_read_text_file","fsv1_read_media_file","fsv1_read_multiple_files","fsv1_write_file","fsv1_edit_file","fsv1_create_directory","fsv1_list_directory","
+08:57:42 discover fs_v2: {"ms":176,"success":true,"toolCount":14,"tools":["fsv2_read_file","fsv2_read_text_file","fsv2_read_media_file","fsv2_read_multiple_files","fsv2_write_file","fsv2_edit_file","fsv2_create_directory","fsv2_list_directory","
+08:57:42 discover token_http: {"ms":15,"success":true,"toolCount":2,"tools":["parity_http_auth_probe","parity_http_slow_probe"],"message":"Successfully discovered and registered 2 tools.","httpRequests":["token POST initialize pv=- auth=expected path
+08:57:42 discover same_origin_redirect_http: {"ms":11,"success":true,"toolCount":2,"tools":["moved_http_auth_probe","moved_http_slow_probe"],"message":"Successfully discovered and registered 2 tools.","httpRequests":["token POST initialize pv=- auth=expected path=/
+08:57:42 discover paging_http: {"ms":13,"success":true,"toolCount":4,"tools":["paging_page_one_a","paging_page_one_b","paging_page_two_a","paging_page_two_b"],"message":"Successfully discovered and registered 4 tools.","httpRequests":["paging POST ini
+08:57:42 discover unauthorized_http: {"ms":5,"success":false,"toolCount":0,"tools":[],"message":"SdkHttpError: Error POSTing to endpoint: unauthorized-parity","httpRequests":["unauth POST initialize pv=- auth=expected path=/mcp"]}
+08:57:42 discover cross_origin_redirect_http: {"ms":6,"success":false,"toolCount":0,"tools":[],"message":"SdkHttpError: Error POSTing to endpoint: Redirect to http://127.0.0.1:47213/mcp not followed; use that URL as the endpoint if it is the intended server (redirec
+08:57:42 discover exit_at_start: {"ms":48,"success":false,"toolCount":0,"tools":[],"message":"SdkError: Connection closed"}
+08:58:42 discover hang_at_start: {"ms":60005,"success":false,"toolCount":0,"tools":[],"message":"SdkError: Request timed out"}
+08:58:45 gateway v1_1_32_1: tools 79 negotiated null 
+08:58:45 gateway v2_default: tools 79 negotiated 2025-03-26 
+08:58:45 gateway v2_auto: tools 79 negotiated 2025-03-26 
+08:58:45 done /tmp/mcp182/results/after-servers+gateway.json
+== harness-before-matrix
+09:00:33 matrix native: {"projectTools":"pass","externalStdio":"pass","externalHttp":"pass","externalStdioFsV2":"pass"} turn 71557 ms
+09:00:44 matrix claude: {"projectTools":"pass","externalStdio":"pass","externalHttp":"pass","externalStdioFsV2":"pass"} turn 8287 ms
+09:00:59 cancel {"model":"qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234","callReachedServerAfterMs":11300,"serverSawCancelledNotificationAfterMs":50,"slowCallHttpClosedAfterMs":null,"runEventsAfterInterrupt":["AGENT_COMMAND_ACK +47ms","TOOL_EXECUTION_INTERRUPTED parity_http_slow_probe +47ms","TURN_INTERRUPTED +48ms"],"slowToolFinishedOnServer":[false],"httpSequence":["POST initialize pv=- auth=expected","POST notifications/initialized pv=2025-11-25 auth=expected","GET - pv=2025-11-25 auth=expected","POST tools/call pv=2025-11-25 auth=expected","POST notifications/cancelled pv=2025-11-25 auth=expected"]}
+09:00:59 done /tmp/mcp182/results/before-matrix+cancel.json
+== harness-after-matrix
+09:03:42 matrix native: {"projectTools":"pass","externalStdio":"pass","externalHttp":"pass","externalStdioFsV2":"pass"} turn 41135 ms
+09:03:56 matrix claude: {"projectTools":"pass","externalStdio":"pass","externalHttp":"pass","externalStdioFsV2":"pass"} turn 11834 ms
+09:04:06 cancel {"model":"qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234","callReachedServerAfterMs":6087,"serverSawCancelledNotificationAfterMs":40,"slowCallHttpClosedAfterMs":null,"runEventsAfterInterrupt":["AGENT_COMMAND_ACK +36ms","TOOL_EXECUTION_INTERRUPTED parity_http_slow_probe +36ms","TURN_INTERRUPTED +37ms"],"slowToolFinishedOnServer":[false],"httpSequence":["POST initialize pv=- auth=expected","POST notifications/initialized pv=2025-11-25 auth=expected","GET - pv=2025-11-25 auth=expected","POST tools/call pv=2025-11-25 auth=expected","POST notifications/cancelled pv=2025-11-25 auth=expected"]}
+09:04:06 done /tmp/mcp182/results/after-matrix+cancel.json

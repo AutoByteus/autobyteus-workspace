@@ -1,0 +1,10 @@
+# API-08 core library excerpt (full log: /tmp/abyt199-api/api08/core.log, not committed:     6846 lines)
+[mcp-test-server] python: used: python via uv (/private/tmp/a8.Bjrp5o/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+[mcp-test-server] python: used: python via uv (/private/tmp/a8.Bjrp5o/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+[mcp-test-server] python: used: python via uv (/private/tmp/a8.Bjrp5o/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+ Test Files  387 passed | 26 skipped (413)
+      Tests  2356 passed | 78 skipped (2434)
+   Duration  26.49s (transform 11.50s, setup 8.14s, import 75.29s, tests 94.69s, environment 36ms)

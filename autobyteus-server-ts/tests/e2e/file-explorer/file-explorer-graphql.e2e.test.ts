@@ -3,9 +3,10 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 const workspaceManager = getWorkspaceManager();
 
@@ -38,14 +39,21 @@ describe("File explorer GraphQL e2e", () => {
   let graphql: typeof graphqlFn;
   let tempRoot: string;
   let initialIds: Set<string>;
+  let dataRoot: string;
 
   beforeAll(async () => {
+    dataRoot = fs.mkdtempSync(path.join(os.tmpdir(), "file-explorer-graphql-appdata-"));
+    appConfigProvider.config.setCustomAppDataDir(dataRoot);
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
+  });
+
+  afterAll(() => {
+    if (dataRoot) fs.rmSync(dataRoot, { recursive: true, force: true });
   });
 
   beforeEach(() => {

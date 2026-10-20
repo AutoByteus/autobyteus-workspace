@@ -6,7 +6,10 @@
  *   and `uv sync --frozen` prepares it. The environment lives outside the repository: `UV_PROJECT_ENVIRONMENT`
  *   (default `<os.tmpdir()>/autobyteus-mcp-test-server-venv-<lock hash>`) and `UV_CACHE_DIR` (default
  *   `<os.tmpdir()>/autobyteus-mcp-test-server-uv-cache`); both can be set by the caller. The first preparation
- *   needs the network to fetch the pinned packages.
+ *   needs the network to fetch the pinned packages. The server is started as
+ *   `/usr/bin/env UV_PROJECT_ENVIRONMENT=… UV_CACHE_DIR=… PYTHONDONTWRITEBYTECODE=1 uv run …`: these location
+ *   variables are on the command line, not in the stdio config's `env`, so where `uv` and Python write files
+ *   does not depend on the env delivery of the code under test.
  * - "node": `tests/fixtures/mcp-stdio-fixture-server.mjs` (TypeScript SDK) with the current `node`; always available.
  * A preparation failure makes the Python cases skip with the reason (never a pass). Once a server has started,
  * every failure is a real test failure.
@@ -30,11 +33,13 @@ const nodeServerPath = path.join(fixturesDir, 'mcp-stdio-fixture-server.mjs');
 
 const lastLine = (text: string): string => text.trim().split('\n').filter(Boolean).at(-1) ?? '(no output)';
 
-/** uv's error line (`× …` or `error: …`) and its cause line; else the last line of output. */
+/** uv's whole error block (`× …` or `error: …` and every cause line, up to its `help:` line) on one line; else the last line of output. */
 const uvError = (text: string): string => {
   const lines = text.split('\n').map((line) => line.trim()).filter(Boolean);
-  const at = lines.findIndex((line) => line.startsWith('×') || line.startsWith('error:'));
-  return at >= 0 ? lines.slice(at, at + 2).join(' ') : lastLine(text);
+  const start = lines.findIndex((line) => line.startsWith('×') || line.startsWith('error:'));
+  if (start < 0) return lastLine(text);
+  const help = lines.findIndex((line, index) => index > start && line.startsWith('help:'));
+  return lines.slice(start, help < 0 ? undefined : help).join(' ');
 };
 
 const findOnPath = (command: string): string | null => {
@@ -51,7 +56,8 @@ const findOnPath = (command: string): string | null => {
 };
 
 let uvPath: string | null = null;
-let uvEnv: Record<string, string> = {};
+/** Where `uv` and Python write files; set on the launch command line and for `uv sync`. */
+let uvLocations: Record<string, string> = {};
 
 const preparePython = (): PreparedImpl => {
   uvPath = findOnPath('uv');
@@ -63,14 +69,14 @@ const preparePython = (): PreparedImpl => {
     .update(fs.readFileSync(path.join(pythonProjectDir, 'pyproject.toml')))
     .digest('hex')
     .slice(0, 12);
-  uvEnv = {
+  uvLocations = {
     UV_PROJECT_ENVIRONMENT:
       process.env.UV_PROJECT_ENVIRONMENT ?? path.join(os.tmpdir(), `autobyteus-mcp-test-server-venv-${lockHash}`),
     UV_CACHE_DIR: process.env.UV_CACHE_DIR ?? path.join(os.tmpdir(), 'autobyteus-mcp-test-server-uv-cache'),
     PYTHONDONTWRITEBYTECODE: '1'
   };
   const sync = spawnSync(uvPath, ['sync', '--frozen', '--project', pythonProjectDir], {
-    env: { ...process.env, ...uvEnv },
+    env: { ...process.env, ...uvLocations },
     encoding: 'utf8',
     timeout: 300_000
   });
@@ -78,7 +84,7 @@ const preparePython = (): PreparedImpl => {
     const detail = sync.error ? String(sync.error) : uvError(sync.stderr ?? '');
     return { impl: 'python', available: false, reason: `uv could not prepare the fixture: ${detail}` };
   }
-  return { impl: 'python', available: true, reason: `python via uv (${uvEnv.UV_PROJECT_ENVIRONMENT})` };
+  return { impl: 'python', available: true, reason: `python via uv (${uvLocations.UV_PROJECT_ENVIRONMENT})` };
 };
 
 let prepared: PreparedImpl[] | null = null;
@@ -97,9 +103,19 @@ export const prepareMcpTestServers = (): PreparedImpl[] => {
 const serverCommand = (impl: McpTestServerImpl, serverArgs: string[]): { command: string; args: string[]; env: Record<string, string> } =>
   impl === 'python'
     ? {
-        command: uvPath as string,
-        args: ['run', '--frozen', '--project', pythonProjectDir, 'python', path.join(pythonProjectDir, 'server.py'), ...serverArgs],
-        env: uvEnv
+        command: '/usr/bin/env',
+        args: [
+          ...Object.entries(uvLocations).map(([name, value]) => `${name}=${value}`),
+          uvPath as string,
+          'run',
+          '--frozen',
+          '--project',
+          pythonProjectDir,
+          'python',
+          path.join(pythonProjectDir, 'server.py'),
+          ...serverArgs
+        ],
+        env: {}
       }
     : { command: process.execPath, args: [nodeServerPath, ...serverArgs], env: {} };
 

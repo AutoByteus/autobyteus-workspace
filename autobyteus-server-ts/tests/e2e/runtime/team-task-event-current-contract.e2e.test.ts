@@ -85,6 +85,7 @@ describe("current Team delegated-execution stream contract", () => {
           platform_agent_run_id: null,
           delegator_agent_run_id: "coordinator-run-001",
           started_at: startedAt,
+          source: { kind: "agent", agent_definition_id: "worker", launch_configuration: launch },
           settled_at: null,
         },
       },
@@ -100,6 +101,7 @@ describe("current Team delegated-execution stream contract", () => {
           agent_run_id: "task-agent-run-001",
           platform_agent_run_id: null,
           started_at: startedAt,
+          source: { kind: "agent", agent_definition_id: "worker", launch_configuration: launch },
         },
       },
     })).toThrow();

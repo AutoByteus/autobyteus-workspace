@@ -1,0 +1,195 @@
+# API-14 RR-001: SDK-independent raw JSON-RPC probe (initialize 2025-11-25, tools/list all pages) of each real server; per server: answered protocolVersion, tool count, outputSchema/inputSchema $schema dialects; command: node raw-dialect-probe.mjs dialect-servers.json out.json; 2026-10-20T09:18:12Z (ran 08:44Z)
+{
+  "python_fixture": {
+    "serverInfo": {
+      "name": "autobyteus-mcp-test-server",
+      "version": "1.0.0"
+    },
+    "protocolVersion": "2025-11-25",
+    "toolCount": 5,
+    "pages": 1,
+    "outputSchemaDialects": {
+      "(no $schema)": 5
+    },
+    "inputSchemaDialects": {
+      "(no $schema)": 5
+    },
+    "toolsWithOutputSchema": [
+      "echo",
+      "add",
+      "fail",
+      "slow",
+      "report_env_and_cwd"
+    ]
+  },
+  "VideoAudioServer": {
+    "serverInfo": {
+      "name": "VideoAudioServer",
+      "version": "1.28.1"
+    },
+    "protocolVersion": "2025-11-25",
+    "toolCount": 32,
+    "pages": 1,
+    "outputSchemaDialects": {
+      "(no $schema)": 32
+    },
+    "inputSchemaDialects": {
+      "(no $schema)": 32
+    },
+    "toolsWithOutputSchema": [
+      "get_media_duration",
+      "convert_audio_properties",
+      "convert_video_properties",
+      "change_aspect_ratio",
+      "convert_audio_format",
+      "set_audio_bitrate",
+      "set_audio_sample_rate",
+      "set_audio_channels",
+      "convert_video_format",
+      "set_video_resolution",
+      "set_video_codec",
+      "set_video_bitrate",
+      "set_video_frame_rate",
+      "set_video_audio_track_codec",
+      "set_video_audio_track_bitrate",
+      "set_video_audio_track_sample_rate",
+      "set_video_audio_track_channels",
+      "trim_video",
+      "concatenate_videos",
+      "concatenate_audios",
+      "change_video_speed",
+      "remove_silence",
+      "extract_audio_from_video",
+      "replace_audio_track",
+      "add_subtitles",
+      "add_text_overlay",
+      "add_image_overlay",
+      "create_video_from_image_and_audio",
+      "extract_frame_from_video",
+      "add_b_roll",
+      "add_basic_transitions",
+      "health_check"
+    ]
+  },
+  "media-downloader": {
+    "serverInfo": {
+      "name": "yt-dlp-mcp",
+      "version": "1.26.0"
+    },
+    "protocolVersion": "2025-11-25",
+    "toolCount": 2,
+    "pages": 1,
+    "outputSchemaDialects": {
+      "(no $schema)": 2
+    },
+    "inputSchemaDialects": {
+      "(no $schema)": 2
+    },
+    "toolsWithOutputSchema": [
+      "download_audio",
+      "download_video"
+    ]
+  },
+  "ssh_remote": {
+    "serverInfo": {
+      "name": "ssh-mcp",
+      "version": "1.26.0"
+    },
+    "protocolVersion": "2025-11-25",
+    "toolCount": 4,
+    "pages": 1,
+    "outputSchemaDialects": {
+      "(no $schema)": 4
+    },
+    "inputSchemaDialects": {
+      "(no $schema)": 4
+    },
+    "toolsWithOutputSchema": [
+      "ssh_health_check",
+      "ssh_open_session",
+      "ssh_session_exec",
+      "ssh_close_session"
+    ]
+  },
+  "fs_v1_2026_8_31": {
+    "serverInfo": {
+      "name": "secure-filesystem-server",
+      "version": "0.2.0"
+    },
+    "protocolVersion": "2025-11-25",
+    "toolCount": 14,
+    "pages": 1,
+    "outputSchemaDialects": {
+      "http://json-schema.org/draft-07/schema#": 14
+    },
+    "inputSchemaDialects": {
+      "http://json-schema.org/draft-07/schema#": 14
+    },
+    "toolsWithOutputSchema": [
+      "read_file",
+      "read_text_file",
+      "read_media_file",
+      "read_multiple_files",
+      "write_file",
+      "edit_file",
+      "create_directory",
+      "list_directory",
+      "list_directory_with_sizes",
+      "directory_tree",
+      "move_file",
+      "search_files",
+      "get_file_info",
+      "list_allowed_directories"
+    ]
+  },
+  "fs_v2_2_0_0": {
+    "serverInfo": {
+      "name": "secure-filesystem-server",
+      "version": "2.0.0"
+    },
+    "protocolVersion": "2025-11-25",
+    "toolCount": 14,
+    "pages": 1,
+    "outputSchemaDialects": {
+      "https://json-schema.org/draft/2020-12/schema": 14
+    },
+    "inputSchemaDialects": {
+      "https://json-schema.org/draft/2020-12/schema": 14
+    },
+    "toolsWithOutputSchema": [
+      "read_file",
+      "read_text_file",
+      "read_media_file",
+      "read_multiple_files",
+      "write_file",
+      "edit_file",
+      "create_directory",
+      "list_directory",
+      "list_directory_with_sizes",
+      "directory_tree",
+      "move_file",
+      "search_files",
+      "get_file_info",
+      "list_allowed_directories"
+    ]
+  },
+  "node_fixture_branch": {
+    "serverInfo": {
+      "name": "autobyteus-mcp-test-server",
+      "version": "1.0.0"
+    },
+    "protocolVersion": "2025-11-25",
+    "toolCount": 5,
+    "pages": 1,
+    "outputSchemaDialects": {
+      "(no outputSchema)": 4,
+      "https://json-schema.org/draft/2020-12/schema": 1
+    },
+    "inputSchemaDialects": {
+      "https://json-schema.org/draft/2020-12/schema": 5
+    },
+    "toolsWithOutputSchema": [
+      "add"
+    ]
+  }
+}

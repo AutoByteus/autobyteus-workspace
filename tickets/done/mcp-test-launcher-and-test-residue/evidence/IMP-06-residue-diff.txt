@@ -1,0 +1,40 @@
+# IMP-06
+# Command: /tmp/abyt199-impl/ac005.sh (script below): snapshot = git status --ignored --porcelain --untracked-files=all, minus node_modules and '?? tickets/'; run pnpm -C autobyteus-ts test, pnpm -C autobyteus-server-ts test:unit, pnpm test:e2e (server built at 33fc5f4e16); snapshot after each
+# Commit: 33fc5f4e16 (pre-rebase; base dc530fdcb0)
+# Env: macOS (Darwin 25.5.0), node v22.23.1, uv 0.10.2; env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-20
+
+## exit codes
+ts exit 0
+server-unit exit 0
+e2e exit 1
+diff exit 0
+## before:     6717 entries total, 6716 under */dist/; entries outside dist/:
+!! autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+## after-ts:     6717 entries total, 6716 under */dist/; entries outside dist/:
+!! autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+## after-unit:     6717 entries total, 6716 under */dist/; entries outside dist/:
+!! autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+## after-e2e:     6717 entries total, 6716 under */dist/; entries outside dist/:
+!! autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+## diff before vs after-e2e over ALL entries incl. dist (empty = no new or removed entry)
+(end of diff)
+## script
+#!/bin/bash
+set -u
+W=/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue
+O=/tmp/abyt199-impl
+cd "$W"
+snap() { git status --ignored --porcelain --untracked-files=all | grep -v node_modules | grep -v '^?? tickets/' | sort; }
+snap > $O/ac005-before.txt
+H="$(cd "$(mktemp -d)" && pwd -P)"
+env -i PATH="$PATH" HOME="$H" TMPDIR="$TMPDIR" pnpm -C autobyteus-ts test > $O/ac005-ts-test.log 2>&1; echo "ts exit $?" > $O/ac005-exits.txt
+snap > $O/ac005-after-ts.txt
+H="$(cd "$(mktemp -d)" && pwd -P)"
+env -i PATH="$PATH" HOME="$H" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts test:unit > $O/ac005-server-unit.log 2>&1; echo "server-unit exit $?" >> $O/ac005-exits.txt
+snap > $O/ac005-after-unit.txt
+H="$(cd "$(mktemp -d)" && pwd -P)"
+env -i PATH="$PATH" HOME="$H" TMPDIR="$TMPDIR" pnpm test:e2e > $O/ac005-e2e.log 2>&1; echo "e2e exit $?" >> $O/ac005-exits.txt
+snap > $O/ac005-after-e2e.txt
+diff $O/ac005-before.txt $O/ac005-after-e2e.txt > $O/ac005-diff.txt; echo "diff exit $?" >> $O/ac005-exits.txt
+cat $O/ac005-exits.txt

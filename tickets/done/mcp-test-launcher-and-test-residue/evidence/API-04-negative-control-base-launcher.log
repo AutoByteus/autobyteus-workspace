@@ -1,0 +1,151 @@
+# API-04 (negative control for API-03)
+# Command: same mutation as API-03 in autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts, plus autobyteus-ts/tests/integration/tools/mcp/mcp-test-server-launcher.ts replaced by its base version (git show aac5da3112:autobyteus-ts/tests/integration/tools/mcp/mcp-test-server-launcher.ts, i.e. location vars in config env); then env -i PATH HOME=<resolved temp> TMPDIR pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts --reporter=verbose; both files reverted with git checkout, the created autobyteus-ts/tests/fixtures/mcp-test-server/.venv removed
+# Commit: 7c9cadba2f + mutation + base launcher
+# Env: macOS 25.5.0, node v22.23.1, uv 0.10.2 (Homebrew 2026-02-10)
+# Date: 2026-10-20T08:39:30Z
+## changed files:  M autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts  M autobyteus-ts/tests/integration/tools/mcp/mcp-test-server-launcher.ts 
+## fixture folder before: pyproject.toml server.py uv.lock 
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts
+
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+Using CPython 3.11.15 interpreter at: /Users/normy/.local/bin/python3.11
+Creating virtual environment at: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts/tests/fixtures/mcp-test-server/.venv
+Downloading cryptography (3.7MiB)
+Downloading pydantic-core (2.0MiB)
+ Downloaded pydantic-core
+ Downloaded cryptography
+Installed 28 packages in 23ms
+Tool 'fail' failed: 'Error executing tool fail: dummy failure'
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > lists the tools and calls echo, add, fail and slow 3502ms
+ × tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > delivers the configured env and cwd to the server 470ms
+   → expected { value: null, …(1) } to deeply equal { value: 'test-dummy', …(1) }
+ × tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > ends the server process when a connected server is closed 10452ms
+   → The test server wrote no pid to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-python-kXdYjK/server.pid within 10000 ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > fails to connect, with an error, when the server exits at start 434ms
+ × tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > does not connect to a server that hangs at start, and closing it ends its process 12041ms
+   → The test server wrote no pid to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-python-I6GCDF/server.pid within 10000 ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > lists the tools and calls echo, add, fail and slow 512ms
+ × tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > delivers the configured env and cwd to the server 147ms
+   → expected { value: null, …(1) } to deeply equal { value: 'test-dummy', …(1) }
+ × tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > ends the server process when a connected server is closed 10158ms
+   → The test server wrote no pid to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-node-htPKqq/server.pid within 10000 ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > fails to connect, with an error, when the server exits at start 187ms
+ × tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > does not connect to a server that hangs at start, and closing it ends its process 12049ms
+   → The test server wrote no pid to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-node-PoSVOU/server.pid within 10000 ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > delivers the configured env and cwd to the server
+AssertionError: expected { value: null, …(1) } to deeply equal { value: 'test-dummy', …(1) }
+
+- Expected
++ Received
+
+  {
+    "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-python-whYK93",
+-   "value": "test-dummy",
++   "value": null,
+  }
+
+ ❯ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts:73:59
+     71|       const server = start('normal', { MCP_TEST_DUMMY_VALUE: 'test-dum…
+     72|       const result = (await server.callTool('report_env_and_cwd', { na…
+     73|       expect(JSON.parse(result.content[0]?.text ?? '{}')).toEqual({ va…
+       |                                                           ^
+     74|     });
+     75| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > ends the server process when a connected server is closed
+Error: The test server wrote no pid to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-python-kXdYjK/server.pid within 10000 ms
+ ❯ readPidFile tests/integration/tools/mcp/mcp-test-server-launcher.ts:203:9
+    201|     await new Promise((resolve) => setTimeout(resolve, 50));
+    202|   }
+    203|   throw new Error(`The test server wrote no pid to ${pidFile} within $…
+       |         ^
+    204| };
+    205| 
+ ❯ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts:79:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > does not connect to a server that hangs at start, and closing it ends its process
+Error: The test server wrote no pid to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-python-I6GCDF/server.pid within 10000 ms
+ ❯ readPidFile tests/integration/tools/mcp/mcp-test-server-launcher.ts:203:9
+    201|     await new Promise((resolve) => setTimeout(resolve, 50));
+    202|   }
+    203|   throw new Error(`The test server wrote no pid to ${pidFile} within $…
+       |         ^
+    204| };
+    205| 
+ ❯ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts:100:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > delivers the configured env and cwd to the server
+AssertionError: expected { value: null, …(1) } to deeply equal { value: 'test-dummy', …(1) }
+
+- Expected
++ Received
+
+  {
+    "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-node-X59bOw",
+-   "value": "test-dummy",
++   "value": null,
+  }
+
+ ❯ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts:73:59
+     71|       const server = start('normal', { MCP_TEST_DUMMY_VALUE: 'test-dum…
+     72|       const result = (await server.callTool('report_env_and_cwd', { na…
+     73|       expect(JSON.parse(result.content[0]?.text ?? '{}')).toEqual({ va…
+       |                                                           ^
+     74|     });
+     75| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > ends the server process when a connected server is closed
+Error: The test server wrote no pid to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-node-htPKqq/server.pid within 10000 ms
+ ❯ readPidFile tests/integration/tools/mcp/mcp-test-server-launcher.ts:203:9
+    201|     await new Promise((resolve) => setTimeout(resolve, 50));
+    202|   }
+    203|   throw new Error(`The test server wrote no pid to ${pidFile} within $…
+       |         ^
+    204| };
+    205| 
+ ❯ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts:79:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > does not connect to a server that hangs at start, and closing it ends its process
+Error: The test server wrote no pid to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-stdio-node-PoSVOU/server.pid within 10000 ms
+ ❯ readPidFile tests/integration/tools/mcp/mcp-test-server-launcher.ts:203:9
+    201|     await new Promise((resolve) => setTimeout(resolve, 50));
+    202|   }
+    203|   throw new Error(`The test server wrote no pid to ${pidFile} within $…
+       |         ^
+    204| };
+    205| 
+ ❯ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts:100:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 4 passed (10)
+   Start at  10:39:32
+   Duration  50.26s (transform 71ms, setup 47ms, import 156ms, tests 49.95s, environment 0ms)
+
+## exit 1
+## fixture folder after: .venv pyproject.toml server.py uv.lock 
+## git status of fixture: []
+## .venv python: autobyteus-ts/tests/fixtures/mcp-test-server/.venv/bin/python autobyteus-ts/tests/fixtures/mcp-test-server/.venv/bin/python3 
+## after revert and .venv removal, git status --ignored of autobyteus-ts (minus node_modules/dist): []

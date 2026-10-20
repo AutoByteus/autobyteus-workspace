@@ -1,4 +1,4 @@
-import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import type { Client } from '@modelcontextprotocol/client';
 import { BaseManagedMcpServer } from './base-managed-mcp-server.js';
 import type { StdioMcpServerConfig } from '../types.js';
 
@@ -7,8 +7,8 @@ export class StdioManagedMcpServer extends BaseManagedMcpServer {
     const config = this.configObject as StdioMcpServerConfig;
     // Loaded on first use, so importing this module does not load the MCP SDK.
     const [{ Client }, { StdioClientTransport }] = await Promise.all([
-      import('@modelcontextprotocol/sdk/client/index.js'),
-      import('@modelcontextprotocol/sdk/client/stdio.js')
+      import('@modelcontextprotocol/client'),
+      import('@modelcontextprotocol/client/stdio')
     ]);
 
     const transport = new StdioClientTransport({

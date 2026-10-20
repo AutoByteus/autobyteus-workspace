@@ -1,0 +1,1024 @@
+{
+  "side": "after",
+  "backend": "http://127.0.0.1:63263",
+  "startedAt": "2026-10-20T08:56:35.204Z",
+  "servers": {
+    "python_fixture": {
+      "preview": {
+        "ms": 855,
+        "toolCount": 5,
+        "tools": [
+          "pyfix_echo",
+          "pyfix_add",
+          "pyfix_fail",
+          "pyfix_slow",
+          "pyfix_report_env_and_cwd"
+        ],
+        "error": null,
+        "startsDuringPreview": {
+          "python_fixture": 1
+        }
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 788,
+        "success": true,
+        "toolCount": 5,
+        "tools": [
+          "pyfix_echo",
+          "pyfix_add",
+          "pyfix_fail",
+          "pyfix_slow",
+          "pyfix_report_env_and_cwd"
+        ],
+        "message": "Successfully discovered and registered 5 tools."
+      }
+    },
+    "VideoAudioServer": {
+      "preview": {
+        "ms": 785,
+        "toolCount": 32,
+        "tools": [
+          "video_editing_get_media_duration",
+          "video_editing_convert_audio_properties",
+          "video_editing_convert_video_properties",
+          "video_editing_change_aspect_ratio",
+          "video_editing_convert_audio_format",
+          "video_editing_set_audio_bitrate",
+          "video_editing_set_audio_sample_rate",
+          "video_editing_set_audio_channels",
+          "video_editing_convert_video_format",
+          "video_editing_set_video_resolution",
+          "video_editing_set_video_codec",
+          "video_editing_set_video_bitrate",
+          "video_editing_set_video_frame_rate",
+          "video_editing_set_video_audio_track_codec",
+          "video_editing_set_video_audio_track_bitrate",
+          "video_editing_set_video_audio_track_sample_rate",
+          "video_editing_set_video_audio_track_channels",
+          "video_editing_trim_video",
+          "video_editing_concatenate_videos",
+          "video_editing_concatenate_audios",
+          "video_editing_change_video_speed",
+          "video_editing_remove_silence",
+          "video_editing_extract_audio_from_video",
+          "video_editing_replace_audio_track",
+          "video_editing_add_subtitles",
+          "video_editing_add_text_overlay",
+          "video_editing_add_image_overlay",
+          "video_editing_create_video_from_image_and_audio",
+          "video_editing_extract_frame_from_video",
+          "video_editing_add_b_roll",
+          "video_editing_add_basic_transitions",
+          "video_editing_health_check"
+        ],
+        "error": null,
+        "startsDuringPreview": {}
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 676,
+        "success": true,
+        "toolCount": 32,
+        "tools": [
+          "video_editing_get_media_duration",
+          "video_editing_convert_audio_properties",
+          "video_editing_convert_video_properties",
+          "video_editing_change_aspect_ratio",
+          "video_editing_convert_audio_format",
+          "video_editing_set_audio_bitrate",
+          "video_editing_set_audio_sample_rate",
+          "video_editing_set_audio_channels",
+          "video_editing_convert_video_format",
+          "video_editing_set_video_resolution",
+          "video_editing_set_video_codec",
+          "video_editing_set_video_bitrate",
+          "video_editing_set_video_frame_rate",
+          "video_editing_set_video_audio_track_codec",
+          "video_editing_set_video_audio_track_bitrate",
+          "video_editing_set_video_audio_track_sample_rate",
+          "video_editing_set_video_audio_track_channels",
+          "video_editing_trim_video",
+          "video_editing_concatenate_videos",
+          "video_editing_concatenate_audios",
+          "video_editing_change_video_speed",
+          "video_editing_remove_silence",
+          "video_editing_extract_audio_from_video",
+          "video_editing_replace_audio_track",
+          "video_editing_add_subtitles",
+          "video_editing_add_text_overlay",
+          "video_editing_add_image_overlay",
+          "video_editing_create_video_from_image_and_audio",
+          "video_editing_extract_frame_from_video",
+          "video_editing_add_b_roll",
+          "video_editing_add_basic_transitions",
+          "video_editing_health_check"
+        ],
+        "message": "Successfully discovered and registered 32 tools."
+      }
+    },
+    "media-downloader": {
+      "preview": {
+        "ms": 827,
+        "toolCount": 2,
+        "tools": [
+          "download_audio",
+          "download_video"
+        ],
+        "error": null,
+        "startsDuringPreview": {}
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 709,
+        "success": true,
+        "toolCount": 2,
+        "tools": [
+          "download_audio",
+          "download_video"
+        ],
+        "message": "Successfully discovered and registered 2 tools."
+      }
+    },
+    "ssh_remote": {
+      "preview": {
+        "ms": 673,
+        "toolCount": 4,
+        "tools": [
+          "ssh_health_check",
+          "ssh_open_session",
+          "ssh_session_exec",
+          "ssh_close_session"
+        ],
+        "error": null,
+        "startsDuringPreview": {}
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 633,
+        "success": true,
+        "toolCount": 4,
+        "tools": [
+          "ssh_health_check",
+          "ssh_open_session",
+          "ssh_session_exec",
+          "ssh_close_session"
+        ],
+        "message": "Successfully discovered and registered 4 tools."
+      }
+    },
+    "fs_v1": {
+      "preview": {
+        "ms": 185,
+        "toolCount": 14,
+        "tools": [
+          "fsv1_read_file",
+          "fsv1_read_text_file",
+          "fsv1_read_media_file",
+          "fsv1_read_multiple_files",
+          "fsv1_write_file",
+          "fsv1_edit_file",
+          "fsv1_create_directory",
+          "fsv1_list_directory",
+          "fsv1_list_directory_with_sizes",
+          "fsv1_directory_tree",
+          "fsv1_move_file",
+          "fsv1_search_files",
+          "fsv1_get_file_info",
+          "fsv1_list_allowed_directories"
+        ],
+        "error": null,
+        "startsDuringPreview": {
+          "fs_v1": 1
+        }
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 232,
+        "success": true,
+        "toolCount": 14,
+        "tools": [
+          "fsv1_read_file",
+          "fsv1_read_text_file",
+          "fsv1_read_media_file",
+          "fsv1_read_multiple_files",
+          "fsv1_write_file",
+          "fsv1_edit_file",
+          "fsv1_create_directory",
+          "fsv1_list_directory",
+          "fsv1_list_directory_with_sizes",
+          "fsv1_directory_tree",
+          "fsv1_move_file",
+          "fsv1_search_files",
+          "fsv1_get_file_info",
+          "fsv1_list_allowed_directories"
+        ],
+        "message": "Successfully discovered and registered 14 tools."
+      }
+    },
+    "fs_v2": {
+      "preview": {
+        "ms": 160,
+        "toolCount": 14,
+        "tools": [
+          "fsv2_read_file",
+          "fsv2_read_text_file",
+          "fsv2_read_media_file",
+          "fsv2_read_multiple_files",
+          "fsv2_write_file",
+          "fsv2_edit_file",
+          "fsv2_create_directory",
+          "fsv2_list_directory",
+          "fsv2_list_directory_with_sizes",
+          "fsv2_directory_tree",
+          "fsv2_move_file",
+          "fsv2_search_files",
+          "fsv2_get_file_info",
+          "fsv2_list_allowed_directories"
+        ],
+        "error": null,
+        "startsDuringPreview": {
+          "fs_v2": 1
+        }
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 176,
+        "success": true,
+        "toolCount": 14,
+        "tools": [
+          "fsv2_read_file",
+          "fsv2_read_text_file",
+          "fsv2_read_media_file",
+          "fsv2_read_multiple_files",
+          "fsv2_write_file",
+          "fsv2_edit_file",
+          "fsv2_create_directory",
+          "fsv2_list_directory",
+          "fsv2_list_directory_with_sizes",
+          "fsv2_directory_tree",
+          "fsv2_move_file",
+          "fsv2_search_files",
+          "fsv2_get_file_info",
+          "fsv2_list_allowed_directories"
+        ],
+        "message": "Successfully discovered and registered 14 tools."
+      }
+    },
+    "token_http": {
+      "preview": {
+        "ms": 54,
+        "toolCount": 2,
+        "tools": [
+          "parity_http_auth_probe",
+          "parity_http_slow_probe"
+        ],
+        "error": null,
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "token POST initialize pv=- auth=expected path=/mcp",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 15,
+        "success": true,
+        "toolCount": 2,
+        "tools": [
+          "parity_http_auth_probe",
+          "parity_http_slow_probe"
+        ],
+        "message": "Successfully discovered and registered 2 tools.",
+        "httpRequests": [
+          "token POST initialize pv=- auth=expected path=/mcp",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp"
+        ]
+      }
+    },
+    "same_origin_redirect_http": {
+      "preview": {
+        "ms": 17,
+        "toolCount": 2,
+        "tools": [
+          "moved_http_auth_probe",
+          "moved_http_slow_probe"
+        ],
+        "error": null,
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "token POST initialize pv=- auth=expected path=/mcp-old",
+          "token POST initialize pv=- auth=expected path=/mcp",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp-old",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp-old",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp-old",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 11,
+        "success": true,
+        "toolCount": 2,
+        "tools": [
+          "moved_http_auth_probe",
+          "moved_http_slow_probe"
+        ],
+        "message": "Successfully discovered and registered 2 tools.",
+        "httpRequests": [
+          "token POST initialize pv=- auth=expected path=/mcp-old",
+          "token POST initialize pv=- auth=expected path=/mcp",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp-old",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp-old",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp-old",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp"
+        ]
+      }
+    },
+    "paging_http": {
+      "preview": {
+        "ms": 15,
+        "toolCount": 4,
+        "tools": [
+          "paging_page_one_a",
+          "paging_page_one_b",
+          "paging_page_two_a",
+          "paging_page_two_b"
+        ],
+        "error": null,
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "paging POST initialize pv=- auth=none path=/mcp",
+          "paging POST notifications/initialized pv=2025-11-25 auth=none path=/mcp",
+          "paging GET - pv=2025-11-25 auth=none path=/mcp",
+          "paging POST tools/list pv=2025-11-25 auth=none path=/mcp",
+          "paging POST tools/list pv=2025-11-25 auth=none path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 13,
+        "success": true,
+        "toolCount": 4,
+        "tools": [
+          "paging_page_one_a",
+          "paging_page_one_b",
+          "paging_page_two_a",
+          "paging_page_two_b"
+        ],
+        "message": "Successfully discovered and registered 4 tools.",
+        "httpRequests": [
+          "paging POST initialize pv=- auth=none path=/mcp",
+          "paging POST notifications/initialized pv=2025-11-25 auth=none path=/mcp",
+          "paging GET - pv=2025-11-25 auth=none path=/mcp",
+          "paging POST tools/list pv=2025-11-25 auth=none path=/mcp",
+          "paging POST tools/list pv=2025-11-25 auth=none path=/mcp"
+        ]
+      }
+    },
+    "unauthorized_http": {
+      "preview": {
+        "ms": 6,
+        "toolCount": null,
+        "tools": null,
+        "error": "Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: unauthorized-parity",
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "unauth POST initialize pv=- auth=expected path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 5,
+        "success": false,
+        "toolCount": 0,
+        "tools": [],
+        "message": "SdkHttpError: Error POSTing to endpoint: unauthorized-parity",
+        "httpRequests": [
+          "unauth POST initialize pv=- auth=expected path=/mcp"
+        ]
+      }
+    },
+    "cross_origin_redirect_http": {
+      "preview": {
+        "ms": 6,
+        "toolCount": null,
+        "tools": null,
+        "error": "Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: Redirect to http://127.0.0.1:47213/mcp not followed; use that URL as the endpoint if it is the intended server (redirectPolicy: 'same-origin')",
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "redirector POST initialize pv=- auth=expected path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 6,
+        "success": false,
+        "toolCount": 0,
+        "tools": [],
+        "message": "SdkHttpError: Error POSTing to endpoint: Redirect to http://127.0.0.1:47213/mcp not followed; use that URL as the endpoint if it is the intended server (redirectPolicy: 'same-origin')",
+        "httpRequests": [
+          "redirector POST initialize pv=- auth=expected path=/mcp"
+        ]
+      }
+    },
+    "exit_at_start": {
+      "preview": {
+        "ms": 39,
+        "toolCount": null,
+        "tools": null,
+        "error": "Failed to preview tools for MCP server: SdkError: Connection closed",
+        "startsDuringPreview": {}
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 48,
+        "success": false,
+        "toolCount": 0,
+        "tools": [],
+        "message": "SdkError: Connection closed"
+      }
+    },
+    "hang_at_start": {
+      "preview": {
+        "ms": 60006,
+        "toolCount": null,
+        "tools": null,
+        "error": "Failed to preview tools for MCP server: SdkError: Request timed out",
+        "startsDuringPreview": {}
+      },
+      "responsiveness": {
+        "healthDuringHang": {
+          "ok": true,
+          "value": 200,
+          "ms": 3
+        },
+        "graphqlDuringHang": {
+          "ok": true,
+          "value": "ok",
+          "ms": 3
+        }
+      },
+      "discover": {
+        "ms": 60005,
+        "success": false,
+        "toolCount": 0,
+        "tools": [],
+        "message": "SdkError: Request timed out"
+      }
+    }
+  },
+  "gateway": {
+    "v1_1_32_1": {
+      "connectMs": 13,
+      "negotiated": null,
+      "era": null,
+      "listMs": 7,
+      "toolCount": 79,
+      "listError": null,
+      "tools": [
+        "download_audio",
+        "download_video",
+        "fsv1_create_directory",
+        "fsv1_directory_tree",
+        "fsv1_edit_file",
+        "fsv1_get_file_info",
+        "fsv1_list_allowed_directories",
+        "fsv1_list_directory",
+        "fsv1_list_directory_with_sizes",
+        "fsv1_move_file",
+        "fsv1_read_file",
+        "fsv1_read_media_file",
+        "fsv1_read_multiple_files",
+        "fsv1_read_text_file",
+        "fsv1_search_files",
+        "fsv1_write_file",
+        "fsv2_create_directory",
+        "fsv2_directory_tree",
+        "fsv2_edit_file",
+        "fsv2_get_file_info",
+        "fsv2_list_allowed_directories",
+        "fsv2_list_directory",
+        "fsv2_list_directory_with_sizes",
+        "fsv2_move_file",
+        "fsv2_read_file",
+        "fsv2_read_media_file",
+        "fsv2_read_multiple_files",
+        "fsv2_read_text_file",
+        "fsv2_search_files",
+        "fsv2_write_file",
+        "moved_http_auth_probe",
+        "moved_http_slow_probe",
+        "paging_page_one_a",
+        "paging_page_one_b",
+        "paging_page_two_a",
+        "paging_page_two_b",
+        "parity_http_auth_probe",
+        "parity_http_slow_probe",
+        "pyfix_add",
+        "pyfix_echo",
+        "pyfix_fail",
+        "pyfix_report_env_and_cwd",
+        "pyfix_slow",
+        "ssh_close_session",
+        "ssh_health_check",
+        "ssh_open_session",
+        "ssh_session_exec",
+        "video_editing_add_b_roll",
+        "video_editing_add_basic_transitions",
+        "video_editing_add_image_overlay",
+        "video_editing_add_subtitles",
+        "video_editing_add_text_overlay",
+        "video_editing_change_aspect_ratio",
+        "video_editing_change_video_speed",
+        "video_editing_concatenate_audios",
+        "video_editing_concatenate_videos",
+        "video_editing_convert_audio_format",
+        "video_editing_convert_audio_properties",
+        "video_editing_convert_video_format",
+        "video_editing_convert_video_properties",
+        "video_editing_create_video_from_image_and_audio",
+        "video_editing_extract_audio_from_video",
+        "video_editing_extract_frame_from_video",
+        "video_editing_get_media_duration",
+        "video_editing_health_check",
+        "video_editing_remove_silence",
+        "video_editing_replace_audio_track",
+        "video_editing_set_audio_bitrate",
+        "video_editing_set_audio_channels",
+        "video_editing_set_audio_sample_rate",
+        "video_editing_set_video_audio_track_bitrate",
+        "video_editing_set_video_audio_track_channels",
+        "video_editing_set_video_audio_track_codec",
+        "video_editing_set_video_audio_track_sample_rate",
+        "video_editing_set_video_bitrate",
+        "video_editing_set_video_codec",
+        "video_editing_set_video_frame_rate",
+        "video_editing_set_video_resolution",
+        "video_editing_trim_video"
+      ],
+      "calls": {
+        "parity_http_auth_probe": {
+          "ms": 15,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-AFTER",
+          "structured": null
+        },
+        "moved_http_auth_probe": {
+          "ms": 14,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-AFTER",
+          "structured": null
+        },
+        "video_editing_get_media_duration": {
+          "ms": 1600,
+          "isError": false,
+          "text": "62.314667",
+          "structured": {
+            "result": 62.314667
+          }
+        },
+        "fsv1_read_text_file": {
+          "ms": 261,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_read_text_file": {
+          "ms": 185,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_list_allowed_directories": {
+          "ms": 4,
+          "isError": false,
+          "text": "Allowed directories:\n/tmp/mcp182/servers/fsroot\n/private/tmp/mcp182/servers/fsroot",
+          "structured": {
+            "content": "Allowed directories:\n/tmp/mcp182/servers/fsroot\n/private/tmp/mcp182/servers/fsroot"
+          }
+        },
+        "pyfix_echo": {
+          "ms": 798,
+          "isError": false,
+          "text": "parity-echo",
+          "structured": {
+            "result": "parity-echo"
+          }
+        },
+        "pyfix_add": {
+          "ms": 8,
+          "isError": false,
+          "text": "{\n  \"sum\": 5.0\n}",
+          "structured": {
+            "sum": 5
+          }
+        },
+        "pyfix_fail": {
+          "ms": 10,
+          "isError": true,
+          "text": "Error executing tool fail: parity-tool-error",
+          "structured": null
+        },
+        "pyfix_report_env_and_cwd": {
+          "ms": 6,
+          "isError": false,
+          "text": "{\"value\": \"parity-env-dummy\", \"cwd\": \"/private/tmp/mcp182/servers/after/autobyteus-ts/tests/fixtures/mcp-test-server\"}",
+          "structured": {
+            "result": "{\"value\": \"parity-env-dummy\", \"cwd\": \"/private/tmp/mcp182/servers/after/autobyteus-ts/tests/fixtures/mcp-test-server\"}"
+          }
+        }
+      },
+      "requests": [
+        "POST initialize pv=- -> 200",
+        "POST notifications/initialized pv=2025-03-26 -> 202",
+        "POST tools/list pv=2025-03-26 -> 200",
+        "GET - pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200"
+      ]
+    },
+    "v2_default": {
+      "connectMs": 56,
+      "negotiated": "2025-03-26",
+      "era": "legacy",
+      "listMs": 9,
+      "toolCount": 79,
+      "listError": null,
+      "tools": [
+        "download_audio",
+        "download_video",
+        "fsv1_create_directory",
+        "fsv1_directory_tree",
+        "fsv1_edit_file",
+        "fsv1_get_file_info",
+        "fsv1_list_allowed_directories",
+        "fsv1_list_directory",
+        "fsv1_list_directory_with_sizes",
+        "fsv1_move_file",
+        "fsv1_read_file",
+        "fsv1_read_media_file",
+        "fsv1_read_multiple_files",
+        "fsv1_read_text_file",
+        "fsv1_search_files",
+        "fsv1_write_file",
+        "fsv2_create_directory",
+        "fsv2_directory_tree",
+        "fsv2_edit_file",
+        "fsv2_get_file_info",
+        "fsv2_list_allowed_directories",
+        "fsv2_list_directory",
+        "fsv2_list_directory_with_sizes",
+        "fsv2_move_file",
+        "fsv2_read_file",
+        "fsv2_read_media_file",
+        "fsv2_read_multiple_files",
+        "fsv2_read_text_file",
+        "fsv2_search_files",
+        "fsv2_write_file",
+        "moved_http_auth_probe",
+        "moved_http_slow_probe",
+        "paging_page_one_a",
+        "paging_page_one_b",
+        "paging_page_two_a",
+        "paging_page_two_b",
+        "parity_http_auth_probe",
+        "parity_http_slow_probe",
+        "pyfix_add",
+        "pyfix_echo",
+        "pyfix_fail",
+        "pyfix_report_env_and_cwd",
+        "pyfix_slow",
+        "ssh_close_session",
+        "ssh_health_check",
+        "ssh_open_session",
+        "ssh_session_exec",
+        "video_editing_add_b_roll",
+        "video_editing_add_basic_transitions",
+        "video_editing_add_image_overlay",
+        "video_editing_add_subtitles",
+        "video_editing_add_text_overlay",
+        "video_editing_change_aspect_ratio",
+        "video_editing_change_video_speed",
+        "video_editing_concatenate_audios",
+        "video_editing_concatenate_videos",
+        "video_editing_convert_audio_format",
+        "video_editing_convert_audio_properties",
+        "video_editing_convert_video_format",
+        "video_editing_convert_video_properties",
+        "video_editing_create_video_from_image_and_audio",
+        "video_editing_extract_audio_from_video",
+        "video_editing_extract_frame_from_video",
+        "video_editing_get_media_duration",
+        "video_editing_health_check",
+        "video_editing_remove_silence",
+        "video_editing_replace_audio_track",
+        "video_editing_set_audio_bitrate",
+        "video_editing_set_audio_channels",
+        "video_editing_set_audio_sample_rate",
+        "video_editing_set_video_audio_track_bitrate",
+        "video_editing_set_video_audio_track_channels",
+        "video_editing_set_video_audio_track_codec",
+        "video_editing_set_video_audio_track_sample_rate",
+        "video_editing_set_video_bitrate",
+        "video_editing_set_video_codec",
+        "video_editing_set_video_frame_rate",
+        "video_editing_set_video_resolution",
+        "video_editing_trim_video"
+      ],
+      "calls": {
+        "parity_http_auth_probe": {
+          "ms": 7,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-AFTER",
+          "structured": null
+        },
+        "moved_http_auth_probe": {
+          "ms": 8,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-AFTER",
+          "structured": null
+        },
+        "video_editing_get_media_duration": {
+          "ms": 113,
+          "isError": false,
+          "text": "62.314667",
+          "structured": {
+            "result": 62.314667
+          }
+        },
+        "fsv1_read_text_file": {
+          "ms": 4,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_read_text_file": {
+          "ms": 8,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_list_allowed_directories": {
+          "ms": 4,
+          "isError": false,
+          "text": "Allowed directories:\n/tmp/mcp182/servers/fsroot\n/private/tmp/mcp182/servers/fsroot",
+          "structured": {
+            "content": "Allowed directories:\n/tmp/mcp182/servers/fsroot\n/private/tmp/mcp182/servers/fsroot"
+          }
+        },
+        "pyfix_echo": {
+          "ms": 6,
+          "isError": false,
+          "text": "parity-echo",
+          "structured": {
+            "result": "parity-echo"
+          }
+        },
+        "pyfix_add": {
+          "ms": 7,
+          "isError": false,
+          "text": "{\n  \"sum\": 5.0\n}",
+          "structured": {
+            "sum": 5
+          }
+        },
+        "pyfix_fail": {
+          "ms": 7,
+          "isError": true,
+          "text": "Error executing tool fail: parity-tool-error",
+          "structured": null
+        },
+        "pyfix_report_env_and_cwd": {
+          "ms": 10,
+          "isError": false,
+          "text": "{\"value\": \"parity-env-dummy\", \"cwd\": \"/private/tmp/mcp182/servers/after/autobyteus-ts/tests/fixtures/mcp-test-server\"}",
+          "structured": {
+            "result": "{\"value\": \"parity-env-dummy\", \"cwd\": \"/private/tmp/mcp182/servers/after/autobyteus-ts/tests/fixtures/mcp-test-server\"}"
+          }
+        }
+      },
+      "requests": [
+        "POST initialize pv=- -> 200",
+        "POST notifications/initialized pv=2025-03-26 -> 202",
+        "GET - pv=2025-03-26 -> 200",
+        "POST tools/list pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200"
+      ]
+    },
+    "v2_auto": {
+      "connectMs": 11,
+      "negotiated": "2025-03-26",
+      "era": "legacy",
+      "listMs": 6,
+      "toolCount": 79,
+      "listError": null,
+      "tools": [
+        "download_audio",
+        "download_video",
+        "fsv1_create_directory",
+        "fsv1_directory_tree",
+        "fsv1_edit_file",
+        "fsv1_get_file_info",
+        "fsv1_list_allowed_directories",
+        "fsv1_list_directory",
+        "fsv1_list_directory_with_sizes",
+        "fsv1_move_file",
+        "fsv1_read_file",
+        "fsv1_read_media_file",
+        "fsv1_read_multiple_files",
+        "fsv1_read_text_file",
+        "fsv1_search_files",
+        "fsv1_write_file",
+        "fsv2_create_directory",
+        "fsv2_directory_tree",
+        "fsv2_edit_file",
+        "fsv2_get_file_info",
+        "fsv2_list_allowed_directories",
+        "fsv2_list_directory",
+        "fsv2_list_directory_with_sizes",
+        "fsv2_move_file",
+        "fsv2_read_file",
+        "fsv2_read_media_file",
+        "fsv2_read_multiple_files",
+        "fsv2_read_text_file",
+        "fsv2_search_files",
+        "fsv2_write_file",
+        "moved_http_auth_probe",
+        "moved_http_slow_probe",
+        "paging_page_one_a",
+        "paging_page_one_b",
+        "paging_page_two_a",
+        "paging_page_two_b",
+        "parity_http_auth_probe",
+        "parity_http_slow_probe",
+        "pyfix_add",
+        "pyfix_echo",
+        "pyfix_fail",
+        "pyfix_report_env_and_cwd",
+        "pyfix_slow",
+        "ssh_close_session",
+        "ssh_health_check",
+        "ssh_open_session",
+        "ssh_session_exec",
+        "video_editing_add_b_roll",
+        "video_editing_add_basic_transitions",
+        "video_editing_add_image_overlay",
+        "video_editing_add_subtitles",
+        "video_editing_add_text_overlay",
+        "video_editing_change_aspect_ratio",
+        "video_editing_change_video_speed",
+        "video_editing_concatenate_audios",
+        "video_editing_concatenate_videos",
+        "video_editing_convert_audio_format",
+        "video_editing_convert_audio_properties",
+        "video_editing_convert_video_format",
+        "video_editing_convert_video_properties",
+        "video_editing_create_video_from_image_and_audio",
+        "video_editing_extract_audio_from_video",
+        "video_editing_extract_frame_from_video",
+        "video_editing_get_media_duration",
+        "video_editing_health_check",
+        "video_editing_remove_silence",
+        "video_editing_replace_audio_track",
+        "video_editing_set_audio_bitrate",
+        "video_editing_set_audio_channels",
+        "video_editing_set_audio_sample_rate",
+        "video_editing_set_video_audio_track_bitrate",
+        "video_editing_set_video_audio_track_channels",
+        "video_editing_set_video_audio_track_codec",
+        "video_editing_set_video_audio_track_sample_rate",
+        "video_editing_set_video_bitrate",
+        "video_editing_set_video_codec",
+        "video_editing_set_video_frame_rate",
+        "video_editing_set_video_resolution",
+        "video_editing_trim_video"
+      ],
+      "calls": {
+        "parity_http_auth_probe": {
+          "ms": 10,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-AFTER",
+          "structured": null
+        },
+        "moved_http_auth_probe": {
+          "ms": 6,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-AFTER",
+          "structured": null
+        },
+        "video_editing_get_media_duration": {
+          "ms": 117,
+          "isError": false,
+          "text": "62.314667",
+          "structured": {
+            "result": 62.314667
+          }
+        },
+        "fsv1_read_text_file": {
+          "ms": 6,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_read_text_file": {
+          "ms": 5,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_list_allowed_directories": {
+          "ms": 4,
+          "isError": false,
+          "text": "Allowed directories:\n/tmp/mcp182/servers/fsroot\n/private/tmp/mcp182/servers/fsroot",
+          "structured": {
+            "content": "Allowed directories:\n/tmp/mcp182/servers/fsroot\n/private/tmp/mcp182/servers/fsroot"
+          }
+        },
+        "pyfix_echo": {
+          "ms": 4,
+          "isError": false,
+          "text": "parity-echo",
+          "structured": {
+            "result": "parity-echo"
+          }
+        },
+        "pyfix_add": {
+          "ms": 6,
+          "isError": false,
+          "text": "{\n  \"sum\": 5.0\n}",
+          "structured": {
+            "sum": 5
+          }
+        },
+        "pyfix_fail": {
+          "ms": 6,
+          "isError": true,
+          "text": "Error executing tool fail: parity-tool-error",
+          "structured": null
+        },
+        "pyfix_report_env_and_cwd": {
+          "ms": 3,
+          "isError": false,
+          "text": "{\"value\": \"parity-env-dummy\", \"cwd\": \"/private/tmp/mcp182/servers/after/autobyteus-ts/tests/fixtures/mcp-test-server\"}",
+          "structured": {
+            "result": "{\"value\": \"parity-env-dummy\", \"cwd\": \"/private/tmp/mcp182/servers/after/autobyteus-ts/tests/fixtures/mcp-test-server\"}"
+          }
+        }
+      },
+      "requests": [
+        "POST server/discover pv=2026-07-28 -> 400",
+        "POST initialize pv=- -> 200",
+        "POST notifications/initialized pv=2025-03-26 -> 202",
+        "GET - pv=2025-03-26 -> 200",
+        "POST tools/list pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200"
+      ]
+    }
+  },
+  "matrix": {},
+  "cancel": {},
+  "notes": [],
+  "health": 200,
+  "import": {
+    "success": true,
+    "message": "Import complete. Imported: 13, Failed: 0",
+    "importedCount": 13,
+    "failedCount": 0
+  },
+  "otherOriginRequests": 0,
+  "stdioStartsAfterServers": {
+    "python_fixture": 2,
+    "fs_v1": 2,
+    "fs_v2": 2
+  },
+  "health_after_servers": 200,
+  "instrumentRequestSummary": {
+    "total": 56,
+    "authValues": [
+      "expected"
+    ]
+  },
+  "finishedAt": "2026-10-20T08:58:45.639Z"
+}
