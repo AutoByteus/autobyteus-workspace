@@ -60,7 +60,8 @@ Not started; it waits for the integrated state.
 
 ## Release Decision
 
-Not asked yet.
+- Decision: `Beta`, decided in advance. Cut it after verification and finalization are complete.
+- Decided by: the user, 2026-10-20: "After everything is done, please do a beta release." and "i say this is advance". Do not ask again (delivery skill, Release Decision).
 
 ## Docs Sync Result
 
