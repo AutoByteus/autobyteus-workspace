@@ -3,7 +3,8 @@
  *
  * Purpose:
  *   - A remote (streamable HTTP) MCP endpoint that redirects to another origin is not followed: GraphQL preview and
- *     discover fail with the SDK's "Redirect to … not followed; … (redirectPolicy: 'same-origin')" message, the
+ *     discover fail with "HTTP 307 Temporary Redirect: " and the SDK's "Redirect to … not followed; …
+ *     (redirectPolicy: 'same-origin')" message, the
  *     other origin receives no request (so no credential leaves the configured origin), and the message carries
  *     no query-string value.
  *   - A same-origin redirect (an endpoint that moved, 308) is followed with the credential, through preview,
@@ -143,6 +144,8 @@ describe("Remote MCP redirects and unsupported transports through the built serv
 
     // Cross-origin: preview and save + discover fail with the redirect message; the other origin sees nothing.
     const crossPreview = await graphql(url, PREVIEW, { input: tokenInput("cross", crossOrigin.url, "cross") });
+    // The redirect answer's status comes first (mcp-http-error-status), then the SDK's redirect text.
+    expect(crossPreview.errors?.[0]?.message).toContain("Failed to preview tools for MCP server: Error: HTTP 307 Temporary Redirect: ");
     expect(crossPreview.errors?.[0]?.message).toContain(`Redirect to ${other.url} not followed`);
     expect(crossPreview.errors?.[0]?.message).toContain("(redirectPolicy: 'same-origin')");
     const crossSaved = await graphql(url, CONFIGURE, { input: tokenInput("cross", crossOrigin.url, "cross") });
@@ -150,6 +153,7 @@ describe("Remote MCP redirects and unsupported transports through the built serv
     const crossDiscover = await graphql<{ discoverAndRegisterMcpServerTools: { success: boolean; message: string } }>(
       url, DISCOVER, { serverId: "cross" });
     expect(crossDiscover.data!.discoverAndRegisterMcpServerTools.success).toBe(false);
+    expect(crossDiscover.data!.discoverAndRegisterMcpServerTools.message).toMatch(/^Error: HTTP 307 Temporary Redirect: /);
     expect(crossDiscover.data!.discoverAndRegisterMcpServerTools.message).toContain(`Redirect to ${other.url} not followed`);
     expect(crossDiscover.data!.discoverAndRegisterMcpServerTools.message).toContain("(redirectPolicy: 'same-origin')");
     expect(JSON.stringify([crossPreview, crossDiscover])).not.toContain(CANARY);

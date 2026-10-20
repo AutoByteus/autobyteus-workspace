@@ -1,0 +1,250 @@
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 122ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+(node:83711) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+BUILD exit 0
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-ts
+
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts (11 tests) 9ms
+stderr | tests/unit/tools/mcp/config-service.test.ts > McpConfigService > adds configs and overwrites existing config
+Overwriting existing MCP config with server_id 'common_server'.
+
+ ✓ tests/unit/tools/mcp/config-service.test.ts (18 tests) 16ms
+ ✓ tests/unit/tools/mcp/tool.test.ts (4 tests) 7ms
+ ✓ tests/unit/tools/mcp/factory.test.ts (2 tests) 4ms
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/http-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+ ✓ tests/unit/tools/mcp/server-instance-manager.test.ts (3 tests) 5ms
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+ ✓ tests/unit/tools/mcp/types.test.ts (22 tests) 10ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts (6 tests) 7ms
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts (6 tests) 19ms
+ ✓ tests/unit/tools/mcp/proxy.test.ts (3 tests) 4ms
+ ↓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts (1 test | 1 skipped)
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts (15 tests) 372ms
+Tool 'fail' failed: 'Error executing tool fail: dummy failure'
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts (4 tests) 3064ms
+     ✓ starts the server with the configured env and cwd, lists its tools and calls one  463ms
+     ✓ aborts a running tool call when the signal is aborted  2382ms
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts (6 tests) 3582ms
+     ✓ lists and calls tools with the token, which the server saw on every request  1405ms
+     ✓ fails to connect without a token  886ms
+     ✓ fails to connect with a wrong token  869ms
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts (6 tests) 3904ms
+     ✓ registers the server tools with prefix and argument schema  1159ms
+     ✓ executes a registered tool through the registry  1485ms
+     ✓ previews tools without registering them  700ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts (10 tests) 15286ms
+     ✓ lists the tools and calls echo, add, fail and slow  1533ms
+     ✓ delivers the configured env and cwd to the server  717ms
+     ✓ ends the server process when a connected server is closed  721ms
+     ✓ fails to connect, with an error, when the server exits at start  683ms
+     ✓ does not connect to a server that hangs at start, and closing it ends its process  5618ms
+     ✓ lists the tools and calls echo, add, fail and slow  452ms
+     ✓ does not connect to a server that hangs at start, and closing it ends its process  5157ms
+
+ Test Files  14 passed | 1 skipped (15)
+      Tests  116 passed | 1 skipped (117)
+   Start at  15:20:12
+   Duration  15.83s (transform 1.35s, setup 712ms, import 1.99s, tests 26.29s, environment 2ms)
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts > Remote MCP redirects and unsupported transports through the built server > refuses a cross-origin redirect, follows a same-origin one, and rejects a websocket import 2994ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts > Remote MCP redirects and unsupported transports through the built server > starts with WebSocket-era entries in mcps.json and registers the valid entry next to them 2123ms
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts > Remote MCP server credentials through the built server > sends the header or token on preview, save, import and tool calls, and rejects token plus Authorization 311ms
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts > Remote MCP server credentials through the built server > re-registers saved credentials at startup after a restart and keeps sending them 2069ms
+ ✓ tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts > HTTP status in remote MCP connection errors through the built server > states the HTTP status in the preview and the discover message for 401, 403, 404 and 500 322ms
+ ✓ tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts > HTTP status in remote MCP connection errors through the built server > names the status of a 404 whose body is empty 67ms
+ ✓ tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts > HTTP status in remote MCP connection errors through the built server > keeps the text of failures without an HTTP answer, without a status 142ms
+ ✓ tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts > HTTP status in remote MCP connection errors through the built server > never shows the token in a response or in the server's output 27ms
+
+ Test Files  3 passed (3)
+      Tests  8 passed (8)
+   Start at  15:20:29
+   Duration  13.72s (transform 99ms, setup 81ms, import 257ms, tests 12.54s, environment 0ms)
+
+EXIT 0

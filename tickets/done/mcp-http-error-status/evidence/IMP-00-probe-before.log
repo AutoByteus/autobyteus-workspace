@@ -1,0 +1,13 @@
+# IMP-00 reproduction probe, before the fix
+# Command: pnpm -C autobyteus-ts exec vitest run --root ../tickets/in-progress/mcp-http-error-status/probes --no-watch --silent=false
+# Commit: 90d5f11a6b (base, no fix)
+# Env: macOS (Darwin 25.5.0), node v22.23.1, real @modelcontextprotocol/client
+# Date: 2026-10-20
+{"label":"401","name":"SdkHttpError","code":"CLIENT_HTTP_NOT_IMPLEMENTED","status":401,"statusText":"Unauthorized","graphqlMessage":"Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: unauthorized"}
+{"label":"403","name":"SdkHttpError","code":"CLIENT_HTTP_NOT_IMPLEMENTED","status":403,"statusText":"Forbidden","graphqlMessage":"Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: forbidden"}
+{"label":"404","name":"SdkHttpError","code":"CLIENT_HTTP_NOT_IMPLEMENTED","status":404,"statusText":"Not Found","graphqlMessage":"Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: Not Found"}
+{"label":"404-empty","name":"SdkHttpError","code":"CLIENT_HTTP_NOT_IMPLEMENTED","status":404,"statusText":"Not Found","graphqlMessage":"Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: "}
+{"label":"500","name":"SdkHttpError","code":"CLIENT_HTTP_NOT_IMPLEMENTED","status":500,"statusText":"Internal Server Error","graphqlMessage":"Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: Internal Server Error"}
+{"label":"307-xorigin","name":"SdkHttpError","code":"CLIENT_HTTP_NOT_IMPLEMENTED","status":307,"statusText":"Temporary Redirect","graphqlMessage":"Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: Redirect to http://localhost:9/mcp not followed; use that URL as the endpoint if it is the intended server (redirectPolicy: 'same-origin')"}
+{"label":"refused","graphqlMessage":"Failed to preview tools for MCP server: TypeError: fetch failed"}
+      Tests  1 passed (1)

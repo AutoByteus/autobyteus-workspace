@@ -1,0 +1,690 @@
+# API-09 + API-11 (final) gated runtime e2e: mcp-http-auth-agent-tool-call, scripted AGY and native AutoByteus + LM Studio
+# command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs RUN_LMSTUDIO_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen/qwen3.6-35b-a3b MCP_AUTH_E2E_EVIDENCE_DIR=<ticket>/evidence/API-09-11-agent-wire pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts --no-watch --reporter=verbose
+# gates: AGY scripted + LM Studio (Codex/Claude skip). Local model only, no paid provider
+# commit: source bb1d3cd28c + this round's test changes; in-process server from src, autobyteus-ts dist from API-00
+# env: macOS 26.5.2, node v22.23.1, LM Studio localhost:1234
+# date: 2026-10-20T12:52:38Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:22145) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/.env
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-http-error-status/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: hdr
+Populating MCP server config cache for the first time...
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+MCP server config cache populated with 0 items.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+In-memory cache: Added new MCP config hdr.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Attempting to discover and register tools for server ID: hdr
+
+stderr | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Overwriting existing MCP config with server_id 'hdr'.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'hdr_auth_probe'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully discovered and registered 1 tools for server ID: hdr
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Configuring MCP server with ID: tok
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+In-memory cache: Added new MCP config tok.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Attempting to discover and register tools for server ID: tok
+
+stderr | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Overwriting existing MCP config with server_id 'tok'.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully registered tool definition: 'tok_auth_probe'
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Successfully discovered and registered 1 tools for server ID: tok
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: the agent's tool calls reach both servers with their credentials
+Agent Definition created successfully with ID: mcp-http-auth-agy-7b0944be-a77d-48df-9725-fca840354efc
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: the agent's tool calls reach both servers with their credentials
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-agy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-agy.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: the agent's tool calls reach both servers with their credentials
+Created and registered workspace ID: agent_ws_17804c2a647a7a8eb4b4580042954cd843cf3d4aebf9edd050ae4975cf868249
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: the agent's tool calls reach both servers with their credentials
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-agy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-agy.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: the agent's tool calls reach both servers with their credentials
+Reusing registered workspace ID: agent_ws_17804c2a647a7a8eb4b4580042954cd843cf3d4aebf9edd050ae4975cf868249
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: the agent's tool calls reach both servers with their credentials
+AGY compaction detection off for run mcp_http_auth_agy_7b0944be_a77d_48df_9725_fca840_36324cbb3d7a42739dcd6e1f0eccc098: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: the agent's tool calls reach both servers with their credentials
+Agent websocket attached for run mcp_http_auth_agy_7b0944be_a77d_48df_9725_fca840_36324cbb3d7a42739dcd6e1f0eccc098
+Created agent session fdfb9ffd-c2b9-4e02-b320-cba807a242a9 for run mcp_http_auth_agy_7b0944be_a77d_48df_9725_fca840_36324cbb3d7a42739dcd6e1f0eccc098
+Agent WebSocket connected: session=fdfb9ffd-c2b9-4e02-b320-cba807a242a9, run=mcp_http_auth_agy_7b0944be_a77d_48df_9725_fca840_36324cbb3d7a42739dcd6e1f0eccc098
+
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: the agent's tool calls reach both servers with their credentials 1273ms
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Discovering LM Studio models from host: http://localhost:1234
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Agent Definition created successfully with ID: mcp-http-auth-native-4655baf6-d295-4372-b21d-1d775aa895d4
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-native
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-native.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Created and registered workspace ID: agent_ws_1885b429417a77bf6e3cbe1e939c5f79bf1c2a2c382e4adf2de33e096dba493c
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-native
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-native.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Reusing registered workspace ID: agent_ws_1885b429417a77bf6e3cbe1e939c5f79bf1c2a2c382e4adf2de33e096dba493c
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/media
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentRuntimeState initialized for agent_id 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': LLM instance 'LMStudioLLM' and 8 tools prepared and stored in state.
+AgentContext composed for agent_id 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' with config: 'mcp-http-auth-native-4655baf6-d295-4372-b21d-1d775aa895d4'.
+AgentWorker initialized for agent_id 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'.
+Registered AgentContext for agent_id 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'. Context registered.
+Agent facade initialized for agent_id 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'.
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' created and stored successfully.
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' requesting runtime to start.
+AgentRuntime for 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Starting worker.
+AgentWorker 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Starting...
+AgentWorker 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' asyncRun(): Starting.
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Runtime init completed (event store initialized).
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Runtime init completed (status deriver initialized).
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Runtime init completed (AgentEventInbox initialized).
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' to become idle (timeout: 30s)...
+AgentEventStream (ID: ce689caf-7e6d-40da-a409-79d45c6aec4a) initialized for agent_id 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'. Subscribed to notifier.
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Bootstrapper starting direct lifecycle execution.
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Executing SystemPromptProcessingStep.
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': No configured skills. Skipping skill catalog.
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Final processed system prompt configured and captured. Trace ID: rt_1792500810715_e7199813-f5a0-4c28-b2ed-d897c537e46c. Final length: 4646.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentWorker 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' has become idle.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentEventStream (ID: ce689caf-7e6d-40da-a409-79d45c6aec4a) for 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentEventStream (ID: 77c21049-3882-420a-966f-661c9723232c) initialized for agent_id 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Agent websocket attached for run mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0
+Created agent session afa5dbe7-87c9-4af1-8472-464bab91edc6 for run mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0
+Agent WebSocket connected: session=afa5dbe7-87c9-4af1-8472-464bab91edc6, run=mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Agent run 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': UserInputContextBuildingProcessor completed. Final content length: 142
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+LlmStreamingResponseHandler finalized 2 tool invocations.
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Agent run 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': UserInputContextBuildingProcessor completed. Final content length: 80
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+Agent run 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials 45184ms
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Agent Definition created successfully with ID: mcp-http-auth-native-revoked-f09423b9-9816-4bea-9bca-9bd1e6f3d50b
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-native-revoked
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-native-revoked.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Created and registered workspace ID: agent_ws_ed7f810fa25b5b6ad2e1c5b9f28bbab742d0aedbd2e5c1b66a181304fe7a566f
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-native-revoked
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/workspace-native-revoked.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Reusing registered workspace ID: agent_ws_ed7f810fa25b5b6ad2e1c5b9f28bbab742d0aedbd2e5c1b66a181304fe7a566f
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-http-auth-agent-e2e-KJjvph/media
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentRuntimeState initialized for agent_id 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' with config: 'mcp-http-auth-native-revoked-f09423b9-9816-4bea-9bca-9bd1e6f3d50b'.
+AgentWorker initialized for agent_id 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'.
+Registered AgentContext for agent_id 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'. Context registered.
+Agent facade initialized for agent_id 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'.
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' created and stored successfully.
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' requesting runtime to start.
+AgentRuntime for 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Starting worker.
+AgentWorker 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Starting...
+AgentWorker 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' asyncRun(): Starting.
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Runtime init completed (event store initialized).
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Runtime init completed (status deriver initialized).
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Runtime init completed (AgentEventInbox initialized).
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' to become idle (timeout: 30s)...
+AgentEventStream (ID: 6a1db0c0-de60-473c-b31f-fe488eb0504c) initialized for agent_id 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'. Subscribed to notifier.
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Bootstrapper starting direct lifecycle execution.
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Executing SystemPromptProcessingStep.
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': No configured skills. Skipping skill catalog.
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Final processed system prompt configured and captured. Trace ID: rt_1792500855904_db42eb59-3436-4e23-8d62-01bc6dfe3c3a. Final length: 4662.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentWorker 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' has become idle.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentEventStream (ID: 6a1db0c0-de60-473c-b31f-fe488eb0504c) for 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentEventStream (ID: 290d41cd-5082-42e6-9464-03d294bb68dd) initialized for agent_id 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Agent websocket attached for run mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c
+Created agent session 07259102-6ae9-490c-b970-220022c66eeb for run mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c
+Agent WebSocket connected: session=07259102-6ae9-490c-b970-220022c66eeb, run=mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Agent run 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': UserInputContextBuildingProcessor completed. Final content length: 102
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_tool_execution_failed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+Agent run 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': UserInputContextBuildingProcessor completed. Final content length: 179
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > claude: the agent's tool calls reach both servers with their credentials
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status 13219ms
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Closed agent session 07259102-6ae9-490c-b970-220022c66eeb
+Agent WebSocket disconnected: 07259102-6ae9-490c-b970-220022c66eeb
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Closed agent session afa5dbe7-87c9-4af1-8472-464bab91edc6
+Agent WebSocket disconnected: afa5dbe7-87c9-4af1-8472-464bab91edc6
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Closed agent session fdfb9ffd-c2b9-4e02-b320-cba807a242a9
+Agent WebSocket disconnected: fdfb9ffd-c2b9-4e02-b320-cba807a242a9
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Removing agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'. Attempting graceful shutdown.
+Agent 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' requesting runtime to stop (timeout: 9.999s).
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentWorker 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Stop requested.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: a4aa7413-ee8e-40c6-9fec-4a16b31b83bb, AgentID: mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' asyncRun() loop has finished.
+AgentWorker 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentWorker 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Shutdown resource cleanup completed successfully.
+AgentWorker 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Unregistered AgentContext for agent_id 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0'.
+AgentRuntime for 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': Context unregistered.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentRuntime for 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0' stop() method completed.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentEventStream (ID: 77c21049-3882-420a-966f-661c9723232c) for 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentEventStream (ID: 77c21049-3882-420a-966f-661c9723232c) for 'mcp_http_auth_native_4655baf6_d295_4372_b21d_1d7_b08967033c5c461ca50c796e008731d0': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Agent run 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Removing agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'. Attempting graceful shutdown.
+Agent 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentWorker 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Stop requested.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentExternalEventNotifier (NotifierID: d239b80b-24e5-4d99-afe6-d44a1538ea85, AgentID: mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' asyncRun() loop has finished.
+AgentWorker 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentWorker 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Shutdown resource cleanup completed successfully.
+AgentWorker 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Unregistered AgentContext for agent_id 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c'.
+AgentRuntime for 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': Context unregistered.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentRuntime for 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c' stop() method completed.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentEventStream (ID: 290d41cd-5082-42e6-9464-03d294bb68dd) for 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+AgentEventStream (ID: 290d41cd-5082-42e6-9464-03d294bb68dd) for 'mcp_http_auth_native_revoked_f09423b9_9816_4bea_780cf0db7c1a40ef9e0b01672d98548c': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Agent Definition with ID mcp-http-auth-agy-7b0944be-a77d-48df-9725-fca840354efc deleted successfully.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Agent Definition with ID mcp-http-auth-native-4655baf6-d295-4372-b21d-1d775aa895d4 deleted successfully.
+
+stdout | tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers
+Agent Definition with ID mcp-http-auth-native-revoked-f09423b9-9816-4bea-9bca-9bd1e6f3d50b deleted successfully.
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 2 skipped (5)
+   Start at  14:52:44
+   Duration  107.77s (transform 32.12s, setup 158ms, import 40.62s, tests 64.49s, environment 0ms)
+
