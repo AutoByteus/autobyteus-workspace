@@ -41,6 +41,7 @@ import { ProjectResolver } from './types/projects.js';
 import { ProjectTaskResolver } from './types/project-tasks.js';
 import { ProjectTaskSearchResolver } from './types/project-task-search.js';
 import { EmbeddingModelResolver } from './types/embeddings.js';
+import { UpdateNotificationResolver } from './types/update-notifications.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -78,6 +79,7 @@ export async function buildGraphqlSchema() {
       ApplicationPackageResolver,
       AppDataMigrationResolver,
       SkillImprovementResolver,
+      UpdateNotificationResolver,
       SecretStorageResolver,
       DefinitionProblemsResolver,
       AgentPackageDefinitionsResolver,
