@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { agentRunCollaborationTreeDtoSchema, agentOrgExecutionTreeDtoSchema, CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
-import { agentProjectionTree, orgProjectionTree } from "../../../fixtures/collaboration-public-projection-fixtures.js";
+import { agentProjectionTree, orgProjectionTree, REMOTE_RUN_ID, withoutRemoteLinks } from "../../../fixtures/collaboration-public-projection-fixtures.js";
 import { projectAgentCollaborationView, projectAgentCollaborationEvent } from "../../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 import { projectAgentOrgExecutionSnapshot, projectAgentOrgExecutionEvent } from "../../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
 import { StandaloneRootExecutionIndex } from "../../../../src/standalone-agent-run-root/services/standalone-root-execution-index.js";
@@ -49,9 +49,11 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
     const publicTree = view.root_subject_kind === "agent" ? view.root_agent.execution_tree : view.root_org.execution_tree;
     // Unstamped current trees already ARE the strict public shape. Exact equality
     // catches dropped children, members, sources, settings or identity fields.
+    // A remote run (CM-10) is kept out of the run tree on the delegating node (S3; design AR-001 table).
     expect(publicTree).toEqual(kind === "agent"
-      ? agentRunCollaborationTreeDtoSchema.parse(agentProjectionTree(false))
-      : agentOrgExecutionTreeDtoSchema.parse(orgProjectionTree(false)));
+      ? agentRunCollaborationTreeDtoSchema.parse(withoutRemoteLinks(agentProjectionTree(false)))
+      : agentOrgExecutionTreeDtoSchema.parse(withoutRemoteLinks(orgProjectionTree(false))));
+    expect(JSON.stringify(publicTree)).not.toContain(REMOTE_RUN_ID);
     expect(JSON.stringify(publicTree)).not.toContain("taskLifetime");
     expect(JSON.stringify(current.tree)).toBe(before);
     expect(before).not.toContain("taskLifetime");

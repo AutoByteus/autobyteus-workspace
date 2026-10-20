@@ -2,6 +2,7 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type {
   IsoTimestamp,
+  RemoteTaskAgentExecution,
   TaskExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
@@ -22,6 +23,8 @@ export type StandaloneRootTreeFile = Readonly<{
   createdAt: IsoTimestamp;
   host: StandaloneRootHost;
   taskExecutions: readonly TaskExecution[];
+  /** In memory only: the remote runs the host delegated to (stored in `taskExecutions` with `nodeId`). */
+  remoteTaskExecutions: readonly RemoteTaskAgentExecution[];
 }>;
 
 export type StandaloneRootTreeSnapshot = StandaloneRootTreeFile;
@@ -45,6 +48,7 @@ export const emptyStandaloneRootTree = (input: Readonly<{
   createdAt: input.createdAt,
   host: Object.freeze({ ...input.host }),
   taskExecutions: Object.freeze([]),
+  remoteTaskExecutions: Object.freeze([]),
 });
 
 export const emptyStandaloneRootMessages = (hostRunId: string): StandaloneRootMessagesFile =>

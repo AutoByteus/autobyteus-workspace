@@ -26,12 +26,26 @@ export type AgentRunMetadata = {
   applicationExecutionContext?: ApplicationExecutionContext | null;
   /** Stored only for helper runs; absent for user runs. */
   launchPurpose?: "server_helper";
+  /** Present only on a run a peer node delegated to this node (CM-10): its back-link; absent means none. */
+  delegatedFrom?: DelegatedFrom;
 };
 
 /** The run a task agent is part of (contract §3.1): it records the link, hosts, idles, wakes and stops it. */
 export type TaskAgentCoordinatingRun = Readonly<{
   kind: "agent" | "agent_team" | "agent_org";
   runId: string;
+}>;
+
+/**
+ * The back-link of a standalone run that a peer node delegated to this node (DEC-112): which peer (`nodeId`,
+ * its server ID), the run there that coordinates the delegation (`coordinatingRun`, echoed on every message
+ * to that peer) and the agent that delegated it, the only run that may message this one. Written once at
+ * creation; the run is a normal standalone run of this node with its own root.
+ */
+export type DelegatedFrom = Readonly<{
+  nodeId: string;
+  coordinatingRun: TaskAgentCoordinatingRun;
+  delegatorAgentRunId: string;
 }>;
 
 /** The `taskAgent` section of a task agent's own run file; its presence is what makes the file a task agent's (G1, G2). */

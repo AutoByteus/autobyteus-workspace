@@ -98,6 +98,7 @@ export class AgentRunProvisioningService {
       startedAt: null,
       applicationExecutionContext: preparedRun.config.applicationExecutionContext,
       ...(input.launchPurpose === "server_helper" ? { launchPurpose: "server_helper" as const } : {}),
+      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}),
     };
 
     await this.historyCatalogService.recordPreparedRun({

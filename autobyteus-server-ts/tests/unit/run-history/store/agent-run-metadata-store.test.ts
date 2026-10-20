@@ -158,4 +158,21 @@ describe("AgentRunMetadataStore", () => {
     }));
     expect(await fs.readFile(metadataPath)).toEqual(beforeRead);
   });
+
+  it("reads and writes a remote run's delegatedFrom back-link exactly; a malformed one makes the file unreadable", async () => {
+    const store = new AgentRunMetadataStore(memoryDir);
+    const delegatedFrom = { nodeId: "srv_peer_a", coordinatingRun: { kind: "agent_team" as const, runId: "team_a" }, delegatorAgentRunId: "agent_a1" };
+    await store.writeMetadata("run-1", buildMetadata({ memoryDir: path.join(memoryDir, "agents", "run-1"),
+      delegatedFrom: { ...delegatedFrom, extra: "ignored" } as never }));
+    const raw = JSON.parse(await fs.readFile(store.getMetadataPath("run-1"), "utf-8")) as Record<string, unknown>;
+    expect(raw.delegatedFrom).toEqual(delegatedFrom);
+    expect((await store.readMetadata("run-1"))?.delegatedFrom).toEqual(delegatedFrom);
+    // A standalone run without the section reads without it.
+    await store.writeMetadata("run-2", buildMetadata({ runId: "run-2", memoryDir: path.join(memoryDir, "agents", "run-2") }));
+    expect(await store.readMetadata("run-2")).not.toHaveProperty("delegatedFrom");
+
+    await fs.writeFile(store.getMetadataPath("run-1"), JSON.stringify({ ...raw, delegatedFrom: { nodeId: "srv_peer_a" } }));
+    const state = await store.readMetadataState("run-1");
+    expect(state.kind).toBe("unreadable");
+  });
 });

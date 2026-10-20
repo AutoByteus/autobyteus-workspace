@@ -58,10 +58,19 @@ const delegatedRuns = (linked: boolean) => [
   },
   taskAgent("/shared/helper", "shared-helper", linked, "shared-lead"),
 ];
+/** A remote run the manager delegated to on a peer node (CM-10): in memory only, never in a public tree (S3). */
+export const REMOTE_RUN_ID = "remote-publisher-run";
+const remoteRuns = [{ address: "/publisher", agentRunId: REMOTE_RUN_ID, nodeId: "srv_test_peer", delegatorAgentRunId: "manager", startedAt }];
+/** A composed tree without its in-memory remote links: exactly the strict public shape. */
+export const withoutRemoteLinks = <T extends Record<string, any>>(tree: T): T => {
+  const strip = ({ remoteTaskExecutions: _remote, ...rest }: Record<string, unknown>) => rest;
+  return (tree.rootOrg ? { ...tree, rootOrg: strip(tree.rootOrg) } : strip(tree)) as T;
+};
 export const agentProjectionTree = (linked: boolean) => validateStandaloneRootTreePayload({
   subjectKind: "agent", createdAt: startedAt,
   host: { address: "/manager", agentRunId: "manager", agentDefinitionId: "manager-definition" },
   taskExecutions: [taskAgent("/solo", "solo-copy", linked, "manager"), ...team(linked), ...delegatedRuns(linked)],
+  remoteTaskExecutions: remoteRuns,
 }, "manager");
 export const orgProjectionTree = (linked: boolean) => {
   const base = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/manager", "manager"), {
@@ -74,6 +83,7 @@ export const orgProjectionTree = (linked: boolean) => {
     ...base, archivedAt: "2026-10-03T01:00:00.000Z", applicationBinding: { applicationId: "app", bindingId: "binding" },
     handoffs: [{ from: "/manager", to: "/configured/lead", rules: ["coordinate"] }],
     rootOrg: { ...base.rootOrg, defaultLaunchConfiguration: projectionLaunch,
-      taskExecutions: [taskAgent("/solo", "solo-copy", linked, "manager"), ...team(linked), ...delegatedRuns(linked)] },
+      taskExecutions: [taskAgent("/solo", "solo-copy", linked, "manager"), ...team(linked), ...delegatedRuns(linked)],
+      remoteTaskExecutions: remoteRuns },
   }, "org-root");
 };

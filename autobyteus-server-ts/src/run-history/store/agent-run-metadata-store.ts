@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import fs from "node:fs/promises";
 import type { AgentRunMetadata, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
 import { hasTaskAgentSection, parseTaskAgentRunMetadata } from "./task-agent-own-file-schema.js";
+import { parseDelegatedFrom } from "./delegated-from-schema.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
@@ -60,6 +61,7 @@ const normalizeMetadata = (
     metadata.applicationExecutionContext,
   ),
   ...(metadata.launchPurpose === "server_helper" ? { launchPurpose: "server_helper" as const } : {}),
+  ...(metadata.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(metadata.delegatedFrom) }),
 });
 
 export type AgentRunMetadataReadState =

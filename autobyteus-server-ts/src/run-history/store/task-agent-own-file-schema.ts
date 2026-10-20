@@ -27,19 +27,21 @@ const COORDINATING_RUN_KINDS: readonly TaskAgentCoordinatingRun["kind"][] = ["ag
 export const hasTaskAgentSection = (value: unknown): boolean =>
   !!value && typeof value === "object" && !Array.isArray(value) && "taskAgent" in value;
 
+/** A coordinating run `{kind, runId}` (a task agent's, or a remote run's back-link on its own node). */
+export const parseTaskAgentCoordinatingRun = (value: unknown, label: string): TaskAgentCoordinatingRun => {
+  const coordinating = objectRecord(value, label);
+  requireKeys(coordinating, ["kind", "runId"], label);
+  if (!COORDINATING_RUN_KINDS.includes(coordinating.kind as TaskAgentCoordinatingRun["kind"])) {
+    throw new Error(`${label}.kind is unsupported.`);
+  }
+  return { kind: coordinating.kind as TaskAgentCoordinatingRun["kind"], runId: requiredString(coordinating.runId, `${label}.runId`) };
+};
+
 export const parseTaskAgentSection = (value: unknown, label = "taskAgent"): TaskAgentSection => {
   const section = objectRecord(value, label);
   requireKeys(section, ["coordinatingRun", "address"], label);
-  const coordinating = objectRecord(section.coordinatingRun, `${label}.coordinatingRun`);
-  requireKeys(coordinating, ["kind", "runId"], `${label}.coordinatingRun`);
-  if (!COORDINATING_RUN_KINDS.includes(coordinating.kind as TaskAgentCoordinatingRun["kind"])) {
-    throw new Error(`${label}.coordinatingRun.kind is unsupported.`);
-  }
   return {
-    coordinatingRun: {
-      kind: coordinating.kind as TaskAgentCoordinatingRun["kind"],
-      runId: requiredString(coordinating.runId, `${label}.coordinatingRun.runId`),
-    },
+    coordinatingRun: parseTaskAgentCoordinatingRun(section.coordinatingRun, `${label}.coordinatingRun`),
     ...(section.delegatorAgentRunId === undefined
       ? {}
       : { delegatorAgentRunId: requiredString(section.delegatorAgentRunId, `${label}.delegatorAgentRunId`) }),

@@ -10,6 +10,7 @@ import type {
   ConfiguredAgentExecutionNode,
   ConfiguredExecutionNode,
   ConfiguredTeamExecutionNode,
+  RemoteTaskAgentExecution,
   TaskExecution,
   TaskTeamAgentExecution,
   TeamRunApplicationBinding,
@@ -224,6 +225,42 @@ export const parseTaskExecutionLink = (value: unknown, label: string): TaskExecu
 
 export const parseTaskExecutions = (value: unknown, label: string): TaskExecution[] =>
   requiredArray(value, label).map((task, index) => parseTaskExecution(task, `${label}[${index}]`));
+
+/** A stored link names a run on a peer node when it carries `nodeId` (absent means this node). */
+export const isRemoteTaskExecutionEntry = (entry: Record<string, unknown>): boolean => entry.nodeId !== undefined;
+
+/** A link to a delegated Agent run on a peer node (exact keys; the same shape on disk and in memory). */
+export const parseRemoteTaskAgentExecution = (value: unknown, label: string): RemoteTaskAgentExecution => {
+  const link = objectRecord(value, label);
+  requireKeys(link, ["address", "agentRunId", "nodeId", "delegatorAgentRunId", "startedAt"], label);
+  return {
+    address: canonicalNonRootAddress(link.address, `${label}.address`),
+    agentRunId: requiredString(link.agentRunId, `${label}.agentRunId`),
+    nodeId: requiredString(link.nodeId, `${label}.nodeId`),
+    delegatorAgentRunId: requiredString(link.delegatorAgentRunId, `${label}.delegatorAgentRunId`),
+    startedAt: isoTimestamp(link.startedAt, `${label}.startedAt`),
+  };
+};
+
+/** The in-memory remote links of a composed tree; absent means none. */
+export const parseRemoteTaskAgentExecutions = (value: unknown, label: string): RemoteTaskAgentExecution[] =>
+  value === undefined ? [] : requiredArray(value, label).map((link, index) => parseRemoteTaskAgentExecution(link, `${label}[${index}]`));
+
+/** A remote link's delegator is an AgentRun of the tree, and each remote run is linked once. */
+export const validateRemoteTaskAgentExecutions = (
+  agentRunIdsOfTree: ReadonlySet<string>,
+  links: readonly RemoteTaskAgentExecution[],
+): void => {
+  const seen = new Set<string>();
+  for (const link of links) {
+    if (!agentRunIdsOfTree.has(link.delegatorAgentRunId)) {
+      throw new Error(`Remote run '${link.agentRunId}' delegator '${link.delegatorAgentRunId}' is not an AgentRun in this tree.`);
+    }
+    const key = `${link.nodeId}\0${link.agentRunId}`;
+    if (seen.has(key)) throw new Error(`Remote run '${link.agentRunId}' is linked twice.`);
+    seen.add(key);
+  }
+};
 
 type TaskExecutionForestOwner = Readonly<{
   members: readonly unknown[];

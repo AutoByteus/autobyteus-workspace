@@ -8,7 +8,7 @@ import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store
 import { getAgentOrgRunExecutionTreePath } from "../../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { CollaborationRootHistoryService } from "../../../../src/run-history/services/collaboration-root-history-service.js";
 import { projectAgentOrgRunHistoryRow } from "../../../../src/run-history/services/agent-org-run-history-row-projector.js";
-import { orgProjectionTree } from "../../../fixtures/collaboration-public-projection-fixtures.js";
+import { orgProjectionTree, withoutRemoteLinks } from "../../../fixtures/collaboration-public-projection-fixtures.js";
 
 const roots: string[] = [];
 afterEach(async () => {
@@ -22,7 +22,7 @@ const setup = async (active: boolean, linked: boolean) => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-history-public-"));
   roots.push(memoryDir);
   const tree = { ...orgProjectionTree(linked), archivedAt: null };
-  const expected = agentOrgExecutionTreeDtoSchema.parse({ ...orgProjectionTree(false), archivedAt: null });
+  const expected = agentOrgExecutionTreeDtoSchema.parse(withoutRemoteLinks({ ...orgProjectionTree(false), archivedAt: null }));
   const store = new AgentOrgRunExecutionTreeStore();
   const packagePath = new AgentMemoryLayout(memoryDir).getOrgDirPath("org-root");
   await store.write(packagePath, tree);

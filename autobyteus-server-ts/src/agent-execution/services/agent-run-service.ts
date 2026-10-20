@@ -4,6 +4,7 @@ import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
   type AgentRunLaunchPurpose,
+  type DelegatedFrom,
   type AgentRunMetadata,
 } from "../../run-history/store/agent-run-metadata-types.js";
 import {
@@ -39,6 +40,8 @@ export interface CreateAgentRunInput {
   } | null;
   /** `server_helper` for server-internal helper runs; they keep their narrowed tool rules. */
   launchPurpose?: AgentRunLaunchPurpose;
+  /** A run a peer node delegated to this node: its back-link (DEC-112), written once at creation. */
+  delegatedFrom?: DelegatedFrom;
 }
 
 export interface CreateAgentRunResult {
