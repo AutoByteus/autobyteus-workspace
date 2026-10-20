@@ -1,0 +1,5 @@
+# API-08 server unit excerpt (full log: /tmp/abyt199-api/api08/server-unit.log, not committed:    13479 lines). Failed-test markers (' FAIL ', '×', 'Failed Tests'): 0
+ ✓ tests/unit/projects/project-task-index-status.test.ts (8 tests) 1915ms
+ Test Files  752 passed | 4 skipped (756)
+      Tests  6201 passed | 7 skipped (6208)
+   Duration  688.86s (transform 18.47s, setup 8.81s, import 355.38s, tests 248.45s, environment 1.60s)

@@ -1,0 +1,24 @@
+# IMP-05
+# Command: env -i PATH=<PATH without any dir containing uv> HOME TMPDIR pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+# Commit: 33fc5f4e16 (pre-rebase; base dc530fdcb0)
+# Env: macOS (Darwin 25.5.0), node v22.23.1, uv 0.10.2; env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-20
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts
+
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: skipped: uv unavailable (not on PATH)
+[mcp-test-server] node: used: node v22.23.1
+
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts (10 tests | 5 skipped) 6167ms
+     ✓ lists the tools and calls echo, add, fail and slow  553ms
+     ✓ does not connect to a server that hangs at start, and closing it ends its process  5161ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 5 skipped (10)
+   Start at  10:07:26
+   Duration  6.34s (transform 60ms, setup 41ms, import 38ms, tests 6.17s, environment 0ms)
+

@@ -1,0 +1,21 @@
+# IMP-06
+# Command: excerpt of e2e run in ac005.sh; full log (not committed, 628K) at /tmp/abyt199-impl/IMP-06-server-e2e.log
+# Commit: 33fc5f4e16 (pre-rebase; base dc530fdcb0)
+# Env: macOS (Darwin 25.5.0), node v22.23.1, uv 0.10.2; env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-20
+
+ ❯ tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts (2 tests | 1 failed) 7ms
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests | 8 skipped) 7ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests) 1942ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (11 tests) 113ms
+ ✓ tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts (2 tests) 88ms
+ ✓ tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts (3 tests) 83ms
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts (2 tests) 73ms
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e
+Error: rootTeam.taskExecutions[0] is missing required field(s): source.
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:149:11
+ FAIL  tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts > current Team delegated-execution stream contract > parses exact task-Agent and task-Team TASK_EXECUTION_STARTED payloads carrying the delegator
+ ❯ tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts:8:26
+ Test Files  2 failed | 91 passed | 91 skipped (184)
+      Tests  1 failed | 377 passed | 418 skipped (796)
+   Duration  652.90s (transform 15.37s, setup 1.98s, import 279.73s, tests 351.86s, environment 13ms)

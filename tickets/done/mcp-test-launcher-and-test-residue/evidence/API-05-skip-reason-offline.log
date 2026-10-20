@@ -1,0 +1,40 @@
+# API-05
+# Command: env -i PATH HOME=<resolved temp> TMPDIR UV_OFFLINE=1 UV_CACHE_DIR=<empty temp dir> UV_PROJECT_ENVIRONMENT=<fresh temp path> pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts --reporter=verbose
+# Commit: 7c9cadba2f
+# Env: macOS 25.5.0, node v22.23.1, uv 0.10.2 (Homebrew 2026-02-10); UV_CACHE_DIR=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.P1bdkED3UD (empty), UV_PROJECT_ENVIRONMENT=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.6NueQ5P6I3/venv (absent)
+# Date: 2026-10-20T08:40:37Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts
+
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`
+[mcp-test-server] node: used: node v22.23.1
+
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > lists the tools and calls echo, add, fail and slow
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > delivers the configured env and cwd to the server
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > ends the server process when a connected server is closed
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > fails to connect, with an error, when the server exits at start
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv could not prepare the fixture: × Failed to download `cryptography==50.0.2` ╰─▶ Network connectivity is disabled, but the requested data wasn't found in the cache for: `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`) > does not connect to a server that hangs at start, and closing it ends its process
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > lists the tools and calls echo, add, fail and slow 582ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > delivers the configured env and cwd to the server 157ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > ends the server process when a connected server is closed 148ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > fails to connect, with an error, when the server exits at start 132ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > does not connect to a server that hangs at start, and closing it ends its process 5159ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 5 skipped (10)
+   Start at  10:40:38
+   Duration  6.55s (transform 59ms, setup 39ms, import 234ms, tests 6.18s, environment 0ms)
+
+## exit 0
+## for comparison, raw uv stderr for the same preparation:
+  × Failed to download `cryptography==50.0.2`
+  ╰─▶ Network connectivity is disabled, but the
+      requested data wasn't found in the cache for:
+      `https://files.pythonhosted.org/packages/e5/56/d194340cc4a57535e82e1bee9e89667ac4b7c13b5d3f59686deae3094dd5/cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl`
+  help: `cryptography` (v50.0.2) was included because
+        `autobyteus-mcp-test-server` (v0.1.0) depends on `mcp` (v2.3.0) which
+        depends on `pyjwt[crypto]` (v2.15.1) which depends on `cryptography`
+## uv exit 1

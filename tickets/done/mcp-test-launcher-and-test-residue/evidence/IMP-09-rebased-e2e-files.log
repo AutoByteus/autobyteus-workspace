@@ -1,0 +1,50 @@
+# IMP-09
+# Command: snapshot (as IMP-06), pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts --no-watch, snapshot; server dist built from identical src (no src change dc530fdcb0..HEAD)
+# Commit: 9a1f560454 (rebased on origin/personal aac5da3112)
+# Env: macOS (Darwin 25.5.0), node v22.23.1; env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-20
+
+## before entries:     6718; after entries:     6718
+## diff (empty = no new entry)
+(end of diff)
+
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+ ✓ tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts (2 tests) 7ms
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:63237) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-server-ts
+stdout | tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-collaboration-F4sOOp
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-collaboration-F4sOOp/.env
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 521ms
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  10:32:06
+   Duration  7.82s (transform 4.66s, setup 46ms, import 6.66s, tests 528ms, environment 0ms)
