@@ -95,6 +95,12 @@ the agent-facing texts are in `domain/remote-refusals.ts`.
   with a remote endpoint are kept out of the public run views: the root never publishes them to its view
   stream (`publishToRootView`, so the stream's change sequence has no gap), and the view snapshots filter
   them out. The local agent's own stream and the message logs show them.
+- **Package admission.** The Team and Org package validators (`validateTeamRunStatePackage`,
+  `validateAgentOrgStatePackage`), which the history scan, restore and the migrations run, check each stored
+  message against the same endpoint set the store composes (`agentRunIdsOfTree`: the tree's agents and its
+  remote runs). A message is admitted when both endpoints are in that set, the two differ, and at least one
+  is an agent of the tree; the execution index stays local-only. A Team or Org whose delegator exchanged
+  messages with a remote run therefore still loads, restores and reopens after a restart.
 - **Task closure** fences a remote run: the closed Task refuses its messages, no release is invoked, and the
   result is `fenced_remote` with the text "… runs on node "X". This Task sends it no more messages; it stops
   there when it goes idle." It keeps running on its node until idle (stopping it from the delegating node is

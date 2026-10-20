@@ -1,0 +1,34 @@
+# DEL-06 two-server E2E run 1 | integrated 4f03cce09d, dist DEL-05 | env -i ... RUN_AGY_FAILURE_E2E=1 vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts | load average ~95-150
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (20 tests | 1 failed) 173589ms
+     ✓ RC-01 AC-101/AC-111: off by default; with the switch off, both inbound request kinds are refused 'turned off' and no peer can be added 51ms
+     ✓ RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent  1365ms
+     ✓ RC-03 AC-101/102/103/111: switched on, both nodes register each other with pinned identities; bad URLs record nothing; the gateway admits in order; publishing records launch settings  1091ms
+     ✓ RC-04 AC-103: before publishing a delegation is refused; after publishing it is evaluated; an Agent that cannot run there is refused; refusals leave nothing  1235ms
+     ✓ RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open)  5267ms
+     ✓ RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted  7363ms
+     ✓ RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears  4185ms
+     ✓ RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing  3726ms
+     ✓ RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent  2046ms
+     × RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered 2759ms
+     ✓ RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent  5484ms
+     ✓ RC-12 AC-106: the remote run on beta is shut down after the idle grace period and a follow-up restores it with its conversation  33011ms
+     ✓ RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators  31914ms
+     ✓ RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'  1947ms
+     ✓ RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha  53569ms
+     ✓ RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch'  520ms
+     ✓ RC-17 AC-103: after unpublishing, new delegations are refused and a run already started still accepts follow-ups  2158ms
+     ✓ RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off'  1028ms
+     ✓ RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays  955ms
+     ✓ RC-20 AC-111/REQ-113/REQ-114: every captured request between the nodes carries no credential and only the contract's fields 11ms
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered
+Error: beta GraphQL failed: [{"message":"Run package 'agent:publisher_1dd1b3b64956477bbd74ef72e1187f3d' is unavailable.","locations":[{"line":1,"column":20}],"path":["getRunProjection"]}]
+ ❯ NodeServer.gql tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:179:50
+ ❯ Object.conversation tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:283:32
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:322:55
+ ❯ until tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:63:39
+ ❯ receives tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:322:5
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:828:5
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 passed (20)
+   Duration  177.25s (transform 486ms, setup 410ms, import 580ms, tests 173.59s, environment 0ms)
+e2e exit=1
