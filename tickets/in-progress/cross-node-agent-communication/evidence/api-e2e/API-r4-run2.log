@@ -1,0 +1,66 @@
+# API-01 … API-20 round 4 run 2 | cmd: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> REMOTE_E2E_EVIDENCE_DIR=evidence/api-e2e/API-r4-run2 vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch | HEAD 303eb6ca1d (integrated), test file with the RC-10 fix and CRR-007 notes | dist API-00 round 4 | macOS 26.5.2, node v22.23.1 | load average after: 50.52 106.92 117.59
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (20 tests) 146088ms
+     ✓ RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent  2067ms
+     ✓ RC-03 AC-101/102/103/111: switched on, both nodes register each other with pinned identities; bad URLs record nothing; the gateway admits in order; publishing records launch settings  2400ms
+     ✓ RC-04 AC-103: before publishing a delegation is refused; after publishing it is evaluated; an Agent that cannot run there is refused; refusals leave nothing  2415ms
+     ✓ RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open)  4935ms
+     ✓ RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted  5741ms
+     ✓ RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears  3188ms
+     ✓ RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing  2293ms
+     ✓ RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent  1955ms
+     ✓ RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered  5309ms
+     ✓ RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent  4293ms
+     ✓ RC-12 AC-106: the remote run on beta is shut down after the idle grace period and a follow-up restores it with its conversation  35705ms
+     ✓ RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators  16179ms
+     ✓ RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'  1199ms
+     ✓ RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha  43247ms
+     ✓ RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch'  430ms
+     ✓ RC-17 AC-103: after unpublishing, new delegations are refused and a run already started still accepts follow-ups  1003ms
+     ✓ RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off'  900ms
+     ✓ RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays  699ms
+
+ Test Files  1 passed (1)
+      Tests  20 passed (20)
+   Start at  20:23:14
+   Duration  148.15s (transform 493ms, setup 131ms, import 608ms, tests 146.09s, environment 0ms)
+

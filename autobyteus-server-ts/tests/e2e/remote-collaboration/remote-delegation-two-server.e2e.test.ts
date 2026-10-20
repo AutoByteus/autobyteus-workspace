@@ -34,8 +34,8 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   every root kind); RC-14 history deleted; RC-15 QR-102 partition and stopped peer; RC-16 identity mismatch;
  *   RC-17 unpublish; RC-18 switch off again; RC-19 peer removal.
  *
- * Prerequisite: a current build (`pnpm -C autobyteus-server-ts build`). About 8 minutes (one idle grace of 60 s and
- * two restarts). `REMOTE_E2E_EVIDENCE_DIR` keeps a JSON receipt and both servers' logs.
+ * Prerequisite: a current build (`pnpm -C autobyteus-server-ts build`). About 2–3 minutes (one idle grace of 60 s, two
+ * 20 s partition bounds and two restarts). `REMOTE_E2E_EVIDENCE_DIR` keeps a JSON receipt and both servers' logs.
  * Run (from the repository root, with a clean environment as TESTING.md asks for E2E folders):
  *   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
  *     ANTIGRAVITY_CLI_COMMAND="$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs" \
@@ -260,6 +260,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   const captured: Captured[] = [];
   const sockets: WebSocket[] = [];
   const evidence: Rec = { cases: {} };
+  /** Agent, Team and Org definition IDs (created once in beforeAll). */
+  const defs: Rec = {};
+  /** Run IDs of the cases (runs, remote runs, Team/Org run records). */
   const ids: Rec = {};
   const record = (caseId: string, value: Rec) => { evidence.cases[caseId] = { ...(evidence.cases[caseId] ?? {}), ...value }; };
   const remoteRequests = (since = 0) => captured.filter((entry) => entry.seq > since && entry.path.startsWith("/rest/remote/"));
@@ -397,19 +400,19 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       const saved = await node.gqlRaw(`mutation($k:String!){saveProviderApiKey(providerId:"OPENAI",apiKey:$k){apiKeyConfigured}}`, { k: key });
       evidence.nodes[node.name].canaryKeySaved = saved.data?.saveProviderApiKey?.apiKeyConfigured === true ? true : JSON.stringify(saved.errors);
     }
-    ids.delegator = await agentDefinition(alpha, "Delegator", ["create_task", "update_task"]);
-    ids.manager = await agentDefinition(alpha, "Remote Manager", ["list_projects", "list_project_tasks", "create_task", "update_task"]);
-    ids.worker = await agentDefinition(alpha, "Remote Worker");
-    ids.team = (await alpha.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
+    defs.delegator = await agentDefinition(alpha, "Delegator", ["create_task", "update_task"]);
+    defs.manager = await agentDefinition(alpha, "Remote Manager", ["list_projects", "list_project_tasks", "create_task", "update_task"]);
+    defs.worker = await agentDefinition(alpha, "Remote Worker");
+    defs.team = (await alpha.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: "Remote Squad", description: "Team delegator", instructions: "Follow requests.", coordinatorMemberName: "lead",
-        nodes: [{ memberName: "lead", ref: ids.delegator, refScope: "SHARED" }, { memberName: "mate", ref: ids.delegator, refScope: "SHARED" }] } })).createAgentTeamDefinition.id;
-    ids.org = (await alpha.gql(`mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}`,
+        nodes: [{ memberName: "lead", ref: defs.delegator, refScope: "SHARED" }, { memberName: "mate", ref: defs.delegator, refScope: "SHARED" }] } })).createAgentTeamDefinition.id;
+    defs.org = (await alpha.gql(`mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}`,
       { input: { name: "Remote Org", description: "Org delegator", instructions: "Follow requests.", handoffs: [], members: [
-        { memberName: "lead", ref: ids.delegator, refType: "AGENT", refScope: "SHARED" },
-        { memberName: "mate", ref: ids.delegator, refType: "AGENT", refScope: "SHARED" }] } })).createAgentOrgDefinition.id;
-    ids.publisher = await agentDefinition(beta, "Publisher");
-    ids.fragile = await agentDefinition(beta, "Fragile");
-    ids.bystander = await agentDefinition(beta, "Bystander");
+        { memberName: "lead", ref: defs.delegator, refType: "AGENT", refScope: "SHARED" },
+        { memberName: "mate", ref: defs.delegator, refType: "AGENT", refScope: "SHARED" }] } })).createAgentOrgDefinition.id;
+    defs.publisher = await agentDefinition(beta, "Publisher");
+    defs.fragile = await agentDefinition(beta, "Fragile");
+    defs.bystander = await agentDefinition(beta, "Bystander");
   }, 240_000);
 
   afterAll(async () => {
@@ -459,7 +462,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   }, 120_000);
 
   it("RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent", async () => {
-    const solo = await createStandalone(alpha, ids.delegator, "alpha standalone delegator");
+    const solo = await createStandalone(alpha, defs.delegator, "alpha standalone delegator");
     ids.solo = solo.runId;
     const before = captured.length;
     const off = await delegateRemote(solo, "Never sent.");
@@ -537,20 +540,20 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const fragileWorkspace = path.join(root, "beta", "fragile-workspace");
     await fsp.mkdir(fragileWorkspace);
     const missingWorkspace = await beta.gqlRaw(`mutation($input:PublishedAgentInput!){publishAgent(input:$input){address}}`,
-      { input: { agentDefinitionId: ids.fragile, ...runConfig(beta), workspaceRootPath: path.join(root, "beta", "no-such-folder") } });
+      { input: { agentDefinitionId: defs.fragile, ...runConfig(beta), workspaceRootPath: path.join(root, "beta", "no-such-folder") } });
     const unknownModel = await beta.gqlRaw(`mutation($input:PublishedAgentInput!){publishAgent(input:$input){address}}`,
-      { input: { agentDefinitionId: ids.fragile, ...runConfig(beta), workspaceRootPath: fragileWorkspace, llmModelIdentifier: "no-such-model" } });
+      { input: { agentDefinitionId: defs.fragile, ...runConfig(beta), workspaceRootPath: fragileWorkspace, llmModelIdentifier: "no-such-model" } });
     for (const refused of [missingWorkspace, unknownModel]) expect(refused.errors?.[0]?.message, JSON.stringify(refused)).toBeTruthy();
     expect(fs.existsSync(path.join(beta.dataDir, "remote-collaboration", "published-agents.json"))
       ? (await readJson(path.join(beta.dataDir, "remote-collaboration", "published-agents.json"))).publishedAgents : [], "refused launch settings record nothing").toEqual([]);
     const published = (await beta.gql(`mutation($input:PublishedAgentInput!){publishAgent(input:$input){agentDefinitionId definitionName address runtimeKind llmModelIdentifier workspaceRootPath autoExecuteTools}}`,
-      { input: { agentDefinitionId: ids.fragile, ...runConfig(beta), workspaceRootPath: fragileWorkspace } })).publishAgent as Rec[];
-    expect(published).toEqual([{ agentDefinitionId: ids.fragile, definitionName: "Fragile", address: "/fragile", runtimeKind: "antigravity_cli",
+      { input: { agentDefinitionId: defs.fragile, ...runConfig(beta), workspaceRootPath: fragileWorkspace } })).publishAgent as Rec[];
+    expect(published).toEqual([{ agentDefinitionId: defs.fragile, definitionName: "Fragile", address: "/fragile", runtimeKind: "antigravity_cli",
       llmModelIdentifier: MODEL, workspaceRootPath: fragileWorkspace, autoExecuteTools: true }]);
     const publishedFile = await readJson(path.join(beta.dataDir, "remote-collaboration", "published-agents.json"));
     expect(sortedKeys(publishedFile)).toEqual(["publishedAgents"]);
     expect(sortedKeys(publishedFile.publishedAgents[0])).toEqual(["agentDefinitionId", "autoExecuteTools", "llmConfig", "llmModelIdentifier", "publishedAt", "runtimeKind", "workspaceRootPath"]);
-    expect((await beta.gql(`mutation($id:String!){unpublishAgent(agentDefinitionId:$id){address}}`, { id: ids.fragile })).unpublishAgent).toEqual([]);
+    expect((await beta.gql(`mutation($id:String!){unpublishAgent(agentDefinitionId:$id){address}}`, { id: defs.fragile })).unpublishAgent).toEqual([]);
     expect((await readJson(path.join(beta.dataDir, "remote-collaboration", "published-agents.json"))).publishedAgents).toEqual([]);
     expect((await alpha.gql(`query{publishedAgents{address}}`)).publishedAgents, "nothing is published by default").toEqual([]);
     record("RC-03", { unregisteredCaller, alphaPeers: await readJson(path.join(alpha.dataDir, "remote-collaboration", "peers.json")),
@@ -567,20 +570,20 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(textOf(notPublished)).toBe(`Node "${LABEL.beta}" has no published Agent at that address.`);
 
     const published = (await beta.gql(`mutation($input:PublishedAgentInput!){publishAgent(input:$input){agentDefinitionId definitionName address runtimeKind llmModelIdentifier workspaceRootPath autoExecuteTools}}`,
-      { input: { agentDefinitionId: ids.publisher, ...runConfig(beta) } })).publishAgent as Rec[];
-    expect(published).toEqual([{ agentDefinitionId: ids.publisher, definitionName: "Publisher", address: "/publisher", runtimeKind: "antigravity_cli",
+      { input: { agentDefinitionId: defs.publisher, ...runConfig(beta) } })).publishAgent as Rec[];
+    expect(published).toEqual([{ agentDefinitionId: defs.publisher, definitionName: "Publisher", address: "/publisher", runtimeKind: "antigravity_cli",
       llmModelIdentifier: MODEL, workspaceRootPath: beta.workspace, autoExecuteTools: true }]);
 
     // A published Agent whose workspace folder was removed afterwards cannot run there.
     const fragileWorkspace = path.join(root, "beta", "fragile-workspace");
     await fsp.mkdir(fragileWorkspace, { recursive: true });
     await beta.gql(`mutation($input:PublishedAgentInput!){publishAgent(input:$input){address}}`,
-      { input: { agentDefinitionId: ids.fragile, ...runConfig(beta), workspaceRootPath: fragileWorkspace } });
+      { input: { agentDefinitionId: defs.fragile, ...runConfig(beta), workspaceRootPath: fragileWorkspace } });
     await fsp.rm(fragileWorkspace, { recursive: true });
     const cannotRun = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/fragile", description: "Cannot run." });
     expect(cannotRun.delegated, JSON.stringify(cannotRun)).toBe(false);
     expect(textOf(cannotRun)).toMatch(new RegExp(`^The published Agent on node "${LABEL.beta}" cannot run there: `));
-    await beta.gql(`mutation($id:String!){unpublishAgent(agentDefinitionId:$id){address}}`, { id: ids.fragile });
+    await beta.gql(`mutation($id:String!){unpublishAgent(agentDefinitionId:$id){address}}`, { id: defs.fragile });
 
     expect(await remoteRunDirs(), "nothing started on beta").toEqual(runsBefore);
     expect(remoteLinksIn(await readJson(path.join(alpha.memory, "agents", ids.solo, "collaboration", "collaboration_tree.json")).catch(() => ({}))), "no link on alpha").toEqual([]);
@@ -601,7 +604,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
 
     // On beta: an ordinary standalone run of Publisher with the published launch settings and its back-link.
     const metadata = await betaMetadata(r1);
-    expect(metadata).toMatchObject({ runId: r1, agentDefinitionId: ids.publisher, workspaceRootPath: beta.workspace, llmModelIdentifier: MODEL,
+    expect(metadata).toMatchObject({ runId: r1, agentDefinitionId: defs.publisher, workspaceRootPath: beta.workspace, llmModelIdentifier: MODEL,
       autoExecuteTools: true, runtimeKind: "antigravity_cli" });
     expect(metadata.delegatedFrom).toEqual({ nodeId: alpha.nodeId, coordinatingRun: { kind: "agent", runId: ids.solo }, delegatorAgentRunId: ids.solo });
     expect(metadata.taskAgent, "a remote run is not a task agent's own file").toBeUndefined();
@@ -638,6 +641,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const sequences = sequenceCheck(view.frames, "ROOT_EXECUTION_VIEW_SNAPSHOT");
     expect(sequences.gaps, JSON.stringify(sequences)).toEqual([]);
     expect(sequences.errorFrames).toEqual([]);
+    // The standalone root view emits no sequenced events for this exchange; RC-06/RC-07 prove the sequence rule.
     expect(view.closed(), "the view stream stays open").toBeNull();
     // Every request kind of the contract was exchanged, so RC-20 audits each of them.
     const kinds = new Set(remoteRequests().filter((entry) => entry.status === 200).map((entry) => entry.path === PATHS.runs ? "start"
@@ -648,9 +652,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
 
   it("RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted", async () => {
     const created = (await alpha.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
-      { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: "/", ...runConfig(alpha) }], memberConfigs: [
-        { memberAddress: "/lead", agentDefinitionId: ids.delegator, ...runConfig(alpha) },
-        { memberAddress: "/mate", agentDefinitionId: ids.delegator, ...runConfig(alpha) }] } })).createAgentTeamRun;
+      { input: { teamDefinitionId: defs.team, teamConfigs: [{ teamAddress: "/", ...runConfig(alpha) }], memberConfigs: [
+        { memberAddress: "/lead", agentDefinitionId: defs.delegator, ...runConfig(alpha) },
+        { memberAddress: "/mate", agentDefinitionId: defs.delegator, ...runConfig(alpha) }] } })).createAgentTeamRun;
     expect(created.success, created.message).toBe(true);
     const teamRunId = created.teamRunId as string;
     const members = Object.fromEntries(flattenE2eConfiguredAgentExecutions((await alpha.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`,
@@ -693,6 +697,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const sequences = sequenceCheck(view.frames, "TEAM_EXECUTION_VIEW_SNAPSHOT");
     expect(sequences.gaps, JSON.stringify(sequences)).toEqual([]);
     expect(sequences.errorFrames).toEqual([]);
+    expect(sequences.sequenced, "the view carried sequenced events during the exchange").toBeGreaterThan(0);
     expect(view.closed(), "the Team view stays open").toBeNull();
     const remoteInView = view.frames.filter((frame) => frame.type === "TEAM_COMMUNICATION_MESSAGE" && JSON.stringify(frame.payload).includes(r2));
     expect(remoteInView, "remote-endpoint messages are not on the Team view").toEqual([]);
@@ -701,7 +706,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
 
   it("RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears", async () => {
     const created = (await alpha.gql(`mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}`,
-      { input: { agentOrgDefinitionId: ids.org, rootConfiguration: runConfig(alpha), agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
+      { input: { agentOrgDefinitionId: defs.org, rootConfiguration: runConfig(alpha), agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
     expect(created.success, created.message).toBe(true);
     const orgRunId = created.agentOrgRunId as string;
     const orgTree = (await alpha.gql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: orgRunId })).getAgentOrgRunConfig.executionTree;
@@ -734,12 +739,13 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const sequences = sequenceCheck(view.frames, "ROOT_EXECUTION_VIEW_SNAPSHOT");
     expect(sequences.gaps, JSON.stringify(sequences)).toEqual([]);
     expect(sequences.errorFrames).toEqual([]);
+    expect(sequences.sequenced, "the view carried sequenced events during the exchange").toBeGreaterThan(0);
     expect(view.closed(), "the Org view stays open").toBeNull();
     record("RC-07", { orgRunId, delegated, link: remoteLinksIn(tree.rootOrg)[0], replyLogs, sequences, frameTypes: view.frames.map((frame) => frame.type) });
   }, 300_000);
 
   it("RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing", async () => {
-    const other = await createStandalone(alpha, ids.delegator, "alpha other root");
+    const other = await createStandalone(alpha, defs.delegator, "alpha other root");
     ids.other = other.runId;
     const sentBefore = remoteRequests().length;
     const otherRoot = await calls(other, "send_message_to", { target_agent_run_id: ids.r1, content: "OTHER-ROOT-TO-REMOTE" });
@@ -748,7 +754,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(textOf(otherRoot)).toBe(liveOnlyRefusal(ids.r1));
     expect(remoteRequests().length, "the live-only path never reaches a peer").toBe(sentBefore);
 
-    const bystander = await createStandalone(beta, ids.bystander, "beta bystander");
+    const bystander = await createStandalone(beta, defs.bystander, "beta bystander");
     ids.bystander = bystander.runId;
     const fromBystander = await calls(bystander, "send_message_to", { target_agent_run_id: ids.solo, content: "BYSTANDER-TO-ALPHA" });
     expect(fromBystander.accepted, JSON.stringify(fromBystander)).toBe(false);
@@ -803,8 +809,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   }, 240_000);
 
   it("RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered", async () => {
-    const manager = await createStandalone(alpha, ids.manager, "alpha manager");
-    ids.manager = manager.runId;
+    const manager = await createStandalone(alpha, defs.manager, "alpha manager");
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-10 project" } })).createProject.projectId as string;
     const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId,
       description: callTool("delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Project work. Marker PROJECT-PACKET." }) } })).createProjectTask.taskId as string;
@@ -815,21 +820,18 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       conversation: async () => (await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: manager.runId, a: "/remote_worker", r: workerRunId })).agentRunCollaborationMemberProjection?.conversation,
       send: async () => { throw new Error("not used"); } };
-    // The worker's Task work makes it delegate to beta; find the remote run by its back-link.
-    let r3 = "";
-    await until(async () => {
-      for (const dir of await remoteRunDirs()) {
-        const metadata = await betaMetadata(dir).catch(() => null);
-        if (metadata?.delegatedFrom?.delegatorAgentRunId === workerRunId) { r3 = dir; return true; }
-      }
-      return false;
-    }, "remote run of the task agent", 90_000);
+    // The worker's Task work makes it delegate to beta. Its delegate_task result returns only after the work packet was
+    // accepted (RemoteTaskActivation.acceptSeed), so the remote run is taken from that result: a run that beta has only
+    // prepared is not yet an admitted run package, and its views answer "unavailable" until the packet starts it.
+    let workerCalls: string[] = [];
+    await until(async () => (workerCalls = calledResults(await worker.conversation())).length > 0, "the task agent's delegate_task result", 90_000);
+    const workerResult = toolResult(workerCalls[0]!);
+    expect(workerResult, JSON.stringify(workerResult)).toMatchObject({ delegated: true, node: LABEL.beta });
+    expect(workerResult.task_id, "sub-work of Task work stays that Task's").toBeUndefined();
+    const r3 = workerResult.target_agent_run_id as string;
     const remote = composeOnBeta(r3);
     await receives(remote, "PROJECT-PACKET");
     expect((await betaMetadata(r3)).delegatedFrom).toEqual({ nodeId: alpha.nodeId, coordinatingRun: { kind: "agent", runId: manager.runId }, delegatorAgentRunId: workerRunId });
-    const workerResult = toolResult(calledResults(await worker.conversation())[0]!);
-    expect(workerResult).toMatchObject({ delegated: true, node: LABEL.beta, target_agent_run_id: r3 });
-    expect(workerResult.task_id, "sub-work of Task work stays that Task's").toBeUndefined();
 
     const resources = await taskResourcesWith(alpha, r3);
     expect(resources, JSON.stringify(resources)).toHaveLength(1);
@@ -946,7 +948,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     }
     // The owner opens the Team and Org runs (their configuration and views load), also after another root is created
     // (a new root re-scans every package), and the woken delegators follow up to their remote runs.
-    await createStandalone(alpha, ids.delegator, "alpha root created after the restart");
+    await createStandalone(alpha, defs.delegator, "alpha root created after the restart");
     const teamConfig = (await alpha.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){teamRunId executionTree}}`, { id: ids.team.teamRunId })).getTeamRunResumeConfig;
     const orgConfig = (await alpha.gql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: ids.org.orgRunId })).getAgentOrgRunConfig;
     expect(flattenE2eConfiguredAgentExecutions(teamConfig.executionTree).map((member) => member.agentRunId)).toContain(ids.team.lead);
@@ -1022,7 +1024,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
 
   it("RC-17 AC-103: after unpublishing, new delegations are refused and a run already started still accepts follow-ups", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
-    expect((await beta.gql(`mutation($id:String!){unpublishAgent(agentDefinitionId:$id){address}}`, { id: ids.publisher })).unpublishAgent).toEqual([]);
+    expect((await beta.gql(`mutation($id:String!){unpublishAgent(agentDefinitionId:$id){address}}`, { id: defs.publisher })).unpublishAgent).toEqual([]);
     const refused = await delegateRemote(solo, "After unpublishing.");
     expect(textOf(refused)).toBe(`Node "${LABEL.beta}" has no published Agent at that address.`);
     expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-UNPUBLISH-FOLLOWUP" })).toMatchObject({ accepted: true });

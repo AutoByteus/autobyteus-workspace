@@ -41,3 +41,10 @@
 | 2026-10-20 19:38 | API-01 … API-20 | Completed | Pass | r3-3 and r3-4: 20/20 each with the final test file |
 | 2026-10-20 19:38 | API-24 | Completed | Not Tested | image dist differs in 31 files outside this branch; TESTING forbids the dist mount; no container started |
 | 2026-10-20 19:38 | — | Checkpoint | — | Round 3 result Pass / 95%. Report, API-REV-003, FU-004 written. Next: commit, test-code review request to the code reviewer |
+| 2026-10-20 20:20 | — | Checkpoint | — | Round 4 (DR-001): RC-10 test race under load (delivery DEL-06). Fix: take the remote run from the worker's delegate_task result (returned after the work packet); CRR-007 notes applied. Next: API-00 at 303eb6ca1d, two full runs |
+| 2026-10-20 20:20 | API-01 … API-20 | Started | — | run r4-1 (load 139.00 154.33 131.80) |
+| 2026-10-20 20:23 | API-01 … API-20 | Completed | Pass | run r4-1:  Tests 20 passed (20) |
+| 2026-10-20 20:23 | API-01 … API-20 | Started | — | run r4-2 (load 103.54 133.73 126.84) |
+| 2026-10-20 20:25 | API-01 … API-20 | Completed | Pass | run r4-2:  Tests 20 passed (20) |
+| 2026-10-20 20:29 | API-23b | Completed | Pass | isolated-app composer screenshot on node B (integrated build, real model); duplicate PNG removed |
+| 2026-10-20 20:29 | — | Checkpoint | — | Round 4 result Pass / 95%. Report, API-REV-004 written. Next: commit, test-code review request |

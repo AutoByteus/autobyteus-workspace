@@ -7,6 +7,7 @@
 | API-REV-001 | Code Reviewer, `code-review-report.md` CRR-002; round 1, cut short by the Solution Designer's hold (ARCH-REV-003) | SR-014, SR-015, ARCH-REV-002, ARCH-REV-003, IR-002, CRR-002 | N/A | Fail (F-001; partial round) / 49% |
 | API-REV-002 | Code Reviewer, `code-review-report.md` CRR-004; round 2 | SR-015, SR-016, ARCH-REV-004, ARCH-REV-006, IR-003, CRR-003, CRR-004 | Fail (F-001; partial) / 49% | Fail (F-002) / 85% |
 | API-REV-003 | Code Reviewer, `code-review-report.md` CRR-006; round 3 | SR-017, ARCH-REV-007, IR-004, CRR-005, CRR-006 | Fail (F-002) / 85% | Pass / 95% |
+| API-REV-004 | Delivery Engineer, DR-001 (`release-deployment-report.md`, DEL-06); round 4 | DR-001, CRR-007 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -102,4 +103,44 @@ None.
 - Recommended owner: the Code Reviewer, for the proportional test-code review.
 - Remaining risks, blocked evidence, or untested scope:
   - AC-113 (only the user can check);
+  - RSK-106 (accepted, FU-002).
+
+### API-REV-004 — RC-10 race fixed on the integrated state; AC-110 screenshot replaced
+
+- Triggering role, report path, and round: Delivery Engineer, DR-001 (`release-deployment-report.md`, `handoff-summary.md`, DEL-06), round 4. The test-code review CRR-007 contributed three notes.
+- Triggering finding or case IDs:
+  - DEL-06: RC-10 failed once on the integrated state under load, 19/20;
+  - delivery's evidence note: the two API-23 PNGs were byte-identical.
+- Related revision IDs: DR-001, CRR-007.
+- Why this revision was recorded: an API/E2E-owned test fix, requested by delivery.
+- Classification confirmed: a race in the test, not a product fault.
+  - RC-10 found the remote run by scanning beta's folders for `delegatedFrom`, which exists as soon as beta prepares the run.
+  - A prepared run is not yet an admitted run package, so its projection answers "Run package … is unavailable" until the work packet starts it. This is existing behavior for prepared runs.
+  - The test's `until()` let that error escape instead of retrying.
+- Coverage decisions or durable test paths changed:
+  - RC-10 takes the remote run ID from the task agent's `delegate_task` result, which returns after `acceptSeed`. All assertions are kept.
+  - CRR-007 notes: the header duration, separate `defs` and `ids` records, and `sequenced > 0` in RC-06/RC-07.
+- Cases added, changed, removed, or rechecked:
+  - API-00 (round 4) and API-01 … API-20: r4-1 and r4-2, 20/20 each, on HEAD `303eb6ca1d` at load average 100–157;
+  - API-23b added (the real app on the integrated build, watched by the user);
+  - the duplicate round-2 PNG `API-23-beta-composer-message.png` removed.
+- Commands, environment, fixture, or broader-validation delta: ENV-8 (the integrated state) and ENV-9 (isolated desktop instances with the test vault).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| DEL-06 RC-10 (delivery DR-001) | Local Fix, test code (delivery's reading, confirmed) | The test waits for the task agent's `delegate_task` result, so it never reads a prepared run | API-10 (r4-1, r4-2) |
+| API-23 duplicate screenshot (delivery note) | evidence defect | Replaced by `API-23b-isolated-beta-composer-message.png` from the real app; the duplicate was removed | API-23b |
+
+- Canonical artifacts and sections updated:
+  - `api-e2e-execution-coverage-report.md`: Round, environments, Cases, AC proof, Durable Coverage, Cleanup, Notes;
+  - `api-e2e-test-progress.md`;
+  - `evidence/api-e2e/`.
+- Prior result and confidence: Pass / 95%
+- Current result and confidence: Pass / 95%
+- New or remaining failure IDs: none in scope.
+- Recommended owner: the Code Reviewer, for the proportional test-code review of the round-4 test change.
+- Remaining risks, blocked evidence, or untested scope:
+  - AC-113's Docker part (only the user can check);
   - RSK-106 (accepted, FU-002).

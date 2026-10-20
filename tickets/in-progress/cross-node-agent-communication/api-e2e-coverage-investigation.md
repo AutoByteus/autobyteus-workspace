@@ -18,11 +18,12 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `…/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Investigation Round: 3
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Investigation Round: 4
 - Trigger: code review pass CRR-002 (reviewed code `744641b35c`, documents `676ecbbb7a`), Large / High. Then, during round 1, the Solution Designer's hold of steps 3–6 (ARCH-REV-003 Fail / Design Impact, SR-015 `f1d7dd9337`, docs only)
 - Prior Investigation Reviewed: rounds 1 and 2 (API-REV-001, API-REV-002)
-- Latest Authoritative Investigation: this document, round 3
+- Latest Authoritative Investigation: this document, round 4
+- Round 4 trigger: delivery DR-001. On the integrated state (HEAD `303eb6ca1d`), RC-10 raced a prepared remote run under load (DEL-06). The fix takes the run from the task agent's `delegate_task` result. Rerun: the whole E2E twice on the integrated state; API-23b, the real app on the integrated build, replaces a duplicate screenshot.
 - Round 3 trigger: CRR-006 pass of IR-004 (code `7a5a9af077`, documents `284769f392`): the F-002 fix in `validateTeamRunStatePackage` and `validateAgentOrgStatePackage` (SR-017, ARCH-REV-007). Rerun by impact: every case of the E2E file (each one starts both servers, and the validators run at every package scan); API-21 and API-22 (the suites go through the same validators); API-23 reused (the receiving node's standalone run view does not use the Team/Org validators). RC-13 adds the reviewer's checks: the owner reopens the Team and Org runs after alpha's restart and after another root is created, and the woken delegators follow up.
 - Round 2 trigger: CRR-004 pass of IR-003 (code `31d46978ad`, documents `7383e89a0f`): SR-015/SR-016 (ARCH-REV-004, ARCH-REV-006 Pass) and CR-002 (F-001). The roots, engine, `RemoteRunLinks`, Task lifecycle and `PeerClient` changed, so every E2E case reruns; nothing is held any more.
 
