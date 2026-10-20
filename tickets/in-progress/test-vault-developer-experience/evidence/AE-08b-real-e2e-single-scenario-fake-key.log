@@ -1,4 +1,4 @@
-# AE-08b | env <real *_API_KEY removed> DEEPSEEK_API_KEY=<env canary> AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-full pnpm test:e2e:real -- --scenarios=deepseek.llm | synthetic vault key -> provider 401 expected | commit 12a23e7b8a | 2026-10-19T19:38:40Z
+# AE-08b (ROUND 2) | env <real *_API_KEY removed> DEEPSEEK_API_KEY=<env canary> AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-full pnpm test:e2e:real -- --scenarios=deepseek.llm | synthetic vault key -> provider 401 expected | commit a525ca02ac | 2026-10-20T04:27:38Z
 
 > autobyteus-workspace@ test:e2e:real /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience
 > pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs -- --scenarios=deepseek.llm
@@ -21,11 +21,11 @@ autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
 autobyteus-application-backend-sdk build: Done
 Prisma schema loaded from prisma/schema.prisma
 
-✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 93ms
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 128ms
 
 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
-Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
 
 
 > autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
@@ -36,11 +36,11 @@ Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enha
 > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
 
 AgentFactory (Singleton) initialized.
-(node:35485) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:97994) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 Built-in agents bootstrap smoke check passed.
 Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
-Vault: test vault /private/tmp/tv-apie2e/v-full
+Vault: test vault /private/tmp/tv-r2/v-full
 
  RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
 
@@ -144,13 +144,13 @@ App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-
 App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
 Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
 Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
-[dotenv@17.3.1] injecting env (5) from tests/.tmp/live-e2e-runtime/.env -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (5) from tests/.tmp/live-e2e-runtime/.env -- tip: ⚙️  suppress all logs with { quiet: true }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:51366
+Server public base URL configured to: http://127.0.0.1:60288
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:51366
+SERVER PUBLIC URL: http://127.0.0.1:60288
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
 APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
 DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/db
@@ -160,12 +160,12 @@ MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-de
 ============================================================
 
 stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities
-[2026-10-19T19:39:03.241Z] [INFO] [secret-management.vault] Secret vault: test vault /private/tmp/tv-apie2e/v-full (read-only)
+[2026-10-20T04:28:06.093Z] [INFO] [secret-management.vault] Secret vault: test vault /private/tmp/tv-r2/v-full (read-only)
 
 {"scenarioId":"deepseek.llm","health":"READY","configured":["provider.deepseek.api-key"],"missing":[],"instructionCode":null}
- ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (2 tests | 1 failed) 411ms
-     ✓ preflights deepseek.llm without value output 21ms
-     × executes deepseek.llm through its reviewed product boundary 383ms
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (2 tests | 1 failed) 463ms
+     ✓ preflights deepseek.llm without value output 22ms
+     × executes deepseek.llm through its reviewed product boundary 433ms
 stdout | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
 AgentFactory (Singleton) initialized.
 
@@ -173,12 +173,12 @@ AgentFactory (Singleton) initialized.
 
  Test Files  1 failed | 1 skipped (2)
       Tests  1 failed | 1 passed (2)
-   Start at  21:38:59
-   Duration  5.41s (transform 2.63s, setup 40ms, import 4.40s, tests 411ms, environment 0ms)
+   Start at  06:28:01
+   Duration  5.68s (transform 2.75s, setup 46ms, import 4.58s, tests 463ms, environment 0ms)
 
-(node:36412) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:608) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:38564) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:1712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 
 ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
@@ -199,7 +199,7 @@ Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:deepseek.llm
  ELIFECYCLE  Command failed with exit code 1.
 exit=1
 ## v-full sha256 after
-7c279c527c89f5886ed35e338ce75b7e1b60318ba63c2530eeada58ad2639c43  /private/tmp/tv-apie2e/v-full/test-vault.db
-fe4b20e768ccaeaa90cb854c4b5b73fdb4595c22bbc63e9ba6d9f14611fe6c5f  /private/tmp/tv-apie2e/v-full/test-vault.db.secret.key
+0d0765a1390ee006b422eb73534ec32c8ac9fdd576f5b96ea794f60b00359513  /private/tmp/tv-r2/v-full/test-vault.db
+8fd93f5d00944ac71707167d4ae653670225056208493e44318dbcbf9bdd01b4  /private/tmp/tv-r2/v-full/test-vault.db.secret.key
 test-vault.db
 test-vault.db.secret.key

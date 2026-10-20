@@ -4,25 +4,25 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 
 ## Investigation Meta
 
-- Requirements Doc: `requirements-doc.md` @ SR-008 (approved; SR-006/SR-007 by the user)
+- Requirements Doc: `requirements-doc.md` @ SR-009 (approved; SR-006/SR-007/SR-009 by the user)
 - Investigation Notes: `investigation-notes.md` (W-*, F-*, A-01..A-26)
 - Solution Revision Record: `solution-revision-record.md` (SR-001..SR-008)
-- Design Spec (required on every route): `design-spec.md` @ SR-008
+- Design Spec (required on every route): `design-spec.md` @ SR-009/SR-010
 - Supplemental Task Artifacts: `test-vault-evaluation-report.md` @ SR-008 (§5.0/§5.1 usage model)
-- Design Review Report: `design-review-report.md` (ARCH-REV-002, Pass)
+- Design Review Report: `design-review-report.md` (ARCH-REV-004, Pass)
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
-- Implementation Handoff: `implementation-handoff.md` (IR-001)
+- Implementation Handoff: `implementation-handoff.md` (IR-003: IR-001 + IR-002 + IR-003)
 - Implementation Revision Record: `implementation-revision-record.md`
-- Code Review Report: `code-review-report.md` (CRR-001, Pass 9.3/10, no findings)
+- Code Review Report: `code-review-report.md` (CRR-003, Pass 9.3/10; CR-001 resolved)
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code_reviewer handoff, CRR-001 Pass, branch `codex/test-vault-developer-experience` @ `12a23e7b8a`
-- Prior Investigation Reviewed: N/A (first round)
-- Latest Authoritative Investigation: this file, round 1
+- Current API/E2E Revision ID: `API-REV-002` (round 2; API-REV-001 was round 1)
+- Current Investigation Round: 2
+- Trigger: code_reviewer handoff, CRR-003 Pass, head `a525ca02ac` (code commits `855842b8f1`, `9498de5f8b`, `469de3d47e`). Lifts the 2026-10-20 hold.
+- Prior Investigation Reviewed: round 1 (below, kept as the base plan)
+- Latest Authoritative Investigation: this file, round 2 (see `## Round 2 Delta` at the end)
 
 ## Current Requirement And Design Basis
 
@@ -245,3 +245,54 @@ None at this point.
   - Added AE-08b: a single-scenario runner run with the synthetic key, to check F-08 and that a refusal is not counted as a pass.
   - Learned constraint: every server vitest run resets the shared `tests/.tmp/autobyteus-server-test.db` in `globalSetup`. Server vitest runs, builds and `pnpm test:e2e` therefore run strictly one at a time in this worktree. The first AE-02 run was discarded for this reason.
   - Durable-coverage decision unchanged (`No`).
+
+
+## Round 2 Delta
+
+### What changed and what it touches
+
+The change set is `git diff --name-only 12a23e7b8a a525ca02ac`, excluding ticket files.
+
+**Changed:**
+
+- `autobyteus-ts/src/secrets/**`. autobyteus-ts now owns the vault read side and has the environment default key source:
+  - lookup order: explicit resolver → `AUTOBYTEUS_TEST_VAULT` vault → `MissingApiKeyError`;
+  - `disableEnvironmentProviderApiKeySource()`.
+- `autobyteus-ts/tests/setup.ts`: the selector is removed unless `RUN_LIVE_PROVIDER_TESTS=1`; the installer is gone.
+- Server `secret-management/**`, built on autobyteus-ts `providerSecretId` and `openVerifiedTestVault`.
+- Both startup sites now call the disable function (AC-018).
+- `test-support/test-vault/**`: `liveProviderTest` classification, `live-server-vault`.
+
+**Unchanged:**
+
+- Electron (`autobyteus-web`);
+- `test-support/live-e2e/**` (runner and harness).
+
+**Reuse decision.** No round-1 AE case is reused unchanged, because each one exercises changed server or autobyteus-ts code. The isolated instance also embeds the changed server, so AE-09 needs a fresh `--build`.
+
+### Revised criteria and new scenario
+
+- **AC-009:** same default-suite results with and without the selector exported.
+- **AC-013:** a plain script, importing only autobyteus-ts and with only the variable set, gets a real completion.
+- **AC-018 (new):** the server disables the environment default.
+- **SCN-008 (revised):** the trigger is a plain `tsx`/`node` script. `tsx` is not installed in the workspace, so the run uses `node` on the built `dist` (AC-013 allows either).
+
+### Round 2 planned cases (same IDs, rerun on `a525ca02ac`; new IDs added)
+
+| Case ID | Criteria | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- |
+| AE-R14..AE-R27 | as IMP-14..IMP-27 (and IMP-10, IMP-11 still valid per the handoff) | Reused | IMP-14..IMP-27 | They ran on `9498de5f8b`/`469de3d47e`. IMP-17 and IMP-22 are superseded by IMP-26 and IMP-27. Since `469de3d47e`, only ticket files changed. |
+| AE-01 | AC-001, AC-003 | fixture | built CLI `setup`/`status` for `v-full` and `v-nods`; root-script `status`; `remove` at cleanup | moved modules |
+| AE-04 | AC-005 (key identity), AC-013 (Vitest form), REQ-006 | Temporary Probe | as round 1; the vault now comes through the environment default, not an installer | revised path |
+| AE-15 (new) | AC-013 (plain-script form, mechanics), REQ-014, REQ-004 on this path, REQ-006 | Temporary Probe | Plain `node` script (`.mjs`) importing only `autobyteus-ts` `dist`, with `AUTOBYTEUS_TEST_VAULT=<v-full>` and env canaries. `globalThis.fetch` is stubbed for `api.deepseek.com`. Checks: `LLMFactory.createLLM('deepseek-v4-flash')` with no resolver sends the vault key (by SHA-256); without the variable it fails with `missing_api_key`; a missing provider names `pnpm test-vault setup`; a selector under `~/.autobyteus/…` is refused as forbidden; with the variable set but no lookup, `node:sqlite` is not loaded. | The SCN-008 real trigger |
+| AE-17 (new) | AC-009 | Existing Test | `pnpm -C autobyteus-ts test` without, then with, the selector exported, in the agent shell (13 inherited keys replaced by canaries); per-file comparison | AC-009 revised to "same results" |
+| AE-06 | AC-008 | Existing Test | as round 1, plus a selector at a missing dir: must **fail** (vault failure), not skip | revised classification |
+| AE-02/AE-03 | AC-017 | Existing Test | as round 1 | server changed |
+| AE-05 | AC-007 (aliases), AC-018 | Temporary Probe | as round 1, plus inside the same in-process server a resolver-less autobyteus-ts client must get `missing_api_key` after `initializeLiveServerVault` | server path changed; AC-018 on the live-suite path |
+| AE-07 | AC-008 (server) | Existing Test | as round 1 | test-support changed |
+| AE-08/AE-08b | AC-006 | Existing Test | as round 1 | server changed |
+| AE-09 | AC-010, AC-018 (user-side), REQ-012 | Journey | as round 1 on a fresh `--build` | embedded server changed |
+| AE-10 | AC-011 | Temporary Probe | as round 1 | — |
+| AE-11..AE-14 | live | Existing Test / Probe | as round 1. AE-12 becomes the AE-15 plain script with the real network (`AE_PROBE_LIVE=1`). | still need the user's vault |
+
+**Execution rule from round 1.** Server vitest runs, builds and `pnpm test:e2e` run one at a time in this worktree.

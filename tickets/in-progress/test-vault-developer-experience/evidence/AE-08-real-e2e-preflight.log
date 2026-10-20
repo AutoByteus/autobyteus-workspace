@@ -1,8 +1,8 @@
-# AE-08 | env <real *_API_KEY removed> ANTHROPIC/OPENAI/DEEPSEEK_API_KEY=<env canaries> [AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-full] pnpm test:e2e:real:preflight | commit 12a23e7b8a | 2026-10-19T19:37:34Z
+# AE-08 (ROUND 2, API-REV-002; round-1 version in commit 17d0d5c0b5) | env <real *_API_KEY removed> <env canaries> [AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-full] pnpm test:e2e:real:preflight | commit a525ca02ac | 2026-10-20T04:26:42Z
 ## v-full sha256 before
-7c279c527c89f5886ed35e338ce75b7e1b60318ba63c2530eeada58ad2639c43  /private/tmp/tv-apie2e/v-full/test-vault.db
-fe4b20e768ccaeaa90cb854c4b5b73fdb4595c22bbc63e9ba6d9f14611fe6c5f  /private/tmp/tv-apie2e/v-full/test-vault.db.secret.key
-## run 1: with AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-full
+0d0765a1390ee006b422eb73534ec32c8ac9fdd576f5b96ea794f60b00359513  /private/tmp/tv-r2/v-full/test-vault.db
+8fd93f5d00944ac71707167d4ae653670225056208493e44318dbcbf9bdd01b4  /private/tmp/tv-r2/v-full/test-vault.db.secret.key
+## run 1: with AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-full
 
 > autobyteus-workspace@ test:e2e:real:preflight /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience
 > pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs --preflight
@@ -16,8 +16,8 @@ fe4b20e768ccaeaa90cb854c4b5b73fdb4595c22bbc63e9ba6d9f14611fe6c5f  /private/tmp/t
 > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
 
 Scope: 3 of 13 workspace projects
-autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
 autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
 autobyteus-application-sdk-contracts build: Done
 autobyteus-ts build: [verify:runtime-deps] OK
 autobyteus-ts build: Done
@@ -25,11 +25,11 @@ autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
 autobyteus-application-backend-sdk build: Done
 Prisma schema loaded from prisma/schema.prisma
 
-✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 118ms
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 212ms
 
 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
-Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
 
 
 > autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
@@ -40,11 +40,11 @@ Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
 > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
 
 AgentFactory (Singleton) initialized.
-(node:9428) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:76571) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 Built-in agents bootstrap smoke check passed.
 Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
-Vault: test vault /private/tmp/tv-apie2e/v-full
+Vault: test vault /private/tmp/tv-r2/v-full
 
  RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
 
@@ -152,13 +152,13 @@ App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-
 App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
 Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
 Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
-[dotenv@17.3.1] injecting env (5) from tests/.tmp/live-e2e-runtime/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (5) from tests/.tmp/live-e2e-runtime/.env -- tip: ⚙️  enable debug logging with { debug: true }
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:51342
+Server public base URL configured to: http://127.0.0.1:60087
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:51342
+SERVER PUBLIC URL: http://127.0.0.1:60087
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
 APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
 DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/db
@@ -168,7 +168,7 @@ MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-de
 ============================================================
 
 stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities
-[2026-10-19T19:37:59.480Z] [INFO] [secret-management.vault] Secret vault: test vault /private/tmp/tv-apie2e/v-full (read-only)
+[2026-10-20T04:27:12.114Z] [INFO] [secret-management.vault] Secret vault: test vault /private/tmp/tv-r2/v-full (read-only)
 
 {"scenarioId":"openai.llm","health":"READY","configured":["provider.openai.api-key"],"missing":[],"instructionCode":null}
 {"scenarioId":"openai.agent-flow","health":"READY","configured":["provider.openai.api-key"],"missing":[],"instructionCode":null}
@@ -189,21 +189,21 @@ Discovering LM Studio models from host: http://localhost:1234
 {"scenarioId":"gemini.ai-studio.audio","health":"READY","configured":[],"missing":["provider.google.ai-studio.api-key"],"instructionCode":null}
 {"scenarioId":"anthropic.llm","health":"READY","configured":["provider.anthropic.api-key"],"missing":[],"instructionCode":null}
 {"scenarioId":"anthropic.claude-agent-sdk-api-key","health":"READY","configured":["provider.anthropic.api-key"],"missing":[],"instructionCode":null}
- ✓ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (16 tests) 116ms
+ ✓ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (16 tests) 127ms
 
  Test Files  1 passed | 1 skipped (2)
       Tests  16 passed (16)
-   Start at  21:37:54
-   Duration  5.04s (transform 2.59s, setup 40ms, import 4.34s, tests 116ms, environment 0ms)
+   Start at  06:27:06
+   Duration  5.69s (transform 3.01s, setup 45ms, import 4.93s, tests 127ms, environment 0ms)
 
-(node:10665) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:79027) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:12842) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:79343) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 exit=0
 ## v-full sha256 after
-7c279c527c89f5886ed35e338ce75b7e1b60318ba63c2530eeada58ad2639c43  /private/tmp/tv-apie2e/v-full/test-vault.db
-fe4b20e768ccaeaa90cb854c4b5b73fdb4595c22bbc63e9ba6d9f14611fe6c5f  /private/tmp/tv-apie2e/v-full/test-vault.db.secret.key
+0d0765a1390ee006b422eb73534ec32c8ac9fdd576f5b96ea794f60b00359513  /private/tmp/tv-r2/v-full/test-vault.db
+8fd93f5d00944ac71707167d4ae653670225056208493e44318dbcbf9bdd01b4  /private/tmp/tv-r2/v-full/test-vault.db.secret.key
 test-vault.db
 test-vault.db.secret.key
 ## run 2: without the selector
@@ -229,11 +229,11 @@ autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
 autobyteus-application-backend-sdk build: Done
 Prisma schema loaded from prisma/schema.prisma
 
-✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 97ms
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 106ms
 
 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
-Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
 
 
 > autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
@@ -244,7 +244,7 @@ Tip: Want real-time updates to your database without manual polling? Discover ho
 > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
 
 AgentFactory (Singleton) initialized.
-(node:18709) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:86960) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 Built-in agents bootstrap smoke check passed.
 Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
@@ -352,13 +352,13 @@ App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-
 App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
 Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
 Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
-[dotenv@17.3.1] injecting env (5) from tests/.tmp/live-e2e-runtime/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (5) from tests/.tmp/live-e2e-runtime/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:51355
+Server public base URL configured to: http://127.0.0.1:60157
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:51355
+SERVER PUBLIC URL: http://127.0.0.1:60157
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
 APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
 DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/db
@@ -371,7 +371,7 @@ stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts 
 prisma:info Starting a sqlite pool with 21 connections.
 
 stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities
-[2026-10-19T19:38:22.352Z] [INFO] [secret-management.vault] Secret vault: application database
+[2026-10-20T04:27:37.583Z] [INFO] [secret-management.vault] Secret vault: application database
 
 {"scenarioId":"openai.llm","health":"READY","configured":[],"missing":["provider.openai.api-key"],"instructionCode":null}
 {"scenarioId":"openai.agent-flow","health":"READY","configured":[],"missing":["provider.openai.api-key"],"instructionCode":null}
@@ -392,7 +392,7 @@ Discovering LM Studio models from host: http://localhost:1234
 {"scenarioId":"gemini.ai-studio.audio","health":"READY","configured":[],"missing":["provider.google.ai-studio.api-key"],"instructionCode":null}
 {"scenarioId":"anthropic.llm","health":"READY","configured":[],"missing":["provider.anthropic.api-key"],"instructionCode":null}
 {"scenarioId":"anthropic.claude-agent-sdk-api-key","health":"READY","configured":[],"missing":["provider.anthropic.api-key"],"instructionCode":null}
- ✓ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (16 tests) 145ms
+ ✓ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (16 tests) 150ms
 stdout | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
 AgentFactory (Singleton) initialized.
 
@@ -400,11 +400,11 @@ AgentFactory (Singleton) initialized.
 
  Test Files  1 passed | 1 skipped (2)
       Tests  16 passed (16)
-   Start at  21:38:18
-   Duration  4.96s (transform 2.46s, setup 39ms, import 4.24s, tests 145ms, environment 0ms)
+   Start at  06:27:33
+   Duration  5.73s (transform 2.97s, setup 46ms, import 4.96s, tests 150ms, environment 0ms)
 
-(node:20609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:89422) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:20933) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:89794) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 exit=0

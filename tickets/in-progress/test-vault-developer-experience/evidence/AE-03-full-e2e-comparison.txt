@@ -1,14 +1,14 @@
-# AE-03 comparison | python3 -I compare.py base.log sel.log (status mark + test counts per file) | commit 12a23e7b8a | 2026-10-19T19:36:51Z
-files compared: 182 (excluded: ['tests/e2e/zz-ae-server-key-identity.probe.test.ts'])
-base: {'✓': 91, '↓': 91}
-sel: {'✓': 91, '↓': 91}
+# AE-03 comparison (ROUND 2) | python3 -I compare.py base.log sel.log | commit a525ca02ac | 2026-10-20T04:25:58Z
+files compared: 183 (excluded: [])
+base: {'✓': 92, '↓': 91}
+sel: {'✓': 92, '↓': 91}
 files whose status or test counts differ: 0
-## vault v-full sha256 before AE-03
-7c279c527c89f5886ed35e338ce75b7e1b60318ba63c2530eeada58ad2639c43  v-full/test-vault.db
-fe4b20e768ccaeaa90cb854c4b5b73fdb4595c22bbc63e9ba6d9f14611fe6c5f  v-full/test-vault.db.secret.key
+## v-full sha256 before AE-03
+0d0765a1390ee006b422eb73534ec32c8ac9fdd576f5b96ea794f60b00359513  /tmp/tv-r2/v-full/test-vault.db
+8fd93f5d00944ac71707167d4ae653670225056208493e44318dbcbf9bdd01b4  /tmp/tv-r2/v-full/test-vault.db.secret.key
 ## after AE-03
-7c279c527c89f5886ed35e338ce75b7e1b60318ba63c2530eeada58ad2639c43  v-full/test-vault.db
-fe4b20e768ccaeaa90cb854c4b5b73fdb4595c22bbc63e9ba6d9f14611fe6c5f  v-full/test-vault.db.secret.key
+0d0765a1390ee006b422eb73534ec32c8ac9fdd576f5b96ea794f60b00359513  v-full/test-vault.db
+8fd93f5d00944ac71707167d4ae653670225056208493e44318dbcbf9bdd01b4  v-full/test-vault.db.secret.key
 ## v-full directory after AE-03 (no sidecars)
 test-vault.db
 test-vault.db.secret.key

@@ -36,3 +36,109 @@ stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key 
    Duration  2.10s (transform 2.58s, setup 3.96s, import 17ms, tests 14ms, environment 0ms)
 
 exit=0
+
+# ===== ROUND 2 (API-REV-002) | AE-04 | env <real *_API_KEY removed> ANTHROPIC/OPENAI/DEEPSEEK_API_KEY=<env canaries> AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-full RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/zz-ae-key-identity.probe.test.ts tests/unit/test-setup-credential-isolation.test.ts | commit a525ca02ac + temporary probe (same source as round 1) | 2026-10-20T04:05:00Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+ ✓ tests/unit/test-setup-credential-isolation.test.ts (2 tests | 1 skipped) 1ms
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > no credential variable is visible to the test process
+[AE probe] AUTOBYTEUS_TEST_VAULT visible=true RUN_LIVE_PROVIDER_TESTS=1
+
+(node:7094) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > LLMFactory.createLLM(id) with no resolver uses the vault key
+[AE probe] createLLM response length=8 live=false
+
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > LLMFactory.createLLM(id) with no resolver uses the vault key
+[AE probe] createLLM bearer sha256 matches vault canary; differs from env canary
+
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > new DeepSeekLLM(model, config) with no resolver uses the vault key
+[AE probe] DeepSeekLLM bearer sha256 matches vault canary
+
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > a provider missing from the vault gives the missing-capability error
+[AE probe] missing provider error: missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-r2/v-full); add it with pnpm test-vault setup
+
+ ✓ tests/integration/llm/zz-ae-key-identity.probe.test.ts (4 tests) 60ms
+
+ Test Files  2 passed (2)
+      Tests  5 passed | 1 skipped (6)
+   Start at  06:05:00
+   Duration  808ms (transform 388ms, setup 97ms, import 627ms, tests 62ms, environment 0ms)
+
+exit=0
+## round 2 extra: same probe WITHOUT RUN_LIVE_PROVIDER_TESTS (setup must remove the selector; the vault must not be used)
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > no credential variable is visible to the test process
+[AE probe] AUTOBYTEUS_TEST_VAULT visible=false RUN_LIVE_PROVIDER_TESTS=undefined
+
+stdout | tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > a provider missing from the vault gives the missing-capability error
+[AE probe] missing provider error: API key not provided for GROK. Configure the GROK API key before sending a request.
+
+ ❯ tests/integration/llm/zz-ae-key-identity.probe.test.ts (4 tests | 3 failed) 10ms
+     ✓ no credential variable is visible to the test process 2ms
+     × LLMFactory.createLLM(id) with no resolver uses the vault key 4ms
+     × new DeepSeekLLM(model, config) with no resolver uses the vault key 1ms
+     × a provider missing from the vault gives the missing-capability error 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > LLMFactory.createLLM(id) with no resolver uses the vault key
+MissingApiKeyError: API key not provided for DEEPSEEK. Configure the DEEPSEEK API key before sending a request.
+ ❯ Object.resolve src/secrets/provider-api-key-resolver.ts:74:27
+     72|   async resolve(providerId: string, slot?: ProviderApiKeySlot): Promis…
+     73|     const directory = environmentSourceEnabled ? process.env[TEST_VAUL…
+     74|     if (!directory) throw new MissingApiKeyError(providerId);
+       |                           ^
+     75|     let resolver: ClosableProviderApiKeyResolver;
+     76|     try {
+ ❯ DeepSeekLLM.initializeClient src/llm/api/openai-compatible-llm.ts:85:48
+ ❯ DeepSeekLLM.getClient src/llm/api/openai-compatible-llm.ts:92:33
+ ❯ DeepSeekLLM._sendMessagesToLLM src/llm/api/openai-compatible-llm.ts:169:33
+ ❯ DeepSeekLLM.sendMessages src/llm/base.ts:114:22
+ ❯ tests/integration/llm/zz-ae-key-identity.probe.test.ts:47:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > new DeepSeekLLM(model, config) with no resolver uses the vault key
+MissingApiKeyError: API key not provided for DEEPSEEK. Configure the DEEPSEEK API key before sending a request.
+ ❯ Object.resolve src/secrets/provider-api-key-resolver.ts:74:27
+     72|   async resolve(providerId: string, slot?: ProviderApiKeySlot): Promis…
+     73|     const directory = environmentSourceEnabled ? process.env[TEST_VAUL…
+     74|     if (!directory) throw new MissingApiKeyError(providerId);
+       |                           ^
+     75|     let resolver: ClosableProviderApiKeyResolver;
+     76|     try {
+ ❯ DeepSeekLLM.initializeClient src/llm/api/openai-compatible-llm.ts:85:48
+ ❯ DeepSeekLLM.getClient src/llm/api/openai-compatible-llm.ts:92:33
+ ❯ DeepSeekLLM._sendMessagesToLLM src/llm/api/openai-compatible-llm.ts:169:33
+ ❯ DeepSeekLLM.sendMessages src/llm/base.ts:114:22
+ ❯ tests/integration/llm/zz-ae-key-identity.probe.test.ts:70:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/integration/llm/zz-ae-key-identity.probe.test.ts > AE probe: key identity through the test-vault default resolver > a provider missing from the vault gives the missing-capability error
+AssertionError: expected 'API key not provided for GROK. Config…' to contain 'missing capability provider.grok.api-…'
+
+Expected: "missing capability provider.grok.api-key"
+Received: "API key not provided for GROK. Configure the GROK API key before sending a request."
+
+ ❯ tests/integration/llm/zz-ae-key-identity.probe.test.ts:92:21
+     90|     }
+     91|     console.log(`[AE probe] missing provider error: ${message}`);
+     92|     expect(message).toContain('missing capability provider.grok.api-ke…
+       |                     ^
+     93|     expect(message).toContain('GROK');
+     94|     expect(message).toContain('pnpm test-vault setup');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+   Start at  06:05:01
+   Duration  712ms (transform 260ms, setup 41ms, import 566ms, tests 10ms, environment 0ms)
+
+exit=1

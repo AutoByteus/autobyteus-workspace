@@ -1,16 +1,19 @@
-// TEMPORARY API/E2E probe (AE-05, ticket test-vault-developer-experience). Not durable coverage.
-// Run with AUTOBYTEUS_TEST_VAULT=<vault> and ANTHROPIC_API_KEY/OPENAI_API_KEY/DEEPSEEK_API_KEY env canaries.
+// TEMPORARY API/E2E probe (AE-05, round 2, ticket test-vault-developer-experience). Not durable coverage.
+// Run with AUTOBYTEUS_TEST_VAULT=<vault>, AE_VAULT_DIR=<same vault> and ANTHROPIC/OPENAI/DEEPSEEK_API_KEY env canaries.
 // A gated live suite's opt-in (initializeLiveServerVault) followed by the product runtime resolver:
-// each key must be the vault's (compared by SHA-256 only), never the env alias.
+// each key must be the vault's (compared by SHA-256 only), never the env alias. AC-018: with the
+// environment default disabled by the opt-in, a resolver-less autobyteus-ts lookup in this process
+// fails even when the selector is put back into process.env.
 import { createHash } from 'node:crypto';
 import { afterAll, describe, expect, it } from 'vitest';
+import { resolveProviderApiKeyResolver } from 'autobyteus-ts';
 import { createLlmProviderApiKeyResolver } from '../../src/secret-management/resolution/runtime-provider-api-key-resolvers.js';
 import { closeLiveServerVault, initializeLiveServerVault } from '../../../test-support/test-vault/live-server-vault.js';
 
 const sha = (value: string): string => createHash('sha256').update(value).digest('hex');
 
 describe('AE probe: server live opt-in resolves keys from the test vault, never env aliases', () => {
-  afterAll(async () => { await closeLiveServerVault(); });
+  afterAll(async () => { delete process.env.AUTOBYTEUS_TEST_VAULT; await closeLiveServerVault(); });
 
   it('setup removed credential variables and the selector from process.env', () => {
     expect(Object.keys(process.env).filter((name) => /_API_KEY$/i.test(name))).toEqual([]);
@@ -32,5 +35,15 @@ describe('AE probe: server live opt-in resolves keys from the test vault, never 
       expect(digest, provider).not.toBe(process.env[envVar]);
       console.log(`[AE probe] ${provider} key sha256 matches vault canary; differs from env canary`);
     }
+  });
+
+  it('AC-018: a resolver-less autobyteus-ts lookup in this server process fails even with the selector in process.env', async () => {
+    process.env.AUTOBYTEUS_TEST_VAULT = process.env.AE_VAULT_DIR;
+    let kind = 'resolved';
+    try { await resolveProviderApiKeyResolver().resolve('DEEPSEEK'); } catch (error) { kind = String((error as { kind?: string }).kind); console.log(`[AE probe] resolver-less lookup: ${kind}: ${(error as Error).message}`); }
+    expect(kind).toBe('missing_api_key');
+    const digest = sha((await createLlmProviderApiKeyResolver().resolve('DEEPSEEK')).revealToTrustedConsumer());
+    expect(digest).toBe(process.env.AE_EXPECT_VAULT_DEEPSEEK_SHA256);
+    console.log('[AE probe] AC-018: resolver-less lookup missing_api_key; server resolver still reads the selected vault');
   });
 });

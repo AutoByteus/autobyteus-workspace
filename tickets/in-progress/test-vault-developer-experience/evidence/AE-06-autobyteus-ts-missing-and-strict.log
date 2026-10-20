@@ -91,3 +91,165 @@ stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > shou
    Duration  371ms (transform 140ms, setup 45ms, import 232ms, tests 2ms, environment 0ms)
 
 exit=0
+
+# ===== ROUND 2 (API-REV-002) | AE-06 | env <real *_API_KEY removed> GROK_API_KEY=<env canary> RUN_LIVE_PROVIDER_TESTS=1 [...] pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/grok-llm.test.ts | commit a525ca02ac | 2026-10-20T04:05:14Z
+## run 1: AUTOBYTEUS_TEST_VAULT=v-full (no Grok key), not strict
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+(node:12379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+[live provider skip] missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-r2/v-full); add it with pnpm test-vault setup
+
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+[live provider skip] missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-r2/v-full); add it with pnpm test-vault setup
+
+ ✓ tests/integration/llm/api/grok-llm.test.ts (2 tests | 2 skipped) 55ms
+
+ Test Files  1 passed (1)
+      Tests  2 skipped (2)
+   Start at  06:05:15
+   Duration  394ms (transform 167ms, setup 42ms, import 209ms, tests 55ms, environment 0ms)
+
+exit=0
+## run 2: same + AUTOBYTEUS_LIVE_STRICT=1
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+(node:13214) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+[live provider skip] missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-r2/v-full); add it with pnpm test-vault setup
+
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+[live provider skip] missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-r2/v-full); add it with pnpm test-vault setup
+
+ ❯ tests/integration/llm/api/grok-llm.test.ts (2 tests | 2 failed) 53ms
+     × should successfully make a simple completion call 51ms
+     × should stream response incrementally 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+ FAIL  tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+Error: LIVE_PROVIDER_UNAVAILABLE: missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-r2/v-full); add it with pnpm test-vault setup
+ ❯ reportUnavailable ../test-support/test-vault/live-provider-test.ts:57:21
+     55| ): never => {
+     56|   console.warn(`[live provider skip] ${reason}`);
+     57|   if (strict) throw new Error(`LIVE_PROVIDER_UNAVAILABLE: ${reason}`, …
+       |                     ^
+     58|   return context.skip(reason);
+     59| };
+ ❯ ../test-support/test-vault/live-provider-test.ts:90:11
+
+Caused by: MissingApiKeyError: missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-r2/v-full); add it with pnpm test-vault setup
+ ❯ TestVaultProviderApiKeyResolver.resolve src/secrets/vault/test-vault-provider-api-key-resolver.ts:32:15
+ ❯ GrokLLM.initializeClient src/llm/api/openai-compatible-llm.ts:85:22
+ ❯ GrokLLM._sendMessagesToLLM src/llm/api/openai-compatible-llm.ts:169:22
+ ❯ tests/integration/llm/api/grok-llm.test.ts:26:24
+ ❯ ../test-support/test-vault/live-provider-test.ts:86:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { kind: 'missing_api_key', providerId: 'GROK' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  06:05:16
+   Duration  403ms (transform 163ms, setup 42ms, import 216ms, tests 53ms, environment 0ms)
+
+exit=1
+## run 3: no selector
+env: -u: No such file or directory
+exit=127
+## run 4 (new): selector at a missing directory, not strict -> must FAIL (vault failure), not skip
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+(node:14103) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/llm/api/grok-llm.test.ts (2 tests | 2 failed) 50ms
+     × should successfully make a simple completion call 48ms
+     × should stream response incrementally 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+SecretVaultError: TEST_VAULT_NOT_FOUND: no test vault in /private/tmp/tv-r2/no-vault-here; run pnpm test-vault setup (key for GROK)
+ ❯ namingProvider src/secrets/provider-api-key-resolver.ts:59:17
+     57| const namingProvider = (error: unknown, providerId: string): unknown =…
+     58|   if (!(error instanceof Error)) return error;
+     59|   const named = new Error(`${error.message} (key for ${providerId})`, …
+       |                 ^
+     60|   named.name = error.name;
+     61|   const { code, instructionCode } = error as { code?: unknown; instruc…
+ ❯ Object.resolve src/secrets/provider-api-key-resolver.ts:79:13
+ ❯ GrokLLM.initializeClient src/llm/api/openai-compatible-llm.ts:85:22
+ ❯ GrokLLM._sendMessagesToLLM src/llm/api/openai-compatible-llm.ts:169:22
+ ❯ tests/integration/llm/api/grok-llm.test.ts:26:24
+ ❯ ../test-support/test-vault/live-provider-test.ts:86:11
+
+Caused by: SecretVaultError: TEST_VAULT_NOT_FOUND: no test vault in /private/tmp/tv-r2/no-vault-here; run pnpm test-vault setup
+ ❯ openVerifiedTestVault src/secrets/vault/open-test-vault.ts:59:11
+ ❯ openTestVaultReader src/secrets/vault/open-test-vault.ts:102:23
+ ❯ openTestVaultProviderApiKeyResolver src/secrets/vault/test-vault-provider-api-key-resolver.ts:46:45
+ ❯ src/secrets/provider-api-key-resolver.ts:40:58
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'TEST_VAULT_NOT_FOUND', retryable: false, instructionCode: 'TEST_VAULT_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+SecretVaultError: TEST_VAULT_NOT_FOUND: no test vault in /private/tmp/tv-r2/no-vault-here; run pnpm test-vault setup (key for GROK)
+ ❯ namingProvider src/secrets/provider-api-key-resolver.ts:59:17
+     57| const namingProvider = (error: unknown, providerId: string): unknown =…
+     58|   if (!(error instanceof Error)) return error;
+     59|   const named = new Error(`${error.message} (key for ${providerId})`, …
+       |                 ^
+     60|   named.name = error.name;
+     61|   const { code, instructionCode } = error as { code?: unknown; instruc…
+ ❯ Object.resolve src/secrets/provider-api-key-resolver.ts:79:13
+ ❯ GrokLLM.initializeClient src/llm/api/openai-compatible-llm.ts:85:22
+ ❯ GrokLLM._streamMessagesToLLM src/llm/api/openai-compatible-llm.ts:202:22
+ ❯ GrokLLM._streamMessagesToLLM src/llm/api/grok-llm.ts:110:5
+ ❯ GrokLLM._streamUserMessageToLLM src/llm/base.ts:200:22
+ ❯ tests/integration/llm/api/grok-llm.test.ts:44:24
+ ❯ ../test-support/test-vault/live-provider-test.ts:86:11
+
+Caused by: SecretVaultError: TEST_VAULT_NOT_FOUND: no test vault in /private/tmp/tv-r2/no-vault-here; run pnpm test-vault setup
+ ❯ openVerifiedTestVault src/secrets/vault/open-test-vault.ts:59:11
+ ❯ openTestVaultReader src/secrets/vault/open-test-vault.ts:102:23
+ ❯ openTestVaultProviderApiKeyResolver src/secrets/vault/test-vault-provider-api-key-resolver.ts:46:45
+ ❯ src/secrets/provider-api-key-resolver.ts:40:58
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'TEST_VAULT_NOT_FOUND', retryable: false, instructionCode: 'TEST_VAULT_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  06:05:17
+   Duration  398ms (transform 168ms, setup 43ms, import 214ms, tests 50ms, environment 0ms)
+
+exit=1
+## run 3 (rerun; the first attempt exited 127 because of an argument-order bug in my wrapper: env saw '-u' after an assignment): no selector
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+[live provider skip] no test vault selected for Grok: set AUTOBYTEUS_TEST_VAULT (TESTING.md#test-vault)
+
+stderr | tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+[live provider skip] no test vault selected for Grok: set AUTOBYTEUS_TEST_VAULT (TESTING.md#test-vault)
+
+ ✓ tests/integration/llm/api/grok-llm.test.ts (2 tests | 2 skipped) 2ms
+
+ Test Files  1 passed (1)
+      Tests  2 skipped (2)
+   Start at  06:05:27
+   Duration  330ms (transform 123ms, setup 39ms, import 203ms, tests 2ms, environment 0ms)
+
+exit=0

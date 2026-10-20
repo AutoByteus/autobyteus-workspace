@@ -297,3 +297,92 @@ TEST_VAULT /private/tmp/tv-apie2e/v-nods
 REMOVED /private/tmp/tv-apie2e/v-nods/test-vault.db
 REMOVED /private/tmp/tv-apie2e/v-nods/test-vault.db.secret.key
 exit=0
+
+# ===== ROUND 2 (API-REV-002) | AE-01 | built CLI | commit a525ca02ac | 2026-10-20T04:03:37Z | stdin </dev/null (no TTY) | root /private/tmp/tv-r2
+## setup v-full
+TEST_VAULT /private/tmp/tv-r2/v-full
+SECRET provider.anthropic.api-key
+SECRET provider.deepseek.api-key
+SECRET provider.lmstudio.api-key
+SECRET provider.openai.api-key
+CONFIGURED 4
+SKIPPED 0
+REPLACED 0
+SETTING AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-full
+exit=0
+## status v-full
+TEST_VAULT /private/tmp/tv-r2/v-full
+STATE READY
+CONFIGURED provider.anthropic.api-key
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.lmstudio.api-key
+CONFIGURED provider.openai.api-key
+MISSING provider.glm.api-key
+MISSING provider.google.ai-studio.api-key
+MISSING provider.google.vertex-express.api-key
+MISSING provider.grok.api-key
+MISSING provider.kimi.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.qwen.api-key
+MISSING search.serpapi.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+exit=0
+  total 520
+  drwx------@  4 normy  wheel     128 Oct 20 06:03 .
+  drwxr-xr-x  11 normy  wheel     352 Oct 20 06:03 ..
+  -rw-------@  1 normy  wheel  262144 Oct 20 06:03 test-vault.db
+  -rw-------@  1 normy  wheel      32 Oct 20 06:03 test-vault.db.secret.key
+## setup v-nods
+TEST_VAULT /private/tmp/tv-r2/v-nods
+SECRET provider.kimi.api-key
+CONFIGURED 1
+SKIPPED 0
+REPLACED 0
+SETTING AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-nods
+exit=0
+## status v-nods
+TEST_VAULT /private/tmp/tv-r2/v-nods
+STATE READY
+CONFIGURED provider.kimi.api-key
+MISSING provider.anthropic.api-key
+MISSING provider.deepseek.api-key
+MISSING provider.glm.api-key
+MISSING provider.google.ai-studio.api-key
+MISSING provider.google.vertex-express.api-key
+MISSING provider.grok.api-key
+MISSING provider.lmstudio.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.openai.api-key
+MISSING provider.qwen.api-key
+MISSING search.serpapi.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+exit=0
+  total 520
+  drwx------@  4 normy  wheel     128 Oct 20 06:03 .
+  drwxr-xr-x  12 normy  wheel     384 Oct 20 06:03 ..
+  -rw-------@  1 normy  wheel  262144 Oct 20 06:03 test-vault.db
+  -rw-------@  1 normy  wheel      32 Oct 20 06:03 test-vault.db.secret.key
+## root script
+TEST_VAULT /private/tmp/tv-r2/v-full
+STATE READY
+CONFIGURED provider.anthropic.api-key
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.lmstudio.api-key
+CONFIGURED provider.openai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+exit=0
+## ROUND 2 cleanup: built CLI remove for v-full and v-nods | 2026-10-20T04:37:39Z
+TEST_VAULT /private/tmp/tv-r2/v-full
+REMOVED /private/tmp/tv-r2/v-full/test-vault.db
+REMOVED /private/tmp/tv-r2/v-full/test-vault.db.secret.key
+exit=0
+TEST_VAULT /private/tmp/tv-r2/v-nods
+REMOVED /private/tmp/tv-r2/v-nods/test-vault.db
+REMOVED /private/tmp/tv-r2/v-nods/test-vault.db.secret.key
+exit=0
