@@ -1,0 +1,41 @@
+# IMP-07 — cause of the autobyteus-ts build failure: axios 1.20.0 response-header typings (Design Impact)
+# Commit: 9936445f55 (+ a temporary diagnostic edit, reverted, never committed)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T16:12:29Z
+
+## Failing line (autobyteus-ts/src/tools/multimedia/download-media-tool.ts L115-118)
+      const contentType = response.headers?.['content-type'];
+      let correctExt = '';
+      if (contentType) {
+        const mimeType = contentType.split(';')[0].trim();
+
+## axios 1.20.0 index.d.ts: lower-case common response keys are now typed (AxiosHeaderValue = AxiosHeaders | string | string[] | number | boolean | null)
+export type AxiosHeaderValue = AxiosHeaders | string | string[] | number | boolean | null;
+139:type CommonResponseHeaderKey = CommonResponseHeadersList | Lowercase<CommonResponseHeadersList>;
+142:  [Key in CommonResponseHeaderKey]: AxiosHeaderValue;
+
+## axios 1.13.6 (npm pack): only the capitalised keys are typed; 'content-type' falls to the RawAxiosHeaders index signature
+164:  [Key in CommonResponseHeadersList]: AxiosHeaderValue;
+
+## Hold-back check (design: hold only at a version that is still patched): axios high advisories and their fixes (base audit)
+GHSA-pmwg-cvhr-8vh7 >=1.0.0 <1.15.1 -> patched >=1.15.1
+GHSA-pf86-5x62-jrwf >=1.0.0 <1.15.1 -> patched >=1.15.1
+GHSA-6chq-wfr3-2hj9 >=1.0.0 <1.15.1 -> patched >=1.15.1
+GHSA-q8qp-cvcw-x6jj >=1.0.0 <1.15.2 -> patched >=1.15.2
+GHSA-hfxv-24rg-xrqf >=1.0.0 <1.16.0 -> patched >=1.16.0
+GHSA-777c-7fjr-54vf >=1.7.0 <1.16.0 -> patched >=1.16.0
+GHSA-p92q-9vqr-4j8v >=1.0.0 <1.16.0 -> patched >=1.16.0
+GHSA-j5f8-grm9-p9fc >=1.0.0 <1.16.0 -> patched >=1.16.0
+GHSA-3g43-6gmg-66jw >=1.0.0 <1.15.2 -> patched >=1.15.2
+GHSA-35jp-ww65-95wh >=1.0.0 <1.16.0 -> patched >=1.16.0
+GHSA-3pq3-5fj3-cg6v >=1.13.0 <1.20.0 -> patched >=1.20.0
+GHSA-542g-h47m-68v8 >=1.13.0 <1.20.0 -> patched >=1.20.0
+=> GHSA-3pq3-5fj3-cg6v and GHSA-542g-h47m-68v8 (high) are fixed only in >=1.20.0, the newest 1.x; no patched version below it exists.
+
+## Diagnostic (temporary, reverted): String(contentType).split(';') at L118
+build-ts exit=0
+server-prebuild exit=0
+server-build exit=0
+server-typecheck exit=0
+=> with that one change every build and the server typecheck pass; no other source change is needed by the updates (as far as builds/typecheck show).
+Revert confirmed: git status shows no tracked change. Note: autobyteus-ts/dist (untracked) was last built from the diagnostic source; rebuild before using it.

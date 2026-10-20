@@ -1,0 +1,7 @@
+const path=require('path'); const [webDir,envName]=process.argv.slice(2);
+const req=require('module').createRequire(path.join(webDir,'package.json'));
+let win; if(envName==='jsdom'){const {JSDOM}=req('jsdom'); win=new JSDOM('').window;} else {const {Window}=req('happy-dom'); win=new Window();}
+const doc=win.document; const tpl=doc.createElement('div'); tpl.innerHTML='<h1>x</h1><p>y</p><strong>z</strong>';
+const lookup=(obj,prop)=>{while(obj){const d=Object.getOwnPropertyDescriptor(obj,prop); if(d&&d.get) return d.get; obj=Object.getPrototypeOf(obj);} return null;};
+const getter=lookup(win.Node.prototype,'nodeName') || lookup(win.Element.prototype,'nodeName');
+for(const el of tpl.children) console.log(envName, el.tagName, 'node.nodeName=',el.nodeName, '| Node.prototype nodeName getter=', getter? JSON.stringify(getter.call(el)) : 'none');

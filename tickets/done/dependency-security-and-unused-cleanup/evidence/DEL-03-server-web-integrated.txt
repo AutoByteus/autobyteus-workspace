@@ -1,0 +1,62 @@
+# DEL-03 — server and web builds and suites on the integrated state (1c0a0e4355; origin/personal 3b9014215e merged)
+# 2026-10-20T18:52:16Z; macOS arm64, Node v22.23.1, pnpm 10.28.2; load: { 21.17 24.26 40.10 }
+
+== server-prebuild: $ pnpm -C autobyteus-server-ts prebuild
+server-prebuild exit=0 (51 s)
+
+== server-build: $ pnpm -C autobyteus-server-ts build
+server-build exit=0 (194 s)
+
+== server-typecheck: $ pnpm -C autobyteus-server-ts typecheck
+server-typecheck exit=0 (127 s)
+
+== server-unit: $ pnpm -C autobyteus-server-ts test:unit
+server-unit exit=1 (1013 s)
+     × enables AGY availability using capabilities rather than release text 5042ms
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ FAIL  tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text
+Error: Test timed out in 5000ms.
+ Test Files  1 failed | 765 passed | 4 skipped (770)
+      Tests  1 failed | 6313 passed | 7 skipped (6321)
+
+== web-prepare: $ pnpm -C autobyteus-web exec nuxt prepare
+web-prepare exit=0 (4 s)
+
+== web-guards: $ pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web guard:localization-boundary && pnpm -C autobyteus-web audit:localization-literals
+web-guards exit=0 (4 s)
+
+== web-build: $ pnpm -C autobyteus-web build
+web-build exit=0 (38 s)
+
+== web-test-nuxt: $ pnpm -C autobyteus-web test:nuxt --run
+web-test-nuxt exit=1 (465 s)
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+Error sending requirement: Error: Input was rejected
+Failed to send message via activeContextStore: Error: Input was rejected
+Error sending requirement: Error: Input was rejected
+Failed to send message via activeContextStore: Error: AgentOrg send target is not ready or is stale.
+Failed to send message via activeContextStore: Error: Input was rejected
+   × ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker 5066ms
+Failed to send message via activeContextStore: Error: transport failed
+Failed to send message via activeContextStore: Error: AgentOrg stream closed before command acknowledgement.
+Failed to terminate run: Error: network unavailable
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+Failed to send message via activeContextStore: Error: restore rejected
+Failed to send message via activeContextStore: Error: restore rejected again
+Failed to send message via activeContextStore: Error: socket unavailable
+Failed to send message via activeContextStore: Error: socket unavailable
+Could not copy the Team run settings; the team defaults are used. Error: Read offline
+   × voice input extension integration > installs, enables, and inserts transcript text into the draft 5044ms
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+Context file upload failed for 'notes.txt': Error: upload rejected
+Failed to send message via activeContextStore: Error: finalize rejected
+
+# end 2026-10-20T19:23:54Z; load: { 36.55 29.47 31.22 }

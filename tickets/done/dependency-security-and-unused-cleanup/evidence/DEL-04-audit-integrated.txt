@@ -1,0 +1,8 @@
+# DEL-04 — fresh pnpm audit on the integrated state (1c0a0e4355) at 2026-10-20T18:52:34Z; compared with the explained set by the API-02 audit-compare.py (unchanged copy)
+$ pnpm audit --json; pnpm audit --prod --json; python3 -I audit-compare.py all.json prod.json
+== ALL totals {'info': 0, 'low': 17, 'moderate': 40, 'high': 46, 'critical': 6}
+   high/critical packages now: 27; expected (IMP-11): 27; same set: True
+   newest advisory creation dates among them: [('GHSA-5gmw-xhrv-c9v3', '2026-10-05'), ('GHSA-7mx3-vvmw-hjmv', '2026-10-05'), ('GHSA-wq5f-xc86-pv6w', '2026-10-06')]
+== PROD totals {'info': 0, 'low': 14, 'moderate': 18, 'high': 13, 'critical': 0}
+   high/critical packages now: 6; expected (IMP-11): 6; same set: True
+   newest advisory creation dates among them: [('GHSA-p68q-wchp-6fh7', '2026-09-30'), ('GHSA-9q9j-q6p8-xq58', '2026-09-30'), ('GHSA-x8mw-p69m-v3mx', '2026-10-02')]

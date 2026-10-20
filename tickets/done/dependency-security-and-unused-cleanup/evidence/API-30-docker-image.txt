@@ -1,0 +1,68 @@
+# API-30 Docker image of the branch (commit 10126a016a): image autobyteus-server:dep229 built from autobyteus-server-ts/docker/Dockerfile.monorepo as build.sh does (linux/arm64, --load); container dep229 on 127.0.0.1:48210, no user volumes; 2026-10-20T17:33:34Z
+== build
+# API-30 docker build commit=10126a016a 2026-10-20T17:22:01Z
+build exit=0 2026-10-20T17:28:59Z
+fac35d6c6e71
+== health: GET /rest/health -> 200 after ~15 s
+{"status":"ok","message":"Server is running"}
+== GraphQL query: POST /graphql { __schema { queryType { name } } mcpServers { __typename } }
+{"data":{"__schema":{"queryType":{"name":"Query"}},"mcpServers":[]}}
+== GraphiQL page: GET /graphiql
+status=200 content-type=text/html; charset=UTF-8 bytes=461
+<title>GraphiQL</title>
+graphiql/config.js
+graphiql/main.js
+asset /graphiql/./graphiql/config.js -> 404 99B
+asset /graphiql/./graphiql/main.js -> 404 97B
+== container: versions of the updated runtime packages in the image
+v22.23.3
+axios@1.20.0
+fastify@4.29.1
+@fastify+busboy@2.1.1
+@fastify+busboy@3.2.3
+fast-uri@2.4.8
+fast-uri@3.1.9
+mercurius@13.4.1_graphql@16.12.0
+protobufjs@7.6.6
+undici@5.28.3
+undici@6.27.0
+undici@7.30.1
+ws@8.22.0
+== container log: error-level lines
+[1020/173337.302490:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1020/173337.304530:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+[103:103:0100/000000.357122:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+_IceTransmkdir: ERROR: euid != 0,directory /tmp/.ICE-unix will not be created.
+[1020/173339.195623:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1020/173339.195691:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+[185:185:0100/000000.215763:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+(polkit-gnome-authentication-agent-1:276): polkit-gnome-1-WARNING **: 17:33:40.935: Error getting authority: Error initializing authority: Could not connect: No such file or directory
+** (light-locker:291): ERROR **: 17:33:41.109: session_id is not set, is /proc mounted with hidepid>0?
+(nm-applet:272): nm-applet-WARNING **: 17:33:41.186: Error connecting to system D-Bus: Could not connect: No such file or directory
+(end)
+== GraphiQL assets resolved as a browser does against http://127.0.0.1:48210/graphiql (the 'asset /graphiql/./graphiql/…' lines above used a wrong base and are superseded)
+asset ./graphiql/config.js -> http://127.0.0.1:48210/graphiql/config.js -> 200 application/javascript 70B
+asset ./graphiql/main.js -> http://127.0.0.1:48210/graphiql/main.js -> 200 application/javascript; charset=UTF-8 5715B
+== server process log (supervisor) error lines
+autobyteus_server.err.log
+autobyteus_server.log
+chrome.err.log
+chrome.log
+copyq.err.log
+copyq.log
+dbus.err.log
+dbus.log
+disable_screensaver.err.log
+disable_screensaver.log
+socat.err.log
+socat.log
+supervisord.log
+websockify.err.log
+websockify.log
+/var/log/supervisor/autobyteus_server.err.log: 0 error-level lines
+/var/log/supervisor/autobyteus_server.log: 0 error-level lines
+== the remaining container error lines above come from the chrome-vnc desktop base image (crashpad, zygote, polkit, light-locker, nm-applet), not from the server
+== cleanup 2026-10-20T17:34:10Z
+dep229
+Untagged: autobyteus-server:dep229
+containers named dep229: 0; images: 0; the user's autobyteus-server-* containers running: 3

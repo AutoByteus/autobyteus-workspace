@@ -1,0 +1,72 @@
+# DEL-05 — diagnosis of the DEL-03 full-suite failures (4 web, 1 server): each failing file rerun alone on the integrated state, then the same tests on the base
+# Full-suite failures in DEL-03, all 'Test timed out in 5000ms':
+#   web: voice-input-extension.integration.test.ts 'installs, enables, and inserts transcript text' (its ENOTEMPTY afterEach line is cleanup after the timeout);
+#        managedExtensionService.spec.ts 'installs disabled by default, enables explicitly, and transcribes via the worker';
+#        CollaborationMessagesOrgRoot.integration.spec.ts (2 cases; the same load timeout API-09 saw on base);
+#   server: antigravity-cli-capability.test.ts 'enables AGY availability using capabilities rather than release text' (no changed dependency on its path)
+
+## A. Integrated state (1c0a0e4355; tar 7.5.22), alone, 3 rounds
+$ NUXT_TEST=true pnpm -C autobyteus-web exec vitest run <the 3 web files> --reporter=verbose; pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/antigravity-cli-capability.test.ts --reporter=verbose
+== round 1 load { 28.28 28.07 30.67 }
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list 1186ms
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker 2364ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows 969ms
+ ✓ tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft 2059ms
+      Tests  8 passed (8)
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text 2352ms
+      Tests  44 passed (44)
+== round 2 load { 18.51 25.63 29.66 }
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list 995ms
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker 1846ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows 894ms
+ ✓ tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft 1766ms
+      Tests  8 passed (8)
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text 2362ms
+      Tests  44 passed (44)
+== round 3 load { 13.49 23.49 28.69 }
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list 938ms
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker 1774ms
+ ✓ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows 899ms
+ ✓ tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft 1659ms
+      Tests  8 passed (8)
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text 2242ms
+      Tests  44 passed (44)
+
+## B. Base origin/personal (tar 7.5.9), temporary worktree, frozen install, alone, 3 rounds
+# base worktree f11773d62c (origin/personal); tar in autobyteus-web:     "tar": "^7.5.9",
+base install exit=0
+base nuxt prepare exit=0
+base tar resolved: 7.5.9
+== base round 1 load { 32.26 25.18 28.67 }
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker 1726ms
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > preserves enabled state and language mode across reinstall 450ms
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > marks a broken installation as requiring attention 217ms
+ ✓ tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > serves the manifest checksum bytes unchanged across repeated downloads 1145ms
+ ✓ tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft 1609ms
+      Tests  5 passed (5)
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text 2668ms
+      Tests  1 passed | 43 skipped (44)
+== base round 2 load { 35.09 26.15 28.95 }
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker 1593ms
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > preserves enabled state and language mode across reinstall 466ms
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > marks a broken installation as requiring attention 208ms
+ ✓ tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > serves the manifest checksum bytes unchanged across repeated downloads 1138ms
+ ✓ tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft 1610ms
+      Tests  5 passed (5)
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text 2394ms
+      Tests  1 passed | 43 skipped (44)
+== base round 3 load { 36.80 26.98 29.20 }
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker 1572ms
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > preserves enabled state and language mode across reinstall 408ms
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > marks a broken installation as requiring attention 208ms
+ ✓ tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > serves the manifest checksum bytes unchanged across repeated downloads 1136ms
+ ✓ tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft 1557ms
+      Tests  5 passed (5)
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text 2347ms
+      Tests  1 passed | 43 skipped (44)
+base worktree removed
+
+## Judgement
+- All 4 timed-out tests pass alone 3/3 on the integrated state, at 0.9-2.4 s against the 5 s limit.
+- The tar-path install cases take 1.66-2.36 s on the branch vs 1.56-1.73 s on base: at most ~0.1-0.2 s (rounds 2-3: +0.1 s), well inside the limit. The AGY case (no changed dependency on its path) is equal (2.24-2.36 vs 2.35-2.67 s), yet timed out in the same full-suite run.
+- Cause: CPU contention in the 465 s / 1013 s full-suite runs (machine load 21-40, other agents' work), not a behavior change. Same class as API-09's base-only load timeout and FU-011.

@@ -1,0 +1,35 @@
+# IMP-12 — web checks after DEC-008 + markdown-it (7da874ed2b)
+# Commit: 7da874ed2b
+# Environment: macOS 26.5.2, node v22.23.1; web test DOM happy-dom 15.11.7
+# Date: 2026-10-20T17:14:05Z
+# Full logs (not committed): /tmp/dep229/checks3/<name>.log
+
+web-3-specs exit=0
+web-test-nuxt exit=1
+web-build exit=0
+web-test-electron exit=0
+
+## Commands (in autobyteus-web): NUXT_TEST=true pnpm exec vitest run <TextSegment, ThinkSegment, MarkdownRenderer specs>; pnpm test:nuxt --run; pnpm build; pnpm test:electron --run
+web-3-specs:  Test Files 3 passed (3); Tests 24 passed (24);
+web-test-nuxt:  Test Files 1 failed | 648 passed | 2 skipped (651); Tests 1 failed | 4629 passed | 5 skipped (4635);
+web-test-electron:  Test Files 38 passed | 1 skipped (39); Tests 215 passed | 1 skipped (216);
+web-build: 1 x 'Build complete!'
+
+## The one test:nuxt failure (FU-010; not caused by this change):
+ FAIL  components/notifications/__tests__/NotificationCenter.spec.ts > Notification Center > shows the pill only while updates wait, solid while unread; nothing opens by itself (REQ-011)
+Expected: "2 updates available: 1 agent package update, 1 skill update"
+Received: "2 updates available: 1 skill update, 1 agent package update"
+
+## Reruns of NotificationCenter.spec.ts alone:
+run 1:  Tests 10 passed (10)
+run 2:  Tests 10 passed (10)
+run 3:  Tests 10 passed (10)
+run 4:  Tests 10 passed (10)
+run 5:  Tests 10 passed (10)
+run 6:  Tests 10 passed (10)
+
+## Cause (Read + Reproduced): stores/updateNotificationsStore.ts sections() sorts kinds by their newest waiting foundAt (descending); the test helper node() stamps each notification with new Date(Date.now() - 3_600_000) separately, so when the clock crosses a millisecond between node('p1') and node('p2', SKILL_SOURCE) the skill section is newer and sorts first. Diagnostic (temporary, reverted): giving p2 a foundAt 5 ms later reproduces the exact failure:
+diag:  Tests 1 failed | 9 passed (10)
+Expected: "2 updates available: 1 agent package update, 1 skill update"
+Received: "2 updates available: 1 skill update, 1 agent package update"
+Nothing on this path changed in this ticket (component, store and test are untouched; the outcome depends only on Date.now()).

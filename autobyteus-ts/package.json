@@ -24,22 +24,20 @@
     "@modelcontextprotocol/server": "2.3.1",
     "@types/mime-types": "^3.0.1",
     "@types/node": "^25.0.10",
-    "dotenv": "^17.2.3",
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.12"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.132.1",
     "@google/genai": "^2.24.0",
     "@mistralai/mistralai": "^1.13.0",
     "@modelcontextprotocol/client": "2.3.1",
-    "axios": "^1.13.2",
+    "axios": "^1.20.0",
     "cheerio": "^1.2.0",
     "mime-types": "^3.0.2",
     "ollama": "^0.6.3",
     "openai": "^6.16.0",
-    "undici": "^7.22.0",
+    "undici": "^7.30.1",
     "zod": "^4.3.6"
   },
   "optionalDependencies": {

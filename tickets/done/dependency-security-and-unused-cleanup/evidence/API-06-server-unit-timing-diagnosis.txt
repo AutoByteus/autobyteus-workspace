@@ -1,0 +1,64 @@
+# API-06 server test:unit: the one branch failure, its excerpt, and the cause (Reproduced on both sides)
+== excerpt from the branch test:unit run (10126a016a)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)
+AssertionError: expected "sync" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st sync call:
+
+    Array [
+      "project-tasks/project_231791ab-c538-419d-8d72-b697fb4d46ee",
+      Array [
+        Object {
+          "id": "project_task_901d1550-aafb-4038-af57-5b3259ef2716",
+          "text": "Docker container crashes on arm64",
+        },
+      ],
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/projects/project-task-index-status.test.ts:155:22
+    153|     await tasks.updateTask({ projectId: alpha, taskId: task.taskId, de…
+    154|     await tasks.createTask({ projectId: alpha, description: "Sidebar c…
+    155|     expect(sync).not.toHaveBeenCalled();
+       |                      ^
+    156|     await until(async () => {
+    157|       const current = await status(alpha);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 764 passed | 4 skipped (769)
+      Tests  1 failed | 6309 passed | 7 skipped (6317)
+   Start at  19:25:14
+   Duration  713.16s (transform 22.90s, setup 10.41s, import 372.23s, tests 247.21s, environment 1.04s)
+
+== diagnosis runs
+# API-06 diagnosis: tests/unit/projects/project-task-index-status.test.ts, 6 runs per side, alternating, while both suite matrices load the machine; 2026-10-20T17:45:06Z
+run 1 branch load=39.28:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 170ms  Tests 1 failed | 7 passed (8) 
+run 1 base load=35.33:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 334ms  Tests 1 failed | 7 passed (8) 
+run 2 branch load=33.89:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 235ms  Tests 1 failed | 7 passed (8) 
+run 2 base load=34.12:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 145ms  Tests 1 failed | 7 passed (8) 
+run 3 branch load=44.35:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 199ms  Tests 1 failed | 7 passed (8) 
+run 3 base load=46.99:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 170ms  Tests 1 failed | 7 passed (8) 
+run 4 branch load=59.72:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 165ms  Tests 1 failed | 7 passed (8) 
+run 4 base load=67.62:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 246ms  Tests 1 failed | 7 passed (8) 
+run 5 branch load=60.84:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 200ms  Tests 1 failed | 7 passed (8) 
+run 5 base load=52.71:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 307ms  Tests 1 failed | 7 passed (8) 
+run 6 branch load=50.14:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 264ms  Tests 1 failed | 7 passed (8) 
+run 6 base load=47.14:  × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 296ms  Tests 1 failed | 7 passed (8) 
+
+# second half: the same file alone at lower load, alternating; 2026-10-20T18:42:13Z
+run 1 branch load=40.28:  Tests 8 passed (8) 
+run 1 base load=54.30:  Tests 8 passed (8) 
+run 2 branch load=61.12:  Tests 8 passed (8) 
+run 2 base load=63.13:  Tests 8 passed (8) 
+run 3 branch load=65.57:  Tests 8 passed (8) 
+run 3 base load=67.32:  Tests 8 passed (8) 
+
+== cause: the test starts the indexer with a 40 ms debounce (start(40), project-task-index-status.test.ts L148) and expects three awaited Task writes (L152-154) to complete before it fires (L155). Under CPU contention a write takes longer than 40 ms, so one sync runs early. It fails 6/6 on base and on the branch while both suite matrices run, and passes 3/3 on both once they finished. Same behavior on base: not caused by this change. Follow-up FU-011.

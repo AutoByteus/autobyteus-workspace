@@ -1,0 +1,21 @@
+# IMP-01 — baseline re-recorded on the untouched branch (step 1)
+# Commit: 3b2c86ca9e (base, no changes)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T15:55:49Z
+
+$ pnpm audit --json / pnpm audit --prod --json  (metadata.vulnerabilities)
+ALL {'info': 0, 'low': 40, 'moderate': 215, 'high': 217, 'critical': 18}
+PROD {'info': 0, 'low': 25, 'moderate': 135, 'high': 91, 'critical': 3}
+(identical to SD-00/SD-01 totals)
+
+$ node probes/import-provider-check.mjs <repo> <8 packages>  vs evidence/SD-07
+identical to SD-07 (136 lines)
+
+$ pnpm install --resolution-only (base peer issues; the lockfile it rewrote was restored with git checkout)
+ WARN  Issues with peer dependencies found
+autobyteus-web
+└─┬ nuxt 3.21.1
+  └─┬ @nuxt/cli 3.33.1
+    ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+    └─┬ @bomb.sh/tab 0.0.12
+      └── ✕ unmet peer citty@^0.1.6: found 0.2.1

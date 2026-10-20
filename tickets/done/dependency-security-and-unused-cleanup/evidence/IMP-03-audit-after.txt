@@ -1,0 +1,17 @@
+# IMP-03 — step 5-6: audit after the change vs base and the trial
+# Commit: 9936445f55 (result of the steps below)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T16:07:20Z
+
+$ pnpm audit --json / --prod --json (metadata.vulnerabilities and remaining high/critical module@version)
+BASE ALL {'info': 0, 'low': 40, 'moderate': 215, 'high': 217, 'critical': 18}
+BASE PROD {'info': 0, 'low': 25, 'moderate': 135, 'high': 91, 'critical': 3}
+AFTER ALL {'info': 0, 'low': 13, 'moderate': 40, 'high': 46, 'critical': 6}
+    @fastify/busboy@2.1.1(high) @fastify/static@7.0.4(high) @graphql-tools/utils@10.11.0(high) @graphql-tools/utils@11.0.0(high) @graphql-tools/utils@9.2.1(high) app-builder-lib@25.1.8(high) braces@3.0.3(high) builder-util-runtime@9.2.10(high) fastify@4.29.1(high) find-my-way@8.2.2(high) form-data@2.3.3(critical/high) happy-dom@15.11.7(critical/high) http-cache-semantics@4.2.0(high) immutable@3.7.6(high) jpeg-js@0.1.2(high) jpeg-js@0.2.0(high) lodash@4.17.23(high) minimatch@9.0.1(high) minimist@0.0.8(critical) node-forge@1.4.0(high) sharp@0.33.5(high) tar@6.2.1(critical/high) tinypool@1.1.1(critical) undici@5.28.3(high) undici@6.27.0(high) url-regex@3.2.0(high) xlsx@0.18.5(high)
+AFTER PROD {'info': 0, 'low': 10, 'moderate': 18, 'high': 13, 'critical': 0}
+    @fastify/busboy@2.1.1(high) @fastify/static@7.0.4(high) fastify@4.29.1(high) find-my-way@8.2.2(high) undici@5.28.3(high) xlsx@0.18.5(high)
+
+Trial (SD-05/SD-08): ALL high 46 / critical 6; PROD high 13 / critical 0: @fastify/busboy@2.1.1 @fastify/static@7.0.4 fastify@4.29.1 find-my-way@8.2.2 undici@5.28.3 xlsx@0.18.5  -> identical totals and sets
+
+$ node probes/fixability.mjs <audit.json> <repo> | grep ^IN-RANGE
+IN-RANGE undici@6.27.0 <- node-gyp (^6.25.0) -> newest in range 6.29.1 | high x1 | via autobyteus-web>@electron/rebuild>node-gyp
