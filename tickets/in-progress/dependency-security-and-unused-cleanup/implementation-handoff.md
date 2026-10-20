@@ -2,16 +2,23 @@
 
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup`, branch `codex/dependency-security-and-unused-cleanup`, base `origin/personal` @ `3b2c86ca9e`
-- Implementation commit: `9936445f55` (`fix(deps): apply in-range security updates and remove unused dependencies`); ticket documents and evidence committed after it
-- **Status: Blocked by a Design Impact (IMP-DI-001).** Steps 1–6 are done. The `axios` in-range update (1.13 → 1.20.0) breaks the `autobyteus-ts` build with a type error that only a one-line source change fixes. REQ-006 forbids source changes, and no patched axios version below 1.20.0 exists.
+- Implementation commits:
+  - `9936445f55`: manifests and lockfile, steps 1–6.
+  - `79ece48bf4`: DEC-007, the one source line and its test.
+  - The ticket documents and evidence are committed after them.
+- **Status (IR-002): blocked by Design Impact IMP-DI-002.**
+  - IMP-DI-001 is resolved by DEC-007 (SR-004, ARCH-REV-004). All builds now pass, and so do the server typecheck, `test:unit` and `test:integration`.
+  - Web `test:nuxt` fails 4 heading-rendering tests. The in-range `dompurify` 3.4.17 drops `<h1>`/`<h2>` under happy-dom, the web test DOM. It keeps them in real Chromium.
+  - Every fix needs a decision outside DEC-007: hold `dompurify` back, change the test harness, or something else.
+- Earlier status (IR-001): blocked by IMP-DI-001, the `axios` 1.20 typing change, now resolved.
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: architecture review selected and passed (`ARCH-REV-002`). This round routes to the Solution Designer (Design Impact).
-- Requirements doc: `requirements-doc.md` (SR-002 basis)
+- Upstream review applicability and handoff-rule result: architecture review selected and passed (`ARCH-REV-002`, then `ARCH-REV-004` after SR-003/SR-004). This round routes to the Solution Designer again (IMP-DI-002).
+- Requirements doc: `requirements-doc.md` (SR-004 basis, including REQ-006/DEC-007)
 - Investigation notes: `investigation-notes.md`
 - Solution revision record: `solution-revision-record.md`
-- Design spec: `design-spec.md` (SR-002)
+- Design spec: `design-spec.md` (SR-004)
 - Supplemental task artifacts: `evidence/SD-00…SD-08`, `probes/`, `follow-ups.md`, `handoff-sr-002.md`
 - Design review report: `design-review-report.md`
 - Architecture review revision record: `architecture-review-revision-record.md`
@@ -19,13 +26,21 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (after IMP-DI-001)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: SR-002
-- Related architecture-review revision IDs: ARCH-REV-002
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: SR-002, SR-003, SR-004
+- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-004
 - Related code-review, API/E2E and delivery revision IDs: N/A
-- Triggering finding IDs: N/A (raised: IMP-DI-001)
+- Triggering finding IDs: IMP-DI-001 (resolved by DEC-007). Raised: IMP-DI-002.
+
+DEC-007 (`79ece48bf4`):
+- `download-media-tool.ts` L118 now reads `const mimeType = String(contentType).split(';')[0].trim();`. Nothing else in the file changed.
+- `download-media-tool.test.ts`: the mock helper accepts a missing content-type, and there are 2 new cases:
+  - `image/png; charset=binary` → `.png`;
+  - no content-type, with URL `…/photo.jpeg` → `.jpeg`.
+- Both new cases also passed before the source line changed, so they pin the runtime behavior the line must keep.
+- The lockfile is unchanged since `9936445f55`.
 
 What is committed (`9936445f55`, manifests and lockfile only):
 - **Bumps:**
@@ -52,9 +67,43 @@ What is committed (`9936445f55`, manifests and lockfile only):
 - Evidence and rationale: the footprint matches the design. The blocker is a requirement and design decision, not a scope change.
 - Selected route: `Solution Designer` (Design Impact)
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: **IMP-DI-001**, below.
+- New design impact or escalation trigger: **IMP-DI-002**, below. IMP-DI-001 is resolved by DEC-007 and kept below as history.
 
-### IMP-DI-001 — the `axios` in-range update needs a source change
+### IMP-DI-002 — the in-range `dompurify` 3.4.17 breaks 4 web markdown tests under happy-dom
+
+How each part was established:
+- The failure: Reproduced (`test:nuxt`, then the 3 files alone).
+- The bisect and the environment split: Reproduced, with a standalone probe using the exact sanitize options.
+- The code change: Read (the 3.4.7 → 3.4.8 diff).
+- Product unaffected: Reproduced, in real Chromium.
+- See `evidence/IMP-09-dompurify-happy-dom-design-impact.txt`.
+
+- **What fails:** `pnpm -C autobyteus-web test:nuxt` → `Tests 4 failed | 4626 passed`. The failing tests:
+  - `TextSegment.spec.ts` (2): `Unable to get h1` / `h2`;
+  - `ThinkSegment.spec.ts` (1): `Unable to get h2`;
+  - `MarkdownRenderer.spec.ts` (1): `# Hello World` renders as plain `Hello World`, with no `<h1>`.
+- **Why `dompurify` moved:** the loop never named it. It went from 3.3.1 to 3.4.17 with the `mermaid` parent update, because `mermaid` 11.17.2 declares `^3.3.3` and dedupe shares one copy with web's `^3.2.2`.
+- **Cause:**
+  - DOMPurify 3.4.8 reads the tag name through the `Node.prototype` `nodeName` getter: `getNodeName(currentNode)`. Before, it used `currentNode.nodeName`.
+  - happy-dom's `Node.prototype` `nodeName` getter returns `""` for elements, in 15.11.7 and in 21.0.3 alike. jsdom returns `"H1"`, as the spec requires.
+  - Bisect under happy-dom: ≤ 3.4.7 keeps `<h1>`; ≥ 3.4.8 drops it. Under jsdom every version keeps it.
+  - Not established: why `<p>`/`<strong>` survive while `<h1>` is dropped.
+- **Product unaffected:** DOMPurify 3.4.17 with the same options in real Chromium (Chrome 148 / Electron 42) keeps `<h1>Hello World</h1>`. Only the happy-dom test DOM breaks.
+- **What did not work as a local fix:**
+  - A per-file `@vitest-environment-options` switch to jsdom: the Nuxt test environment fails to start.
+  - A test-setup shim for the `nodeName` getter: 11 failures instead of 4.
+  - Both were temporary and are reverted.
+- **Decision needed.** Every option goes beyond DEC-007 or holds a package back.
+  - (a) Hold `dompurify` at 3.4.7. That means an exact pin `"dompurify": "3.4.7"` in `autobyteus-web` (within major), then redo steps 3–6.
+    - It leaves 2 moderate and 4 low advisories that 3.4.8–3.4.17 fix: GHSA-cmwh-pvxp-8882, GHSA-55q2-fjhq-7xh7, GHSA-vxr8-fq34-vvx9, GHSA-gvmj-g25r-r7wr, GHSA-c2j3-45gr-mqc4, GHSA-6688-9rhm-gjv2. None is high or critical.
+    - Our own call uses none of the affected features.
+    - Base was 3.3.1, so 3.4.7 still fixes more than base.
+    - This is the smallest change. It fits the design's hold-back rule if "patched" means the ticket's high/critical scope.
+    - `mermaid`'s internal DOMPurify use was not analysed.
+  - (b) Keep 3.4.17 and fix the web test DOM: a spec-correct `nodeName` in happy-dom, or jsdom for these specs through the Nuxt test config. This is test-harness work beyond DEC-007, and the size is unknown.
+  - (c) (a) now, with a follow-up for (b) and an upstream report to happy-dom (or DOMPurify) so the pin can be lifted. **Recommended.**
+
+### IMP-DI-001 (resolved by DEC-007, SR-004) — the `axios` in-range update needs a source change
 
 How each part was established: build failure Reproduced; typing cause Read (both `index.d.ts`); fix Reproduced (diagnostic build); hold-back option Measured (audit data).
 
@@ -78,13 +127,13 @@ How each part was established: build failure Reproduced; typing cause Read (both
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Runtime libraries at patched versions | lockfile and manifests (`9936445f55`) | Prod audit: 0 critical / 13 high, only the explained set (IMP-03). **Blocked:** `autobyteus-ts` does not build with axios 1.20 (IMP-DI-001) |
-| BEH-002 | Build and test tooling at patched versions | same | All audit: 6 critical / 46 high, all in the Findings Table (IMP-03). Builds pass except `autobyteus-ts` and the server chain (IMP-06) |
+| BEH-001 | Runtime libraries at patched versions | lockfile and manifests (`9936445f55`); DEC-007 (`79ece48bf4`) | Prod audit: 0 critical / 13 high, only the explained set (IMP-03). Builds, server typecheck, `test:unit` and `test:integration` pass (IMP-08). **Blocked:** 4 web tests fail with `dompurify` 3.4.17 under happy-dom (IMP-DI-002) |
+| BEH-002 | Build and test tooling at patched versions | same | All audit: 6 critical / 46 high, all in the Findings Table (IMP-03). All builds pass after DEC-007 (IMP-08) |
 | BEH-003 | Unused packages removed | 6 manifests | All 17 removals absent from the manifests and lockfile importers. `@nuxtjs/apollo` and `monaco-editor` kept. Import providers identical to `SD-07` (IMP-05) |
 | BEH-004 | `pnpm dedupe --check` exits 0 | lockfile | Exit 0 (IMP-02) |
 | BEH-005 | Electron 42.11.x | `autobyteus-web/package.json` | `process.versions.electron` = `42.11.16`; `test:electron` 215 passed (IMP-06) |
 
-- Changes stayed within the requirements doc's Scope Guardrail: `Yes`. The needed source change was not made; it is routed as IMP-DI-001.
+- Changes stayed within the requirements doc's Scope Guardrail: `Yes`. The only source change is DEC-007. The IMP-DI-002 fix is not made; it is routed.
 
 ## Key Files Or Areas
 
@@ -114,7 +163,9 @@ How each part was established: build failure Reproduced; typing cause Read (both
 ## Known Risks
 
 - R-001…R-004 remain for validation: semver slips, Electron 42.4 → 42.11, new advisories, and hidden removal paths. Nothing beyond the builds below has run on the new versions yet.
-- `autobyteus-ts/dist` (untracked) was last built from the reverted diagnostic source. Rebuild before using it.
+- `autobyteus-ts/dist` (untracked) was rebuilt from `79ece48bf4` in IMP-08.
+- IMP-06's build failures are resolved by DEC-007 (IMP-08).
+- FU-008: `package-auto-refresh` failed once in 10 runs. It is not caused by this change, and its root cause is not established. API/E2E may see it in the integration suite.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -161,11 +212,13 @@ Evidence is in the ticket's `evidence/` folder. Full logs are in `/tmp/dep229/` 
 | IMP-05 | Peer issues (`--resolution-only`) vs base; `import-provider-check.mjs` vs `SD-07`; removal greps in manifests and lockfile importers | `9936445f55` | same | manifests, lockfile, `node_modules` | AC-004 | Pass | `IMP-05-peers-providers-removals.txt` | `identical to SD-07 (136 lines; …)`; 17 × `manifest=absent lock-importer=absent`; peer `@nuxt/schema@^4.4.6` only |
 | IMP-06 | Builds and tests of the 6 contract/SDK packages; `autobyteus-ts` build and test; server prebuild/build/typecheck; web `nuxt build`, voice-input `tar` test, `test:electron`, Electron version | `9936445f55` | macOS | the packages above | AC-005 (part), AC-006 (part), AC-007 (version) | **Fail** (`autobyteus-ts` build and server chain); rest Pass | `IMP-06-builds-and-focused-tests.txt` | `build-ts exit=2`; `error TS2339: Property 'split' does not exist on type 'string \| number \| true \| string[] \| AxiosHeaders'`; `test-ts … 2368 passed`; `web-test-electron … 215 passed \| 1 skipped`; `web-voice-input … 2 passed`; `42.11.16` |
 | IMP-07 | Cause analysis (axios `index.d.ts` 1.20.0 vs 1.13.6); hold-back check against the advisories; temporary diagnostic build with `String(contentType)` (reverted) | `9936445f55` + reverted diagnostic | macOS | `download-media-tool.ts`, axios typings | IMP-DI-001 | Pass (diagnosis) | `IMP-07-axios-typing-design-impact.txt` | `GHSA-3pq3-5fj3-cg6v >=1.13.0 <1.20.0 -> patched >=1.20.0`; diagnostic `build-ts exit=0`, `server-typecheck exit=0` |
+| IMP-08 | After DEC-007: frozen install; `dedupe --check`; `autobyteus-ts` build and test; server prebuild/build/typecheck/`test:unit`/`test:integration:prepare`/`test:integration` (plus one full rerun); web `test:nuxt --run`; DEC-007 test file alone | `79ece48bf4` | macOS, clean env for `autobyteus-ts` | `autobyteus-ts`, server, web units | REQ-007, AC-005, AC-006 (part), DEC-007 | Pass, except web `test:nuxt` (IMP-DI-002) and 1 intermittent in the first integration run (FU-008) | `IMP-08-after-dec007-suites.txt` | `[verify:runtime-deps] OK`; `test-ts … Tests 2370 passed`; `server-unit … Tests 6310 passed`; integration rerun `Tests 421 passed`; `web-test-nuxt … Tests 4 failed \| 4626 passed`; download tool `Tests 4 passed (4)` |
+| IMP-09 | DOMPurify bisect under happy-dom vs jsdom with the exact sanitize options; 3.4.7 → 3.4.8 diff; happy-dom `nodeName` getter probe (15.11.7 and 21.0.3); real-Chromium probe page; tried a per-file jsdom switch and a setup shim (both reverted) | `79ece48bf4` + reverted diagnostics | macOS, happy-dom 15.11.7, jsdom 25.0.1, Chromium 148 | `useMarkdownSegments.ts` sanitize path, `dompurify` | IMP-DI-002 | Pass (diagnosis) | `IMP-09-dompurify-happy-dom-design-impact.txt`, `IMP-09-chromium-probe.html`, `IMP-09-nodename-probe.cjs.txt` | `3.4.8 happy-dom profile+ADD_TAGS : "Hello World\n<p>…`; `3.4.7 happy-dom … "<h1>Hello World</h1>…`; `happy-dom H1 … Node.prototype nodeName getter= ""`; Chromium `"result":"<h1>Hello World</h1>…` |
+| IMP-10 | `package-auto-refresh.integration.test.ts`: 5 runs alone, 3 alone under full CPU load, 1 full-suite rerun; watcher package versions base vs now | `79ece48bf4` | macOS | agent package folder watcher | FU-008 | Not caused by this change (root cause not established) | `IMP-10-auto-refresh-intermittent.txt` | `Condition not met within 5000 ms; last value: ["agent:Planner","agent:Scout"]` once; 9 × `Tests 14 passed (14)`; chokidar/readdirp lists identical |
 
-- Not run, and why: blocked by IMP-DI-001. The remaining step-7 matrix belongs to API/E2E after the decision:
-  - server `test:unit` and `test:integration`;
+- Not run, and why: blocked by IMP-DI-002. The remaining step-7 matrix belongs to API/E2E after the decision:
   - `pnpm test:e2e`;
-  - web `test:nuxt` and the guards;
+  - web guards (`test:nuxt` ran: IMP-08);
   - the applications' typecheck and build;
   - packaged macOS app, packaged Electron harness and isolated instance;
   - Docker image;

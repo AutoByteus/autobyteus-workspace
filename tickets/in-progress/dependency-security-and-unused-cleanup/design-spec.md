@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002` (design correction after ARCH-REV-001)
+- Current solution revision ID: `SR-004` (scope wording aligned after ARCH-REV-003)
 - Approved requirements: `requirements-doc.md` SR-001, approved by the Solution Designer within the direction of Task `autobyteus-229` (user informed 2026-10-20)
 - Behavior-defining supplements: none
 - Design status: `Ready`
@@ -24,13 +24,13 @@ Every workspace package resolves through the root `pnpm-lock.yaml` (pnpm 10.28.2
 
 - Task size: `Medium`.
   - Payload: 8 manifests (web, `autobyteus-ts`, 4 small packages; the server's and backend SDK's manifests change only where `pnpm update` raises a direct specifier) plus the root lockfile. The trial diff was about 3.4k insertions / 3.5k deletions, mostly lockfile (`evidence/SD-06`).
-  - Structural surfaces: none; no source change.
+  - Structural surfaces: none. One type-level source line (DEC-007) and its test.
 - Architectural risk: `High`. No code, contract or persistence changes, but the blast radius is wide:
   - Runtime library versions change under every packaged runtime: Electron 42.4.1 → 42.11.16 (the desktop shell); `vue` 3.5.28 → 3.5.44 and `nuxt` 3.21.1 → 3.21.11 (the UI build); `axios` 1.13 → 1.20 and `undici` 7.22 → 7.30 (`autobyteus-ts` provider calls); `protobufjs`, `ws`, `@fastify/busboy` and `fast-uri` (server); `express` and `hono` (the Claude SDK's MCP peer).
   - All of them are semver-compatible, and only the full validation matrix shows that nothing regressed.
 - Escalation trigger (→ Design Impact):
   - a suite, build, packaged app or Docker image fails because of an update and the cause is not a local test fix;
-  - an update needs a source change or an override;
+  - an update needs an override, or a source change beyond a type-level adaptation with no runtime change (DEC-007);
   - `pnpm update` cannot reach a runtime row listed as in-range.
 
 ## Architecture Investigation Evidence
@@ -58,9 +58,10 @@ Every workspace package resolves through the root `pnpm-lock.yaml` (pnpm 10.28.2
 
 - In scope: UC-001…UC-003.
   - Files: `autobyteus-web/package.json`, `autobyteus-ts/package.json`, the `package.json` of `autobyteus-application-frontend-sdk`, `autobyteus-team-stream-contracts`, `autobyteus-agent-presentation-contracts` and `autobyteus-collaboration-stream-contracts`, any manifest whose direct specifier `pnpm update` raises, and the root `pnpm-lock.yaml`.
+  - Source, only the DEC-007 type-level adaptation: `autobyteus-ts/src/tools/multimedia/download-media-tool.ts` (L118) and its test `autobyteus-ts/tests/unit/tools/multimedia/download-media-tool.test.ts` (new content-type → extension assertions).
   - The ticket folder's findings (`follow-ups.md`).
 - Deliberately left alone:
-  - all source code;
+  - all other source code (REQ-006 allows only type-level adaptations with no runtime change; DEC-007 is the only one);
   - Fastify / `mercurius` / `@fastify/*` majors (FU-001);
   - `xlsx` (FU-002);
   - the web build-tool majors and `to-ico`/`sharp` (FU-003, FU-004);
@@ -186,7 +187,7 @@ N/A.
 
 - No `pnpm.overrides`, `resolutions` or npm `overrides`.
 - No `pnpm update --latest`.
-- No major bump: a major bump is a follow-up.
+- No **direct specifier** crosses a major (for `0.x`, a minor); such a bump is a follow-up. A **transitive** major (or `0.x` minor) change is allowed when it comes from an in-range update of its parent, i.e. it sits inside the parent's own declared range. List each in the handoff, as `evidence/IMP-04` does: mostly the nuxt/vite/oxc/esbuild toolchain, plus `@hono/node-server` 2.x inside `@modelcontextprotocol/sdk`'s `^1.19.9 || ^2.0.5`.
 - Direct specifiers may only be raised within their major. For `0.x`, within the minor.
 - Exact pins stay exact (Electron).
 
@@ -231,6 +232,8 @@ N/A.
 | --- | --- |
 | `autobyteus-web/package.json` | `tar` → `^7.5.22`; `electron` → `42.11.16` (or the newest 42.x at implementation time, exact); remove the 7 dependencies and 4 devDependencies of DEC-005 (**not** `@nuxtjs/apollo`); specifiers raised by `pnpm update` (e.g. `axios`, `electron-updater`, `nuxt`, `postcss`, `vitest`, `ws`) are accepted |
 | `autobyteus-ts/package.json` | `undici` → `^7.29.1` or higher in 7.x; remove `dotenv`, `ts-node`; raised specifiers accepted (`axios`, `vitest`) |
+| `autobyteus-ts/src/tools/multimedia/download-media-tool.ts` | L118: `const mimeType = String(contentType).split(';')[0].trim();` (DEC-007). Nothing else in the file changes |
+| `autobyteus-ts/tests/unit/tools/multimedia/download-media-tool.test.ts` (existing; it already mocks `content-type`) | Assert the content-type → extension mapping: `image/png; charset=binary` → `.png`; no content-type → extension from the URL |
 | 4 small packages' `package.json` | Remove `@types/node` (minimal text edit; keep their compact one-line formatting) |
 | Other manifests | Only specifier raises made by `pnpm update` |
 | `pnpm-lock.yaml` | Result of install + in-range loop + dedupe |
@@ -276,7 +279,7 @@ N/A.
    - Then `pnpm dedupe`; `pnpm dedupe --check` must exit 0.
 4. **Review:**
    - `git diff -- '*package.json'`: only the intended removals and same-major raises;
-   - the lockfile diff summary: list the major version changes of any package; there should be none, and any would be a finding;
+   - the lockfile diff summary: no direct specifier crosses a major; list the transitive major/`0.x`-minor changes with their in-range parent (Dependency Rules);
    - unmet peer warnings vs base: the `@nuxt/cli` optional-peer notice is expected;
    - **import providers (AR-001):** `node probes/import-provider-check.mjs <repo> autobyteus-web autobyteus-ts autobyteus-server-ts autobyteus-application-frontend-sdk autobyteus-team-stream-contracts autobyteus-agent-presentation-contracts autobyteus-collaboration-stream-contracts autobyteus-application-backend-sdk` is compared with `evidence/SD-07`. An import that turns `MISSING` has lost its only provider, so stop: that's a Design Impact. A provider moving between locations (package, root, hidden hoist) is harmless; note it in the implementation handoff (ARCH-REV-002 note).
 5. **Audit:** compare `pnpm audit --prod` and `--json` with `evidence/SD-05`. Every remaining high/critical must be in the findings table. A newly published one that is in-range is fixed; any other is added to the table with evidence.

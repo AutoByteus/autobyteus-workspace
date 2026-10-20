@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-004`
 - Package identifier: `dependency-security-and-unused-cleanup`
 - Request / ticket: Project Task `autobyteus-229` (FU-004 of `autobyteus-224`, plus Part 2 added by the user on 2026-10-20)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Requirements owner: Solution Designer
 - Date: 2026-10-20
 - Approved by and reference: Solution Designer within the direction of Task `autobyteus-229` (user informed in the Solution Designer conversation, 2026-10-20). The Task already sets the rule for out-of-rule items (list them, don't widen silently) and for doubtful removals (report to the user).
-- Exact approved requirements baseline: SR-002 (SR-001 with DEC-005/AC-004 corrected after ARCH-REV-001 AR-001: `@nuxtjs/apollo` kept; no change of intended behavior)
+- Exact approved requirements baseline: SR-003. SR-002 corrected DEC-005/AC-004 after ARCH-REV-001 AR-001 (`@nuxtjs/apollo` kept). SR-003 revised REQ-006 and added DEC-007 after IMP-DI-001 (a type-level source adaptation for axios 1.20.0). Intended behavior unchanged; approved by the Solution Designer within the Task's direction, user informed
 - Behavior-defining supplements: none
 
 ## Problem And Desired Outcome
@@ -75,7 +75,7 @@ Major upgrades and replacements, listed as follow-ups:
 
 ### Non-Goals
 
-- No `pnpm.overrides` / `resolutions` / npm `overrides`; no source code changes (a removal never needs code, by definition of unused).
+- No `pnpm.overrides` / `resolutions` / npm `overrides`. No source code changes, except a type-level adaptation with no runtime change that a patched version's stricter types require (REQ-006; DEC-007, `download-media-tool.ts` L118). A removal never needs code, by definition of unused.
 - Moderate/low advisories are not targeted, though in-range refreshes may fix some.
 
 ### Preserved Behavior Boundary
@@ -107,7 +107,7 @@ None. Checked: `pnpm` targeted update works (probe, investigation), Electron 42.
 | REQ-003 | Every remaining high/critical advisory is explained in the ticket's findings table, with evidence (version, why not in-rule, reachability) and a follow-up ID | BEH-001, BEH-002 | Must | Task Done-when | Task |
 | REQ-004 | The clearly unused dependencies listed in DEC-005 are removed from their manifests; doubtful ones are kept and reported to the user | BEH-003 | Must | Task Part 2 | User 2026-10-20 |
 | REQ-005 | `pnpm dedupe --check` passes on the final lockfile; the dedupe's version changes are reviewed in the implementation handoff | BEH-004 | Must | Task | Task |
-| REQ-006 | No new override/resolution mechanism; no source change | — | Must | Clean-cut, smallest change | DESIGN.md |
+| REQ-006 | No new override/resolution mechanism. Source changes only where a patched version's stricter **types** require a type-level adaptation with no runtime behavior change, each one listed with its cause and covered by a test. Today the only one is `autobyteus-ts/src/tools/multimedia/download-media-tool.ts` L118 (DEC-007) | — | Must | Clean-cut, smallest change; keeps the axios fix | DESIGN.md; DEC-007 |
 | REQ-007 | Install, builds, suites, packaged app and Docker image keep working (AC-005…AC-008) | all | Must | Task Done-when | Task |
 
 ## Acceptance Criteria
@@ -170,12 +170,13 @@ None. Checked: `pnpm` targeted update works (probe, investigation), Electron 42.
 
 | Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| DEC-001 | What counts as "small and safe" (the Task's words)? | Draws the line between this ticket and follow-ups | (a) only the 3 named; (b) any patched version reachable without code change; (c) also majors | **(b), precisely:** a fix is in-rule when the vulnerable package reaches a patched version (1) inside every declared range of its dependents (a lockfile refresh, possibly of its parent within the parent's range), or (2) by raising one of our own direct specifiers within the same major (same minor for `0.x`). No overrides, no source change. Applies to prod and dev alike, because both use the same mechanism and validation. 23 prod rows and 28 dev rows qualify (SD-02). | Solution Designer | Decided |
+| DEC-001 | What counts as "small and safe" (the Task's words)? | Draws the line between this ticket and follow-ups | (a) only the 3 named; (b) any patched version reachable without code change; (c) also majors | **(b), precisely:** a fix is in-rule when the vulnerable package reaches a patched version (1) inside every declared range of its dependents (a lockfile refresh, possibly of its parent within the parent's range), or (2) by raising one of our own direct specifiers within the same major (same minor for `0.x`). No overrides; source changes only as REQ-006 allows (type-level, no runtime change; DEC-007). Applies to prod and dev alike, because both use the same mechanism and validation. 23 prod rows and 28 dev rows qualify (SD-02). | Solution Designer | Decided |
 | DEC-002 | Include Electron 42.4.1 → 42.x latest? | The shipped desktop runtime has 5 high advisories (fixed by 42.10.0) | An exact-pin bump within major 42 keeps the Node ABI; Chromium/Electron security patches | Include it: it fits DEC-001 (2), the risk is in the runtime users run, and AC-007 validates the packaged app | Solution Designer | Decided |
 | DEC-003 | Mercurius' `undici` 5.28.3 (17 advisories, 3 high): override, upgrade or explain? | Task asks for a fix or an explained remainder | Reproduced (`evidence/SD-04`): mercurius 13.4.1, registered as the server registers it (GraphiQL + subscriptions), loads 535 modules and **no** `undici`; `lib/` never requires it. Fixed versions need `mercurius` ≥ 14 → Fastify 5. An override would add a second resolution mechanism and would not reach the Windows packaging path (`npm install`) | Explain, don't override: the vulnerable code never runs. The real fix is the Fastify 5 migration follow-up (FU-001), which also clears `fastify`, `find-my-way`, `@fastify/static` and `@fastify/busboy` 2.x | Solution Designer | Decided |
 | DEC-004 | Fastify 4 → 5 here? | `fastify` 4.29.1 (newest 4.x) has 6 high advisories (e.g. auth bypass via malformed URLs, validation bypasses), fixed only in 5.x; v4 is end-of-life | A framework-major migration of the server (and gateway) with `mercurius` 16 and `@fastify/*` majors | Not here: the Task forbids silent widening, and it's a code migration. Follow-up FU-001, **urgent** | Solution Designer | Decided |
 | DEC-005 | Which dependencies are clearly unused? | Task Part 2 | Scans (SD-03) + hand checks (investigation) | **Remove:** see the list below. **Keep and report as doubtful:** `monaco-editor` (unused because `@monaco-editor/loader` fetches Monaco from its CDN; whether the app should bundle it for offline use is FU-006). **Keep, used:** `@anthropic-ai/sdk` in the server (required peer of the Claude Agent SDK, pinned on purpose); the codegen plugins, `postcss`, `autoprefixer` (config use); `typescript` in the gateway (`tsc` in scripts); `@types/node` where removing it breaks type checks (backend SDK, brief-studio) | Solution Designer | Decided |
 | DEC-006 | Undeclared imports: server tests (`jsdom`, `@autobyteus/application-backend-sdk`); web code (`@apollo/client`, `@vue/apollo-composable`, `graphql`, `graphql-tag`, provided only through other packages; ARCH-REV-001) | Found by knip and the review | The opposite of unused; adding them is not removal | Follow-up FU-005 | Solution Designer | Decided |
+| DEC-007 | axios 1.20.0 (the only release that fixes GHSA-3pq3-5fj3-cg6v and GHSA-542g-h47m-68v8, both high, `>=1.13.0 <1.20.0`; verified 2026-10-20) types the lower-case `'content-type'` response header as `AxiosHeaderValue`, so `download-media-tool.ts` L118 `contentType.split(';')` stops compiling (IMP-DI-001, `evidence/IMP-07`) | Without a fix, the `autobyteus-ts` and server builds fail; holding axios back keeps two high runtime advisories | (a) a one-line type adaptation `String(contentType).split(';')` plus a unit assertion of the content-type → extension mapping; (b) hold axios at 1.13.x and explain | **(a).** For the string header Node delivers, `String()` is the identity, so runtime behavior is unchanged; the change is local and covered by a test. (b) would keep two high advisories in the agents' download tool path | Solution Designer | Decided |
 
 **DEC-005 removal list:**
 - `autobyteus-web` dependencies: `chart.js`, `vue-chartjs`, `diff-match-patch`, `html2canvas`, `jsonrepair`, `markdown-it-katex` (also removes its XSS advisory), `markdown-it-prism`.
@@ -199,7 +200,7 @@ None. Checked: `pnpm` targeted update works (probe, investigation), Electron 42.
 ## Architecture Phase Input
 
 - Approved scenarios: SCN-001…SCN-004.
-- Constraints: DEC-001 rule; no overrides; no source change; TESTING.md rules (worktree build, isolated instances).
+- Constraints: DEC-001 rule; no overrides; source changes only per REQ-006 (DEC-007); TESTING.md rules (worktree build, isolated instances).
 - Deferred to design: the exact update commands and order; how to review the lockfile churn; the validation matrix.
 
 ## Readiness Check

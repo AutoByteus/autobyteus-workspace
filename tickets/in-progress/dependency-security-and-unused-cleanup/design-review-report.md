@@ -2,18 +2,18 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/requirements-doc.md` (SR-002: SR-001 with DEC-005/DEC-006/AC-004 corrected after ARCH-REV-001; approved by the Solution Designer within the Task's direction; user informed; no change of intended behavior)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/requirements-doc.md` (SR-004: SR-003 [REQ-006 revised, DEC-007 added after IMP-DI-001] with the scope wording aligned after ARCH-REV-003; approved by the Solution Designer within the Task's direction; user informed; no change of intended behavior)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/investigation-notes.md`
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/design-spec.md` (SR-002)
-- Supplemental Task Artifacts Reviewed: `evidence/SD-00…SD-08`, `probes/` (`update-inrange-loop.sh`, `fixability.mjs`, `apply-manifest-changes.mjs`, `import-provider-check.mjs`), `follow-ups.md`, `handoff-sr-001.md`, `handoff-sr-002.md`
-- Relevant Solution Revision IDs: SR-001, SR-002
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/design-spec.md` (SR-004)
+- Supplemental Task Artifacts Reviewed: `evidence/SD-00…SD-08`, `probes/` (`update-inrange-loop.sh`, `fixability.mjs`, `apply-manifest-changes.mjs`, `import-provider-check.mjs`), `follow-ups.md`, `handoff-sr-001.md`, `handoff-sr-002.md`, `handoff-sr-003.md`, `implementation-handoff.md`, `evidence/IMP-04-lockfile-review.txt`, `evidence/IMP-07-axios-typing-design-impact.txt`
+- Relevant Solution Revision IDs: SR-001, SR-002, SR-003, SR-004
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: SR-002 re-review of AR-001 and the new import-provider check
-- Prior Review Round Reviewed: 1 (`ARCH-REV-001`, Fail)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Trigger: SR-004, the re-review of AR-002 (scope wording)
+- Prior Review Round Reviewed: 3 (`ARCH-REV-003`, Fail)
+- Latest Authoritative Round: 4
 - Current-State Evidence Basis: worktree `codex/dependency-security-and-unused-cleanup` @ `3b2c86ca9e`, installed and clean.
   - Read: the web, `autobyteus-ts` and server manifests; the root `pnpm-lock.yaml` (importer and snapshot sections); the trial evidence `SD-02`/`SD-03`/`SD-05`/`SD-06`; the loop and fixability probes.
   - For each removal candidate, I grepped the name across the package, excluding build output and tickets.
@@ -21,6 +21,18 @@
   - For each undeclared import, I searched the lockfile snapshots for the packages that provide it.
   - Shared references re-read after the 2026-10-20 update to `handoff.md`.
   - Round 2 read: `handoff-sr-002.md`; `probes/import-provider-check.mjs`; `evidence/SD-07` (136 lines over the 8 changed packages) and `SD-08` (the corrected trial: import-provider diff empty, dedupe check 0, prod 0 critical / 13 high, all explained). Round 2 grepped the revised DEC-005/AC-004, the Removal Plan, the file mapping, Change Sequence steps 3-4, Risks, FU-005 and `apply-manifest-changes.mjs` (it no longer removes `@nuxtjs/apollo`).
+  - Round 3: the implementation is at `9936445f55` (manifests + lockfile, steps 1-6) and `3387f715c1` (IR-001 docs); the SR-003 doc edits are uncommitted. Read:
+    - `download-media-tool.ts` L109-124: `axios.get(url, { responseType: 'stream' })`, then `response.headers?.['content-type']`;
+    - the existing `tests/unit/tools/multimedia/download-media-tool.test.ts`, which already mocks `headers: { 'content-type': … }`;
+    - `IMP-07` (the axios 1.13.6 vs 1.20.0 typings, the hold-back check, and the diagnostic build with the one-line change);
+    - `IMP-04` (68 packages removed, 23 added, each NEW-MAJOR node traced to its dependents);
+    - `git diff 3b2c86ca9e 9936445f55 -- '*package.json'` (every direct specifier change stays within its major);
+    - `git diff` of the SR-003 edits to `requirements-doc.md` and `design-spec.md`;
+    - a grep of both docs for remaining "no source change" wording.
+  - Round 4: `grep` of `requirements-doc.md`, `design-spec.md` and `handoff-sr-003.md` for the source-change wording and the node count, plus `solution-revision-record.md` SR-004.
+    - Change Scope L61 now lists `download-media-tool.ts` (L118) and its existing test; L64 reads "all other source code (… DEC-007 is the only one)".
+    - Non-Goals L78, DEC-001 L173 and Architecture Phase Input L203 now refer to REQ-006/DEC-007.
+    - The Dependency Rules (L190) and the handoff refer to `evidence/IMP-04` for the list.
 
 ## Routing Classification Review
 
@@ -47,7 +59,7 @@
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Operational/Security | Pass | Pass | Pass | Confirmed | RR-002 taken: step 3 parent pass |
+| BEH-001 | Operational/Security | Pass | Pass | Pass | Confirmed | AR-002 resolved: the Change Scope lists the DEC-007 source file and its test |
 | BEH-002 | Operational | Pass | Pass | Pass | Confirmed | — |
 | BEH-003 | Operational | Pass | Pass | Pass | Confirmed | AR-001 resolved: `@nuxtjs/apollo` kept; step 4 import-provider check |
 | BEH-004 | Operational | Pass | Pass | Pass | Confirmed | — |
@@ -86,7 +98,7 @@ N/A: no code owner or boundary changes.
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Workspace manifests / root lockfile | Pass | Pass | Pass | Pass | No overrides, no `--latest`, no `audit --fix`, same-major only, exact pins stay exact |
+| Workspace manifests / root lockfile | Pass | Pass | Pass | Pass | No overrides, no `--latest`, no `audit --fix`; direct specifiers same-major only; exact pins stay exact. The restated transitive rule matches DEC-001(1): every IMP-04 NEW-MAJOR node sits inside an updated parent's declared range. Examples: `proxy-from-env` 2 ← `axios` 1.20.0; `content-type`/`content-disposition` 2 ← `express` 5.3/`body-parser` 2.3; `diff` 9 ← `@nuxt/devtools-wizard`; `@hono/node-server` 2 ← `@modelcontextprotocol/sdk` 1.32.1. None of them is declared directly by our manifests. |
 
 ## Interface Boundary Verdict
 
@@ -115,6 +127,7 @@ N/A.
 | File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Re-Tightened After Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-web/package.json` | Pass | Pass | N/A | Pass | 7 dependencies + 4 devDependencies removed; `@nuxtjs/apollo` kept |
+| `autobyteus-ts/src/tools/multimedia/download-media-tool.ts` + its existing unit test | Pass | Pass | N/A | Pass | DEC-007: L118 `String(contentType).split(';')`. Runtime value: a string. Axios' Node adapter wraps the Node `IncomingMessage` headers, where `content-type` is a single string, so `String()` is the identity and only the types change. The existing test already mocks `content-type`, so the new assertions fit there. |
 | `autobyteus-ts/package.json` | Pass | Pass | N/A | Pass | `dotenv`/`ts-node`: grep finds only a test label and a regex. No script or config loads them. Web declares its own `dotenv` for `codegen`. |
 | 4 small packages | Pass | Pass | N/A | Pass | `@types/node` (measured) |
 | Other manifests, `pnpm-lock.yaml` | Pass | Pass | N/A | Pass | Specifier raises by `pnpm update` within range only |
@@ -148,7 +161,7 @@ N/A.
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Baseline → manifest edits → in-range loop + parent pass → dedupe → review (incl. import providers) → audit → validation | Pass | Pass (none) | Pass | Pass |
+| Baseline → manifest edits → in-range loop + parent pass → dedupe → review (incl. import providers, transitive majors) → DEC-007 line + test → audit → validation | Pass | Pass (none) | Pass | Pass |
 
 The one-name-per-update loop is well argued by the trial: a single multi-name update left `protobufjs`, `fast-uri` and `linkify-it` behind. The lockfile-review step and the escalation triggers are concrete.
 
@@ -172,10 +185,10 @@ None.
 
 ## Findings
 
-None open. AR-001 is resolved (see `ARCH-REV-002`).
+None open.
 
-- AR-001 (High) is resolved by option (a), reproduced in `SD-08`. `@nuxtjs/apollo` is kept and recorded as "not unused: the only provider" in DEC-005/DEC-006, the Removal Plan, the file mapping and `apply-manifest-changes.mjs`. FU-005 is extended to cover the web's undeclared imports.
-- The class-level guard is in step 4 and AC-004: `import-provider-check.mjs` over all 8 changed packages, which must match `SD-07`. The corrected trial's diff is empty.
+- AR-001 is resolved (ARCH-REV-002).
+- AR-002 is resolved (ARCH-REV-004). The five places listed in ARCH-REV-003 are aligned with REQ-006/DEC-007, and the Change Scope names both files.
 
 ## Classification
 
@@ -190,6 +203,8 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`); 
 - **RR-001 (R-001…R-004).** Semver slips, Electron 42.4 → 42.11, new advisories, and hidden removal paths remain validation items under step 7. The matrix is complete for the surfaces touched.
 - **RR-002 (resolved).** Step 3 has an explicit parent pass (`electron-updater`, `vue`, `express-rate-limit`, `mermaid`, `@mermaid-js/parser`, plus the parent of any remaining runtime row). The corrected trial shows it was needed: without it, `lodash-es` 4.17.23 remained.
 - **Note on the step-4 rule.** The rule is "identical to SD-07, otherwise stop". Only a change *to* `MISSING` means a lost provider. A line that moves between `package`, `root` and `hidden-hoist-only` after a refresh is harmless, so the implementer may judge it rather than escalate. Non-blocking: in the trial the diff was empty.
+- **Count (resolved).** The design and `handoff-sr-003.md` now say "as listed in `evidence/IMP-04`".
+- **DEC-007 (accepted).** axios 1.20.0 is the only release that fixes GHSA-3pq3-5fj3-cg6v and GHSA-542g-h47m-68v8 (`IMP-07` hold-back check), so holding it back would leave two high advisories. Option (a) is a type-only change on the real runtime path. The diagnostic build passed with only that line changed.
 - **Audit baseline (non-blocking).** Step 5 compares with `SD-05`; `SD-08` is the corrected trial. Their high/critical totals and sets match, so either works.
 - **RR-003 (FYI).** `generated/graphql.ts` L3 imports `@vue/composition-api`, which nothing declares or provides today. This predates the ticket and is unaffected by it. Noted so it isn't mistaken for a regression during validation.
 
@@ -197,4 +212,4 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`); 
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass` (no premise needed)
-- Notes: Ready for implementation per `design-spec.md` SR-002. Classification `Medium`/`High` is preserved.
+- Notes: Ready for implementation per `design-spec.md` SR-004. IR-001 steps 1-6 (`9936445f55`) stay valid. What remains: the DEC-007 line and test, then step 7 validation. Classification `Medium`/`High` is preserved.

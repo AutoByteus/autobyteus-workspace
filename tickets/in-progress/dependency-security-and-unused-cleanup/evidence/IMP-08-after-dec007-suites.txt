@@ -1,0 +1,37 @@
+# IMP-08 — after DEC-007 (79ece48bf4): rebuild and implementation-scoped suites
+# Commit: 79ece48bf4
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T16:55:58Z
+# Full logs (not committed): /tmp/dep229/checks2/<name>.log
+
+frozen-install exit=0
+dedupe-check exit=0
+build-ts exit=0
+test-ts exit=0
+server-prebuild exit=0
+server-build exit=0
+server-typecheck exit=0
+server-unit exit=0
+server-int-prepare exit=0
+server-int exit=1
+web-test-nuxt exit=1
+
+## Commands: pnpm install --frozen-lockfile; pnpm dedupe --check; pnpm -C autobyteus-ts build; env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-ts test; pnpm -C autobyteus-server-ts prebuild|build|typecheck|test:unit|test:integration:prepare|test:integration; pnpm -C autobyteus-web test:nuxt --run
+## DEC-007 tests alone: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/multimedia/download-media-tool.test.ts -> Tests 4 passed (4) (the 2 new cases also passed before the source line changed: they pin runtime behavior)
+
+test-ts:  Test Files 387 passed | 26 skipped (413); Tests 2370 passed | 78 skipped (2448);
+server-unit:  Test Files 765 passed | 4 skipped (769); Tests 6310 passed | 7 skipped (6317);
+server-int:  Test Files 1 failed | 77 passed | 20 skipped (98); Tests 1 failed | 420 passed | 69 skipped (490);
+web-test-nuxt:  Test Files 3 failed | 646 passed | 2 skipped (651); Tests 4 failed | 4626 passed | 5 skipped (4635);
+build-ts: [verify:runtime-deps] OK
+
+## server-int failure (see IMP-10):
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+Error: Condition not met within 5000 ms; last value: ["agent:Planner","agent:Scout"]
+## web-test-nuxt failures (see IMP-09):
+ FAIL  components/conversation/segments/__tests__/TextSegment.spec.ts > TextSegment > delegates active Markdown directly to the rich renderer
+ FAIL  components/conversation/segments/__tests__/TextSegment.spec.ts > TextSegment > reacts to shaped content revisions through the same mounted rich renderer
+ FAIL  components/conversation/segments/__tests__/ThinkSegment.spec.ts > ThinkSegment disclosure > renders visible active reasoning richly and revises it through the same mounted renderer
+ FAIL  components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > should render markdown content correctly
+
+## server-int rerun (full suite, same commit):  Test Files 78 passed | 20 skipped (98); Tests 421 passed | 69 skipped (490);

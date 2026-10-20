@@ -1,0 +1,26 @@
+# IMP-10 — server integration: package-auto-refresh intermittent (not caused by this change; follow-up FU-008)
+# Commit: 79ece48bf4
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T16:55:58Z
+
+## The failure (full test:integration, 1st run):
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+Error: Condition not met within 5000 ms; last value: ["agent:Planner","agent:Scout"]
+
+## Reruns (same commit):
+alone run 1:  Tests 14 passed (14)
+alone run 2:  Tests 14 passed (14)
+alone run 3:  Tests 14 passed (14)
+alone run 4:  Tests 14 passed (14)
+alone run 5:  Tests 14 passed (14)
+alone under full CPU load (10 x yes) run 1:  Tests 14 passed (14)
+alone under full CPU load (10 x yes) run 2:  Tests 14 passed (14)
+alone under full CPU load (10 x yes) run 3:  Tests 14 passed (14)
+full test:integration rerun:  Test Files 78 passed | 20 skipped (98); Tests 421 passed | 69 skipped (490);
+
+## Why not this change: the watcher path (src/agent-package-definitions/monitor/agent-package-folder-watcher.ts: chokidar + fs.watch) runs the same package versions as base:
+base: chokidar@3.6.0: chokidar@4.0.3: chokidar@5.0.0: readdirp@3.6.0: readdirp@4.1.2: readdirp@5.0.0: 
+now:  chokidar@3.6.0: chokidar@4.0.3: chokidar@5.0.0: readdirp@3.6.0: readdirp@4.1.2: readdirp@5.0.0: 
+No source on that path changed (git diff 3b2c86ca9e -- autobyteus-server-ts/src is empty).
+
+## Root cause: not established (1 failure in 10 runs; not reproduced in 9). The test itself notes 'Directory watches on macOS start slightly after the watcher reports ready' and sleeps 300 ms; the miss was the new Team folder (last value ["agent:Planner","agent:Scout"]), consistent with a late directory watch.

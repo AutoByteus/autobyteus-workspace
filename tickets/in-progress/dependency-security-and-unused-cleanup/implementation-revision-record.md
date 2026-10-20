@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md` round 2 (Pass) → initial implementation | N/A | `Design Impact` (raised by implementation) | SR-002, ARCH-REV-002; CRR/API-REV/DR `N/A` | Steps 1–6 done and committed; blocked at the build by a source change that the `axios` update needs (IMP-DI-001) |
+| IR-002 | Architecture reviewer, `design-review-report.md` (ARCH-REV-004 Pass) after SR-003/SR-004 resolved IMP-DI-001 (DEC-007) | IMP-DI-001 | `Design Impact` (raised by implementation) | SR-004, ARCH-REV-004; CRR/API-REV/DR `N/A` | DEC-007 line and test done; builds pass. Blocked by 4 web test failures: the in-range `dompurify` 3.4.17 drops headings under the happy-dom test DOM (IMP-DI-002) |
 
 ## Revision Entries
 
@@ -43,3 +44,35 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   Fail: the `autobyteus-ts` build, and through it the server prebuild, build and typecheck (IMP-06, IMP-07).
 - Next recipient or routing: Solution Designer (Design Impact)
 - Remaining limitations or risks: the steps 4–6 results hold for this lockfile. A fix that changes only source keeps them valid. A fix that changes the axios resolution needs steps 3–6 again.
+
+### IR-002 — DEC-007 applied; blocked by DOMPurify ≥ 3.4.8 under happy-dom (IMP-DI-002)
+
+- Triggering role, report path, and round: architecture reviewer, `design-review-report.md` (`ARCH-REV-004`, Pass) after SR-003/SR-004 (DEC-007)
+- Triggering finding IDs: IMP-DI-001 (resolved by DEC-007)
+- Classification: `Design Impact` (escalation trigger: a test-harness or other source change beyond DEC-007, or holding a package back, needs a decision)
+- Prior authoritative result: IR-001, blocked by IMP-DI-001
+- Current authoritative result:
+  - DEC-007 is applied at `79ece48bf4`.
+  - Pass:
+    - the frozen install and `dedupe --check`;
+    - the `autobyteus-ts` build, with `verify:runtime-deps` OK, and its tests (2370);
+    - the server prebuild, build and typecheck;
+    - server `test:unit` (6310);
+    - server `test:integration` (421) on the rerun. The first run had 1 failure, not caused by this ticket (FU-008).
+  - Fail: web `test:nuxt`, 4 tests in 3 files: `TextSegment`, `ThinkSegment` and `MarkdownRenderer` headings (IMP-DI-002).
+- Related solution revision IDs: SR-003, SR-004
+- Related architecture-review revision IDs: ARCH-REV-004
+- Related code-review revision IDs: N/A
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this revision is recorded: the DEC-007 delta, and a new Design Impact found by the web suite
+- Approved behavior or requirement IDs affected: REQ-001, REQ-006, REQ-007/AC-006
+- Implementation delta:
+  - `autobyteus-ts/src/tools/multimedia/download-media-tool.ts` L118: `String(contentType)`.
+  - `autobyteus-ts/tests/unit/tools/multimedia/download-media-tool.test.ts`: 2 cases (`image/png; charset=binary` → `.png`; no content-type → the URL's extension). The helper now accepts a missing content-type.
+- Changed files or areas: the 2 files above (`79ece48bf4`)
+- Local validation and result: IMP-08, IMP-09, IMP-10
+- Next recipient or routing: Solution Designer (IMP-DI-002)
+- Remaining limitations or risks:
+  - The lockfile is unchanged since IR-001, so IMP-02…IMP-05 stay valid.
+  - If the decision holds `dompurify` back, steps 3–6 must be redone.
