@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Approved` at `SR-003` (SR-003 integrates the user-approved Product UI/UX package as the behavior-defining UI supplement, with three Solution Designer readings: DEC-014..DEC-016)
-- Current solution revision ID: `SR-003`
+- Status: `Approved` at `SR-004` (SR-003 integrates the user-approved Product UI/UX package as the behavior-defining UI supplement, with three Solution Designer readings: DEC-014..DEC-016)
+- Current solution revision ID: `SR-004`
 - Package identifier: `settings-update-notifications`
 - Request / ticket: Notification area in Settings: tell users when the app, a GitHub agent package or a GitHub skill source has an update (check in the background, notify, never update by itself)
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's request of 2026-10-20
 - Requirements owner: Solution Designer (`/software_engineering_team/solution_designer`)
 - Date: 2026-10-20
 - Approved by and reference: SR-001 `Solution Designer within the direction (user informed)`, reference: the Solution Designer's message to the user of 2026-10-20. SR-002 deltas: `User`, reference: the user's own words in the Product ticket (`autobyteus-web-design`, branch `design/settings-update-notifications`, `tickets/in-progress/settings-update-notifications/product-ticket.md`, rounds 6–7, 9–10 and 11–12, and its "Requirement Impact" section), relayed by `/project_task_manager` on 2026-10-20
-- Exact approved requirements baseline / solution revision: this document at `SR-003`
+- Exact approved requirements baseline / solution revision: this document at `SR-004`
 - Behavior-defining supplements and their approved versions: Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/settings-update-notifications/ui-ux-spec.md` with final references `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/settings-update-notifications/visual-references/` (VIS-001..028), design repository `personal` at `288ef06` (approved round 14, commit `e6ef28c`); user approval "i like the UI approved", 2026-10-20
 
 ## Problem And Desired Outcome
@@ -127,7 +127,7 @@ None.
 | --- | --- | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001, REQ-004 | SCN-001 | Isolated app; a GitHub package and a GitHub skill source imported whose installed revision is older than GitHub's latest; setting on; neither checked in the last 6 hours | Shortly after start, without opening Agent Packages or Skills, both notifications appear with installed → latest short revisions and a working compare link | — | Isolated instance, real GitHub |
 | AC-002 | REQ-011 | SCN-001 | AC-001 state; user is on a non-Settings page | The indicator on the Settings entry is visible; opening the notification area shows the items; no pop-up, modal, toast or OS notification appeared | — | Isolated instance; UI check |
-| AC-003 | REQ-004, REQ-012, REQ-019 | SCN-002, SCN-008 | Isolated instance with the test update feed opt-in offering a newer version | An app-update notification shows current → new version, release notes, release link; the old card does not open by itself | Without the opt-in: no app notification, quiet disabled state | Isolated instance + test feed; Electron tests |
+| AC-003 | REQ-004, REQ-012, REQ-019 | SCN-002, SCN-008 | Isolated instance with the test update feed opt-in offering a newer version | An app-update notification shows current → new version and the release notes; the old card does not open by itself. Under the test feed the row has no Release page link (DEC-017). With the real GitHub feed, the details also show the Release page link for that version | Without the opt-in: no app notification, quiet disabled state | Isolated instance + test feed for the notification; Electron tests with a GitHub publish config, and the user's beta check, for the Release page link |
 | AC-004 | REQ-001, REQ-004 | SCN-001 | Window open on Settings when a background pass finds a new update | The notification and indicator appear without reloading the window | — | Isolated instance |
 | AC-005 | REQ-007, REQ-015 | SCN-003 | Package notification | Pressing Update updates the package through the existing pipeline; the notification shows progress then handled; the row shows up to date | Update failure: error shown in the notification, package unchanged, notification kept | Isolated instance + server tests |
 | AC-006 | REQ-007 | SCN-003 | Skill source notification | Pressing Update shows the existing confirmation with its warning; confirming updates; cancelling changes nothing | — | Isolated instance + web tests |
@@ -234,6 +234,7 @@ None.
 | DEC-014 | How does REQ-004's "shows" apply to the repository and the compare link? | The approved design keeps them one click away | Approved design: the kind (section), name, installed → latest and the found time are always visible; repository · branch and "See changes on GitHub" (app: release notes and the release page) are in the row's details | Reading: REQ-004 is met when every listed item is in the notification, either always visible or in its details one click away. This is what the user approved; no requirement text changes. | Solution Designer | Decided |
 | DEC-015 | A waiting notification when the source becomes "up to date" without being updated (upstream moved back to the installed revision, or the app channel no longer offers the version) | REQ-008 says "resolved the same way"; "Updated to …" would be false here | Mark handled vs remove | When the installed revision or app version changed since the update was found, the notification is handled ("Updated to <installed>"). When it did not change and the update is no longer offered, the notification is removed, because nothing was updated. This is a reading of "resolved" in REQ-008; it stays consistent with REQ-005 and REQ-009. | Solution Designer | Decided |
 | DEC-016 | Errors from the app's own startup check | Today, startup-check errors other than network and release-preparing errors raise a toast by themselves | Keep the toasts vs quiet | REQ-011 and DEC-006 say a check the user did not start never produces a toast. All startup-check errors become quiet (no toast); Settings → Updates still shows them. Errors from checks, downloads and installs the user starts keep their feedback (REQ-012). | Solution Designer | Decided |
+| DEC-017 | The release link when the app checks the e2e test feed | The packaged config names the real GitHub repository, not the test feed, so a link would point to a tag that the test version does not have (architecture review AR-002) | Link from the packaged config / no link under the test feed | No link under the test feed (`releasePageUrl = null`, the row omits it). AC-003's Release page link is verified with the real GitHub feed configuration (Electron tests, and the user's beta check). The released app's behavior does not change. | Solution Designer | Decided |
 
 ## Traceability
 

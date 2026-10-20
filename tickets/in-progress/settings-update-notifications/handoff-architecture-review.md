@@ -4,7 +4,7 @@
 - Project Task: autobyteus-209, delegated by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`); design step autobyteus-212 (Product Team)
 - Result classification: `Architecture Design Complete`
 - `task_size`: `Large`; `architectural_risk`: `High` (rationale in `design-spec.md`, Task Size And Architectural Risk)
-- Current SR entry: `SR-003`
+- Current SR entry: `SR-004` (round 2: resolves ARCH-REV-001 AR-001..AR-003, R-1, R-2)
 - Date: 2026-10-20
 
 ## Original Request And Goal
@@ -50,7 +50,7 @@ Key decisions to check:
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications/tickets/in-progress/settings-update-notifications/`
 - `requirements-doc.md`, `investigation-notes.md` (architecture evidence AF-01..AF-14), `solution-revision-record.md`, `design-spec.md`, `follow-ups.md` (FU-001, FU-002; not yet sent), `handoff-product-design-request.md` (SR-001 history).
 - Product artifacts (read-only, external): the UI/UX spec and `visual-references/` above; `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/settings-update-notifications/product-ticket.md`; `/Users/normy/autobyteus_org/autobyteus-web-design/ui-reference-runbook.md`.
-- Prior review artifacts: `N/A — not applicable` (first review).
+- Prior review artifacts: `design-review-report.md` and `architecture-review-revision-record.md` (ARCH-REV-001, reviewed basis SR-003).
 
 ## Workspace
 
@@ -75,7 +75,22 @@ Key decisions to check:
 
 An independent architecture review of the package against the approved requirements and UI spec. On Pass, it goes to implementation as the team's rules route it; findings come back to the Solution Designer.
 
+## Round 2 (SR-004): What Changed For The Recheck
+
+- AR-001 (option a): `GitHubRateLimitGate` persists its blocked-until time.
+  - File: `<app-data>/github/rate-limit.json` `{ blockedUntil }`, tolerant read once on first use, atomic write when it learns a later time.
+  - So no automatic request is made before the reset, even after a restart.
+  - See the Ownership Map row, Persisted Data, File Mapping and the "Rate limit across a restart" example.
+- AR-002: under the e2e test feed, `releasePageUrl = null` and the row omits the link.
+  - The link is verified with the real GitHub feed configuration: Electron tests of `appReleasePage.ts` and `AppUpdater`, and the user's beta check.
+  - AC-003 and the new DEC-017 say so. AF-10, the Off-Spine row and the Interface table agree.
+- AR-003: inside `serialize(id, …)` every package check and update re-reads its record and writes only from that fresh record (Ownership Map; new example).
+- R-1: the wiring uses `getInstance()` singletons shared by the resolver and the composition (Guidance For Implementation).
+- R-2: the setting and the gate are checked before every source (DS-006).
+- The investigation notes' supplement inventory now shows the UI/UX spec as Approved.
+
 ## Route Record
 
 - `get_handoff_rules` (2026-10-20): Large or High → `/software_engineering_team/architecture_reviewer`.
-- Applied route: `send_message_to` → `/software_engineering_team/architecture_reviewer`.
+- Applied route: `send_message_to` → `/software_engineering_team/architecture_reviewer` (round 1, SR-003).
+- Round 2 (SR-004): `get_handoff_rules` again matches Large or High → `/software_engineering_team/architecture_reviewer`; sent with `send_message_to`.

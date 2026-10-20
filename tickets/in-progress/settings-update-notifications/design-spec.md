@@ -2,8 +2,9 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003`
-- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at SR-003.
+- Current solution revision ID: `SR-004`
+- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at SR-004.
+  - SR-004 (architecture review ARCH-REV-001, Design Impact AR-001..003): AC-003's verification of the release link (DEC-017) is set by the Solution Designer within the direction, user informed; no user-visible behavior of the released app changed.
   - SR-001: the Solution Designer within the direction (user informed), 2026-10-20.
   - SR-002: the user's own review decisions (no skip, persistent indicator, panel).
   - SR-003: the user's approval of the UI/UX package ("i like the UI approved", round 14), plus DEC-014..016 by the Solution Designer within the direction (user informed).
@@ -179,8 +180,9 @@ Add an update-notification capability:
 - Stored subject, location, representative shape, and approximate volume:
   - Node: `<app-data>/update-notifications/notifications.json`, a JSON array of `{ kind: "AGENT_PACKAGE" | "SKILL_SOURCE", sourceId, latestRevision, fromRevision, foundAt, read, handledRevision | null, handledAt | null }`. At most one per imported GitHub source (tens).
   - Shell: `<userData>/app-update-notification.json`, a single object `{ version, fromVersion, foundAt, read, handledVersion | null, handledAt | null }` or absent.
+  - Node: `<app-data>/github/rate-limit.json`, a single object `{ blockedUntil: ISO time }` written by `GitHubRateLimitGate` (AR-001). A tolerant reader: a missing, unreadable or malformed file, or a past time, means not blocked. One small atomic write per learned limit; read once per process.
   - Existing package and skill registries: no shape change. They are read by the new projection methods and written only by their existing writers.
-- Relevant code-model, serialization, semantic, or physical-store change: two new files. `ENABLE_UPDATE_CHECKS` is a new app-config key (absent = on).
+- Relevant code-model, serialization, semantic, or physical-store change: three new files (node notifications, node rate-limit time, shell app record). `ENABLE_UPDATE_CHECKS` is a new app-config key (absent = on).
 - Normal reader/writer behavior and representative evidence:
   - Node store: a tolerant reader keeps only rows with a known `kind`, non-empty `sourceId`/`latestRevision`/`fromRevision`/`foundAt`, a boolean `read` and nullable handled fields, and ignores unknown fields. The exact writer goes through `writeJsonArrayFile` (atomic, cross-process lock; AF-13).
   - Shell store: the same tolerant read / exact write, with an atomic write like `appUpdateChannelStore`.
@@ -248,9 +250,9 @@ Add an update-notification capability:
 | Node | Owns |
 | --- | --- |
 | `UpdateCheckScheduler` (server, new) | When automatic checks run: initial delay (60 s), tick interval (30 min), due rule (≥ 6 h since last check of any kind), sequential order (packages, then skill sources, oldest check first), stop on a closed gate, obeying the capability, timer lifecycle (`start`/`close`, unref'd timer). It never decides what a check does or what is notified. |
-| `AgentPackageService` (server, extended) | Package GitHub update state, as today. New: per-package serialization of `checkAgentPackageUpdates` (per id), `updateAgentPackage`, `removeAgentPackage`; `listGitHubSourceUpdateStates()`; announcing state changes to one injected listener at the end of import/remove/check/update. |
+| `AgentPackageService` (server, extended) | Package GitHub update state, as today. New: per-package serialization of `checkAgentPackageUpdates` (per id), `updateAgentPackage`, `removeAgentPackage`. Inside `serialize(id, …)` each check and update re-reads its record from the registry before calling GitHub and builds every write from that fresh record, as `SkillSourceService` does with `current`; nothing read before the lock is written back (AR-003); `listGitHubSourceUpdateStates()`; announcing state changes to one injected listener at the end of import/remove/check/update. |
 | `SkillSourceService` (server, extended) | Skill source GitHub state, as today (already serialized). New: `listGitHubSourceUpdateStates()`; announcing state changes at the end of import/check/update/remove. |
-| `GitHubRateLimitGate` (server, new, `integrations/github`) | The process-wide "GitHub API blocked until" time for `api.github.com`: learns it from 403/429 responses (`retry-after`; `x-ratelimit-remaining: 0` with `x-ratelimit-reset`; otherwise 60 s for a 429), refuses requests before it with `GitHubRateLimitError`, and answers `isBlocked(now)`. |
+| `GitHubRateLimitGate` (server, new, `integrations/github`) | The node's "GitHub API blocked until" time for `api.github.com`: learns it from 403/429 responses (`retry-after`; `x-ratelimit-remaining: 0` with `x-ratelimit-reset`; otherwise 60 s for a 429), refuses requests before it with `GitHubRateLimitError`, and answers `isBlocked(now)`. It persists the time in `<app-data>/github/rate-limit.json` whenever it learns a later one, and loads it once on first use, so the stop survives an app or node restart (AR-001, REQ-003). |
 | `UpdateNotificationService` (server, new) | Notification records and their rules (DS-007), views for GraphQL, `markAllRead`, `clear(kind, sourceId)` (handled records only), one serialized reconcile at a time, and announcing changes. Reads sources only through the owners' projections. |
 | `UpdateNotificationStore` (server, new) | The JSON file: tolerant read, exact write. No rules. |
 | `UpdateChecksCapabilityService` (server, new) | `ENABLE_UPDATE_CHECKS` (absent = on): `getCapability()`, `setEnabled()`, `isEnabled()`. |
@@ -288,7 +290,7 @@ Add an update-notification capability:
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-- **DS-006**, parent `UpdateCheckScheduler`: `timer -> capability.isEnabled? -> gate.isBlocked? -> due = projections where lastCheckedAt null or ≥ 6 h old -> for each due (packages, then skills; oldest first): owner.check([id]) -> gate.isBlocked? stop -> schedule next tick`.
+- **DS-006**, parent `UpdateCheckScheduler`: `timer -> capability.isEnabled? -> gate.isBlocked? -> due = projections where lastCheckedAt null or ≥ 6 h old -> for each due (packages, then skills; oldest first): capability.isEnabled and gate open? else stop -> owner.check([id]) -> schedule next tick`. Both the setting and the gate are checked before every source, so turning the switch off during a pass stops it at the next source (R-2).
   - Exceptions from one check are logged and do not stop the pass. A closed gate does.
   - A pass never overlaps another pass (a running flag).
 - **DS-007**, parent `UpdateNotificationService` (per `(kind, sourceId)`; S = projection, R = record):
@@ -315,7 +317,7 @@ Add an update-notification capability:
 | `ChangeFeedHub` (generic) | DS-005 | Update-notification capability | Broadcast frames to connections | Live update | Business logic in transport |
 | `UpdateChecksCapabilityService` | DS-006, DS-008 | Scheduler; GraphQL | Setting | REQ-013 | Setting reads scattered |
 | `AppUpdateNotificationRecord` file I/O | DS-004 | `AppUpdater` | Persist app record | REQ-010 | `appUpdater.ts` growing past 500 lines |
-| `appReleasePage.ts` | DS-004 | `AppUpdater` | Release page URL from the packaged publish config (`app-update.yml`: provider github → `https://github.com/<owner>/<repo>/releases/tag/v<version>`; otherwise null) | REQ-004 | — |
+| `appReleasePage.ts` | DS-004 | `AppUpdater` | Release page URL from the packaged publish config (`app-update.yml`: provider github → `https://github.com/<owner>/<repo>/releases/tag/v<version>`; otherwise null). When the launch uses the e2e test feed, `AppUpdater` does not call it and the URL is `null`, because the packaged config names the real repository, not the feed that offered the version (AR-002, DEC-017) | REQ-004, REQ-019 | A link to a tag that the test feed's version does not have |
 | `SkillSourceUpdateConfirmation.vue` | DS-003 | Skill sources dialog and panel | The existing confirmation body | DEC-012 | Two copies of the dialog body |
 | `notificationTime.ts` (web) | DS-003 | Rows | Short relative time + full title | UI spec Formats | — |
 
@@ -361,10 +363,10 @@ Add an update-notification capability:
 | GraphQL `updateNotifications`, `markUpdateNotificationsRead`, `clearUpdateNotification(kind, sourceId)` | Same | Transport | Enum `UpdateNotificationKind` + `String` | — |
 | GraphQL `updateChecksCapability`, `setUpdateChecksEnabled(enabled)` | Setting | `{ enabled, settingKey, source: SERVER_SETTING \| DEFAULT_ENABLED }` | — | Shape fits `createBoundNodeCapabilityStore` |
 | `/ws/update-notifications` | Change feed | `{type:"connected"}` \| `{type:"update_notifications_changed"}` (zod, strict) | — | Server → client only |
-| `GitHubRateLimitGate.isBlocked(now)`, `GitHubRateLimitError { resetAt }` | API rate limit | — | — | Process singleton `getGitHubRateLimitGate()` |
+| `GitHubRateLimitGate.isBlocked(now)`, `GitHubRateLimitError { resetAt }` | API rate limit | — | — | Process singleton `getGitHubRateLimitGate()`; its blocked-until time is persisted in `<app-data>/github/rate-limit.json` (AR-001) |
 | `UpdateCheckScheduler.start()`, `close()` | Cadence | — | — | Constants: `INITIAL_DELAY_MS=60_000`, `TICK_INTERVAL_MS=1_800_000`, `CHECK_INTERVAL_MS=21_600_000` |
 | IPC `app-update:mark-notification-read`, `app-update:clear-notification` | App record | Intents | — | Both return `AppUpdateState`; disabled updater returns its state unchanged |
-| `AppUpdateState.notification: AppUpdateNotification \| null` | App record | `{ version, fromVersion, foundAt, read, state: 'waiting' \| 'handled', handledVersion, releasePageUrl }` | — | — |
+| `AppUpdateState.notification: AppUpdateNotification \| null` | App record | `{ version, fromVersion, foundAt, read, state: 'waiting' \| 'handled', handledVersion, releasePageUrl }` | — | `releasePageUrl` is the GitHub release page from the packaged publish config; `null` under the e2e test feed (DEC-017). The row's details omit the Release page link when it is `null` |
 | e2e env `AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL` | Launch profile | `http://127.0.0.1:<port>` or `http://localhost:<port>` only; rejected in the production profile | — | `isolated-app start --test-update-feed <url>` sets it |
 
 ## Interface Boundary Check
@@ -450,7 +452,7 @@ Server (`autobyteus-server-ts/src`):
 | `update-notifications/changes/update-notification-change-messages.ts` (new) | Feed contract | zod schema + serializer |
 | `compositions/update-notifications-composition.ts` (new) | Wiring | Listeners → service; hub; scheduler start; `close()` |
 | `utils/change-feed-hub.ts` (new) | Transport-generic | Connect/greet/broadcast/closeAll for any serializer |
-| `integrations/github/github-rate-limit-gate.ts` (new) | Transport | Gate + `GitHubRateLimitError` |
+| `integrations/github/github-rate-limit-gate.ts` (new) | Transport | Gate + `GitHubRateLimitError` + its one-timestamp file (tolerant read once, atomic write when a later time is learned) |
 | `integrations/github/public-github-request.ts` (modify) | Transport | Consult/update the gate for `api.github.com` |
 | `integrations/github/github-source-update-state.ts` (new) | Shared type | Projection type |
 | `agent-packages/services/agent-package-service.ts` (modify, split) | Package owner (public boundary) | Import, remove, reload, list, per-package serialization, listener; delegates the GitHub check/update lifecycle. It is 528 lines today: the split brings it under 500 instead of growing it |
@@ -535,6 +537,8 @@ Docs:
 | Source change signal | `AgentPackageService.updateAgentPackage` runs inside `this.serialize(id, …)` and, in `finally`, calls `this.announceGitHubSourceStateChanged()`; the composition set that listener to `() => notifications.reconcile()` | `UpdateNotificationService` importing `AgentPackageRegistryStore` to diff files; or GraphQL resolvers calling `reconcile()` after each mutation | Keeps one writer per state and one coordination owner (Principles 3, 13) |
 | Reconcile, failed check | Record waiting for `B`; offline check → owner keeps `latestRevision=B`, status `CHECK_FAILED` → reconcile sees latest `B` ≠ installed `A` → unchanged; row still offers Update (`canUpdate` from `B ≠ A`) | Deriving "update available" from `updateStatus === 'UPDATE_AVAILABLE'` | REQ-006 |
 | Reconcile, update done elsewhere | Record waiting `A→B`; user updates from the Agent Packages row; installed becomes `B`, latest `B` → installed ≠ `R.from` (A) → handled "Updated to B" | Removing the record (the user would never see "Updated") | REQ-008 |
+| Serialized check (AR-003) | `serialize(id, async () => { const record = await registry.findPackageById(id); … fetch … write from record })` | Reading all records before the loop, then serializing a write built from that earlier read | The race AF-05 stays open if the read happens before the lock |
+| Rate limit across a restart (AR-001) | Gate blocked until T and persisted; the app restarts at T−20 min; the gate loads T; the scheduler's first tick at 60 s sees `isBlocked()` and makes no request | An in-memory gate that is empty after the restart and lets one request through | REQ-003 holds across restarts |
 | Rate limit | First 403 with `x-ratelimit-remaining: 0`, `x-ratelimit-reset: T` → gate blocked until T → scheduler stops after that source; a manual check before T fails at once with "GitHub rate limit reached; try again after HH:MM" and makes no request | Retrying the remaining sources, each receiving 403 | QR-001, GitHub guidance |
 | App Download after restart | Record waiting `1.5.7`; status `idle` (startup check not done) or `no-update`/`error`; Download → `checkForUpdates('manual')` → if `available`, `downloadUpdate()`; else the result is shown as today | Button that does nothing or a main-process error "No update available" | DS-004 |
 
@@ -580,6 +584,7 @@ Not needed; the spines and ownership map are sufficient.
 ## Risks
 
 - Electron's generic-provider check in a packaged isolated build is not yet proven (escalation trigger).
+- Under the e2e test feed the app row has no Release page link (DEC-017). The link is verified by Electron unit tests of `appReleasePage.ts` and of `AppUpdater` with a GitHub publish config, and in the user's own check of the beta (a real GitHub feed).
 - macOS download/install of a test feed build requires matching signing; AC-007 install is verified in the Electron harness per the `desktop-beta-update-channel` precedent if the isolated instance cannot.
 - Live order movement while the panel is open was reviewed by the user; if implementation finds it disruptive, it is a Product question.
 
@@ -601,4 +606,5 @@ Not needed; the spines and ownership map are sufficient.
   - Shell: Electron tests for the record, the re-check before download, the IPC intents and the launch profile.
   - Web: tests for the stores, the panel (keyboard, Esc, outside click, order, Show N more) and the card; the localization audit.
   - Isolated instance with `--test-update-feed` and real public GitHub repositories (ASM-001) for AC-001..003.
+- **Wiring (R-1):** the resolver reaches `UpdateNotificationService.getInstance()` and `UpdateChecksCapabilityService.getInstance()`, the same pattern as `SkillImprovementCapabilityService` and the source owners. `getInstance()` builds the service with its default dependencies (the two source owners' `getInstance()`, the store, and the process hub `getUpdateNotificationChangeHub()`). `composeUpdateNotifications` takes those same instances to set the owners' listeners, register the hub on `/ws/update-notifications` and start the scheduler; `close()` clears the listeners, stops the scheduler and closes the hub. No second instance is created anywhere.
 - **File size:** keep every touched file under 500 lines.

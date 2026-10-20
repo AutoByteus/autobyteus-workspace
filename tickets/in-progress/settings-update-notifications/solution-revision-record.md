@@ -10,6 +10,7 @@ Package: `settings-update-notifications`. Canonical artifacts in
 | SR-001 | Requirements | Initial coherent baseline (Task from `/project_task_manager`, 2026-10-20) | N/A | N/A | Approved (Solution Designer within the direction, user informed) | BEH-001..010, REQ-001..020, AC-001..021, SCN-001..008, DEC-001..012 | Product Design Requested |
 | SR-002 | Requirements | Interim Product `Requirement Impact` (autobyteus-212, review rounds 6–13), relayed by `/project_task_manager` 2026-10-20 | Impact items 1–3 | Approved (SR-001) | Approved (SR-002: deltas by the user) | UC-004, REQ-009, REQ-010, REQ-011, AC-009, AC-010, SCN-006, DEC-004, DEC-008, DEC-013 | Integrated; no objection; waiting for the final Product package |
 | SR-003 | Mixed (Requirements + Design) | Final user-approved Product UI/UX package (autobyteus-212), relayed by `/project_task_manager` 2026-10-20; architecture investigation and design | Designer findings 1–3 | Approved (SR-002); design not started | Requirements Approved (SR-003); design Ready | REQ-004 (DEC-014 reading), REQ-008 (DEC-015), REQ-011/012 (DEC-016), UI section, supplements; design DS-001..DS-008 | Architecture Design Complete — Large / High |
+| SR-004 | Design (+ AC-003 verification) | Architecture review ARCH-REV-001 (Fail, Design Impact) | AR-001, AR-002, AR-003; residual R-1, R-2 | Requirements Approved (SR-003); design Ready | Requirements Approved (SR-004); design Ready (revised) | REQ-003, REQ-004, REQ-019, AC-003 (verification), DEC-017; design: gate persistence, test-feed release link, serialized re-read, wiring | Architecture Design Complete — Large / High; back to review |
 
 ## Revision Entries
 
@@ -102,3 +103,37 @@ Package: `settings-update-notifications`. Canonical artifacts in
   - ASM-002: the 6-hour cadence;
   - the design's Risks section: generic test feed in a packaged isolated build; macOS install of a test build.
 - Next action: architecture review.
+
+### SR-004 — Architecture review ARCH-REV-001 findings resolved
+
+- Phase and classification: Design, `Design Impact` (plus a verification-only refinement of AC-003).
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: architecture review ARCH-REV-001 against SR-003, Fail.
+  - Report: `design-review-report.md`.
+  - Record: `architecture-review-revision-record.md`.
+  - From `/software_engineering_team/architecture_reviewer`, 2026-10-20.
+- Triggering finding IDs: AR-001, AR-002 (blocking), AR-003 (non-blocking), residual notes R-1 and R-2.
+- Prior authoritative requirements/design status: requirements Approved (SR-003); design Ready.
+- Current authoritative requirements/design status: requirements Approved (SR-004); design Ready (revised).
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected:
+  - AR-001 → REQ-003, QR-001, AC-013: `GitHubRateLimitGate` now persists its blocked-until time in `<app-data>/github/rate-limit.json` and loads it on first use, so the stop holds across restarts. The literal REQ-003 is kept; no reading was needed.
+  - AR-002 → REQ-004, REQ-019, AC-003, new DEC-017: no Release page link under the e2e test feed (`releasePageUrl = null`). AC-003's link is verified with the real GitHub feed configuration (Electron tests, the user's beta check). AF-10, the Off-Spine row and the Interface table now agree.
+  - AR-003 → BEH-002: inside `serialize(id, …)` every package check and update re-reads its record and writes only from that fresh record.
+  - R-1: the resolver and the composition share `getInstance()` singletons.
+  - R-2: the scheduler re-checks the setting and the gate before every source.
+- Scenario-basis or scenario-validity changes: none.
+- Why this baseline or revision was recorded: to resolve the review's Design Impact findings.
+- Canonical requirements, investigation and design sections changed:
+  - `requirements-doc.md`: Status lines, AC-003, DEC-017;
+  - `investigation-notes.md`: Meta, AF-10, supplement inventory (UI/UX spec now Approved);
+  - `design-spec.md`: approval basis, Persisted Data, Ownership Map (AgentPackageService, GitHubRateLimitGate), DS-006, Off-Spine (`appReleasePage.ts`), Interface table, File Mapping, Examples, Risks, Guidance (wiring).
+- Supplemental artifacts added, changed or removed: none.
+- Product design evidence or product decisions incorporated: none new. The approved spec shows the Release page link in the app row's details; with the real GitHub feed that is unchanged.
+- Intended behavior changed: `No` for the released app. AC-003's expected outcome under the test-only feed now names no Release page link (DEC-017, a verification detail within the direction; the user is informed).
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: baseline `requirements-doc.md` at SR-004. DEC-017 is by the Solution Designer within the direction, user informed in the Solution Designer conversation (2026-10-20). Earlier approvals unchanged.
+- Behavior-defining supplement versions and approval references: unchanged (UI/UX spec at `288ef06`).
+- Affected design/review basis invalidated or rebuilt: ARCH-REV-001 covered SR-003. The revised design needs the reviewer's recheck of AR-001..003.
+- Post-design task-size/risk classification and rationale changes: unchanged (`Large` / `High`).
+- Applied handoff-rule outcome / result-file reference: `handoff-architecture-review.md` (Route Record, round 2).
+- Downstream and architecture-review impact: re-review of AR-001..AR-003.
+- Remaining gaps, assumptions or blocked decisions: unchanged (ASM-001, ASM-002; the design's Risks).
+- Next action: architecture re-review.
