@@ -11,18 +11,19 @@
 - Supplemental Task Artifacts: `…/slice-plan.md` (approved), `…/follow-ups.md` (FU-001 done, FU-002 RSK-106)
 - Design Review Report: `…/design-review-report.md` (ARCH-REV-002, Pass)
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Implementation Handoff: `…/implementation-handoff.md` (IR-002)
+- Implementation Handoff: `…/implementation-handoff.md` (IR-003)
 - Implementation Revision Record: `…/implementation-revision-record.md`
-- Code Review Report: `…/code-review-report.md` (CRR-002, Pass)
+- Code Review Report: `…/code-review-report.md` (CRR-004, Pass; CRR-003 was the failure-origin review of F-001)
 - Code Review Revision Record: `…/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `…/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
 - Trigger: code review pass CRR-002 (reviewed code `744641b35c`, documents `676ecbbb7a`), Large / High. Then, during round 1, the Solution Designer's hold of steps 3–6 (ARCH-REV-003 Fail / Design Impact, SR-015 `f1d7dd9337`, docs only)
-- Prior Investigation Reviewed: none (first round)
-- Latest Authoritative Investigation: this document, round 1
+- Prior Investigation Reviewed: round 1 (API-REV-001)
+- Latest Authoritative Investigation: this document, round 2
+- Round 2 trigger: CRR-004 pass of IR-003 (code `31d46978ad`, documents `7383e89a0f`): SR-015/SR-016 (ARCH-REV-004, ARCH-REV-006 Pass) and CR-002 (F-001). The roots, engine, `RemoteRunLinks`, Task lifecycle and `PeerClient` changed, so every E2E case reruns; nothing is held any more.
 
 ## Current Requirement And Design Basis
 
@@ -138,33 +139,33 @@ Round 1 was split by the Solution Designer's hold (ARCH-REV-003, SR-015, 2026-10
 | Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why | Now |
 | --- | --- | --- | --- | --- | --- | --- |
 | API-00 | all | build | Existing Test | `pnpm -C autobyteus-server-ts build` | TESTING: `dist/app.js` suites need a current build | Run |
-| API-R1 | AC-112, unit level | unit | Reused | IMP-11 (full unit suite at `744641b35c`) | HEAD source equals `744641b35c` (`git diff --name-only 744641b35c HEAD` lists only `tickets/`) | Reuse (until the revision) |
-| API-R2 | BEH-101 … BEH-106 in process | unit | Reused | IMP-03, IMP-10 | same source | Reuse (until the revision) |
+| API-R1 | AC-112, unit level | unit | Reused | IMP-14 (full unit suite at `31d46978ad`; round 1 used IMP-11) | HEAD `7383e89a0f` changes only `tickets/` after `31d46978ad` | Reuse |
+| API-R2 | BEH-101 … BEH-106 in process, AR-003 … AR-008, CR-002 | unit | Reused | IMP-13 (88 focused tests at `31d46978ad`; round 1 used IMP-03/IMP-10) | same source | Reuse |
 | API-R3 | REQ-115 | web | Reused | IMP-04, IMP-05, IMP-08 | `autobyteus-web` unchanged since `8491e0d916` | Reuse |
 | API-R4 | REQ-114 (N-3) | route policy | Reused | IMP-07 (a mobile credential on `/rest/remote/*` → 403) | `api/security/` and `api/rest/remote.ts` unchanged since `4c07f5b268`; IMP-07's gateway and settings parts are superseded by API-01/03 | Reuse |
 | API-01 | AC-101, AC-111 | settings, gateway | Durable | RC-01: off by default (`DEFAULT_DISABLED`, nothing in `.env`); both inbound kinds → `REMOTE_COLLABORATION_OFF`; `addPeerNode` refused; nothing contacted or recorded | — | Run |
-| API-02 | AC-101 | delegation | Durable | RC-02: fresh node, switch off: `delegate_task({node})` refused "turned off", nothing sent | — | Held |
+| API-02 | AC-101 | delegation | Durable | RC-02: fresh node, switch off: `delegate_task({node})` refused "turned off", nothing sent | — | Run (round 2) |
 | API-03 | AC-101, AC-102, AC-103, AC-111 | settings, client, gateway | Durable | RC-03: switch on (`.env`); inbound evaluated (`PEER_NOT_REGISTERED`); registration both ways through the proxies with pinned IDs; non-AutoByteus page, 404 web server and dead URL refused with nothing recorded; rename; `peers.json` exact keys; gateway order for both kinds (`toNodeId` → caller; 400 with `nodeId`); publish-time validation (missing workspace, unknown model) records nothing; publish (address derived), `published-agents.json` exact keys; unpublish | — | Run |
-| API-04 | AC-103, REQ-109 | delegation | Durable | RC-04: not published; publish Publisher; cannot run (workspace removed); nothing left on A or B | — | Held |
-| API-05 | AC-104, AC-105, RU-1 | delegation, messages | Durable | RC-05: standalone delegator, view open: result, B metadata + `delegatedFrom`, A tree link exact keys, Task record, packet header, reply via B's composer, follow-up, one message ID once per log, contiguous view sequence, every request kind captured | — | Held |
-| API-06 | AC-104, AC-105, AC-107, RU-1/2 | delegation, messages | Durable | RC-06: Team coordinator with the Team view open; local message after; the other member → `REMOTE_TARGET_NOT_PERMITTED` | CR-001 expectations 1, 5 | Held |
-| API-07 | AC-104, AC-105, RU-1/2 | delegation, messages | Durable | RC-07: Org member with the Org view open; local message after | CR-001 expectations 1, 5 | Held |
-| API-08 | AC-107 | messages | Durable | RC-08: other root on A → "not running"; local run on B → refused; forged unlinked inbound to B and A → `REMOTE_TARGET_NOT_PERMITTED`, nothing written | CR-001 expectation 2 | Held |
-| API-09 | AC-108 | delegation, messages | Durable | RC-09: `reference_files` (delegate, follow-up), `task_id` with `node`, saved Task to the remote run (AR-003); nothing sent | — | Held |
-| API-10 | AC-109, RU-3 | Task | Durable | RC-10: Project Task → task agent delegates remotely; Task record `role: delegated`; link in the Manager's tree; after DONE the remote reply is refused (closed Task) | AR-007 changes the fence | Held |
-| API-11 | AC-109 | Task | Durable | RC-11: ad hoc Task DONE: the delegator's message refused, nothing sent; the remote reply refused | AR-007 | Held |
-| API-12 | AC-106, DS-006 | lifecycle | Durable | RC-12: B's remote run idles out (60 s grace); A's follow-up restores it (`--conversation`) | — | Held |
-| API-13 | AC-106, REQ-108 | lifecycle | Durable | RC-13: restart B, then A; replies restore A's standalone, Team and Org roots; links and `delegatedFrom` unchanged on disk | — | Held |
-| API-14 | AC-106 | lifecycle | Durable | RC-14: history deleted on B → "no longer exists" | — | Held |
-| API-15 | QR-102, AC-104 | channel | Durable | RC-15: partition (≤ 30 s, "did not answer in time"), stopped peer; nothing left | CR-001 expectation 3; RSK-106 accepted | Held |
-| API-16 | AC-102 | channel | Durable | RC-16: B's URL reaches A: delegation and message refused "identity mismatch" | — | Held |
-| API-17 | AC-103 | delegation | Durable | RC-17: unpublish → refused; existing run still exchanges | — | Held |
-| API-18 | AC-101, SCN-107 | delegation, messages | Durable | RC-18: B off, then A off: "turned off" refusals, nothing sent from A | — | Held |
-| API-19 | AC-102, SCN-107 | delegation, messages | Durable | RC-19: removal on B, then on A: refusals both ways; history stays | — | Held |
-| API-20 | AC-111, REQ-113, REQ-114 | channel | Durable | RC-20: every captured request: only the contract paths; no credential header; no canary key or token-like text; exact body keys per kind | runs over whatever was captured | Run (now over the identity checks; full after the revision) |
-| API-21 | AC-112, QR-105 | same-node E2E suites | Existing Test | `tests/e2e/projects`, `run-history`, `agent-team-runs`, `agent-org-runs` with the AGY gate, switch off | — | Held (the revision changes the roots) |
-| API-22 | AC-112, QR-105 | same-node E2E suites | Existing Test | the same with `ENABLE_REMOTE_COLLABORATION=true` | — | Held |
-| API-23 | AC-110, REQ-112 | browser | Journey | two nodes + one remote delegation, Nuxt dev against B: history lists the run, open it, work packet visible, composer message, stop | DOM/state assertions | Held |
+| API-04 | AC-103, REQ-109 | delegation | Durable | RC-04: not published; publish Publisher; cannot run (workspace removed); nothing left on A or B | — | Run (round 2) |
+| API-05 | AC-104, AC-105, RU-1 | delegation, messages | Durable | RC-05: standalone delegator, view open: result, B metadata + `delegatedFrom`, A tree link exact keys, Task record, packet header, reply via B's composer, follow-up, one message ID once per log, contiguous view sequence, every request kind captured | — | Run (round 2) |
+| API-06 | AC-104, AC-105, AC-107, RU-1/2 | delegation, messages | Durable | RC-06: Team coordinator with the Team view open; local message after; the other member → `REMOTE_TARGET_NOT_PERMITTED` | CR-001 expectations 1, 5 | Run (round 2) |
+| API-07 | AC-104, AC-105, RU-1/2 | delegation, messages | Durable | RC-07: Org member with the Org view open; local message after | CR-001 expectations 1, 5 | Run (round 2) |
+| API-08 | AC-107 | messages | Durable | RC-08: other root on A → "not running"; local run on B → refused; forged unlinked inbound to B and A → `REMOTE_TARGET_NOT_PERMITTED`, nothing written | CR-001 expectation 2 | Run (round 2) |
+| API-09 | AC-108 | delegation, messages | Durable | RC-09: `reference_files` (delegate, follow-up), `task_id` with `node`, saved Task to the remote run (AR-003); nothing sent | — | Run (round 2) |
+| API-10 | AC-109, RU-3 | Task | Durable | RC-10: Project Task → task agent delegates remotely; Task record `role: delegated`; link in the Manager's tree; after DONE the remote reply is refused (closed Task) | AR-007 changes the fence | Run (round 2) |
+| API-11 | AC-109 | Task | Durable | RC-11: ad hoc Task DONE: the delegator's message refused, nothing sent; the remote reply refused | AR-007 | Run (round 2) |
+| API-12 | AC-106, DS-006 | lifecycle | Durable | RC-12: B's remote run idles out (60 s grace); A's follow-up restores it (`--conversation`) | — | Run (round 2) |
+| API-13 | AC-106, REQ-108 | lifecycle | Durable | RC-13: restart B, then A; replies restore A's standalone, Team and Org roots; links and `delegatedFrom` unchanged on disk | — | Run (round 2) |
+| API-14 | AC-106 | lifecycle | Durable | RC-14: history deleted on B → "no longer exists" | — | Run (round 2) |
+| API-15 | QR-102, AC-104 | channel | Durable | RC-15: partition (≤ 30 s, "did not answer in time"), stopped peer; nothing left | CR-001 expectation 3; RSK-106 accepted | Run (round 2) |
+| API-16 | AC-102 | channel | Durable | RC-16: B's URL reaches A: delegation and message refused "identity mismatch" | — | Run (round 2) |
+| API-17 | AC-103 | delegation | Durable | RC-17: unpublish → refused; existing run still exchanges | — | Run (round 2) |
+| API-18 | AC-101, SCN-107 | delegation, messages | Durable | RC-18: B off, then A off: "turned off" refusals, nothing sent from A | — | Run (round 2) |
+| API-19 | AC-102, SCN-107 | delegation, messages | Durable | RC-19: removal on B, then on A: refusals both ways; history stays | — | Run (round 2) |
+| API-20 | AC-111, REQ-113, REQ-114 | channel | Durable | RC-20: every captured request: only the contract paths; no credential header; no canary key or token-like text; exact body keys per kind | runs over whatever was captured | Run (round 2: full) |
+| API-21 | AC-112, QR-105 | same-node E2E suites | Existing Test | `tests/e2e/projects`, `run-history`, `agent-team-runs`, `agent-org-runs` with the AGY gate, switch off | — | Round 3 (after the F-002 fix, which changes run-history code these suites use) |
+| API-22 | AC-112, QR-105 | same-node E2E suites | Existing Test | the same with `ENABLE_REMOTE_COLLABORATION=true` | — | Run (round 2), and again after the F-002 fix |
+| API-23 | AC-110, REQ-112 | browser | Journey | two nodes + one remote delegation (`evidence/api-e2e/API-23-setup-two-nodes.mjs`, temporary), Nuxt dev against B: history lists the run, open it, work packet visible, composer message, stop | DOM/state assertions; a durable browser probe would need a two-node stack the web probe harness does not provide, and the E2E already proves the same server behavior (RC-05 composer) | Run (round 2) |
 
 - Test progress log needed: `Yes`
 
@@ -213,7 +214,8 @@ None.
 
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
-| F-001: registering a URL that answers but is not an AutoByteus node (an HTML page, or a web server answering 404) is refused as `PEER_UNREACHABLE` "could not be reached: …" instead of `PEER_NOT_AUTOBYTEUS` "is not an AutoByteus node." | `Local Fix` (preliminary) | API-03; `peer-client.ts:89-100` (`response.json()` and the `!ok` throw are inside the transport `try`) | Implementation Engineer, via the code reviewer's failure-origin review |
+| F-001 (round 1; resolved by CR-002 in IR-003, rechecked in API-03 round 2): registering a URL that answers but is not an AutoByteus node (an HTML page, or a web server answering 404) is refused as `PEER_UNREACHABLE` "could not be reached: …" instead of `PEER_NOT_AUTOBYTEUS` "is not an AutoByteus node." | `Local Fix` (preliminary) | API-03; `peer-client.ts:89-100` (`response.json()` and the `!ok` throw are inside the transport `try`) | Implementation Engineer, via the code reviewer's failure-origin review |
+| F-002 (round 2): Team and Org root packages whose message log holds a message with a remote endpoint fail the current root-package validator (`validateTeamRunStatePackage` / `validateAgentOrgStatePackage` require both endpoints of every message to be agents of the tree). The next package re-scan (any new root, every startup) excludes them: their member views fail while they run, and after a restart replies from the remote run are refused "no longer exists" and the runs cannot be reopened (`…_STATE_PACKAGE_NOT_CATALOGED`). The AR-001 walker table has no row for this validator; the design names this as its escalation trigger. | `Design Impact` (preliminary; the fix looks bounded) | API-13 (RC-13), `API-13-F002-package-validator-scan.log`, `API-13-F002-restart-reopen.log` | Solution Designer / Implementation Engineer, via the code reviewer's failure-origin review |
 
 ## Investigation Decision
 
@@ -221,4 +223,4 @@ None.
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (one new E2E file)
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: —
-- Notes: round 1 runs API-00, API-01, API-03 and API-20 now; the held cases run on the revised code (SR-015), together with a rerun of these by impact. The E2E is long (idle grace and two restarts, about 6–10 minutes); it runs alone, not in parallel with other runtime suites.
+- Notes: round 2 runs every case on IR-003; API-21 waits for the F-002 fix. Round 1 ran API-00, API-01, API-03 and API-20; the held cases run on the revised code (SR-015), together with a rerun of these by impact. The E2E is long (idle grace and two restarts, about 6–10 minutes); it runs alone, not in parallel with other runtime suites.

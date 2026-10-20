@@ -1,0 +1,225 @@
+# API-01 … API-20 round 2 run 1 | cmd: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> REMOTE_E2E_EVIDENCE_DIR=evidence/api-e2e/API-r2-run1 vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch | code 31d46978ad; test file: run 1 as in 2f60c233a8 + the round-1 soft checks, runs 2-3 with the fixes in the progress log | dist API-00 round 2 | macOS 26.5.2, node v22.23.1
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (20 tests | 7 failed) 116843ms
+     ✓ RC-01 AC-101/AC-111: off by default; with the switch off, both inbound request kinds are refused 'turned off' and no peer can be added 22ms
+     ✓ RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent  546ms
+     ✓ RC-03 AC-101/102/103/111: switched on, both nodes register each other with pinned identities; bad URLs record nothing; the gateway admits in order; publishing records launch settings  476ms
+     ✓ RC-04 AC-103: before publishing a delegation is refused; after publishing it is evaluated; an Agent that cannot run there is refused; refusals leave nothing  780ms
+     ✓ RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open)  3290ms
+     × RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted 1012ms
+     ✓ RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears  2120ms
+     × RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing 482ms
+     ✓ RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent  1914ms
+     × RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered 1790ms
+     × RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent 744ms
+     ✓ RC-12 AC-106: the remote run on beta is shut down after the idle grace period and a follow-up restores it with its conversation  50276ms
+     × RC-13 AC-106/REQ-108: after beta restarts, follow-ups restore the remote runs; after alpha restarts, replies restore every root kind and wake the delegators 3301ms
+     ✓ RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'  326ms
+     ✓ RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha  42468ms
+     ✓ RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch'  433ms
+     ✓ RC-17 AC-103: after unpublishing, new delegations are refused and a run already started still accepts follow-ups  669ms
+     × RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off' 1003ms
+     × RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays 230ms
+     ✓ RC-20 AC-111/REQ-113/REQ-114: every captured request between the nodes carries no credential and only the contract's fields 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted
+AssertionError: expected { …(3) } to deeply equal { …(3) }
+
+- Expected
++ Received
+
+  {
+    "coordinatingRun": {
+-     "kind": "team",
++     "kind": "agent_team",
+      "runId": "remote_squad_ee4c1bb010a5434499d624ac36b8da75",
+    },
+    "delegatorAgentRunId": "delegator_71718923f92c4d638317f3d6e44ccb10",
+    "nodeId": "srv_pFj-ns1P23Oy1O-9OYWgPoo8aK2IX3Bs",
+  }
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:663:52
+    661|     ids.team.r2 = r2;
+    662|     const remote = composeOnBeta(r2);
+    663|     expect((await betaMetadata(r2)).delegatedFrom).toEqual({ nodeId: a…
+       |                                                    ^
+    664|     expect(await receives(remote, "TEAM-PACKET")).toContain(`sender ru…
+    665|     expect(await calls(remote, "send_message_to", { target_agent_run_i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing
+AssertionError: expected 'No running agent has the run id \'pub…' to match /not running/
+
+- Expected: 
+/not running/
+
++ Received: 
+"No running agent has the run id 'publisher_4e6bcb3ab08a4fd3b47b2aa94639aeef', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you."
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:742:31
+    740|     const otherRoot = await calls(other, "send_message_to", { target_a…
+    741|     expect(otherRoot.accepted, JSON.stringify(otherRoot)).toBe(false);
+    742|     expect(textOf(otherRoot)).toMatch(/not running/);
+       |                               ^
+    743|     expect(remoteRequests().length, "the live-only path never reaches …
+    744| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered
+AssertionError: {"task":{"projectId":"project_acd75595-2a8b-4925-804a-9bac498f6e1e","taskId":"rc-10-project-1","status":"DONE","dependsOn":[],"partOf":null},"isError":false,"elapsedMs":209}: expected { Object (task, isError, ...) } to match object { status: 'DONE' }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
++   "elapsedMs": 209,
++   "isError": false,
++   "task": {
++     "dependsOn": [],
++     "partOf": null,
++     "projectId": "project_acd75595-2a8b-4925-804a-9bac498f6e1e",
+      "status": "DONE",
++     "taskId": "rc-10-project-1",
++   },
+  }
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:838:40
+    836|     await receives(worker, "BEFORE-DONE-TO-WORKER");
+    837|     const done = await calls(manager, "update_task", { task_id: taskId…
+    838|     expect(done, JSON.stringify(done)).toMatchObject({ status: "DONE" …
+       |                                        ^
+    839|     const afterDone = await calls(remote, "send_message_to", { target_…
+    840|     expect(afterDone.accepted, JSON.stringify(afterDone)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent
+AssertionError: {"task":{"projectId":null,"taskId":"ad_hoc_task_67680144-2623-4d30-9f88-2aa17da995b6","status":"DONE"},"isError":false,"elapsedMs":211}: expected { …(3) } to match object { status: 'DONE' }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
++   "elapsedMs": 211,
++   "isError": false,
++   "task": {
++     "projectId": null,
+      "status": "DONE",
++     "taskId": "ad_hoc_task_67680144-2623-4d30-9f88-2aa17da995b6",
++   },
+  }
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:857:40
+    855|     await receives(remote, "ADHOC-PACKET");
+    856|     const done = await calls(solo, "update_task", { task_id: delegated…
+    857|     expect(done, JSON.stringify(done)).toMatchObject({ status: "DONE" …
+       |                                        ^
+    858|     const sentBefore = remoteRequests().length;
+    859|     const toRemote = await calls(solo, "send_message_to", { target_age…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-13 AC-106/REQ-108: after beta restarts, follow-ups restore the remote runs; after alpha restarts, replies restore every root kind and wake the delegators
+Error: alpha GraphQL failed: [{"message":"AgentRun 'delegator_aa334d0ef5434dc3bfbd3630be9a9184' at '/lead' was not found in AgentOrg 'remote_org_1a10f6af4ccc4ea383b609436983fd00'.","locations":[{"line":1,"column":42}],"path":["getAgentOrgMemberRunProjection"]}]
+ ❯ NodeServer.gql tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:177:50
+    175|   async gql(query: string, variables?: Rec): Promise<Rec> {
+    176|     const body = await this.gqlRaw(query, variables);
+    177|     if (!body.data || body.errors?.length) throw new Error(`${this.nam…
+       |                                                  ^
+    178|     return body.data;
+    179|   }
+ ❯ Object.conversation tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:298:32
+ ❯ calls tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:308:34
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:903:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off'
+AssertionError: only beta's refused message was sent: expected [ 'toBeta', 'toBeta', 'toAlpha' ] to deeply equal [ 'toAlpha' ]
+
+- Expected
++ Received
+
+  [
++   "toBeta",
++   "toBeta",
+    "toAlpha",
+  ]
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:1015:106
+    1013|     const inboundWhileAlphaOff = await calls(composeOnBeta(ids.team.r2…
+    1014|     expect(textOf(inboundWhileAlphaOff)).toBe(`Remote collaboration is…
+    1015|     expect(remoteRequests(sentBefore).map((entry) => entry.via), "only…
+       |                                                                                                          ^
+    1016|     await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:tr…
+    1017|     await neverReceives(teamLead, "TO-ALPHA-WHILE-OFF", 0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays
+AssertionError: expected 'Remote collaboration is turned off on…' to be 'Node "beta-node" does not have this n…' // Object.is equality
+
+Expected: "Node "beta-node" does not have this node registered as a peer, so it refused the request."
+Received: "Remote collaboration is turned off on this node, so nothing was sent to another node."
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:1027:40
+    1025|     expect((await beta.gql(`mutation($id:String!){removePeerNode(nodeI…
+    1026|     const toBetaAfterRemoval = await calls(teamLead, "send_message_to"…
+    1027|     expect(textOf(toBetaAfterRemoval)).toBe(`Node "${LABEL.beta}" does…
+       |                                        ^
+    1028|     const fromBetaAfterRemoval = await calls(composeOnBeta(ids.team.r2…
+    1029|     expect(textOf(fromBetaAfterRemoval)).toBe(`The node of that run ($…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 13 passed (20)
+   Start at  17:40:57
+   Duration  117.51s (transform 87ms, setup 40ms, import 135ms, tests 116.84s, environment 0ms)
+
