@@ -2,7 +2,7 @@
 
 Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`, branch `codex/cross-node-agent-communication-r2`; base `origin/personal` `5de6a698b9`; finalization target `origin/personal`.
 
-Implementation commits (on top of the reviewed design `910f024ec5` and SR-014 `a3b0cf1028`):
+Implementation commits (design: SR-014 `a3b0cf1028`, SR-015 `f1d7dd9337`, SR-016 `213a5d9668`):
 
 | Commit | Content |
 | --- | --- |
@@ -12,40 +12,48 @@ Implementation commits (on top of the reviewed design `910f024ec5` and SR-014 `a
 | `6076a3aadf` | Engine takes the attachment refusal from the one code/text owner; idle-shutdown unit test |
 | `37224bf2dc` | This handoff, the revision record, evidence (IR-001) |
 | `744641b35c` | IR-002 (CR-001): remote-endpoint messages are not published to the root view stream; stream-sequence test |
-| the IR-002 documents commit (named in the handoff message) | This handoff and the revision record updated; IMP-09 … IMP-11 evidence |
+| `676ecbbb7a` | IR-002 documents; IMP-09 … IMP-11 evidence |
+| `31d46978ad` | IR-003: clean ownership of remote messaging (SR-015, SR-016) and CR-002 |
+| the IR-003 documents commit (named in the handoff message) | This handoff and the revision record updated; IMP-12 … IMP-14 evidence |
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review selected (Large / High); ARCH-REV-002 Pass. The review sent the package here.
+- Upstream review applicability and handoff-rule result: independent architecture review selected (Large / High). ARCH-REV-002 Pass, reopened at the user's direction (ARCH-REV-003 → SR-015 → ARCH-REV-004 Pass; ARCH-REV-005 → SR-016 → ARCH-REV-006 Pass). The review sent the package here.
 - Requirements doc: `tickets/in-progress/cross-node-agent-communication/requirements-doc.md` (approved baseline SR-007)
 - Investigation notes: `tickets/in-progress/cross-node-agent-communication/investigation-notes.md`
-- Solution revision record: `tickets/in-progress/cross-node-agent-communication/solution-revision-record.md` (current SR-014)
-- Design spec: `tickets/in-progress/cross-node-agent-communication/design-spec.md` (SR-014)
+- Solution revision record: `tickets/in-progress/cross-node-agent-communication/solution-revision-record.md` (current SR-016)
+- Design spec: `tickets/in-progress/cross-node-agent-communication/design-spec.md` (SR-016; authoritative: § Remote Messaging: Owners And Order, § Task Closure Of A Remote Run)
 - Supplemental task artifacts: `slice-plan.md` (approved); `follow-ups.md` (FU-001 done as autobyteus-197; FU-002 added by the architecture reviewer)
-- Design review report: `tickets/in-progress/cross-node-agent-communication/design-review-report.md` (ARCH-REV-002, notes N-6 … N-11)
+- Design review report: `tickets/in-progress/cross-node-agent-communication/design-review-report.md` (ARCH-REV-006; notes N-6 … N-14)
 - Architecture review revision record: `tickets/in-progress/cross-node-agent-communication/architecture-review-revision-record.md`
-- Triggering rework report: `tickets/in-progress/cross-node-agent-communication/code-review-report.md` (CRR-001, finding CR-001); `code-review-revision-record.md`
+- Triggering rework: SR-015 / SR-016 (ARCH-REV-004, ARCH-REV-006) for steps 3–6; `code-review-report.md` CRR-003 (finding CR-002, from API/E2E F-001 in `api-e2e-execution-coverage-report.md`); earlier CRR-001 (CR-001, IR-002)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002 on top of IR-001)
+- Implementation cycle: `Rework` (IR-003 on top of IR-002)
 - Implementation revision record: `tickets/in-progress/cross-node-agent-communication/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: SR-013, SR-014
-- Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: CRR-001
-- Related API/E2E revision IDs: N/A
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: SR-014, SR-015, SR-016
+- Related architecture-review revision IDs: ARCH-REV-004, ARCH-REV-006
+- Related code-review revision IDs: CRR-001, CRR-002, CRR-003
+- Related API/E2E revision IDs: API-REV-001 (F-001)
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: CR-001 (IR-002; see the revision record for the delta)
+- Triggering finding IDs: AR-005 … AR-009 (design), CR-002 (IR-003); CR-001 (IR-002)
 
 What exists now:
 
 - **Node settings** (`src/remote-collaboration/settings/`): the switch `ENABLE_REMOTE_COLLABORATION` (off by default; GraphQL reports `source` `DEFAULT_DISABLED` or `SERVER_SETTING`), `peers.json` (`PeerDirectory`: add pins the peer's `serverInstanceId`, needs the switch on; refuses this node, a duplicate node and a taken name; rename; remove) and `published-agents.json` (`PublishedAgentService` + `PublishedLaunchCheck`; the address is derived with the catalog's address rules, never stored).
-- **Channel**: `PeerClient` implements the process-bound `RemoteRunChannel` port (switch, registration, 20 s bound, pinned-identity check on the answer, agent wording with the peer's name). `PeerGateway` is the one inbound entry (`toNodeId` → switch → registered peer → handler; every answer names this node, including the 400). REST `POST /rest/remote/delegated-runs` and `POST /rest/remote/messages`, route class `REMOTE_PEER` (mobile credential → 403).
+- **Channel**: `PeerClient` implements the process-bound `RemoteRunChannel` port (switch, registration, 20 s bound, pinned-identity check on the answer, agent wording with the peer's name). Adding a peer: only a transport failure or a timeout is `PEER_UNREACHABLE`; a server that answered without its identity (another status, a page, JSON without `serverInstanceId`) is `PEER_NOT_AUTOBYTEUS` (CR-002). `PeerGateway` is the one inbound entry (`toNodeId` → switch → registered peer → handler; every answer names this node, including the 400). REST `POST /rest/remote/delegated-runs` and `POST /rest/remote/messages`, route class `REMOTE_PEER` (mobile credential → 403).
 - **Receivers**: `RemoteDelegationReceiver` prepares a standalone run of the published Agent with its launch settings and `delegatedFrom`; `RemoteMessageReceiver` routes a work packet or a message without `coordinatingRun` to the run's own standalone root, and a message with `coordinatingRun` to that coordinating root (restored when needed).
-- **Shared remote component** (`src/agent-collaboration/execution/remote/`): `RemoteRunReference`, the port, the refusal codes and root texts, `RemoteRunLinks` (one per root: endpoints, pair rule `route`, inbound link check, ownership chain, `refuseExistingCopy`, `delegationPlacement` / `delegate`, `accept`, `planActivation` / `beginActivation`, `send`) and `RemoteTaskActivation`.
-- **Engine**: `RootCommunicationEngine.sendToRemote` (sender log committed only after the peer accepted) and `acceptFromRemote` (receiver log only, the sender's message ID kept); each adapter's `commitSentToRemote`; message log owner `REMOTE_RUN_LOG` skipped when writing.
-- **Roots**: standalone, Team and Org roots answer `hasAgentExecution` for their remote endpoints, route `deliverExact` through `RemoteRunLinks`, accept inbound messages (`acceptRemoteMessage`), and record remote links in the topmost tree through their task adapters. The standalone root on B also admits the work packet (N-6) and runs `StandaloneHostIdleShutdown` (DS-006).
+- **Shared remote component** (`src/agent-collaboration/execution/remote/`), one of each per root:
+  - `RemoteEndpoint` kinds (`remote-endpoint.ts`): `delegated_run` (A: only its delegator; chain `[{agentRunId}]`; `closureFence`) and `delegator` (B: only the host; chain `[]`; `coordinatingRun` on transmit; `admitsWorkPacket`). Each kind owns its pair rule, Task chain, transmit request and refusals (AR-006).
+  - `RemoteRunLinks` (`remote-run-links.ts`): membership (`endpointFor`, `inboundEndpoint`, `has`) and `deliver` (the channel only), no side branch.
+  - `RemoteMessageSend` (`remote-message-send.ts`): the one owner of the outbound order and its refusals: `allowsSender` → `engine.prepareRemoteSend` → `RemoteRunLinks.deliver` → `engine.commitSentToRemote`; the result names the node (AR-005, AR-008).
+  - `RemoteDelegation` (`remote-delegation.ts`): placement, planning (`startDelegatedRun`, its one caller) and activation (`RemoteTaskActivation`) of DS-001; each root's task adapter hands a remote placement to it (N-13).
+  - `RemoteRunReference`, the port `RemoteRunChannel` (+ `resolveRemoteRunChannel`), the refusal codes and root texts.
+- **Engine**: `RootCommunicationEngine.prepareRemoteSend` (checks and message ID, no state change), `commitSentToRemote(prepared)` (sender log only, no Task re-check; a failed write after the peer accepted stays `accepted` with a warning naming the message) and `acceptFromRemote` (receiver log only, the sender's ID kept, the endpoint's run checked); each adapter's `commitSentToRemote`; message log owner `REMOTE_RUN_LOG` skipped when writing. The engine never sends.
+- **Roots**: standalone, Team and Org roots answer `hasAgentExecution` for their remote endpoints. Their delivery keeps the routing line (`endpointFor` → `remoteSend.send`, under the sender's lease) and the inbound order (`inboundEndpoint` → the root's own wake → `engine.acceptFromRemote`). They record remote links in the topmost tree through their task adapters. The standalone root on B also admits the work packet through the `delegator` endpoint (N-6) and runs `StandaloneHostIdleShutdown` (DS-006).
+- **Task lifecycle**: the existing-copy refusal (AR-003) is checked once, in `RootTaskExecutionLifecycle.assignToExistingCopy`, after `resolveAssignment` and before `resolveExistingCopy` or any Task change, through `RemoteEndpointLookup` (backed by `RemoteRunLinks.has`). Task closure fences a remote run: `releaseTaskExecutions` returns `{outcome: "fenced_remote", stopped: false, message}` and invokes no release (AR-007); the release logger reports it as info with its message.
 - **Tool**: `delegate_task` has `node`; the result names the node. `send_message_to` is unchanged (DEC-111).
 - **Views**: messages with a remote endpoint are kept out of the public run views (the web asserts that every message's sender and receiver are participants). The root never publishes them to its view stream: `commitAppend` takes `publishToRootView` (`false` from `acceptFromRemote`) and `commitSentToRemote` never publishes, so the change sequence has no gap (IR-002, CR-001). The view snapshots filter them with `isPublicMessage`. A reply from a remote run still produces the receiver's member-input or presentation event.
 - **Web**: Nodes → Remote Collaboration tab (switch, peers, published Agents), en and zh-CN.
@@ -57,10 +65,10 @@ What exists now:
 - Architecture risk: `High`
 - Design classification section / evidence reference: `design-spec.md` § Task Size And Architectural Risk
 - Classification confirmed or changed: `Confirmed`
-- Evidence and rationale for confirmation or change: 93 server source files (29 new), 18 web files; a new inter-node contract, new persisted fields in three exact-written tree kinds and in run metadata, a new inbound surface, remote activation around the task queue.
+- Evidence and rationale for confirmation or change: about 96 server source files (32 new), 18 web files; a new inter-node contract, new persisted fields in three exact-written tree kinds and in run metadata, a new inbound surface, remote activation around the task queue.
 - Selected route: `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: `None` open. DI-1 (activation order) was raised during implementation and resolved by the Solution Designer as SR-014 (see § Important Assumptions). No walker of `taskExecutions` outside the AR-001 table and no writer bypassing the shared split was found.
+- New design impact or escalation trigger: `None` open. DI-1 (activation order) was raised during implementation and resolved by the Solution Designer as SR-014 (see § Important Assumptions); SR-015 / SR-016 reworked steps 3–6 (IR-003). No walker of `taskExecutions` outside the AR-001 table and no writer bypassing the shared split was found.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -68,21 +76,22 @@ What exists now:
 | --- | --- | --- | --- |
 | BEH-101 | Switch + peers with pinned identity (REQ-101/102/114/115) | `remote-collaboration/settings/remote-collaboration-capability.ts`, `peer-directory.ts`, `peer-store.ts`; `channel/peer-client.ts` (`readServerIdentity`); `channel/peer-gateway.ts`; `api/rest/remote.ts`; `api/security/remote-access-route-policy.ts`; `api/graphql/types/remote-collaboration-settings.ts`; web tab | Implemented. Unit: settings, gateway, client, route policy. Real HTTP: IMP-07. UI: IMP-08 |
 | BEH-102 | Published Agents with launch settings (REQ-103) | `settings/published-agent-service.ts`, `published-agent-store.ts`, `published-launch-check.ts`; web `RemoteCollaborationPublishedAgentsSection.vue`, `RemoteCollaborationPublishForm.vue` | Implemented. Any shared Agent definition is publishable, including built-in ones (REQ-103 says "shared"; an earlier built-in exclusion was removed) |
-| BEH-103 | `delegate_task({node,…})` → B prepares a standalone run → A links it → work packet (REQ-104/105/109/111) | Tool: `agent-tools/task-delegation/*` (`node` parameter, parser, serialization). Root: `RemoteRunLinks.delegate` / `delegationPlacement` → unchanged `RootTaskExecutionLifecycle` → adapter `planActivation` (calls `startDelegatedRun`, SR-014) → `beginActivation` (`RemoteTaskActivation`: one tree write of the link, then the work packet). B: `inbound/remote-delegation-receiver.ts` → prepared run with `delegatedFrom`; `standalone-root-message-delivery.ts` `acceptRemoteWorkPacket` (N-6) | Implemented for all three root kinds as delegators. In-process A↔B test (IMP-03) for a standalone delegator |
-| BEH-104 | Run-ID messages both ways through the link (REQ-106/107/108) | `hasAgentExecution` → root `deliverExact` → `RemoteRunLinks.route` / `send` → `RootCommunicationEngine.sendToRemote` → `PeerClient` → B `PeerGateway` → `RemoteMessageReceiver` → root `acceptRemoteMessage` → `RemoteRunLinks.accept` (link check; root `wake` restores the host, N-8) → `acceptFromRemote`. Headers name the node (`received-message-header.ts`) | Implemented. In-process test: both directions, one ID in both logs, restart of both nodes, pair-rule refusals |
-| BEH-105 | Files and saved Task refused before anything is sent (REQ-110) | `RemoteRunLinks.delegationPlacement` (task_id, reference_files), `refuseExistingCopy` (AR-003, in `assignToExistingCopy`), `RootCommunicationEngine.sendToRemote` (follow-up files) | Implemented; codes `REMOTE_SAVED_TASK_NOT_SUPPORTED`, `REMOTE_ATTACHMENTS_NOT_SUPPORTED` |
+| BEH-103 | `delegate_task({node,…})` → B prepares a standalone run → A links it → work packet (REQ-104/105/109/111) | Tool: `agent-tools/task-delegation/*` (`node` parameter, parser, serialization). Root: `RemoteDelegation.delegate` / `delegationPlacement` → unchanged `RootTaskExecutionLifecycle` → adapter `planActivation` → `RemoteDelegation.planActivation` (`startDelegatedRun`, SR-014) → `beginActivation` (`RemoteTaskActivation`: one tree write of the link, then the work packet). B: `inbound/remote-delegation-receiver.ts` → prepared run with `delegatedFrom`; `standalone-root-message-delivery.ts` `acceptRemoteWorkPacket` (N-6) | Implemented for all three root kinds as delegators. In-process A↔B test (IMP-03) for a standalone delegator |
+| BEH-104 | Run-ID messages both ways through the link (REQ-106/107/108) | `hasAgentExecution` → root `deliverExact` (routing line) → `RemoteMessageSend.send`: `endpoint.allowsSender` → `engine.prepareRemoteSend` → `RemoteRunLinks.deliver` → `PeerClient` → B `PeerGateway` → `RemoteMessageReceiver` → root `acceptRemoteMessage`: `inboundEndpoint` → the root's wake (N-8) → `engine.acceptFromRemote` ← accepted → `engine.commitSentToRemote`. Headers name the node (`received-message-header.ts`) | Implemented. In-process test: both directions, one ID in both logs, restart of both nodes, pair-rule refusals; shared sequence test; routing test per root kind |
+| BEH-105 | Files and saved Task refused before anything is sent (REQ-110) | `RemoteDelegation.delegationPlacement` (task_id, reference_files), `RootTaskExecutionLifecycle.assignToExistingCopy` via `RemoteEndpointLookup` (AR-003), `engine.prepareRemoteSend` (follow-up files) | Implemented; codes `REMOTE_SAVED_TASK_NOT_SUPPORTED`, `REMOTE_ATTACHMENTS_NOT_SUPPORTED` |
 | BEH-106 | Remote run is a normal standalone run on B (REQ-112) | `RemoteDelegationReceiver` (prepared run via the existing provisioning path, `PrepareAgentRunInput.delegatedFrom`); `agent-run-metadata-store.ts` keeps `delegatedFrom` (N-10); `StandaloneHostIdleShutdown` (DS-006) | Implemented. The rendered history view of B is left to API/E2E (AC-110) |
 
 Review notes:
 
 | Note | Where |
 | --- | --- |
-| N-6 work packet on B | `standalone-root-message-delivery.ts` `acceptRemoteWorkPacket`: link check against `delegatedFrom`, host made ready, system task notification naming the node, package created with the first message |
+| N-6 work packet on B | `standalone-root-message-delivery.ts` `acceptRemoteWorkPacket`: the `delegator` endpoint's `admitsWorkPacket`, host made ready, system task notification naming the node, package created with the first message |
 | N-7 compose shortcut | `task-execution-tree-split.ts` `composeTreeFile(Sync)`: the shortcut partitions remote entries; test "partitions a tree whose only link is remote" per tree kind |
-| N-8 wake placement | `RemoteRunLinks.accept` calls the root's `wake(…)` around `acceptFromRemote` (standalone `wakeAndRun`, Team and Org their live-lease paths) |
-| N-9 closure text | Task-closure release results are only logged (`projects/runtime/task-execution-resource-release.ts`); no agent- or user-facing text says the remote run stopped |
+| N-8 wake placement | each root's `acceptRemoteMessage` wakes the paired agent before `engine.acceptFromRemote` (standalone `wakeAndRun`, Team and Org their live-lease paths) |
+| AR-007 closure (replaces N-9) | `RootTaskExecutionResourceScope.releaseTaskExecutions` asks `RemoteRunLinks.endpointFor`; a closed `delegated_run` gets `endpoint.closureFence(...)` → `fenced_remote` with its message; no release; the release logger logs it as info |
 | N-10 `delegatedFrom` survives activation | catalog test: `delegatedFrom` kept through `recordRunStarted`; metadata store round trip |
-| N-11 ownership chain on B | `RemoteRunLinks.ownershipChainFor`: `[{agentRunId}]` on the delegating side, `[]` on the receiving side |
+| N-11 ownership chain on B | the adapters' `ownershipChainFor` returns `endpoint.ownershipChain()`: `[{agentRunId}]` for `delegated_run`, `[]` for `delegator` |
+| N-13 one caller of `startDelegatedRun` | the three task adapters' `planActivation` / `beginActivation` hand a remote placement to `RemoteDelegation` |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
 
@@ -91,7 +100,8 @@ Review notes:
 Server (`autobyteus-server-ts/src/`):
 
 - New subsystem `remote-collaboration/`: `domain/` (peer node, published agent, requests, refusal texts, settings error), `settings/` (schema, stores, `PeerDirectory`, `PublishedAgentService`, `PublishedLaunchCheck`, capability), `channel/` (`PeerClient`, `PeerGateway`), `inbound/` (two receivers), `remote-collaboration-services.ts`.
-- New shared component `agent-collaboration/execution/remote/`: `remote-run-reference.ts`, `remote-run-channel.ts`, `remote-refusal-codes.ts`, `remote-run-links.ts`, `remote-task-activation.ts`.
+- New shared component `agent-collaboration/execution/remote/`: `remote-run-reference.ts`, `remote-run-channel.ts`, `remote-refusal-codes.ts`, `remote-endpoint.ts`, `remote-run-links.ts`, `remote-message-send.ts`, `remote-delegation.ts`, `remote-task-activation.ts`.
+- Task: `root-task-execution-lifecycle.ts` (`RemoteEndpointLookup`, AR-003), `root-task-execution-resource-scope.ts` and `task-execution-resource-port.ts` (`fenced_remote`), `projects/runtime/task-execution-resource-release.ts`.
 - Engine and adapters: `agent-collaboration/execution/communication/root-communication-engine.ts`, `root-communication-adapter.ts`, `root-communication-runtime-builder.ts`, `received-message-header.ts`; the three adapters' `commitSentToRemote`; `task-agent-message-logs.ts` (`REMOTE_RUN_LOG`).
 - Data model: `run-history/domain/run-execution-tree-shared-records.ts`, `run-history/store/run-execution-tree-shared-record-schemas.ts`, `remote-task-execution-links.ts` (new), `task-execution-tree-split.ts`, `coordinating-tree-shapes.ts`, the three tree types and validators, `agent-run-metadata-types.ts`, `delegated-from-schema.ts` (new), `agent-run-metadata-store.ts`.
 - Roots: `standalone-agent-run-root/` (root, message delivery, `standalone-host-idle-shutdown.ts` (new), builder, manager, persistence coordinator, task adapter, tree mutator); Team (`root-team-run.ts`, `team-run-message-delivery.ts`, `team-communication-service.ts`, task adapter, mutator); Org (`agent-org-run.ts`, message delivery, task adapter, mutator).
@@ -103,8 +113,10 @@ Web (`autobyteus-web/`): `components/settings/RemoteCollaboration*.vue` (4 new),
 
 Places that deserve the reviewer's closest look:
 
-1. `remote-run-links.ts` — the pair rule, the inbound link check, `planActivation` (SR-014) and the refusal paths that must leave nothing behind.
-2. `root-communication-engine.ts` `sendToRemote` / `acceptFromRemote` — the only message-state writers for remote endpoints (AR-002).
+1. `remote-message-send.ts` + `remote-endpoint.ts` + `remote-run-links.ts` — the outbound order, the kinds' rules, membership; nothing written unless the peer accepted.
+2. `root-communication-engine.ts` `prepareRemoteSend` / `commitSentToRemote` / `acceptFromRemote` — the only message-state owner for remote endpoints (AR-002); `remote-delegation.ts` `planActivation` (SR-014).
+6. `root-task-execution-lifecycle.ts` (AR-003 position) and `root-task-execution-resource-scope.ts` (`fenced_remote`, cancel-before-await order of hosted runs kept).
+7. `peer-client.ts` `fetchServerInstanceId` (CR-002).
 3. `task-execution-tree-split.ts` + `remote-task-execution-links.ts` — remote entries never reach `taskExecutions` in memory and survive every save (AR-001, RSK-108).
 4. `peer-gateway.ts` — admission order (REQ-114).
 5. `standalone-root-message-delivery.ts` — work-packet admission and wake on B.
@@ -115,6 +127,11 @@ Places that deserve the reviewer's closest look:
   - (a) the plan's target uses the peer's run ID as `ingressAgentRunId` and an empty `ownedAgentRunIds`;
   - (b) `beginActivation` commits the link in one tree write, then sends the work packet in `acceptSeed`; a refused work packet leaves the link (the prepared run on B expires);
   - (c) the refusal codes and the root texts live next to the port (`remote-refusal-codes.ts`), and the agent texts of channel and peer refusals in `remote-collaboration/domain/remote-refusals.ts`, so roots do not depend on `remote-collaboration`.
+- **SR-016 code shape details** (within § Remote Messaging):
+  - `RemoteRunLinks.deliver` returns `{accepted: true, peerName}`, so `RemoteMessageSend` adds the "on node" text to the result of `engine.commitSentToRemote(prepared)` (the engine signature stays as designed).
+  - The lifecycle takes `remoteRunLinks` (for the closure fence) and `remoteEndpoints: RemoteEndpointLookup` (AR-003) as two options, both backed by the root's `RemoteRunLinks`.
+  - `commitSentToRemote` publishes no root-view event (IR-002, CR-001); the design table's "publishes the sender-side presentation" is read as the sender's own stream, which already shows its tool call.
+  - The sender's live lease around a remote send stays in each root's routing line (it is root-specific, like the inbound wake).
 - `remoteTaskExecutions` is optional in memory and absent when empty, so validators that rebuild trees (including app-data migrations, which write validator output) keep today's exact key set when there are no remote links.
 - The roots receive the channel through an option `remoteRunChannel` (tests inject one; production uses the process-bound port).
 - `delegatedFrom` is parsed strictly: a malformed section makes `run_metadata.json` unreadable, as for the file's other sections. A malformed remote link in a tree is left out with a warning naming the run and stays on disk (DESIGN.md rule 7).
@@ -176,6 +193,9 @@ Evidence is in `tickets/in-progress/cross-node-agent-communication/evidence/`. E
 | IMP-09 | `pnpm -C autobyteus-server-ts typecheck` | `744641b35c` | as above | all server source | CR-001 | Pass | `IMP-09-server-typecheck-cr001.log` | `exit=0` |
 | IMP-10 | `npx vitest run tests/unit/remote-collaboration/remote-message-view-sequence.test.ts`, on the fix and with `src/` from `37224bf2dc` | `744641b35c` and `37224bf2dc` | as above | the three adapters, engine, append plan, view projectors | CR-001; BEH-104 | Pass (fails before the fix) | `IMP-10-cr001-stream-sequence.log` | after: `Tests  3 passed (3)`; before: `Tests  3 failed (3)` |
 | IMP-11 | `pnpm -C autobyteus-server-ts test:unit` (full unit suite) | `744641b35c` | as above, temp dirs only | all server unit tests | AC-112 and all | Pass | `IMP-11-server-unit-full-cr001.excerpt.log` | `Test Files  760 passed \| 4 skipped (764)`, `Tests  6255 passed \| 7 skipped (6262)`, `exit=0` |
+| IMP-12 | `pnpm -C autobyteus-server-ts typecheck` | `31d46978ad` | as above | all server source | IR-003 (SR-015, SR-016, CR-002) | Pass | `IMP-12-server-typecheck-ir003.log` | `exit=0` |
+| IMP-13 | `npx vitest run tests/unit/remote-collaboration tests/unit/run-history/store/remote-task-execution-links.test.ts tests/unit/standalone-agent-run-root/standalone-host-idle-shutdown.test.ts tests/unit/agent-collaboration/execution/communication tests/unit/agent-collaboration/task-execution-resource-tree-scope.test.ts` | `31d46978ad` | as above | endpoint kinds, `RemoteRunLinks`, `RemoteMessageSend`, routing per root, lifecycle AR-003, `fenced_remote`, `PeerClient` (CR-002), in-process A↔B | BEH-101 … BEH-106; AR-003 … AR-008; CR-002 | Pass | `IMP-13-server-remote-focused-ir003.log` | `Test Files  12 passed (12)`, `Tests  88 passed (88)`; `remote-messaging-owners.test.ts (11 tests)`, `remote-message-routing.test.ts (6 tests)` |
+| IMP-14 | `pnpm -C autobyteus-server-ts test:unit` (full unit suite) | `31d46978ad` | as above, temp dirs only | all server unit tests | AC-112 and all | Pass | `IMP-14-server-unit-full-ir003.excerpt.log` | `Test Files  762 passed \| 4 skipped (766)`, `Tests  6273 passed \| 7 skipped (6280)`, `exit=0` |
 | IMP-08 | Rendered web tab against the two-server stack (Nuxt dev, browser) | web as in `8491e0d916` | Chromium via the agent browser tool | Nodes → Remote Collaboration | BEH-101, BEH-102, REQ-115 | Pass (observed) | `IMP-08-ui-remote-collaboration-tab.png`, `IMP-08-ui-peer-refusal-and-rename.png`, `IMP-08-ui-publish-form.png` | the switch on; peer "docker" listed with its node ID; the refusal next to the peer form; the publish form with runtime, model, workspace and auto-approve |
 
 - Not run, and why:

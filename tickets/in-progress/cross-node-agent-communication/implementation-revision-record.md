@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-013, SR-014, ARCH-REV-002 | Implemented; handed to code review |
 | IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (round 1, Fail) | CR-001 | `Local Fix` | CRR-001, SR-014, ARCH-REV-002 | Fixed; back to code review for a targeted delta review |
+| IR-003 | Architecture reviewer (ARCH-REV-004, ARCH-REV-006) for SR-015 / SR-016; code reviewer CRR-003 (from API/E2E F-001) | AR-005 … AR-009; CR-002 | `Design Impact` (upstream, resolved) + `Local Fix` | SR-015, SR-016, ARCH-REV-004, ARCH-REV-006, CRR-003, API-REV-001 | Steps 3–6 brought in line; CR-002 fixed; to code review (targeted delta) |
 
 ## Revision Entries
 
@@ -65,3 +66,38 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Commit `744641b35c`.
 - Next recipient or routing: code reviewer (targeted delta review), then API/E2E.
 - Remaining limitations or risks: the web clients are unchanged. A remote-endpoint message is visible in the local agent's own stream and in the logs, but not in the root's communication view, as in IR-001.
+
+### IR-003 — Steps 3–6 brought in line with SR-015 / SR-016; CR-002
+
+- Triggering role, report path, and round:
+  - architecture reviewer (`architecture_reviewer_3f2fb8418663470e884249ccd42b9963`), `design-review-report.md`: ARCH-REV-004 (SR-015: AR-005 … AR-007) and ARCH-REV-006 (SR-016: AR-008, AR-009), both Pass, after the review was reopened at the user's direction;
+  - code reviewer (`code_reviewer_905377eb52914beba173d7604d83e5a1`), `code-review-report.md` CRR-003: failure-origin review of API/E2E F-001 (API-REV-001, RC-03), finding CR-002.
+- Triggering finding IDs: AR-005, AR-006, AR-007, AR-008, AR-009 (design); CR-002.
+- Classification: the design findings were `Design Impact` resolved upstream (SR-015, SR-016); CR-002 is a `Local Fix`.
+- Prior authoritative result: IR-002. `RemoteRunLinks` held the pair rule, the side (`delegating` / `receiving`), the Task chain, the existing-copy refusal, placement and activation, and `send` / `accept`, which handed the engine a transmit callback (`sendToRemote`). Task closure of a remote run counted `NO_AUTHORITY` as stopped. Adding a peer URL that answered with a page or 404 said "could not be reached".
+- Current authoritative result: one owner per concern (design § Remote Messaging: Owners And Order, § Task Closure Of A Remote Run).
+- Related solution revision IDs: SR-014 (kept), SR-015, SR-016
+- Related architecture-review revision IDs: ARCH-REV-004, ARCH-REV-006
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: API-REV-001 (F-001)
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: the existing implementation of steps 3–6 brought in line with the revised design, and CR-002.
+- Approved behavior or requirement IDs affected: BEH-103, BEH-104, BEH-105 (ownership only; behavior unchanged except the closure result text, AR-007); BEH-101 / REQ-102 (CR-002 wording of the refusal).
+- Implementation delta:
+  - New `remote-endpoint.ts`: the `delegated_run` / `delegator` union, each kind with `allowsSender` / `allowsTarget`, `ownershipChain`, `transmission`, `refusals`, and its own rule (`closureFence`; `admitsWorkPacket`).
+  - `remote-run-links.ts` reduced to membership (`endpointFor`, `inboundEndpoint`, `has`), `deliver` (returns the peer's name when accepted) and `peerName`; no root identity, no side.
+  - New `remote-message-send.ts` (`RemoteMessageSend`): the outbound order and its refusals; the result names the node.
+  - New `remote-delegation.ts` (`RemoteDelegation`): `delegationPlacement`, `delegate`, `planActivation`, `beginActivation`, `RemoteDelegationRefusedError` (moved from `RemoteRunLinks`).
+  - Engine: `sendToRemote(input, transmit)` replaced by `prepareRemoteSend` and `commitSentToRemote(prepared)`; `acceptFromRemote` takes the endpoint and checks the sender is it.
+  - Roots: the three deliveries keep `endpointFor` → `remoteSend.send` (under the sender's lease) and the inbound order with their own wake; the AR-003 checks in the three roots are removed; the three task adapters use `RemoteDelegation` and `endpoint.ownershipChain()`.
+  - Lifecycle: `RemoteEndpointLookup` option and the AR-003 refusal after `resolveAssignment`; `remoteRunLinks` option for the resource scope.
+  - Resource scope: closed `delegated_run` executions get `fenced_remote` (no cancel, no release); hosted runs keep the existing cancel-before-await release. `TaskExecutionStopResult` = `TaskExecutionReleaseResult | TaskExecutionRemoteFence`; the release logger logs the fence as info.
+  - CR-002: `PeerClient.fetchServerInstanceId` — transport failure or timeout → `PEER_UNREACHABLE`; non-2xx, non-JSON body or JSON without `serverInstanceId` → `PEER_NOT_AUTOBYTEUS`.
+  - Docs: `remote_collaboration.md` § In the roots; `standalone_agent_run_root.md` wording.
+- Changed files or areas: see commit `31d46978ad` (26 source files, 3 new; 7 test files, 2 new; 2 docs).
+- Local validation and result:
+  - Typecheck passes (IMP-12); no unused locals in the changed files.
+  - Focused tests: 88 passed (IMP-13), including the new shared `RemoteMessageSend` sequence test, the shared lifecycle refusal test, the `fenced_remote` test, the endpoint-kind tests, the routing test per root kind and the CR-002 cases (HTML 200, 404, body timeout).
+  - Full server unit suite at `31d46978ad` passes: 762 files, 6,273 tests (IMP-14).
+- Next recipient or routing: code reviewer (targeted delta covering SR-015 / SR-016 and CR-002), then API/E2E (RC-03 and the held RC-02, RC-04 … RC-19).
+- Remaining limitations or risks: unchanged from IR-002 (RSK-106 / FU-002; Team and Org delegators are exercised end to end only by API/E2E).
