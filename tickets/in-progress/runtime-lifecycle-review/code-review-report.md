@@ -14,17 +14,18 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-003
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Solution Revision IDs (round 2): SR-012 (CR-003 recorded as requirements "UI note (SR-010)" item (3); design-spec Claude rule corrected)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation handoff IR-001 (Large/High)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): `git diff 8a2db203dc 52aa663edd` touches two source files (`claude-agent-runtime-strategy.ts`, `agent-runtime-status-service.ts` `runningAgents`) and two test files, all inside CR-001/CR-002. No web, GraphQL, composition, application-platform or shared-interface change; no new layering. CR-003 closed by SR-012 with no code change.
+- Trigger: IR-002 Local Fix for CRR-001
+- Prior Review Round Reviewed: round 1 (CRR-001, Fail)
+- Latest Authoritative Round: 2
 - Coverage / execution / API/E2E / delivery records: N/A (implementation review)
-- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-design-review`, branch `codex/runtime-lifecycle-design-review`, `aac5da3112..8a2db203dc` (server `ef5308178d`, web `8a2db203dc`)
+- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-design-review`, branch `codex/runtime-lifecycle-design-review`; round 1 `aac5da3112..8a2db203dc`; round 2 fix `52aa663edd` (docs/evidence `e5e5001b43`)
 
 ## Routing Classification Review
 
@@ -45,9 +46,9 @@
 - Approved requirements basis understood: Yes (SR-010; UD-005…UD-008; DEC-001…DEC-008).
 - Design-spec behavior map verified against the implementation: Yes, with one contradiction against real vendor behavior (BEH-005, CR-001).
 - Design review report and round confirmed: ARCH-REV-003 Pass; AR-008 applied (narrow `activeAgentRuns` reader on the kernel, `Pick<AgentRunManager, "listActiveRuns" | "getActiveRun">`).
-- Behavior-basis status: `Confirmed` for the approved behavior; the implementation contradicts it for Claude in BEH-005.
+- Behavior-basis status: `Confirmed` (round 2; round 1 contradicted BEH-005 for Claude, resolved by IR-002).
 - Changed or newly discovered behavior: None.
-- Remaining material ambiguity: the table/stacked switch range (CR-003).
+- Remaining material ambiguity: None (CR-003 settled by SR-012).
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
@@ -55,7 +56,7 @@
 | BEH-002 | Confirmed | per-row `readLatestVersion` promise, generation-guarded; failure sets only `checkFailed`, version kept | — |
 | BEH-003 | Confirmed | `startUpdate` → agents rule (process + application count) → `RuntimeProcessOperation([exe,"update"])` → fresh version → `succeeded` + re-check keeps it / `failed` with vendor output | — |
 | BEH-004 | Confirmed | strategy `installInstructionsUrl` (DEC-004 URLs match); row link + restart hint | — |
-| BEH-005 | **Contradicted (Claude)** | Codex/Grok/Antigravity paths match DEC-005; Claude `readSignIn` maps any non-zero exit to `unknown` | Claude 2.1.302 `auth status --json` exits **1** when signed out (CR-001) |
+| BEH-005 | Confirmed (round 2; Contradicted in round 1) | Codex/Grok/Antigravity paths match DEC-005; Claude `readSignIn` now reads the JSON whatever the exit code (`readLoggedIn`), real Claude 2.1.302 signed out → `signedOut` (IMP-11) | Round 1: Claude 2.1.302 `auth status --json` exits **1** when signed out (CR-001, resolved) |
 | BEH-006 | Confirmed | `isOwnNode = isEmbeddedWindow`; no actions, hint or blocked line on remote; remote note | — |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
@@ -96,7 +97,7 @@ $ claude --version
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
 | Task design health assessment present and preserved | Pass | Detection moved to `AgentRuntimeSignInReader`; adapter keeps only mapping and texts | — |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | Claude signed-out state (CR-001); responsive rule deviation pending confirmation (CR-003) | CR-001, CR-003 |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass (round 2) | Claude signed-out fixed (CR-001); container-width switch recorded in requirements UI note item (3), SR-012 (CR-003) | — |
 | Data-flow spine inventory clarity and preservation | Pass | DS-001…003, DS-005, DS-006 map 1:1 to code | — |
 | Ownership boundary preservation and clarity | Pass | Service owns rows/operations; reader owns sign-in; strategies stateless; process operation owns one child | — |
 | Off-spine concern clarity | Pass | runner, version, source fetch serve strategies/service | — |
@@ -114,11 +115,11 @@ $ claude --version
 | Naming quality | Pass | C-6 only, not material | — |
 | No unjustified duplication | Pass | adapter copy removed | — |
 | Patch-on-patch complexity | Pass | — | — |
-| Dead code removed in touched files | Fail (Low) | `runningAgents` catch is unreachable (CR-002) | Remove |
-| Test scenarios and assertions requirement-aligned | Fail | Claude signed-out fake uses exit 0, not the vendor's exit 1, so the test proves a shape the vendor does not produce (CR-001) | Align fake with the real vendor answer |
+| Dead code removed in touched files | Pass (round 2) | catch removed; a count error now refuses Update and starts no process (new test) | — |
+| Test scenarios and assertions requirement-aligned | Pass (round 2) | fake now prints the JSON and exits 1 for signed out; added JSON-without-field and text-at-exit-1 cases; IMP-11 confirms against real Claude 2.1.302 | — |
 | Test fixtures/helpers reusable and coherent | Pass | one scripted fake CLI per test file | — |
 | No stale/duplicate/compat-only tests | Pass | adapter `commandRunner` test usage removed | — |
-| API/E2E readiness | Fail until CR-001 | AC-006/AC-009 for Claude would fail on a real install | CR-001 |
+| API/E2E readiness | Pass (round 2) | CR-001 fixed; IMP-12 (typecheck, 17 files / 149 tests) on `52aa663edd` | — |
 
 ## Source File Size And Structure Audit
 
@@ -144,7 +145,7 @@ All changed source files are below 500 effective lines; no delta exceeds 220.
 | --- | --- | --- |
 | No backward-compatibility mechanisms in changed scope | Pass | — |
 | No legacy old-behavior retention | Pass | adapter `runCommand`, `describeFailure`, `commandRunner`, `codexClientManager` dependency removed |
-| Dead code removed in touched files | Fail (Low) | CR-002 |
+| Dead code removed in touched files | Pass (round 2) | CR-002 resolved |
 | Approved persisted-data decision followed | Pass | Not Affected; in-memory only |
 | No version-specific dual reads/writes | Pass | — |
 | Transition mechanics | Pass | N/A |
@@ -184,12 +185,13 @@ New premise:
 - Consequence: wrong account state and missing hint on every signed-out Claude install
 - Reachability: `Reachable`
 - Review consequence: CR-001 (Local Fix)
+- Round 2: resolved. `readLoggedIn` reads the JSON on any exit; IMP-11 runs the real Claude 2.1.302 through the strategy in an empty home: `exitCode=1` → `{"state":"signedOut","detail":""}`.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.0
-- Overall score (`/100`): 90
-- Score calculation note: simple average; the decision follows the findings.
+- Overall score (`/10`): 9.4
+- Overall score (`/100`): 94
+- Score calculation note: simple average; the decision follows the findings. Round 2 rescored categories 7, 8 and 10 for the delta; the rest carry forward from round 1 (unchanged code).
 
 | Priority | Category | Score | Why This Score | What Is Weak | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -199,32 +201,18 @@ New premise:
 | 4 | Separation of Concerns and File Placement | 9.3 | Placement differences justified (C-7) | — | — |
 | 5 | Shared-Structure / Data-Model Tightness | 9.2 | Discriminated unions; one meaning per field | GraphQL operation flat with nullables (designed) | — |
 | 6 | Naming Quality and Local Readability | 9.0 | Clear names and comments | sign-in reuses `update.retry` key (C-6, not material) | optional |
-| 7 | API/E2E Readiness | 8.5 | Good fakes, overrides and evidence | Claude signed-out case would fail AC-006/009 on a real install | CR-001 |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.0 | Update, sign-in, cancel, time-out, independence and secrecy rules correct | Claude signed out shows "Sign-in unknown" (CR-001) | Parse the JSON on non-zero exit |
+| 7 | API/E2E Readiness | 9.3 | Fakes now match the vendor's signed-out answer; real-binary check IMP-11; IMP-12 delta suite green | Codex browser opening and Grok signed-in output only verifiable at delivery | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | Claude signed out reads correctly; readiness outcome and text unchanged; update, sign-in, cancel, time-out, independence and secrecy rules correct | an exit-1 JSON with `loggedIn:true` now counts as signed in (no known vendor output; harmless) | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Adapter copy removed cleanly | — | — |
-| 10 | Cleanup Completeness | 8.8 | Removals done | unreachable fail-open catch (CR-002) | Remove |
+| 10 | Cleanup Completeness | 9.5 | Unreachable fail-open catch removed; temporary IMP-11 probe file not left in the tree | — | — |
 
 ## Findings
 
-### CR-001 — Claude signed out shows "Sign-in unknown" (Medium, Local Fix, implementation)
+No open findings. Round-1 findings and their resolution:
 
-- Where: `autobyteus-server-ts/src/runtime-management/agent-runtimes/strategies/claude-agent-runtime-strategy.ts` 47–60; test `tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts` fake lines 30–35 and cases 146–159.
-- Evidence: Claude 2.1.302 `auth status --json` prints `{"loggedIn": false, ...}` and exits **1** when signed out (probe above). The strategy returns `unknown` for every non-zero exit, so the row shows "Sign-in unknown" with no "Sign in from its command line." The unit fake and the IMP-10 fake both model signed-out as exit 0, so no check could catch it. The design's rule ("exit 0, `loggedIn` false → signedOut") carried the same premise; E-R21 recorded the output but not the exit code.
-- Contract: REQ-005 ("from the runtime's own report"), AC-006, AC-009 (Claude explicitly).
-- Required action: read the JSON whatever the exit code. Parsed `loggedIn === true` → signedIn; parsed `loggedIn === false` → signedOut (detail `describeFailure(result)`, so application readiness keeps today's text); no parseable JSON → keep today's exit-0 "logged in" text fallback, otherwise unknown. Update the fake to the vendor's real shape (signed out = JSON + exit 1) and keep an exit-0 case only if a real version produces it. Application readiness outcome is unchanged (not configured either way).
-- Design note: the design-spec's Claude rule line should say the same; the Solution Designer can correct it when the spec is next touched. No structural change.
-
-### CR-002 — Unreachable fail-open catch around the running-agent count (Low, Local Fix, implementation)
-
-- Where: `agent-runtime-status-service.ts` 260–266.
-- Evidence: C-2. Nothing in the composed port throws in production; if it did, Update would be allowed while agents run.
-- Required action: call `countRunningAgents` directly (Principle 7; DESIGN.md rule 7).
-
-### CR-003 — Table/stacked switch differs from the approved spec's 640 px rule (Requirement Gap, confirmation only)
-
-- Where: `AgentRuntimesManager.vue` 129–140, `AgentRuntimeRow.vue` 171–199.
-- Evidence: the spec says ≥ 640 px viewport → table and "Permitted responsive variation: none beyond the 640 px stacking", and also "no horizontal overflow". The fixed grid needs 46 rem of list width, which the list does not have beside the Settings menu until roughly 1100 px windows; at 739 px the cells overlapped (IMP-10a). The code switches on the list's own width (58 rem). The spec's references hold: table at 1440/1280, stacked at 390 (IMP-10b…d).
-- Reviewer view: technically sound and closer to the spec's intent; it uses the repo's existing container-query pattern. But it changes user-approved visible behavior in the 640–~1100 px range, so the Solution Designer (requirements owner, Product coordination) needs to record it, as with the SR-010 UI note, or decide otherwise. No code change is expected if accepted.
+- **CR-001 — Claude signed out showed "Sign-in unknown" (Medium, Local Fix) — Resolved (IR-002, `52aa663edd`).** `claude-agent-runtime-strategy.ts` `readLoggedIn()`: `true` → signedIn; `false` → signedOut with `describeFailure` detail (readiness text unchanged); JSON object without a boolean field at exit 0 → signedOut (as before); no JSON → exit-0 "logged in" text fallback, else unknown. Fake now prints the JSON and exits 1; new cases for JSON without the field and text at exit 1. Real-binary check IMP-11. Design-spec line 219 now states the same rule including the kept fallback (SR-012).
+- **CR-002 — Unreachable fail-open catch (Low, Local Fix) — Resolved (IR-002).** `runningAgents()` calls the port directly; new test shows a count error refuses Update and starts no process (fail closed).
+- **CR-003 — Table/stacked switch vs the spec's 640 px rule (Requirement Gap) — Resolved (SR-012).** Recorded as requirements "UI note (SR-010)" item (3); no code change.
 
 The other UI interpretations in the handoff (screen-reader-only labels on the table, no hint on remote, "Checking…" for a first sign-in read, vendor's latest line as the step, Sign in disabled during an update, "–" for DEC-008) follow the spec text or fill gaps it leaves silent; no finding.
 
@@ -234,31 +222,30 @@ The other UI interpretations in the handoff (screen-reader-only labels on the ta
 
 ## Classification
 
-- CR-001, CR-002: `Local Fix` (implementation).
-- CR-003: `Requirement Gap` (Solution Designer; confirmation of a visible deviation, no code change expected).
+- N/A (Pass).
 
 ## Recommended Recipient
 
-- `/software_engineering_team/implementation_engineer` for CR-001 and CR-002 (rule: implementation-owned Local Fix before executable coverage).
-- `/software_engineering_team/solution_designer` for CR-003 (rule: Requirement Gap), in parallel; it does not block the implementation fix. If the designer keeps the literal 640 px rule, the implementation engineer gets that decision before the next review.
-
-Routing note: after the fix, source review (targeted delta) and API/E2E again.
+- `/software_engineering_team/api_e2e_engineer` (implementation review passes); informational notice to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
+For API/E2E and delivery:
 - `codex login` opening the browser from a piped process and Grok's signed-in `grok models` output remain unverified until delivery with the user's consent (design escalation trigger / known risk).
 - AR-008 count is proven by wiring tests, not a live Application team; left to API/E2E as the handoff says.
 - Own-node gating is UI-only (accepted, E-R10).
 - Each page open makes one unauthenticated GitHub request (60/h limit) → Codex "Check failed" only under heavy reopening (accepted R-02).
 - Web package has no type check (existing).
+- Claude application-readiness time-out reason text/time changed (5 s → 10 s, shared runner; design-sanctioned).
+- Solution Designer's SR-012 doc edits (requirements-doc, design-spec, solution-revision-record, analysis-result) are uncommitted in the worktree; theirs to commit.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Fail**
-- Review Entry Point: `Implementation Review`
+- Review Decision: **Pass**
+- Review Entry Point: `Implementation Review` (round 2, targeted delta)
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass` (CR-P1 reachable and supported)
-- Score Summary: 9.0/10; Runtime Correctness 8.0, API/E2E Readiness 8.5, Cleanup 8.8 below the 9.0 bar
-- Failure Origin: implementation (CR-001 rooted in an unrecorded vendor exit code in the design premise; fix is local)
-- Recommended Recipient: implementation engineer (CR-001, CR-002); Solution Designer (CR-003)
-- Notes: CRR-001; task_size Large, architectural_risk High (confirmed). Next round: targeted delta review of the Claude strategy, its tests, the service catch, and the CR-003 decision.
+- Material-Premise Gate: `Pass` (CR-P1 resolved)
+- Score Summary: 9.4/10; every category ≥ 9.0
+- Failure Origin: N/A
+- Recommended Recipient: API/E2E engineer
+- Notes: CRR-002; task_size Large, architectural_risk High (confirmed). Code reviewed at `52aa663edd`.
