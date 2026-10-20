@@ -40,14 +40,19 @@ const taskBodyLines = (description: string, referenceFiles: readonly string[]): 
  * its sender run id; never a name), the reply instruction, the description and any reference files.
  */
 export const buildTaskWorkText = (input: {
-  delegator: CollaborationMemberExecutionIdentity;
+  delegator: Pick<CollaborationMemberExecutionIdentity, "agentRunId">;
   /** The delegator's address when it reaches the delegator run-wide (T-5); null otherwise. */
   delegatorAddress: string | null;
+  /** The delegator's node, this owner's label for it, when the delegator runs on a peer node (CM-11). */
+  delegatorNode?: string | null;
   description: string;
   referenceFiles: readonly string[];
 }): string => {
   const runId = input.delegator.agentRunId;
-  const [from, reply] = input.delegatorAddress
+  const [from, reply] = input.delegatorNode
+    ? [`You have a new task from the agent with sender run id "${runId}" on node "${input.delegatorNode}".`,
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id."]
+    : input.delegatorAddress
     ? [`You have a new task from the agent with sender address "${input.delegatorAddress}" and sender run id "${runId}".`,
       "When you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both)."]
     : [`You have a new task from the agent with sender run id "${runId}".`,

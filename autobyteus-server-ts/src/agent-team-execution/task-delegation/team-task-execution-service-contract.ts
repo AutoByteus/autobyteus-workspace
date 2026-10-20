@@ -14,6 +14,7 @@ import type {
 } from "../services/team-run-persistence-contract.js";
 import type { TeamRunResolver } from "../services/team-run-resolver.js";
 import type { TaskExecutionIdentityCapabilities } from "./task-execution-identity-capabilities.js";
+import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 
 /** Host capabilities required by the Team task-execution adapter and lifecycle. */
 export type TeamTaskExecutionServiceOptions = Readonly<{
@@ -21,6 +22,8 @@ export type TeamTaskExecutionServiceOptions = Readonly<{
   taskExecutionResources?: TaskExecutionResourcePort;
   getTree(): TeamRunExecutionTreeSnapshot;
   getIndex(): TeamExecutionIndex;
+  /** The root's remote endpoints: remote placements, and the remote runs' Task ownership. */
+  remoteLinks: RemoteRunLinks;
   isRootOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   requireTeamRun(teamRunId: string): Promise<TeamRun>;

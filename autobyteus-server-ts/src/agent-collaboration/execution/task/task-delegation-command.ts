@@ -3,10 +3,13 @@ import type { TaskExecutionReference } from "./task-execution-reference.js";
 
 export type TaskDelegationContext = Readonly<{ identity: CollaborationMemberExecutionIdentity }>;
 
-/** `delegate_task` with an address: spawns a new copy for a saved Task (`task_id`) or for described work. */
+/**
+ * `delegate_task` with an address: spawns a new copy for a saved Task (`task_id`) or for described work.
+ * `node` names a registered peer node (DEC-111): the address is then a published Agent there.
+ */
 export type SpawnTaskInput =
-  | Readonly<{ recipient_address: string; task_id: string; description?: never; reference_files?: never }>
-  | Readonly<{ recipient_address: string; description: string; reference_files?: string[]; task_id?: never }>;
+  | Readonly<{ recipient_address: string; task_id: string; node?: string; description?: never; reference_files?: never }>
+  | Readonly<{ recipient_address: string; description: string; reference_files?: string[]; node?: string; task_id?: never }>;
 
 /** `delegate_task` with a copy's own ID: assigns saved Task `taskId` to that existing copy in the sender's root. */
 export type AssignToExistingCopyInput = Readonly<{ copy: TaskExecutionReference; taskId: string }>;
@@ -22,13 +25,13 @@ export type DelegatedCopy =
   | Readonly<{ kind: "agent"; agentRunId: string }>
   | Readonly<{ kind: "team"; teamRunId: string; teamCoordinatorAgentRunId: string }>;
 /**
- * Internal result of both delegation commands. Success names the copy; `taskId` is present only when the
- * delegation created a Task with no Project; `launchNotes` only when a new copy's freshly resolved launch
+ * Internal result of both delegation commands. Success names the copy, and `node` the peer it runs on when
+ * it is a remote run (CM-11); `taskId` is present only when the delegation created a Task with no Project; `launchNotes` only when a new copy's freshly resolved launch
  * skipped a configured layer (REQ-008). Failure means nothing was started (or, after an existing-copy
  * commit, that its work was not delivered) and carries the reason.
  */
 export type TaskDelegationOutcome =
-  | Readonly<{ delegated: true; copy: DelegatedCopy; taskId?: string; launchNotes?: readonly string[] }>
+  | Readonly<{ delegated: true; copy: DelegatedCopy; taskId?: string; launchNotes?: readonly string[]; node?: string }>
   | Readonly<{ delegated: false; message: string }>;
 
 /** The copy at a target: its reference and ingress (the Agent itself, or the Team's coordinator). */

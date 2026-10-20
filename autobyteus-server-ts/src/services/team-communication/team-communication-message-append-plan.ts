@@ -4,24 +4,27 @@ import type { PreparedTeamMessageAppend } from "../../agent-team-execution/servi
 import { buildTeamMemberInputEventPayload } from "../../agent-team-execution/services/team-member-input-event-builder.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
-import type { MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
+import type { StoredMessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 
 type AppendPlanState = "sealed" | "prepared" | "cancelled" | "committed" | "fail_stop_disposed";
 
 /**
  * Builds the one-shot logical append capability consumed under the root file lock.
  * The service retains message policy; this owner alone derives the next immutable
- * message snapshot from the latest authoritative state.
+ * message snapshot from the latest authoritative state. `receiver` is the local receiver's reserved input;
+ * it is `null` for a message sent to a remote run (the peer admitted it; nothing is reserved here).
  */
 export const createTeamCommunicationMessageAppendPlan = (input: {
   rootTeamRunId: string;
   message: CollaborationCommunicationMessage;
-  inputMessage: Parameters<typeof buildTeamMemberInputEventPayload>[0]["message"];
-  reservation: AgentRunInputReservation;
+  receiver: Readonly<{
+    inputMessage: Parameters<typeof buildTeamMemberInputEventPayload>[0]["message"];
+    reservation: AgentRunInputReservation;
+  }> | null;
   isAccepting(): boolean;
   getCurrent(): TeamCommunicationMessagesSnapshot;
   /** The logs the message belongs to, resolved against the current tree. */
-  resolveLogOwners(): readonly MessageLogOwner[];
+  resolveLogOwners(): readonly StoredMessageLogOwner[];
   replaceCurrent(messages: TeamCommunicationMessagesSnapshot): void;
   publish(event: TeamRunEvent): void;
 }): PreparedTeamMessageAppend => {
@@ -33,12 +36,12 @@ export const createTeamCommunicationMessageAppendPlan = (input: {
     cancelBeforePreparation: () => {
       if (state !== "sealed") return;
       state = "cancelled";
-      input.reservation.cancel();
+      input.receiver?.reservation.cancel();
     },
     disposeAfterRootFailStop: () => {
       if (state !== "sealed" && state !== "prepared") return;
       state = "fail_stop_disposed";
-      input.reservation.cancel();
+      input.receiver?.reservation.cancel();
     },
     prepareAgainstCurrent: () => {
       if (state !== "sealed") {
@@ -51,7 +54,7 @@ export const createTeamCommunicationMessageAppendPlan = (input: {
       const current = input.getCurrent();
       if (!input.isAccepting() || current.messages.some((row) => row.messageId === input.message.messageId)) {
         state = "cancelled";
-        input.reservation.cancel();
+        input.receiver?.reservation.cancel();
         return {
           prepared: false as const,
           code: "TEAM_MESSAGE_COMMIT_CONFLICT" as const,
@@ -72,28 +75,30 @@ export const createTeamCommunicationMessageAppendPlan = (input: {
           cancelBeforeDurability: () => {
             if (state !== "prepared") return;
             state = "cancelled";
-            input.reservation.cancel();
+            input.receiver?.reservation.cancel();
           },
           commitAfterDurability: () => {
             if (state !== "prepared") return;
             state = "committed";
             input.replaceCurrent(nextMessages);
-            const committed = input.reservation.commit();
+            const committed = input.receiver?.reservation.commit() ?? null;
             input.publish({
               eventSourceType: TeamRunEventSourceType.COMMUNICATION,
               payload: input.message,
             });
-            input.publish({
-              eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
-              agentRunId: input.message.receiverAgentRunId,
-              payload: buildTeamMemberInputEventPayload({
-                rootTeamRunId: input.rootTeamRunId,
-                recipientAgentRunId: input.message.receiverAgentRunId,
-                message: input.inputMessage,
-                receivedAt: input.message.createdAt,
-              }),
-            });
-            committed.release();
+            if (input.receiver) {
+              input.publish({
+                eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
+                agentRunId: input.message.receiverAgentRunId,
+                payload: buildTeamMemberInputEventPayload({
+                  rootTeamRunId: input.rootTeamRunId,
+                  recipientAgentRunId: input.message.receiverAgentRunId,
+                  message: input.receiver.inputMessage,
+                  receivedAt: input.message.createdAt,
+                }),
+              });
+            }
+            committed?.release();
           },
         }),
       };

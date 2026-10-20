@@ -9,6 +9,13 @@ import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-ex
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import { AgentOrgExecutionIndex } from "../../agent-org-execution/services/agent-org-execution-index.js";
+import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
+import { isPublicMessage } from "./public-message-scope.js";
+
+const agentsOf = (tree: AgentOrgRunExecutionTreeSnapshot) => {
+  const index = new AgentOrgExecutionIndex(tree);
+  return (agentRunId: string) => index.getAgent(agentRunId) !== null;
+};
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 
 const requireStartedExecution = (run: AgentOrgRun, reference: TaskExecutionReference) => {
@@ -40,7 +47,8 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
     is_active: isActive,
     execution_tree: projectAgentOrgExecutionTree(snapshot.tree),
     closed_task_executions: snapshot.closedTaskExecutions,
-    communication_messages: snapshot.messages,
+    communication_messages: { ...snapshot.messages,
+      messages: snapshot.messages.messages.filter((message) => isPublicMessage(message, agentsOf(snapshot.tree))) },
     agent_input_states: snapshot.inputStates,
     agent_statuses: snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,
@@ -81,6 +89,7 @@ export const projectAgentOrgExecutionEvent = (
       };
       break;
     case "communication":
+      if (!isPublicMessage(source.message, agentsOf(run.getExecutionTreeSnapshot()))) return null;
       event = { kind: "communication" as const, message: source.message };
       break;
     case "delegated_launch_selections_changed":

@@ -41,7 +41,8 @@ import {
   type TaskDelegationContext,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
-import { messageLogOwnerOf } from "../../run-history/store/task-agent-message-logs.js";
+import { messageLogOwnerOf, REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
+import { RemoteRunLinks, type RemoteInboundMessage } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { TeamTaskExecutionService } from "../task-delegation/team-task-execution-service.js";
@@ -90,6 +91,7 @@ export class RootTeamRun {
   private readonly collaborators: TeamRunCollaborators;
   private readonly delivery: TeamRunMessageDelivery;
   private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
+  private readonly remoteLinks: RemoteRunLinks;
   private readonly unsubscribeTaskExecutionEvents: () => void;
   private termination: Promise<AgentOperationResult> | null = null;
   private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
@@ -122,6 +124,7 @@ export class RootTeamRun {
       rootTeamRunId: this.teamRunId,
       canEnter: () => this.isAdmitting(),
     });
+    this.remoteLinks = new RemoteRunLinks({ root: createTeamRootExecutionIdentity(this.teamRunId), remoteRuns: () => this.tree.rootTeam.remoteTaskExecutions ?? [] });
     this.teamRunResolver = new TeamRunResolver({
       rootTeamRun: options.rootRun,
       getIndex: () => this.index,
@@ -130,6 +133,7 @@ export class RootTeamRun {
       rootTeamRunId: this.teamRunId,
       getTree: () => this.tree,
       getIndex: () => this.index,
+      remoteLinks: this.remoteLinks,
       isRootOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       requireTeamRun: (teamRunId) => this.requireTeamRun(teamRunId),
@@ -147,9 +151,10 @@ export class RootTeamRun {
     this.communication = new TeamCommunicationService({
       rootTeamRunId: this.teamRunId,
       initial: options.messages,
-      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
+      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender, receiver),
       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
-      messageLogOwnerOf: (agentRunId) => messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
+      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) ? REMOTE_RUN_LOG
+        : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
       commit: (plan) => options.persistence.commitReservedMessageAppend(plan),
       publish: (event) => options.publisher.publish(event),
@@ -167,6 +172,7 @@ export class RootTeamRun {
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
       isLiveAgent: (agentRunId) => this.isLiveAgent(agentRunId),
       withLiveLease: (agentRunId, operation) => this.taskExecutions.withLiveLease(agentRunId, operation),
+      remoteLinks: this.remoteLinks,
     });
     this.platformBindings = new TeamAgentPlatformBindingCommitter({
       persistence: options.persistence,
@@ -241,7 +247,10 @@ export class RootTeamRun {
   }
   getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot { return this.tree; }
   /** Same-root membership for run-ID routing; a shut-down child is still a member. */
-  hasAgentExecution(agentRunId: string): boolean { return this.index.getAgent(agentRunId.trim()) !== null; }
+  /** Same-root membership for run-ID routing: every agent of the Team (and its copies) and every remote endpoint. */
+  hasAgentExecution(agentRunId: string): boolean {
+    return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
+  }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot { return this.messages; }
 
   commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
@@ -298,6 +307,9 @@ export class RootTeamRun {
   delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
+      if (input.node !== undefined) {
+        return this.remoteLinks.delegate({ ...input, node: input.node }, (local, placement) => this.taskExecutions.delegateToNewCopy(context, local, placement));
+      }
       return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) =>
         this.taskExecutions.delegateToNewCopy(context, input, placement));
     });
@@ -307,6 +319,8 @@ export class RootTeamRun {
   assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
+      const remote = this.remoteLinks.refuseExistingCopy(input.copy);
+      if (remote) return remote;
       return this.taskExecutions.assignToExistingCopy(context, input, (targetAgentRunId, content, referenceFiles) =>
         this.delivery.deliverToRunId(buildTaskWorkMessageInput(context.identity, targetAgentRunId, content, referenceFiles)));
     });
@@ -320,8 +334,13 @@ export class RootTeamRun {
   }
 
   deliverExactAgentMessage(input: ExactTeamAgentMessageInput): Promise<AgentOperationResult> {
-    return this.materializationGate.run(() => this.taskExecutions.deliverToExactTarget(input.sender.identity.agentRunId, input.targetAgentRunId,
-      () => this.delivery.deliverToRunId(input)));
+    return this.materializationGate.run(() => this.delivery.deliverExact(input, () => this.taskExecutions.deliverToExactTarget(
+      input.sender.identity.agentRunId, input.targetAgentRunId, () => this.delivery.deliverToRunId(input))));
+  }
+
+  /** A message from a linked run on a peer node, admitted by its peer gateway (DS-003). */
+  acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    return this.materializationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
   }
 
   async executeAgentCommand(

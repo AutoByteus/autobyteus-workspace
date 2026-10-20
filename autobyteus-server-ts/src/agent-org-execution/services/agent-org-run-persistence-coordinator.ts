@@ -5,7 +5,7 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-e
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import type { AgentOrgCommunicationMessagesStore } from "../persistence/agent-org-communication-messages-store.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type { MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
+import type { StoredMessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 
 export class AgentOrgPersistenceFailStoppedError extends Error {
   constructor(readonly orgRunId: string) {
@@ -95,7 +95,7 @@ export class AgentOrgRunPersistenceCoordinator {
     nextMessages: AgentOrgCommunicationMessagesFile;
     /** The one message this commit adds, and the logs it belongs to (receiver's first; D-4). */
     message: CollaborationCommunicationMessage;
-    logOwners: readonly MessageLogOwner[];
+    logOwners: readonly StoredMessageLogOwner[];
     commitAfterDurability(): void;
     cancelBeforeDurability(): void;
   }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {

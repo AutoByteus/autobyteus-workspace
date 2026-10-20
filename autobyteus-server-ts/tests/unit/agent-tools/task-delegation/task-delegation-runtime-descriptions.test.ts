@@ -79,6 +79,7 @@ describe("task delegation runtime descriptions", () => {
       "target_agent_run_id",
       "task_id",
       "description",
+      "node",
       "reference_files",
     ]);
     expect(findParameter(delegateSchema, "tasks")).toBeUndefined();
@@ -166,7 +167,8 @@ describe("task delegation runtime descriptions", () => {
       properties: { delegated: { const: true }, target_kind: { const: "agent" }, target_agent_run_id: { type: "string", minLength: 1 },
         task_id: { type: "string", minLength: 1 } },
     });
-    expect(Object.keys(agentCopy!.properties as object)).toEqual(["delegated", "target_kind", "target_agent_run_id", "task_id", "launch_notes"]);
+    // `node`: present only for a task agent on a peer node (DEC-111).
+    expect(Object.keys(agentCopy!.properties as object)).toEqual(["delegated", "target_kind", "target_agent_run_id", "node", "task_id", "launch_notes"]);
     // launch_notes: an optional, non-empty list of non-blank fallback notes.
     expect((agentCopy!.properties as Record<string, unknown>).launch_notes).toMatchObject({ type: "array", minItems: 1, items: { type: "string", minLength: 1 } });
     expect((agentCopy!.required as string[])).not.toContain("launch_notes");

@@ -129,7 +129,7 @@ describe("team append plan", () => {
   const plan = (current: readonly CollaborationCommunicationMessage[], next: CollaborationCommunicationMessage) => {
     const reserved = reservation();
     return { reserved, plan: createTeamCommunicationMessageAppendPlan({
-      rootTeamRunId: "team", message: next, inputMessage: {} as never, reservation: reserved as never, isAccepting: () => true,
+      rootTeamRunId: "team", message: next, receiver: { inputMessage: {} as never, reservation: reserved as never }, isAccepting: () => true,
       getCurrent: () => ({ schemaVersion: 1, rootTeamRunId: "team", messages: current }), resolveLogOwners: () => [COORDINATING_LOG],
       replaceCurrent: vi.fn(), publish: vi.fn(),
     }) };

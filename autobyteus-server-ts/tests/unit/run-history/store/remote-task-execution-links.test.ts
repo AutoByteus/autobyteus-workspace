@@ -165,7 +165,7 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
 
     const loaded = await kind.read(dir);
     expect(kind.memoryHolder(loaded).taskExecutions.map((task: { agentRunId: string }) => task.agentRunId)).toEqual(["reviewer-run"]);
-    expect(kind.memoryHolder(loaded).remoteTaskExecutions).toEqual([]);
+    expect(kind.memoryHolder(loaded).remoteTaskExecutions).toBeUndefined();
     expect(warn.mock.calls.map(([line]) => String(line)).join("\n")).toMatch(/Remote run 'broken'[\s\S]*Remote run 'orphan'/);
 
     await kind.write(dir, kind.tree([localCopy("reviewer-run", kind.delegator)], []));

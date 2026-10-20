@@ -27,8 +27,8 @@ describe("current Team communication append plan", () => {
     const plan = createTeamCommunicationMessageAppendPlan({
       rootTeamRunId: current.rootTeamRunId,
       message,
-      inputMessage: new AgentInputUserMessage("hello", SenderType.AGENT),
-      reservation: Object.freeze({ agentRunId: "receiver-run", cancel, commit }),
+      receiver: { inputMessage: new AgentInputUserMessage("hello", SenderType.AGENT),
+        reservation: Object.freeze({ agentRunId: "receiver-run", cancel, commit }) },
       isAccepting: () => true,
       getCurrent: () => current,
       resolveLogOwners: () => [COORDINATING_LOG],

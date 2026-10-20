@@ -23,8 +23,11 @@ export type StandaloneRootTreeFile = Readonly<{
   createdAt: IsoTimestamp;
   host: StandaloneRootHost;
   taskExecutions: readonly TaskExecution[];
-  /** In memory only: the remote runs the host delegated to (stored in `taskExecutions` with `nodeId`). */
-  remoteTaskExecutions: readonly RemoteTaskAgentExecution[];
+  /**
+   * In memory only: the remote runs the host delegated to (stored in `taskExecutions` with `nodeId`).
+   * Absent when there are none, so a tree without remote links has exactly its stored shape.
+   */
+  remoteTaskExecutions?: readonly RemoteTaskAgentExecution[];
 }>;
 
 export type StandaloneRootTreeSnapshot = StandaloneRootTreeFile;
@@ -48,7 +51,6 @@ export const emptyStandaloneRootTree = (input: Readonly<{
   createdAt: input.createdAt,
   host: Object.freeze({ ...input.host }),
   taskExecutions: Object.freeze([]),
-  remoteTaskExecutions: Object.freeze([]),
 });
 
 export const emptyStandaloneRootMessages = (hostRunId: string): StandaloneRootMessagesFile =>

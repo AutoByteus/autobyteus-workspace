@@ -62,6 +62,12 @@ import { StandaloneRootRecipientResolver } from "../services/standalone-root-rec
 import { StandaloneRootTaskExecutionAdapter, type StandaloneRootPlacement } from "../services/standalone-root-task-execution-adapter.js";
 import { StandaloneRootMessageDelivery } from "../services/standalone-root-message-delivery.js";
 import { adoptStandaloneRootPlatformBinding, replaceStandaloneRootPlatformBindingWithoutConversation } from "../services/standalone-root-tree-mutator.js";
+import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import { REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
+import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
+import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import { StandaloneHostIdleShutdown } from "../services/standalone-host-idle-shutdown.js";
 
 export type StandaloneRootPackageSnapshot = Readonly<{
   tree: StandaloneRootTreeSnapshot;
@@ -90,6 +96,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   private readonly collaborators: StandaloneRootCollaborators;
   private readonly delivery: StandaloneRootMessageDelivery;
   private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
+  private readonly remoteLinks: RemoteRunLinks;
+  private readonly hostIdle: StandaloneHostIdleShutdown | null;
   private termination: Promise<AgentOperationResult> | null = null;
   private failStopped = false;
   private frozenTerminationScope: FrozenRootTerminationScope | null = null;
@@ -111,6 +119,10 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
+    /** The back-link of a run a peer node delegated to this node (DEC-112); it also gets the host idle schedule. */
+    delegatedFrom?: DelegatedFrom | null;
+    remoteRunChannel?: () => RemoteRunChannel | null;
+    agentRunManager?: Pick<AgentRunManager, "tryPrepareAgentRunTerminationIfQuiescent">;
     onTerminated?(): void;
   }>) {
     this.tree = options.tree;
@@ -121,6 +133,14 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       throw new Error("Agent root authorities do not correlate to one exact host run.");
     }
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
+    this.remoteLinks = new RemoteRunLinks({ root: options.root, remoteRuns: () => this.tree.remoteTaskExecutions ?? [],
+      backLink: options.delegatedFrom ? { hostRunId: this.hostRunId, delegatedFrom: options.delegatedFrom } : null,
+      channel: options.remoteRunChannel });
+    this.hostIdle = options.delegatedFrom && options.agentRunManager ? new StandaloneHostIdleShutdown({
+      hostRunId: this.hostRunId, agentRunManager: options.agentRunManager,
+      runInGate: (operation) => this.operationGate.run(operation), hasOpenChildWork: () => this.hasOpenExecutionWork(),
+      ...options.taskExecutionIdleShutdown,
+    }) : null;
     this.presentation = new CollaborationAgentPresentationEventAdapter((agentRunId) => {
       const agent = this.index.getAgent(agentRunId);
       return agent && agent.executionKind !== "host" ? this.identityFor(agent.agentRunId, agent.address) : null;
@@ -139,6 +159,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       persistence: options.persistence,
       getTree: () => this.tree,
       getIndex: () => this.index,
+      remoteLinks: this.remoteLinks,
       isOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       replaceTree: (tree) => this.replaceTree(tree),
@@ -175,6 +196,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       rootAgents: options.rootAgents,
       teams: options.teams,
       publisher: options.publisher,
+      remoteLinks: this.remoteLinks,
+      onHostReady: (run) => this.hostIdle?.watch(run),
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
     this.communication = new RootCommunicationEngine(new StandaloneRootCommunicationAdapter({
@@ -182,12 +205,13 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       initial: options.messages,
       persistence: options.persistence,
       isOpen: () => this.isAdmitting(),
-      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
+      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender, receiver),
       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
-      // The host is the run itself; every other endpoint is a task agent or a task-team member.
-      messageLogOwnerOf: (agentRunId) => agentRunId === options.root.rootRunId
-        ? COORDINATING_LOG
-        : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
+      // The host is the run itself; a remote endpoint's log is on its own node; every other endpoint is a
+      // task agent or a task-team member.
+      messageLogOwnerOf: (agentRunId) => agentRunId === options.root.rootRunId ? COORDINATING_LOG
+        : this.remoteLinks.has(agentRunId) ? REMOTE_RUN_LOG
+          : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
       replaceMessages: (messages) => { this.messages = messages; },
       publish: (message) => options.publisher.publish({ kind: "communication", message }),
@@ -244,8 +268,11 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   hasOpenExecutionWork(): boolean {
     return this.options.rootAgents.hasOpenExecutionWork() || this.options.teams.hasOpenExecutionWork();
   }
-  /** Same-root membership for run-ID routing: the host and every child (shut-down children too). */
-  hasAgentExecution(agentRunId: string): boolean { return this.index.getAgent(agentRunId.trim()) !== null; }
+  /** Same-root membership for run-ID routing: the host, every child (shut-down children too) and every remote endpoint. */
+  hasAgentExecution(agentRunId: string): boolean {
+    const runId = agentRunId.trim();
+    return this.index.getAgent(runId) !== null || this.remoteLinks.has(runId);
+  }
 
   /** The host's real live state (the collaboration view's `isActive`). */
   isHostLive(): boolean { return this.options.host.readiness === "live"; }
@@ -254,7 +281,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   ensureHostReady(): Promise<AgentRun> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
-      return this.options.host.ensureReady();
+      return this.delivery.readyHost();
     });
   }
 
@@ -302,8 +329,17 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
 
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
-    return this.operationGate.run(() => this.taskExecutions.deliverToExactTarget(input.sender.identity.agentRunId, input.targetAgentRunId,
-      () => this.delivery.deliverToRunId(input)));
+    return this.operationGate.run(() => this.delivery.deliverExact(input));
+  }
+
+  /** A message from a linked run on a peer node, admitted by its peer gateway (DS-002 here as B, DS-003 as A). */
+  acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
+  }
+
+  /** The work packet of the peer's delegation that started this run (N-6). */
+  acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
+    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteWorkPacket(input); });
   }
 
   /** Commands for children only; the host's commands come through its own Agent stream. */
@@ -381,6 +417,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) return this.termination;
     this.lifecycle = "terminating";
+    this.hostIdle?.dispose();
     this.communication.closeAdmission();
     this.taskExecutions.closeExternalAdmission();
     void this.operationGate.closeAndDrain();

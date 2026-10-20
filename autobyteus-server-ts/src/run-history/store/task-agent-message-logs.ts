@@ -18,13 +18,21 @@ import { MessageLog } from "./message-log.js";
  * `agent_teams/<id>/`; each is a `MessageLog`.
  */
 
-/** Whose log a message endpoint's messages belong to, from the endpoint's memory placement. */
+/**
+ * Whose log a message endpoint's messages belong to, from the endpoint's memory placement. A run on a peer
+ * node (CM-10) keeps its log on its own node: on this node its side of a message is written nowhere.
+ */
 export type MessageLogOwner =
   | Readonly<{ kind: "coordinating" }>
   | Readonly<{ kind: "task_agent"; agentRunId: string }>
-  | Readonly<{ kind: "task_agent_team"; teamRunId: string }>;
+  | Readonly<{ kind: "task_agent_team"; teamRunId: string }>
+  | Readonly<{ kind: "remote" }>;
+
+/** A log that exists on this node. */
+export type StoredMessageLogOwner = Exclude<MessageLogOwner, { kind: "remote" }>;
 
 export const COORDINATING_LOG: MessageLogOwner = Object.freeze({ kind: "coordinating" });
+export const REMOTE_RUN_LOG: MessageLogOwner = Object.freeze({ kind: "remote" });
 
 export const messageLogOwnerOf = (agentRunId: string, placement: AgentRunMemoryPlacement): MessageLogOwner => {
   switch (placement.kind) {
@@ -39,17 +47,21 @@ const sameOwner = (left: MessageLogOwner, right: MessageLogOwner): boolean =>
   && (left.kind !== "task_agent" || left.agentRunId === (right as typeof left).agentRunId)
   && (left.kind !== "task_agent_team" || left.teamRunId === (right as typeof left).teamRunId);
 
-/** The logs one message belongs to: the receiver's first, then the sender's when it is another run (DEC-011). */
+/**
+ * The logs on this node one message belongs to: the receiver's first, then the sender's when it is another
+ * run (DEC-011); a remote run's side is skipped (its node stores it).
+ */
 export const messageLogOwners = (
   message: Pick<CollaborationCommunicationMessage, "senderAgentRunId" | "receiverAgentRunId">,
   ownerOf: (agentRunId: string) => MessageLogOwner,
-): readonly MessageLogOwner[] => {
+): readonly StoredMessageLogOwner[] => {
   const receiver = ownerOf(message.receiverAgentRunId);
   const sender = ownerOf(message.senderAgentRunId);
-  return Object.freeze(sameOwner(receiver, sender) ? [receiver] : [receiver, sender]);
+  const owners = sameOwner(receiver, sender) ? [receiver] : [receiver, sender];
+  return Object.freeze(owners.filter((owner): owner is StoredMessageLogOwner => owner.kind !== "remote"));
 };
 
-type TaskAgentLogOwner = Exclude<MessageLogOwner, { kind: "coordinating" }>;
+type TaskAgentLogOwner = Exclude<StoredMessageLogOwner, { kind: "coordinating" }>;
 
 /** Task agents' own message logs under one memory root: where each one is (on top of `MessageLog`). */
 export class TaskAgentMessageLogs {
@@ -98,8 +110,8 @@ export const taskAgentLogOwners = (lists: Iterable<readonly TaskExecution[]>): T
  * coordinator fail-stops as for any indeterminate write (contract V-11).
  */
 export const appendMessageToOwnerLogs = async (
-  owners: readonly MessageLogOwner[],
-  append: (owner: MessageLogOwner) => Promise<RunPackageFileWriteResult>,
+  owners: readonly StoredMessageLogOwner[],
+  append: (owner: StoredMessageLogOwner) => Promise<RunPackageFileWriteResult>,
 ): Promise<RunPackageFileWriteResult<"communication_messages">> => {
   let durable = false;
   for (const owner of owners) {

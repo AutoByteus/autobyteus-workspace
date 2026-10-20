@@ -19,6 +19,7 @@ import type { TeamExecutionIndex } from "./team-execution-index.js";
 import { TeamRecipientResolver } from "./team-recipient-resolver.js";
 import type { TeamDelegationPlacement } from "./resolved-team-recipient.js";
 import type { TeamRunCollaborators } from "./team-run-collaborators.js";
+import type { RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 
 export type ExactTeamAgentMessageInput = Readonly<{
   sender: InterAgentMessageParticipant;
@@ -45,7 +46,34 @@ export class TeamRunMessageDelivery {
     isLiveAgent(agentRunId: string): boolean;
     /** Target lease that records the receiver's first accepted message. */
     withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult>;
+    remoteLinks: RemoteRunLinks;
   }>) {}
+
+  /**
+   * `send_message_to(run ID)` from an agent of this Team: a remote endpoint goes through the link under the
+   * sender's live lease (never reactivated, S3); any other run ID through today's exact delivery (`local`).
+   */
+  deliverExact(input: ExactTeamAgentMessageInput, local: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    const sender = input.sender.identity;
+    const route = this.options.remoteLinks.route(sender.agentRunId, input.targetAgentRunId);
+    if (route.kind === "refused") return Promise.resolve(route.result);
+    if (route.kind === "local") return local();
+    this.options.authorizeIdentity(sender);
+    return this.options.withLiveLease(sender.agentRunId, () => this.options.communication.sendToRemote(this.options.remoteLinks, route.endpoint,
+      { senderIdentity: sender, content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
+  }
+
+  /** A message from a linked run on a peer node: its paired agent here is woken or restored first (N-8). */
+  acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    return this.options.communication.acceptFromRemote(this.options.remoteLinks, input, {
+      receiver: (agentRunId) => {
+        const execution = this.options.getIndex().getAgent(agentRunId);
+        return execution ? { identity: this.identityFor(execution.address, execution.agentRunId),
+          displayName: getAgentTeamAddressBasename(execution.address) ?? execution.agentRunId } : null;
+      },
+      wake: (agentRunId, operation) => this.options.withLiveLease(agentRunId, operation),
+    });
+  }
 
   /** `send_message_to(address)`: the sender's own instance, then run-wide standing instances; else not found. */
   async deliverToAddress(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {

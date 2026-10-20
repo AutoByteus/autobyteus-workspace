@@ -7,6 +7,7 @@ import type {
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { CatalogTaskSource } from "./collaborator-admission.js";
 import { CollaboratorAddError, ownTeamDelegationRefusedMessage } from "./collaborator-errors.js";
+import type { RemotePeer } from "../execution/remote/remote-run-channel.js";
 
 /** The index fact a root supplies for the own-Team delegation rule (CM-1, DEC-008). */
 export interface DelegationSourceIndexPort {
@@ -28,7 +29,20 @@ export type DelegationPlacement =
       coordinatorAddress: AgentTeamAddress;
       source: TaskTeamExecutionSource;
       launchNotes?: readonly string[];
-    }>;
+    }>
+  | RemoteAgentPlacement;
+
+/**
+ * A published Agent on a peer node (`delegate_task` with `node`, DEC-111): the peer, the published address
+ * there, and the described work, which the peer words into its run's first message (it names this node).
+ */
+export type RemoteAgentPlacement = Readonly<{
+  kind: "remote_agent";
+  address: AgentTeamAddress;
+  peer: RemotePeer;
+  description: string;
+  launchNotes?: never;
+}>;
 
 /** The placement of a copy at `address` that starts from `source`. */
 export const sourcedPlacement = (address: AgentTeamAddress, source: TaskExecutionSource, launchNotes: readonly string[] = []): DelegationPlacement => {

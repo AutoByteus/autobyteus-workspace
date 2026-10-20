@@ -1,5 +1,6 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
+import { REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY } from "../remote-collaboration/settings/remote-collaboration-capability.js";
 import {
   AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
   SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
@@ -138,6 +139,11 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
       "Controls whether manual Skill Improvement is available for this node at runtime. Defaults to disabled.",
+    );
+
+    this.registerPredefinedSetting(
+      REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY,
+      "Controls whether this node collaborates with registered peer nodes (trusted private network only). Defaults to disabled.",
     );
 
     this.registerPredefinedSetting(

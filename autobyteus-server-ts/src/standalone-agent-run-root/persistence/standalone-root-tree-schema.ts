@@ -47,7 +47,7 @@ export const validateStandaloneRootTreePayload = (
       agentDefinitionId: requiredString(host.agentDefinitionId, "host.agentDefinitionId"),
     },
     taskExecutions: parseTaskExecutions(payload.taskExecutions, "taskExecutions"),
-    remoteTaskExecutions: parseRemoteTaskAgentExecutions(payload.remoteTaskExecutions, "remoteTaskExecutions"),
+    ...parseRemoteTaskAgentExecutions(payload.remoteTaskExecutions, "remoteTaskExecutions"),
   };
   if (expectedHostRunId && tree.host.agentRunId !== expectedHostRunId) {
     throw new Error(`Collaboration tree host '${tree.host.agentRunId}' does not match '${expectedHostRunId}'.`);

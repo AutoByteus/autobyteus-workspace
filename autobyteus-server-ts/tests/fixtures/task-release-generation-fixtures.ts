@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+import { RemoteRunLinks } from "../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { AgentRunActivationCandidate } from '../../src/agent-execution/services/agent-run-activation-candidate.js';
 import { FlatTeamExecutionFactory } from '../../src/agent-team-execution/local/flat-team-execution-factory.js';
@@ -19,6 +20,9 @@ import { testActivationManager } from './agent-run-preparation-fixtures.js';
 import { InMemoryTaskExecutionResources } from './task-execution-resource-fixtures.js';
 import { testAgentNode, testAgentTeamNode, testExecutionTree, testTeamRunConfig } from './current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from './current-agent-org-run-fixtures.js';
+
+/** A root without remote links (CM-10): its adapters see only local copies. */
+const noRemoteLinks = (root: any) => new RemoteRunLinks({ root, remoteRuns: () => [] });
 
 /** Concrete local factory/registries/quiet/restore; provider and business admission boundaries controlled. */
 export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', abort?: (id: string) => Promise<any>, rejectBindingFor?: string) {
@@ -139,7 +143,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
     resolver.registerManaged(oldTeam); resolver.registerManaged(oldNested);
     adapter = new TeamTaskExecutionAdapter({ rootTeamRunId: 'root', config: testTeamRunConfig({ rootTeamRunId: 'root', children: [managerNode], coordinatorAddress: '/Manager' }),
       getIndex: () => index, teamRunResolver: resolver, requireTeamRun: async (id: string) => { const run = resolver!.getActive(id); if (!run) throw Error('Missing active host'); return run; },
-      tokenUsageMigrationReadiness: {}, publish: vi.fn(), activityInspector: presentConversation } as never);
+      tokenUsageMigrationReadiness: {}, publish: vi.fn(), activityInspector: presentConversation, remoteLinks: noRemoteLinks(f.root) } as never);
   } else {
     if (kind === 'agent_org') {
       const base = testAgentOrgExecutionTree({ orgRunId: 'root', members: [testOrgAgentNode('/Manager', 'manager')] });
@@ -148,7 +152,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
       tree = { subjectKind: 'agent', createdAt: now, host: { address: '/Manager', agentRunId: 'root', agentDefinitionId: 'manager' }, taskExecutions: tasks };
       index = new StandaloneRootExecutionIndex(tree);
     }
-    const options = { root: f.root, rootAgents: f.rootAgents, teams: f.teams, callbacks: f.callbacks, getTree: () => tree, getIndex: () => index, tokenUsageReadiness: {}, publishTaskExecutionsClosed: vi.fn(), publishTaskExecutionsReopened: vi.fn(), activityInspector: presentConversation };
+    const options = { root: f.root, rootAgents: f.rootAgents, teams: f.teams, callbacks: f.callbacks, getTree: () => tree, getIndex: () => index, tokenUsageReadiness: {}, publishTaskExecutionsClosed: vi.fn(), publishTaskExecutionsReopened: vi.fn(), activityInspector: presentConversation, remoteLinks: noRemoteLinks(f.root) };
     adapter = kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(options as never) : new StandaloneRootTaskExecutionAdapter(options as never);
   }
   // Original exact controls observed at the root registration boundary, not reconstructed by lookup.

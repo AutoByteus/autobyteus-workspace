@@ -242,14 +242,19 @@ export const parseRemoteTaskAgentExecution = (value: unknown, label: string): Re
   };
 };
 
-/** The in-memory remote links of a composed tree; absent means none. */
-export const parseRemoteTaskAgentExecutions = (value: unknown, label: string): RemoteTaskAgentExecution[] =>
-  value === undefined ? [] : requiredArray(value, label).map((link, index) => parseRemoteTaskAgentExecution(link, `${label}[${index}]`));
+/**
+ * The in-memory remote links of a composed tree, as the field to spread into the parsed holder: present only
+ * when there are any, so a tree without remote links keeps exactly its stored shape.
+ */
+export const parseRemoteTaskAgentExecutions = (value: unknown, label: string): { remoteTaskExecutions?: RemoteTaskAgentExecution[] } => {
+  const links = value === undefined ? [] : requiredArray(value, label).map((link, index) => parseRemoteTaskAgentExecution(link, `${label}[${index}]`));
+  return links.length ? { remoteTaskExecutions: links } : {};
+};
 
 /** A remote link's delegator is an AgentRun of the tree, and each remote run is linked once. */
 export const validateRemoteTaskAgentExecutions = (
   agentRunIdsOfTree: ReadonlySet<string>,
-  links: readonly RemoteTaskAgentExecution[],
+  links: readonly RemoteTaskAgentExecution[] = [],
 ): void => {
   const seen = new Set<string>();
   for (const link of links) {

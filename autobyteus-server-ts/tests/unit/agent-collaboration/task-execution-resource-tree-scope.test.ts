@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
 import { testExecutionTree, testAgentNode } from '../../fixtures/current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
@@ -94,7 +95,8 @@ function adapterFor(kind: Kind, h: ReturnType<typeof subject>, teams: { getManag
   publishers: { publish?: unknown; publishTaskExecutionsClosed?: unknown } = {}) {
   const common = { root: { rootSubjectKind: kind, rootRunId: 'root' }, getTree: () => h.tree, getIndex: () => h.index,
     teams: { getManaged: teams.getManaged, get: teams.getActive }, tokenUsageReadiness: {}, memoryLocator: {},
-    config: { rootTeam: { address: '/', children: [] }, children: [] }, callbacks: {}, ...publishers };
+    config: { rootTeam: { address: '/', children: [] }, children: [] }, callbacks: {}, ...publishers,
+    remoteLinks: new RemoteRunLinks({ root: { rootSubjectKind: kind, rootRunId: 'root' } as never, remoteRuns: () => [] }) };
   return kind === 'agent_team' ? new TeamTaskExecutionAdapter({ ...common, rootTeamRunId: 'root',
     teamRunResolver: teams, config: {}, tokenUsageMigrationReadiness: {} } as never)
     : kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(common as never)

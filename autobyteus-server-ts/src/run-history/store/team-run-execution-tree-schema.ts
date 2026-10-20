@@ -61,7 +61,7 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
     members,
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
-    remoteTaskExecutions: parseRemoteTaskAgentExecutions(root.remoteTaskExecutions, "rootTeam.remoteTaskExecutions"),
+    ...parseRemoteTaskAgentExecutions(root.remoteTaskExecutions, "rootTeam.remoteTaskExecutions"),
   };
 };
 

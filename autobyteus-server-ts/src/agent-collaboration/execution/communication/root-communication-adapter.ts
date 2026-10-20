@@ -27,7 +27,8 @@ export interface RootCommunicationAdapter {
   readonly root: RootExecutionIdentity;
   readonly initialMessages: readonly CollaborationCommunicationMessage[];
   isOpen(): boolean;
-  assertDeliveryAllowed(sender: CollaborationMemberExecutionIdentity, receiver: CollaborationMemberExecutionIdentity): void;
+  /** Task scope of a message between two runs, by run ID (either may be a remote run of this root). */
+  assertDeliveryAllowed(senderAgentRunId: string, receiverAgentRunId: string): void;
   isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean;
   buildRecipientInput(input: Readonly<{
     delivery: RootCommunicationDeliveryInput;
@@ -38,6 +39,15 @@ export interface RootCommunicationAdapter {
     message: CollaborationCommunicationMessage;
     inputMessage: AgentInputUserMessage;
     reservation: Extract<AgentRunInputReservationResult, { reserved: true }>["reservation"];
+    getCurrentMessages(): readonly CollaborationCommunicationMessage[];
+    commitMessages(messages: readonly CollaborationCommunicationMessage[]): void;
+  }>): Promise<RootCommunicationAppendResult>;
+  /**
+   * A message a local agent sent to a remote run, after the peer accepted it: appended to the sender's log
+   * only (the peer stores its side, CM-9), then committed to `current` and published to this root's view.
+   */
+  commitSentToRemote(input: Readonly<{
+    message: CollaborationCommunicationMessage;
     getCurrentMessages(): readonly CollaborationCommunicationMessage[];
     commitMessages(messages: readonly CollaborationCommunicationMessage[]): void;
   }>): Promise<RootCommunicationAppendResult>;

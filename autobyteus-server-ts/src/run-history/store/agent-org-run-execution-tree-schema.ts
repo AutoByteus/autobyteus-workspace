@@ -60,7 +60,7 @@ const parseRootOrg = (value: unknown): RootConfiguredAgentOrgExecutionNode => {
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootOrg.defaultLaunchConfiguration"),
     members,
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootOrg.taskExecutions"),
-    remoteTaskExecutions: parseRemoteTaskAgentExecutions(root.remoteTaskExecutions, "rootOrg.remoteTaskExecutions"),
+    ...parseRemoteTaskAgentExecutions(root.remoteTaskExecutions, "rootOrg.remoteTaskExecutions"),
   };
 };
 

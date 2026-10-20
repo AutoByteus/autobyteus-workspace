@@ -42,7 +42,9 @@ import type { AgentOrgExecutionIndex, AgentOrgIndexedTaskExecution } from "./age
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
-import { addAgentOrgTaskExecution, adoptAgentOrgPlatformBinding } from "./agent-org-run-execution-tree-mutator.js";
+import { addAgentOrgRemoteTaskExecution, addAgentOrgTaskExecution, adoptAgentOrgPlatformBinding } from "./agent-org-run-execution-tree-mutator.js";
+import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { RemoteTaskAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 export type ResolvedAgentOrgRecipient = DelegationPlacement;
 
@@ -60,6 +62,8 @@ export type AgentOrgTaskExecutionAdapterOptions = Readonly<{
   persistence: AgentOrgRunPersistenceCoordinator;
   getTree(): AgentOrgRunExecutionTreeSnapshot;
   getIndex(): AgentOrgExecutionIndex;
+  /** The root's remote endpoints: remote placements, and the remote runs' Task ownership. */
+  remoteLinks: RemoteRunLinks;
   isOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   /** Suppresses teardown status events of the retiring agents until the returned release. */
@@ -93,6 +97,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   assertCurrentSchemaReady(): void { this.readiness.assertCurrentSchemaReady(); }
 
   async planActivation(input: TaskExecutionActivationPreparation<ResolvedAgentOrgRecipient>): Promise<TaskExecutionActivationPlan<ResolvedAgentOrgRecipient>> {
+    if (input.placement.kind === "remote_agent") return this.options.remoteLinks.planActivation(input, input.placement);
     // CM-1 refuses every target inside the delegator's own Team, so a new copy is always hosted at the root.
     const host = createTaskExecutionHostIdentity({ root: this.root, hostKind: "root", hostRunId: this.root.rootRunId, hostAddress: "/" });
     let beginLocal: () => TaskExecutionPreparationOperation;
@@ -124,6 +129,10 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   }
 
   beginActivation(plan: TaskExecutionActivationPlan<ResolvedAgentOrgRecipient>): TaskExecutionActivationOperation {
+    if (plan.placement.kind === "remote_agent") {
+      return this.options.remoteLinks.beginActivation(plan, plan.placement, (link) => this.commitRemoteLink(link));
+    }
+    const source = plan.placement.source;
     const facts = this.plans.get(plan);
     if (!facts) throw new Error("Activation plan does not belong to this root.");
     let reservation: ReturnType<RootTeamExecutionDirectory["reserveTaskSubtree"]> | null = null;
@@ -142,7 +151,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
           commit: () => {
             assertAccepting();
             return this.commitActivation({ host: facts.host, prepared, reservation,
-              delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt, source: plan.placement.source,
+              delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt, source,
               retainWork: (value) => { work = value; } });
           },
           acceptSeed: (assertOpen) => {
@@ -159,7 +168,9 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   registrationFor(reference: TaskExecutionReference) { return this.registrations.get(taskExecutionReferenceKey(reference)) ?? null; }
   ownershipChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     const chain = this.taskExecutionChainFor(agentRunId);
-    return chain.length ? chain : [...this.registrations.values()]
+    if (chain.length) return chain;
+    const remote = this.options.remoteLinks.ownershipChainFor(agentRunId);
+    return remote.length ? remote : [...this.registrations.values()]
       .filter(entry => entry.ownedAgentRunIds.includes(agentRunId)).map(entry => entry.target.execution);
   }
   taskExecutionTargetOf(reference: TaskExecutionReference) {
@@ -353,6 +364,22 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
       );
     }
     return { address: coordinatorAddress, agentRunId: coordinator.agentRunId };
+  }
+
+  /** A remote delegation's one tree write: the link with `nodeId`. */
+  private commitRemoteLink(link: RemoteTaskAgentExecution): Promise<TaskExecutionActivationCommitResult> {
+    let nextTree: AgentOrgRunExecutionTreeSnapshot | null = null;
+    return this.options.persistence.commitTaskActivation({
+      prepareAgainstCurrent: () => {
+        nextTree = addAgentOrgRemoteTaskExecution({ tree: this.options.getTree(), link });
+        return { nextTree };
+      },
+      abortBeforeDurability: async () => undefined,
+      commitAfterDurability: () => {
+        if (!nextTree) throw new Error("AgentOrg remote link tree was not prepared.");
+        this.options.replaceTree(nextTree);
+      },
+    });
   }
 
   private async commitActivation(input: {

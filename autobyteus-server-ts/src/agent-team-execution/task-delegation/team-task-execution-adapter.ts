@@ -34,7 +34,8 @@ import {
   createTeamAgentStatusSnapshot,
 } from "../domain/team-agent-status.js";
 import type { IndexedTaskExecution } from "../services/team-execution-index.js";
-import { addTaskExecutionToTree, adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
+import { addRemoteTaskExecutionToTree, addTaskExecutionToTree, adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
+import type { RemoteTaskAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { TeamRunPersistenceFinalizationIndeterminateError } from "../services/team-run-persistence-contract.js";
 import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
 import type { TeamRunRegistrationReservation } from "../services/team-run-resolver.js";
@@ -65,6 +66,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   assertCurrentSchemaReady(): void { this.tokenUsageReadiness.assertCurrentSchemaReady(); }
 
   async planActivation(input: TaskExecutionActivationPreparation<TeamDelegationPlacement>): Promise<TaskExecutionActivationPlan<TeamDelegationPlacement>> {
+    if (input.placement.kind === "remote_agent") return this.options.remoteLinks.planActivation(input, input.placement);
     // CM-1 refuses every target inside the delegator's own Team, so a new copy is always hosted by the root TeamRun.
     const hostTeamRunId = this.options.rootTeamRunId;
     let execution: TaskExecutionReference;
@@ -94,6 +96,10 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   }
 
   beginActivation(plan: TaskExecutionActivationPlan<TeamDelegationPlacement>): TaskExecutionActivationOperation {
+    if (plan.placement.kind === "remote_agent") {
+      return this.options.remoteLinks.beginActivation(plan, plan.placement, (link) => this.commitRemoteLink(link));
+    }
+    const placement = plan.placement;
     const facts = this.plans.get(plan);
     if (!facts) throw new Error("Task plan does not belong to this root.");
     let reservation: TeamRunRegistrationReservation | null = null;
@@ -108,9 +114,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       prepared.sealForCommit();
       const execution: TaskExecution = prepared.binding.kind === "agent"
         ? projectTaskAgentExecution({ address: prepared.binding.address, agentRunId: prepared.binding.agentRunId,
-          delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt, source: placementSourceOf(plan.placement, "agent") })
+          delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt, source: placementSourceOf(placement, "agent") })
         : projectTaskTeamExecution({ node: requirePreparedTaskTeamNode(prepared), delegatorAgentRunId: plan.identity.agentRunId,
-          startedAt: plan.startedAt, source: placementSourceOf(plan.placement, "agent_team") });
+          startedAt: plan.startedAt, source: placementSourceOf(placement, "agent_team") });
       let work: CommittedTaskExecution | null = null;
       return Object.freeze({
         targetAgentRunId: plan.target.ingressAgentRunId,
@@ -129,7 +135,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   registrationFor(reference: TaskExecutionReference) { return this.registrations.get(taskExecutionReferenceKey(reference)) ?? null; }
   ownershipChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     const chain = this.taskExecutionChainFor(agentRunId);
-    return chain.length ? chain : [...this.registrations.values()]
+    if (chain.length) return chain;
+    const remote = this.options.remoteLinks.ownershipChainFor(agentRunId);
+    return remote.length ? remote : [...this.registrations.values()]
       .filter(entry => entry.ownedAgentRunIds.includes(agentRunId)).map(entry => entry.target.execution);
   }
   taskExecutionTargetOf(reference: TaskExecutionReference) {
@@ -279,6 +287,28 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       );
     }
     return { address: coordinatorAddress, agentRunId: coordinator.agentRunId };
+  }
+
+  /** A remote delegation's one tree write: the link with `nodeId`. */
+  private async commitRemoteLink(link: RemoteTaskAgentExecution): Promise<TaskExecutionActivationCommitResult> {
+    let nextTree: TeamRunExecutionTreeSnapshot | null = null;
+    const result = await this.options.commitTaskActivation({
+      prepareAgainstCurrent: () => {
+        nextTree = addRemoteTaskExecutionToTree({ tree: this.options.getTree(), link });
+        return { nextTree };
+      },
+      activation: {
+        assertCommitReady: () => { if (!this.options.isRootOpen()) throw new Error("Root TeamRun is not open."); },
+        abortBeforeCommit: async () => undefined,
+        commitAfterDurability: () => {
+          if (!nextTree) throw new Error("Remote link tree was not prepared at the lock head.");
+          this.options.replaceTree(nextTree);
+        },
+      },
+    });
+    if (result.outcome === "committed") return Object.freeze({ committed: true });
+    if (result.outcome === "finalization_indeterminate") throw new TeamRunPersistenceFinalizationIndeterminateError(result.file, result.stage);
+    return Object.freeze({ committed: false, message: result.cause.message });
   }
 
   private async commitActivation(input: {

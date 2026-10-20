@@ -15,7 +15,9 @@ import type { MemberLogicalMessageInput } from "../../agent-collaboration/execut
 import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
-import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
+import { buildTaskAssigneeWorkPacket, buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
+import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -29,6 +31,7 @@ import type { AvailableCollaborator } from "../../agent-collaboration/collaborat
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import { buildDirectAgentRunInterAgentEvent } from "../../agent-communication/services/global-agent-run-message-runtime-builders.js";
 import type { StandaloneHostAgentHandle } from "../domain/standalone-host-agent-handle.js";
+import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { StandaloneRootEvent } from "../domain/standalone-root-event.js";
 import type { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
 import type { StandaloneRootCollaborators } from "./standalone-root-collaborators.js";
@@ -62,6 +65,9 @@ export class StandaloneRootMessageDelivery {
     rootAgents: RootAgentExecutionRegistry;
     teams: RootTeamExecutionDirectory;
     publisher: RootEventPublisher<StandaloneRootEvent>;
+    remoteLinks: RemoteRunLinks;
+    /** Told each time the host is made ready (the host idle schedule of a run started by a peer). */
+    onHostReady?(run: AgentRun): void;
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
   }>) {}
 
@@ -79,7 +85,7 @@ export class StandaloneRootMessageDelivery {
    * resolution posts nothing.
    */
   async postToHost(input: Omit<StandaloneRunPostInput, "runId">): Promise<StandaloneRunPostResult> {
-    const run = await this.options.host.ensureReady();
+    const run = await this.readyHost();
     input.onActiveRunReady?.(run);
     let message = input.message;
     if (input.mentions?.length) {
@@ -117,6 +123,49 @@ export class StandaloneRootMessageDelivery {
     });
   }
 
+  /**
+   * `send_message_to(run ID)` from an agent of this root: a remote endpoint goes through the link under the
+   * sender's live lease (never reactivated, S3); any other run ID through today's exact delivery.
+   */
+  deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
+    const sender = input.sender.identity;
+    const route = this.options.remoteLinks.route(sender.agentRunId, input.targetAgentRunId);
+    if (route.kind === "refused") return Promise.resolve(route.result);
+    if (route.kind === "remote") {
+      this.options.authorizeIdentity(sender);
+      return this.options.taskExecutions.withLiveLease(sender.agentRunId, () => this.options.remoteLinks.send(this.options.getCommunication(),
+        route.endpoint, { senderIdentity: sender, content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
+    }
+    return this.options.taskExecutions.deliverToExactTarget(sender.agentRunId, input.targetAgentRunId, () => this.deliverToRunId(input));
+  }
+
+  /** A message from a linked run on a peer node: its paired agent here is woken or restored first (N-8). */
+  acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    return this.options.remoteLinks.accept(this.options.getCommunication(), input, {
+      receiver: (agentRunId) => {
+        const agent = this.options.getIndex().getAgent(agentRunId);
+        return agent ? { identity: this.identityFor(agent.agentRunId, agent.address), displayName: getAgentTeamAddressBasename(agent.address) ?? agent.agentRunId } : null;
+      },
+      wake: (agentRunId, operation) => this.wakeAndRun(agentRunId, operation),
+    });
+  }
+
+  /**
+   * N-6: the work packet that starts this run, a peer's delegation. The link check (the delegator on that node,
+   * for the host), then the prepared host is activated, then the system task notification is posted. No log line.
+   */
+  async acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
+    const endpoint = this.options.remoteLinks.inboundEndpoint(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId);
+    if (endpoint?.side !== "receiving" || input.targetAgentRunId !== this.options.hostRunId) {
+      return { accepted: false, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: "That run is not linked with the sender." };
+    }
+    let run;
+    try { run = await this.readyHost(); }
+    catch (error) { return { accepted: false, code: "AGENT_ROOT_HOST_UNAVAILABLE", message: error instanceof Error ? error.message : String(error) }; }
+    return run.postUserMessage(buildTaskAssigneeWorkPacket({ delegator: { agentRunId: input.senderAgentRunId }, delegatorAddress: null,
+      delegatorNode: input.fromNodeName, description: input.description, referenceFiles: [] }));
+  }
+
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */
   deliverToRunId(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
     this.options.authorizeIdentity(input.sender.identity);
@@ -138,6 +187,10 @@ export class StandaloneRootMessageDelivery {
    */
   delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
+    if (input.node !== undefined) {
+      return this.options.remoteLinks.delegate({ ...input, node: input.node },
+        (local, placement) => this.options.taskExecutions.delegateToNewCopy(context, local, placement));
+    }
     return delegateToResolvedTarget(
       () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address),
       (placement) => this.options.taskExecutions.delegateToNewCopy(context, input, placement),
@@ -147,6 +200,8 @@ export class StandaloneRootMessageDelivery {
   /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
   assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
+    const remote = this.options.remoteLinks.refuseExistingCopy(input.copy);
+    if (remote) return Promise.resolve(remote);
     return this.options.taskExecutions.assignToExistingCopy(context, input, (targetAgentRunId, content, referenceFiles) =>
       this.deliverToRunId(buildTaskWorkMessageInput(context.identity, targetAgentRunId, content, referenceFiles)));
   }
@@ -171,10 +226,12 @@ export class StandaloneRootMessageDelivery {
     const index = this.options.getIndex();
     const receiver = index.requireAgent(message.receiverAgentRunId);
     if (receiver.executionKind === "host") {
-      // The host's conversation lives on its own Agent stream: show the delivery there.
-      const sender = index.requireAgent(message.senderAgentRunId);
+      // The host's conversation lives on its own Agent stream: show the delivery there. A sender on a peer
+      // node (a linked remote endpoint) is named by its run id.
+      const sender = index.getAgent(message.senderAgentRunId);
+      const senderName = sender ? getAgentTeamAddressBasename(sender.address) ?? sender.agentRunId : message.senderAgentRunId;
       void this.options.host.getActiveRun()?.publishEvent(buildDirectAgentRunInterAgentEvent({
-        sender: { senderRunId: sender.agentRunId, senderName: getAgentTeamAddressBasename(sender.address) ?? sender.agentRunId, runtimeKind: null, memberExecutionContext: null },
+        sender: { senderRunId: message.senderAgentRunId, senderName, runtimeKind: null, memberExecutionContext: null },
         targetAgentRunId: receiver.agentRunId,
         content: message.content,
         messageType: message.messageType,
@@ -225,21 +282,32 @@ export class StandaloneRootMessageDelivery {
   }
 
   /** The host is made ready through its handle; a child through its live lease. */
-  private async deliverTo(targetAgentRunId: string, input: DeliveryInput): Promise<AgentOperationResult> {
+  private deliverTo(targetAgentRunId: string, input: DeliveryInput): Promise<AgentOperationResult> {
     const receiver = this.options.getIndex().requireAgent(targetAgentRunId);
-    const deliver = () => this.options.getCommunication().deliver({
+    return this.wakeAndRun(receiver.agentRunId, () => this.options.getCommunication().deliver({
       ...input,
       senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.senderIdentity),
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
-    });
-    if (receiver.executionKind !== "host") return this.withLiveLease(receiver.agentRunId, deliver);
+    }));
+  }
+
+  /** Runs a delivery into an agent of this root once it is ready: the host through its handle, a child through its live lease. */
+  private async wakeAndRun(agentRunId: string, deliver: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    if (agentRunId !== this.options.hostRunId) return this.withLiveLease(agentRunId, deliver);
     try {
-      await this.options.host.ensureReady();
+      await this.readyHost();
     } catch (error) {
       return { accepted: false, code: "AGENT_ROOT_HOST_UNAVAILABLE", message: error instanceof Error ? error.message : String(error) };
     }
     return deliver();
+  }
+
+  /** The host made ready (activated, restored, or the live run). */
+  async readyHost(): Promise<AgentRun> {
+    const run = await this.options.host.ensureReady();
+    this.options.onHostReady?.(run);
+    return run;
   }
 
   private identityFor(agentRunId: string, address: AgentTeamAddress): CollaborationMemberExecutionIdentity {

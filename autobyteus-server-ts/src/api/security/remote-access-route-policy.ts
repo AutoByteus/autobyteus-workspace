@@ -68,6 +68,9 @@ export const classifyHttpRoute = (
   if (path === "/rest/remote-access/status" && normalizedMethod === "GET") {
     return "PUBLIC_HEALTH_STATUS";
   }
+  if (path.startsWith("/rest/remote/")) {
+    return "REMOTE_PEER";
+  }
   if (path === "/rest/remote-access/pairing-exchanges" && normalizedMethod === "POST") {
     return "PUBLIC_PAIRING_EXCHANGE";
   }
@@ -154,6 +157,13 @@ export class RemoteAccessRoutePolicy {
     }
 
     const bearerCredential = readBearerCredential(request.headers.authorization);
+    // Peer nodes carry no credential (REQ-113); the peer gateway applies the switch and peer checks (REQ-114).
+    if (routeClass === "REMOTE_PEER") {
+      if (isMobileRemoteAccessCredential(bearerCredential)) {
+        return reject(403, "REMOTE_ACCESS_AUTH_INVALID", "Mobile credentials do not authorize peer-node routes.");
+      }
+      return { ok: true, context: trustedNetworkContext(peerAddress) };
+    }
     if (routeClass === "TRUSTED_NETWORK_OWNER") {
       if (isMobileRemoteAccessCredential(bearerCredential)) {
         return reject(403, "REMOTE_ACCESS_AUTH_INVALID", "Mobile credentials do not authorize owner-management routes.");

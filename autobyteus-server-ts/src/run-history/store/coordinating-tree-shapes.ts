@@ -15,10 +15,10 @@ const configuredTeamKey = (teamRunId: string): string => `configured_team:${team
 
 const field = (raw: Record<string, unknown>, key: string): Record<string, unknown> => objectRecord(raw[key], key);
 const list = (value: unknown, label: string): readonly unknown[] => value === undefined ? [] : requiredArray(value, label);
-/** Sets (or, with `null`, removes) the in-memory remote links on one object of a tree. */
+/** Sets the in-memory remote links on one object of a tree; none (or `null`, for writing) removes the field. */
 const withRemote = (holder: Record<string, unknown>, links: readonly RemoteTaskAgentExecution[] | null): Record<string, unknown> => {
   const { [REMOTE]: _previous, ...rest } = holder;
-  return links === null ? rest : { ...rest, [REMOTE]: links };
+  return links?.length ? { ...rest, [REMOTE]: links } : rest;
 };
 const runIds = (members: readonly unknown[], label: string): string[] =>
   members.map((member, index) => requiredString(objectRecord(member, `${label}[${index}]`).agentRunId, `${label}[${index}].agentRunId`));
@@ -30,7 +30,7 @@ export const TEAM_RUN_TREE_SHAPE: CoordinatingTreeShape<TeamRunExecutionTreeFile
   rawTaskLists: (raw) => new Map([[ROOT, list(field(raw, "rootTeam").taskExecutions, "rootTeam.taskExecutions")]]),
   withRawTaskLists: (raw, lists) => ({ ...raw, rootTeam: { ...field(raw, "rootTeam"), taskExecutions: lists.get(ROOT) ?? [] } }),
   ownAgentRunIdsOfRaw: (raw) => runIds(list(field(raw, "rootTeam").members, "rootTeam.members"), "rootTeam.members"),
-  remoteLinks: (tree) => tree.rootTeam.remoteTaskExecutions,
+  remoteLinks: (tree) => tree.rootTeam.remoteTaskExecutions ?? [],
   withRemoteLinks: (raw, links) => ({ ...raw, rootTeam: withRemote(field(raw, "rootTeam"), links) }),
 });
 
@@ -71,7 +71,7 @@ export const AGENT_ORG_RUN_TREE_SHAPE: CoordinatingTreeShape<AgentOrgRunExecutio
       ? [member.agentRunId]
       : runIds(list(member.members, `rootOrg.members[${index}].members`), `rootOrg.members[${index}].members`);
   }),
-  remoteLinks: (tree) => tree.rootOrg.remoteTaskExecutions,
+  remoteLinks: (tree) => tree.rootOrg.remoteTaskExecutions ?? [],
   withRemoteLinks: (raw, links) => ({ ...raw, rootOrg: withRemote(field(raw, "rootOrg"), links) }),
 });
 
@@ -83,6 +83,6 @@ export const STANDALONE_ROOT_TREE_SHAPE: CoordinatingTreeShape<StandaloneRootTre
   rawTaskLists: (raw) => new Map([[ROOT, list(raw.taskExecutions, "taskExecutions")]]),
   withRawTaskLists: (raw, lists) => ({ ...raw, taskExecutions: lists.get(ROOT) ?? [] }),
   ownAgentRunIdsOfRaw: (raw) => [requiredString(field(raw, "host").agentRunId, "host.agentRunId")],
-  remoteLinks: (tree) => tree.remoteTaskExecutions,
+  remoteLinks: (tree) => tree.remoteTaskExecutions ?? [],
   withRemoteLinks: (raw, links) => withRemote(raw, links),
 });

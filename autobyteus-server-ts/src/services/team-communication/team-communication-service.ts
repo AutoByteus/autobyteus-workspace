@@ -5,6 +5,7 @@ import type { InterAgentMessageDeliveryIntent } from "../../agent-team-execution
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { TeamCommunicationAdapter, type TeamCommunicationAdapterOptions } from "./team-communication-adapter.js";
 import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
+import type { RemoteEndpoint, RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 
 /** Team-private facade over the root-neutral accepted-message engine. */
 export class TeamCommunicationService {
@@ -23,6 +24,16 @@ export class TeamCommunicationService {
     });
   }
   closeAdmission(): void { this.accepting = false; this.engine.closeAdmission(); }
+
+  /** A message from an agent of this Team to its linked remote run (through the link, AR-002). */
+  sendToRemote(links: RemoteRunLinks, endpoint: RemoteEndpoint, input: Parameters<RemoteRunLinks["send"]>[2]): Promise<AgentOperationResult> {
+    return links.send(this.engine, endpoint, input);
+  }
+
+  /** A message from a linked remote run for an agent of this Team (link check, wake, admit). */
+  acceptFromRemote(links: RemoteRunLinks, input: RemoteInboundMessage, root: Parameters<RemoteRunLinks["accept"]>[2]): Promise<AgentOperationResult> {
+    return links.accept(this.engine, input, root);
+  }
 
   deliver(input: {
     intent: InterAgentMessageDeliveryIntent;

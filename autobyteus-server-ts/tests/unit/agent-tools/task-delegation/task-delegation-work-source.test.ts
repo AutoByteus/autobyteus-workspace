@@ -40,3 +40,18 @@ describe('existing-copy mode: a copy\'s own ID with task_id (REQ-002)', () => {
     expect(() => parseDelegateTaskInput({ ...id, task_id: 'B' })).toThrow('Invalid delegate_task input');
   });
 });
+
+describe('`node`: a new copy on a registered peer node (DEC-111)', () => {
+  it('carries a trimmed node with described work or a saved Task; the root refuses the latter and files (REQ-110)', () => {
+    expect(parseDelegateTaskInput({ recipient_address: '/publisher', description: 'Publish it', node: ' docker ' }))
+      .toEqual({ subject: 'new_copy', input: { recipient_address: '/publisher', description: 'Publish it', reference_files: [], node: 'docker' } });
+    expect(parseDelegateTaskInput({ recipient_address: '/publisher', task_id: 'A', node: 'docker' }))
+      .toEqual({ subject: 'new_copy', input: { recipient_address: '/publisher', task_id: 'A', node: 'docker' } });
+  });
+  it('keeps the local input unchanged without node, and rejects a blank node or node with an existing copy', () => {
+    expect(parseDelegateTaskInput({ recipient_address: '/writer', description: 'w' }).input).not.toHaveProperty('node');
+    expect(() => parseDelegateTaskInput({ recipient_address: '/publisher', description: 'w', node: ' ' })).toThrow('Invalid delegate_task input');
+    expect(() => parseDelegateTaskInput({ target_agent_run_id: 'a', task_id: 'B', node: 'docker' }))
+      .toThrow('with target_team_run_id or target_agent_run_id, supply only that run id and task_id');
+  });
+});
