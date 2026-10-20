@@ -57,13 +57,14 @@ const writeOrgRoot = async (memoryRoot: string, tree: AgentOrgRunExecutionTreeSn
 
 /** Writing team root: configured coordinator `/writer` plus its delegated task instance (flat Team V2 has no nested teams). */
 const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecutionTreeSnapshot => {
+  const writer = testAgentNode("/writer", { agentRunId: `${rootTeamRunId}-writer` });
   const base = testExecutionTree({
     rootTeamRunId,
     rootTeamDefinitionId: "gql-writing-team",
     teamDefinitionName: "Tree Writing Team",
     coordinatorAddress: "/writer",
     createdAt,
-    children: [testAgentNode("/writer", { agentRunId: `${rootTeamRunId}-writer` })],
+    children: [writer],
   });
   return {
     ...base,
@@ -75,6 +76,11 @@ const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecu
         platformAgentRunId: null,
         delegatorAgentRunId: `${rootTeamRunId}-writer`,
         startedAt: createdAt,
+        source: {
+          kind: "agent",
+          agentDefinitionId: writer.agentDefinitionId,
+          launchConfiguration: base.rootTeam.defaultLaunchConfiguration,
+        },
       }],
     },
   };
@@ -86,21 +92,27 @@ const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecu
  */
 const orgTree = (orgRunId: string, orgDefinitionId: string): AgentOrgRunExecutionTreeSnapshot => {
   const designer = testOrgAgentNode("/engineering/solution_designer", `${orgRunId}-designer`);
+  const ceo = testOrgAgentNode("/ceo", `${orgRunId}-ceo`);
+  const engineering = testOrgTeamNode({ address: "/engineering", teamRunId: `${orgRunId}-engineering`, coordinatorAddress: designer.address, members: [designer] });
   const base = testAgentOrgExecutionTree({
     orgRunId,
     orgDefinitionId,
     orgDefinitionName: "Tree Org Name",
-    members: [
-      testOrgAgentNode("/ceo", `${orgRunId}-ceo`),
-      testOrgTeamNode({ address: "/engineering", teamRunId: `${orgRunId}-engineering`, coordinatorAddress: designer.address, members: [designer] }),
-    ],
+    members: [ceo, engineering],
   });
   return validateAgentOrgRunExecutionTreePayload({
     ...base,
     rootOrg: {
       ...base.rootOrg,
       taskExecutions: [
-        { address: assertAgentTeamAddress("/ceo"), agentRunId: `${orgRunId}-task-ceo`, platformAgentRunId: null, delegatorAgentRunId: `${orgRunId}-ceo`, startedAt: "2026-09-01T00:01:00.000Z" },
+        {
+          address: assertAgentTeamAddress("/ceo"),
+          agentRunId: `${orgRunId}-task-ceo`,
+          platformAgentRunId: null,
+          delegatorAgentRunId: `${orgRunId}-ceo`,
+          startedAt: "2026-09-01T00:01:00.000Z",
+          source: { kind: "agent", agentDefinitionId: ceo.agentDefinitionId, launchConfiguration: ceo.launchConfiguration },
+        },
         {
           address: assertAgentTeamAddress("/engineering"),
           teamRunId: `${orgRunId}-engineering-task`,
@@ -108,6 +120,14 @@ const orgTree = (orgRunId: string, orgDefinitionId: string): AgentOrgRunExecutio
           taskExecutions: [],
           delegatorAgentRunId: `${orgRunId}-ceo`,
           startedAt: "2026-09-01T00:02:00.000Z",
+          source: {
+            kind: "agent_team",
+            teamDefinitionId: engineering.teamDefinitionId,
+            coordinatorAddress: designer.address,
+            members: [{ address: designer.address, agentDefinitionId: designer.agentDefinitionId, launchConfiguration: designer.launchConfiguration, followsTeam: true }],
+            handoffs: [],
+            defaultLaunchConfiguration: engineering.defaultLaunchConfiguration,
+          },
         },
       ],
     },

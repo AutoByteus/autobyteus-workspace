@@ -2,6 +2,13 @@ import { describe, expect, it } from "vitest";
 import { parseTeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 
 const startedAt = "2026-08-28T00:00:00.000Z";
+const launch = {
+  runtime_kind: "autobyteus",
+  llm_model_identifier: "test-model",
+  llm_config: null,
+  auto_execute_tools: false,
+  workspace_root_path: null,
+};
 
 describe("current Team delegated-execution stream contract", () => {
   it("parses exact task-Agent and task-Team TASK_EXECUTION_STARTED payloads carrying the delegator", () => {
@@ -17,6 +24,7 @@ describe("current Team delegated-execution stream contract", () => {
           platform_agent_run_id: null,
           delegator_agent_run_id: "coordinator-run-001",
           started_at: startedAt,
+          source: { kind: "agent", agent_definition_id: "worker", launch_configuration: launch },
         },
       },
     });
@@ -43,6 +51,14 @@ describe("current Team delegated-execution stream contract", () => {
           task_executions: [],
           delegator_agent_run_id: "coordinator-run-001",
           started_at: startedAt,
+          source: {
+            kind: "agent_team",
+            team_definition_id: "worker-team",
+            coordinator_address: "/worker/lead",
+            members: [{ address: "/worker/lead", agent_definition_id: "lead", launch_configuration: launch, follows_team: true }],
+            handoffs: [],
+            default_launch_configuration: launch,
+          },
         },
       },
     });
