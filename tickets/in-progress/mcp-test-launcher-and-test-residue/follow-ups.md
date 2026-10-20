@@ -1,0 +1,5 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, `investigation-notes.md` (probe P-5) | `autobyteus-server-ts/tests/unit/projects/project-task-index-status.test.ts` › "indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)" failed on the base: `expected "sync" to not be called at all, but actually been called 1 times` | `env -i … pnpm -C autobyteus-server-ts test:unit` on `origin/personal` @ `dc530fdcb0`, 2026-10-20: 1 failed / 6200 passed. Cause not investigated (likely timing-sensitive) | Projects index behavior; this ticket does not touch it, and its goal does not depend on it | No | Find the cause of the `project-task-index-status` unit failure (TESTING.md rule 9: no "flaky" without a cause) and fix the test or the indexing timing | |
