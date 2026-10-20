@@ -37,7 +37,14 @@ import { validateStandaloneRootTreePayload } from "../../../src/standalone-agent
 import { StandaloneRootExecutionIndex } from "../../../src/standalone-agent-run-root/services/standalone-root-execution-index.js";
 import { StandaloneRootTaskExecutionAdapter } from "../../../src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.js";
 import { standaloneDelegatedLaunchForest } from "../../../src/standalone-agent-run-root/services/standalone-root-tree-mutator.js";
-import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { RootRunPackageCurrentValidator } from "../../../src/run-history/services/root-run-package-current-validator.js";
+import { TeamRunStatePackageLoader } from "../../../src/run-history/services/team-run-state-package-loader.js";
+import { validateTeamRunStatePackage } from "../../../src/run-history/services/team-run-state-package-validator.js";
+import { AgentOrgStatePackageLoader } from "../../../src/agent-org-execution/services/agent-org-state-package-loader.js";
+import { validateAgentOrgStatePackage } from "../../../src/agent-org-execution/services/agent-org-state-package-validator.js";
+import { AGENT_ORG_RUN_TREE_SHAPE, TEAM_RUN_TREE_SHAPE } from "../../../src/run-history/store/coordinating-tree-shapes.js";
+import { agentRunIdsOfTree } from "../../../src/run-history/store/task-execution-tree-split.js";
+import { testAgentNode, testAgentTeamNode, testCatalogTeamCopy, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration } from "../../fixtures/current-agent-org-run-fixtures.js";
 import type { CollaborationCommunicationMessage } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
@@ -111,11 +118,22 @@ const standalone = (): Walkers => {
   };
 };
 
-const team = (): Walkers => {
+const teamConfig = () => {
   const lead = testAgentNode("/lead", { agentRunId: "lead-run" });
-  const config = testTeamRunConfig({ rootTeamRunId: "team-root", coordinatorAddress: lead.address, children: [lead] });
-  const base = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Team", createdAt: T0 });
-  const tree = validateTeamRunExecutionTreePayload({ ...base, rootTeam: { ...base.rootTeam, taskExecutions: [localCopy("lead-run")], remoteTaskExecutions: [remoteLink("lead-run")] } }, "team-root");
+  return testTeamRunConfig({ rootTeamRunId: "team-root", coordinatorAddress: lead.address, children: [lead, testAgentNode("/writer", { agentRunId: "writer-run" })] });
+};
+const teamTree = (taskExecutions: unknown[], remote: unknown[]) => {
+  const base = buildInitialTeamRunExecutionTree({ config: teamConfig(), teamDefinitionName: "Team", createdAt: T0 });
+  return validateTeamRunExecutionTreePayload({ ...base, rootTeam: { ...base.rootTeam, taskExecutions, remoteTaskExecutions: remote } }, "team-root");
+};
+const orgTree = (taskExecutions: unknown[], remote: unknown[]) => {
+  const base = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "director-run"), testOrgAgentNode("/analyst", "analyst-run")] });
+  return validateAgentOrgRunExecutionTreePayload({ ...base, rootOrg: { ...base.rootOrg, taskExecutions, remoteTaskExecutions: remote } }, "org-root");
+};
+
+const team = (): Walkers => {
+  const config = teamConfig();
+  const tree = teamTree([localCopy("lead-run")], [remoteLink("lead-run")]);
   const index = new TeamExecutionIndex(tree);
   const root = new RootTeamRun({
     rootRun: { teamRunId: "team-root", isActive: () => true, isTerminated: () => false, hasOpenExecutionWork: () => false, getLeafAgentStatusSnapshots: () => [] } as never,
@@ -146,8 +164,7 @@ const team = (): Walkers => {
 };
 
 const org = (): Walkers => {
-  const base = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "director-run")] });
-  const tree = validateAgentOrgRunExecutionTreePayload({ ...base, rootOrg: { ...base.rootOrg, taskExecutions: [localCopy("director-run")], remoteTaskExecutions: [remoteLink("director-run")] } }, "org-root");
+  const tree = orgTree([localCopy("director-run")], [remoteLink("director-run")]);
   const index = new AgentOrgExecutionIndex(tree);
   const root = new AgentOrgRun({
     root: createAgentOrgRootExecutionIdentity("org-root"), tree,
@@ -207,5 +224,79 @@ describe.each([
     expect(endpoint?.allowsSender(LOCAL)).toBe(false);
     expect(w.links().endpointFor(LOCAL)).toBeNull();
     expect(await w.storedView()).toEqual(["collabmsg_out", "collabmsg_in", "collabmsg_local"]);
+  });
+});
+
+/**
+ * SR-017 (F-002): the package-state validators check message endpoints against the store's set
+ * (`agentRunIdsOfTree`), which includes the remote runs, so a stored delegator ↔ remote message passes the
+ * admission scan and a restore; at least one endpoint must be an agent of the tree; the index stays local.
+ */
+const taskTeam = (delegator: string) => testCatalogTeamCopy({
+  node: testAgentTeamNode({ address: "/reviewers", coordinatorAddress: "/reviewers/lead", teamRunId: "review-team-run",
+    children: [testAgentNode("/reviewers/lead", { agentRunId: "reviewer-run" })] }),
+  delegatorAgentRunId: delegator, startedAt: T0,
+});
+
+describe.each([
+  {
+    kind: "Team root", delegator: "lead-run", other: "writer-run",
+    tree: teamTree, shape: TEAM_RUN_TREE_SHAPE, agents: (tree: never) => new TeamExecutionIndex(tree).listAgentExecutions().map((agent) => agent.agentRunId),
+    validate: (tree: never, list: CollaborationCommunicationMessage[]) => validateTeamRunStatePackage({ executionTree: tree, communicationMessages: { schemaVersion: 1, rootTeamRunId: "team-root", messages: list } }),
+    write: async (memory: string, tree: never, list: CollaborationCommunicationMessage[]) => {
+      const dir = new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-root", ancestorTeamRunIds: [] });
+      await new TeamRunExecutionTreeStore().write(dir, tree);
+      await new MessageLog(dir, "team_communication_messages").writeInitial(list);
+      return dir;
+    },
+    restore: async (dir: string) => {
+      const loaded = await new TeamRunStatePackageLoader({ executionTreeStore: new TeamRunExecutionTreeStore(), communicationStore: new TeamCommunicationStore() })
+        .load({ teamMemoryDir: dir, rootTeamRunId: "team-root" });
+      return loaded.loaded ? loaded.state.communicationMessages.messages.map((message) => message.messageId) : loaded.message;
+    },
+  },
+  {
+    kind: "Org root", delegator: "director-run", other: "analyst-run",
+    tree: orgTree, shape: AGENT_ORG_RUN_TREE_SHAPE, agents: (tree: never) => new AgentOrgExecutionIndex(tree).listAgents().map((agent) => agent.agentRunId),
+    validate: (tree: never, list: CollaborationCommunicationMessage[]) => validateAgentOrgStatePackage({ executionTree: tree, communicationMessages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: list } }),
+    write: async (memory: string, tree: never, list: CollaborationCommunicationMessage[]) => {
+      const dir = new AgentMemoryLayout(memory).getOrgDirPath("org-root");
+      await new AgentOrgRunExecutionTreeStore().write(dir, tree);
+      await new AgentOrgCommunicationMessagesStore().write(dir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: list });
+      return dir;
+    },
+    restore: async (dir: string) => {
+      const loaded = await new AgentOrgStatePackageLoader({ executionTree: new AgentOrgRunExecutionTreeStore(), messages: new AgentOrgCommunicationMessagesStore() })
+        .load({ orgMemoryDir: dir, orgRunId: "org-root" });
+      return loaded.loaded ? loaded.state.communicationMessages.messages.map((message) => message.messageId) : loaded.message;
+    },
+  },
+])("$kind package state with remote message endpoints (SR-017, F-002)", ({ delegator, other, tree, shape, agents, validate, write, restore }) => {
+  it("a stored delegator ↔ remote message passes the admission scan and a restore", async () => {
+    const memory = await memoryRoot();
+    const dir = await write(memory, tree([localCopy(delegator)], [remoteLink(delegator)]) as never, messages(delegator));
+    const scan = await new RootRunPackageCurrentValidator(memory).scan();
+    expect(scan.diagnostics).toEqual([]);
+    expect(scan.groups.map((group) => group.id)).toEqual([delegator === "lead-run" ? "team-root" : "org-root"]);
+    expect(await restore(dir)).toEqual(["collabmsg_out", "collabmsg_in", "collabmsg_local"]);
+  });
+
+  it("keeps refusing an endpoint outside the run, equal endpoints, and a message with no local endpoint", () => {
+    const second = { ...remoteLink(delegator), agentRunId: "remote-second-run" };
+    const withRemotes = tree([], [remoteLink(delegator), second]) as never;
+    const at = (sender: string, receiver: string): CollaborationCommunicationMessage[] =>
+      [{ messageId: "m", senderAgentRunId: sender, receiverAgentRunId: receiver, content: "x", messageType: "agent_message", referenceFiles: [], createdAt: T0 }];
+    expect(() => validate(withRemotes, at(delegator, "stranger-run"))).toThrow("names AgentRun 'stranger-run', which is not in this run");
+    expect(() => validate(withRemotes, at(delegator, delegator))).toThrow("must use distinct AgentRun endpoints");
+    expect(() => validate(withRemotes, at(REMOTE, "remote-second-run"))).toThrow("has no endpoint that is an agent of this run");
+    expect(() => validate(withRemotes, at(delegator, REMOTE))).not.toThrow();
+    expect(() => validate(withRemotes, at(other, delegator))).not.toThrow();
+  });
+
+  it("N-15: without remote links the endpoint set is the index's agent set (configured members, a task Agent, a task Team)", () => {
+    const local = tree([localCopy(delegator), taskTeam(delegator)], []) as never;
+    const endpoints = [...agentRunIdsOfTree(shape as never, local)].sort();
+    expect(endpoints).toEqual([...agents(local)].sort());
+    expect(endpoints).toEqual(expect.arrayContaining([delegator, other, LOCAL, "reviewer-run"]));
   });
 });
