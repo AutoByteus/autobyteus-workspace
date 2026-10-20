@@ -30,7 +30,6 @@ describe("Daily Assistant bootstrap → GraphQL identity (AC-001–006)", () => 
 
   beforeEach(async () => {
     vi.stubEnv("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", "");
-    vi.stubEnv("AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID", "");
     root = await fs.mkdtemp(path.join(os.tmpdir(), "general-agent-api-"));
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir: root });

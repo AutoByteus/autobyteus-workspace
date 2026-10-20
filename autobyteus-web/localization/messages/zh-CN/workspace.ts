@@ -281,13 +281,6 @@ const messages = {
     "模型",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "选择模型",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.improve_skills": "改进技能",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.standalone_scope": "此运行",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.team_member_scope": "该成员的运行",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.aria_label": "为{{scope}}改进技能",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.tooltip": "为{{scope}}启动一个可见的 Retrospective Skill Improver。它可能更新已配置的技能包，也可能不做更改。",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.run_not_eligible": "此运行不符合技能改进条件。",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.started_toast": "技能改进已启动。技能可能会被更新，也可能不做更改。",
 } satisfies TranslationCatalog;
 
 export default messages;

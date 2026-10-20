@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import { GlobalAgentRunMessageRouter } from "../../../src/agent-communication/services/global-agent-run-message-router.js";
-import { DirectAgentRunMessageGrantRegistry } from "../../../src/agent-communication/services/direct-agent-run-message-grant-registry.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
@@ -36,14 +35,13 @@ const createTargetRun = (input: {
   return { run, postUserMessage, emittedEvents };
 };
 
-const createRouter = (targetRun: AgentRun | null, grantRegistry = new DirectAgentRunMessageGrantRegistry()) => {
+const createRouter = (targetRun: AgentRun | null) => {
   const agentRunManager = {
     getActiveRun: vi.fn(() => targetRun),
   };
   return {
-    router: new GlobalAgentRunMessageRouter({ agentRunManager, grantRegistry }),
+    router: new GlobalAgentRunMessageRouter({ agentRunManager }),
     agentRunManager,
-    grantRegistry,
   };
 };
 
@@ -273,99 +271,5 @@ describe("GlobalAgentRunMessageRouter", () => {
       agentRunId: "target-run",
     });
     expect(target.postUserMessage).toHaveBeenCalledTimes(1);
-  });
-
-  it("enforces direct grants for helper runs and records usage", async () => {
-    const target = createTargetRun({ runId: "target-run" });
-    const grantRegistry = new DirectAgentRunMessageGrantRegistry();
-    const grant = grantRegistry.register({
-      senderRunId: "helper-run",
-      purpose: "skill_improvement_skill_update",
-      allowedTargetAgentRunIds: ["target-run"],
-      allowedMessageTypes: ["skill_update"],
-      allowedReferenceFileRoots: ["/tmp/skill-root"],
-      maxAcceptedDeliveries: 1,
-    });
-    const { router } = createRouter(target.run, grantRegistry);
-    const helperSender = buildAgentRunMessageSenderContext({ senderRunId: "helper-run" });
-
-    await expect(router.deliver({
-      sender: helperSender,
-      targetAgentRunId: "wrong-target",
-      content: "wrong target",
-      messageType: "skill_update",
-    })).resolves.toEqual(expect.objectContaining({
-      accepted: false,
-      code: "DIRECT_MESSAGE_GRANT_TARGET_DENIED",
-    }));
-
-    await expect(router.deliver({
-      sender: helperSender,
-      targetAgentRunId: "target-run",
-      content: "old contract",
-      messageType: "status_update",
-    })).resolves.toEqual(expect.objectContaining({
-      accepted: false,
-      code: "DIRECT_MESSAGE_GRANT_MESSAGE_TYPE_DENIED",
-    }));
-
-    await expect(router.deliver({
-      sender: helperSender,
-      targetAgentRunId: "target-run",
-      content: "bad path",
-      messageType: "skill_update",
-      referenceFiles: ["/tmp/outside.md"],
-    })).resolves.toEqual(expect.objectContaining({
-      accepted: false,
-      code: "DIRECT_MESSAGE_GRANT_REFERENCE_DENIED",
-    }));
-
-    await expect(router.deliver({
-      sender: helperSender,
-      targetAgentRunId: "target-run",
-      content: "sent",
-      messageType: "skill_update",
-      referenceFiles: ["/tmp/skill-root/SKILL.md"],
-    })).resolves.toEqual(expect.objectContaining({ accepted: true }));
-
-    await expect(router.deliver({
-      sender: helperSender,
-      targetAgentRunId: "target-run",
-      content: "second",
-      messageType: "skill_update",
-    })).resolves.toEqual(expect.objectContaining({
-      accepted: false,
-      code: "DIRECT_MESSAGE_GRANT_EXHAUSTED",
-    }));
-
-    const summary = grantRegistry.summarizeGrant(grant.grantId);
-    expect(summary?.acceptedCount).toBe(1);
-    expect(summary?.latestUsage?.code).toBe("DIRECT_MESSAGE_GRANT_EXHAUSTED");
-  });
-
-  it("records a granted helper delivery as target inactive when the target terminates before final send", async () => {
-    const grantRegistry = new DirectAgentRunMessageGrantRegistry();
-    const grant = grantRegistry.register({
-      senderRunId: "helper-run",
-      purpose: "skill_improvement_skill_update",
-      allowedTargetAgentRunIds: ["target-run"],
-      allowedMessageTypes: ["skill_update"],
-      maxAcceptedDeliveries: 1,
-    });
-    const { router } = createRouter(null, grantRegistry);
-
-    const result = await router.deliver({
-      sender: buildAgentRunMessageSenderContext({ senderRunId: "helper-run" }),
-      targetAgentRunId: "target-run",
-      content: "target died",
-      messageType: "skill_update",
-    });
-
-    expect(result.code).toBe("TARGET_AGENT_RUN_NOT_ACTIVE");
-    expect(grantRegistry.summarizeGrant(grant.grantId)?.latestUsage).toEqual(expect.objectContaining({
-      accepted: false,
-      code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-      targetAgentRunId: "target-run",
-    }));
   });
 });

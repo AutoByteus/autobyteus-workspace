@@ -51,16 +51,16 @@ then unions:
   Team and Org members, and members of a task Team in any root).
 
 These tools apply even when the agent definition omitted them. Every
-user-facing standalone run that can host delegated copies (not a server helper
-run with `launchPurpose: "server_helper"`, not application-owned) gets a host
+user-facing standalone run that can host delegated copies (not an
+application-owned run) gets a host
 member context from its Agent root (see
 [Standalone Agent Run Root](./standalone_agent_run_root.md)), so it has
 `send_message_to` and `delegate_task` from its first
 turn. Every runtime reads the same list (AutoByteus through `requestedToolNames`,
 Codex and Claude through `enabledProjectTaskToolNames` on the Agent Tools MCP
 surface). A task Agent directly
-under an Agent root is not Team-scoped and has no `get_handoff_rules`. Server
-helper runs and application-owned runs have no member context and keep their
+under an Agent root is not Team-scoped and has no `get_handoff_rules`.
+Application-owned runs have no member context and keep their
 explicitly configured set. Browser, media, publishing, `list_available_agents`
 and configured MCP-origin tools remain explicitly selected and availability-gated.
 
@@ -93,8 +93,8 @@ provider-native, out-of-band capability contracts.
 
 `send_message_to` and `get_handoff_rules` are the shared first-party Agent
 communication tools. Their canonical contracts, logical-address parsing,
-runtime-neutral services, result projection, direct exact-run routing,
-and optional direct-message grants live under `src/agent-communication`;
+runtime-neutral services, result projection and direct exact-run routing
+live under `src/agent-communication`;
 AutoByteus, Codex, and Claude adapters project the same contracts through their
 effective runtime surfaces. Codex App Server and Claude Agent SDK project both
 tools through the server-hosted
@@ -165,8 +165,8 @@ its definition's `toolNames` select it. It is never added automatically.
   (`createBoundListAvailableAgentsTool`); Codex, Claude, AGY and the other MCP
   runtimes receive it through the Agent Tools MCP adapter
   (`list-available-agents-mcp-adapter-provider.ts`), available only to a sender
-  whose context can list. Runs without a catalog (application-owned and server
-  helper runs) have no lister, so the tool is skipped there.
+  whose context can list. Runs without a catalog (application-owned runs) have no
+  lister, so the tool is skipped there.
 
 The tool controls discovery only. Any agent may delegate to an available address
 with `delegate_task` whether or not it has the tool (REQ-006); `send_message_to`

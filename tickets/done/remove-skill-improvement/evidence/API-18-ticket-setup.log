@@ -1,0 +1,14 @@
+# DR-002 ticket-side setup (throwaway worktree at the ticket head)
+# Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/ab205-dr002-ticket-check @ dd396d8820
+2026-10-20T17:50:04Z
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 14s using pnpm v10.28.2
+install exit=0
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit=0
+│
+◆  Types generated in .nuxt.
+prepare exit=0

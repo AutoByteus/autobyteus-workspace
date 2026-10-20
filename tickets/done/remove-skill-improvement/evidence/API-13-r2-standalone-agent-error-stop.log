@@ -1,0 +1,9 @@
+# Case: API-13 round 2 (standalone-agent-error-stop)
+# Commit: 2147206408 (merged web source)
+# Date: 2026-10-20
+
+
+> autobyteus@1.5.8-beta.3 test:e2e:standalone-agent-error-stop /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web
+> node tests/e2e/standalone-agent-error-stop-probe.mjs --output-dir /tmp/ab205e2e/r2-api13-standalone-agent-error-stop
+
+Standalone Error Stop browser probe passed. Evidence: /tmp/ab205e2e/r2-api13-standalone-agent-error-stop/evidence.json

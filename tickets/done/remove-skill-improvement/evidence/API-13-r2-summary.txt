@@ -1,0 +1,13 @@
+# Case: API-13 round 2 summary
+# Batch: /tmp/ab205e2e/r2.sh
+# Date: 2026-10-20
+
+exit=1 agent-org-draft-retention 2026-10-20T17:06:54Z
+exit=1 agent-org-task-team-disclosure 2026-10-20T17:08:48Z
+exit=0 composer-mention-discoverability 2026-10-20T17:09:22Z
+exit=1 fresh-run-auto-approval 2026-10-20T17:10:25Z
+exit=0 standalone-agent-error-stop 2026-10-20T17:10:53Z
+exit=1 task-agent-monitor-visibility 2026-10-20T17:12:50Z
+exit=0 workspaces-sidebar-dock 2026-10-20T17:14:21Z
+exit=1 task-agent-peer-sidebar 2026-10-20T17:14:42Z
+# grep -i skillImprovement over all round-2 API-13 outputs: 0 files

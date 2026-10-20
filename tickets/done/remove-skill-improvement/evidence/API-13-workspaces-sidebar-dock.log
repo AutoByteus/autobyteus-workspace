@@ -1,0 +1,39 @@
+# Case: API-13 (workspaces-sidebar-dock)
+# Command: pnpm -C autobyteus-web test:e2e:workspaces-sidebar-dock --output-dir /tmp/ab205e2e/api13-workspaces-sidebar-dock
+# Commit: 46c1c6b83d (web source = fc46a7b5fc)
+# Environment: macOS 26.5.2, Node v22.23.1, Google Chrome headless; probe-owned Nuxt dev and fixture route
+# Date: 2026-10-20
+
+
+> autobyteus@1.5.8-beta.2 test:e2e:workspaces-sidebar-dock /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web
+> node tests/e2e/workspaces-sidebar-dock-probe.mjs --output-dir /tmp/ab205e2e/api13-workspaces-sidebar-dock
+
+{
+  "result": "Pass",
+  "cases": {
+    "BR-001": {
+      "result": "Pass",
+      "name": "Wide Team/Activity actual pointer drag, three cycles and meaningful controls"
+    },
+    "BR-002": {
+      "result": "Pass",
+      "name": "Exact capacity neighbors, actual navigation resize and drag while open"
+    },
+    "BR-003": {
+      "result": "Pass",
+      "name": "Constrained modal keyboard/backdrop and wide recovery cleanup"
+    },
+    "BR-004": {
+      "result": "Pass",
+      "name": "Automatic allocation keeps 480 center floor at1210 capacity"
+    }
+  },
+  "cleanup": {
+    "routeRemoved": true,
+    "privateHomeRemoved": true,
+    "nuxtExit": 0,
+    "portFree": true,
+    "browserClosed": true
+  },
+  "evidence": "/tmp/ab205e2e/api13-workspaces-sidebar-dock/evidence.json"
+}

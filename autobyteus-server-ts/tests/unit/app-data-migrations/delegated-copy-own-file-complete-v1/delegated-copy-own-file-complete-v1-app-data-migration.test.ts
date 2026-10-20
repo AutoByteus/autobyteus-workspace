@@ -132,10 +132,11 @@ const seedConvertible = async (memory: string) => {
 };
 
 describe("20261019_delegated_copy_own_file_complete_v1", () => {
-  it("is registered last, required on startup and startup-only", () => {
+  it("is registered after every run-tree migration (only the Skill Improvement data removal follows), required on startup and startup-only", () => {
     const definitions = new AppDataMigrationRegistry().listDefinitions();
-    expect(definitions.at(-1)).toMatchObject({ id: DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
-    expect(definitions.findIndex((definition) => definition.id === TASK_AGENT_OWN_RUN_V1_MIGRATION_ID)).toBeLessThan(definitions.length - 1);
+    expect(definitions.at(-2)).toMatchObject({ id: DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
+    expect(definitions.at(-1)?.id).toBe("20261020_remove_skill_improvement_data");
+    expect(definitions.findIndex((definition) => definition.id === TASK_AGENT_OWN_RUN_V1_MIGRATION_ID)).toBeLessThan(definitions.length - 2);
   });
 
   it("converts every released shape in one start: catalog copies lose origin, configured-place copies take their slot (AC-005, AC-006, AC-008, AC-011)", async () => {

@@ -1,0 +1,18 @@
+# DR-002 base setup: pnpm install --frozen-lockfile; pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web exec nuxt prepare
+# Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/ab205-dr002-base-check @ 3b2c86ca9e (detached, throwaway)
+2026-10-20T17:46:50Z
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 24.4s using pnpm v10.28.2
+install exit=0
+(node:47916) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit=0
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+prepare exit=0

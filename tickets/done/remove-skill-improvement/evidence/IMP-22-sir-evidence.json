@@ -1,0 +1,666 @@
+{
+  "startedAt": "2026-10-20T16:58:29.282Z",
+  "cases": {
+    "SIR-001": {
+      "title": "BEH-003: send_message_to by run id through real tool calls: standalone → standalone delivered, unknown run not active, Team member → member, a Team copy's run id refused naming its coordinator, its coordinator reached",
+      "result": "Pass",
+      "ms": 40541,
+      "details": {
+        "names": {
+          "a": "Sender b843",
+          "b": "Receiver b843",
+          "team": "Relay Team b843",
+          "pair": "Relay Pair b843"
+        },
+        "teamDefinitionId": "relay-team-b843",
+        "b": "receiver_b843_ce18199794ce44d5a42d60f0eff74841",
+        "a": "sender_b843_4e52c91d4f964904962df3111a93a8d4",
+        "toB": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to receiver_b843_ce18199794ce44d5a42d60f0eff74841.\",\"target_agent_run_id\":\"receiver_b843_ce18199794ce44d5a42d60f0eff74841\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to receiver_b843_ce18199794ce44d5a42d60f0eff74841.\",\"target_agent_run_id\":\"receiver_b843_ce18199794ce44d5a42d60f0eff74841\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n0 Events\nNo activity history yet.",
+        "bReceived": true,
+        "bProjectionHasMessage": true,
+        "toUnknown": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":false,\"code\":\"TARGET_AGENT_RUN_NOT_ACTIVE\",\"message\":\"No running agent has the run id 'no_such_run_b843', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.\",\"target_agent_run_id\":null}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TARGET_AGENT_RUN_NOT_ACTIVE\",\"message\":\"No running agent has the run id 'no_such_run_b843', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.\",\"target_agent_run_id\":null},\"isError\":true}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n0 Events\nNo activity history yet.",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"team\",\\n \"target_team_run_id\": \"relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51\",\\n \"target_team_coordinator_agent_run_id\": \"relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a\",\\n \"task_id\": \"ad_hoc_task_fce58295-273c-42c9-98c4-02a17db777e5\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"team\",\"target_team_run_id\":\"relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51\",\"target_team_coordinator_agent_run_id\":\"relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a\",\"task_id\":\"ad_hoc_task_fce58295-273c-42c9-98c4-02a17db777e5\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyTeam": "relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51",
+        "copyLead": "relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a",
+        "toCopyTeam": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":false,\"code\":\"TARGET_IS_TEAM_RUN\",\"message\":\"relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51 is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a.\",\"target_agent_run_id\":null}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TARGET_IS_TEAM_RUN\",\"message\":\"relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51 is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a.\",\"target_agent_run_id\":null},\"isError\":true}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "toCopyLead": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 20, 06:59 PM\n\nto lead\n\nCopy note SIR1-COPY-MARKER.\n\nMessage\nlead\nOct 20, 06:59 PM\n\nCopy note SIR1-COPY-MARKER.\nMessage\nlead\nOct 20, 06:59 PM\n\nCopy note SIR1-COPY-MARKER.",
+        "toCopyLeadCode": "DELIVERED",
+        "copyLeadReceived": true,
+        "teamRunId": "relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6",
+        "teamMembers": {
+          "lead": "relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9",
+          "member": "relay_member_b843_7349277080ed45b093ce50d46bbe4414"
+        },
+        "toMember": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"relay_member_b843_7349277080ed45b093ce50d46bbe4414\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"relay_member_b843_7349277080ed45b093ce50d46bbe4414\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 20, 06:59 PM\n\nto member\n\nMember note SIR1-MEMBER-MARKER.\n\nMessage\nmember\nOct 20, 06:59 PM\n\nMember note SIR1-MEMBER-MARKER.\nMessage\nmember\nOct 20, 06:59 PM\n\nMember note SIR1-MEMBER-MARKER.",
+        "toMemberCode": "DELIVERED",
+        "memberReceived": true
+      }
+    },
+    "SIR-002": {
+      "title": "AC-003/AC-004: an upgrade around real runs deletes exactly the feature data once; other files and .env byte-identical; a second start changes nothing; runs listed and resumed; no feature UI; retired keys refused",
+      "result": "Pass",
+      "ms": 59342,
+      "details": {
+        "freshRecord": {
+          "migrationId": "20261020_remove_skill_improvement_data",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+          "errorMessage": null
+        },
+        "names": {
+          "agent": "Upgrade Agent 8236",
+          "team": "Upgrade Team 8236"
+        },
+        "teamDefinitionId": "upgrade-team-8236",
+        "runId": "upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421",
+        "teamRunId": "upgrade_team_8236_f33b56396763496fb389db1fe0e45fab",
+        "members": {
+          "lead": "upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca",
+          "member": "upgrade_member_8236_3c96506569d34f21906f779112f7bf39"
+        },
+        "agentSession": "1b6c44a6-2634-4303-8af9-c7b299da5b97",
+        "memberDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U/server-data/memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39",
+        "leadDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U/server-data/memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca",
+        "envBefore": "APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U/server-data/db/probe.db\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:63103\nENABLE_APPLICATIONS=false",
+        "envWithKeys": "APP_ENV=development\nENABLE_SKILL_IMPROVEMENT=true\nDB_TYPE=sqlite\nAUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID=autobyteus-retrospective-skill-improver\nDATABASE_URL=file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U/server-data/db/probe.db\nENABLE_SELF_EVOLUTION=false\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:63103\nENABLE_APPLICATIONS=false",
+        "realRows": [
+          {
+            "runId": "upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421",
+            "agentDefinitionId": "upgrade-agent-8236",
+            "agentName": "Upgrade Agent 8236",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U/server-data/temp_workspace",
+            "summary": "Hello. Marker SIR2-A.",
+            "createdAt": "2026-10-20T16:59:58.025Z",
+            "archivedAt": null,
+            "terminatedAt": null
+          },
+          {
+            "runId": "sender_b843_4e52c91d4f964904962df3111a93a8d4",
+            "agentDefinitionId": "sender-b843",
+            "agentName": "Sender b843",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U/server-data/temp_workspace",
+            "summary": "Hello. Marker SIR1-A.",
+            "createdAt": "2026-10-20T16:59:25.682Z",
+            "archivedAt": null,
+            "terminatedAt": null,
+            "hasCollaboration": true
+          },
+          {
+            "runId": "receiver_b843_ce18199794ce44d5a42d60f0eff74841",
+            "agentDefinitionId": "receiver-b843",
+            "agentName": "Receiver b843",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U/server-data/temp_workspace",
+            "summary": "Hello. Marker SIR1-B.",
+            "createdAt": "2026-10-20T16:59:17.602Z",
+            "archivedAt": null,
+            "terminatedAt": null
+          }
+        ],
+        "deleted": [
+          "memory/skill_improvement",
+          "memory/self_evolution",
+          "memory/agents/retrospective_skill_improver_1111",
+          "memory/agents/retrospective_skill_improver_2222",
+          "memory/agents/retrospective_skill_improver_3333",
+          "memory/agents/helper_run_5555",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/skill_improvement",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/skill_improvement",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/self_evolution",
+          "agents/autobyteus-retrospective-skill-improver"
+        ],
+        "before": {
+          ".env": "e24ae31fc9a98b9250da9f6d804bcdcbce47837cf281bc051fd01b92a1c2a4de",
+          "ad-hoc-tasks/": "dir",
+          "ad-hoc-tasks/ad_hoc_task_fce58295-273c-42c9-98c4-02a17db777e5/": "dir",
+          "ad-hoc-tasks/ad_hoc_task_fce58295-273c-42c9-98c4-02a17db777e5/agent_run_resources.json": "66de98bdb6d2faf642f927fd24390e3f92b9f4751b2b820f3b39cf6a68aac858",
+          "ad-hoc-tasks/ad_hoc_task_fce58295-273c-42c9-98c4-02a17db777e5/task.json": "2e4dbaaf27a3c7331d72112d54164f9b6e8d46c78907d676824db5ae200f9709",
+          "agent-orgs/": "dir",
+          "agent-orgs/hostorg-org-dfa7/": "dir",
+          "agent-orgs/hostorg-org-dfa7/org-config.json": "e0177323967928df66041c513e0b9009f4a35debf264fbe11994810c8444f5b5",
+          "agent-orgs/hostorg-org-dfa7/org.md": "f9dfea09ab09df5bdcc49d5539b694a37c0304b263fcdcf043b3306dc07643f5",
+          "agent-orgs/launchorg-org-0617/": "dir",
+          "agent-orgs/launchorg-org-0617/org-config.json": "0890ad6a121f2e677905f80fddf15d4f6a4a00183ad970819d103dc6271ae6a7",
+          "agent-orgs/launchorg-org-0617/org.md": "487ab900b95a0c2f5912a7faa92f0a07daa632034deaae565a981d658dc0ffb7",
+          "agent-teams/": "dir",
+          "agent-teams/build-team-7a6c/": "dir",
+          "agent-teams/build-team-7a6c/team-config.json": "f5d1b9eb9f5c78c51414eab17a4d0f855c7a848505ddf1cc2d50d30cb03c6b83",
+          "agent-teams/build-team-7a6c/team.md": "5a5afc74ccc2ee6b62c9f19a63d10ced02d9dd29794df4dadda9de3b1076154d",
+          "agent-teams/home-team-7945/": "dir",
+          "agent-teams/home-team-7945/team-config.json": "885ba7cd54a790a837402ed7998e24da663139022fdc2de2481d62822581ae8b",
+          "agent-teams/home-team-7945/team.md": "eb01a731ddaf014125e54736339bd331c6204aebccda35d32a30c5c1cc502697",
+          "agent-teams/pair-team-c73f/": "dir",
+          "agent-teams/pair-team-c73f/team-config.json": "6ed9cb3cd9c3ae44eb41684e0e7d93c0ad870a494d195d99dc2c4f7d3593d205",
+          "agent-teams/pair-team-c73f/team.md": "fceae719eb74ae31e384f1d152306a6c75d779b2f16c7a08a6b26d265e5af35e",
+          "agent-teams/relay-pair-b843/": "dir",
+          "agent-teams/relay-pair-b843/team-config.json": "4387dcbe800f8f136fe5183ad008b9cfebb2c721d2e9649c6a1595c0e1d982a8",
+          "agent-teams/relay-pair-b843/team.md": "7fff056a443ab8ccdbf48a521da1040ccd7b4e76a9a1b4d8401287bfffff664a",
+          "agent-teams/relay-team-b843/": "dir",
+          "agent-teams/relay-team-b843/team-config.json": "0e1f88f5e7859751e4d9fbf19826a694169849d54ff020656d3d038a82284e58",
+          "agent-teams/relay-team-b843/team.md": "0f8eac95adefcc2a180a7b73aeb295be0b1e29762a40f88e77477353207032fd",
+          "agent-teams/squad-team-5bb3/": "dir",
+          "agent-teams/squad-team-5bb3/team-config.json": "d2863ab2a4f422027fdba5be567cfe07aae1b1c556b4b92dc7b82388f682d37b",
+          "agent-teams/squad-team-5bb3/team.md": "f83a6b55df53c32a8fac53f7a7b9a0370a45d24c8797a7f908a3937b3d110fef",
+          "agent-teams/upgrade-team-8236/": "dir",
+          "agent-teams/upgrade-team-8236/team-config.json": "ee961babd46ce3fa228e494c7b57eb864a1a42bdf2b66bae44a64016a5569ffc",
+          "agent-teams/upgrade-team-8236/team.md": "2e0cbe667d783e7ecda759b5618faf7862d574b8f4549dd4748806d263fb7dc4",
+          "agents/": "dir",
+          "agents/autobyteus-daily-assistant/": "dir",
+          "agents/autobyteus-daily-assistant/agent-config.json": "47681db331664b222716f841da5ec57d48172ede96d470de79b9397ec1531042",
+          "agents/autobyteus-daily-assistant/agent.md": "49ed6e909ef92a470fb8b3fce84f471334cd125ff50adf2f5e6aff60389d07b7",
+          "agents/autobyteus-retrospective-skill-improver/": "dir",
+          "agents/autobyteus-retrospective-skill-improver/agent-config.json": "2ae716a6349b6108e0c634e24dadc51e404394279e8a51c703f13702aeaafb4b",
+          "agents/autobyteus-retrospective-skill-improver/agent.md": "34bd8efa74d76726e14db75c3552b3b10a4a0d22676b63e25387b1a6fc996702",
+          "agents/autobyteus-retrospective-skill-improver/skills/": "dir",
+          "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/": "dir",
+          "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/SKILL.md": "6504f2de0a1febf7492c3b98f93d9ab49558eb364607a706f02fe9a75aa7f75b",
+          "agents/autobyteus-skill-evolver/": "dir",
+          "agents/autobyteus-skill-evolver/agent.md": "566f785eb795ef4399e7fc121eccb27245afcf9386d24f4740ab35c58a864f80",
+          "agents/badsettings-d54b/": "dir",
+          "agents/badsettings-d54b/agent-config.json": "e9baf0bb71abd290b463f9a5b1d4a8e4f6c03b342f578976eab4afa1f625c06f",
+          "agents/badsettings-d54b/agent.md": "3155abfa78d440bec704ba74ee34e3f6d600bbc859194f928c09e8c9b4e55888",
+          "agents/engineer-c9ee/": "dir",
+          "agents/engineer-c9ee/agent-config.json": "45deb1cbb8e14ca868846495fe080bed60c166c92533300ff1aea6f042ba7d1b",
+          "agents/engineer-c9ee/agent.md": "8de935427e3b1e16800bea762ea060a49ab776c1b083f07a85a2295d9e319cbe",
+          "agents/incomplete-4c85/": "dir",
+          "agents/incomplete-4c85/agent-config.json": "fd8601fff83f776d46ee21dd059d79b17d6d791418b6b8c8f4682dd391893ca1",
+          "agents/incomplete-4c85/agent.md": "6c376b84337b5bd3391ae262d832a750eac69694b8633428eb904f21be3507bc",
+          "agents/lead-0501/": "dir",
+          "agents/lead-0501/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/lead-0501/agent.md": "974b9c65f5f05ceff34a134ac330422ce4b32aef9ce205ae8a2578fc07ed3f99",
+          "agents/manager-5659/": "dir",
+          "agents/manager-5659/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/manager-5659/agent.md": "ad74f01ec854b2d613dff32f2e44f0b04a8694a71870e1f8fe04e84006760391",
+          "agents/offline-c1c3/": "dir",
+          "agents/offline-c1c3/agent-config.json": "d222fb3e308e38b19c79abc4a6a414f7d252fcc6c1f1a1d4fa9b67a9bcec4615",
+          "agents/offline-c1c3/agent.md": "c62e436598759f393eacacdd13d61d1ec05d3fdf8f056f536cd6fed58e2ede05",
+          "agents/plain-8923/": "dir",
+          "agents/plain-8923/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/plain-8923/agent.md": "9bfc69abd8a5cac03292044d535bdd04ba425d9eedd44ac736dc6245244a49c4",
+          "agents/receiver-b843/": "dir",
+          "agents/receiver-b843/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/receiver-b843/agent.md": "4af4a31fe7397c0483cc88c0b05959efaf57f9fd45ee927bea36d4093eb8e7a9",
+          "agents/relay-lead-b843/": "dir",
+          "agents/relay-lead-b843/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/relay-lead-b843/agent.md": "40a82f9827c134e57ff34cf935077443598303bfacabfc078a105028c3a07e89",
+          "agents/relay-member-b843/": "dir",
+          "agents/relay-member-b843/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/relay-member-b843/agent.md": "b5123b3f2c4e3726f59807e8dda6267d6a43ac5ec4ccb8126154cda040ca64ea",
+          "agents/reviewer-5356/": "dir",
+          "agents/reviewer-5356/agent-config.json": "10ef0f3f8cfee6f26092862b66c585e41f9948d9eae5445f317c3af6720071e4",
+          "agents/reviewer-5356/agent.md": "d7cd2d3f9a081c1ed76bfeaaa524868de768fe5b99cf8f239c8edfbde85b53a0",
+          "agents/sender-b843/": "dir",
+          "agents/sender-b843/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/sender-b843/agent.md": "cf5068b142819d90a6efa4f92c54d0f2aad11889b063d1d3cc2fd563428e1bc4",
+          "agents/unoffered-0984/": "dir",
+          "agents/unoffered-0984/agent-config.json": "6c55bdace40b6f7f5136bb34114d4aae6f65e441ed66c37a6110066773d4660c",
+          "agents/unoffered-0984/agent.md": "a7d85255a22ae1bc994a58edaf21a2dbdf85814b5ae0575c9cb8caeda92e39cc",
+          "agents/upgrade-agent-8236/": "dir",
+          "agents/upgrade-agent-8236/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/upgrade-agent-8236/agent.md": "1194a2479de3bf9fafcbbe6bccd775f23ec12d2b680ef8cc8f1a67d0aea1d2d4",
+          "agents/upgrade-lead-8236/": "dir",
+          "agents/upgrade-lead-8236/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/upgrade-lead-8236/agent.md": "94c127fadbe22a3c38bdae68615480d31aa4b19c431e9a8bd85ebe9e78ca6b86",
+          "agents/upgrade-member-8236/": "dir",
+          "agents/upgrade-member-8236/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/upgrade-member-8236/agent.md": "7fbdace325ab2f93b4a5a2501174d66fe40772797ea79984781f93b8eaca84f6",
+          "agents/worker-ce05/": "dir",
+          "agents/worker-ce05/agent-config.json": "20e71a5ed2f26c579b63c6aba919cf058fb5ec1957fe1d727541219f9e9e924e",
+          "agents/worker-ce05/agent.md": "e311973312f2f0810fc58fa43a2f807dbfcb657d01d95f6bfd85df8b98ce1e9f",
+          "agents/writer-b68e/": "dir",
+          "agents/writer-b68e/agent-config.json": "10ef0f3f8cfee6f26092862b66c585e41f9948d9eae5445f317c3af6720071e4",
+          "agents/writer-b68e/agent.md": "d32a7e8f1fdfe4e54ceae5e5f5d1757d92423bf96762405a87774f5333f3e3ff",
+          "application-packages/": "dir",
+          "application-packages/platform/": "dir",
+          "application-packages/platform/applications/": "dir",
+          "application-packages/platform/applications/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "applications/": "dir",
+          "applications/_global/": "dir",
+          "applications/_global/db/": "dir",
+          "applications/_global/db/orchestration.sqlite": "f0d160fdecd1e7847acba3025eb2c852a52766e6880e3730a4eb6640b8f52a4d",
+          "download/": "dir",
+          "llm/": "dir",
+          "memory/": "dir",
+          "memory/agent_teams/": "dir",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/": "dir",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/": "dir",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/agy-project/": "dir",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/agy-project/.agents/": "dir",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/agy-project/.agents/agents/": "dir",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/agy-project/.agents/agents/autobyteus-631dd3972660bdaf/": "dir",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/agy-project/.agents/agents/autobyteus-631dd3972660bdaf/agent.md": "eaa8631bde12ce8834c6a660e60a5f1fbbdef1a5b8858f004ed7de5a037ecfd4",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/agy-project/.agents/mcp_config.json": "4144ad3ac9a2d3258ffcf920fbfd1a105784fbdd6d9b48d22c7ac6a2355190a7",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/agy-project/.agents/skills/": "dir",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/agy-project/manifest.json": "b268e962ea7d547a3fd39d8fb487daf26f62a53635b3026fff9b755c1b7a6c1d",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/raw_traces_active.jsonl": "f01fc988de8c88fff04e46d390905c2fc250f015b487dda17401b91faaef45b7",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/work_journal/": "dir",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/work_journal/work_journal_active.md": "f70e18bf5dc46014534a34ed49610aafe6e43b6b5b16895d3d340e188897ff5e",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/relay_lead_b843_6494a06a1291419a87ebea7ab6016c3a/work_journal/work_journal_manifest.json": "fa96901a1966e6c55b394f64112c8148a2c46a3fdfc7c36af86925231d7b9419",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/team_communication_messages_active.jsonl": "3874ada78223b53e3c5f37d05702dc4dffeee9aad64dcb718be2f98e1ed3bc1d",
+          "memory/agent_teams/relay_pair_b843_d825fe7f5eca410aabab5cf24ec20a51/team_run_execution_tree.json": "ff50fa7058c8d2f5230bc09803ab7ac7db030bda0c43ceda2df21b2fd6f2d667",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/agy-project/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/agy-project/.agents/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/agy-project/.agents/agents/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/agy-project/.agents/agents/autobyteus-605d89697201192b/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/agy-project/.agents/agents/autobyteus-605d89697201192b/agent.md": "d0e25536f7ce948d09371670389ea03d3aef13ef1d1ecab40bbc9173bb064196",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/agy-project/.agents/mcp_config.json": "3a1418cb4c4d4d20ba42b90b1035f32c66d532e9513edde432bfaf757e47486a",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/agy-project/.agents/skills/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/agy-project/manifest.json": "4775ed4d0f88ee473ddc9e068073918b9eaf012573312814e5c486174ed51573",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/raw_traces_active.jsonl": "b0ce54981ca783d36435ee622fff92c74e70d73cf86eea6d4d827f0fccc2a86e",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/work_journal/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/work_journal/work_journal_active.md": "9996bbaa830ebdb3026ed251d2d8140624b46cc263375da11b1d2476e3a9373d",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_lead_b843_7fc923b5728045c78f91d2f07dc0c6c9/work_journal/work_journal_manifest.json": "31fec9f7371313c22c91c362fd9e368701c6405b246c70e2deb22aa9556099f2",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/agy-project/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/agy-project/.agents/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/agy-project/.agents/agents/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/agy-project/.agents/agents/autobyteus-515a5aeaf6244b43/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/agy-project/.agents/agents/autobyteus-515a5aeaf6244b43/agent.md": "d7602e01f3c4a470788c5282944013ebffa15ff73cebb1fc71fc3f4b6f133fbc",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/agy-project/.agents/mcp_config.json": "2037ec6fb38266b52f7dbdabd8ef9a2bbf600d52ca607904ddb2928cd4f085c2",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/agy-project/.agents/skills/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/agy-project/manifest.json": "dad0f854870b6ccbab21b13cc09176070cbf7bb51a902d082923c42a3131a994",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/raw_traces_active.jsonl": "f249a7dc74ed488a22c8293077c480821182655703597ee4bcfce11d10b17302",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/work_journal/": "dir",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/work_journal/work_journal_active.md": "9ec65bc95a750fb00d17d1cd324caf37ae6f9d954844291437e9bd8900210743",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/relay_member_b843_7349277080ed45b093ce50d46bbe4414/work_journal/work_journal_manifest.json": "1b7bd78b99d4b28b840d80ba38405ea22659317235c9ae6d8c3b3ae2cc0af508",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/team_communication_messages_active.jsonl": "426df1b100c4d2985e4cc50b965f78e2be5e6fc8d79e1598f9ea98868c16f411",
+          "memory/agent_teams/relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6/team_run_execution_tree.json": "c0e63d30b944b824546f63aa5b304dc4641cd10a69f6376304ab5dea2627eded",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/team_communication_messages_active.jsonl": "d7219cc0f16e8ef73a05c006cf1fc3338a8f397212d21eedf2405df6eb00dc02",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/team_run_execution_tree.json": "175c0692f3969b59c35147d8684075952cb04013f3a874d793b46e2ed6b2b004",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/agy-project/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/agy-project/.agents/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/agy-project/.agents/agents/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/agy-project/.agents/agents/autobyteus-1ce8ed9edda33029/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/agy-project/.agents/agents/autobyteus-1ce8ed9edda33029/agent.md": "ae338e8e0ecb3a8e0cdab2f9448c5557ab5c0f45a62b031aa6d989149d88e9be",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/agy-project/.agents/mcp_config.json": "bccade635056d7392e4254c3ee5367a0d065a7dadf822e09fc33542b4c27d6d7",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/agy-project/.agents/skills/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/agy-project/manifest.json": "913516033af2a90244f37d65bc63e1685d8ac68c55b2d64409f0032592d46c3b",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/raw_traces_active.jsonl": "10de2454ac854818ef0d6be778e25d6b23b77aec6a615faa7feb8d47cbe4264b",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/self_evolution/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/self_evolution/evolver_session.json": "96f242a7b21dffe8a22948b7f988463911fe7e28b1d86c0fa807508e6792c607",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/work_journal/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/work_journal/work_journal_active.md": "b3e8ce69bf75df5d93efebde4d36e28a3d36d1c1253b6be1cb71879fb4eb9d9d",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_lead_8236_4a7b94f602c64f57bff623e150736dca/work_journal/work_journal_manifest.json": "73dba2e9163a1089a67ba84fbd70fec827e1a1c44881cab5a4c0bf2c784bc1f1",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/agy-project/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/agy-project/.agents/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/agy-project/.agents/agents/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/agy-project/.agents/agents/autobyteus-a5dd06d02e36fcf1/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/agy-project/.agents/agents/autobyteus-a5dd06d02e36fcf1/agent.md": "0e84011e373f3473232115966a54096384f23cecfaec2c39714e5fd3a8e8ceda",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/agy-project/.agents/mcp_config.json": "0212a1ceffa29c08837a4600b4882d34f950ead04518d1958adc91e911ffdec5",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/agy-project/.agents/skills/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/agy-project/manifest.json": "ca06033d53dc6e131ff6be2b30ba1b51e69666181fc949ef18e7f434c02d5f8b",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/raw_traces_active.jsonl": "2bb6915754f411b20122d6874e5f78d5da6d98ecfbfb59745a7ae8b1f86acd84",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/skill_improvement/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/skill_improvement/improver_session.json": "bb3a9798bbfd4fc0781f139e7465cebbde1888084ba227c81075879ecd997373",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/work_journal/": "dir",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/work_journal/work_journal_active.md": "1106491a01c007d50e168c7d226c1c15e4ed962187a0278e450648465fa8d525",
+          "memory/agent_teams/upgrade_team_8236_f33b56396763496fb389db1fe0e45fab/upgrade_member_8236_3c96506569d34f21906f779112f7bf39/work_journal/work_journal_manifest.json": "2e4586b5e8743ba810a5a08a543c55eb81aa547adde674245034a19947f627fe",
+          "memory/agents/": "dir",
+          "memory/agents/helper_run_5555/": "dir",
+          "memory/agents/helper_run_5555/raw_traces_active.jsonl": "2a24c0519fa6d51144b786c7a345dee36ef93667b918f2e84f6d66a80879ac58",
+          "memory/agents/helper_run_5555/run_metadata.json": "2960bb0b95c0f4f159ef1934cb20e571804af78484800124792f4e6b80552f42",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/": "dir",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/agy-project/": "dir",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/agy-project/.agents/": "dir",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/agy-project/.agents/agents/": "dir",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/agy-project/.agents/agents/autobyteus-2ebbda343532d873/": "dir",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/agy-project/.agents/agents/autobyteus-2ebbda343532d873/agent.md": "3de32d4875fd85c807d33d5bd45e61577280566d99223829d1b8e170c169c050",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/agy-project/.agents/mcp_config.json": "66b6bcfed5197c1433ee58a315938bc0f673f706f1c76df70ad7e8a05b1102d2",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/agy-project/.agents/skills/": "dir",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/agy-project/manifest.json": "12f1fd35f30941aae5efa4588c008bb418aff7384901e1c0ffa6ce606f7ea002",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/raw_traces_active.jsonl": "fafbacc5bea7ea9200853916a4d2a78a00f9d7676566afa7961051b374253e58",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/run_metadata.json": "b08ee88953a5e4d60ae5b8a3c0012e52d16b31927066941f7def8c20a1e09a52",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/work_journal/": "dir",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/work_journal/work_journal_active.md": "8bfa1b55a63b3414f7b5e7b319cde2a422742fa49c3abe7954dcae210870bb2d",
+          "memory/agents/receiver_b843_ce18199794ce44d5a42d60f0eff74841/work_journal/work_journal_manifest.json": "541b6a93cad3d00440df88de263932dd369d5606ae032152191a3aea78c2888a",
+          "memory/agents/retrospective_skill_improver_1111/": "dir",
+          "memory/agents/retrospective_skill_improver_1111/raw_traces_active.jsonl": "737c9ec6e1b47dad1b4ecf8e8067c0c1da27198ba80205630b3de9761a56e6f3",
+          "memory/agents/retrospective_skill_improver_1111/run_metadata.json": "4293b59943335c6fb81f5064d781ba6e6b4250b7a5453ff25cb718c2b900f2ae",
+          "memory/agents/retrospective_skill_improver_2222/": "dir",
+          "memory/agents/retrospective_skill_improver_2222/raw_traces_active.jsonl": "8f68e9eab6613a1588ddfa88b862148c3c84ee0cd4fdc508f34913644caa51d7",
+          "memory/agents/retrospective_skill_improver_2222/run_metadata.json": "6dab9b6bf215139aebad6abb1bc8be7ce8452edda643e5841035e74da91efb2a",
+          "memory/agents/retrospective_skill_improver_3333/": "dir",
+          "memory/agents/retrospective_skill_improver_3333/raw_traces_active.jsonl": "7dd1686eecd3f8406619b167894ef516bf98e11ac85c0eb0b256a5957cb62af7",
+          "memory/agents/retrospective_skill_improver_3333/run_metadata.json": "1488a2e3e07ac90c3ab76e8db68c85d8aabffe0d6a6d62ef96de4f9ef2f3a1c9",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/": "dir",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/agy-project/": "dir",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/agy-project/.agents/": "dir",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/agy-project/.agents/agents/": "dir",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/agy-project/.agents/agents/autobyteus-360b48ca752fb5a5/": "dir",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/agy-project/.agents/agents/autobyteus-360b48ca752fb5a5/agent.md": "89d95bdde8cd4ed50ca5b3a5500509baadf1632dbd2da25497f4fd0f140b5522",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/agy-project/.agents/mcp_config.json": "4dd9a4c66c93264812b2295c334b1acecb819805f1fdd5b705ed15fad8fb2142",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/agy-project/.agents/skills/": "dir",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/agy-project/manifest.json": "a521c6d267b67975f813ab08fa1a745405241c349946ddc0c66e95946fe63093",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/collaboration/": "dir",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/collaboration/collaboration_tree.json": "ce1e206329995e5d41327a3a12167781d400900c39229b58303a2e56fa69fbd3",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/collaboration/communication_messages_active.jsonl": "3874ada78223b53e3c5f37d05702dc4dffeee9aad64dcb718be2f98e1ed3bc1d",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/raw_traces_active.jsonl": "a0c581eda3adc435b32c8fa7a29d65d64a161d3083e8c4eba2fa123c0e43b454",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/run_metadata.json": "a1d98db954db0818086a92e80c8b95053b84c2fcb86d8b6b1b2524cb5fc3ba9d",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/work_journal/": "dir",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/work_journal/work_journal_active.md": "29dc62f1b5a9b9a9624934266b5c59e7a98016a960cc88cd9cbb3e0230d817d2",
+          "memory/agents/sender_b843_4e52c91d4f964904962df3111a93a8d4/work_journal/work_journal_manifest.json": "33951ceb4059edf0bfb0d57da905e673d25a159774d4166bee096b3bd4231f4a",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/": "dir",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/agy-project/": "dir",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/agy-project/.agents/": "dir",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/agy-project/.agents/agents/": "dir",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/agy-project/.agents/agents/autobyteus-2965cf97ee6f51c5/": "dir",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/agy-project/.agents/agents/autobyteus-2965cf97ee6f51c5/agent.md": "1961283bc942bf50474c67f7d22fa6c16a3e8a4a38c2a38faa8218feef9ee51f",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/agy-project/.agents/mcp_config.json": "003ead8287320201e16d329ee9df7ab2b388c1c20bc28b3ea5c69b2ff153f415",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/agy-project/.agents/skills/": "dir",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/agy-project/manifest.json": "c8856b4b56138824d551e17f2943ce2fdb1959dae652ba2e531cfd0ee99ea5ab",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/raw_traces_active.jsonl": "e6552e3aca828cbfac9e93cdd945d3dc9cabd6fe96c6221327be7e4f460c8725",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/run_metadata.json": "43c4d7483dbdc0c43fb21fed5ff575420cc2bbdafd36687a2a733650cfe5b5e5",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/seen_skill_versions.json": "1410831f099de6212dcd908b62d62df171dfccda3b7cbfbde9f5dda4ff608dfc",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/skill_improvement/": "dir",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/skill_improvement/improver_session.json": "96749a550ec8a61ac7fc808924e06ce7592d4a5a724e3e918dbecb2a1ea0f288",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/work_journal/": "dir",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/work_journal/work_journal_active.md": "2d9b3d61115fa7ea18547b5000f39e7373caee3d9eafd265101023473c96ce9c",
+          "memory/agents/upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421/work_journal/work_journal_manifest.json": "f385f2a0b1d3a7c256160dd4c0840b0f1bcae255e3a8e27182f0635f86dcf12c",
+          "memory/run_history_index.json": "a38a3ece16765d53f82562fe06abea6f8eab5cf0f4cd62da010280706376cc22",
+          "memory/self_evolution/": "dir",
+          "memory/self_evolution/evolution_runs/": "dir",
+          "memory/self_evolution/evolution_runs/evol_01/": "dir",
+          "memory/self_evolution/evolution_runs/evol_01/record.json": "2e7267183409d6759f78350ed5bdf674ad8a9865703e5691f328ff2631fea704",
+          "memory/self_evolution/index.json": "331bae40f0d8517f1061ab5a861bdf7ab17572a365399793e62323ead8a512b8",
+          "memory/skill_improvement/": "dir",
+          "memory/skill_improvement/improvement_runs/": "dir",
+          "memory/skill_improvement/improvement_runs/impr_01/": "dir",
+          "memory/skill_improvement/improvement_runs/impr_01/record.json": "09e7eb61728b198615f272719f051cb8c84e38a4aebd5736fdb8bf75c41a94b0",
+          "memory/skill_improvement/improvement_runs/impr_02/": "dir",
+          "memory/skill_improvement/improvement_runs/impr_02/record.json": "70fbf511c629a189e9883892e091def22f66fbe68268d78e5f2501d08e2b51b9",
+          "memory/skill_improvement/improvement_runs/impr_03/": "dir",
+          "memory/skill_improvement/improvement_runs/impr_03/record.json": "38f6c280c6dba58e1c2be13dc7852f59044f26bae6d2c957c894ee0deff0a881",
+          "memory/skill_improvement/index.json": "cc8a98224c17876a337cd94826a0d7f4a573019e7eac802e9a28d3894e4cc82f",
+          "memory/team_run_history_index.json": "337723a3d42d8d64c3073b829a7c127c837381ec742c65b3e4e35dd4fde5f6ee",
+          "skills/": "dir",
+          "temp_workspace/": "dir"
+        },
+        "firstRecord": {
+          "migrationId": "20261020_remove_skill_improvement_data",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 11; migrated 11; skipped 0; failed 0.",
+          "errorMessage": null
+        },
+        "stillThere": [],
+        "changed": [],
+        "rowsChanged": [],
+        "helperRowsLeft": [],
+        "envAfter": "APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U/server-data/db/probe.db\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:63103\nENABLE_APPLICATIONS=false",
+        "counts": {
+          "featurePaths": 10,
+          "keptFiles": 236
+        },
+        "secondRecord": {
+          "migrationId": "20261020_remove_skill_improvement_data",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 11; migrated 11; skipped 0; failed 0.",
+          "errorMessage": null
+        },
+        "secondChanged": [],
+        "secondAdded": [],
+        "history": {
+          "agentRuns": [
+            "receiver_b843_ce18199794ce44d5a42d60f0eff74841",
+            "sender_b843_4e52c91d4f964904962df3111a93a8d4",
+            "upgrade_agent_8236_913b980d0cf84925bf9fb50008ec2421"
+          ],
+          "teamRuns": [
+            "upgrade_team_8236_f33b56396763496fb389db1fe0e45fab",
+            "relay_team_b843_750e6b4a90d84e8da13e3967ee4e5bc6"
+          ]
+        },
+        "agentIds": [
+          {
+            "id": "autobyteus-daily-assistant",
+            "name": "Daily Assistant"
+          },
+          {
+            "id": "autobyteus-skill-evolver",
+            "name": "Skill Self-Evolver"
+          },
+          {
+            "id": "badsettings-d54b",
+            "name": "Badsettings d54b"
+          },
+          {
+            "id": "engineer-c9ee",
+            "name": "Engineer c9ee"
+          },
+          {
+            "id": "incomplete-4c85",
+            "name": "Incomplete 4c85"
+          },
+          {
+            "id": "lead-0501",
+            "name": "Lead 0501"
+          },
+          {
+            "id": "manager-5659",
+            "name": "Manager 5659"
+          },
+          {
+            "id": "offline-c1c3",
+            "name": "Offline c1c3"
+          },
+          {
+            "id": "plain-8923",
+            "name": "Plain 8923"
+          },
+          {
+            "id": "receiver-b843",
+            "name": "Receiver b843"
+          },
+          {
+            "id": "relay-lead-b843",
+            "name": "Relay Lead b843"
+          },
+          {
+            "id": "relay-member-b843",
+            "name": "Relay Member b843"
+          },
+          {
+            "id": "reviewer-5356",
+            "name": "Reviewer 5356"
+          },
+          {
+            "id": "sender-b843",
+            "name": "Sender b843"
+          },
+          {
+            "id": "unoffered-0984",
+            "name": "Unoffered 0984"
+          },
+          {
+            "id": "upgrade-agent-8236",
+            "name": "Upgrade Agent 8236"
+          },
+          {
+            "id": "upgrade-lead-8236",
+            "name": "Upgrade Lead 8236"
+          },
+          {
+            "id": "upgrade-member-8236",
+            "name": "Upgrade Member 8236"
+          },
+          {
+            "id": "worker-ce05",
+            "name": "Worker ce05"
+          },
+          {
+            "id": "writer-b68e",
+            "name": "Writer b68e"
+          }
+        ],
+        "agentsPage": {
+          "selfEvolver": 1,
+          "traces": {
+            "text": false,
+            "hooks": 0
+          }
+        },
+        "memoryPage": {
+          "traces": {
+            "text": false,
+            "hooks": 0
+          },
+          "helperIds": []
+        },
+        "basics": {
+          "cards": [
+            "applications-feature-toggle-card"
+          ],
+          "traces": {
+            "text": false,
+            "hooks": 0
+          }
+        },
+        "advancedKeys": [
+          "APP_ENV",
+          "AUTOBYTEUS_MEMORY_DIR",
+          "AUTOBYTEUS_SERVER_HOST",
+          "DATABASE_URL",
+          "DB_TYPE",
+          "ENABLE_APPLICATIONS"
+        ],
+        "refusal": "Error updating server setting: SERVER_SETTING_UPDATE_REJECTED",
+        "serverReason": "response: {\"updateServerSetting\":\"Error updating server setting: SERVER_SETTING_UPDATE_REJECTED\"}",
+        "envAfterRefusal": "APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U/server-data/db/probe.db\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:63103\nENABLE_APPLICATIONS=false",
+        "settingsAfterRefusal": [],
+        "agentComposer": {
+          "composer": 1,
+          "traces": {
+            "text": false,
+            "hooks": 0
+          }
+        },
+        "agentResumed": [
+          [
+            "gemini-3.8-flash-low",
+            "1b6c44a6-2634-4303-8af9-c7b299da5b97"
+          ]
+        ],
+        "sidebarRuns": {
+          "team": 1,
+          "helpers": 0
+        },
+        "memberComposer": {
+          "composer": 1,
+          "traces": {
+            "text": false,
+            "hooks": 0
+          }
+        },
+        "memberResumed": [
+          [
+            "gemini-3.8-flash-low",
+            "000377e8-ed94-4269-9c41-dd97c6f4bc39"
+          ]
+        ],
+        "memberSession": "000377e8-ed94-4269-9c41-dd97c6f4bc39"
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 16724
+    },
+    {
+      "label": "frontend",
+      "pid": 19470
+    },
+    {
+      "label": "backend-upgraded",
+      "pid": 58161
+    },
+    {
+      "label": "backend-second-start",
+      "pid": 60882
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 60882,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 58161,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 19470,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 16724,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-DJVa2U",
+  "backendUrl": "http://127.0.0.1:63103",
+  "frontUrl": "http://127.0.0.1:63104",
+  "definitions": {
+    "ids": {
+      "manager": "manager-5659",
+      "lead": "lead-0501",
+      "worker": "worker-ce05",
+      "plain": "plain-8923",
+      "engineer": "engineer-c9ee",
+      "reviewer": "reviewer-5356",
+      "writer": "writer-b68e",
+      "offline": "offline-c1c3",
+      "unoffered": "unoffered-0984",
+      "badsettings": "badsettings-d54b",
+      "incomplete": "incomplete-4c85",
+      "build": "build-team-7a6c",
+      "pair": "pair-team-c73f",
+      "squad": "squad-team-5bb3",
+      "home": "home-team-7945",
+      "launchOrg": "launchorg-org-0617",
+      "hostOrg": "hostorg-org-dfa7"
+    },
+    "names": {
+      "manager": "Manager 5659",
+      "lead": "Lead 0501",
+      "worker": "Worker ce05",
+      "plain": "Plain 8923",
+      "engineer": "Engineer c9ee",
+      "reviewer": "Reviewer 5356",
+      "writer": "Writer b68e",
+      "offline": "Offline c1c3",
+      "unoffered": "Unoffered 0984",
+      "badsettings": "Badsettings d54b",
+      "incomplete": "Incomplete 4c85",
+      "build": "Build Team 7a6c",
+      "pair": "Pair Team c73f",
+      "squad": "Squad Team 5bb3",
+      "home": "Home Team 7945",
+      "launchOrg": "LaunchOrg Org 0617",
+      "hostOrg": "HostOrg Org dfa7"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 0
+  },
+  "completedAt": "2026-10-20T17:00:51.805Z"
+}

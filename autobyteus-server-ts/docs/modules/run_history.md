@@ -452,9 +452,8 @@ Standalone agent persisted files:
   `workspaceRootPath`, `memoryDir`, `runtimeKind`, `llmModelIdentifier`,
   `llmConfig`, `autoExecuteTools`, `platformAgentRunId`,
   `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
-  `applicationExecutionContext` and `launchPurpose` (stored only as
-  `"server_helper"` for server-owned helper runs such as the memory compactor
-  and the skill improver; those runs never host delegated copies)
+  `applicationExecutionContext` (an application-owned run never hosts delegated
+  copies)
 - optional collaboration package (created lazily with the first delegated copy):
   `memory/agents/<runId>/collaboration/collaboration_tree.json` (host identity and
   a link per task agent) and the host's own message log (`communication_messages_*.jsonl`,
@@ -725,14 +724,22 @@ Important identity/storage rules:
   `scripts/migrate-agent-run-history-index-v2.mjs`; see
   `scripts/run-history-index-migration.md` before running cleanup against old
   memory directories
-- Skill Improvement no longer stores launch-time eligibility snapshots in run
-  history metadata. Manual skill-improvement uses current global settings plus the
-  current active target state at click time. Required startup app-data migration
-  `20260623_remove_self_evolution_run_metadata` removes obsolete
-  `skillImprovementEffective` fields from standalone `run_metadata.json` files and
-  recursive team member metadata entries, creates per-file backups for changed
-  metadata, and reports migrated/skipped/failed item counts. History listing and
-  manual start flows must not rely on stale `skillImprovementEffective` metadata.
+- Required startup app-data migration `20260623_remove_self_evolution_run_metadata`
+  removes obsolete `skillImprovementEffective` fields from standalone
+  `run_metadata.json` files and recursive team member metadata entries, creates
+  per-file backups for changed metadata, and reports migrated/skipped/failed item
+  counts.
+- Startup-only app-data migration `20261020_remove_skill_improvement_data` deletes
+  the removed Skill Improvement feature's data once: its records
+  (`memory/skill_improvement/`, `memory/self_evolution/`), the per-run session
+  folders, its helper runs (runs of the built-in improver, runs that stored the
+  former `launchPurpose: "server_helper"`, and runs the records name) with their
+  `run_history_index.json` rows, and the built-in improver's installed definition.
+  A helper run folder goes only after its row; a records folder goes only after
+  every run it names. A source that cannot be read is kept and reported; a failed
+  step retries on the next start; Memory Sync mirrors under `memory/imports/` are
+  not touched. Its three settings are retired by `retiredSettingNames`, which
+  deletes them from `.env` at config initialization.
 - standalone runs persist an explicit `memoryDir` in agent metadata
 - new concrete agent runtime ids are allocated by `AgentRunIdentityAllocator` before backend creation and use `<agent_definition_name_slug>_<uuid-without-dashes>`; the slug is readability-only and the entire id is treated as opaque
 - standalone, team-member, and task-agent `AgentRun` ids use the same allocator-backed identity policy; new production paths do not derive ids from runtime kind, route key, team run id, or task id

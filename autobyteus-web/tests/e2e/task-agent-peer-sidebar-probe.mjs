@@ -144,9 +144,6 @@ const graphQlData = (operationName, query) => {
   if (operationName === 'GetApplicationsCapability' || query.includes('applicationsCapability')) {
     return { applicationsCapability: { enabled: false, scope: 'BOUND_NODE', settingKey: 'ENABLE_APPLICATIONS', source: 'INITIALIZED_EMPTY_CATALOG' } };
   }
-  if (operationName === 'GetSkillImprovementCapability' || query.includes('skillImprovementCapability')) {
-    return { skillImprovementCapability: { enabled: false, settingKey: 'ENABLE_SKILL_IMPROVEMENT', source: 'INITIALIZED_EMPTY_CATALOG' } };
-  }
   if (operationName === 'GetAllWorkspaces' || query.includes('workspaces')) return { workspaces: [] };
   if (operationName === 'GetServerSettings' || query.includes('serverSettings')) return { serverSettings: [] };
   // The opened run's Files tab reads its file changes (added after this probe); the fixture runs have none.

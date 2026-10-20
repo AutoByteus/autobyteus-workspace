@@ -40,11 +40,7 @@
         :skill-tagging="skillTagging"
         :composer-placeholder="composerPlaceholder"
         class="h-full"
-      >
-        <template v-if="skillTarget" #composerContext>
-          <SkillImprovementComposerCta :target="skillTarget" />
-        </template>
-      </AgentEventMonitor>
+      />
     </div>
   </div>
 </template>
@@ -56,8 +52,6 @@ import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vu
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue'
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue'
 import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceRecoveryNotice.vue'
-import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue'
-import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useStandaloneRunTitle } from '~/composables/chat/useStandaloneRunTitle'
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
@@ -101,16 +95,6 @@ const senderNameByAgentRunId = computed(() => 'collaborationMessages' in props.t
       props.target.collaborationMessages.memberIdentityByAgentRunId(),
     ).map(([agentRunId, identity]) => [agentRunId, identity.label])))
   : Object.freeze({}))
-const skillTarget = computed<SkillImprovementComposerCtaTarget | null>(() =>
-  props.target.kind === 'standalone_agent'
-    ? {
-        kind: 'agent',
-        runId: props.target.context.state.runId,
-        isHelperRun:
-          props.target.context.config.agentDefinitionId === 'autobyteus-retrospective-skill-improver'
-          || props.target.context.config.agentDefinitionName === 'Retrospective Skill Improver',
-      }
-    : null)
 
 watch(avatarUrl, () => { avatarFailed.value = false })
 </script>

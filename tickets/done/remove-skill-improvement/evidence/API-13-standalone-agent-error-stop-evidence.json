@@ -1,0 +1,490 @@
+{
+  "startedAt": "2026-10-20T15:34:11.961Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue",
+  "scenarios": {
+    "API-E2E-004-A": {
+      "result": "Pass",
+      "description": "Active and inactive Error rows preserve truthful browser presentation and accessibility",
+      "startedAt": "2026-10-20T15:34:21.856Z",
+      "details": {
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        },
+        "activeStopCount": 1,
+        "inactiveActions": {
+          "archive": 1,
+          "remove": 1
+        }
+      }
+    },
+    "API-E2E-004-B": {
+      "result": "Pass",
+      "description": "Enter dispatches one exact delayed success, disables only that run, and retains inactive history",
+      "startedAt": "2026-10-20T15:34:21.952Z",
+      "details": {
+        "request": {
+          "sequence": 1,
+          "mode": "success",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-10-20T15:34:21.959Z"
+        },
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "offline",
+              "lastKnownStatus": "IDLE",
+              "isActive": false,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        },
+        "inactiveActions": {
+          "archive": 1,
+          "remove": 1
+        }
+      }
+    },
+    "API-E2E-004-C": {
+      "result": "Pass",
+      "description": "success:false preserves Error, clears pending, toasts, and remains retryable",
+      "startedAt": "2026-10-20T15:34:22.726Z",
+      "details": {
+        "request": {
+          "sequence": 2,
+          "mode": "false",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-10-20T15:34:22.735Z"
+        },
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [
+            {
+              "sequence": 1,
+              "message": "Failed to terminate run. Please try again.",
+              "type": "error"
+            }
+          ],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        }
+      }
+    },
+    "API-E2E-004-D": {
+      "result": "Pass",
+      "description": "GraphQL and HTTP failures preserve truthful retry state without selection",
+      "startedAt": "2026-10-20T15:34:22.798Z",
+      "details": {
+        "graphqlRequest": {
+          "sequence": 3,
+          "mode": "graphql-error",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-10-20T15:34:22.829Z"
+        },
+        "httpRequest": {
+          "sequence": 4,
+          "mode": "http-error",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-10-20T15:34:22.930Z"
+        },
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [
+            {
+              "sequence": 3,
+              "message": "Failed to terminate run. Please try again.",
+              "type": "error"
+            }
+          ],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        }
+      }
+    },
+    "API-E2E-004-E": {
+      "result": "Pass",
+      "description": "Retry succeeds and the narrow layout keeps exact actions within the viewport",
+      "startedAt": "2026-10-20T15:34:22.989Z",
+      "details": {
+        "request": {
+          "sequence": 5,
+          "mode": "success",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-10-20T15:34:23.038Z"
+        },
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [
+            {
+              "sequence": 3,
+              "message": "Failed to terminate run. Please try again.",
+              "type": "error"
+            }
+          ],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "offline",
+              "lastKnownStatus": "IDLE",
+              "isActive": false,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        },
+        "activeBox": {
+          "x": 380,
+          "y": 226,
+          "width": 16,
+          "height": 32
+        },
+        "stopBox": {
+          "x": 324.84375,
+          "y": 148,
+          "width": 20,
+          "height": 20
+        }
+      }
+    }
+  },
+  "terminationRequests": [
+    {
+      "sequence": 1,
+      "mode": "success",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-10-20T15:34:21.959Z"
+    },
+    {
+      "sequence": 2,
+      "mode": "false",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-10-20T15:34:22.735Z"
+    },
+    {
+      "sequence": 3,
+      "mode": "graphql-error",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-10-20T15:34:22.829Z"
+    },
+    {
+      "sequence": 4,
+      "mode": "http-error",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-10-20T15:34:22.930Z"
+    },
+    {
+      "sequence": 5,
+      "mode": "success",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-10-20T15:34:23.038Z"
+    }
+  ],
+  "otherGraphqlOperations": [
+    {
+      "operationName": "GetApplicationsCapability",
+      "receivedAt": "2026-10-20T15:34:21.728Z"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "receivedAt": "2026-10-20T15:34:21.728Z"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:34:21.729Z"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:34:21.730Z"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "receivedAt": "2026-10-20T15:34:21.732Z"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "receivedAt": "2026-10-20T15:34:21.732Z"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "receivedAt": "2026-10-20T15:34:21.733Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "success"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:49398/ws/agent-package-definitions' failed: Error during WebSocket handshake: Unexpected response code: 404",
+      "terminationMode": "success"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "success"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "success"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "success"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "false"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "false"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "false"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "graphql-error"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to terminate run: Error: fixture GraphQL termination error\n    at Object.terminateRun (http://127.0.0.1:49399/_nuxt/pages/api-e2e-standalone-agent-error-stop.vue:140:15)\n    at async Object.onTerminateRun (http://127.0.0.1:49399/_nuxt/composables/useWorkspaceHistoryMutations.ts:63:12)",
+      "terminationMode": "graphql-error"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "graphql-error"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "graphql-error"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "http-error"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "terminationMode": "http-error"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to terminate run: Error: Termination HTTP 503\n    at Object.terminateRun (http://127.0.0.1:49399/_nuxt/pages/api-e2e-standalone-agent-error-stop.vue:137:31)\n    at async Object.onTerminateRun (http://127.0.0.1:49399/_nuxt/composables/useWorkspaceHistoryMutations.ts:63:12)",
+      "terminationMode": "http-error"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "http-error"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "success"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "success"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace-error-stop, workspaceRootPath: /fixture/error-stop, workspaceName: Error Stop Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: true} workspace-teams= [] workspace-team-history-groups= []  ... > \n  at <ApiE2eStandaloneAgentErrorStop onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-standalone-agent-error-stop\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-standalone-agent-error-stop?backendUrl=http://127.0.0.1:49398, hash: , query: Object, name: api-e2e-standalone-agent-error-stop, path: /api-e2e-standalone-agent-error-stop}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>",
+      "terminationMode": "success"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 16525,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": 0,
+      "finalSignalCode": null
+    },
+    "apiServer": "closed",
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "HARNESS",
+      "description": "Run standalone Error Stop browser probe",
+      "message": "Unexpected browser page/console/request errors were observed",
+      "details": [
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:49398/ws/agent-package-definitions' failed: Error during WebSocket handshake: Unexpected response code: 404",
+          "terminationMode": "success"
+        }
+      ],
+      "stack": "Error: Unexpected browser page/console/request errors were observed\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web/tests/e2e/standalone-agent-error-stop-probe.mjs:47:17)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web/tests/e2e/standalone-agent-error-stop-probe.mjs:423:3"
+    }
+  ],
+  "apiBaseUrl": "http://127.0.0.1:49398",
+  "port": 49399,
+  "baseUrl": "http://127.0.0.1:49399",
+  "result": "Fail",
+  "finishedAt": "2026-10-20T15:34:23.818Z",
+  "artifacts": {
+    "evidencePath": "/tmp/ab205e2e/api13-standalone-agent-error-stop/evidence.json",
+    "nuxtLogPath": "/tmp/ab205e2e/api13-standalone-agent-error-stop/nuxt.log",
+    "initialScreenshotPath": "/tmp/ab205e2e/api13-standalone-agent-error-stop/initial-error-matrix.png",
+    "pendingScreenshotPath": "/tmp/ab205e2e/api13-standalone-agent-error-stop/pending-exact-run.png",
+    "successScreenshotPath": "/tmp/ab205e2e/api13-standalone-agent-error-stop/confirmed-success.png",
+    "failureScreenshotPath": "/tmp/ab205e2e/api13-standalone-agent-error-stop/failure-retry-narrow.png"
+  }
+}

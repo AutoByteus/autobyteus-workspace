@@ -3020,8 +3020,6 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-tools/agent-team-management/update-agent-team-definition.ts",
       "autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts",
       "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
-      "autobyteus-server-ts/src/skill-improvement/services/retrospective-skill-improver-agent-settings-resolver.ts",
-      "autobyteus-server-ts/src/skill-improvement/services/skill-improvement-target-context-resolver.ts",
     ].sort());
 
     const ambientRunServiceImports = walkSourceFiles(serverSourceRoot).flatMap((file) => {
@@ -3052,7 +3050,6 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",
-      "autobyteus-server-ts/src/skill-improvement/services/improver-session/skill-improvement-improver-session-service.ts:getAgentRunService",
     ].sort());
   });
 

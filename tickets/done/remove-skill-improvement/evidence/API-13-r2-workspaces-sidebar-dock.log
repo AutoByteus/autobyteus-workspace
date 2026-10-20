@@ -1,0 +1,37 @@
+# Case: API-13 round 2 (workspaces-sidebar-dock)
+# Commit: 2147206408 (merged web source)
+# Date: 2026-10-20
+
+
+> autobyteus@1.5.8-beta.3 test:e2e:workspaces-sidebar-dock /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web
+> node tests/e2e/workspaces-sidebar-dock-probe.mjs --output-dir /tmp/ab205e2e/r2-api13-workspaces-sidebar-dock
+
+{
+  "result": "Pass",
+  "cases": {
+    "BR-001": {
+      "result": "Pass",
+      "name": "Wide Team/Activity actual pointer drag, three cycles and meaningful controls"
+    },
+    "BR-002": {
+      "result": "Pass",
+      "name": "Exact capacity neighbors, actual navigation resize and drag while open"
+    },
+    "BR-003": {
+      "result": "Pass",
+      "name": "Constrained modal keyboard/backdrop and wide recovery cleanup"
+    },
+    "BR-004": {
+      "result": "Pass",
+      "name": "Automatic allocation keeps 480 center floor at1210 capacity"
+    }
+  },
+  "cleanup": {
+    "routeRemoved": true,
+    "privateHomeRemoved": true,
+    "nuxtExit": 0,
+    "portFree": true,
+    "browserClosed": true
+  },
+  "evidence": "/tmp/ab205e2e/r2-api13-workspaces-sidebar-dock/evidence.json"
+}

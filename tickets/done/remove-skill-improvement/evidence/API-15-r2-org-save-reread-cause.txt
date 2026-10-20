@@ -1,0 +1,45 @@
+# Case: API-15 Org save re-read cause (round 2)
+# Command: pnpm -C autobyteus-web exec node tests/e2e/delegated-launch-defaults-probe.mjs --output-dir /tmp/ab205e2e/org-diag1 --cases DCP-003,DCR-003,DCP-003,DCR-003,DCP-003,DCR-003
+# Commit: 2147206408 (merged build) with TEMPORARY diagnostics, removed afterwards and never committed:
+#   - autobyteus-web/stores/existingRunConfigStore.ts loadAgentOrgCanonical: console.error of the caught error;
+#   - the probe: page console, Org-config / delegated GraphQL responses and Org WebSocket frames appended to diag.log.
+# Date: 2026-10-20
+
+Results (case lines; the summary miscounts repeated ids):
+DCP-003 Fail delegated-copy-model-change AC-001/002 (Org roo
+DCR-003 Pass AC-011(a): a mounted Team member with its own a
+DCP-003 Fail delegated-copy-model-change AC-001/002 (Org roo
+DCR-003 Fail AC-011(a): a mounted Team member with its own a
+DCP-003 Pass delegated-copy-model-change AC-001/002 (Org roo
+DCR-003 Pass AC-011(a): a mounted Team member with its own a
+
+Failures with their caught error:
+2026-10-20T17:34:26.298Z console.error [DIAG] loadAgentOrgCanonical failed: Org configuration read is stale; refresh required. current= true
+2026-10-20T17:36:17.087Z console.error [DIAG] loadAgentOrgCanonical failed: Org configuration read is stale; refresh required. current= true
+2026-10-20T17:37:41.651Z console.error [DIAG] loadAgentOrgCanonical failed: Org configuration read is stale; refresh required. current= true
+
+Sequence around the first failure (diag.log):
+2026-10-20T17:34:25.459Z ws agent-org/hostorg_org_0711_93dd5cede01d479ca2b66a3023cc67e8 ROOT_EXECUTION_EVENT {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_93dd5cede01d479ca2b66a3023
+2026-10-20T17:34:25.462Z graphql StopDelegatedExecution status=200 errors=null
+2026-10-20T17:34:25.526Z graphql DelegatedLaunchModelOptions status=200 errors=null
+2026-10-20T17:34:26.270Z ws agent-org/hostorg_org_0711_93dd5cede01d479ca2b66a3023cc67e8 ROOT_EXECUTION_EVENT {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_93dd5cede01d479ca2b66a3023
+2026-10-20T17:34:26.276Z graphql UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-20T17:34:26.278Z ws agent-org/hostorg_org_0711_93dd5cede01d479ca2b66a3023cc67e8 CONNECTED {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_93dd5cede01d479ca2b66a3023cc67e8","se
+2026-10-20T17:34:26.282Z ws agent-org/hostorg_org_0711_93dd5cede01d479ca2b66a3023cc67e8 ROOT_EXECUTION_VIEW_SNAPSHOT {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_93dd5cede01d479ca2
+2026-10-20T17:34:26.283Z ws agent-org/hostorg_org_0711_93dd5cede01d479ca2b66a3023cc67e8 ROOT_LIFECYCLE {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_93dd5cede01d479ca2b66a3023cc67e8
+2026-10-20T17:34:26.298Z console.error [DIAG] loadAgentOrgCanonical failed: Org configuration read is stale; refresh required. current= true
+2026-10-20T17:34:26.302Z graphql AgentOrgRunConfig status=200 errors=null
+2026-10-20T17:34:26.366Z graphql DelegatedLaunchModelOptions status=200 errors=null
+
+Sequence around the second failure:
+2026-10-20T17:36:16.186Z ws agent-org/hostorg_org_0711_fdff3ebb1a8a4e9b81b9bdfaed5a9421 ROOT_EXECUTION_EVENT {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_fdff3ebb1a8a4e9b81b9bdfaed
+2026-10-20T17:36:16.190Z graphql StopDelegatedExecution status=200 errors=null
+2026-10-20T17:36:16.250Z graphql DelegatedLaunchModelOptions status=200 errors=null
+2026-10-20T17:36:17.060Z ws agent-org/hostorg_org_0711_fdff3ebb1a8a4e9b81b9bdfaed5a9421 ROOT_EXECUTION_EVENT {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_fdff3ebb1a8a4e9b81b9bdfaed
+2026-10-20T17:36:17.064Z graphql UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-20T17:36:17.067Z ws agent-org/hostorg_org_0711_fdff3ebb1a8a4e9b81b9bdfaed5a9421 CONNECTED {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_fdff3ebb1a8a4e9b81b9bdfaed5a9421","se
+2026-10-20T17:36:17.069Z ws agent-org/hostorg_org_0711_fdff3ebb1a8a4e9b81b9bdfaed5a9421 ROOT_EXECUTION_VIEW_SNAPSHOT {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_fdff3ebb1a8a4e9b81
+2026-10-20T17:36:17.070Z ws agent-org/hostorg_org_0711_fdff3ebb1a8a4e9b81b9bdfaed5a9421 ROOT_LIFECYCLE {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_0711_fdff3ebb1a8a4e9b81b9bdfaed5a9421
+2026-10-20T17:36:17.087Z console.error [DIAG] loadAgentOrgCanonical failed: Org configuration read is stale; refresh required. current= true
+2026-10-20T17:36:17.089Z graphql AgentOrgRunConfig status=200 errors=null
+2026-10-20T17:36:17.141Z graphql DelegatedLaunchModelOptions status=200 errors=null

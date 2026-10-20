@@ -204,9 +204,10 @@ per-team, runtime, provider, or frontend-renderer preference.
 ## Server Settings: Feature Capability Toggles
 
 Settings -> Server Settings -> Basics shows one toggle card per node-bound
-feature capability: **Applications** (`ENABLE_APPLICATIONS`) and **Skill
-Improvement** (`ENABLE_SKILL_IMPROVEMENT`). Projects has no capability: it is
-always available on desktop (see `projects.md`). Both share one mechanism:
+feature capability; today that is **Applications** (`ENABLE_APPLICATIONS`).
+**Update checks** uses the same store factory with its own card (see the
+exception below). Projects has no capability: it is always available on
+desktop (see `projects.md`). A capability card is built from one mechanism:
 
 - `stores/capabilities/createBoundNodeCapabilityStore.ts` builds each
   capability Pinia store from a store id, the capability query/mutation
@@ -214,9 +215,8 @@ always available on desktop (see `projects.md`). Both share one mechanism:
   `waitForBoundBackendReady()`, caching per `windowNodeContextStore.bindingRevision`
   (invalidated on rebinding; stale responses discarded), and `setEnabled`,
   which applies the server-returned capability and restores the previous
-  state on failure. `applicationsCapabilityStore` and
-  `skillImprovementCapabilityStore` are thin
-  typed calls to this factory; their store ids and public API
+  state on failure. `applicationsCapabilityStore` is a thin
+  typed call to this factory; its store id and public API
   (`capability`, `status`, `error`, `isEnabled`, `ensureResolved`, `refresh`,
   `invalidate`, `setEnabled`) are stable. Feature policy does not belong in the
   factory.
@@ -227,13 +227,13 @@ always available on desktop (see `projects.md`). Both share one mechanism:
   `${prefix}-feature-toggle-card`, `${prefix}-feature-status`, and
   `${prefix}-feature-toggle` test ids. After a toggle it best-effort reloads the
   server-settings list so the Advanced table stays in sync.
-  `ApplicationsFeatureToggleCard` and `SkillImprovementFeatureToggleCard` are
-  wrappers that supply only labels, test-id prefix, and source message.
+  `ApplicationsFeatureToggleCard` is a wrapper that supplies only labels,
+  test-id prefix, and source message.
 - When `ENABLE_APPLICATIONS` is edited in the Advanced
   table, `serverSettingsStore.updateServerSetting` refreshes the matching
   capability store through `CAPABILITY_STORE_BY_SETTING_KEY` (key matched by
   `trim().toUpperCase()`), so navigation and route gating update without a
-  reload. `ENABLE_SKILL_IMPROVEMENT` is intentionally not in that table.
+  reload.
 - Route gating (`middleware/feature-flags.global.ts`) is a prefix → capability
   store table (`/applications`); navigation gating lives in
   `useShellPrimaryNavigation`.
@@ -1466,48 +1466,6 @@ for Codex, a fast-capable model exposes `service_tier` as **Fast mode** (a
 [Agent Execution Architecture](./agent_execution_architecture.md#existing-run-model-configuration).
 
 
-### Skill Improvement Manual Composer Action
-
-Skill Improvement is current-target owned, not definition-owned and not
-launch-config owned. Frontend run-config types no longer carry `skillImprovement`
-overrides for standalone runs, team runs, or team agent-member launch records,
-and the backend no longer snapshots `skillImprovementEffective` into run/member
-metadata for new runs. Agent/team definition forms and persisted definition
-defaults must not add `skillImprovement`.
-
-The start surfaces do not expose Skill Improvement eligibility controls. The
-only user-facing manual start entrypoint is the concise composer-adjacent **Self
-improve** CTA for the selected active standalone run or team member. That CTA is
-hidden when the global capability is disabled, hidden for Retrospective Skill Improver
-improver runs, and lazy-loads backend eligibility before rendering. The UI must
-not show technical backend ineligibility reasons in chat and must not recompute
-eligibility from current definitions or local skill lists.
-
-`useSkillImprovementCapabilityStore` owns the global typed capability query/mutation
-for `ENABLE_SKILL_IMPROVEMENT`. `useSkillImprovementStore` owns backend eligibility and
-manual start calls. Run-history rows do not expose Skill Improvement controls.
-Starting Skill Improvement from the composer CTA calls `startAgentRunSkillImprovement`
-or `startTeamMemberSkillImprovement` without run-time overrides. The backend uses
-current global Skill Improvement settings, current target state, and current
-configured writable skill roots; it first ensures the target's Work Journal files are current
-for the selected target, then activates or reuses a visible target-scoped
-improver `AgentRun`. The returned record summary is stored only internally and
-the UI may show at most a short transient toast/status after start. It must not
-render a persistent composer card, improvement record id, or improver-run
-navigation button.
-
-Meaningful completion communication is helper-authored only after durable skill
-package file changes: the visible improver may call `send_message_to` once with
-`message_type: "skill_update"`, the exact active target run id supplied by the
-backend, concise content explaining what changed, why it matters, and how the
-target should use or reload the updated guidance, plus dynamic references as
-absolute paths to changed or directly relevant surviving files inside editable
-roots. The backend records whether that direct outcome was sent, rejected,
-target-inactive, or not attempted. The skill update message is separate from any
-runtime/model skill-refresh instruction, and team-member live reload remains
-next-run-only in the MVP. The MVP does not expose a metrics/reporting query and
-the UI must not imply improver completion proves downstream improvement.
-
 ### New Run From Existing Run
 
 **+** on a run starts another run like it, through `useRunStart`:
@@ -1876,7 +1834,6 @@ turn.
 
 ## Related Documentation
 
-- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, Work Journal evidence package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

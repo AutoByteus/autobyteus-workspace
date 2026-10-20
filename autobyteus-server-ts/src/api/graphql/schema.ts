@@ -31,7 +31,6 @@ import { RuntimeAvailabilityResolver } from './types/runtime-availability.js';
 import { AgentPackageResolver } from './types/agent-packages.js';
 import { ApplicationPackageResolver } from './types/application-packages.js';
 import { AppDataMigrationResolver } from './types/app-data-migrations.js';
-import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 import { SecretStorageResolver } from './types/secret-storage.js';
 import { DefinitionProblemsResolver } from './types/definition-problems.js';
@@ -79,7 +78,6 @@ export async function buildGraphqlSchema() {
       AgentPackageResolver,
       ApplicationPackageResolver,
       AppDataMigrationResolver,
-      SkillImprovementResolver,
       UpdateNotificationResolver,
       SecretStorageResolver,
       DefinitionProblemsResolver,

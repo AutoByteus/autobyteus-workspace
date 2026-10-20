@@ -3,7 +3,6 @@ import { AgentRunManager } from "./agent-run-manager.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
-  type AgentRunLaunchPurpose,
   type AgentRunMetadata,
 } from "../../run-history/store/agent-run-metadata-types.js";
 import {
@@ -37,8 +36,6 @@ export interface CreateAgentRunInput {
     bindingId: string;
     displayName: string | null;
   } | null;
-  /** `server_helper` for server-internal helper runs; they keep their narrowed tool rules. */
-  launchPurpose?: AgentRunLaunchPurpose;
 }
 
 export interface CreateAgentRunResult {

@@ -36,7 +36,7 @@ let canonical: any
 let createdTree: any
 const meta = { workspaceId: 'ws', workspaceRootPath: '/source', displayName: 'Source', kind: 'filesystem' as const }
 const wrappers: ReturnType<typeof mount>[] = []
-const mounted = (component: any) => { const w = mount(component, { global: { stubs: { AgentTeamEventMonitor: true, SkillImprovementComposerCta: true } } }); wrappers.push(w); return w }
+const mounted = (component: any) => { const w = mount(component, { global: { stubs: { AgentTeamEventMonitor: true } } }); wrappers.push(w); return w }
 const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'OpenAI', displayName: id,
   canonicalName: id, description: null, configSchema: { type: 'object',
     properties: { budget: { type: 'integer', minimum: 0 }, enabled: { type: 'boolean' } } }, recommended: false })
