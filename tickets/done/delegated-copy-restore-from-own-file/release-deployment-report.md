@@ -74,8 +74,8 @@ Finalize into `origin/personal` per `RELEASE.md`. Any release is the user's deci
 
 ## Release Decision
 
-- Decision: **pending, asked of the user at DR-002.** AC-010 needs a released build, so a release (beta recommended) is required before the user can check. Without one, the change finalizes and ships with the next release, and AC-010 stays open until then.
-- Decided by: the user (pending)
+- Decision: `Beta` (`v1.5.7-beta.4`, from `python3 scripts/release_versions.py next-beta` after fetching tags; the highest published is `v1.5.7-beta.3`)
+- Decided by: the user, 2026-10-20: "yes please beta" (answer to the DR-002 release question). AC-010 needs this released build.
 
 ## Docs Sync Result
 
@@ -85,7 +85,8 @@ Finalize into `origin/personal` per `RELEASE.md`. Any release is the user's deci
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/`: `No`. This waits for the decision; the folder moves just before the final commit.
+- Ticket moved to `tickets/done/`: `Yes`
+- Archived ticket path: `tickets/done/delegated-copy-restore-from-own-file/`
 
 ## Version / Tag / Release Commit
 
