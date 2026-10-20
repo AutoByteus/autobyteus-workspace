@@ -65,8 +65,8 @@
     "prisma": "^5.22.0",
     "typescript": "^5.9.3",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^4.0.18",
-    "ws": "^8.18.1"
+    "vitest": "^4.1.12",
+    "ws": "^8.22.0"
   },
   "license": "AGPL-3.0-only"
 }
