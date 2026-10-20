@@ -113,8 +113,19 @@ governance and keeps its Codex-owned authentication behavior.
   settings. Callers do not receive raw Prisma clients or transaction delegates.
 - `SecretCatalog` maps semantic consumer identities to stable `SecretId`
   records and rejects unknown or mismatched consumers before vault access.
-- `ProviderApiKeyResolver` is storage-neutral. Concrete provider clients call it
-  lazily when constructing the SDK/client for an authorized operation.
+- Provider clients take a `ProviderApiKeyResolver` and call it lazily when
+  constructing the SDK/client for an authorized operation. The server always
+  passes its own resolver. autobyteus-ts owns the vault format's read side
+  (`autobyteus-ts/secrets/vault/`: crypto, root-key file, records, the store
+  interface, the read-only store, verification, `readSecretEntry`,
+  `providerSecretId` and the test-vault location policy); the server owns the
+  lifecycle (initialization, writes, the Prisma repository) and consumer
+  authorization (`ProviderCredentialCatalog`, built on `providerSecretId`).
+- For a client built without a resolver, autobyteus-ts reads
+  `AUTOBYTEUS_TEST_VAULT` itself (see [Test Vault](#test-vault)). The server
+  turns that environment default off at both startup sites
+  (`disableEnvironmentProviderApiKeySource()`), so it never reads the selector
+  through autobyteus-ts.
 - GraphQL and Settings expose only value-free configured state and vault
   failures through typed errors.
 
@@ -374,8 +385,8 @@ The vault is an ordinary current-schema application database plus key:
   `Secret vault: application database`.
 - **Read-only.** The runtime opens the test vault through
   `openReadOnlyTestVault`: a `node:sqlite` read-only/query-only store over the
-  two secret tables, verified without a lock or write
-  (`SecretVaultBootstrap.verifyEstablished`). Consumers never migrate it, so
+  two secret tables, verified without a lock or write (autobyteus-ts
+  `openVerifiedTestVault` / `verifyEstablishedVault`). Consumers never migrate it, so
   worktrees of different versions can share it. Product lookups go through the
   same `SecretManagementService` and resolvers; saves fail with
   `SECRET_VAULT_READ_ONLY`. Agent file tools are denied the selected vault
@@ -389,10 +400,19 @@ The vault is an ordinary current-schema application database plus key:
   code always uses its own vault. Live opt-ins apply it:
   `initializeLiveServerVault()` for in-process live suites and the real-E2E
   harness, `startBuiltTestServer({ testVaultSetting })` for built servers
-  (`test:e2e:real`). `autobyteus-ts` test setup, with the selector and
-  `RUN_LIVE_PROVIDER_TESTS=1`, installs the vault as the library's default key
-  resolver (`setDefaultProviderApiKeyResolver`); production callers always pass
-  their resolver. Usage is in [TESTING.md](../../../TESTING.md#test-vault).
+  (`test:e2e:real`); `initializeLiveServerVault()` also turns the
+  autobyteus-ts environment default off, as server startup does.
+- **autobyteus-ts and scripts.** Any process that uses autobyteus-ts (a script
+  run with `node` or `tsx`, a Vitest live run) gets keys for clients built
+  without a resolver from the vault `AUTOBYTEUS_TEST_VAULT` names: explicit
+  resolver first, then that environment default, else `MissingApiKeyError`.
+  The vault modules and `node:sqlite` load only when the variable is set and a
+  key is needed; each vault is opened once per process, read-only. A key the
+  vault lacks fails with a missing-capability error naming the secret, the
+  vault and `pnpm test-vault setup`; a provider without a vault entry fails with
+  `SECRET_PROVIDER_UNKNOWN`. autobyteus-ts Vitest setup removes the selector
+  unless `RUN_LIVE_PROVIDER_TESTS=1`. Usage is in
+  [TESTING.md](../../../TESTING.md#test-vault).
 
 ## Deployment, Reset, And Recovery
 
