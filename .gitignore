@@ -20,6 +20,22 @@ docker/.runtime/
 ios_distribution_private_key.key
 ios_distribution_certificate_p12_password.txt
 
+# Secret-bearing local files. API keys and tokens live in .env files and
+# runtime databases (server data folders, test.db); commit only *.example
+# templates. Files tracked on purpose before this rule (non-secret defaults
+# such as autobyteus-web/.env) stay tracked. To add a new one, first confirm it
+# holds no secret, then use `git add -f`.
+.env
+.env.*
+*.env
+!*.example
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
 autobyteus-server-ts/agents/
 autobyteus-server-ts/applications/
 autobyteus-server-ts/agent-teams/

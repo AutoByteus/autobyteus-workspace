@@ -1,0 +1,39 @@
+# IMP-01 unit file, failing first (new tests at bb1d3cd28c, production file reverted to base 90d5f11a6b)
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/mcp/http-managed-mcp-server.test.ts --no-watch
+# Commit: bb1d3cd28c tests + 90d5f11a6b autobyteus-ts/src/tools/mcp/server/http-managed-mcp-server.ts
+# Env: macOS (Darwin 25.5.0), node v22.23.1
+# Date: 2026-10-20
+
+     ✓ sends configured headers on initialize, tool listing and tool call  376ms
+     ✓ sends the token as a Bearer Authorization header on every request 30ms
+     ✓ connects to an unauthenticated server without sending an Authorization header 33ms
+     × fails to connect when the server rejects the configured credential 21ms
+     ✓ connects with the 2025 initialize handshake and no server/discover probe 10ms
+     ✓ lists the tools of every page when the server pages tools/list 10ms
+       × fails to connect with the status first in the message when the server answers 401 2ms
+       × fails to connect with the status first in the message when the server answers 403 2ms
+       × fails to connect with the status first in the message when the server answers 404 2ms
+       × fails to connect with the status first in the message when the server answers 500 94ms
+       × names the status of a 404 whose body is empty 6ms
+       ✓ keeps the message of a failure without an HTTP answer 2ms
+       × fails a tool call that has to connect with the status in the message 2ms
+       × does not follow a redirect to another origin, so the credential never reaches it 3ms
+       ✓ follows a redirect within the same origin 20ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+Expected: "HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized"
+Received: "Error POSTing to endpoint: unauthorized"
+Expected: "HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized"
+Received: "Error POSTing to endpoint: unauthorized"
+Expected: "HTTP 403 Forbidden: Error POSTing to endpoint: forbidden"
+Received: "Error POSTing to endpoint: forbidden"
+Expected: "HTTP 404 Not Found: Error POSTing to endpoint: Not Found"
+Received: "Error POSTing to endpoint: Not Found"
+Expected: "HTTP 500 Internal Server Error: Error POSTing to endpoint: Internal Server Error"
+Received: "Error POSTing to endpoint: Internal Server Error"
+Expected: "HTTP 404 Not Found: Error POSTing to endpoint: "
+Received: "Error POSTing to endpoint: "
+Expected: "HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized"
+Received: "Error POSTing to endpoint: unauthorized"
+- Expected: 
++ Received: 
+      Tests  8 failed | 7 passed (15)

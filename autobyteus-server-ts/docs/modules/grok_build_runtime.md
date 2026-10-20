@@ -63,7 +63,10 @@ modules.
   **offered** catalog membership plus a valid target schema.
 - **Authentication.** Authentication belongs to Grok: the CLI's own login,
   or `XAI_API_KEY` inherited from the server environment. AutoByteus adds no
-  login UI, vault binding, or credential relay. The vault's
+  vault binding or credential relay. Settings -> Agent Runtimes shows the
+  sign-in state (from `grok models`) and can start Grok's own
+  `grok login --oauth` on the desktop's own node
+  ([Agent Runtimes](./agent_runtimes.md)); it never sees the credential. The vault's
   `provider.grok.api-key` belongs to the native `autobyteus` runtime and is
   never passed to the child process. Provider errors are surfaced as-is. For
   example, an unauthenticated start fails `createAgentRun` with

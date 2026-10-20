@@ -1,0 +1,16 @@
+# IMP-07 built-server e2e: new mcp-http-error-status plus existing mcp-http-auth-remote-server and mcp-http-redirect-and-transport (dist built from bb1d3cd28c source)
+# Command: pnpm -C autobyteus-ts build; pnpm -C autobyteus-server-ts prebuild; pnpm -C autobyteus-server-ts build; env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts --no-watch
+# Commit: bb1d3cd28c
+# Env: macOS (Darwin 25.5.0), node v22.23.1
+# Date: 2026-10-20
+
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts (2 tests) 19373ms
+     ✓ sends the header or token on preview, save, import and tool calls, and rejects token plus Authorization  1273ms
+     ✓ re-registers saved credentials at startup after a restart and keeps sending them  10005ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts (2 tests) 17431ms
+     ✓ refuses a cross-origin redirect, follows a same-origin one, and rejects a websocket import  9236ms
+     ✓ starts with WebSocket-era entries in mcps.json and registers the valid entry next to them  8064ms
+ ✓ tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts (1 test) 4558ms
+     ✓ states the HTTP status in the preview and the discover message for 401, 403, 404 and 500  4544ms
+ Test Files  3 passed (3)
+      Tests  5 passed (5)

@@ -1,0 +1,13 @@
+# DEL-02 — update-notification server E2E on the integrated state (excerpt: results; full log not kept)
+# Command: env -i PATH HOME=<tmp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/update-notifications --no-watch
+# State: merge 6c34ce51d2 (ticket code c42bf2abc4 + origin/personal e0df0bfd05); macOS 26 arm64, Node v22.23.1; 2026-10-20
+
+ ✓ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (8 tests) 7909ms
+     ✓ API-02 (AC-001, AC-004, AC-014, AC-017, AC-021): the background pass finds both updates through the real chain, downloads nothing and tells open windows  1028ms
+     ✓ API-03 (AC-009, AC-010, AC-014): read state survives a restart, and a restart inside 6 hours makes no automatic request  875ms
+     ✓ API-04 (AC-008, AC-012): a newer revision replaces the same notification as unread; an offline pass keeps it and the row's Update  977ms
+     ✓ API-06 (AC-015): with Update checks off there is no automatic request, also after a restart; manual checks still notify; on again resumes  1777ms
+     ✓ API-07 (AC-013): a rate-limited answer stops the pass; nothing is requested before the reset, also after a restart; checks resume after it  2609ms
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+exit 0

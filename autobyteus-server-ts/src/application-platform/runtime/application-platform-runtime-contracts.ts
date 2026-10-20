@@ -6,6 +6,7 @@ import type { ApplicationOrchestrationHostService } from "../../application-orch
 import type { ApplicationCatalogTransitionService } from "../../application-orchestration/services/application-catalog-transition-service.js";
 import type { ApplicationRunOwnershipReader } from "../../application-orchestration/services/application-run-ownership-service.js";
 import type { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 
 export type ApplicationPlatformLifecycleReadiness = Pick<
   ApplicationPlatformLifecycle,
@@ -67,4 +68,6 @@ export type ApplicationPlatformRealtimeContracts = Readonly<{
 export type ApplicationPlatformHostManagementContracts = Readonly<{
   catalogTransition: ApplicationCatalogTransitionService;
   runOwnership: ApplicationRunOwnershipReader;
+  /** Live Application agents by runtime (Settings → Agent Runtimes blocks Update while they run). */
+  activeAgentRuns: Readonly<{ countByRuntimeKind(runtimeKind: RuntimeKind): number }>;
 }>;

@@ -1,0 +1,1 @@
+export default async (page, args) => { await page.screenshot({ path: args.path }); return { saved: args.path, viewport: page.viewportSize() ?? await page.evaluate(() => ({ width: innerWidth, height: innerHeight })) }; };

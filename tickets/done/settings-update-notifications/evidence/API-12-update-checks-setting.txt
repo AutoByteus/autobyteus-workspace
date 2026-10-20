@@ -1,0 +1,102 @@
+# API-12 — Update checks card off/on in the packaged instance (AC-015, AC-016)
+# macOS 26.5.2 arm64; packaged worktree build d76332c669 (code c42bf2abc4); real public GitHub (unauthenticated); 2026-10-20
+
+## card text and switch, off by a real click (A2)
+{
+  "before": {
+    "text": "Update checksFind new versions of the agent packages and skill sources you imported from GitHub, and show them in Notifications.Check GitHub packages and skills in the backgroundAt most every 6 hours, this node asks api.github.com for the latest commit of each agent package and skill source you imported from GitHub. No account or token is used. GitHub sees your IP address and the repository names; nothing is sent to AutoByteus. Nothing is updated until you press Update. The desktop app also checks GitHub releases for its own update when it starts.Applies to this node.",
+    "toggle": {
+      "role": "switch",
+      "checked": "true",
+      "disabled": false,
+      "label": "update-checks-label-v-1-4"
+    }
+  },
+  "after": {
+    "text": "Update checksFind new versions of the agent packages and skill sources you imported from GitHub, and show them in Notifications.Check GitHub packages and skills in the backgroundAt most every 6 hours, this node asks api.github.com for the latest commit of each agent package and skill source you imported from GitHub. No account or token is used. GitHub sees your IP address and the repository names; nothing is sent to AutoByteus. Nothing is updated until you press Update. The desktop app also checks GitHub releases for its own update when it starts.Applies to this node.",
+    "toggle": {
+      "role": "switch",
+      "checked": "false",
+      "disabled": false,
+      "label": "update-checks-label-v-1-4"
+    }
+  }
+}
+{
+  "data": {
+    "updateChecksCapability": {
+      "enabled": false,
+      "settingKey": "ENABLE_UPDATE_CHECKS",
+      "source": "SERVER_SETTING"
+    }
+  }
+}
+data root .env after stop: ENABLE_UPDATE_CHECKS=false
+
+## sources shaped due again (7 h, older revision); A3 iso-59003-7a68 started 2026-10-20T13:36:12Z; at 13:37:31 (79 s later):
+non-loopback connections: none
+{
+  "data": {
+    "updateNotifications": []
+  }
+}
+
+## Agent Packages opened in the UI at 13:37:43 (checks still off)
+{
+  "data": {
+    "updateNotifications": [
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:autobyteus/autobyteus-agents",
+        "name": "AutoByteus/autobyteus-agents",
+        "repositoryUrl": "https://github.com/AutoByteus/autobyteus-agents",
+        "defaultBranch": "main",
+        "installedRevision": "99c58fdf47b6f7e6cb305e3bf11dd0604d70b8fb",
+        "latestRevision": "074dc24dea4f1f3eb5752f2e2c42a06bad596698",
+        "foundAt": "2026-10-20T13:37:43.675Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      }
+    ]
+  }
+}
+{"at":"2026-10-20T13:37:43.257Z","pid":"71299","local":"192.168.2.158:59223","remote":"140.82.121.6:443","state":"ESTABLISHED"}
+
+## card switched on, restart 13:38:12, first pass:
+{
+  "data": {
+    "updateNotifications": [
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:autobyteus/autobyteus-agents",
+        "name": "AutoByteus/autobyteus-agents",
+        "repositoryUrl": "https://github.com/AutoByteus/autobyteus-agents",
+        "defaultBranch": "main",
+        "installedRevision": "99c58fdf47b6f7e6cb305e3bf11dd0604d70b8fb",
+        "latestRevision": "074dc24dea4f1f3eb5752f2e2c42a06bad596698",
+        "foundAt": "2026-10-20T13:37:43.675Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      },
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "fc803ed8-72e7-4825-a14e-8203ebe90647",
+        "name": "blader/humanizer",
+        "repositoryUrl": "https://github.com/blader/humanizer",
+        "defaultBranch": "main",
+        "installedRevision": "6be1fa4e0c768202b126f8bc5c9bf67ead9162bc",
+        "latestRevision": "8c307f367c91bd974002f10f2be2965d642c13df",
+        "foundAt": "2026-10-20T13:39:12.892Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      }
+    ]
+  }
+}
+{"at":"2026-10-20T13:39:12.467Z","pid":"42828","local":"192.168.2.158:59387","remote":"140.82.121.5:443","state":"ESTABLISHED"}

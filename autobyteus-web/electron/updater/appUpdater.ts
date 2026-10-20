@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import type { ProgressInfo, UpdateInfo } from 'electron-updater';
@@ -11,12 +12,16 @@ import { isAppUpdateChannelLocked } from '../../shared/appUpdateTypes';
 import { logger } from '../logger';
 import { classifyAppUpdateError } from './appUpdateErrorClassifier';
 import { isAppUpdateChannel, loadAppUpdateChannel, saveAppUpdateChannel } from './appUpdateChannelStore';
+import { AppUpdateNotificationRecord } from './appUpdateNotificationRecord';
+import { resolveAppReleasePageUrl } from './appReleasePage';
 import {
   APP_UPDATE_IPC_CHECK,
+  APP_UPDATE_IPC_CLEAR_NOTIFICATION,
   APP_UPDATE_IPC_COMMAND_CHANNELS,
   APP_UPDATE_IPC_DOWNLOAD,
   APP_UPDATE_IPC_GET_STATE,
   APP_UPDATE_IPC_INSTALL,
+  APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
   APP_UPDATE_IPC_SET_CHANNEL,
   APP_UPDATE_STATE_CHANNEL,
   type AppUpdateController,
@@ -66,13 +71,29 @@ function buildErrorDedupeSignature(
   return `${kind}:${code ?? 'none'}:${diagnosticHeadline}`;
 }
 
+type AppUpdaterOptions = {
+  autoCheckDelayMs?: number;
+  /** e2e only: check this generic feed instead of the packaged GitHub feed (REQ-019). */
+  testFeedUrl?: string | null;
+  /** The packaged publish config (`app-update.yml`) the release link is read from. */
+  appUpdateConfigPath?: string | null;
+};
+
 export class AppUpdater implements AppUpdateController {
   private state: AppUpdateState;
   private initialized = false;
   private activeOperation: AppUpdateOperation | null = null;
   private lastErrorSignature: string | null = null;
+  private notificationRecord: AppUpdateNotificationRecord | null = null;
+  private readonly autoCheckDelayMs: number;
+  private readonly testFeedUrl: string | null;
+  private readonly appUpdateConfigPath: string | null;
 
-  constructor(private readonly autoCheckDelayMs: number = 8000) {
+  constructor(options: AppUpdaterOptions = {}) {
+    this.autoCheckDelayMs = options.autoCheckDelayMs ?? 8000;
+    this.testFeedUrl = options.testFeedUrl ?? null;
+    this.appUpdateConfigPath = options.appUpdateConfigPath !== undefined ? options.appUpdateConfigPath
+      : process.resourcesPath ? path.join(process.resourcesPath, 'app-update.yml') : null;
     const currentVersion = app.getVersion();
     this.state = {
       status: 'idle',
@@ -89,6 +110,7 @@ export class AppUpdater implements AppUpdateController {
       errorKind: null,
       errorOperation: null,
       checkedAt: null,
+      notification: null,
     };
   }
 
@@ -108,7 +130,15 @@ export class AppUpdater implements AppUpdateController {
       debug: (message: string) => logger.debug(`[updater] ${message}`),
     } as any;
 
-    this.state = { ...this.state, updateChannel: loadAppUpdateChannel(app.getPath('userData')) };
+    if (this.testFeedUrl) {
+      autoUpdater.setFeedURL({ provider: 'generic', url: this.testFeedUrl });
+    }
+    this.notificationRecord = new AppUpdateNotificationRecord(app.getPath('userData'), this.state.currentVersion);
+    this.state = {
+      ...this.state,
+      updateChannel: loadAppUpdateChannel(app.getPath('userData')),
+      notification: this.currentNotification(),
+    };
     this.applyChannelPolicy();
 
     this.registerAutoUpdaterListeners();
@@ -198,6 +228,15 @@ export class AppUpdater implements AppUpdateController {
       return this.getState();
     }
 
+    // After a restart the notification exists before this process has seen the update: check first.
+    if (this.state.status !== 'available' && this.state.notification?.state === 'waiting'
+      && this.state.status !== 'checking' && this.state.status !== 'downloaded') {
+      const checked = await this.checkForUpdates('manual');
+      if (checked.status !== 'available') {
+        return checked;
+      }
+    }
+
     if (this.state.status !== 'available') {
       this.applyState({
         status: 'error',
@@ -276,6 +315,23 @@ export class AppUpdater implements AppUpdateController {
     return { accepted: true, persisted, state: this.getState() };
   }
 
+  markNotificationRead(): AppUpdateState {
+    if (this.notificationRecord?.markRead()) this.applyState({ notification: this.currentNotification() });
+    return this.getState();
+  }
+
+  clearNotification(): AppUpdateState {
+    if (this.notificationRecord?.clear()) this.applyState({ notification: this.currentNotification() });
+    return this.getState();
+  }
+
+  /** The release link names the packaged GitHub feed; a test feed has none (DEC-017). */
+  private currentNotification(): AppUpdateState['notification'] {
+    const configPath = this.testFeedUrl ? null : this.appUpdateConfigPath;
+    return this.notificationRecord?.toNotification(
+      (version) => configPath ? resolveAppReleasePageUrl(configPath, version) : null) ?? null;
+  }
+
   /**
    * Applies the channel to electron-updater before every check. Never set
    * `autoUpdater.channel`: its setter forces `allowDowngrade = true`.
@@ -297,7 +353,9 @@ export class AppUpdater implements AppUpdateController {
     });
 
     autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+      if (updateInfo.version) this.notificationRecord?.recordFound(updateInfo.version);
       this.applyState({
+        notification: this.currentNotification(),
         status: 'available',
         availableVersion: updateInfo.version || null,
         releaseNotes: normalizeReleaseNotes(updateInfo.releaseNotes),
@@ -314,7 +372,9 @@ export class AppUpdater implements AppUpdateController {
     });
 
     autoUpdater.on('update-not-available', () => {
+      this.notificationRecord?.recordNotAvailable();
       this.applyState({
+        notification: this.currentNotification(),
         status: 'no-update',
         availableVersion: null,
         releaseNotes: null,
@@ -370,6 +430,8 @@ export class AppUpdater implements AppUpdateController {
     ipcMain.handle(APP_UPDATE_IPC_DOWNLOAD, async () => await this.downloadUpdate());
     ipcMain.handle(APP_UPDATE_IPC_INSTALL, async () => this.installUpdateAndRestart());
     ipcMain.handle(APP_UPDATE_IPC_SET_CHANNEL, async (_event, channel: unknown) => await this.setUpdateChannel(channel));
+    ipcMain.handle(APP_UPDATE_IPC_MARK_NOTIFICATION_READ, async () => this.markNotificationRead());
+    ipcMain.handle(APP_UPDATE_IPC_CLEAR_NOTIFICATION, async () => this.clearNotification());
   }
 
   private handleError(

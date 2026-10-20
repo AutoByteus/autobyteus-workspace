@@ -1,0 +1,10 @@
+# IMP-05 autobyteus-ts build (tsc typecheck + emit) and lazy-load check of the emitted module
+# Command: pnpm -C autobyteus-ts build; head -1 autobyteus-ts/dist/tools/mcp/server/http-managed-mcp-server.js
+# Commit: bb1d3cd28c
+# Env: macOS (Darwin 25.5.0), node v22.23.1
+# Date: 2026-10-20
+
+build: exit 0, [verify:runtime-deps] OK
+emitted first line: import { BaseManagedMcpServer } from './base-managed-mcp-server.js';
+occurrences of modelcontextprotocol (only the dynamic import): 1
+6:        const { Client, StreamableHTTPClientTransport, SdkHttpError } = await import('@modelcontextprotocol/client');

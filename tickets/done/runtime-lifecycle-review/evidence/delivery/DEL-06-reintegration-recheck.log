@@ -1,0 +1,25 @@
+# DEL-06 re-integration with origin/personal 66d834b0ac (merge 6f0c4eaea9) 2026-10-20T13:09:05Z
+$ pnpm -C autobyteus-server-ts prepare:shared
+EXIT 0
+$ pnpm -C autobyteus-server-ts typecheck
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-design-review/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+TSC EXIT 0
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/agent-runtimes tests/unit/api/graphql/agent-runtimes-resolver.test.ts tests/unit/application-platform --no-watch
+ Test Files  16 passed (16)
+      Tests  143 passed (143)
+EXIT 0
+$ env -i PATH HOME=<resolved temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts --no-watch
+[AR-11] scanned 348 API responses, 414 stdout/stderr writes, 11 data files; markers 6; hits 0
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+EXIT 0
+$ env -i PATH HOME=<resolved temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts --no-watch
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+EXIT 0
+$ cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run components/settings/agent-runtimes pages/__tests__/settings.spec.ts
+ Test Files  2 passed (2)
+      Tests  35 passed (35)
+EXIT 0

@@ -87,7 +87,7 @@ export const tabs = [
 
   it('flags raw literals returned from vue script setup blocks', () => {
     const appRoot = createFixtureDir({
-      'components/app/AppUpdateNotice.vue': `
+      'components/notifications/NotificationRow.vue': `
 <template>
   <p>{{ statusMessage }}</p>
 </template>
@@ -108,7 +108,7 @@ const statusMessage = computed(() => {
       expect.arrayContaining([
         expect.objectContaining({
           scopeId: 'M-001',
-          file: 'components/app/AppUpdateNotice.vue#script-1',
+          file: 'components/notifications/NotificationRow.vue#script-1',
           finding: 'Update downloaded. Restart to install.',
           status: 'unresolved',
         }),

@@ -5,6 +5,10 @@
  * `Authorization` header (Basic) and one with the token (sent as Bearer), calls both through the AutoByteus server,
  * and each remote server sees its credential on the `tools/call` request itself. Native AutoByteus runs the
  * registry MCP tool directly; AGY, Codex and Claude reach it through the run's `autobyteus_agent_tools` endpoint.
+ * Then the token server revokes the token: a new native AutoByteus run's tool call fails, and the agent's tool
+ * failure states the HTTP status (`HTTP 401 Unauthorized: …`). Native only: the Agent Tools MCP endpoint that AGY,
+ * Codex and Claude use answers every failed configured-MCP tool call with JSON-RPC `Internal error`
+ * (tickets/…/mcp-http-error-status/follow-ups.md FU-001).
  * Gates (each runtime runs only when its gate is set; a skip is not a pass):
  *   - AGY, scripted (no model): RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs
  *   - Native AutoByteus with a local LM Studio model: RUN_LMSTUDIO_E2E=1 (optional LMSTUDIO_TARGET_TEXT_MODEL)
@@ -64,6 +68,8 @@ const INSTRUCTIONS = [
 ].join("\n");
 const LIVE_PROMPT = `Call the tool ${HDR_TOOL} once and the tool ${TOK_TOOL} once, both with no arguments. Then reply with the exact text each tool returned.`;
 const AGY_PROMPT = `CALL_TOOLS:${JSON.stringify([{ name: HDR_TOOL, arguments: {} }, { name: TOK_TOOL, arguments: {} }])}`;
+
+const REVOKED_TOOL_RESULT = "HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -152,46 +158,58 @@ suite("Agents call tools of credential-protected remote MCP servers", () => {
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
   }, 120_000);
 
+  /** Starts a new run of `runtime` with the agent's tools `toolNames` and opens its WebSocket. */
+  const startRun = async (runtime: RuntimeCase, label: string, toolNames: string[]) => {
+    // The scripted AGY CLI answers `CALL_TOOLS:` in its `linked_skills` case.
+    if (runtime.key === "agy") process.env["AGY_FAKE_CASE"] = "linked_skills";
+    const model = await pickModel(runtime);
+    const workspace = path.join(dataDir, `workspace-${label}`);
+    await fs.mkdir(workspace, { recursive: true });
+    const created = await graphql<{ createAgentDefinition: { id: string } }>(
+      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: `mcp-http-auth-${label}-${randomUUID()}`, role: "assistant", category: "runtime-e2e",
+        description: "Calls credential-protected remote MCP tools.", instructions: INSTRUCTIONS, toolNames } });
+    definitionIds.push(created.createAgentDefinition.id);
+    const run = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
+      "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId: created.createAgentDefinition.id, workspaceRootPath: workspace,
+        llmModelIdentifier: model, llmConfig: runtime.llmConfig, autoExecuteTools: true, runtimeKind: runtime.runtimeKind } });
+    expect(run.createAgentRun.success, run.createAgentRun.message).toBe(true);
+    const runId = run.createAgentRun.runId!;
+    runIds.push(runId);
+
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);
+    sockets.push(socket);
+    const messages: Wire[] = [];
+    socket.on("message", (raw: unknown) => {
+      try {
+        const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
+        if (typeof parsed.type === "string") messages.push({ type: parsed.type,
+          payload: parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+            ? parsed.payload as Record<string, unknown> : {} });
+      } catch { /* Ignore malformed diagnostic rows. */ }
+    });
+    await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
+    return { model, runId, socket, messages };
+  };
+
+  /** Sends `content` and waits until the turn completes or fails; returns the last events for assertion messages. */
+  const runTurn = async (started: Awaited<ReturnType<typeof startRun>>, content: string) => {
+    sendE2eSendMessageCommand(started.socket, { agent_run_id: started.runId, content });
+    const deadline = Date.now() + 300_000;
+    const finished = () => started.messages.some((m) => m.type === "TURN_COMPLETED" || m.type === "ERROR");
+    while (Date.now() < deadline && !finished()) await wait(100);
+    return started.messages.slice(-25).map((m) => `${m.type}:${JSON.stringify(m.payload).slice(0, 200)}`).join(" | ");
+  };
+
   for (const runtime of RUNTIMES) {
     it.skipIf(!runtime.enabled)(`${runtime.key}: the agent's tool calls reach both servers with their credentials`, async () => {
-      // The scripted AGY CLI answers `CALL_TOOLS:` in its `linked_skills` case.
-      if (runtime.key === "agy") process.env["AGY_FAKE_CASE"] = "linked_skills";
-      const model = await pickModel(runtime);
-      const workspace = path.join(dataDir, `workspace-${runtime.key}`);
-      await fs.mkdir(workspace, { recursive: true });
-      const created = await graphql<{ createAgentDefinition: { id: string } }>(
-        "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
-        { input: { name: `mcp-http-auth-${runtime.key}-${randomUUID()}`, role: "assistant", category: "runtime-e2e",
-          description: "Calls credential-protected remote MCP tools.", instructions: INSTRUCTIONS, toolNames: [HDR_TOOL, TOK_TOOL] } });
-      definitionIds.push(created.createAgentDefinition.id);
-      const run = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
-        "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
-        { input: { agentDefinitionId: created.createAgentDefinition.id, workspaceRootPath: workspace,
-          llmModelIdentifier: model, llmConfig: runtime.llmConfig, autoExecuteTools: true, runtimeKind: runtime.runtimeKind } });
-      expect(run.createAgentRun.success, run.createAgentRun.message).toBe(true);
-      const runId = run.createAgentRun.runId!;
-      runIds.push(runId);
-
-      const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);
-      sockets.push(socket);
-      const messages: Wire[] = [];
-      socket.on("message", (raw: unknown) => {
-        try {
-          const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-          if (typeof parsed.type === "string") messages.push({ type: parsed.type,
-            payload: parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
-              ? parsed.payload as Record<string, unknown> : {} });
-        } catch { /* Ignore malformed diagnostic rows. */ }
-      });
-      await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
+      const started = await startRun(runtime, runtime.key, [HDR_TOOL, TOK_TOOL]);
+      const { model, messages } = started;
 
       const hdrMark = hdr.toolCalls().length;
       const tokMark = tok.toolCalls().length;
-      sendE2eSendMessageCommand(socket, { agent_run_id: runId, content: runtime.key === "agy" ? AGY_PROMPT : LIVE_PROMPT });
-      const deadline = Date.now() + 300_000;
-      const finished = () => messages.some((m) => m.type === "TURN_COMPLETED" || m.type === "ERROR");
-      while (Date.now() < deadline && !finished()) await wait(100);
-      const preview = messages.slice(-25).map((m) => `${m.type}:${JSON.stringify(m.payload).slice(0, 200)}`).join(" | ");
+      const preview = await runTurn(started, runtime.key === "agy" ? AGY_PROMPT : LIVE_PROMPT);
       expect(messages.some((m) => m.type === "ERROR"), preview).toBe(false);
       expect(messages.some((m) => m.type === "TURN_COMPLETED"), preview).toBe(true);
 
@@ -221,4 +239,38 @@ suite("Agents call tools of credential-protected remote MCP servers", () => {
       }
     }, 360_000);
   }
+
+  const native = RUNTIMES.find((runtime) => runtime.key === "native")!;
+  it.skipIf(!native.enabled)("native: after the server revokes the token, the agent's tool call fails with the HTTP status", async () => {
+    // The tools were registered with the token; the server now accepts another value only, as after a revocation.
+    tok.setRequiredAuthorization("Bearer test-rotated");
+    try {
+      const started = await startRun(native, "native-revoked", [TOK_TOOL]);
+      const mark = tok.observations.length;
+      const preview = await runTurn(started,
+        `Call the tool ${TOK_TOOL} once with no arguments. Then reply with the exact text the tool returned.`);
+      const wire = JSON.stringify(started.messages);
+
+      // Each connect of the run was refused with 401 at initialize; no tool call reached the server.
+      const seen = tok.observations.slice(mark);
+      expect(seen.length, preview).toBeGreaterThanOrEqual(1);
+      expect(new Set(seen.map((entry) => entry.rpcMethod)), preview).toEqual(new Set(["initialize"]));
+      expect(new Set(seen.map((entry) => entry.auth))).toEqual(new Set(["other"]));
+      // The tool failure the agent and the user see states the status, then the SDK's text.
+      expect(wire, preview).toContain(REVOKED_TOOL_RESULT);
+      expect(wire).not.toContain(tok.marker);
+      expect(wire).not.toContain(DUMMY);
+
+      if (evidenceDir) {
+        await fs.mkdir(evidenceDir, { recursive: true });
+        await fs.writeFile(path.join(evidenceDir, "native-revoked.json"), JSON.stringify({
+          runtime: native.runtimeKind, model: started.model, toolNamesSelected: [TOK_TOOL], remoteRequests: seen,
+          events: started.messages.map((m) => m.type),
+          lastEvents: preview, statusInToolResult: wire.includes(REVOKED_TOOL_RESULT), dummyValueOnAgentWire: wire.includes(DUMMY),
+        }, null, 2));
+      }
+    } finally {
+      tok.setRequiredAuthorization(`Bearer ${DUMMY}`);
+    }
+  }, 360_000);
 });

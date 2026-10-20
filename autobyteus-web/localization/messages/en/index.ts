@@ -20,6 +20,7 @@ import tokenUsageSettingsMessages from './token-usage-settings';
 import memorySyncSettingsMessages from './memorySyncSettings';
 import remoteCollaborationSettingsMessages from './remoteCollaborationSettings';
 import embeddingSettingsMessages from './embeddingSettings';
+import agentRuntimesSettingsMessages from './agentRuntimesSettings';
 import projectMessages from './projects';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
@@ -56,6 +57,7 @@ const enMessages: TranslationCatalog = {
   ...memorySyncSettingsMessages,
   ...remoteCollaborationSettingsMessages,
   ...embeddingSettingsMessages,
+  ...agentRuntimesSettingsMessages,
   ...projectMessages,
   ...generatedShellMessages,
   ...shellMessages,

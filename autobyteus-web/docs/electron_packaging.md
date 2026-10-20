@@ -586,7 +586,7 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
 
 ### Runtime Behavior
 
-- `AppUpdater` implements `AppUpdateController`. Isolated (`e2e`) launches register `DisabledAppUpdater` instead, which reports `status: 'disabled'` (see [Updates in isolated launches](#updates-in-isolated-launches)).
+- `AppUpdater` implements `AppUpdateController`. Isolated (`e2e`) launches register `DisabledAppUpdater` instead, which reports `status: 'disabled'`, unless the launch names a test update feed (see [Updates in isolated launches](#updates-in-isolated-launches)).
 - Startup auto-check runs only for packaged apps (dev/unpackaged mode is skipped).
 - Renderer windows receive normalized updater state via IPC channel `app-update-state`.
 - Manual check entrypoint is exposed in `Settings > Updates` (canonical UI location).
@@ -595,6 +595,32 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
   - `app-update:download`
   - `app-update:install`
   - `app-update:set-channel`
+  - `app-update:mark-notification-read`, `app-update:clear-notification` (the
+    Notification Center's intents; both return `AppUpdateState`)
+- Nothing downloads by itself (`autoDownload = false`). An available update is
+  announced only in the Notification Center (the self-opening card is gone).
+
+### App Update Notification
+
+`electron/updater/appUpdateNotificationRecord.ts` keeps the app's update
+notification in `userData/app-update-notification.json`
+(`{ version, fromVersion, foundAt, read, handledVersion, handledAt }`; tolerant
+read, atomic write) and `AppUpdater` sends it as `AppUpdateState.notification`:
+
+- `update-available` creates a waiting, unread record for the version, or
+  replaces it when the version is newer.
+- At start, a waiting record becomes handled when the app runs another version
+  than when the update was found ("Updated to …").
+- `update-not-available` removes a waiting record (nothing was updated and the
+  version is no longer offered, for example after turning Beta off).
+- `mark-notification-read` marks a waiting record read; `clear-notification`
+  removes a handled one. A waiting record is never dismissed.
+- `releasePageUrl` is `https://github.com/<owner>/<repo>/releases/tag/v<version>`
+  from the packaged `app-update.yml` (`electron/updater/appReleasePage.ts`);
+  `null` under an e2e test feed.
+- After a restart the record exists before this process has seen the update:
+  Download first runs a manual check and downloads only if the update is
+  available again; otherwise the check's result is shown.
 
 ### Update Channel (Stable / Beta)
 
@@ -646,11 +672,12 @@ Renderer-visible update state must stay safe for display:
 - `shared/appUpdateTypes.ts` carries `errorKind` and `errorOperation`.
 - The renderer contract must not reintroduce a raw `error` / provider-message
   field for normal UI, Settings, or toast copy.
-- `utils/appUpdateErrorDisplay.ts` maps `errorKind` to localized notice,
-  Settings, and toast messages.
-- `stores/appUpdateStore.ts` suppresses visible card/toast noise for startup
-  `network` and `release-preparing` failures, while manual checks and
-  download/install failures still show concise recovery copy.
+- `utils/appUpdateErrorDisplay.ts` maps `errorKind` to localized Settings and
+  toast messages.
+- `stores/appUpdateStore.ts` raises no toast for any startup-check failure (a
+  check the user did not start stays quiet; Settings → Updates shows the
+  error), while manual checks and download/install failures still show concise
+  recovery copy.
 - Raw provider details such as `net::ERR_*`, `ERR_UPDATER_*`, provider URLs,
   YAML, stack traces, or file lists belong in the Electron main log with
   classification context, not in user-facing renderer text.
@@ -855,7 +882,12 @@ using a relative or missing root, or choosing an occupied listener fails closed
 before stateful startup. The backend keeps its current listener-bind policy;
 Electron and renderer clients use `127.0.0.1:<selected-port>`. E2E mode disables
 automatic update checks, downloads, and install-on-quit side effects, while the
-production updater remains unchanged.
+production updater remains unchanged. One optional e2e-only value points the
+updater at a local test feed instead (rejected in the production profile):
+
+```text
+AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL=http://127.0.0.1:<port>[/path] (or http://localhost:<port>)
+```
 
 Do not persist these values in repository or production-data `.env` files, bake
 them into Nuxt/electron-builder output, or create an alternate app/product name.
@@ -927,9 +959,15 @@ system variable in isolated mode, add it to the baseline list; never spread
 Every launch registers one `AppUpdateController` for the `app-update:*` IPC
 contract. Production uses `AppUpdater`. The `e2e` profile uses
 `DisabledAppUpdater`, which answers with `status: 'disabled'`, refuses download,
-install and channel changes, and never checks. The renderer store keeps the
-update notice hidden and shows no toast. Settings → Updates shows a neutral
-"turned off" line without update controls.
+install and channel changes, and never checks. The renderer shows no app update
+and no toast. Settings → Updates shows a neutral "turned off" line without
+update controls.
+
+With `AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL` (set by
+`pnpm isolated-app start --test-update-feed <url>`), the e2e profile uses
+`AppUpdater` with `setFeedURL({ provider: 'generic', url })`: the startup check
+runs against that feed, and the app update notification, Download and Install
+work as in production. The release page link is omitted under the test feed.
 
 #### Agent lifecycle (`pnpm isolated-app`) and the control port
 

@@ -1,3 +1,4 @@
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { ConfiguredExecutionNode } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { isConfiguredAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type {
@@ -118,6 +119,15 @@ export class ApplicationExecutionScope {
       }
       throw error;
     }
+  }
+
+  /** Live Application agents (standalone and Team members) running on `runtimeKind`. */
+  countActiveAgentRuns(runtimeKind: RuntimeKind): number {
+    let count = 0;
+    for (const runId of this.kernel.activeAgentRuns.listActiveRuns()) {
+      if (this.kernel.activeAgentRuns.getActiveRun(runId)?.runtimeKind === runtimeKind) count += 1;
+    }
+    return count;
   }
 
   abortConstruction(): void {

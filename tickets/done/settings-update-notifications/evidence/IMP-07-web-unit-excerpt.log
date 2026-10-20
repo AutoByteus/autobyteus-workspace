@@ -1,0 +1,7 @@
+IMP-07 web unit/component suite | cmd: NUXT_TEST=true vitest run (pnpm test:nuxt --run), run alone | commit 71cfcd7d32 | macOS, node v22.23.1 | 2026-10-20
+Earlier run of the same commit, with the server unit suite running in parallel: 2 failed (CollaborationMessagesOrgRoot.integration.spec.ts, 'Test timed out in 5000ms'; these tests take 3.2-3.8 s alone and pass alone: 3 passed). This rerun had no parallel load:
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+ Test Files  646 passed | 2 skipped (648)
+      Tests  4609 passed | 5 skipped (4614)
+exit 0

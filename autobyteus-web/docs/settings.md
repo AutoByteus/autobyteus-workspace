@@ -252,7 +252,62 @@ always available on desktop (see `projects.md`). Both share one mechanism:
 
 Add a new per-node feature capability as another factory instance plus a card
 wrapper, never as a copied store or card. See `applications.md` and
-`projects.md` for feature-specific behavior.
+`projects.md` for feature-specific behavior. One exception keeps the factory
+but not the card: **Update checks** (`ENABLE_UPDATE_CHECKS`, on when absent) is
+`stores/capabilities/updateChecksCapabilityStore.ts` with its own
+`UpdateChecksCard.vue`, because its approved design is the Basics inner-row card
+without a status badge (see Notification Center below).
+
+## Notification Center (Update Notifications)
+
+The quiet place where waiting updates of the app, imported GitHub agent
+packages and imported GitHub skill sources are shown. Nothing opens by itself;
+nothing is updated without the user's Update.
+
+- **Entry.** `components/layout/SidebarNotificationsEntry.vue`: a word pill
+  ("3 updates") on the right of the sidebar's Settings row
+  (`AppLeftPanel.vue`), or an icon with a count badge above the cog in the
+  collapsed strip (`LeftSidebarStrip.vue`). The count is the number of waiting
+  (not handled) rows, the app included. Solid `sky-700` while any is unread,
+  soft `sky-100` once all are read, absent at 0. Hover or focus lists the kinds.
+  It shows where Settings does (`isFeatureAvailableInRuntime('desktopSettings')`):
+  desktop and browser windows, not the mobile client.
+- **Panel.** `components/notifications/NotificationCenter.vue` (mounted in
+  `app.vue`, teleported, `z-[90]`) with `NotificationSection.vue` and
+  `NotificationRow.vue`. One section per kind (Software update first, then by
+  newest waiting update), one row per update (waiting rows newest first, then
+  handled), first three rows then "Show N more". A row's name or change line
+  toggles its details: repository · branch and "See changes on GitHub" (the
+  compare page of the two revisions); for the app, the release notes and the
+  Release page. ✕, Esc or a click outside closes it; ✕ and Esc return focus to
+  the entry. Opening marks every waiting row read on the node and in the shell;
+  the "New" dots stay until the panel closes.
+- **Row actions** run the existing explicit update of their kind:
+  `agentPackagesStore.updateAgentPackage`; for a skill source, the shared
+  `components/skills/SkillSourceUpdateConfirmation.vue` (also used by the skill
+  sources dialog) and then `skillSourcesStore.githubOperation('update')`; for the
+  app, Download (`appUpdateStore.downloadUpdate`) → progress → Install and
+  restart. A failure shows "Update failed. Nothing was changed." with the reason
+  and Try again; a handled row shows "Updated to …" and Clear. There is no
+  dismiss or skip.
+- **Data.** `stores/updateNotificationsStore.ts` is the only place that combines
+  the bound node's records (GraphQL `updateNotifications`,
+  `markUpdateNotificationsRead`, `clearUpdateNotification(kind, sourceId)`) with
+  the shell's app record (`AppUpdateState.notification`, IPC
+  `markAppUpdateNotificationRead` / `clearAppUpdateNotification`). It re-reads on
+  every `/ws/update-notifications` frame
+  (`services/updateNotifications/updateNotificationChangeFeed.ts`, retained
+  app-wide by `useUpdateNotificationChangeFeed`) and drops the rows when the
+  window is bound to another node. A browser window has no app row.
+  `stores/notificationCenterStore.ts` owns open/closed, position and the "New"
+  dots.
+- **Setting.** Settings → Server Settings → Basics → **Update checks** (last
+  card): the node's switch for background checks, with the description of the
+  network calls (at most every 6 hours, `api.github.com`, no account or token,
+  nothing sent to AutoByteus; the desktop app also checks GitHub releases for
+  its own update at start). Server behavior: `autobyteus-server-ts/docs/modules/update_notifications.md`.
+- The former self-opening app update card (`AppUpdateNotice`) is gone; Settings
+  → Updates keeps all app update controls.
 
 ## Server Settings: Embedding
 
@@ -296,6 +351,68 @@ states.
 - `tests/e2e/embedding-settings-probe.mjs` (`pnpm test:e2e:embedding-settings`)
   drives the section against a real node on a fresh data root, with real
   downloads of the small LEAF-IR model.
+
+## Settings: Agent Runtimes
+
+Settings -> **Agent Runtimes** (`?section=agent-runtimes`, right after API Keys)
+lists Codex, Claude, Antigravity and Grok for the node the window is bound to.
+The user installs runtimes. AutoByteus shows what it finds, checks for newer
+versions, and starts the vendor's own update and login commands.
+
+- **Rows.** For each runtime the page shows its installed version or **Not
+  installed**, its update state (Checking for updates…, Up to date, Update
+  available (version X), Check failed), and its account (Signed in, Not signed
+  in, Sign-in unknown, or "–" when Codex is set up with a model provider that
+  needs no OpenAI sign-in).
+- **Finding runtimes.** The page uses the same lookup AutoByteus uses to run
+  agents (PATH and the existing per-runtime command settings), so it shows
+  exactly what agent runs will use. A runtime that is not installed shows
+  "Install instructions" (the vendor's official page) and "After installing,
+  restart AutoByteus.", because a runtime installed while AutoByteus runs may
+  not be found until a restart. AutoByteus never installs a runtime.
+- **Checks.** Opening the page and **Check again** start one check per
+  runtime. Each one reads `--version`, the sign-in state and the vendor's
+  newest version on its own, so a slow or failing source only marks its own
+  row ("Couldn't reach the update source. <Runtime> still works."). Checking
+  changes nothing.
+- **Update** (the desktop's own node only) runs `<runtime> update`. The row
+  shows the command and the vendor's latest output line. Then it shows
+  "Updated from X to Y." and checks that runtime again. A failure, or an exit
+  without a newer version, shows the vendor's message and **Try again**.
+  Update stays visible but cannot be pressed while that runtime has running
+  agents, with the reason "Update unavailable while N agents are running.".
+  Application agents count too.
+- **Sign in** (the desktop's own node only) exists for Codex (`codex login`)
+  and Grok (`grok login --oauth`). The vendor's command opens the browser. The
+  row shows "Finish signing in to <Runtime> in your browser." with **Cancel**.
+  After 10 minutes it shows "Sign-in didn't finish. Try again.". Claude and
+  Antigravity show "Sign in from its command line." with no button, by vendor
+  policy and the user's decision.
+- **Remote and Docker node windows** show the same rows and statuses with the
+  note "Status only. Update these runtimes on that node's computer." They have
+  no Update, no Sign in and no command-line hint.
+- **Layout.** The five-column table appears when the runtime list itself is at
+  least about 58 rem wide (a CSS container query). Below that, rows stack with
+  visible labels. The rule follows the list's width, not the window's, so the
+  table never overflows beside the Settings menu. Windows narrower than about
+  1250 px show stacked rows.
+- **Data flow.** `composables/settings/useAgentRuntimes.ts` reads the
+  `agentRuntimes` query every 2 s while a row is checking or an operation is
+  running, and every 10 s otherwise. The 10 s read also refreshes running-agent
+  counts, so a blocked Update becomes available by itself. Reading never starts
+  work, and rebinding the window starts over with the new node. Completed
+  updates and sign-ins are announced in a polite live region. Views:
+  `components/settings/agent-runtimes/` (`AgentRuntimesManager`,
+  `AgentRuntimeRow`). Copy: `localization/messages/{en,zh-CN}/agentRuntimesSettings.ts`.
+- **Privacy.** No sign-in URL, code, token or account detail reaches the page,
+  the GraphQL API, server logs or storage. AutoByteus only asks each runtime
+  for its state and starts the runtime's own commands.
+- `tests/e2e/agent-runtimes-settings-probe.mjs`
+  (`pnpm test:e2e:agent-runtimes-settings`) drives the section in a real
+  browser against a real server on a fresh data root, with scripted runtime
+  CLIs and vendor sources (`tests/e2e/fixtures/agent-runtimes-vendor-sources.mjs`).
+
+Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md).
 
 ## Settings: Agent Packages Auto-Refresh
 

@@ -1,0 +1,9 @@
+# IMP-05 — full autobyteus-ts suite (excerpt)
+# Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts test
+# Commit: base 5de6a698b9 + uncommitted ticket edits (identical to the ticket commit)
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-20T10:29:08Z
+# Full log (634238 bytes, not committed): /tmp/hyg-ts-full.log
+
+ Test Files  387 passed | 26 skipped (413)
+      Tests  2361 passed | 78 skipped (2439)

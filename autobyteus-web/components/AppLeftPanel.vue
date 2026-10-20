@@ -108,18 +108,21 @@
     </div>
 
     <footer class="flex-shrink-0 bg-white p-2">
-      <button
-        v-if="showSettingsNavigation"
-        type="button"
-        class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors"
-        :class="isSettingsActive
-          ? 'bg-gray-100 text-gray-900'
-          : 'text-gray-700 hover:bg-gray-100'"
-        @click="navigateToSettings"
-      >
-        <Icon icon="heroicons:cog-6-tooth" class="h-4 w-4 flex-shrink-0" />
-        <span class="truncate">{{ $t('shell.navigation.settings') }}</span>
-      </button>
+      <!-- Waiting updates show as a pill on the right of the Settings row. -->
+      <div v-if="showSettingsNavigation" class="flex items-center gap-1.5">
+        <button
+          type="button"
+          class="flex min-w-0 flex-1 items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors"
+          :class="isSettingsActive
+            ? 'bg-gray-100 text-gray-900'
+            : 'text-gray-700 hover:bg-gray-100'"
+          @click="navigateToSettings"
+        >
+          <Icon icon="heroicons:cog-6-tooth" class="h-4 w-4 flex-shrink-0" />
+          <span class="truncate">{{ $t('shell.navigation.settings') }}</span>
+        </button>
+        <SidebarNotificationsEntry variant="inline" />
+      </div>
     </footer>
   </div>
 </template>
@@ -130,6 +133,7 @@ import { computed, nextTick, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import WorkspaceAgentRunsTreePanel from '~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue';
+import SidebarNotificationsEntry from '~/components/layout/SidebarNotificationsEntry.vue';
 import { useAppLeftPanelSectionResize } from '~/composables/useAppLeftPanelSectionResize';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 import {

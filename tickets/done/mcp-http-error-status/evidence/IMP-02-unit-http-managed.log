@@ -1,0 +1,23 @@
+# IMP-02 unit file after the fix
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/mcp/http-managed-mcp-server.test.ts --no-watch --reporter=verbose
+# Commit: bb1d3cd28c
+# Env: macOS (Darwin 25.5.0), node v22.23.1
+# Date: 2026-10-20
+
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > sends configured headers on initialize, tool listing and tool call 389ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > sends the token as a Bearer Authorization header on every request 241ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > connects to an unauthenticated server without sending an Authorization header 39ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > fails to connect when the server rejects the configured credential 38ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > connects with the 2025 initialize handshake and no server/discover probe 60ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > lists the tools of every page when the server pages tools/list 96ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > HTTP error answers > fails to connect with the status first in the message when the server answers 401 4ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > HTTP error answers > fails to connect with the status first in the message when the server answers 403 2ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > HTTP error answers > fails to connect with the status first in the message when the server answers 404 2ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > HTTP error answers > fails to connect with the status first in the message when the server answers 500 33ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > HTTP error answers > names the status of a 404 whose body is empty 3ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > HTTP error answers > keeps the message of a failure without an HTTP answer 1ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > HTTP error answers > fails a tool call that has to connect with the status in the message 40ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > redirects > does not follow a redirect to another origin, so the credential never reaches it 5ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > redirects > follows a redirect within the same origin 67ms
+ Test Files  1 passed (1)
+      Tests  15 passed (15)

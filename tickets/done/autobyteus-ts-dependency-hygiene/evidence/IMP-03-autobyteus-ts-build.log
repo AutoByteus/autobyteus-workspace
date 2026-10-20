@@ -1,0 +1,11 @@
+# IMP-03 — autobyteus-ts build incl. verify:runtime-deps
+# Command: pnpm -C autobyteus-ts build
+# Commit: base 5de6a698b9 + uncommitted ticket edits (identical to the ticket commit)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T10:27:40Z
+
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-dependency-hygiene/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK

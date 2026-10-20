@@ -1,0 +1,22 @@
+IMP-10 rendered check (implementation self-validation, not API/E2E sign-off)
+Commit: working tree on eba4674616 + uncommitted web part (committed afterwards as the web commit named in implementation-handoff.md)
+Environment: macOS, `pnpm dev` (backend 127.0.0.1:8000, Nuxt 127.0.0.1:3000), browser tab of the agent browser bridge
+Data: test-owned dev data root <worktree>/.autobyteus/development/server-data, seeded by /tmp/sun-seed/seed.mjs
+      (4 GitHub package records installed != latest, 1 up to date; 1 GitHub skill source installed != latest; fake repos autobyteus-test/*)
+Date: 2026-10-20
+
+Observed (DOM / API results copied from run_script and curl):
+1. Docked layout: pill "5 updates", class bg-sky-700 (unread); aria-label "5 updates available: 4 agent package updates, 1 skill update".
+2. Click pill -> panel open {"open":true,"focused":true,"rect":{"x":8,"width":360,...},"pillSoft":true,"sections":["notification-section-agent_package","notification-section-skill_source"],"dots":4}
+3. Row details: "autobyteus-test/agents-one · main", "See changes on GitHub"; "Show 1 more" -> "Show less".
+4. Skill row Update -> "Update entire skill source?" confirmation over the open panel; Esc -> {"dialog":false,"panel":true}
+5. Package Update on fake repo (one real api.github.com request) -> row data-state "failed",
+   text "Update failed. Nothing was changed. GitHub repository not found or not public: https://github.com/autobyteus-test/agents-one. ..." and "Try again"
+6. Esc -> {"panel":false,"focusOnPill":true,"soft":true}
+7. Server restart (pnpm dev restarted): updateNotifications all "read":true, "state":"WAITING" (read state persisted).
+8. Narrow window (766x738): strip entry badge 5; panel rect x 50.5 = icon.right 42.5 + 8; panel bottom 682 = icon bottom 682.
+9. Live update: `mutation { removeGitHubSkillSource(...) }` via curl while the panel was open ->
+   {"badge":"4","label":"4 updates available: 4 agent package updates","sections":["notification-section-agent_package"],"panelOpen":true}
+   (no page reload).
+10. Browser window: no "notification-section-app" (appSection false).
+Screenshots: IMP-10-strip-panel-open.png (and IMP-10-*.png listed in the handoff).

@@ -63,6 +63,25 @@ a background garbage collector or a multi-server/shared-data coordination
 protocol. No conversion of local registrations, disabled names or run history
 is required.
 
+### Background checks and update notifications
+
+While the node's Update checks setting is on, the
+[update notifications](./update_notifications.md) checker runs the same
+`checkGitHubSkillSourceUpdates([sourceId])` for each ACTIVE source not checked
+for 6 hours. Any check that finds a newer revision (also the check when Manage
+skill sources opens) becomes that source's notification; Update from the
+notification shows the same confirmation and runs `updateGitHubSkillSource`.
+Nothing is downloaded or replaced without that confirmed Update.
+
+- `listGitHubSourceUpdateStates()` projects every ACTIVE source's update facts
+  (installed and latest known revision, default branch, last check time).
+- `setGitHubSourceStateListener(listener)` sets the one listener told after an
+  import, check, update or removal settled (success or failure); a listener
+  error is logged and never fails the source action.
+- A failed later check keeps `lastCheck.latestRevision`, so a known newer
+  revision stays updatable in the dialog row and in the notification
+  (`CHECK_FAILED` is shown as the last check's result).
+
 Shared metadata/revision transport now lives in `src/integrations/github/`,
 replacing the agent-package-specific `utils/github-repository-source.ts` owner.
 The agent package importer consumes that shared transport but retains its own

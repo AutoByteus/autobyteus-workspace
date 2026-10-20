@@ -23,13 +23,51 @@ this file.
 
   ```bash
   git fetch origin personal
+  scripts/check_secrets.sh origin/personal..codex/<ticket-name>   # Secret Gate, before the first push
   git checkout -b finalize/<ticket-name> origin/personal
   git merge --no-ff codex/<ticket-name>
+  scripts/check_secrets.sh                                        # again on the merged state
   git push origin HEAD:personal
   ```
 
 - Never commit build output: `*/dist/`, `autobyteus-web/electron-dist/` and
   other packaged app files. CI builds every release from source.
+
+## Secret Gate
+
+This repository is public, so a pushed commit is already exposed. That
+includes the ticket branch. Before the **first push** of a ticket branch, and
+again on the merged state before pushing `personal`, scan the new commits for
+API keys, tokens, passwords and private keys:
+
+```bash
+scripts/check_secrets.sh origin/personal..HEAD   # the default range; any range works
+```
+
+- **How it works:** gitleaks (`brew install gitleaks`) scans only the commits
+  in the range, with `.gitleaks.toml`. That config is gitleaks' default rules,
+  plus rules for `*_API_KEY` / `*_TOKEN` / `*_SECRET` assignments and
+  passwords in URLs, plus allowlists for confirmed false positives. Output is
+  redacted (commit, file, line, rule; never the value). Nothing is sent to any
+  provider.
+- **Exit codes:**
+  - `0`: pass.
+  - `1`: findings. **Finalization is blocked; push nothing.**
+  - `2`: cannot run (gitleaks missing, or a range end that does not
+    resolve). Treat it as blocked too.
+- **On a finding:**
+  - Remove the value from the unpushed commits (amend or rebase the ticket
+    branch). A key that never left the machine needs no rotation.
+  - A key that was ever pushed must also be revoked or rotated at its
+    provider by the user. Removing it from git does not make it safe.
+  - Report the commit, file and kind of key, never the value. Never test a
+    key against its provider.
+- **False positives:** confirm the value by shape and context, then add the
+  narrowest entry to `.gitleaks.toml`, with the reason. Shape-based
+  allowlists stay scoped to the `generic-api-key` rule.
+- **Not covered:** images (screenshots are not OCR-scanned) and commits
+  pushed without this guide. Keep keys out of screenshots, and write evidence
+  with secret IDs, never values (`TESTING.md`).
 
 ## Release Decision
 
@@ -45,12 +83,13 @@ The user decides at verification. There are three options:
 
 ## Checks Before Tagging
 
-Run both checks on the merged `personal` state. The release workflows run them
-too, but by then the tag is already pushed.
+Run these checks on the merged `personal` state. The release workflows run
+the first two too, but by then the tag is already pushed.
 
 ```bash
 python3 scripts/check_licensing.py
 python3 scripts/check_repository_artifact_hygiene.py
+scripts/check_secrets.sh <previous-release-tag>..HEAD   # Secret Gate over everything the release adds
 ```
 
 The hygiene check rejects these tracked paths:

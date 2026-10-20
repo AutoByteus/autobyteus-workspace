@@ -27,7 +27,7 @@ profile (see the [packaging contract](../autobyteus-web/docs/electron_packaging.
 | Own backend port and own data root | The `e2e` profile; the root is a new private temp directory unless you pass `--data-root` |
 | Never reads or writes your production data | The data root must not overlap production paths. The embedded server receives only a system-baseline environment (home, locale, proxy, display, …), so production `AUTOBYTEUS_*`, database and provider settings from the launching shell never reach it. |
 | Works from an agent shell | The inherited `ELECTRON_RUN_AS_NODE` is removed for the launch |
-| No update checks, prompts or update errors | The instance answers update requests with a quiet `disabled` state |
+| No update checks, prompts or update errors | The instance answers update requests with a quiet `disabled` state, unless you start it with `--test-update-feed` |
 | Control endpoint on loopback only | Chromium remote debugging on `127.0.0.1:<control port>` (a free port unless `--control-port` is given) |
 | Keeps rendering while covered by other windows | Started with `--disable-backgrounding-occluded-windows --disable-renderer-backgrounding` |
 | Main app unaffected | Separate ports, data and process group; `stop` ends only the instance's own process group |
@@ -87,7 +87,16 @@ pnpm --dir <repo> isolated-app start --build
 #   --server-port <n>    backend port (default: a free port)
 #   --data-root <path>   use an existing directory you own; it is never deleted
 #   --keep               keep the auto-created data root when the instance stops
+#   --test-update-feed <url>  check this local test update feed for app updates
 ```
+
+`--test-update-feed http://127.0.0.1:<port>` (or `http://localhost:<port>`, an optional path
+allowed) makes the instance check that feed for its own update instead of staying quiet, so the
+app update notification, Download and Install and restart can be verified without your data. The
+feed is an electron-updater generic feed: serve the update metadata electron-updater reads for
+the platform (for example `latest-mac.yml`) and the artifacts it names. The startup check runs 8 seconds after launch. The
+Release page link is omitted under a test feed. `restart` keeps the option; without it, the
+instance keeps the quiet `disabled` update state.
 
 Relative `--app`/`--data-root` paths resolve against the directory you ran `pnpm` from. On Linux
 there is no standard install location, so pass `--app` or use `--from-worktree`. `--build` runs

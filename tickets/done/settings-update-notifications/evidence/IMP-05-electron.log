@@ -1,0 +1,12 @@
+IMP-05 Electron main-process suite | cmd: pnpm test:electron --run | commit 71cfcd7d32 | macOS | 2026-10-20
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (7 tests) 17ms
+ ✓ launch-profile/__tests__/e2eLaunchPreflight.spec.ts (1 test) 12ms
+ ✓ updater/__tests__/appUpdater.spec.ts (34 tests) 472ms
+ ✓ launch-profile/__tests__/electronLaunchProfile.spec.ts (5 tests) 128ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 8ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 13ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 6ms
+ ✓ launch-profile/__tests__/e2eDataRootSafety.spec.ts (3 tests) 9ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 11ms
+ Test Files  38 passed | 1 skipped (39)
+      Tests  213 passed | 1 skipped (214)
