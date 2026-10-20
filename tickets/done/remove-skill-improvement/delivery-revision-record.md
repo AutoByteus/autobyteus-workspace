@@ -8,6 +8,7 @@ Ticket `remove-skill-improvement` (autobyteus-205). Task size `Large`, architect
 | --- | --- | --- | --- | --- |
 | DR-001 | Code reviewer's delivery handoff (CRR-002 Pass; API-REV-001 Pass) | N/A | `Blocked`: INT-001 merge conflicts with `origin/personal`, routed as `Local Fix` | `release-deployment-report.md`, this record |
 | DR-002 | Code reviewer's handoff after INT-001 (CRR-003 Pass; API-REV-002 Pass; CRR-004 N/A) | DR-001 `Blocked` | `Blocked` on evidence: the origin of the DCP-003/DCR-003 Org save failures (FU-005) is not established; discriminating base run requested from API/E2E | this record |
+| DR-003 | API/E2E's DR-002 result (API-REV-003: FU-005 pre-existing on base) | DR-002 `Blocked` on evidence | Verified; docs synced; finalized and beta released (see the report) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, this record |
 
 ## Revision Entries
 
@@ -41,3 +42,10 @@ Ticket `remove-skill-improvement` (autobyteus-205). Task size `Large`, architect
 - Action: evidence requested from API/E2E. Loop DCP-003 and DCR-003 on `origin/personal` @ `3b2c86ca9e` without this ticket. If it fails at a similar rate, FU-005 is pre-existing in base (a follow-up) and delivery continues. If not, it is this ticket's defect and goes to implementation.
 - Terminal return to the Solution Designer: `Not yet eligible`
 - Release decision: `Beta`, decided in advance by the user. It applies after verification.
+
+### DR-003: verified, finalized and released as beta
+
+- Trigger: API/E2E's message with API-REV-003. API-18 matched base vs ticket: 4/12 vs 3/12 Org save failures with the same sequence, so FU-005 is pre-existing in base.
+- Prior authoritative result: DR-002 (`Blocked` on the FU-005 origin)
+- Current authoritative result: verification complete (AC-001..AC-005; the user's own data check follows the beta). Docs synced with no delivery edits. Ticket archived. Finalization and the advance-decided beta follow; the outcome is in `release-deployment-report.md`.
+- Terminal return to the Solution Designer: after the release and the user's check
