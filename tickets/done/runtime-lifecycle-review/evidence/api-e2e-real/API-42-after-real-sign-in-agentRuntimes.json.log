@@ -1,0 +1,72 @@
+# API-42 real account state after the user's real sign-out and in-app sign-in (Codex, Grok) in iso-56551-47f6
+# command: POST http://127.0.0.1:56552/graphql agentRuntimes; date 2026-10-20T13:03:44Z; commit 0c27f0a3b5
+{
+    "data": {
+        "agentRuntimes": [
+            {
+                "runtimeKind": "codex_app_server",
+                "installed": true,
+                "installedVersion": "0.163.0",
+                "updates": {
+                    "state": "UP_TO_DATE",
+                    "latestVersion": "0.163.0"
+                },
+                "account": {
+                    "state": "SIGNED_IN"
+                },
+                "signInRoute": "BROWSER",
+                "runningAgentCount": 0,
+                "operation": null,
+                "checkedAt": "2026-10-20T13:02:14.740Z"
+            },
+            {
+                "runtimeKind": "claude_agent_sdk",
+                "installed": true,
+                "installedVersion": "2.1.304",
+                "updates": {
+                    "state": "UP_TO_DATE",
+                    "latestVersion": "2.1.304"
+                },
+                "account": {
+                    "state": "SIGNED_IN"
+                },
+                "signInRoute": "COMMAND_LINE",
+                "runningAgentCount": 0,
+                "operation": null,
+                "checkedAt": "2026-10-20T13:02:14.454Z"
+            },
+            {
+                "runtimeKind": "antigravity_cli",
+                "installed": true,
+                "installedVersion": "1.4.3",
+                "updates": {
+                    "state": "UP_TO_DATE",
+                    "latestVersion": "1.4.3"
+                },
+                "account": {
+                    "state": "SIGNED_IN"
+                },
+                "signInRoute": "COMMAND_LINE",
+                "runningAgentCount": 0,
+                "operation": null,
+                "checkedAt": "2026-10-20T13:02:15.771Z"
+            },
+            {
+                "runtimeKind": "grok_build",
+                "installed": true,
+                "installedVersion": "1.0.62",
+                "updates": {
+                    "state": "UP_TO_DATE",
+                    "latestVersion": "1.0.62"
+                },
+                "account": {
+                    "state": "SIGNED_IN"
+                },
+                "signInRoute": "BROWSER",
+                "runningAgentCount": 0,
+                "operation": null,
+                "checkedAt": "2026-10-20T13:02:14.957Z"
+            }
+        ]
+    }
+}

@@ -1,0 +1,33 @@
+# DEL-03 commit 62aad6624d 2026-10-20T10:13:57Z
+$ pnpm -C autobyteus-server-ts test:integration:prepare
+(Use `node --trace-warnings ...` to show where the warning was created)
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-design-review/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-design-review/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+EXIT 0
+$ env -i PATH HOME=<resolved temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts --no-watch --reporter=verbose
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-01 lists the four runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002) 189ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-02 Check again re-reads every row; the source that failed recovers (AC-002, SCN-A1) 102ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006) 2315ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003) 701ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003) 3254ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-06 refuses what the page never offers, with codes and safe messages 16ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011) 329ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-08 Cancel stops the login process and returns the row to Sign in (AC-007 cancel, QR-003) 159ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003) 9185ms
+[AR-11] scanned 350 API responses, 416 stdout/stderr writes, 11 data files; markers 6; hits 0
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-10 Codex with no OpenAI sign-in required shows no account state (DEC-008); a signed-in Grok reads Signed in 106ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-11 no sign-in URL, code or account detail appears in any API response, log or data file (AC-011, REQ-008) 102ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-12 closing the server stops a running vendor process (QR-003, SCN-A4) 162ms
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+EXIT 0
+$ env -i PATH HOME=<resolved temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts --no-watch --reporter=verbose
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3) 956ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable 1719ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004) 2521ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts > Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs) > RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008) 2208ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+EXIT 0
+(note: 8 expected pino info lines for the refused mutations in AR-05/AR-06 removed from this excerpt)

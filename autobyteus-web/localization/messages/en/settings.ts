@@ -11,6 +11,7 @@ const settingsMessages = {
   'settings.page.empty.title': 'Settings',
   'settings.page.empty.description': 'Select a category to configure settings.',
   'settings.page.sections.apiKeys': 'API Keys',
+  'settings.page.sections.agentRuntimes': 'Agent Runtimes',
   'settings.page.sections.tokenUsage': 'Token Statistics',
   'settings.page.sections.display': 'Display',
   'settings.page.sections.language': 'Language',

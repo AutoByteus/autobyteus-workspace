@@ -14,6 +14,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Memory | [agent_memory.md](./agent_memory.md) |
 | Agent Work Journal | [agent_work_journal.md](./agent_work_journal.md) |
 | Agent Packages | [agent_packages.md](./agent_packages.md) |
+| Agent Runtimes (Settings -> Agent Runtimes: versions, updates and sign-in of Codex, Claude, Antigravity, Grok) | [agent_runtimes.md](./agent_runtimes.md) |
 | Agent Streaming | [agent_streaming.md](./agent_streaming.md) |
 | Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
 | Agent Organization | [agent_orgs.md](./agent_orgs.md) |

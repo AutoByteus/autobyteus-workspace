@@ -5,6 +5,8 @@ import { describe, expect, it, vi } from "vitest";
 import { ApplicationPlatformLifecycle } from "../../../src/application-platform/runtime/application-platform-lifecycle.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationProviderCredentialReadinessAdapter } from "../../../src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.js";
+import { AgentRuntimeSignInReader } from "../../../src/runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
+import { createCodexAgentRuntimeStrategy } from "../../../src/runtime-management/agent-runtimes/strategies/codex-agent-runtime-strategy.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { ApplicationAgentToolCallLifecycle } from "../../../src/application-agent-tools/services/application-agent-tool-call-lifecycle.js";
 
@@ -155,7 +157,9 @@ describe("ApplicationPlatformLifecycle", () => {
       });
       const credentialReadiness = new ApplicationProviderCredentialReadinessAdapter({
         llmProviderService: { getProviderCredentialSetting: vi.fn() } as never,
-        codexClientManager: { beginAcquire } as never,
+        signInReader: new AgentRuntimeSignInReader([
+          createCodexAgentRuntimeStrategy({ codexClientManager: { beginAcquire } as never }),
+        ]),
       });
       dependencies.storageLifecycleService = storageLifecycleService as never;
       dependencies.preparation.definitionRuntimeReadiness.prepare = vi.fn(async () => {

@@ -49,6 +49,8 @@ export type ApplicationExecutionScopeKernel = Readonly<{
   publicationService: PublishedArtifactPublicationService;
   projectionService: PublishedArtifactProjectionService;
   memoryLocationService: AgentMemoryLocationService;
+  /** This scope's live agent runs (standalone and Team members), for counting them by runtime. */
+  activeAgentRuns: Pick<AgentRunManager, "listActiveRuns" | "getActiveRun">;
   abortConstruction(): void;
 }>;
 
@@ -204,6 +206,7 @@ export const buildApplicationExecutionScopeKernel = (
         snapshotStore,
       }),
       memoryLocationService,
+      activeAgentRuns: agentRunManager,
       abortConstruction,
     });
     return kernel;

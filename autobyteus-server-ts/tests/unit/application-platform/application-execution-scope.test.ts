@@ -13,6 +13,7 @@ import type { ApplicationAgentToolCapability } from "../../../src/application-ag
 import { ApplicationExecutionScope } from "../../../src/application-platform/execution/application-execution-scope.js";
 import type { ApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const tempRoots: string[] = [];
 
@@ -303,6 +304,31 @@ describe("ApplicationExecutionScope", () => {
       errors: [shutdownFailure, authorityFailure],
     });
     expect(closeAuthority).toHaveBeenCalledTimes(1);
+  });
+
+  it("counts its live Agents per runtime, Team members included (Settings → Agent Runtimes, SR-011)", async () => {
+    const { scope, kernel } = await createScope();
+    const agentRunManager = (kernel.agentRunService as unknown as { agentRunManager: unknown }).agentRunManager;
+    const teamFactory = ((kernel.teamRunService as unknown as { manager: unknown }).manager as {
+      factory: { dependencies: { agentRunManager: unknown } };
+    }).factory;
+    // Standalone Application agents and Application Team members are AgentRuns of the one manager it counts.
+    expect(kernel.activeAgentRuns).toBe(agentRunManager);
+    expect(teamFactory.dependencies.agentRunManager).toBe(agentRunManager);
+
+    const runs = new Map([
+      ["standalone", RuntimeKind.CODEX_APP_SERVER],
+      ["team-lead", RuntimeKind.CODEX_APP_SERVER],
+      ["team-designer", RuntimeKind.CLAUDE_AGENT_SDK],
+    ]);
+    vi.spyOn(kernel.activeAgentRuns, "listActiveRuns").mockReturnValue([...runs.keys(), "just-released"]);
+    vi.spyOn(kernel.activeAgentRuns, "getActiveRun").mockImplementation((runId: string) =>
+      (runs.has(runId) ? { runtimeKind: runs.get(runId) } : null) as never);
+
+    expect(scope.countActiveAgentRuns(RuntimeKind.CODEX_APP_SERVER)).toBe(2);
+    expect(scope.countActiveAgentRuns(RuntimeKind.CLAUDE_AGENT_SDK)).toBe(1);
+    expect(scope.countActiveAgentRuns(RuntimeKind.GROK_BUILD)).toBe(0);
+    scope.abortConstruction();
   });
 
   it("delegates construction abort exactly once after kernel transfer", async () => {

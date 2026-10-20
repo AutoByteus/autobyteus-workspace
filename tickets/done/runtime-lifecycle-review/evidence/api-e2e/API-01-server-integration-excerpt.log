@@ -1,0 +1,27 @@
+# API-01 server integration suite
+# command: pnpm -C autobyteus-server-ts test:integration
+# commit: a5d4eeaa20 (code 52aa663edd)
+# date: 2026-10-20T09:37:42Z  node v22.23.1  macOS 26.5.2 arm64
+# excerpt (ANSI stripped): summary lines and application-platform files
+ ✓ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests) 523ms
+ ✓ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests) 137ms
+ ✓ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts (2 tests) 230ms
+ ✓ tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts (1 test) 151ms
+ ✓ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts (1 test) 62ms
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts (6 tests | 6 skipped)
+ ✓ tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts (3 tests) 330ms
+ ✓ tests/integration/application-backend/brief-studio-team-config.integration.test.ts (4 tests) 11ms
+ ↓ tests/integration/runtime-management/codex/client/codex-native-multi-agent-disabled.integration.test.ts (4 tests | 4 skipped)
+ ✓ tests/integration/application-backend/standalone-application-server.integration.test.ts (2 tests) 65ms
+ ✓ tests/integration/application-backend/application-agent-tool-worker.integration.test.ts (3 tests) 250ms
+ ✓ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test) 27ms
+ ✓ tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts (1 test) 151ms
+ ✓ tests/integration/application-backend/studio-agent-tools-listener.integration.test.ts (1 test) 257ms
+ ✓ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts (9 tests) 143ms
+ ✓ tests/integration/application-backend/application-worker-completion-coupling.integration.test.ts (1 test) 4ms
+ ↓ tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts (2 tests | 2 skipped)
+ ↓ tests/integration/runtime-management/codex/client/codex-app-server-client.integration.test.ts (2 tests | 2 skipped)
+ Test Files  78 passed | 20 skipped (98)
+      Tests  419 passed | 70 skipped (489)
+   Duration  220.09s (transform 7.69s, setup 1.07s, import 81.13s, tests 128.23s, environment 7ms)
+EXIT 0
