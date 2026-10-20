@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved; SR-004, SR-005, SR-007; unchanged in SR-013)
 - Upstream Investigation Notes: `…/investigation-notes.md` (SR-013; S-01 … S-15, A-01 … A-15, P-1 … P-5)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-013)
-- Reviewed Design Spec: `…/design-spec.md` at commit `f1d7dd93372dde1d959eb3e5cb66efebbe2d8cec` (SR-015; includes SR-014 `a3b0cf1028`)
+- Reviewed Design Spec: `…/design-spec.md` at commit `213a5d9668e80fbf89691e27cf5a01c37dfb8025` (SR-016; includes SR-014 and SR-015)
 - Supplemental Task Artifacts Reviewed: `slice-plan.md`, `follow-ups.md`, contract draft `autobyteus-server-ts/docs/design/collaboration_model.md`, `handoff-architecture-review.md` § Round 2
-- Relevant Solution Revision IDs: SR-011, SR-012, SR-013, SR-014, SR-015
+- Relevant Solution Revision IDs: SR-011 … SR-016
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-005`
-- Current Review Round: 5
-- Trigger: the user's direction, 2026-10-20, after the round-4 `Pass`: problems the reviewer still sees must be raised as review findings and improved, not left as remarks. The design is unchanged since round 4 (SR-015, commit `f1d7dd9337`).
-- Prior Review Round Reviewed: round 4 (`ARCH-REV-004`, `Pass`)
-- Latest Authoritative Round: 5
+- Current Architecture Review Revision ID: `ARCH-REV-006`
+- Current Review Round: 6
+- Trigger: the Solution Designer's SR-016 (commit `213a5d9668`), answering ARCH-REV-005 (AR-008, AR-009)
+- Prior Review Round Reviewed: round 5 (`ARCH-REV-005`, `Fail`)
+- Latest Authoritative Round: 6
 - Current-State Evidence Basis: the round-1 code reading (still valid; SR-013 changed documents only), plus these round-2 checks:
   - `run-history/store/task-execution-tree-split.ts` (`splitTaskExecutions` keeps on-disk entries it did not load, in place; `composeTreeFile` / `agentRunIdsOfTree`);
   - `agent-collaboration/execution/task/root-task-execution-resource-scope.ts` (`releaseTaskExecutions`; `NO_AUTHORITY` counts as stopped);
@@ -229,7 +229,7 @@ None.
 
 ## Review Decision
 
-`Fail` (`Design Impact`). AR-001 … AR-007 stay resolved. Two findings remain. AR-008: the remote coordination is repeated in the three roots. AR-009: the spec's summary sections contradict its authoritative sections; this promotes N-12 and N-13. Both are small and within approved scope, and neither changes behavior. Steps 0 … 2 and the parts of steps 3 … 6 that AR-008 does not touch (endpoint kinds, engine methods, closure fence, `RemoteDelegation`, work packet) may continue.
+`Pass`. AR-001 … AR-009 are resolved. The remote send sequence now has one shared owner (`RemoteMessageSend`); the roots keep only routing and their root-specific wake. The existing-copy refusal is checked once in the shared lifecycle, and the summary sections match the authoritative ones. Two leftover sentences (N-14) are text corrections and do not block. The design is ready for implementation.
 
 ## Findings
 
@@ -239,7 +239,19 @@ None blocking. AR-001 … AR-004 resolved in ARCH-REV-002; AR-005 … AR-007 res
 - AR-006 (resolved): `RemoteEndpoint` kinds `delegated_run` (delegator-only pair rule, chain `[{agentRunId}]`, existing-copy refusal, closure fence) and `delegator` (host-only pair rule, chain `[]`, `coordinatingRun` on transmit, the work packet). `RemoteRunLinks` keeps only membership and `deliver`. DS-001 moved to its own owner, `RemoteDelegation`.
 - AR-007 (resolved): an explicit `fenced_remote` result at `releaseTaskExecutions`: no release is invoked, the text is truthful, and it is the S3 hook for "stop on the peer". It replaces N-9.
 
-### AR-008 — The remote coordination is written once per root kind instead of having one owner
+None blocking. Resolved in ARCH-REV-006:
+- AR-008 (resolved): `RemoteMessageSend` (`remote-message-send.ts`, one per root, built with the root's engine and links) owns pair rule → `prepareRemoteSend` → `deliver` → `commitSentToRemote` and its refusals. Each root keeps one routing line. Inbound stays per root only for the wake, using the shared `inboundEndpoint` and `acceptFromRemote`. The existing-copy refusal is checked once in `RootTaskExecutionLifecycle.assignToExistingCopy`, after `resolveAssignment` (a read) and before `resolveExistingCopy` or any Task change, through `RemoteEndpointLookup.isRemoteEndpoint`. Tests: shared sequence, shared refusal, routing per root kind.
+- AR-009 (resolved): the DS-002/DS-003/DS-005 narratives, § Spine Actors and the ownership map are aligned. Remote planning is stated once (root adapters delegate to `RemoteDelegation`, the only caller of `startDelegatedRun`).
+
+### Text corrections (non-blocking)
+
+- N-14:
+  - The ownership map's `RemoteDelegation` bullet ends "`RootTaskExecutionLifecycle` and `dispatchTaskCopy` are unchanged". Since AR-008 the lifecycle gains the existing-copy refusal, so say "`dispatchTaskCopy` is unchanged".
+  - The DS-001 spine narrative still says "runs the same serialized activation … The remote activation asks B to create the run". Since SR-014, B is asked in `planActivation`, before the Task link and outside the root's queue; the activation only commits the link and sends the packet.
+
+The round-5 text of AR-008 and AR-009 follows, kept for traceability.
+
+### AR-008 (resolved) — The remote coordination is written once per root kind instead of having one owner
 
 - Type: Design Impact
 - Severity: Medium (blocking)
@@ -265,7 +277,7 @@ None blocking. AR-001 … AR-004 resolved in ARCH-REV-002; AR-005 … AR-007 res
 - Why proportionate: it moves code that is already planned into one place; no new behavior and no new layer that only forwards (the shared owner owns the sequence and its refusals).
 - Recommended recipient: Solution Designer
 
-### AR-009 — The spec's summary sections contradict its authoritative sections
+### AR-009 (resolved) — The spec's summary sections contradict its authoritative sections
 
 - Type: Design Impact
 - Severity: Low (blocking)
@@ -307,11 +319,11 @@ Status in SR-015: N-6, N-7, N-8, N-10 and N-11 are now in the design; N-9 is rep
 
 ## Classification
 
-`Design Impact` (AR-008, AR-009).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`). The implementation engineer received the round-4 `Pass`; the Solution Designer tells it that the outbound sequence and the existing-copy refusal each move into one shared owner (AR-008), and that the rest of the rework may continue.
+Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer (including N-14).
 
 ## Residual Risks
 
@@ -324,6 +336,6 @@ Solution Designer (`/software_engineering_team/solution_designer`). The implemen
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (`Design Impact`, AR-008, AR-009)
+- Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: classification `Large` / `High`. Design at commit `f1d7dd9337` (SR-015). Reopened at the user's direction so that the problems the reviewer still saw become findings. AR-001 … AR-007 stay resolved. MP-004 is unchanged (residual only).
+- Notes: classification `Large` / `High`. Design at commit `213a5d9668` (SR-016). AR-001 … AR-009 are resolved. N-14 is a text correction. Residual: MP-004, RSK-106 (FU-002), RSK-107.

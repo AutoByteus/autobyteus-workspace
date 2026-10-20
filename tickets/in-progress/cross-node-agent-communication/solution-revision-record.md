@@ -241,3 +241,8 @@ See `history-sr-002/solution-revision-record.md` § SR-002.
 - Coordination: the implementation engineer was told on 2026-10-20 that the outbound sequence and the existing-copy refusal each move into one shared owner, and that the rest continues.
 - Intended behavior changed: `No`.
 - Next action: round 5 to the architecture reviewer.
+
+#### Review note — ARCH-REV-006 Pass (2026-10-20)
+
+- The architecture reviewer passed SR-016 (commit `213a5d9668`) as ARCH-REV-006. Large / High; AR-001 … AR-009 are all resolved. The reviewer handed off to `/software_engineering_team/implementation_engineer`.
+- N-14 (text): the DS-001 narrative now describes the SR-014 order (B asked in `planActivation`, before the Task link, outside the queue), and the `RemoteDelegation` ownership bullet now says only `dispatchTaskCopy` is unchanged. Applied the same day; editorial.

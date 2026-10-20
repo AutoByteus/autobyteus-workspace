@@ -11,6 +11,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | ARCH-REV-003 | Round 3 / the user's direction on ownership quality | SR-013 | Pass | Fail | AR-005, AR-006, AR-007 (new) |
 | ARCH-REV-004 | Round 4 / SR-015 answers ARCH-REV-003 | SR-014, SR-015 | Fail | Pass | AR-005 … AR-007 resolved |
 | ARCH-REV-005 | Round 5 / the user's direction: remaining problems become findings | SR-015 | Pass | Fail | AR-008, AR-009 (new; AR-009 promotes N-12, N-13) |
+| ARCH-REV-006 | Round 6 / SR-016 answers ARCH-REV-005 | SR-016 | Fail | Pass | AR-008, AR-009 resolved |
 
 ## Revision Entries
 
@@ -134,3 +135,26 @@ None.
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: MP-004 (residual); RSK-101, RSK-103, RSK-106 (FU-002), RSK-107, RSK-108.
+
+### ARCH-REV-006 — Round 6: one owner for the remote send and the existing-copy refusal; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/tickets/in-progress/cross-node-agent-communication/design-review-report.md`
+- Review round and trigger: round 6; the Solution Designer's SR-016 (commit `213a5d9668e80fbf89691e27cf5a01c37dfb8025`), answering ARCH-REV-005.
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 5; AR-008, AR-009.
+- Relevant solution revision IDs: SR-016
+- Prior authoritative decision: `Fail` (ARCH-REV-005)
+- Current authoritative decision: `Pass`
+- What changed in the review result: both findings were verified in the current spec. One text correction (N-14) was recorded.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-008 | Open (Medium) | Resolved | SR-016; § Remote Messaging: Owners And Order; spine inventory; ownership map; interfaces; file mapping | `RemoteMessageSend` owns the outbound sequence once; the roots route with one line; inbound per root only for the wake; the existing-copy refusal once in `RootTaskExecutionLifecycle` via `RemoteEndpointLookup`; shared and per-root tests named |
+| AR-009 | Open (Low) | Resolved | SR-016 (first pass in `9c57cc92b3`) | The narratives for DS-002/DS-003/DS-005, § Spine Actors and the ownership map are aligned; remote planning stated once. Two leftover sentences are N-14 |
+| AR-001 … AR-007 | Resolved | Resolved (unchanged) | — | — |
+
+- New or remaining finding IDs: none blocking. N-14 is a text correction (the lifecycle "unchanged" sentence; the DS-001 narrative before SR-014).
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
+- Remaining risks or uncertainty: MP-004; RSK-101, RSK-103, RSK-106 (FU-002), RSK-107, RSK-108.
