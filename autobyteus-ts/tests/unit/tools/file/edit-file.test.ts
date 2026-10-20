@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../../src/utils/parameter-schema.js';
@@ -6,6 +6,7 @@ import { PatchApplicationError, registerEditFileTool } from '../../../../src/too
 import { registerReadFileTool } from '../../../../src/tools/file/read-file.js';
 import { BaseTool } from '../../../../src/tools/base-tool.js';
 import fs from 'fs/promises';
+import os from 'os';
 import path from 'path';
 
 const TOOL_NAME_EDIT_FILE = 'edit_file';
@@ -13,6 +14,17 @@ const TOOL_NAME_EDIT_FILE = 'edit_file';
 type MockContext = { agentId: string; workspaceRootPath: string | null };
 
 describe('edit_file tool', () => {
+  const tempDirs: string[] = [];
+  const makeTempDir = async (): Promise<string> => {
+    const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'tmp-edit-file-')));
+    tempDirs.push(dir);
+    return dir;
+  };
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
+  });
+
   beforeEach(() => {
     defaultToolRegistry.clear();
     registerEditFileTool();
@@ -63,7 +75,7 @@ describe('edit_file tool', () => {
   });
 
   it('applies a context-located patch in an existing file', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'sample.txt');
     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
     const patch = `@@
@@ -83,7 +95,7 @@ describe('edit_file tool', () => {
   });
 
   it('keeps an unterminated final addition separate from untouched file content', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'observed_boundary.txt');
     await fs.writeFile(
       filePath,
@@ -106,7 +118,7 @@ describe('edit_file tool', () => {
   });
 
   it('rejects git file headers because path is supplied separately', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'sample_git_diff.txt');
     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
 
@@ -129,7 +141,7 @@ index 1111111..2222222 100644
   });
 
   it('raises a concise unique-candidate PatchApplicationError without writing', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'sample_failure.txt');
     await fs.writeFile(filePath, 'alpha\nbeta\ngamma\n', 'utf-8');
 
@@ -153,7 +165,7 @@ index 1111111..2222222 100644
   });
 
   it('reports the exact concise retained four-hunk failure and writes nothing', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'renderer.ts');
     const original = [
       ...Array.from({ length: 10 }, (_, index) => `header ${index + 1}`),
@@ -204,7 +216,7 @@ index 1111111..2222222 100644
   });
 
   it('reports zero diagnostic candidates without exposing patch or file content', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'zero-candidate.txt');
     const original = 'alpha\nbeta\ngamma\n';
     await fs.writeFile(filePath, original, 'utf-8');
@@ -226,7 +238,7 @@ index 1111111..2222222 100644
   });
 
   it('reports multiple diagnostic candidates without selecting or exposing one', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'multiple-candidates.txt');
     const original = 'actual one\nstable anchor\nseparator\nactual two\nstable anchor\n';
     await fs.writeFile(filePath, original, 'utf-8');
@@ -249,7 +261,7 @@ index 1111111..2222222 100644
   });
 
   it('rejects ambiguous context without writing the file', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'ambiguous.txt');
     const original = 'status: draft\nseparator\nstatus: draft\n';
     await fs.writeFile(filePath, original, 'utf-8');
@@ -267,7 +279,7 @@ index 1111111..2222222 100644
   });
 
   it('reports hunk identity for invalid hunk bodies without writing', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'invalid-hunk.txt');
     const original = 'one\ntwo\nthree\n';
     await fs.writeFile(filePath, original, 'utf-8');
@@ -285,7 +297,7 @@ index 1111111..2222222 100644
   });
 
   it('does not write a partially applied multi-hunk patch', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'atomic.txt');
     const original = 'alpha: old\nmiddle\nomega: old\n';
     await fs.writeFile(filePath, original, 'utf-8');
@@ -304,7 +316,7 @@ index 1111111..2222222 100644
   });
 
   it('does not split prefixed delimiter context into noncontiguous hunks or write', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'noncontiguous-context.txt');
     const original = 'old1\n@@\nunrelated\nold2\n';
     await fs.writeFile(filePath, original, 'utf-8');
@@ -318,7 +330,7 @@ index 1111111..2222222 100644
   });
 
   it('retries with whitespace tolerance', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'whitespace_patch.txt');
     await fs.writeFile(filePath, 'alpha\n  beta\ngamma\n', 'utf-8');
 
@@ -339,7 +351,7 @@ index 1111111..2222222 100644
   });
 
   it('uses the unique exact match before considering whitespace-tolerant candidates', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'exact_first.txt');
     await fs.writeFile(filePath, 'key: old\n key: old\n', 'utf-8');
 
@@ -354,7 +366,7 @@ index 1111111..2222222 100644
   });
 
   it('raises error when file is missing', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'nonexistent.txt');
 
     const tool = getPatchTool();
@@ -363,7 +375,7 @@ index 1111111..2222222 100644
   });
 
   it('resolves relative paths from an explicit absolute base directory', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'rel_patch.txt');
     await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
 
@@ -395,7 +407,7 @@ index 1111111..2222222 100644
   });
 
   it('read then patch flow', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'flow_test.txt');
     await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
 

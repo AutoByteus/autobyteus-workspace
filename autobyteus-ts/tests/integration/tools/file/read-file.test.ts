@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'fs/promises';
+import os from 'os';
 import path from 'path';
 import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
@@ -11,6 +12,17 @@ const TOOL_NAME_READ_FILE = 'read_file';
 type MockContext = { agentId: string; workspaceRootPath: string | null };
 
 describe('read_file tool (integration)', () => {
+  const tempDirs: string[] = [];
+  const makeTempDir = async (): Promise<string> => {
+    const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'tmp-read-file-')));
+    tempDirs.push(dir);
+    return dir;
+  };
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
+  });
+
   beforeEach(() => {
     defaultToolRegistry.clear();
     registerReadFileTool();
@@ -22,7 +34,7 @@ describe('read_file tool (integration)', () => {
   };
 
   it('reads file content with line numbers', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'test_file_reader.txt');
     await fs.writeFile(filePath, 'Test Content with Ümlauts for read_file', 'utf-8');
 
@@ -34,7 +46,7 @@ describe('read_file tool (integration)', () => {
   });
 
   it('reads file content without line numbers', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'test_file_reader.txt');
     await fs.writeFile(filePath, 'Test Content with Ümlauts for read_file', 'utf-8');
 
@@ -46,7 +58,7 @@ describe('read_file tool (integration)', () => {
   });
 
   it('reads file with line range', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'range_reader_file.txt');
     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
 
@@ -61,7 +73,7 @@ describe('read_file tool (integration)', () => {
   });
 
   it('rejects invalid line range', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'invalid_range_reader_file.txt');
     await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
 
@@ -80,7 +92,7 @@ describe('read_file tool (integration)', () => {
   });
 
   it('resolves relative paths from an explicit absolute base directory', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'relative_reader_test.txt');
     await fs.writeFile(filePath, 'Relative path content for read_file', 'utf-8');
 
@@ -102,7 +114,7 @@ describe('read_file tool (integration)', () => {
   });
 
   it('returns empty string for empty file', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'empty_reader_file.txt');
     await fs.writeFile(filePath, '', 'utf-8');
 
@@ -113,7 +125,7 @@ describe('read_file tool (integration)', () => {
   });
 
   it('throws when file does not exist', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const tmpDir = await makeTempDir();
     const missingPath = path.join(tmpDir, 'non_existent_reader_file.txt');
     const tool = getToolInstance();
     const context: MockContext = {
@@ -125,7 +137,7 @@ describe('read_file tool (integration)', () => {
   });
 
   it('allows absolute paths outside the workspace root', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const tmpDir = await makeTempDir();
     const workspaceDir = path.join(tmpDir, 'workspace');
     const outsidePath = path.join(tmpDir, 'escaped.txt');
     await fs.mkdir(workspaceDir, { recursive: true });
@@ -141,7 +153,7 @@ describe('read_file tool (integration)', () => {
   });
 
   it('wraps IO errors', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'reader_io_error_file.txt');
     await fs.writeFile(filePath, 'content', 'utf-8');
 
