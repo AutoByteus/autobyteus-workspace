@@ -1,0 +1,97 @@
+# API-01
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp --reporter=verbose
+# Commit: 7c9cadba2f
+# Env: macOS 25.5.0, node v22.23.1, uv 0.10.2 (Homebrew 2026-02-10)
+# Date: 2026-10-20T08:37:26Z
+## fixture folder before: pyproject.toml server.py uv.lock 
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts
+
+ ↓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: pptx-mcp — skipped: RUN_REAL_MCP_SERVER_E2E=1 is not set > lists the server tools from a temp copy, leaving the source folder unchanged
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/http-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+Tool 'fail' failed: 'Error executing tool fail: dummy failure'
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema 1040ms
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with the real MCP test server (python) > lists and calls tools with the token, which the server saw on every request 1288ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > lists the tools and calls echo, add, fail and slow 1366ms
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > delivers the configured env and cwd to the server 721ms
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry 1465ms
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with the real MCP test server (python) > fails to connect without a token 884ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > ends the server process when a connected server is closed 699ms
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with the real MCP test server (python) > fails to connect with a wrong token 848ms
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with the real MCP test server (node) > lists and calls tools with the token, which the server saw on every request 212ms
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > previews tools without registering them 730ms
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with the real MCP test server (node) > fails to connect without a token 149ms
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema 158ms
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with the real MCP test server (node) > fails to connect with a wrong token 149ms
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > fails to connect, with an error, when the server exits at start 720ms
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry 309ms
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > previews tools without registering them 146ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python) > does not connect to a server that hangs at start, and closing it ends its process 5686ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > lists the tools and calls echo, add, fail and slow 466ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > delivers the configured env and cwd to the server 152ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > ends the server process when a connected server is closed 149ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > fails to connect, with an error, when the server exits at start 132ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > does not connect to a server that hangs at start, and closing it ends its process 5158ms
+
+ Test Files  3 passed | 1 skipped (4)
+      Tests  22 passed | 1 skipped (23)
+   Start at  10:37:28
+   Duration  15.55s (transform 340ms, setup 178ms, import 478ms, tests 22.63s, environment 0ms)
+
+## exit 0
+## fixture folder after: pyproject.toml server.py uv.lock 
+## git status --ignored of fixture: []

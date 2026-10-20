@@ -1,0 +1,4 @@
+# API-08 server e2e excerpt (full log: /tmp/abyt199-api/api08/e2e.log, not committed:     7309 lines). Failed-test markers (' FAIL ', '×', 'Failed Tests'): 0; 'Cannot set custom app data directory' lines: 0
+ Test Files  93 passed | 91 skipped (184)
+      Tests  386 passed | 410 skipped (796)
+   Duration  702.63s (transform 16.94s, setup 2.47s, import 323.29s, tests 355.22s, environment 16ms)

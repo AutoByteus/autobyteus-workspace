@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   BaseMcpConfig,
   McpTransportType,
@@ -7,6 +7,7 @@ import {
 } from '../../../../src/tools/mcp/types.js';
 import { McpConfigService } from '../../../../src/tools/mcp/config-service.js';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 const USER_EXAMPLE_1_DICT_OF_DICTS = {
@@ -59,9 +60,19 @@ function createConfigService(): McpConfigService {
 
 describe('McpConfigService', () => {
   let service: McpConfigService;
+  const tempDirs: string[] = [];
+  const makeTempDir = (): string => {
+    const dir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-config-')));
+    tempDirs.push(dir);
+    return dir;
+  };
 
   beforeEach(() => {
     service = createConfigService();
+  });
+
+  afterEach(() => {
+    for (const dir of tempDirs.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
   });
 
   it('loads a single config from dict', () => {
@@ -107,7 +118,7 @@ describe('McpConfigService', () => {
       VALID_HTTP_CONFIG_LIST_ITEM
     ];
 
-    const tempDir = fs.mkdtempSync(path.join(process.cwd(), 'mcp-config-'));
+    const tempDir = makeTempDir();
     const configFile = path.join(tempDir, 'mcp_config_list.json');
     fs.writeFileSync(configFile, JSON.stringify(fileContent), 'utf-8');
 
@@ -124,7 +135,7 @@ describe('McpConfigService', () => {
   });
 
   it('loads configs from file with dict', () => {
-    const tempDir = fs.mkdtempSync(path.join(process.cwd(), 'mcp-config-'));
+    const tempDir = makeTempDir();
     const configFile = path.join(tempDir, 'mcp_config_dict.json');
     fs.writeFileSync(configFile, JSON.stringify(USER_EXAMPLE_1_DICT_OF_DICTS), 'utf-8');
 
@@ -137,7 +148,7 @@ describe('McpConfigService', () => {
   });
 
   it('rejects invalid config data', () => {
-    const tempDir = fs.mkdtempSync(path.join(process.cwd(), 'mcp-config-'));
+    const tempDir = makeTempDir();
     const invalidFile = path.join(tempDir, 'invalid.json');
     fs.writeFileSync(invalidFile, JSON.stringify([{ transport_type: 'stdio' }]), 'utf-8');
 

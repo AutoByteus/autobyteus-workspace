@@ -1,0 +1,21 @@
+# IMP-06
+# Command: excerpt of ts-test run in ac005.sh; full log (not committed, 620K) at /tmp/abyt199-impl/IMP-06-core-library-test.log
+# Commit: 33fc5f4e16 (pre-rebase; base dc530fdcb0)
+# Env: macOS (Darwin 25.5.0), node v22.23.1, uv 0.10.2; env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-20
+
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts (6 tests) 5030ms
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts (6 tests) 5711ms
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts (12 tests) 1066ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts (7 tests) 36ms
+ ✓ tests/unit/tools/file/edit-file.test.ts (18 tests) 229ms
+ ✓ tests/integration/tools/file/write-file.test.ts (9 tests) 64ms
+ ✓ tests/integration/tools/file/edit-file.test.ts (4 tests) 28ms
+ ✓ tests/integration/tools/file/read-file.test.ts (11 tests) 126ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts (18 tests) 15ms
+ ✓ tests/unit/tools/file/edit-file-patch-diagnostic.test.ts (9 tests) 5ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts (10 tests) 18389ms
+ ✓ tests/integration/agent/runtime/agent-runtime-compaction.test.ts (6 tests) 17149ms
+ Test Files  387 passed | 26 skipped (413)
+      Tests  2356 passed | 78 skipped (2434)
+   Duration  28.32s (transform 10.80s, setup 8.66s, import 89.17s, tests 99.27s, environment 56ms)

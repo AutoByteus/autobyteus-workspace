@@ -1,0 +1,32 @@
+# API-06
+# Command: env -i PATH=<PATH minus every dir containing uv> HOME=<resolved temp> TMPDIR pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts --reporter=verbose
+# Removed PATH dirs: /opt/homebrew/bin; uv found on reduced PATH: []
+# Commit: 7c9cadba2f
+# Env: macOS 25.5.0, node v22.23.1
+# Date: 2026-10-20T08:40:55Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts
+
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: skipped: uv unavailable (not on PATH)
+[mcp-test-server] node: used: node v22.23.1
+
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv unavailable (not on PATH)) > lists the tools and calls echo, add, fail and slow
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv unavailable (not on PATH)) > delivers the configured env and cwd to the server
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv unavailable (not on PATH)) > ends the server process when a connected server is closed
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv unavailable (not on PATH)) > fails to connect, with an error, when the server exits at start
+ ↓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (python — skipped: uv unavailable (not on PATH)) > does not connect to a server that hangs at start, and closing it ends its process
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > lists the tools and calls echo, add, fail and slow 553ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > delivers the configured env and cwd to the server 161ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > ends the server process when a connected server is closed 190ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > fails to connect, with an error, when the server exits at start 211ms
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with the real MCP test server (node) > does not connect to a server that hangs at start, and closing it ends its process 5161ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 5 skipped (10)
+   Start at  10:40:56
+   Duration  6.46s (transform 65ms, setup 43ms, import 42ms, tests 6.28s, environment 0ms)
+
+## exit 0
