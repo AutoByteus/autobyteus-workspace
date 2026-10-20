@@ -221,3 +221,8 @@ See `history-sr-002/solution-revision-record.md` § SR-002.
 - Coordination: steps 3–6 are on hold at the implementation engineer; API/E2E is asked to limit validation to steps 0–2.
 - Intended behavior changed: `No`.
 - Next action: round 3 to the architecture reviewer.
+
+#### Review note — ARCH-REV-004 Pass (2026-10-20)
+
+- The architecture reviewer passed SR-014 and SR-015 (commit `f1d7dd9337`) as ARCH-REV-004. Large / High; AR-005 … AR-007 are resolved; MP-004 (a prepared run left on B) is a residual risk only. The reviewer released steps 3–6 to the implementation engineer.
+- Text corrections N-12 (Spine Narratives DS-002/DS-003/DS-005, the Spine Actors list) and N-13 (one ownership bullet for `RemoteDelegation`) were applied to `design-spec.md` the same day. They are editorial and change no decision.
