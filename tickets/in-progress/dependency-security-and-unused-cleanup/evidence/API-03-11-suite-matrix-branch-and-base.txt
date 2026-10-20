@@ -1,0 +1,97 @@
+# API-03…API-11 (branch) and API-B (base) suite matrix: run-suites.sh on each worktree, in parallel; branch 10126a016a, base 3b2c86ca9e; one line per step: exit code, seconds, summary lines. Full per-step logs were in /tmp/dep229v/logs (not committed; failure excerpts are in the API-06/API-09 files). Machine load average 30-150 during the runs (other agents' work plus both matrices).
+
+== branch
+# branch commit=10126a016a start=2026-10-20T17:21:54Z
+install exit=0 secs=2 Lockfile is up to date, resolution step is skipped;
+dedupe-check exit=0 secs=23 
+server-prebuild exit=0 secs=10 autobyteus-ts build: [verify:runtime-deps] OK;
+pkg-autobyteus-application-sdk-contracts exit=0 secs=4 # tests 6;# pass 6;# fail 0;
+pkg-autobyteus-team-stream-contracts exit=0 secs=4 # tests 19;# pass 19;# fail 0;
+pkg-autobyteus-agent-presentation-contracts exit=0 secs=5 # tests 18;# pass 18;# fail 0;
+pkg-autobyteus-collaboration-stream-contracts exit=0 secs=5 # tests 34;# pass 34;# fail 0;
+pkg-autobyteus-application-frontend-sdk exit=0 secs=5 # tests 12;# pass 12;# fail 0;
+pkg-autobyteus-application-backend-sdk exit=0 secs=3  Test Files 2 passed (2); Tests 10 passed (10);
+pkg-autobyteus-application-devkit exit=0 secs=11 # tests 22;# pass 22;# fail 0;
+ts-build exit=0 secs=9 [verify:runtime-deps] OK;
+ts-test exit=0 secs=55  Test Files 387 passed | 26 skipped (413); Tests 2370 passed | 78 skipped (2448);
+server-build exit=0 secs=40 autobyteus-ts build: [verify:runtime-deps] OK;
+server-typecheck exit=0 secs=19 autobyteus-ts build: [verify:runtime-deps] OK;
+server-unit exit=1 secs=714  Test Files 1 failed | 764 passed | 4 skipped (769); Tests 1 failed | 6309 passed | 7 skipped (6317);
+server-int exit=0 secs=284 autobyteus-ts build: [verify:runtime-deps] OK; Test Files 78 passed | 20 skipped (98); Tests 421 passed | 69 skipped (490);
+server-e2e exit=0 secs=1341 autobyteus-ts build: [verify:runtime-deps] OK; Test Files 97 passed | 91 skipped (188); Tests 414 passed | 411 skipped (825);
+web-prepare exit=0 secs=4 
+web-guards exit=0 secs=2 
+web-build exit=0 secs=37 
+web-test-nuxt exit=0 secs=916  Test Files 649 passed | 2 skipped (651); Tests 4630 passed | 5 skipped (4635);
+web-test-electron exit=0 secs=7  Test Files 38 passed | 1 skipped (39); Tests 215 passed | 1 skipped (216);
+web-voice-input exit=0 secs=18  Test Files 1 passed (1); Tests 2 passed (2);
+app-brief-studio exit=0 secs=5 
+app-socratic-math-teacher exit=0 secs=3 
+# end=2026-10-20T18:20:44Z
+
+== base
+# base commit=3b2c86ca9e start=2026-10-20T17:21:54Z
+install exit=0 secs=13 Lockfile is up to date, resolution step is skipped;
+dedupe-check exit=1 secs=32  ERR_PNPM_DEDUPE_CHECK_ISSUES  Dedupe --check found changes to the lockfile;
+server-prebuild exit=0 secs=15 autobyteus-ts build: [verify:runtime-deps] OK;
+pkg-autobyteus-application-sdk-contracts exit=0 secs=3 # tests 6;# pass 6;# fail 0;
+pkg-autobyteus-team-stream-contracts exit=0 secs=4 # tests 19;# pass 19;# fail 0;
+pkg-autobyteus-agent-presentation-contracts exit=0 secs=5 # tests 18;# pass 18;# fail 0;
+pkg-autobyteus-collaboration-stream-contracts exit=0 secs=4 # tests 34;# pass 34;# fail 0;
+pkg-autobyteus-application-frontend-sdk exit=0 secs=6 # tests 12;# pass 12;# fail 0;
+pkg-autobyteus-application-backend-sdk exit=0 secs=4  Test Files 2 passed (2); Tests 10 passed (10);
+pkg-autobyteus-application-devkit exit=2 secs=3 
+ts-build exit=0 secs=12 [verify:runtime-deps] OK;
+ts-test exit=0 secs=60  Test Files 387 passed | 26 skipped (413); Tests 2368 passed | 78 skipped (2446);
+server-build exit=0 secs=29 autobyteus-ts build: [verify:runtime-deps] OK;
+server-typecheck exit=0 secs=18 autobyteus-ts build: [verify:runtime-deps] OK;
+server-unit exit=0 secs=713  Test Files 765 passed | 4 skipped (769); Tests 6310 passed | 7 skipped (6317);
+server-int exit=0 secs=293 autobyteus-ts build: [verify:runtime-deps] OK; Test Files 78 passed | 20 skipped (98); Tests 421 passed | 69 skipped (490);
+server-e2e exit=0 secs=1324 autobyteus-ts build: [verify:runtime-deps] OK; Test Files 97 passed | 91 skipped (188); Tests 414 passed | 411 skipped (825);
+web-prepare exit=0 secs=5 
+web-guards exit=0 secs=2 
+web-build exit=0 secs=36 
+web-test-nuxt exit=1 secs=893  Test Files 1 failed | 648 passed | 2 skipped (651); Tests 1 failed | 4629 passed | 5 skipped (4635);
+web-test-electron exit=0 secs=8  Test Files 38 passed | 1 skipped (39); Tests 215 passed | 1 skipped (216);
+web-voice-input exit=0 secs=28  Test Files 1 passed (1); Tests 2 passed (2);
+app-brief-studio exit=1 secs=3 
+app-socratic-math-teacher exit=1 secs=1 
+# end=2026-10-20T18:20:30Z
+pkg-autobyteus-application-devkit-rerun exit=0 # tests 22;# pass 22;# fail 0;
+app-brief-studio-rerun exit=1 
+app-socratic-math-teacher-rerun exit=1 
+app-brief-studio-rerun2 exit=0
+app-socratic-math-teacher-rerun2 exit=0
+
+== base-only notes
+- dedupe-check exit=1 on base is the BEH-004 'before' state (ERR_PNPM_DEDUPE_CHECK_ISSUES), fixed on the branch.
+- base devkit exit=2 and the two applications exit=1 were harness order in the fresh base worktree: the devkit build needs the server's types (built later in the sequence) and its 'autobyteus-app' bin link is created only by an install after the devkit build. Rerun after the server build and a reinstall: devkit 22/22, both applications exit=0 (the -rerun / -rerun2 lines). The branch worktree already had both.
+
+== runner (run-suites.sh)
+#!/bin/bash
+# API/E2E (autobyteus-229): build + full suite rerun for one side. Usage: run-suites.sh <worktree> <side>
+# Each step: /tmp/dep229v/logs/<side>-<step>.log (header + full output, ANSI stripped); summary: /tmp/dep229v/logs/<side>-summary.txt
+W="$1"; side="$2"; L=/tmp/dep229v/logs; S=$L/$side-summary.txt
+cd "$W" || exit 9
+echo "# $side commit=$(git rev-parse --short HEAD) start=$(date -u +%FT%TZ)" > $S
+step() { name="$1"; shift; f=$L/$side-$name.log; echo "# $name ($side, commit $(git rev-parse --short HEAD), $(date -u +%FT%TZ)); cmd: $*" > $f; t0=$(date +%s); bash -c "$*" 2>&1 | sed -e 's/\x1b\[[0-9;]*[A-Za-z]//g' >> $f; rc=${PIPESTATUS[0]}; echo "$name exit=$rc secs=$(( $(date +%s)-t0 )) $(grep -E '^ *(Tests|Test Files) |# (tests|pass|fail) |Lockfile is up to date|ERR_PNPM|\[verify:runtime-deps\]' $f | tr -s ' ' | tr '\n' ';' | cut -c1-400)" >> $S; }
+H() { mktemp -d | xargs -I{} sh -c 'cd {} && pwd -P'; }
+step install "pnpm install --frozen-lockfile"
+step dedupe-check "pnpm dedupe --check"
+step server-prebuild "pnpm -C autobyteus-server-ts prebuild"
+for p in autobyteus-application-sdk-contracts autobyteus-team-stream-contracts autobyteus-agent-presentation-contracts autobyteus-collaboration-stream-contracts autobyteus-application-frontend-sdk autobyteus-application-backend-sdk autobyteus-application-devkit; do step "pkg-$p" "pnpm -C $p build && pnpm -C $p test"; done
+step ts-build "pnpm -C autobyteus-ts build"
+step ts-test "env -i PATH=\"$PATH\" HOME=\"$(H)\" TMPDIR=\"$TMPDIR\" pnpm -C autobyteus-ts test --run"
+step server-build "pnpm -C autobyteus-server-ts build"
+step server-typecheck "pnpm -C autobyteus-server-ts typecheck"
+step server-unit "pnpm -C autobyteus-server-ts test:unit"
+step server-int "pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration"
+step server-e2e "env -i PATH=\"$PATH\" HOME=\"$(H)\" TMPDIR=\"$TMPDIR\" pnpm test:e2e"
+step web-prepare "pnpm -C autobyteus-web exec nuxt prepare"
+step web-guards "pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web guard:localization-boundary && pnpm -C autobyteus-web audit:localization-literals"
+step web-build "pnpm -C autobyteus-web build"
+step web-test-nuxt "pnpm -C autobyteus-web test:nuxt --run"
+step web-test-electron "pnpm -C autobyteus-web test:electron --run"
+step web-voice-input "NUXT_TEST=true pnpm -C autobyteus-web exec vitest run tests/integration/voice-input-extension.integration.test.ts"
+for a in brief-studio socratic-math-teacher; do step "app-$a" "pnpm -C applications/$a typecheck:backend && pnpm -C applications/$a build"; done
+echo "# end=$(date -u +%FT%TZ)" >> $S

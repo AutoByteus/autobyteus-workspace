@@ -1,0 +1,28 @@
+# API-02 fresh pnpm audit on 10126a016a (2026-10-20T17:22:34Z); commands: pnpm audit --json; pnpm audit --prod --json; compared with the IMP-11 high/critical package set (= the design's Findings Table) by audit-compare.py (source below)
+== ALL totals {'info': 0, 'low': 17, 'moderate': 40, 'high': 46, 'critical': 6}
+   high/critical packages now: 27; expected (IMP-11): 27; same set: True
+   newest advisory creation dates among them: [('GHSA-85c8-ppgw-ccpr', '2026-10-05'), ('GHSA-5gmw-xhrv-c9v3', '2026-10-05'), ('GHSA-wq5f-xc86-pv6w', '2026-10-06')]
+== PROD totals {'info': 0, 'low': 14, 'moderate': 18, 'high': 13, 'critical': 0}
+   high/critical packages now: 6; expected (IMP-11): 6; same set: True
+   newest advisory creation dates among them: [('GHSA-667r-xxjv-c9mm', '2026-09-30'), ('GHSA-9q9j-q6p8-xq58', '2026-09-30'), ('GHSA-x8mw-p69m-v3mx', '2026-10-02')]
+
+== audit-compare.py
+# API-02: high/critical set of a fresh pnpm audit vs IMP-11's recorded set (the explained set). Usage: python3 -I audit-compare.py all.json prod.json
+import json,sys
+EXPECTED_ALL=set("@fastify/busboy@2.1.1 @fastify/static@7.0.4 @graphql-tools/utils@10.11.0 @graphql-tools/utils@11.0.0 @graphql-tools/utils@9.2.1 app-builder-lib@25.1.8 braces@3.0.3 builder-util-runtime@9.2.10 fastify@4.29.1 find-my-way@8.2.2 form-data@2.3.3 happy-dom@15.11.7 http-cache-semantics@4.2.0 immutable@3.7.6 jpeg-js@0.1.2 jpeg-js@0.2.0 lodash@4.17.23 minimatch@9.0.1 minimist@0.0.8 node-forge@1.4.0 sharp@0.33.5 tar@6.2.1 tinypool@1.1.1 undici@5.28.3 undici@6.27.0 url-regex@3.2.0 xlsx@0.18.5".split())
+EXPECTED_PROD=set("@fastify/busboy@2.1.1 @fastify/static@7.0.4 fastify@4.29.1 find-my-way@8.2.2 undici@5.28.3 xlsx@0.18.5".split())
+def hc(p):
+    d=json.load(open(p)); out={}
+    for a in d['advisories'].values():
+        if a['severity'] not in ('critical','high'): continue
+        for f in a.get('findings',[]):
+            k=f"{a['module_name']}@{f['version']}"; out.setdefault(k,set()).add((a['severity'],a.get('github_advisory_id') or a.get('url','').rsplit('/',1)[-1],a.get('created','')[:10],a.get('patched_versions')))
+    return d['metadata']['vulnerabilities'],out
+for label,p,exp in [('ALL',sys.argv[1],EXPECTED_ALL),('PROD',sys.argv[2],EXPECTED_PROD)]:
+    meta,s=hc(p); keys=set(s)
+    print(f"== {label} totals {meta}")
+    print(f"   high/critical packages now: {len(keys)}; expected (IMP-11): {len(exp)}; same set: {keys==exp}")
+    for k in sorted(keys-exp): print("   NEW (not in the explained set):",k,sorted(s[k]))
+    for k in sorted(exp-keys): print("   GONE (was in the explained set):",k)
+    newest=sorted({adv for k in keys for adv in s[k]},key=lambda x:x[2])[-3:]
+    print("   newest advisory creation dates among them:",[(x[1],x[2]) for x in newest])

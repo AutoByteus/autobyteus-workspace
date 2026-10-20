@@ -1,0 +1,32 @@
+# API-12 LM Studio through autobyteus-ts LMStudioLLM (undici local long-running fetch), commit 10126a016a, undici 7.30.1; 2026-10-20T18:22:10Z
+# lms load qwen/qwen3.6-35b-a3b (just in time; unloaded after)
+(19.03 GiB)
+To use the model in the API/SDK, use the identifier "qwen/qwen3.6-35b-a3b".
+
+IDENTIFIER              MODEL                   STATUS    SIZE        CONTEXT    PARALLEL    DEVICE    TTL
+qwen/qwen3.6-35b-a3b    qwen/qwen3.6-35b-a3b    IDLE      20.43 GB    262144     4           Local        
+# cmd: env -i PATH HOME=<temp> TMPDIR LMSTUDIO_TARGET_TEXT_MODEL=qwen/qwen3.6-35b-a3b pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/lmstudio-llm.test.ts -t '^(?!.*multimodal).*' --reporter=verbose
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > uses metadata-aware LM Studio discovery to create a runnable text model with truthful context metadata 50ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should return a completion for a text model 1ms
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should handle multimodal images (/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tests/assets/sample_image.png)
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should handle multimodal images (http://192.168.2.124:29695/rest/files/images/d0d0f29a-824c-4af0-9457-ecfba83ff9be.jpg)
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should stream responses from a text model 2ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should stream reasoning from a reasoning-capable text model 62918ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should emit tool calls for LM Studio 1ms
+ Test Files  1 passed (1)
+      Tests  5 passed | 2 skipped (7)
+
+# rerun with LMSTUDIO_HOSTS=http://localhost:1234 (without it the factory-discovery cases above returned early: 1-50 ms; only the reasoning stream really ran, 62.9 s); 2026-10-20T18:24:10Z
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > uses metadata-aware LM Studio discovery to create a runnable text model with truthful context metadata 39ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should return a completion for a text model 1ms
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should handle multimodal images (/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tests/assets/sample_image.png)
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should handle multimodal images (http://192.168.2.124:29695/rest/files/images/d0d0f29a-824c-4af0-9457-ecfba83ff9be.jpg)
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should stream responses from a text model 2ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should stream reasoning from a reasoning-capable text model 57474ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should emit tool calls for LM Studio 1ms
+ Test Files  1 passed (1)
+      Tests  5 passed | 2 skipped (7)
+
+# finding: which cases really called LM Studio. 'should stream reasoning…' selects a loaded model through LM Studio's native /api/v1/models and streamed through LMStudioLLM (undici local fetch) for 57-63 s with its assertions passing. The cases using LLMFactory discovery return early (1-50 ms), because LLMFactory.listModelsByRuntime(LMSTUDIO) returns 0 models, on base and branch alike (below), while the provider's own discovery finds 4:
+dependency-security-and-unused-cleanup-base: LMStudioModelProvider.discoverModels -> 4 models; LLMFactory.listModelsByRuntime(LMSTUDIO) -> 0
+dependency-security-and-unused-cleanup: LMStudioModelProvider.discoverModels -> 4 models; LLMFactory.listModelsByRuntime(LMSTUDIO) -> 0
