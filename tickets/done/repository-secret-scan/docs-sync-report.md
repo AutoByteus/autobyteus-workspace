@@ -19,6 +19,7 @@
 | --- | --- | --- | --- |
 | `TESTING.md` | Says where test keys come from and that they are never committed | No change | It already says keys come only from the test vault, never from `.env` files, and are referred to by secret ID. The guard enforces the same rule. |
 | `RELEASE.md` | Finalization rules, tags, the workflow secrets list | No change | The decision not to move published tags follows its rule. The workflows' secrets are names only. |
+| `RELEASE.md` | DR-002: where finalization rules live | Updated | New "Secret Gate" section. The gate was added to the finalize steps and to Checks Before Tagging, at the user's request. |
 | `.gitignore` | The changed file | Updated (the change itself) | The new comment says why `.env` and database files are ignored and how to add a reviewed file (`git add -f`). |
 
 ## Docs Updated

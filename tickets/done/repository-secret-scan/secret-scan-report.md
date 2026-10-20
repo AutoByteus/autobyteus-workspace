@@ -123,8 +123,9 @@ All checked by value shape and context, without the value:
   `secret_encryption_metadata` tables. One file, `kimi-…/server-data/.env.redacted`,
   holds only redacted placeholders.
 
-`gitleaks-allowlist.toml` in this folder encodes these classes, so the next
-scan can ignore them.
+These classes are encoded in the repository-root `.gitleaks.toml`, so the
+next scan can ignore them. It started as this folder's `gitleaks-allowlist.toml`
+and was moved and tuned for the Secret Gate (DR-002).
 
 ## Other Checks
 
@@ -148,8 +149,17 @@ scan can ignore them.
   - A new one needs `git add -f`.
   - This closes the path the leak took: a generated runtime config, or a
     copied server data folder, committed by accident.
-- **Proposed, not added (user decision open):** a gitleaks check in CI or as a
-  pre-commit hook, using `gitleaks-allowlist.toml`. See `follow-ups.md` FU-002.
+- **Secret Gate at every finalization (added at the user's request, DR-002):**
+  - `RELEASE.md` "Secret Gate" runs `scripts/check_secrets.sh` (gitleaks with
+    `.gitleaks.toml`, redacted) on the new commits before the ticket
+    branch's first push, again on the merged state, and before tagging.
+  - Any finding blocks finalization.
+  - Tested: it caught all 14 planted fake keys, including a 40-hex Serper-style
+    key and a password in a URL, with every output line redacted. On 1,820
+    recent real commits (126 ticket merges) it would have blocked 2 merges,
+    both false positives.
+- **Still open:** a CI check for pushes that skip the guide. See
+  `follow-ups.md` FU-002.
 
 ## Related Tickets
 

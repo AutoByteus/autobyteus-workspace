@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | User-directed direct delivery from the Solution Designer (2026-10-20) | N/A | Scan done; SF-001 revoked by the user; `.gitignore` guard finalized into `personal` | `secret-scan-report.md`, `gitleaks-allowlist.toml`, `follow-ups.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `.gitignore` |
+| DR-002 | User request: Secret Gate at every finalization (2026-10-20) | DR-001 | Gate in `RELEASE.md` + `scripts/check_secrets.sh` + root `.gitleaks.toml`, tested, pushed to `personal` | `RELEASE.md`, `scripts/check_secrets.sh`, `.gitleaks.toml`, `secret-scan-report.md`, `follow-ups.md`, `handoff-summary.md`, `docs-sync-report.md` |
 
 ## Revision Entries
 
@@ -53,3 +54,49 @@
   - FU-001: other repositories not scanned (user scope).
   - FU-002: CI or pre-commit scan not agreed.
   - FU-003: images not OCR-scanned.
+
+### DR-002 — Secret Gate at every finalization
+
+- Delivery round and trigger: the user asked for a security gate on every
+  finalization, so that no API key gets committed, and approved adding it to
+  `RELEASE.md` and committing directly to `personal` (2026-10-20).
+- Prior authoritative result: DR-001. The guard was the `.gitignore` rule
+  only; CI or pre-commit was proposed (FU-002).
+- Current authoritative result:
+  - The `RELEASE.md` "Secret Gate" section, plus the gate in the finalize
+    steps and in Checks Before Tagging.
+  - `scripts/check_secrets.sh`: gitleaks over a commit range, redacted; exit
+    0 pass, 1 block, 2 cannot run.
+  - Root `.gitleaks.toml`, moved from this folder's `gitleaks-allowlist.toml`
+    and tuned.
+- Changed canonical artifacts: `RELEASE.md`, `scripts/check_secrets.sh`,
+  `.gitleaks.toml`, plus these ticket documents:
+  - `secret-scan-report.md` (Guards);
+  - `follow-ups.md` (FU-001, FU-002);
+  - `handoff-summary.md`;
+  - `docs-sync-report.md`.
+- Verification:
+  - **Detection:** a throwaway clone in a temp folder, with 14 planted values
+    randomly generated in real provider formats (GitHub, AWS, OpenAI,
+    Anthropic, Google, Slack, Telegram, private key, generic, bearer, a
+    40-hex Serper-style key, a 32-character Mistral-style key, a camelCase
+    `apiKey`, a password in a URL). All 14 were caught, and 16 of 16 output
+    lines were redacted.
+  - **False blocks** on real history: `HEAD~400..HEAD` (1,820 commits, 126
+    ticket merges since 2026-10-04) would block 2 merges. Both are word-like
+    values in ticket prose and a Python list, not keys. That is down from 13
+    with the DR-001 allowlist.
+  - **Exit paths:** a bad range gives 2; an empty range gives 0; the SF-001
+    commit passes (allowlisted).
+  - On the release range `v1.5.8-beta.2..HEAD`: PASS. The hygiene check
+    passed.
+  - The gate was run on its own change before the push.
+- A fix found while tuning: the DR-001 allowlist ignored any 40-hex value for
+  every rule, which would hide a hex provider key. Shape allowlists are now
+  scoped to `generic-api-key`, and the new `env-style-secret` rule covers
+  `*_API_KEY=<hex>`.
+- Finalization: committed on `codex/secret-gate` from `origin/personal`
+  `4c513759fb`, gate run, then pushed to `personal` (fast-forward, by the
+  user's direction to commit directly).
+- Terminal return to the Solution Designer: `Sent` (`Delivery Completed`).
+- Remaining: FU-002, a CI check for pushes that skip the guide.
