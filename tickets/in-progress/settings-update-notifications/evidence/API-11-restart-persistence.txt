@@ -1,0 +1,72 @@
+# API-11 — live change from another client and restart persistence (AC-009, AC-010, AC-004 live feed)
+# macOS 26.5.2 arm64; packaged worktree build d76332c669 (code c42bf2abc4); real public GitHub (unauthenticated); 2026-10-20
+
+## Clear of the handled skill record by another client (gql.mjs → CLEAR_UPDATE_NOTIFICATION) while the panel is open
+{
+  "marker": "marker-1792503003944",
+  "rows": [
+    "app waiting",
+    "agent_package:github:autobyteus/autobyteus- handled"
+  ],
+  "pill": [
+    {
+      "text": "1 update",
+      "bg": "rgb(224, 242, 254)"
+    }
+  ]
+}
+
+## after isolated-app restart iso-58636-d7b5
+{"url": "x.html#/chat", "pills": [{"text": "1 update", "className": ""}], "notification": {"version": "1.5.8", "fromVersion": "1.5.7-beta.4", "foundAt": "2026-10-20T13:27:34.097Z", "read": true, "state": "waiting", "handledVersion": null, "releasePageUrl": null}, "toasts": []}
+panel rows before open / open / after UI Clear of the package:
+{
+  "marker": null,
+  "rows": [],
+  "pill": [
+    {
+      "text": "1 update",
+      "bg": "rgb(224, 242, 254)"
+    }
+  ]
+}
+{
+  "marker": null,
+  "rows": [
+    "app waiting",
+    "agent_package:github:autobyteus/autobyteus- handled"
+  ],
+  "pill": [
+    {
+      "text": "1 update",
+      "bg": "rgb(186, 230, 253)"
+    }
+  ]
+}
+{
+  "marker": null,
+  "rows": [
+    "app waiting"
+  ],
+  "pill": [
+    {
+      "text": "1 update",
+      "bg": "rgb(224, 242, 254)"
+    }
+  ]
+}
+
+## after a second restart: node records and the files
+{
+  "data": {
+    "updateNotifications": []
+  }
+}
+notifications.json: []
+{
+  "version": "1.5.8",
+  "fromVersion": "1.5.7-beta.4",
+  "foundAt": "2026-10-20T13:27:34.097Z",
+  "read": true,
+  "handledVersion": null,
+  "handledAt": null
+}

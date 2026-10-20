@@ -1,0 +1,428 @@
+{
+  "api02": {
+    "notifications": [
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:un-e2e/agents",
+        "name": "un-e2e/agents",
+        "repositoryUrl": "https://github.com/un-e2e/agents",
+        "defaultBranch": "main",
+        "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "latestRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "foundAt": "2026-10-20T20:20:29.689Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      },
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "ead97221-26c0-4962-8740-79c192fb3f13",
+        "name": "un-e2e/skills",
+        "repositoryUrl": "https://github.com/un-e2e/skills",
+        "defaultBranch": "main",
+        "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "latestRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "foundAt": "2026-10-20T20:20:29.689Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      }
+    ],
+    "passRequests": [
+      {
+        "url": "https://api.github.com/repos/un-e2e/agents",
+        "host": "api.github.com",
+        "phase": "background-due-pass",
+        "answered": "repository"
+      },
+      {
+        "url": "https://api.github.com/repos/un-e2e/agents/branches/main",
+        "host": "api.github.com",
+        "phase": "background-due-pass",
+        "answered": "branch bbbbbbb"
+      },
+      {
+        "url": "https://api.github.com/repos/un-e2e/skills",
+        "host": "api.github.com",
+        "phase": "background-due-pass",
+        "answered": "repository"
+      },
+      {
+        "url": "https://api.github.com/repos/un-e2e/skills/branches/main",
+        "host": "api.github.com",
+        "phase": "background-due-pass",
+        "answered": "branch bbbbbbb"
+      }
+    ],
+    "changedFrames": 1
+  },
+  "api03": {
+    "afterRestart": [
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:un-e2e/agents",
+        "name": "un-e2e/agents",
+        "repositoryUrl": "https://github.com/un-e2e/agents",
+        "defaultBranch": "main",
+        "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "latestRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "foundAt": "2026-10-20T20:20:29.689Z",
+        "read": true,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      },
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "ead97221-26c0-4962-8740-79c192fb3f13",
+        "name": "un-e2e/skills",
+        "repositoryUrl": "https://github.com/un-e2e/skills",
+        "defaultBranch": "main",
+        "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "latestRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "foundAt": "2026-10-20T20:20:29.689Z",
+        "read": true,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      }
+    ]
+  },
+  "api04": {
+    "afterOffline": [
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:un-e2e/agents",
+        "name": "un-e2e/agents",
+        "repositoryUrl": "https://github.com/un-e2e/agents",
+        "defaultBranch": "main",
+        "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "latestRevision": "cccccccccccccccccccccccccccccccccccccccc",
+        "foundAt": "2026-10-20T20:21:30.709Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      },
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "ead97221-26c0-4962-8740-79c192fb3f13",
+        "name": "un-e2e/skills",
+        "repositoryUrl": "https://github.com/un-e2e/skills",
+        "defaultBranch": "main",
+        "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "latestRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "foundAt": "2026-10-20T20:20:29.689Z",
+        "read": true,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      }
+    ],
+    "offlineRequests": [
+      {
+        "url": "https://api.github.com/repos/un-e2e/agents",
+        "host": "api.github.com",
+        "phase": "background-offline-pass",
+        "answered": "offline"
+      },
+      {
+        "url": "https://api.github.com/repos/un-e2e/skills",
+        "host": "api.github.com",
+        "phase": "background-offline-pass",
+        "answered": "offline"
+      }
+    ]
+  },
+  "api05": {
+    "afterRestart": [
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "ead97221-26c0-4962-8740-79c192fb3f13",
+        "name": "un-e2e/skills",
+        "repositoryUrl": "https://github.com/un-e2e/skills",
+        "defaultBranch": "main",
+        "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "latestRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "foundAt": "2026-10-20T20:20:29.689Z",
+        "read": true,
+        "state": "HANDLED",
+        "handledRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "handledAt": "2026-10-21T02:51:31.769Z"
+      }
+    ]
+  },
+  "api06": {
+    "notifications": [
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "ead97221-26c0-4962-8740-79c192fb3f13",
+        "name": "un-e2e/skills",
+        "repositoryUrl": "https://github.com/un-e2e/skills",
+        "defaultBranch": "main",
+        "installedRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "latestRevision": "cccccccccccccccccccccccccccccccccccccccc",
+        "foundAt": "2026-10-21T10:22:33.669Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      },
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:un-e2e/agents",
+        "name": "un-e2e/agents",
+        "repositoryUrl": "https://github.com/un-e2e/agents",
+        "defaultBranch": "main",
+        "installedRevision": "cccccccccccccccccccccccccccccccccccccccc",
+        "latestRevision": "dddddddddddddddddddddddddddddddddddddddd",
+        "foundAt": "2026-10-21T09:52:33.629Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      }
+    ]
+  },
+  "api07": {
+    "gateFile": {
+      "blockedUntil": "2026-10-21T17:22:33.000Z"
+    },
+    "notifications": [
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "ead97221-26c0-4962-8740-79c192fb3f13",
+        "name": "un-e2e/skills",
+        "repositoryUrl": "https://github.com/un-e2e/skills",
+        "defaultBranch": "main",
+        "installedRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "latestRevision": "dddddddddddddddddddddddddddddddddddddddd",
+        "foundAt": "2026-10-22T00:23:34.469Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      },
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:un-e2e/agents",
+        "name": "un-e2e/agents",
+        "repositoryUrl": "https://github.com/un-e2e/agents",
+        "defaultBranch": "main",
+        "installedRevision": "cccccccccccccccccccccccccccccccccccccccc",
+        "latestRevision": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "foundAt": "2026-10-22T00:23:34.469Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      }
+    ]
+  },
+  "api17": {
+    "whileUnreadable": [
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:un-e2e/agents",
+        "name": "un-e2e/agents",
+        "repositoryUrl": "https://github.com/un-e2e/agents",
+        "defaultBranch": "main",
+        "installedRevision": "cccccccccccccccccccccccccccccccccccccccc",
+        "latestRevision": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "foundAt": "2026-10-22T00:23:34.469Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      }
+    ]
+  },
+  "requests": [
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents",
+      "host": "api.github.com",
+      "phase": "import",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents/branches/main",
+      "host": "api.github.com",
+      "phase": "import",
+      "answered": "branch aaaaaaa"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "host": "codeload.github.com",
+      "phase": "import",
+      "answered": "archive aaaaaaa"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills",
+      "host": "api.github.com",
+      "phase": "import",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills/branches/main",
+      "host": "api.github.com",
+      "phase": "import",
+      "answered": "branch aaaaaaa"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/skills/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "host": "codeload.github.com",
+      "phase": "import",
+      "answered": "archive aaaaaaa"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents",
+      "host": "api.github.com",
+      "phase": "background-due-pass",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents/branches/main",
+      "host": "api.github.com",
+      "phase": "background-due-pass",
+      "answered": "branch bbbbbbb"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills",
+      "host": "api.github.com",
+      "phase": "background-due-pass",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills/branches/main",
+      "host": "api.github.com",
+      "phase": "background-due-pass",
+      "answered": "branch bbbbbbb"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents",
+      "host": "api.github.com",
+      "phase": "on-open-check",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents/branches/main",
+      "host": "api.github.com",
+      "phase": "on-open-check",
+      "answered": "branch ccccccc"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents",
+      "host": "api.github.com",
+      "phase": "background-offline-pass",
+      "answered": "offline"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills",
+      "host": "api.github.com",
+      "phase": "background-offline-pass",
+      "answered": "offline"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents",
+      "host": "api.github.com",
+      "phase": "user-update-package",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents/branches/main",
+      "host": "api.github.com",
+      "phase": "user-update-package",
+      "answered": "branch ccccccc"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/agents/tar.gz/cccccccccccccccccccccccccccccccccccccccc",
+      "host": "codeload.github.com",
+      "phase": "user-update-package",
+      "answered": "archive ccccccc"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills",
+      "host": "api.github.com",
+      "phase": "user-update-skill",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills/branches/main",
+      "host": "api.github.com",
+      "phase": "user-update-skill",
+      "answered": "branch bbbbbbb"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/skills/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "host": "codeload.github.com",
+      "phase": "user-update-skill",
+      "answered": "archive bbbbbbb"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents",
+      "host": "api.github.com",
+      "phase": "on-open-check-setting-off",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents/branches/main",
+      "host": "api.github.com",
+      "phase": "on-open-check-setting-off",
+      "answered": "branch ddddddd"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills",
+      "host": "api.github.com",
+      "phase": "background-setting-on",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills/branches/main",
+      "host": "api.github.com",
+      "phase": "background-setting-on",
+      "answered": "branch ccccccc"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents",
+      "host": "api.github.com",
+      "phase": "background-rate-limited",
+      "answered": "403 rate limited"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents",
+      "host": "api.github.com",
+      "phase": "background-after-reset",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents/branches/main",
+      "host": "api.github.com",
+      "phase": "background-after-reset",
+      "answered": "branch eeeeeee"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills",
+      "host": "api.github.com",
+      "phase": "background-after-reset",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills/branches/main",
+      "host": "api.github.com",
+      "phase": "background-after-reset",
+      "answered": "branch ddddddd"
+    }
+  ],
+  "frames": [
+    "{\"type\":\"connected\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"connected\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}"
+  ]
+}

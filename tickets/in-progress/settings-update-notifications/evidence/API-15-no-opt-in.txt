@@ -1,0 +1,35 @@
+# API-15 — isolated instance without --test-update-feed stays quiet (AC-003 alternate, BEH-007, REQ-019)
+# pnpm --silent isolated-app start --from-worktree → iso-61323-4549 (testUpdateFeedUrl null), started 14:09:45Z; observed 14:10:05Z (20 s, past the 8 s startup check); macOS 26.5.2; 2026-10-20
+
+{
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "title": "",
+  "sidebarEntry": null,
+  "pills": [],
+  "centerOpen": false,
+  "centerEmpty": null,
+  "sections": [],
+  "rows": [],
+  "appUpdateNoticePresent": false,
+  "dialogs": [],
+  "toasts": [],
+  "appUpdate": {
+    "status": "disabled",
+    "currentVersion": "1.5.7-beta.4",
+    "currentVersionIsPrerelease": true,
+    "updateChannel": "stable",
+    "updateStaged": false,
+    "availableVersion": null,
+    "downloadPercent": null,
+    "downloadTransferredBytes": null,
+    "downloadTotalBytes": null,
+    "releaseNotes": null,
+    "message": "Updates are disabled for this app instance.",
+    "errorKind": null,
+    "errorOperation": null,
+    "checkedAt": null,
+    "notification": null
+  }
+}
+
+panel: no entry to open (pill absent at 0 waiting); [updater] log lines in the instance log: 0
