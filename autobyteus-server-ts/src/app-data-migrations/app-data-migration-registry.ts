@@ -31,6 +31,7 @@ import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/col
 import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports-migration.js";
 import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "./migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
+import { RemoveSkillImprovementDataMigration } from "./migrations/remove-skill-improvement-data-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -100,6 +101,11 @@ export class AppDataMigrationRegistry {
       new RemoveWorkTraceExportsMigration(appConfigProvider.config.getMemoryDir()),
       // Completes delegated copies' own files so each restores on its own, and removes their origin field.
       new DelegatedCopyOwnFileCompleteV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
+      // Deletes the removed Skill Improvement feature's data once (records, sessions, helper runs, built-in agent).
+      new RemoveSkillImprovementDataMigration(
+        appConfigProvider.config.getMemoryDir(),
+        appConfigProvider.config.getAgentsDir(),
+      ),
     ];
     this.validateDefinitions();
   }

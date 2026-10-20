@@ -3,8 +3,7 @@
 ## Scope
 
 `src/agent-work-journal` owns the **Work Journal**: a deterministic, runtime-neutral Markdown
-rendering of a run's raw traces. A reader (a person, the Retrospective Skill Improver, a future
-consumer) can follow what the run did without knowing which runtime produced it: one runtime's
+rendering of a run's raw traces. A reader (a person, or an agent asked to review a run) can follow what the run did without knowing which runtime produced it: one runtime's
 `Read`, another's `view_file` and another's `read_file` all read as `Command: cat <path>`.
 
 The journal is derived data. Raw traces stay the only authority; the whole `work_journal/`
@@ -34,8 +33,6 @@ caller.
 Consumers today:
 
 - `WorkJournalRunUpdater` (below) keeps every live run's journal current.
-- Skill Improvement calls `ensureCurrent` for its live target and lists the package's files in
-  the improver's trigger message (see [skill_improvement.md](./skill_improvement.md)).
 
 ## Keeping It Current
 

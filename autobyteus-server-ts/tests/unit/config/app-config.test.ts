@@ -19,6 +19,9 @@ const ENV_KEYS = [
   "AUTOBYTEUS_TEMP_WORKSPACE_DIR",
   "AUTOBYTEUS_STREAM_PARSER",
   "AUTOBYTEUS_STREAM_PARSER_SUFFIX",
+  "ENABLE_SKILL_IMPROVEMENT",
+  "AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID",
+  "ENABLE_SELF_EVOLUTION",
   "UNRELATED_SETTING",
   "LOG_LEVEL",
   "QWEN_BASE_URL",
@@ -347,6 +350,40 @@ describe("AppConfig", () => {
     expect(config.get("UNRELATED_SETTING")).toBe("preserved");
     expect(contents).toContain("AUTOBYTEUS_STREAM_PARSER_SUFFIX=still-current");
     expect(contents).toContain("UNRELATED_SETTING=preserved");
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("discards the removed Skill Improvement settings and leaves every other line byte-identical (F-7)", async () => {
+    const kept = [
+      "# server",
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",
+      "ENABLE_APPLICATIONS=true",
+      "UNRELATED_SETTING=preserved value",
+      "ENABLE_SKILL_IMPROVEMENT_NOTES=a different key",
+    ];
+    const configDir = await createTempConfigDir([
+      kept[0], kept[1],
+      "ENABLE_SKILL_IMPROVEMENT=true",
+      kept[2],
+      "AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID=autobyteus-retrospective-skill-improver",
+      kept[3],
+      "ENABLE_SELF_EVOLUTION=false",
+      kept[4],
+      "",
+    ].join("\n"));
+    const config = new AppConfig({ appDataDir: configDir });
+
+    config.initialize();
+
+    const contents = await fsPromises.readFile(path.join(configDir, ".env"), "utf-8");
+    expect(contents).toBe(`${kept.join("\n")}\n`);
+    for (const key of ["ENABLE_SKILL_IMPROVEMENT", "AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID", "ENABLE_SELF_EVOLUTION"]) {
+      expect(config.get(key)).toBeUndefined();
+      expect(process.env[key]).toBeUndefined();
+      expect(() => config.set(key, "true")).toThrow(`Server setting '${key}' has been retired and cannot be set.`);
+    }
+    expect(config.get("ENABLE_SKILL_IMPROVEMENT_NOTES")).toBe("a different key");
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });

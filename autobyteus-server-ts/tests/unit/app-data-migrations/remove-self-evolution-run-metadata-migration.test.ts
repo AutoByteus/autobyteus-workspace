@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { RemoveSelfEvolutionRunMetadataMigration } from "../../src/app-data-migrations/migrations/remove-self-evolution-run-metadata-migration.js";
+import { RemoveSelfEvolutionRunMetadataMigration } from "../../../src/app-data-migrations/migrations/remove-self-evolution-run-metadata-migration.js";
 
 const pathExists = async (filePath: string): Promise<boolean> => {
   try {

@@ -116,11 +116,10 @@ Every agent definition carries `skillScope` (`AgentSkillScope`), persisted in `a
 
 ## Built-In Agent Sync
 
-Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform built-in agent templates, syncs the registry-defined built-in agent ids into the normal runtime agent folder under `<appDataDir>/agents/`, resolves them through `AgentDefinitionService`, and initializes server settings that select infrastructure agents when required.
+Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform built-in agent templates, syncs the registry-defined built-in agent ids into the normal runtime agent folder under `<appDataDir>/agents/`, and resolves them through `AgentDefinitionService`.
 
 Built-in templates are centralized under `src/built-in-agents/templates/`. Every built-in agent is platform-owned:
 
-- `retrospective-skill-improver/` syncs the shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver**. The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
 - `daily-assistant/` syncs the shared `agents/autobyteus-daily-assistant/` definition with display name **Daily Assistant** and role **General Agent**. It is the default agent of the web Chat entry, ships with the general tool set (including `read_file` for cataloged `SKILL.md` files and opt-in `list_available_agents` for accessible specialist agents and teams) and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
 
 Daily Assistant is a displayed name, not a new definition:
@@ -142,11 +141,10 @@ introduced.
 The built-in-agent bootstrapper owns this lifecycle:
 
 - every built-in has its `agent.md` and `agent-config.json` rewritten from the template on every startup, and its `skills/` folder mirrored from the template (removed when the template has none); app-data edits to those ids, including edits to the Daily Assistant's prompt, tools, model defaults, skill scope or agent-local skills, do not survive restart;
-- standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
-- `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and
-- built-in files are written for every built-in first, then one full reload of the agent package definitions (`reloadAgentPackageDefinitions()`) runs, and only then is each built-in resolved through `getAgentDefinitionById` and its setting default initialized.
+- standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync; and
+- built-in files are written for every built-in first, then one full reload of the agent package definitions (`reloadAgentPackageDefinitions()`) runs, and only then is each built-in resolved through `getAgentDefinitionById`.
 
-Internal infrastructure-agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting.
+Built-in agent customization belongs in the bundled source templates; a user who wants a different agent creates their own definition.
 
 Do not add separate one-off built-in-agent bootstrappers or scatter platform
 templates under feature-runtime folders. Native compaction now constructs an

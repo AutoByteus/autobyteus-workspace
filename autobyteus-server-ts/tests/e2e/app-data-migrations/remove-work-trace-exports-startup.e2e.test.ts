@@ -173,8 +173,11 @@ describe("Removal of retired work-trace exports on startup (built Studio)", () =
     expect(await fs.readFile(memory("agents", "daily_assistant_dddd", "work_traces", "notes.md"), "utf8")).toBe("my own notes\n");
     expect((await fs.lstat(memory("agents", "daily_assistant_eeee", "work_traces"))).isSymbolicLink()).toBe(true);
     expect(await snapshot(path.join(root, "outside-export"))).toEqual(outsideBefore);
-    // Everything outside the removed exports is byte-identical (raw traces, sessions, decoy).
-    const removed = (rel: string) => exportDirs.some(dir => path.join(memory(), rel).startsWith(dir));
+    // Everything outside the removed exports is byte-identical (raw traces, decoy). The same start also runs the
+    // later-registered 20261020_remove_skill_improvement_data, which deletes the old self-evolution session folder.
+    const sessionDirs = [memory("agents", "daily_assistant_bbbb", "self_evolution")];
+    expect(await exists(sessionDirs[0]!)).toBe(false);
+    const removed = (rel: string) => [...exportDirs, ...sessionDirs].some(dir => path.join(memory(), rel).startsWith(dir));
     const after = await snapshot(memory());
     const expected = Object.fromEntries(Object.entries(before).filter(([rel]) => !removed(rel)));
     expect(Object.fromEntries(Object.entries(after).filter(([rel]) => rel in expected))).toEqual(expected);

@@ -4,12 +4,6 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { UserLaunchSelection } from "../domain/run-execution-tree-shared-records.js";
 
-/**
- * Why a standalone run was launched. Absent means a user run; `server_helper` marks
- * server-internal helper runs (compaction, skill improver), which never become Agent roots.
- */
-export type AgentRunLaunchPurpose = "user" | "server_helper";
-
 export type AgentRunMetadata = {
   runId: string;
   agentDefinitionId: string;
@@ -24,8 +18,6 @@ export type AgentRunMetadata = {
   preparedExpiresAt?: string | null;
   startedAt?: string | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
-  /** Stored only for helper runs; absent for user runs. */
-  launchPurpose?: "server_helper";
 };
 
 /** The run a task agent is part of (contract §3.1): it records the link, hosts, idles, wakes and stops it. */

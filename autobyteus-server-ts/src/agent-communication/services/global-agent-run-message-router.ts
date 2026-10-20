@@ -2,11 +2,6 @@ import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/tas
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentRunMessageSenderContext } from "../domain/agent-run-message-sender.js";
-import type { DirectAgentRunMessageGrant } from "../domain/direct-agent-run-message-grant.js";
-import {
-  DirectAgentRunMessageGrantRegistry,
-  getDirectAgentRunMessageGrantRegistry,
-} from "./direct-agent-run-message-grant-registry.js";
 import {
   buildDirectAgentRunInputMessage,
   buildDirectAgentRunInterAgentEvent,
@@ -60,7 +55,6 @@ export class GlobalAgentRunMessageRouter {
 
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
-    grantRegistry?: DirectAgentRunMessageGrantRegistry;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
   } = {}) {}
 
@@ -69,29 +63,6 @@ export class GlobalAgentRunMessageRouter {
     const content = normalizeRequired(input.content, "content");
     const messageType = normalizeMessageType(input.messageType);
     const referenceFiles = normalizeReferenceFiles(input.referenceFiles);
-    const grantDecision = this.grantRegistry.evaluate({
-      senderRunId: input.sender.senderRunId,
-      targetAgentRunId,
-      messageType,
-      referenceFiles,
-    });
-
-    if (grantDecision.kind === "rejected") {
-      this.recordGrantUsage(grantDecision.grant, {
-        accepted: false,
-        code: grantDecision.code,
-        message: grantDecision.message,
-        senderRunId: input.sender.senderRunId,
-        targetAgentRunId,
-        messageType,
-        referenceFiles,
-      });
-      return {
-        accepted: false,
-        code: grantDecision.code,
-        message: grantDecision.message,
-      };
-    }
 
     // A sender inside a collaboration root reaches every AgentRun of that root
     // through the root boundary, which restores a shut-down delegated child first.
@@ -111,15 +82,6 @@ export class GlobalAgentRunMessageRouter {
         messageType,
         referenceFiles,
       });
-      this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
-        accepted: result.accepted,
-        code: result.code ?? (result.accepted ? "DELIVERED" : "TARGET_AGENT_RUN_REJECTED_INPUT"),
-        message: result.message ?? null,
-        senderRunId: input.sender.senderRunId,
-        targetAgentRunId,
-        messageType,
-        referenceFiles,
-      });
       return result.accepted ? { ...result, agentRunId: targetAgentRunId } : result;
     }
 
@@ -131,13 +93,6 @@ export class GlobalAgentRunMessageRouter {
         code: "TARGET_IS_TEAM_RUN",
         message: `${targetAgentRunId} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${coordinator}.`,
       } satisfies AgentOperationResult;
-      this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
-        ...result,
-        senderRunId: input.sender.senderRunId,
-        targetAgentRunId,
-        messageType,
-        referenceFiles,
-      });
       return result;
     }
 
@@ -148,13 +103,6 @@ export class GlobalAgentRunMessageRouter {
         code: "TARGET_AGENT_RUN_NOT_ACTIVE",
         message: `No running agent has the run id '${targetAgentRunId}', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.`,
       } satisfies AgentOperationResult;
-      this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
-        ...result,
-        senderRunId: input.sender.senderRunId,
-        targetAgentRunId,
-        messageType,
-        referenceFiles,
-      });
       return result;
     }
 
@@ -171,13 +119,6 @@ export class GlobalAgentRunMessageRouter {
         code: "COLLABORATION_ROOT_NOT_ACTIVE",
         message: ROOT_NOT_ACTIVE_MESSAGE,
       } satisfies AgentOperationResult;
-      this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
-        ...result,
-        senderRunId: input.sender.senderRunId,
-        targetAgentRunId,
-        messageType,
-        referenceFiles,
-      });
       return result;
     }
 
@@ -204,20 +145,6 @@ export class GlobalAgentRunMessageRouter {
       }
     }
 
-    this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
-      accepted: postResult.accepted,
-      code: publicationError
-        ? "DELIVERED_EVENT_PUBLICATION_FAILED"
-        : postResult.code ?? (postResult.accepted ? "DELIVERED" : "TARGET_AGENT_RUN_REJECTED_INPUT"),
-      message: publicationError
-        ? `Message was accepted, but outward event publication failed: ${String(publicationError)}`
-        : postResult.message ?? null,
-      senderRunId: input.sender.senderRunId,
-      targetAgentRunId,
-      messageType,
-      referenceFiles,
-    });
-
     if (!postResult.accepted) {
       return {
         ...postResult,
@@ -241,44 +168,12 @@ export class GlobalAgentRunMessageRouter {
     };
   }
 
-  private recordGrantUsage(
-    grant: DirectAgentRunMessageGrant | null,
-    input: {
-      accepted: boolean;
-      code: string;
-      message: string | null;
-      senderRunId: string;
-      targetAgentRunId: string;
-      messageType: string;
-      referenceFiles: string[];
-    },
-  ): void {
-    if (!grant) {
-      return;
-    }
-    this.grantRegistry.recordUsage({
-      grantId: grant.grantId,
-      senderRunId: input.senderRunId,
-      purpose: grant.purpose,
-      accepted: input.accepted,
-      code: input.code,
-      message: input.message,
-      targetAgentRunId: input.targetAgentRunId,
-      messageType: input.messageType,
-      referenceFiles: input.referenceFiles,
-    });
-  }
-
   private get agentRunManager(): ActiveRunLookup {
     return this.deps.agentRunManager ?? AgentRunManager.getInstance();
   }
 
   private get activeRootDirectory(): ActiveCollaborationRootDirectory {
     return this.deps.activeRootDirectory ?? getActiveCollaborationRootDirectory();
-  }
-
-  private get grantRegistry(): DirectAgentRunMessageGrantRegistry {
-    return this.deps.grantRegistry ?? getDirectAgentRunMessageGrantRegistry();
   }
 
 }
