@@ -554,11 +554,11 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.get).toHaveBeenLastCalledWith('ENABLE_APPLICATIONS');
 
     mockConfig.get.mockReturnValueOnce('false');
-    expect(service.getBooleanSetting('ENABLE_SKILL_IMPROVEMENT')).toBe(false);
-    expect(mockConfig.get).toHaveBeenLastCalledWith('ENABLE_SKILL_IMPROVEMENT');
+    expect(service.getBooleanSetting('ENABLE_EXAMPLE_FEATURE')).toBe(false);
+    expect(mockConfig.get).toHaveBeenLastCalledWith('ENABLE_EXAMPLE_FEATURE');
 
     mockConfig.get.mockReturnValueOnce('   ');
-    expect(service.getBooleanSetting('ENABLE_SKILL_IMPROVEMENT')).toBeNull();
+    expect(service.getBooleanSetting('ENABLE_EXAMPLE_FEATURE')).toBeNull();
 
     mockConfig.get.mockReturnValueOnce(undefined);
     expect(service.getBooleanSetting('ENABLE_APPLICATIONS')).toBeNull();
@@ -568,10 +568,10 @@ describe("ServerSettingsService", () => {
     const service = new ServerSettingsService();
 
     service.setBooleanSetting('ENABLE_APPLICATIONS', true);
-    service.setBooleanSetting('ENABLE_SKILL_IMPROVEMENT', false);
+    service.setBooleanSetting('ENABLE_EXAMPLE_FEATURE', false);
 
     expect(mockConfig.set).toHaveBeenNthCalledWith(1, 'ENABLE_APPLICATIONS', 'true');
-    expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_SKILL_IMPROVEMENT', 'false');
+    expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_EXAMPLE_FEATURE', 'false');
   });
 
   // projects-always-on (AC-002, DEC-001): the retired Projects flag is no longer a predefined setting.

@@ -1,0 +1,11 @@
+# Check: IMP-08
+# Command: cd autobyteus-web && pnpm exec nuxt prepare >/dev/null 2>&1 && pnpm exec cross-env NUXT_TEST=true vitest run
+# Commit: fc46a7b5fc (branch codex/remove-skill-improvement)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T14:53:51Z
+
+# Excerpt of IMP-08-web-unit.log: summary and failure lines. The full log (1725682 bytes) is not committed; it is at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/tickets/in-progress/remove-skill-improvement/evidence/IMP-08-web-unit.log until the worktree is removed.
+
+      Tests  4571 passed | 5 skipped (4576)
+ Test Files  640 passed | 2 skipped (642)
+# Exit code: 0

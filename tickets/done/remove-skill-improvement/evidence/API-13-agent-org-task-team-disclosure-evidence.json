@@ -1,0 +1,79 @@
+{
+  "startedAt": "2026-10-20T15:31:04.262Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web/tests/e2e/fixtures/agent-org-task-team-disclosure.page.vue",
+  "scenarios": {},
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "[nuxt] error caught during app initialization TypeError: Cannot read properties of undefined (reading 'coordinatorAddress')\n    at http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:51:86\n    at wrappedFn (http://127.0.0.1:65373/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=b680e4cd:860:19)\n    at Array.filter (<anonymous>)\n    at apply (http://127.0.0.1:65373/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=b680e4cd:868:27)\n    at Proxy.filter (http://127.0.0.1:65373/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=b680e4cd:739:12)\n    at Object.coordinatorFor (http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:51:36)\n    at flattenTaskTeam (http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:66:30)\n    at flattenTask (http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:109:6)\n    at projectAgentOrgHistoryRows (http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:145:69)\n    at Proxy.rowsFor (http://127.0.0.1:65373/_nuxt/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue:59:30)"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 41529,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "HARNESS",
+      "description": "Run Agent Org delegated Team disclosure browser probe",
+      "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"ttrc-disclosure-probe-root\"]') to be visible\n",
+      "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"ttrc-disclosure-probe-root\"]') to be visible\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web/tests/e2e/agent-org-task-team-disclosure-probe.mjs:213:66"
+    }
+  ],
+  "port": 65373,
+  "baseUrl": "http://127.0.0.1:65373",
+  "browserVersion": "155.0.8059.85",
+  "failureDom": "Error 500\n\nCannot read properties of undefined (reading 'coordinatorAddress')\n\nTypeError: Cannot read properties of undefined (reading 'coordinatorAddress')\n    at http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:51:86\n    at wrappedFn (http://127.0.0.1:65373/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=b680e4cd:860:19)\n    at Array.filter (<anonymous>)\n    at apply (http://127.0.0.1:65373/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=b680e4cd:868:27)\n    at Proxy.filter (http://127.0.0.1:65373/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=b680e4cd:739:12)\n    at Object.coordinatorFor (http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:51:36)\n    at flattenTaskTeam (http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:66:30)\n    at flattenTask (http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:109:6)\n    at projectAgentOrgHistoryRows (http://127.0.0.1:65373/_nuxt/utils/agentOrgHistoryRows.ts:145:69)\n    at Proxy.rowsFor (http://127.0.0.1:65373/_nuxt/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue:59:30)\nGo back home",
+  "result": "Fail",
+  "finishedAt": "2026-10-20T15:32:41.573Z",
+  "artifacts": {
+    "evidencePath": "/tmp/ab205e2e/api13-agent-org-task-team-disclosure/evidence.json",
+    "nuxtLogPath": "/tmp/ab205e2e/api13-agent-org-task-team-disclosure/nuxt.log",
+    "outputDir": "/tmp/ab205e2e/api13-agent-org-task-team-disclosure"
+  }
+}

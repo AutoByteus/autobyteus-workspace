@@ -1,0 +1,11 @@
+# Check: IMP-02
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: a71e93a7f2 (branch codex/remove-skill-improvement)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T14:59:00Z
+
+# Excerpt of IMP-02-server-unit.log: summary and failure lines. The full log (1185787 bytes) is not committed; it is at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/tickets/in-progress/remove-skill-improvement/evidence/IMP-02-server-unit.log until the worktree is removed.
+
+      Tests  6259 passed | 7 skipped (6266)
+ Test Files  757 passed | 4 skipped (761)
+# Exit code: 0

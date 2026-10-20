@@ -282,13 +282,6 @@ const messages = {
     "Model",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "Select a model",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.improve_skills": "improve skills",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.standalone_scope": "this run",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.team_member_scope": "this member's run",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.aria_label": "improve skills {{scope}}",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.tooltip": "Start a visible Retrospective Skill Improver for {{scope}}. It may update configured skill packages or make no changes.",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.run_not_eligible": "This run is not eligible for Skill Improvement.",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.started_toast": "Improve skills started. Skills may be updated or no changes may be made.",
 } satisfies TranslationCatalog;
 
 export default messages;

@@ -206,24 +206,6 @@ and receive the file paths and an evidence hash. Raw traces stay the only author
 is regenerable and never feeds back into recording, restore or run history.
 See `modules/agent_work_journal.md` for the detailed contract.
 
-## Skill Improvement Runtime
-
-The skill-improvement subsystem is a control-plane workflow under `src/skill-improvement`.
-It is globally disabled by default through `ENABLE_SKILL_IMPROVEMENT`. Manual starts
-resolve eligibility from current global Skill Improvement settings and the current
-live target state, not from launch-time run overrides or stored launch snapshots.
-Agent/team definitions and launch inputs do not own Skill Improvement eligibility.
-Manual starts consume the Work Journal package of the
-selected standalone run or team member, then activate or reuse a visible
-target-scoped Retrospective Skill Improver `AgentRun` and send it a small path-based trigger. The
-Retrospective Skill Improver reads Work Journal files, may edit only exact configured skill roots, and
-can report a meaningful durable skill update through the grant-scoped
-`send_message_to` contract. A required startup migration removes obsolete
-`skillImprovementEffective` fields from existing run and team-member metadata. The
-MVP intentionally has no product change-audit or metrics/reporting service;
-Git/manual inspection remains the review surface. See `modules/skill_improvement.md`
-for the detailed consumer contract.
-
 ## Testing Layers
 
 - Unit tests: isolated service/provider behavior.

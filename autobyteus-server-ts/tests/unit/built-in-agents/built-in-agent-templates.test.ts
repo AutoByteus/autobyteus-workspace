@@ -10,7 +10,7 @@ describe('retired compactor builtin',()=>{
 });
 describe('retired project task manager builtin',()=>{
  it('has neither a registry entry nor production template',async()=>{
-   expect(BUILT_IN_AGENT_DEFINITIONS.map(definition=>definition.id)).toEqual(['autobyteus-retrospective-skill-improver','autobyteus-daily-assistant']);
+   expect(BUILT_IN_AGENT_DEFINITIONS.map(definition=>definition.id)).toEqual(['autobyteus-daily-assistant']);
    expect(JSON.stringify(BUILT_IN_AGENT_DEFINITIONS)).not.toContain('project-task-manager');
    await expect(fs.stat(fileURLToPath(new URL('../../../src/built-in-agents/templates/project-task-manager',import.meta.url)))).rejects.toMatchObject({code:'ENOENT'});
  });

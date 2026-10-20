@@ -15,7 +15,6 @@ import { REMOVE_BUILT_IN_PROJECT_TASK_MANAGER_MIGRATION_ID as MIGRATION_ID } fro
 import { AppDataMigrationRecordRepository } from "../../../src/app-data-migrations/repositories/app-data-migration-record-repository.js";
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { ServerSettingsService } from "../../../src/services/server-settings-service.js";
 
 /**
  * Startup-path proof for the retired built-in Project Task Manager (AC-002, AC-003, AC-004, AC-006):
@@ -105,10 +104,7 @@ const startServer = async (repository: AppDataMigrationRecordRepository, migrati
   });
   const [migrationStatus] = await runner.runPending();
   const agentDefinitionService = new AgentDefinitionService();
-  const bootstrap = await bootstrapBuiltInAgents({
-    agentDefinitionService,
-    serverSettingsService: new ServerSettingsService(),
-  });
+  const bootstrap = await bootstrapBuiltInAgents({ agentDefinitionService });
   const visible = await agentDefinitionService.getVisibleAgentDefinitions();
   return { migrationStatus: migrationStatus!, bootstrap, visible };
 };
@@ -155,7 +151,7 @@ describe("Retired built-in Project Task Manager on the startup path", () => {
     expect(first.migrationStatus).toMatchObject({ migrationId: MIGRATION_ID, status: "SUCCEEDED", attempts: 1 });
     expect(await exists(installedCopyDir())).toBe(false);
     expect(first.bootstrap.builtInAgents.map((item) => item.agentDefinitionId).sort())
-      .toEqual(["autobyteus-daily-assistant", "autobyteus-retrospective-skill-improver"]);
+      .toEqual(["autobyteus-daily-assistant"]);
     expect(projectTaskManagers(first.visible)).toEqual([REPOSITORY_ID]);
     expect(first.visible.some((definition) => definition.id === RETIRED_ID)).toBe(false);
     expect(first.visible.some((definition) => definition.id === "my-user-agent")).toBe(true);

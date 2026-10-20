@@ -1,0 +1,12 @@
+# Check: IMP-03
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# Commit: fc46a7b5fc (branch codex/remove-skill-improvement)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T14:48:36Z
+
+# Excerpt of IMP-03-server-integration.log: summary and failure lines. The full log (840483 bytes) is not committed; it is at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/tickets/in-progress/remove-skill-improvement/evidence/IMP-03-server-integration.log until the worktree is removed.
+
+      Tests  421 passed | 69 skipped (490)
+ Test Files  78 passed | 20 skipped (98)
+# Exit code: 0
+Integration test prerequisites are present.

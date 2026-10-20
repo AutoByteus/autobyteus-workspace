@@ -1,0 +1,11 @@
+# Case: API-13 (agent-org-draft-retention, warm rerun)
+# Command: pnpm -C autobyteus-web test:e2e:agent-org-draft-retention --output-dir /tmp/ab205e2e/api13-agent-org-draft-retention-r2
+# Commit: 46c1c6b83d
+# Date: 2026-10-20
+
+
+> autobyteus@1.5.8-beta.2 test:e2e:agent-org-draft-retention /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web
+> node tests/e2e/agent-org-draft-retention-probe.mjs --output-dir /tmp/ab205e2e/api13-agent-org-draft-retention-r2
+
+Agent Org draft-retention browser probe failed. See /tmp/ab205e2e/api13-agent-org-draft-retention-r2/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.
