@@ -73,3 +73,15 @@ Prerequisites: none. Follow-ups: `follow-ups.md`, FU-001 (done as autobyteus-197
   - a standalone host is made ready again after going offline (Reproduced, unit);
   - an existing two-server E2E harness exists (Read).
 - Review the latest commit; nothing else changed.
+
+## Round 2 — 2026-10-20 (SR-013), answering ARCH-REV-001
+
+| Finding | Resolution | Where in `design-spec.md` |
+| --- | --- | --- |
+| AR-001 | On disk one list; in memory the shared compose/split owner puts `nodeId` links into `remoteTaskExecutions`, so the 170 existing checks never see them. A walker-category table covers include / fence / refuse / exclude, with one guard test per root kind | § Remote Links In Memory; data model item 4; principles |
+| AR-002 | `RootCommunicationEngine.sendToRemote` / `acceptFromRemote`: checks, message-ID source, log owners (adapter `commitSentToRemote`). `RemoteRunLinks` reaches messages only through them | § Remote Delivery In The Engine; health assessment; ownership; DS-002/DS-003; mapping; step 3 |
+| AR-003 | `REMOTE_SAVED_TASK_NOT_SUPPORTED` in each root's `assignToExistingCopy`, before any Task change | AR-001 table row; Interface Boundary Mapping |
+| AR-004 | Envelope `{fromNodeId, toNodeId}`; gateway order; both request bodies and both answer shapes (responder `nodeId`); HTTP status rules | § Contract Between Nodes; `PeerClient` and `PeerGateway` ownership |
+| N-1 … N-5 | `requestId` dropped; prepared-run path on B (TTL 24 h); mobile credentials refused; A-09 aligned; idempotency claim dropped | Contract; `RemoteDelegationReceiver`; Risks; investigation notes |
+
+The reviewer's `design-review-report.md` and `architecture-review-revision-record.md` are committed unchanged with this round.

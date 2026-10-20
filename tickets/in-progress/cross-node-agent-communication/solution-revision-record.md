@@ -168,3 +168,19 @@ See `history-sr-002/solution-revision-record.md` § SR-002.
   - Contract § 4 retitled "Remote Delegated Runs".
 - Intended behavior changed: `No`.
 - Next action: premise checks (route policy, Docker host reachability, standalone restore on message), then a revision note to the architecture reviewer.
+
+### SR-013 — Architecture review round 1 findings resolved (2026-10-20)
+
+- Phase and classification: Design / `Design Impact` (ARCH-REV-001: AR-001 … AR-004, N-1 … N-5). Approved intent unchanged.
+- Trigger: `/software_engineering_team/architecture_reviewer`, `design-review-report.md` round 1 (Fail, Design Impact), reviewed commit `02933975c6`.
+- Changes in `design-spec.md`:
+  - **AR-001:** new § Remote Links In Memory. The shared compose/split owner (`task-execution-tree-split.ts`) puts `nodeId` links into the in-memory `remoteTaskExecutions`, never into `taskExecutions`, so every existing walker excludes them by construction. A walker-category table says where remote links are included (membership, delivery, stored message view, Task ownership chain), fenced (Task closure), refused (existing-copy assignment) or excluded (everything else). One guard test per root kind. The principles bullet "the compiler checks" is replaced.
+  - **AR-002:** new § Remote Delivery In The Engine. `RootCommunicationEngine.sendToRemote` and `acceptFromRemote`, each with the checks that apply and those that don't. The sender's node assigns the message ID; the receiver's log only on accept, the sender's log only after the peer accepted (adapter `commitSentToRemote`). `RemoteRunLinks` never touches the adapter. Health assessment, ownership, spines DS-002/DS-003, file mapping and step 3 updated.
+  - **AR-003:** the existing-copy form refuses a remote run with `REMOTE_SAVED_TASK_NOT_SUPPORTED` in each root's `assignToExistingCopy`, before any Task change. Interface row added.
+  - **AR-004:** new § Contract Between Nodes. The envelope carries `{fromNodeId, toNodeId}`; the gateway order is mobile credential → `toNodeId` → switch → registered peer → dispatch; both request bodies and both answer shapes (with the responder `nodeId`) are written out, plus the HTTP status rules.
+  - **N-1:** `requestId` dropped. **N-2:** the prepared-run path on B (TTL 24 h, cleanup); RSK-106 restated. **N-3:** mobile credentials refused on `/rest/remote/*`. **N-5:** the idempotency claim dropped; a duplicate is the existing conflict refusal.
+  - Escalation trigger and RSK-108 restated.
+- `investigation-notes.md`: N-4 (A-09 aligned with SR-009/SR-013); A-15 added.
+- `slice-plan.md`: "versioned" wording removed (cosmetic, from the report).
+- Intended behavior changed: `No`. The disk shape the user chose (SR-009) is unchanged.
+- Next action: send round 2 to the architecture reviewer.
