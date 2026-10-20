@@ -59,6 +59,9 @@
 //   DCR-001..DCR-003 (delegated-copy-restore-from-own-file AC-001..AC-004, AC-011(a)): copies of configured placements in
 //           Team and Org runs restore from their own files after the slot is edited; see delegated-copy-own-file-cases.mjs.
 //           Alone: pnpm -C autobyteus-web test:e2e:delegated-copy-own-file
+//   SIR-001..SIR-002 (remove-skill-improvement BEH-003, AC-003, AC-004): send_message_to by run id through real tool
+//           calls; an upgrade around real runs removes the feature's data once; see skill-improvement-removal-cases.mjs.
+//           Alone: pnpm -C autobyteus-web test:e2e:skill-improvement-removal
 // Settings rows (SR-006) are the read-only member rows, collapsed until opened, with the same look as the Members list
 // (`model · runtime · approval · source`, Coordinator chip, an opened Team's card then its Members, "Notes: N" on a
 // collapsed Team); DLP-003 (running) and DLP-007 (stopped and running again) also read them as Settings opens them.
@@ -80,6 +83,7 @@
 import { desktopAdapter } from './fixtures/settings-refresh-desktop.mjs'
 import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.mjs'
 import { registerDelegatedCopyOwnFileCases } from './delegated-copy-own-file-cases.mjs'
+import { registerSkillImprovementRemovalCases } from './skill-improvement-removal-cases.mjs'
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
@@ -1523,6 +1527,12 @@ registerDelegatedCopyOwnFileCases({ defineCase, assert, waitFor, delay, sel, set
   backToConversation, delegatedRows, rowsAt, openDrawer, closeDrawer, openMember, memberRow, saveSettings, saveBarText,
   agyLaunchDetailsOf, teamTree, teamRunIds, AGY, GROK, MODEL, ALT, GROK_MODEL, MODEL_LABEL, ALT_LABEL,
   env: () => ({ frontUrl, dataRoot, outDir }) })
+registerSkillImprovementRemovalCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, callTool, objectsIn, pick,
+  newChatFor, chooseModel, typeAndSend, callFromComposer, conversationText, openAgentRun, openTeamRun,
+  agyLaunchDetailsOf, teamTree, teamRunIds, AGY, MODEL, ALT,
+  /** Quits the backend, runs `between` while it is down, and starts it again on the same data root. */
+  restartBackend: async (label, between) => { await stopOwned(backend); if (between) await between(); backend = await startBackend(label) },
+  env: () => ({ frontUrl, dataRoot, outDir, dbUrl }) })
 const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })
 let exitCode = 0
 try {
