@@ -1,5 +1,6 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
+import { UPDATE_CHECKS_SETTING_KEY } from "../update-notifications/domain/settings.js";
 import {
   AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
   SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
@@ -138,6 +139,11 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
       "Controls whether manual Skill Improvement is available for this node at runtime. Defaults to disabled.",
+    );
+
+    this.registerPredefinedSetting(
+      UPDATE_CHECKS_SETTING_KEY,
+      "Controls whether this node checks its imported GitHub agent packages and skill sources for updates in the background. Defaults to enabled.",
     );
 
     this.registerPredefinedSetting(

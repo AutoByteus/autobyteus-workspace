@@ -70,6 +70,7 @@ import type { TaskExecutionResourcePort } from "../agent-collaboration/execution
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "./project-task-execution-resource-composition.js";
 import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
 import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
+import { composeUpdateNotifications, type UpdateNotifications } from "./update-notifications-composition.js";
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
 
 export type StudioServer = Readonly<{
@@ -88,11 +89,17 @@ const closeStudioProcessResources = async (input: {
   generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
   skillUpdateNotices: SkillUpdateNotices | null;
+  updateNotifications: UpdateNotifications | null;
   taskExecutionResources: TaskExecutionResourcePort | null;
   studioApiHandle: StudioApiHandle | null;
   agentRuntimeStatus: AgentRuntimeStatusHandle | null;
 }): Promise<void> => {
   stopMemorySyncWorker();
+  try {
+    input.updateNotifications?.close();
+  } catch (error) {
+    console.warn("UPDATE_NOTIFICATIONS_CLOSE_FAILED", error);
+  }
   try {
     // Vendor update/sign-in processes started from Settings → Agent Runtimes end with the server (QR-003).
     await input.agentRuntimeStatus?.close();
@@ -223,6 +230,7 @@ export const buildStudioServer = async (input: {
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
   let skillUpdateNotices: SkillUpdateNotices | null = null;
+  let updateNotifications: UpdateNotifications | null = null;
   let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let studioApiHandle: StudioApiHandle | null = null;
   let agentRuntimeStatus: AgentRuntimeStatusHandle | null = null;
@@ -238,6 +246,7 @@ export const buildStudioServer = async (input: {
       generalProcessAuthority,
       generalProcessRunSupervisor,
       skillUpdateNotices,
+      updateNotifications,
       taskExecutionResources,
       studioApiHandle,
       agentRuntimeStatus,
@@ -273,6 +282,7 @@ export const buildStudioServer = async (input: {
     skillUpdateNotices = createSkillUpdateNotices({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
     });
+    updateNotifications = composeUpdateNotifications();
     generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
       memoryDir: input.appConfig.getMemoryDir(),
       contextFilePathEnvironment,

@@ -49,6 +49,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Skills | [skills.md](./skills.md) |
 | Terminal | [terminal.md](./terminal.md) |
 | Token Usage | [token_usage.md](./token_usage.md) |
+| Update Notifications (background update checks of imported GitHub packages and skill sources, one notification per source) | [update_notifications.md](./update_notifications.md) |
 | WebSocket Session Design | [websocket_session_design.md](./websocket_session_design.md) |
 | Workflow Definition | [workflow_definition.md](./workflow_definition.md) |
 | Workspace File Explorer | [WORKSPACE_FILE_EXPLORER.md](./WORKSPACE_FILE_EXPLORER.md) |

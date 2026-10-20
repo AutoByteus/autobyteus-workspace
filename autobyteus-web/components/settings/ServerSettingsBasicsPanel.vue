@@ -11,6 +11,7 @@
       <FeaturedCatalogItemsCard />
       <WebSearchConfigurationCard @notify="showNotification" />
       <CompactionConfigCard />
+      <UpdateChecksCard />
     </div>
 
     <div
@@ -33,6 +34,7 @@ import FeaturedCatalogItemsCard from '~/components/settings/FeaturedCatalogItems
 import MediaDefaultModelsCard from '~/components/settings/MediaDefaultModelsCard.vue'
 import ServerSettingsEndpointCards from '~/components/settings/ServerSettingsEndpointCards.vue'
 import SkillImprovementFeatureToggleCard from '~/components/settings/SkillImprovementFeatureToggleCard.vue'
+import UpdateChecksCard from '~/components/settings/UpdateChecksCard.vue'
 import LiveResponseStreamingCard from '~/components/settings/LiveResponseStreamingCard.vue'
 import WebSearchConfigurationCard from '~/components/settings/WebSearchConfigurationCard.vue'
 

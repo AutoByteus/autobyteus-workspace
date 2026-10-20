@@ -28,7 +28,7 @@ export const localizationMigrationScopes: LocalizationMigrationScope[] = [
     scopeId: 'M-001',
     status: 'closed',
     description: 'app root, landing shell, navigation, and layouts',
-    include: ['app.vue', 'pages/index.vue', 'layouts/', 'components/app/', 'components/layout/', 'components/AppLeftPanel.vue'],
+    include: ['app.vue', 'pages/index.vue', 'layouts/', 'components/app/', 'components/layout/', 'components/AppLeftPanel.vue', 'components/notifications/'],
   },
   {
     scopeId: 'M-002',

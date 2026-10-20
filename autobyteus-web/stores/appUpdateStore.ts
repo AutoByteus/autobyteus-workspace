@@ -13,26 +13,14 @@ type Cleanup = () => void;
 type AppUpdateStatePayload = AppUpdateState;
 
 let updateStateCleanup: Cleanup | null = null;
-let noUpdateHideTimer: ReturnType<typeof setTimeout> | null = null;
-const NO_UPDATE_HIDE_DELAY_MS = 3000;
 
 function t(key: string, params?: Record<string, string | number>): string {
   return localizationRuntime.translate(key, params);
 }
 
-function clearNoUpdateHideTimer(): void {
-  if (!noUpdateHideTimer) {
-    return;
-  }
-  clearTimeout(noUpdateHideTimer);
-  noUpdateHideTimer = null;
-}
-
 interface AppUpdateStoreState extends AppUpdateStatePayload {
   initialized: boolean;
   isElectron: boolean;
-  visible: boolean;
-  dismissedVersion: string | null;
   lastErrorToastSignature: string | null;
 }
 
@@ -51,6 +39,7 @@ const DEFAULT_STATE: AppUpdateStatePayload = {
   errorKind: null,
   errorOperation: null,
   checkedAt: null,
+  notification: null,
 };
 
 export const useAppUpdateStore = defineStore('appUpdate', {
@@ -58,35 +47,8 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     ...DEFAULT_STATE,
     initialized: false,
     isElectron: typeof window !== 'undefined' && Boolean(window.electronAPI),
-    visible: false,
-    dismissedVersion: null,
     lastErrorToastSignature: null,
   }),
-
-  getters: {
-    shouldShow(state): boolean {
-      if (!state.isElectron) {
-        return false;
-      }
-
-      if (!state.visible || state.status === 'disabled') {
-        return false;
-      }
-
-      if (state.status === 'available' && state.availableVersion && state.availableVersion === state.dismissedVersion) {
-        return false;
-      }
-
-      return true;
-    },
-
-    progressLabel(state): string {
-      if (state.downloadPercent == null) {
-        return '';
-      }
-      return `${Math.round(state.downloadPercent)}%`;
-    },
-  },
 
   actions: {
     async initialize(): Promise<void> {
@@ -227,15 +189,24 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       }
     },
 
-    dismissNotice(): void {
-      clearNoUpdateHideTimer();
-      this.visible = false;
-      if (this.status === 'available' && this.availableVersion) {
-        this.dismissedVersion = this.availableVersion;
+    /** The user saw the app update notification (the shell keeps its read state). */
+    async markNotificationRead(): Promise<void> {
+      if (!this.notification || this.notification.read || !window.electronAPI?.markAppUpdateNotificationRead) {
+        return;
       }
+      this.applyRemoteState(await window.electronAPI.markAppUpdateNotificationRead());
+    },
+
+    /** Removes the handled app update notification. */
+    async clearNotification(): Promise<void> {
+      if (!window.electronAPI?.clearAppUpdateNotification) {
+        return;
+      }
+      this.applyRemoteState(await window.electronAPI.clearAppUpdateNotification());
     },
 
     applyRemoteState(payload: Partial<AppUpdateStatePayload>): void {
+      const previousStatus = this.status;
       this.status = (payload.status ?? this.status) as AppUpdateStatus;
       this.currentVersion = payload.currentVersion ?? this.currentVersion;
       this.currentVersionIsPrerelease = payload.currentVersionIsPrerelease ?? this.currentVersionIsPrerelease;
@@ -258,36 +229,16 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         this.errorOperation = null;
       }
       this.checkedAt = payload.checkedAt ?? this.checkedAt;
-      clearNoUpdateHideTimer();
+      this.notification = payload.notification !== undefined ? payload.notification : this.notification;
 
       const isQuietError = isQuietStartupAppUpdateError(this);
-
-      if (this.status === 'disabled') {
-        // Updates are off for this launch (isolated instance): never show a notice.
-        this.visible = false;
-      } else if (this.status === 'available') {
-        if (!this.availableVersion || this.availableVersion !== this.dismissedVersion) {
-          this.visible = true;
-        }
-      } else if (this.status === 'downloading' || this.status === 'downloaded' || this.status === 'installing' || this.status === 'checking') {
-        this.visible = true;
-      } else if (this.status === 'error') {
-        this.visible = !isQuietError;
-      } else if (this.status === 'no-update') {
-        this.visible = true;
-        noUpdateHideTimer = setTimeout(() => {
-          if (this.status === 'no-update') {
-            this.visible = false;
-          }
-          noUpdateHideTimer = null;
-        }, NO_UPDATE_HIDE_DELAY_MS);
-      }
 
       if (this.status !== 'error') {
         this.lastErrorToastSignature = null;
       }
 
-      if (this.status === 'downloaded') {
+      // Once per download: later broadcasts (for example marking the notification read) repeat the status.
+      if (this.status === 'downloaded' && previousStatus !== 'downloaded') {
         const { addToast } = useToasts();
         addToast(t('settings.updates.store.downloadedRestartToInstall'), 'success');
       }

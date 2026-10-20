@@ -1,0 +1,85 @@
+# API-10 — Update from the Notification Center with real GitHub archives (AC-005, AC-006, AC-017)
+# macOS 26.5.2 arm64; packaged worktree build d76332c669 (code c42bf2abc4); real public GitHub (unauthenticated); 2026-10-20
+# Instance A2 (iso-58636-d7b5); real clicks via CDP (playwright-core connectOverCDP, attach-only)
+
+## skill: Update → confirmation → Cancel
+{
+  "modalText": "Update entire skill source?Replace the entire downloaded source with the latest default-branch revision? Local edits will be overwritten and upstream deletions will be applied. This does not refresh active agent contexts.blader/humanizerhttps://github.com/blader/humanizermain6be1fa4e0c8c307f367cCancelUpdate",
+  "modalOpenAfter": 1,
+  "panelOpen": 1
+}
+after cancel: {'repositoryUrl': 'https://github.com/blader/humanizer', 'defaultBranch': 'main', 'installedRevision': '6be1fa4e0c768202b126f8bc5c9bf67ead9162bc', 'latestRevision': '8c307f367c91bd974002f10f2be2965d642c13df', 'latestCheckedAt': '2026-10-20T13:30:56.229Z', 'status': 'UPDATE_AVAILABLE', 'lastError': None}
+
+## skill: Update → confirm (row transitions, 100 ms polling)
+{
+  "transitions": [
+    {
+      "atMs": 5,
+      "key": "waiting | New: blader/humanizer6be1fa48c307f3·1 min. agoUpdateblader/humanizer · mainSee changes on GitHub"
+    },
+    {
+      "atMs": 632,
+      "key": "updating | New: blader/humanizer6be1fa48c307f3·2 min. agoUpdating…blader/humanizer · mainSee changes on GitHub"
+    },
+    {
+      "atMs": 1663,
+      "key": "handled | blader/humanizerUpdated to 8c307f3Clearblader/humanizer · mainSee changes on GitHub"
+    }
+  ]
+}
+
+## package: Update (no confirmation, existing flow)
+{
+  "transitions": [
+    {
+      "atMs": 5,
+      "key": "waiting | New: AutoByteus/autobyteus-agents99c58fd074dc24·2 min. agoUpdateAutoByteus/autobyteus-agents · mainSee changes on GitHub"
+    },
+    {
+      "atMs": 766,
+      "key": "updating | New: AutoByteus/autobyteus-agents99c58fd074dc24·3 min. agoUpdating…AutoByteus/autobyteus-agents · mainSee changes on GitHub"
+    },
+    {
+      "atMs": 3031,
+      "key": "handled | AutoByteus/autobyteus-agentsUpdated to 074dc24ClearAutoByteus/autobyteus-agents · mainSee changes on GitHub"
+    }
+  ]
+}
+install folder inode before/after: 563423567 → 563523858 (replaced by the update pipeline)
+
+## after both updates
+{
+ "pills": [
+  {
+   "text": "1 update",
+   "className": ""
+  }
+ ],
+ "toasts": [],
+ "rows": [
+  {
+   "id": "notification-row-app",
+   "state": "waiting",
+   "actions": [
+    "AutoByteus1.5.7-beta.41.5.8\u00b76 min. ago",
+    "Download"
+   ]
+  },
+  {
+   "id": "notification-row-agent_package:github:autobyteus/autobyteus-agents",
+   "state": "handled",
+   "actions": [
+    "AutoByteus/autobyteus-agentsUpdated to 074dc24",
+    "Clear"
+   ]
+  },
+  {
+   "id": "notification-row-skill_source:fc803ed8-72e7-4825-a14e-8203ebe90647",
+   "state": "handled",
+   "actions": [
+    "blader/humanizerUpdated to 8c307f3",
+    "Clear"
+   ]
+  }
+ ]
+}

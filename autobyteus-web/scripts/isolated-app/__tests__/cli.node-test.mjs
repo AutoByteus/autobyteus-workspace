@@ -19,6 +19,10 @@ test('options are validated per command', () => {
   assert.throws(() => parseArgs(['start', '--control-port', 'abc'], {}), { code: 'USAGE_ERROR' })
   assert.throws(() => parseArgs(['start', 'extra'], {}), { code: 'USAGE_ERROR' })
   assert.throws(() => parseArgs(['start', '--frobnicate'], {}), { code: 'USAGE_ERROR' })
+  assert.deepEqual(parseArgs(['start', '--test-update-feed', 'http://127.0.0.1:8123'], {}).options,
+    { testUpdateFeedUrl: 'http://127.0.0.1:8123' })
+  assert.throws(() => parseArgs(['start', '--test-update-feed'], {}), { code: 'USAGE_ERROR' })
+  assert.throws(() => parseArgs(['restart', '--test-update-feed', 'http://127.0.0.1:8123'], {}), { code: 'USAGE_ERROR' })
 })
 
 test('start has no default control port in the parser or usage text', () => {

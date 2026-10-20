@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   APP_UPDATE_IPC_CHECK,
+  APP_UPDATE_IPC_CLEAR_NOTIFICATION,
   APP_UPDATE_IPC_DOWNLOAD,
   APP_UPDATE_IPC_GET_STATE,
   APP_UPDATE_IPC_INSTALL,
+  APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
   APP_UPDATE_IPC_SET_CHANNEL,
 } from '../appUpdateController'
 
@@ -48,8 +50,11 @@ describe('DisabledAppUpdater', () => {
       updateStaged: false,
       errorKind: null,
       checkedAt: null,
+      notification: null,
     })
     expect(await invoke(APP_UPDATE_IPC_CHECK)).toMatchObject({ status: 'disabled' })
+    expect(await invoke(APP_UPDATE_IPC_MARK_NOTIFICATION_READ)).toMatchObject({ status: 'disabled', notification: null })
+    expect(await invoke(APP_UPDATE_IPC_CLEAR_NOTIFICATION)).toMatchObject({ status: 'disabled', notification: null })
     expect(await invoke(APP_UPDATE_IPC_DOWNLOAD)).toMatchObject({ status: 'disabled' })
   })
 
@@ -69,6 +74,6 @@ describe('DisabledAppUpdater', () => {
     controller.initialize()
     controller.startAutoCheck()
 
-    expect(ipcMainMock.handle).toHaveBeenCalledTimes(5)
+    expect(ipcMainMock.handle).toHaveBeenCalledTimes(7)
   })
 })

@@ -1,0 +1,181 @@
+# API-09 — real-GitHub background pass in a packaged isolated instance (AC-001, AC-002, AC-004, AC-021, AC-017)
+# macOS 26.5.2 arm64; packaged worktree build d76332c669 (code c42bf2abc4); real public GitHub (unauthenticated); 2026-10-20
+# Steps: instance A (iso-58470-0628) imports https://github.com/AutoByteus/autobyteus-agents and https://github.com/blader/humanizer through the renderer's GraphQL documents (gql.mjs);
+#  stop; in the instance's own data root the installed revisions are set to older real commits (99c58fd…, 6be1fa4…) and the last check to 7 h ago (ASM-001 'older installed revision in the isolated instance's test data');
+#  start A2 (iso-58636-d7b5, --data-root same, --test-update-feed); go to Settings at once and plant window.__apiE2eMarker; wait; connection sampler (lsof every 250 ms) on server pid 46045 + main pid 44766.
+
+## import results
+github:autobyteus/autobyteus-agents {'status': 'UP_TO_DATE', 'canCheck': True, 'canUpdate': False, 'canReload': False, 'message': 'Up to date.', 'installedRevision': '074dc24dea4f1f3eb5752f2e2c42a06bad596698', 'latestRevision': '074dc24dea4f1f3eb5752f2e2c42a06bad596698', 'checkedAt': '2026-10-20T13:29:04.355Z', 'lastError': None}
+fc803ed8-72e7-4825-a14e-8203ebe90647 {'repositoryUrl': 'https://github.com/blader/humanizer', 'defaultBranch': 'main', 'installedRevision': '8c307f367c91bd974002f10f2be2965d642c13df', 'latestRevision': '8c307f367c91bd974002f10f2be2965d642c13df', 'latestCheckedAt': '2026-10-20T13:29:05.366Z', 'status': 'UP_TO_DATE', 'lastError': None}
+
+## shaped registries (instance A data root, before A2 start)
+[
+  {
+    "packageId": "github:autobyteus/autobyteus-agents",
+    "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WzxLSJ/server-data/agent-packages/github/autobyteus__autobyteus-agents",
+    "sourceKind": "GITHUB_REPOSITORY",
+    "source": "https://github.com/AutoByteus/autobyteus-agents",
+    "normalizedSource": "autobyteus/autobyteus-agents",
+    "managedInstallPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WzxLSJ/server-data/agent-packages/github/autobyteus__autobyteus-agents",
+    "sourceMetadata": {
+      "github": {
+        "defaultBranch": "main",
+        "installedRevision": "99c58fdf47b6f7e6cb305e3bf11dd0604d70b8fb",
+        "latestRevision": "99c58fdf47b6f7e6cb305e3bf11dd0604d70b8fb",
+        "latestCheckedAt": "2026-10-20T06:29:37.000Z",
+        "updateStatus": "UP_TO_DATE",
+        "lastError": null
+      }
+    },
+    "createdAt": "2026-10-20T13:29:04.355Z",
+    "updatedAt": "2026-10-20T13:29:04.355Z"
+  }
+][
+  {
+    "id": "fc803ed8-72e7-4825-a14e-8203ebe90647",
+    "repository": {
+      "owner": "blader",
+      "repo": "humanizer"
+    },
+    "state": "ACTIVE",
+    "installed": {
+      "generation": "b84b5692-f7e3-4f2e-85fb-a73c4b103415",
+      "revision": "6be1fa4e0c768202b126f8bc5c9bf67ead9162bc",
+      "defaultBranch": "main"
+    },
+    "lastCheck": {
+      "checkedAt": "2026-10-20T06:29:37.000Z",
+      "latestRevision": "6be1fa4e0c768202b126f8bc5c9bf67ead9162bc",
+      "defaultBranch": "main",
+      "error": null
+    },
+    "lastUpdateError": null
+  }
+]
+## A2 ready at
+2026-10-20T13:29:55Z
+## window on Settings, marker planted
+{"url":"#/settings","marker":"marker-1792503003944","at":"2026-10-20T13:30:03.944Z"}
+
+## node notifications after the first background pass (no page of Agent Packages / Skills opened)
+{
+  "data": {
+    "updateNotifications": [
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:autobyteus/autobyteus-agents",
+        "name": "AutoByteus/autobyteus-agents",
+        "repositoryUrl": "https://github.com/AutoByteus/autobyteus-agents",
+        "defaultBranch": "main",
+        "installedRevision": "99c58fdf47b6f7e6cb305e3bf11dd0604d70b8fb",
+        "latestRevision": "074dc24dea4f1f3eb5752f2e2c42a06bad596698",
+        "foundAt": "2026-10-20T13:30:55.716Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      },
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "fc803ed8-72e7-4825-a14e-8203ebe90647",
+        "name": "blader/humanizer",
+        "repositoryUrl": "https://github.com/blader/humanizer",
+        "defaultBranch": "main",
+        "installedRevision": "6be1fa4e0c768202b126f8bc5c9bf67ead9162bc",
+        "latestRevision": "8c307f367c91bd974002f10f2be2965d642c13df",
+        "foundAt": "2026-10-20T13:30:56.241Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null
+      }
+    ]
+  }
+}
+
+## window while still on Settings (no Settings row exists on the Settings page; no pill, dialog or toast)
+{"url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings", "pills": [], "sidebarEntry": null, "dialogs": [], "toasts": [], "appUpdateNoticePresent": false}
+
+## Back to Workspace: pill without reload (same marker)
+{
+  "marker": "marker-1792503003944",
+  "url": "#/workspace",
+  "pillVisibleAfterMs": 138,
+  "pill": [
+    {
+      "text": "3 updates",
+      "bg": "rgb(3, 105, 161)",
+      "color": "rgb(255, 255, 255)"
+    }
+  ],
+  "aria": [
+    "3 updates available: 1 software update, 1 skill update, 1 agent package update"
+  ]
+}
+
+## panel opened by a click on the pill
+{
+ "sections": [
+  {
+   "id": "notification-section-app",
+   "title": "Software update"
+  },
+  {
+   "id": "notification-section-skill_source",
+   "title": "Skill update"
+  },
+  {
+   "id": "notification-section-agent_package",
+   "title": "Agent package update"
+  }
+ ],
+ "rows": [
+  {
+   "id": "notification-row-app",
+   "state": "waiting",
+   "name": "AutoByteus",
+   "change": "1.5.7-beta.41.5.8\u00b75 min. ago",
+   "newDot": false,
+   "details": null,
+   "compare": null
+  },
+  {
+   "id": "notification-row-skill_source:fc803ed8-72e7-4825-a14e-8203ebe90647",
+   "state": "waiting",
+   "name": "New: blader/humanizer",
+   "change": "6be1fa48c307f3\u00b71 min. ago",
+   "newDot": true,
+   "details": "blader/humanizer \u00b7 mainSee changes on GitHub",
+   "compare": "https://github.com/blader/humanizer/compare/6be1fa4e0c768202b126f8bc5c9bf67ead9162bc...8c307f367c91bd974002f10f2be2965d642c13df"
+  },
+  {
+   "id": "notification-row-agent_package:github:autobyteus/autobyteus-agents",
+   "state": "waiting",
+   "name": "New: AutoByteus/autobyteus-agents",
+   "change": "99c58fd074dc24\u00b71 min. ago",
+   "newDot": true,
+   "details": "AutoByteus/autobyteus-agents \u00b7 mainSee changes on GitHub",
+   "compare": "https://github.com/AutoByteus/autobyteus-agents/compare/99c58fdf47b6f7e6cb305e3bf11dd0604d70b8fb...074dc24dea4f1f3eb5752f2e2c42a06bad596698"
+  }
+ ]
+}
+
+## compare links (GET, followed)
+200 https://github.com/blader/humanizer/compare/6be1fa4e0c768202b126f8bc5c9bf67ead9162bc...8c307f367c91bd974002f10f2be2965d642c13df
+<title>Comparing 6be1fa4e0c768202b126f8bc5c9bf67ead9162bc...8c307f367c91bd974002f10f2be2965d642c13df · blader/humanizer · GitHub
+200 https://github.com/AutoByteus/autobyteus-agents/compare/99c58fdf47b6f7e6cb305e3bf11dd0604d70b8fb...074dc24dea4f1f3eb5752f2e2c42a06bad596698
+<title>Comparing 99c58fdf47b6f7e6cb305e3bf11dd0604d70b8fb...074dc24dea4f1f3eb5752f2e2c42a06bad596698 · AutoByteus/autobyteus-agents · GitHub
+
+## DNS at start (api.github.com, codeload.github.com, github.com)
+20.250.119.72
+140.82.121.10
+140.82.121.3
+
+## non-loopback TCP connections of the server (46045) and Electron main (44766) during A2 (all)
+{"at":"2026-10-20T13:30:55.264Z","pid":"46045","local":"192.168.2.158:58723","remote":"140.82.121.5:443","state":"ESTABLISHED"}
+{"at":"2026-10-20T13:33:16.938Z","pid":"46045","local":"192.168.2.158:58793","remote":"140.82.121.6:443","state":"ESTABLISHED"}
+{"at":"2026-10-20T13:33:17.434Z","pid":"46045","local":"192.168.2.158:58794","remote":"140.82.121.10:443","state":"ESTABLISHED"}
+5.121.82.140.in-addr.arpa domain name pointer lb-140-82-121-5-fra.github.com.
+6.121.82.140.in-addr.arpa domain name pointer lb-140-82-121-6-fra.github.com.
+10.121.82.140.in-addr.arpa domain name pointer lb-140-82-121-10-fra.github.com.
+# 13:30:55 = background pass (api.github.com only). 13:33:16/17 = the user's skill Update press (api + codeload 140.82.121.10); the package Update reused connections. Electron main: loopback only (feed 127.0.0.1:58466).

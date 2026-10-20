@@ -1,0 +1,17 @@
+# DEL-04 — whole web unit/component suite on the integrated state (excerpt: summary and failures; full log not kept)
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# State: merge 6c34ce51d2 (ticket code c42bf2abc4 + origin/personal e0df0bfd05); macOS 26 arm64, Node v22.23.1; 2026-10-20
+
+ ✓ components/notifications/__tests__/NotificationCenter.spec.ts (10 tests) 513ms
+ ✓ electron/updater/__tests__/appUpdater.spec.ts (34 tests) 49ms
+ ✓ stores/__tests__/updateNotificationsStore.spec.ts (12 tests) 20ms
+ ✓ stores/__tests__/appUpdateStore.spec.ts (19 tests) 17ms
+ ✓ electron/updater/__tests__/appUpdateNotificationRecord.spec.ts (7 tests) 15ms
+ ✓ __tests__/app.spec.ts (6 tests) 37ms
+ ✓ components/settings/__tests__/UpdateChecksCard.spec.ts (3 tests) 17ms
+ ✓ electron/updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 27ms
+ ✓ electron/updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 9ms
+ ✓ services/updateNotifications/__tests__/updateNotificationChangeFeed.spec.ts (2 tests) 3ms
+ Test Files  649 passed | 2 skipped (651)
+      Tests  4632 passed | 3 skipped (4635)
+exit 0

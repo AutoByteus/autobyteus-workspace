@@ -1,0 +1,4 @@
+IMP-04 server unit suite | cmd: pnpm -C autobyteus-server-ts test:unit | server tree of 71cfcd7d32 (server src/tests unchanged since the run started at the same content) | macOS | 2026-10-20 | full log not committed (~large), at /tmp/server-unit-full.log during the session
+ Test Files  757 passed | 4 skipped (761)
+      Tests  6220 passed | 7 skipped (6227)
+exit 0

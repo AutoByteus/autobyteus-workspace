@@ -54,6 +54,8 @@ interface Window {
     downloadAppUpdate: () => Promise<AppUpdateState>;
     installAppUpdateAndRestart: () => Promise<{ accepted: boolean }>;
     setAppUpdateChannel: (channel: AppUpdateChannel) => Promise<AppUpdateChannelChangeResult>;
+    markAppUpdateNotificationRead: () => Promise<AppUpdateState>;
+    clearAppUpdateNotification: () => Promise<AppUpdateState>;
     onAppUpdateState: (callback: (updateState: AppUpdateState) => void) => Cleanup;
 
     getLogFilePath: () => Promise<string>;

@@ -18,6 +18,9 @@ export const APP_UPDATE_IPC_CHECK = 'app-update:check'
 export const APP_UPDATE_IPC_DOWNLOAD = 'app-update:download'
 export const APP_UPDATE_IPC_INSTALL = 'app-update:install'
 export const APP_UPDATE_IPC_SET_CHANNEL = 'app-update:set-channel'
+/** The renderer's intents on the app update notification; the shell owns the record. */
+export const APP_UPDATE_IPC_MARK_NOTIFICATION_READ = 'app-update:mark-notification-read'
+export const APP_UPDATE_IPC_CLEAR_NOTIFICATION = 'app-update:clear-notification'
 
 export const APP_UPDATE_IPC_COMMAND_CHANNELS: readonly string[] = Object.freeze([
   APP_UPDATE_IPC_GET_STATE,
@@ -25,4 +28,6 @@ export const APP_UPDATE_IPC_COMMAND_CHANNELS: readonly string[] = Object.freeze(
   APP_UPDATE_IPC_DOWNLOAD,
   APP_UPDATE_IPC_INSTALL,
   APP_UPDATE_IPC_SET_CHANNEL,
+  APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
+  APP_UPDATE_IPC_CLEAR_NOTIFICATION,
 ])
