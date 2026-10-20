@@ -95,7 +95,7 @@
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `tickets/in-progress/mcp-sdk-v2-migration/release-notes.md`, archived to `tickets/done/mcp-sdk-v2-migration/release-notes.md`
+- Release notes artifact created before verification / acceptance: `tickets/in-progress/mcp-sdk-v2-migration/release-notes.md` (written before verification), archived to `tickets/done/mcp-sdk-v2-migration/release-notes.md`
 - Archived release notes artifact used for release/publication: not by the beta (pre-release tags always use GitHub generated notes, per `RELEASE.md`); kept for the next stable release's curated notes
 - Release notes status: `Updated`
 
