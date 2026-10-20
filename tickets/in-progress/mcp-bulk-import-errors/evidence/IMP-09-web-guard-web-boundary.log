@@ -1,0 +1,6 @@
+# Check: IMP-09 guard:web-boundary
+# Command: pnpm -C autobyteus-web guard:web-boundary
+# Commit: c5161eddc8
+# Date: 2026-10-20
+
+[guard:web-boundary] Passed.

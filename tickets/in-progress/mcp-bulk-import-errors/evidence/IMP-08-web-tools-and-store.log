@@ -1,0 +1,96 @@
+# Check: IMP-08
+# Command: pnpm -C autobyteus-web test:nuxt components/tools stores/__tests__/toolManagementStore.mcpImport.spec.ts stores/__tests__/toolManagementStore.mcpGateway.spec.ts --run
+# Commit: c5161eddc8
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-20
+
+
+> autobyteus@1.5.7-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-bulk-import-errors/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/tools stores/__tests__/toolManagementStore.mcpImport.spec.ts stores/__tests__/toolManagementStore.mcpGateway.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-bulk-import-errors/autobyteus-web
+
+stderr | components/tools/__tests__/McpManagementTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/McpBulkImportView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/McpServerFormModal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/toolParameterDisplayRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/toolManagementStore.mcpImport.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/ToolsManagementWorkspace.reloadSchema.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/McpGatewayPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/toolManagementStore.mcpGateway.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/ToolDetailsModal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/tools/__tests__/ToolDetailsModal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tools/__tests__/McpBulkImportView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/toolManagementStore.mcpImport.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tools/__tests__/McpGatewayPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tools/__tests__/toolParameterDisplayRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tools/__tests__/McpServerFormModal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tools/__tests__/ToolsManagementWorkspace.reloadSchema.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tools/__tests__/McpManagementTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/toolManagementStore.mcpGateway.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tools/__tests__/toolParameterDisplayRows.spec.ts (2 tests) 2ms
+ ✓ components/tools/__tests__/ToolDetailsModal.spec.ts (1 test) 10ms
+ ✓ stores/__tests__/toolManagementStore.mcpGateway.spec.ts (1 test) 3ms
+ ✓ stores/__tests__/toolManagementStore.mcpImport.spec.ts (2 tests) 3ms
+ ✓ components/tools/__tests__/McpManagementTabs.spec.ts (1 test) 9ms
+ ✓ components/tools/__tests__/McpGatewayPanel.spec.ts (2 tests) 21ms
+ ✓ components/tools/__tests__/McpBulkImportView.spec.ts (4 tests) 29ms
+ ✓ components/tools/__tests__/McpServerFormModal.spec.ts (9 tests) 88ms
+ ✓ components/tools/__tests__/ToolsManagementWorkspace.reloadSchema.spec.ts (1 test) 39ms
+
+ Test Files  9 passed (9)
+      Tests  23 passed (23)
+   Start at  05:37:07
+   Duration  7.81s (transform 4.33s, setup 59.82s, collect 1.68s, tests 204ms, environment 3.06s, prepare 1.83s)
+
