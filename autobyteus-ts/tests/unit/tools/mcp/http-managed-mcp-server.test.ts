@@ -4,9 +4,10 @@
  * Purpose: prove that the configured credentials (headers, or the token sent as
  * `Authorization: Bearer <token>`) reach the remote server on every request, that the
  * client keeps the 2025 `initialize` handshake (no `server/discover` probe), and that a
- * server paging `tools/list` has all its tools listed, using the real
- * `@modelcontextprotocol/client` and the `@modelcontextprotocol/server`/`node` packages
- * (no SDK mock).
+ * server paging `tools/list` has all its tools listed, and that a connect the server answers
+ * with an HTTP error fails with the status first in the message (`HTTP 401 Unauthorized: …`),
+ * using the real `@modelcontextprotocol/client` and the `@modelcontextprotocol/server`/`node`
+ * packages (no SDK mock).
  * Prerequisites: none. The server is in-process on 127.0.0.1 with an OS-assigned port.
  * Values: dummy only (`test-dummy`).
  * Command: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/mcp/http-managed-mcp-server.test.ts
@@ -14,6 +15,7 @@
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { afterEach, describe, expect, it } from 'vitest';
+import { SdkHttpError } from '@modelcontextprotocol/client';
 import { NodeStreamableHTTPServerTransport } from '@modelcontextprotocol/node';
 import { McpServer, Server } from '@modelcontextprotocol/server';
 import { HttpManagedMcpServer } from '../../../../src/tools/mcp/server/http-managed-mcp-server.js';
@@ -145,6 +147,35 @@ const startRedirector = async (target: string): Promise<LocalMcpServer> => {
   return { url: `${origin}/mcp`, received, close };
 };
 
+/** Starts a plain HTTP server that answers every request with `status` and, when given, a text `body`. */
+const startStatusServer = async (status: number, body?: string): Promise<LocalMcpServer> => {
+  const received: ReceivedRequest[] = [];
+  const httpServer = http.createServer(async (req, res) => {
+    const rawBody = await readBody(req);
+    received.push({ httpMethod: req.method ?? '', rpcMethod: rpcMethodOf(rawBody ? JSON.parse(rawBody) : undefined), headers: req.headers });
+    if (body === undefined) {
+      res.writeHead(status).end();
+    } else {
+      res.writeHead(status, { 'content-type': 'text/plain' }).end(body);
+    }
+  });
+  const { origin, close } = await listenOnLocalPort(httpServer);
+  return { url: `${origin}/mcp`, received, close };
+};
+
+/** A loopback URL on a port that was free a moment ago, so nothing listens there. */
+const unusedLocalUrl = async (): Promise<string> => {
+  const { origin, close } = await listenOnLocalPort(http.createServer());
+  await close();
+  return `${origin}/mcp`;
+};
+
+const rejectionOf = (promise: Promise<unknown>): Promise<unknown> =>
+  promise.then(
+    () => null,
+    (caught: unknown) => caught
+  );
+
 const rpcMethods = (received: ReceivedRequest[]): string[] =>
   received.map((request) => request.rpcMethod).filter((method): method is string => method !== null);
 
@@ -229,12 +260,10 @@ describe('HttpManagedMcpServer with a real streamable HTTP MCP server', () => {
       new StreamableHttpMcpServerConfig({ server_id: 'wrong-token-server', url: localServer.url, token: 'test-wrong' })
     );
 
-    const error = await client.connect().then(
-      () => null,
-      (caught: unknown) => caught
-    );
+    const error = await rejectionOf(client.connect());
 
     expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toBe('HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized');
     expect((error as Error).message).not.toContain('test-wrong');
     expect(client.connectionState).toBe(ServerState.FAILED);
     expect(localServer.received[0]?.headers.authorization).toBe('Bearer test-wrong');
@@ -267,6 +296,61 @@ describe('HttpManagedMcpServer with a real streamable HTTP MCP server', () => {
     expect(rpcMethods(localServer.received).filter((method) => method === 'tools/list')).toHaveLength(2);
   });
 
+  describe('HTTP error answers', () => {
+    const connectFailure = async (url: string, serverId: string) => {
+      client = new HttpManagedMcpServer(new StreamableHttpMcpServerConfig({ server_id: serverId, url, token: 'test-dummy' }));
+      return await rejectionOf(client.connect());
+    };
+
+    it.each([
+      [401, 'unauthorized', 'HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized'],
+      [403, 'forbidden', 'HTTP 403 Forbidden: Error POSTing to endpoint: forbidden'],
+      [404, 'Not Found', 'HTTP 404 Not Found: Error POSTing to endpoint: Not Found'],
+      [500, 'Internal Server Error', 'HTTP 500 Internal Server Error: Error POSTing to endpoint: Internal Server Error']
+    ])('fails to connect with the status first in the message when the server answers %i', async (status, body, expected) => {
+      localServer = await startStatusServer(status, body);
+
+      const error = await connectFailure(localServer.url, `status-${status}`);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toBe(expected);
+      expect((error as Error).message).not.toContain('test-dummy');
+      const cause = (error as Error).cause;
+      expect(SdkHttpError.isInstance(cause)).toBe(true);
+      expect((cause as SdkHttpError).status).toBe(status);
+      expect(client!.connectionState).toBe(ServerState.FAILED);
+      expect(localServer.received[0]?.rpcMethod).toBe('initialize');
+    });
+
+    it('names the status of a 404 whose body is empty', async () => {
+      localServer = await startStatusServer(404);
+
+      const error = await connectFailure(localServer.url, 'status-404-empty');
+
+      expect((error as Error).message).toBe('HTTP 404 Not Found: Error POSTing to endpoint: ');
+    });
+
+    it('keeps the message of a failure without an HTTP answer', async () => {
+      const error = await connectFailure(await unusedLocalUrl(), 'refused');
+
+      expect(error).toBeInstanceOf(TypeError);
+      expect((error as Error).message).toBe('fetch failed');
+      expect(client!.connectionState).toBe(ServerState.FAILED);
+    });
+
+    it('fails a tool call that has to connect with the status in the message', async () => {
+      localServer = await startStatusServer(401, 'unauthorized');
+      client = new HttpManagedMcpServer(
+        new StreamableHttpMcpServerConfig({ server_id: 'tool-call-401', url: localServer.url, token: 'test-dummy' })
+      );
+
+      const error = await rejectionOf(client.callTool('echo', {}));
+
+      expect((error as Error).message).toBe('HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized');
+      expect(client.connectionState).toBe(ServerState.FAILED);
+    });
+  });
+
   describe('redirects', () => {
     let redirector: LocalMcpServer | null = null;
 
@@ -283,13 +367,12 @@ describe('HttpManagedMcpServer with a real streamable HTTP MCP server', () => {
         new StreamableHttpMcpServerConfig({ server_id: 'cross-origin', url: redirector.url, token: 'test-dummy' })
       );
 
-      const error = await client.connect().then(
-        () => null,
-        (caught: unknown) => caught
-      );
+      const error = await rejectionOf(client.connect());
 
       expect(error).toBeInstanceOf(Error);
-      expect((error as Error).message).toMatch(/redirect/i);
+      expect((error as Error).message).toMatch(/^HTTP 307 Temporary Redirect: /);
+      expect((error as Error).message).toContain(`Redirect to ${localServer.url} not followed`);
+      expect((error as Error).message).toContain("(redirectPolicy: 'same-origin')");
       expect((error as Error).message).not.toContain('test-dummy');
       expect(client.connectionState).toBe(ServerState.FAILED);
       expect(redirector.received.length).toBeGreaterThan(0);
