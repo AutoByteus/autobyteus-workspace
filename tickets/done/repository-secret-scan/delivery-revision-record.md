@@ -28,10 +28,24 @@
   `origin/personal` `66d834b0ac`. Ignore-rule, allowlist and hygiene checks
   passed.
 - Verification (evidence judgement or user check) and finalization state:
-  sufficient, with the user's revocation check. The finalization state is
-  recorded below once done.
-- Terminal return to the Solution Designer: `Not yet eligible`, until
-  finalization and cleanup are done.
+  sufficient, with the user's revocation check.
+  - Ticket branch `codex/repository-secret-scan` committed as `de24d513a6`
+    and pushed.
+  - `origin/personal` moved twice during delivery: first to `7f41314aa8`
+    (runtime-lifecycle-review and the `1.5.8-beta.2` bump), then to
+    `51bb75ef18` (mcp-http-error-status). The pre-push check caught the
+    second move, so nothing was pushed until then. `finalize/repository-secret-scan`
+    was rebuilt from `51bb75ef18` and the ticket branch merged with `--no-ff` as `8dc4be788e`, with
+    no conflicts. This record commit follows the merge.
+  - Rerun on the merged state: ignore-rule checks and the hygiene check
+    passed. gitleaks (0 findings) and trufflehog `--no-verification`
+    (0 findings, 480 chunks) scanned the new base range `66d834b0ac..51bb75ef18`, in two steps.
+  - Pushed to `origin/personal` after a fresh fetch confirmed it had not moved.
+  - No release (`RELEASE.md` default).
+  - Cleanup: ticket worktree and local `codex/` and `finalize/` branches
+    removed. The remote ticket branch is kept, as on earlier tickets. The
+    scan temp folder was deleted.
+- Terminal return to the Solution Designer: `Sent` (`Delivery Completed`).
 - Why this baseline or delivery revision was recorded: first delivery result.
 - Next recipient/action: finalize into `personal`, clean up, then return
   `Delivery Completed` to the Solution Designer.
