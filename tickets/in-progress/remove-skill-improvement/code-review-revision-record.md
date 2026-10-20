@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 handoff | N/A | Pass | None (FU-003 recorded as a follow-up) |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 / API-REV-001 | N/A (first test review) | Pass | None |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 2 (Targeted Delta: INT-001 merge, Secret Gate entry) / IR-002 | Pass (CRR-001) | Pass | None |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 2 / API-REV-002 | Pass (CRR-002) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -98,3 +99,30 @@ None open.
 - Material score or classification changes: none (9.45 / 10). Classification Large / High preserved.
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer`, to revalidate by impact after the product-code merge.
 - Remaining risks or uncertainty: as before (FU-001..FU-005; the user's check after backup).
+
+### CRR-004 — Test-code review after API/E2E round 2: Not Applicable
+
+- Canonical review report updated: `tickets/in-progress/remove-skill-improvement/api-e2e-test-review-report.md`
+- Review entry point and round: proportional API/E2E test-code review, round 2
+- Review scope: `N/A` (test review). `2147206408..8d2dba3b72` changes only `tickets/` files.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-002, Pass)
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-002)
+- Current authoritative result: `Not Applicable`. No durable test changed.
+- What changed in the review result and why: none for test code. FU-005 now has an established cause (stream reconnect during the post-save re-read). It is outside this ticket's diff, but user-visible, as noted for the Solution Designer. FU-006 was added and FU-004 extended; both are outside the ticket.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none. Classification Large / High preserved.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - FU-004..FU-006 (outside the ticket);
+  - AC-004's user check after backup and AC-005 (delivery).

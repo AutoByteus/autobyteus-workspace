@@ -76,13 +76,22 @@ Both are follow-ups, not this ticket. Following the updated skill, they are reco
 
 - Sent to: `None` (the Solution Designer sends the ticket's follow-ups)
 
+## Round 2 (API-REV-002, after the INT-001 merge)
+
+- Trigger: API/E2E round 2 on merge `5cfccd66c7` and Secret Gate entry `bda3731947`; head `8d2dba3b72` (API-REV-002, Pass, confidence 95.0%).
+- Changed durable test scope: none. `git diff --name-only 2147206408..8d2dba3b72` lists only `tickets/` files. The round reran the existing suites and the full browser regression. SIR-001 and SIR-002 pass with the same values, and Basics shows base's Update checks card with no Skill Improvement trace.
+- No durable test file changed: `Yes`. Review result: `Not Applicable`.
+- Follow-ups updated by API/E2E in `follow-ups.md`, each checked against ticket scope:
+  - **FU-005** now has an established cause (`API-15-r2-org-save-reread-cause.txt`). Right after `UpdateDelegatedLaunchSelections` returns, the Org stream reconnects (`CONNECTED`, then `ROOT_EXECUTION_VIEW_SNAPSHOT`, which replaces the Org view) while the post-save `AgentOrgRunConfig` read is in flight. `readRunConfig` then reports "stale; refresh required". The Save itself is stored.
+    - The path (`agentOrgContextsStore`, `existingRunConfig*`, the Org stream and the delegated-launch command) is not in this ticket's diff, and no acceptance criterion depends on it, so it is a follow-up.
+    - Note for the Solution Designer when sending: it is user-visible ("Settings were saved, but could not be refreshed") in the delegated-copy Settings flow. It was seen 1 in 4 runs in round 1 and 3 in 6 now, and it also hits DCR-003. Not urgent by the definition (no data loss or security), but worth an early slot.
+  - **FU-006:** `projects-feature-probe` PT-E2E-013 expects no match, but base's meaning-search tier now returns similar tasks. A stale expectation from a base feature; follow-up.
+  - **FU-004:** the same causes as before, plus base's new `/ws/update-notifications`, which the fixtures don't serve.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed:
-  - `autobyteus-web/tests/e2e/skill-improvement-removal-cases.mjs`
-  - `autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs`
-  - `autobyteus-web/package.json`
+- Result: `Not Applicable` (round 2: no durable test changed). Round 1: `Pass`.
+- Changed durable test paths reviewed: none this round. Round 1 reviewed `skill-improvement-removal-cases.mjs`, `delegated-launch-defaults-probe.mjs` and `autobyteus-web/package.json`.
 - Unresolved finding IDs: none
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
-- Notes: `CRR-002`. The classification Large / High is preserved.
+- Notes: `CRR-004`. The classification Large / High is preserved. Source review is current at CRR-003 (merge `5cfccd66c7`).
