@@ -1,5 +1,5 @@
 import type { ApplicationDatabaseLocation } from '../../config/application-database-location.js';
-import type { SecretId } from '../domain/secret-id.js';
+import type { SecretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
 import type { ImportTargetInspection } from '../services/secret-vault-inspection-service.js';
 
 export type ImportRequest = Readonly<{

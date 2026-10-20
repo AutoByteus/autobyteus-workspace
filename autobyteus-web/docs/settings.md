@@ -340,6 +340,68 @@ states.
   drives the section against a real node on a fresh data root, with real
   downloads of the small LEAF-IR model.
 
+## Settings: Agent Runtimes
+
+Settings -> **Agent Runtimes** (`?section=agent-runtimes`, right after API Keys)
+lists Codex, Claude, Antigravity and Grok for the node the window is bound to.
+The user installs runtimes. AutoByteus shows what it finds, checks for newer
+versions, and starts the vendor's own update and login commands.
+
+- **Rows.** For each runtime the page shows its installed version or **Not
+  installed**, its update state (Checking for updates…, Up to date, Update
+  available (version X), Check failed), and its account (Signed in, Not signed
+  in, Sign-in unknown, or "–" when Codex is set up with a model provider that
+  needs no OpenAI sign-in).
+- **Finding runtimes.** The page uses the same lookup AutoByteus uses to run
+  agents (PATH and the existing per-runtime command settings), so it shows
+  exactly what agent runs will use. A runtime that is not installed shows
+  "Install instructions" (the vendor's official page) and "After installing,
+  restart AutoByteus.", because a runtime installed while AutoByteus runs may
+  not be found until a restart. AutoByteus never installs a runtime.
+- **Checks.** Opening the page and **Check again** start one check per
+  runtime. Each one reads `--version`, the sign-in state and the vendor's
+  newest version on its own, so a slow or failing source only marks its own
+  row ("Couldn't reach the update source. <Runtime> still works."). Checking
+  changes nothing.
+- **Update** (the desktop's own node only) runs `<runtime> update`. The row
+  shows the command and the vendor's latest output line. Then it shows
+  "Updated from X to Y." and checks that runtime again. A failure, or an exit
+  without a newer version, shows the vendor's message and **Try again**.
+  Update stays visible but cannot be pressed while that runtime has running
+  agents, with the reason "Update unavailable while N agents are running.".
+  Application agents count too.
+- **Sign in** (the desktop's own node only) exists for Codex (`codex login`)
+  and Grok (`grok login --oauth`). The vendor's command opens the browser. The
+  row shows "Finish signing in to <Runtime> in your browser." with **Cancel**.
+  After 10 minutes it shows "Sign-in didn't finish. Try again.". Claude and
+  Antigravity show "Sign in from its command line." with no button, by vendor
+  policy and the user's decision.
+- **Remote and Docker node windows** show the same rows and statuses with the
+  note "Status only. Update these runtimes on that node's computer." They have
+  no Update, no Sign in and no command-line hint.
+- **Layout.** The five-column table appears when the runtime list itself is at
+  least about 58 rem wide (a CSS container query). Below that, rows stack with
+  visible labels. The rule follows the list's width, not the window's, so the
+  table never overflows beside the Settings menu. Windows narrower than about
+  1250 px show stacked rows.
+- **Data flow.** `composables/settings/useAgentRuntimes.ts` reads the
+  `agentRuntimes` query every 2 s while a row is checking or an operation is
+  running, and every 10 s otherwise. The 10 s read also refreshes running-agent
+  counts, so a blocked Update becomes available by itself. Reading never starts
+  work, and rebinding the window starts over with the new node. Completed
+  updates and sign-ins are announced in a polite live region. Views:
+  `components/settings/agent-runtimes/` (`AgentRuntimesManager`,
+  `AgentRuntimeRow`). Copy: `localization/messages/{en,zh-CN}/agentRuntimesSettings.ts`.
+- **Privacy.** No sign-in URL, code, token or account detail reaches the page,
+  the GraphQL API, server logs or storage. AutoByteus only asks each runtime
+  for its state and starts the runtime's own commands.
+- `tests/e2e/agent-runtimes-settings-probe.mjs`
+  (`pnpm test:e2e:agent-runtimes-settings`) drives the section in a real
+  browser against a real server on a fresh data root, with scripted runtime
+  CLIs and vendor sources (`tests/e2e/fixtures/agent-runtimes-vendor-sources.mjs`).
+
+Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md).
+
 ## Settings: Agent Packages Auto-Refresh
 
 `components/settings/AgentPackagesManager.vue` shows each package row's

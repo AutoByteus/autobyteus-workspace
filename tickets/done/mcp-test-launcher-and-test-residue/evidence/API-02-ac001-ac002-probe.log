@@ -1,0 +1,30 @@
+# API-02
+# Command: env -i PATH HOME=<resolved temp> TMPDIR pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp/zz-api02-probe.test.ts --reporter=verbose (throwaway probe, source in API-02-probe.test.ts.txt; deleted after the run)
+# Commit: 7c9cadba2f + uncommitted probe file
+# Env: macOS 25.5.0, node v22.23.1, uv 0.10.2 (Homebrew 2026-02-10)
+# Date: 2026-10-20T08:38:10Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts
+
+stdout | tests/integration/tools/mcp/zz-api02-probe.test.ts > API-02: location variables are on the command line, not in the config env, and hold with a minimal child env
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+API02 prepared={"impl":"python","available":true,"reason":"python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)"}
+API02 command=/usr/bin/env
+API02 args=["UV_PROJECT_ENVIRONMENT=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e","UV_CACHE_DIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-uv-cache","PYTHONDONTWRITEBYTECODE=1","/opt/homebrew/bin/uv","run","--frozen","--project","/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts/tests/fixtures/mcp-test-server","python","/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts/tests/fixtures/mcp-test-server/server.py","--mode","normal"]
+API02 env={"MCP_TEST_DUMMY_VALUE":"v","MCP_TEST_SERVER_PID_FILE":"/tmp/api02.pid"}
+API02 node command=/Users/normy/.hermes/node/bin/node env={}
+API02 child env keys=PATH,HOME
+API02 status=0
+PY={"prefix": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e", "dont_write_bytecode": true, "UV_PROJECT_ENVIRONMENT": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e", "UV_CACHE_DIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-uv-cache", "PYTHONDONTWRITEBYTECODE": "1"}
+API02 fixture before=["pyproject.toml","server.py","uv.lock"] after=["pyproject.toml","server.py","uv.lock"]
+
+ ✓ tests/integration/tools/mcp/zz-api02-probe.test.ts > API-02: location variables are on the command line, not in the config env, and hold with a minimal child env 146ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  10:38:11
+   Duration  302ms (transform 48ms, setup 38ms, import 26ms, tests 147ms, environment 0ms)
+
+## exit 0

@@ -4,16 +4,18 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
-import {
-  LocalEnvironmentSecretImportService,
-  type LocalImportConfirmationPort,
-} from '../../../src/secret-management/provisioning/local-environment-secret-import-service.js';
+import { createTerminalImportDecision } from '../../../src/secret-management/cli/import-local-environment-secrets.js';
+import { LocalEnvironmentSecretImportService } from '../../../src/secret-management/provisioning/local-environment-secret-import-service.js';
 
 const readyHealth = { state: 'READY' as const };
-const confirmation = (response: string | null, direct = true): LocalImportConfirmationPort => ({
-  isDirectTty: () => direct,
-  readChallenge: vi.fn().mockResolvedValue(response),
-});
+// The secrets:import terminal decision over a scripted terminal.
+const confirmation = (response: string | null, direct = true) => {
+  const terminal = {
+    isDirectTty: () => direct,
+    readChallenge: vi.fn().mockResolvedValue(response),
+  };
+  return Object.assign(createTerminalImportDecision(terminal), terminal);
+};
 
 describe('LocalEnvironmentSecretImportService', () => {
   let directory: string;

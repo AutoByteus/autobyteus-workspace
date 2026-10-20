@@ -1,13 +1,9 @@
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { SecretValue } from 'autobyteus-ts/secrets/secret-value.js';
-import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import {
   ApplicationDatabaseLocation,
 } from '../../config/application-database-location.js';
-import { runMigrations } from '../../startup/migrations.js';
 import { providerCredentialCatalog } from '../catalog/provider-credential-catalog.js';
-import { SecretVaultRuntime } from '../secret-vault-runtime.js';
 import { SecretVaultInspectionService } from '../services/secret-vault-inspection-service.js';
 import {
   LocalEnvironmentSourceReader,
@@ -19,20 +15,20 @@ import {
   type LocalEnvironmentSecretImportPlan,
   type LocalEnvironmentSecretImportResult,
 } from './local-environment-secret-import.js';
+import { openWritableVaultTarget, type WritableVaultTarget } from './writable-vault-target.js';
 
-export interface LocalImportConfirmationPort {
-  isDirectTty(): boolean;
-  readChallenge(
-    expectedPhrase: string,
+/**
+ * Decides whether a previewed import may write to its target. It resolves to
+ * continue, or throws `LocalEnvironmentSecretImportError` to refuse. The
+ * `secrets:import` CLI asks on a terminal; `test-vault setup` confirms only
+ * its own validated test-vault target.
+ */
+export interface LocalImportDecisionPort {
+  confirm(
     targetLocation: ApplicationDatabaseLocation,
     plan: LocalEnvironmentSecretImportPlan,
-  ): Promise<string | null>;
+  ): Promise<void>;
 }
-
-type ExecutionRuntime = {
-  runtime: SecretVaultRuntime;
-  close(): Promise<void>;
-};
 
 export type LocalImportInspectorFactory = (
   targetLocation: ApplicationDatabaseLocation,
@@ -40,60 +36,15 @@ export type LocalImportInspectorFactory = (
 
 export type LocalImportExecutionRuntimeFactory = (
   targetLocation: ApplicationDatabaseLocation,
-) => Promise<ExecutionRuntime>;
-
-const importerAppRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '..',
-  '..',
-  '..',
-);
+) => Promise<WritableVaultTarget>;
 
 export class LocalEnvironmentSecretImportService {
   constructor(
     private readonly sourceReader = new LocalEnvironmentSourceReader(),
     private readonly inspectorFactory: LocalImportInspectorFactory = (targetLocation) =>
       new SecretVaultInspectionService(targetLocation),
-    private readonly executionRuntimeFactory: LocalImportExecutionRuntimeFactory = async (
-      targetLocation,
-    ) => {
-      runMigrations({
-        appRoot: importerAppRoot,
-        databaseUrl: targetLocation.databaseUrl,
-      });
-      try {
-        await initializePrisma({
-          datasourceUrl: targetLocation.databaseUrl,
-        });
-      } catch (error) {
-        try {
-          await shutdownPrisma();
-        } finally {
-          throw error;
-        }
-      }
-      const runtime = new SecretVaultRuntime();
-      try {
-        await runtime.initialize(targetLocation);
-        return {
-          runtime,
-          close: async () => {
-            try {
-              await runtime.close();
-            } finally {
-              await shutdownPrisma();
-            }
-          },
-        };
-      } catch (error) {
-        try {
-          await runtime.close();
-        } finally {
-          await shutdownPrisma();
-        }
-        throw error;
-      }
-    },
+    private readonly executionRuntimeFactory: LocalImportExecutionRuntimeFactory =
+      openWritableVaultTarget,
   ) {}
 
   async preview(request: ImportRequest): Promise<LocalEnvironmentSecretImportPlan> {
@@ -109,7 +60,7 @@ export class LocalEnvironmentSecretImportService {
 
   async execute(
     request: ImportRequest,
-    confirmation: LocalImportConfirmationPort,
+    decision: LocalImportDecisionPort,
   ): Promise<LocalEnvironmentSecretImportResult> {
     this.validateRequest(request);
     if (request.dryRun) throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID');
@@ -126,7 +77,7 @@ export class LocalEnvironmentSecretImportService {
       ) {
         throw new LocalEnvironmentSecretImportError('IMPORT_TARGET_NOT_READY');
       }
-      await this.confirm(request.targetLocation, plan, confirmation);
+      await decision.confirm(request.targetLocation, plan);
       const execution = await this.executionRuntimeFactory(request.targetLocation);
       try {
         const service = execution.runtime.requireService();
@@ -171,23 +122,6 @@ export class LocalEnvironmentSecretImportService {
       throw new LocalEnvironmentSecretImportError('IMPORT_MAPPING_INVALID');
     }
     return this.inspectorFactory(targetLocation).inspectImportTarget(secretIds, overwrite);
-  }
-
-  private async confirm(
-    targetLocation: ApplicationDatabaseLocation,
-    plan: LocalEnvironmentSecretImportPlan,
-    confirmation: LocalImportConfirmationPort,
-  ): Promise<void> {
-    if (!confirmation.isDirectTty()) {
-      throw new LocalEnvironmentSecretImportError('IMPORT_CONFIRMATION_REQUIRED');
-    }
-    let response: string | null;
-    try {
-      response = await confirmation.readChallenge('IMPORT', targetLocation, plan);
-    } catch {
-      throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED');
-    }
-    if (response !== 'IMPORT') throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED');
   }
 
   private validateRequest(request: ImportRequest): void {

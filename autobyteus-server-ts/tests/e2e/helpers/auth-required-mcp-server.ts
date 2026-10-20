@@ -1,6 +1,7 @@
 /**
  * A local streamable HTTP MCP server that requires one exact `Authorization` value, for E2E tests of
- * remote-server credentials. Real `@modelcontextprotocol/sdk` server, 127.0.0.1, OS-assigned port.
+ * remote-server credentials. Real `@modelcontextprotocol/server` server with the
+ * `@modelcontextprotocol/node` transport, 127.0.0.1, OS-assigned port.
  *
  * Every request without the required value is answered with 401. Each request is recorded value-free:
  * HTTP method, JSON-RPC method, called tool name and whether `Authorization` was the expected value,
@@ -9,13 +10,15 @@
  * The server has one tool, `auth_probe`, which returns `marker`, so a caller can tell this server's
  * result from any other text.
  *
+ * `setRequiredAuthorization` changes the accepted value while the server runs, as a server that revokes a token does.
+ *
  * Optional `redirects` maps a request path to a redirect response (status and `Location`), answered before
  * the credential check, as an endpoint that has moved answers every client.
  */
 import http from "node:http";
 import type { AddressInfo } from "node:net";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { NodeStreamableHTTPServerTransport } from "@modelcontextprotocol/node";
+import { McpServer } from "@modelcontextprotocol/server";
 
 export const AUTH_PROBE_TOOL = "auth_probe";
 
@@ -34,6 +37,8 @@ export type AuthRequiredMcpServer = {
   observations: AuthObservation[];
   /** Observations of `tools/call` requests for `auth_probe`. */
   toolCalls: () => AuthObservation[];
+  /** Accept only `value` from now on (`null`: accept every request). */
+  setRequiredAuthorization: (value: string | null) => void;
   close: () => Promise<void>;
 };
 
@@ -59,6 +64,7 @@ export const startAuthRequiredMcpServer = async (input: {
   redirects?: Record<string, { status: 301 | 302 | 307 | 308; location: string }>;
 }): Promise<AuthRequiredMcpServer> => {
   const observations: AuthObservation[] = [];
+  let requiredAuthorization = input.requiredAuthorization;
   const httpServer = http.createServer(async (req, res) => {
     const rawBody = await readBody(req);
     let body: unknown;
@@ -71,14 +77,14 @@ export const startAuthRequiredMcpServer = async (input: {
     const envelope = asRecord(body);
     const params = asRecord(envelope?.["params"]);
     const received = req.headers.authorization;
-    const accepted = input.requiredAuthorization === null || received === input.requiredAuthorization;
+    const accepted = requiredAuthorization === null || received === requiredAuthorization;
     const path = (req.url ?? "/").split("?")[0] ?? "/";
     observations.push({
       httpMethod: req.method ?? "",
       path,
       rpcMethod: typeof envelope?.["method"] === "string" ? envelope["method"] : null,
       toolName: typeof params?.["name"] === "string" ? params["name"] : null,
-      auth: received === undefined ? "none" : received === input.requiredAuthorization ? "expected" : "other",
+      auth: received === undefined ? "none" : received === requiredAuthorization ? "expected" : "other",
     });
     const redirect = input.redirects?.[path];
     if (redirect) {
@@ -90,10 +96,10 @@ export const startAuthRequiredMcpServer = async (input: {
       return;
     }
     const mcp = new McpServer({ name: "auth-required-e2e", version: "1.0.0" });
-    mcp.tool(AUTH_PROBE_TOOL, "Returns this server's marker text. Takes no arguments.", async () => ({
+    mcp.registerTool(AUTH_PROBE_TOOL, { description: "Returns this server's marker text. Takes no arguments." }, async () => ({
       content: [{ type: "text", text: input.marker }],
     }));
-    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+    const transport = new NodeStreamableHTTPServerTransport({ sessionIdGenerator: undefined });
     res.on("close", () => {
       void transport.close();
       void mcp.close();
@@ -108,6 +114,7 @@ export const startAuthRequiredMcpServer = async (input: {
     marker: input.marker,
     observations,
     toolCalls: () => observations.filter((entry) => entry.rpcMethod === "tools/call" && entry.toolName === AUTH_PROBE_TOOL),
+    setRequiredAuthorization: (value) => { requiredAuthorization = value; },
     close: () => new Promise<void>((resolve) => {
       httpServer.closeAllConnections();
       httpServer.close(() => resolve());

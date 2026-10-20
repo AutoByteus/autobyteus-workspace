@@ -1,0 +1,10 @@
+# IMP-26 default autobyteus-ts suite after CR-001 (alias removed); selector exported, 13 inherited *_API_KEY
+# IR-003 | commit 469de3d47e | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# command: AUTOBYTEUS_TEST_VAULT=<synthetic vault> pnpm -C autobyteus-ts test
+
+ ✓ tests/unit/secrets/provider-api-key-resolver.test.ts (11 tests) 966ms
+ ✓ tests/unit/secrets/vault-module-graph.test.ts (9 tests) 146ms
+ ✓ tests/unit/secrets/vault/read-secret-entry.test.ts (5 tests) 44ms
+ ✓ tests/unit/test-setup-credential-isolation.test.ts (2 tests) 3ms
+ Test Files  392 passed | 21 skipped (413)
+      Tests  2354 passed | 73 skipped (2427)

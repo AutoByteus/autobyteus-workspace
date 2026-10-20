@@ -1,0 +1,17 @@
+# DEL-01 | post-integration builds and typechecks | HEAD ee78ab81a1 | 2026-10-20T04:57:19Z
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+exit=0
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+typecheck exit=0
+AgentFactory (Singleton) initialized.
+(node:50449) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+server build exit=0

@@ -8,6 +8,7 @@ import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { registerFileExplorerWebsocket } from "../../../src/api/websocket/file-explorer.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
 type WsMessage = {
@@ -175,8 +176,11 @@ describe("File explorer websocket lifecycle e2e", () => {
   let wsBaseUrl: string;
   let tempRoot: string;
   let initialIds: Set<string>;
+  let dataRoot: string;
 
   beforeAll(async () => {
+    dataRoot = fs.mkdtempSync(path.join(os.tmpdir(), "file-explorer-ws-e2e-appdata-"));
+    appConfigProvider.config.setCustomAppDataDir(dataRoot);
     app = fastify();
     await app.register(websocket);
     await registerFileExplorerWebsocket(app);
@@ -203,7 +207,11 @@ describe("File explorer websocket lifecycle e2e", () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    try {
+      if (app) await app.close();
+    } finally {
+      if (dataRoot) fs.rmSync(dataRoot, { recursive: true, force: true });
+    }
   });
 
   const openFileExplorerSocket = async (workspaceId: string): Promise<{

@@ -129,7 +129,7 @@ describe('custom provider metadata GraphQL E2E', () => {
       datasourceUrl: config.getOperationalDatabaseLocation().databaseUrl,
     });
     await resetSecretVaultRuntimeForTests();
-    await getSecretVaultRuntime().initialize(config.getOperationalDatabaseLocation());
+    await getSecretVaultRuntime().initialize({ kind: "application", location: config.getOperationalDatabaseLocation() });
 
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);

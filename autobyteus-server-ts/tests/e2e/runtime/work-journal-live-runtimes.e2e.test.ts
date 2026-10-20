@@ -9,7 +9,7 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnvironment } from "../helpers/live-runtime-secret-vault-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
@@ -23,13 +23,14 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //     escalation trigger 1).
 //   - Claude: `/compact` closes a journal file, which a later turn leaves byte-identical (AC-W5, SCN-W5).
 // One gate per runtime; each run spends the user's credits or local compute:
-//   AutoByteus: RUN_DEEPSEEK_E2E=1 with DEEPSEEK_API_KEY (saved into the test-owned vault; DEEPSEEK_E2E_MODEL,
-//     default deepseek-v4-flash), or RUN_LMSTUDIO_E2E=1 (LMSTUDIO_TARGET_TEXT_MODEL, default qwen3.6-35b-a3b)
+//   AutoByteus: RUN_DEEPSEEK_E2E=1 (key from the test vault, AUTOBYTEUS_TEST_VAULT, see TESTING.md#test-vault;
+//     DEEPSEEK_E2E_MODEL, default deepseek-v4-flash), or RUN_LMSTUDIO_E2E=1 (LMSTUDIO_TARGET_TEXT_MODEL,
+//     default qwen3.6-35b-a3b)
 //   RUN_CLAUDE_E2E=1, RUN_CODEX_E2E=1, RUN_AGY_E2E=1 (host agy login; adds to the user's agy history).
 // Signed-in CLIs need the real HOME, USER and LOGNAME (TESTING.md). Grok Build is not covered live here.
 const commandReady = (command: string) => spawnSync(command, ["--version"], { stdio: "ignore" }).status === 0;
 const gate = (flag: string, command?: string) => process.env[flag] === "1" && (!command || commandReady(command));
-const AUTOBYTEUS_PROVIDER = process.env.RUN_DEEPSEEK_E2E === "1" && process.env.DEEPSEEK_API_KEY?.trim() ? "DEEPSEEK"
+const AUTOBYTEUS_PROVIDER = process.env.RUN_DEEPSEEK_E2E === "1" ? "DEEPSEEK"
   : process.env.RUN_LMSTUDIO_E2E === "1" ? "LMSTUDIO" : null;
 const AUTOBYTEUS_MODEL = AUTOBYTEUS_PROVIDER === "DEEPSEEK" ? process.env.DEEPSEEK_E2E_MODEL?.trim() || "deepseek-v4-flash"
   : process.env.LMSTUDIO_TARGET_TEXT_MODEL?.trim() || "qwen3.6-35b-a3b";
@@ -105,8 +106,8 @@ describe("Work Journal on each live runtime", () => {
     await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     process.env.LMSTUDIO_HOSTS ??= "http://127.0.0.1:1234";
     appConfigProvider.config.setCustomAppDataDir(dataDir);
-    // Provider keys present in the environment (DEEPSEEK_API_KEY) go into the test database's vault.
-    await initializeLiveRuntimeSecretVaultFromEnvironment();
+    // Provider keys come from the test vault when AUTOBYTEUS_TEST_VAULT is set (never from the environment).
+    await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
     url = started.mainUrl;
@@ -121,7 +122,7 @@ describe("Work Journal on each live runtime", () => {
         .catch(() => undefined);
       await app.close();
     }
-    await closeLiveRuntimeSecretVault();
+    await closeLiveServerVault();
     if (previousLmStudioHosts === undefined) delete process.env.LMSTUDIO_HOSTS; else process.env.LMSTUDIO_HOSTS = previousLmStudioHosts;
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
   }, 120_000);
@@ -223,7 +224,8 @@ describe("Work Journal on each live runtime", () => {
     return { runId, memoryDir, messages, send, journal, until };
   };
 
-  it.runIf(AUTOBYTEUS_PROVIDER !== null)(`AutoByteus (native, ${AUTOBYTEUS_PROVIDER}): raw records on disk at TURN_COMPLETED; journal current`, async () => {
+  it.runIf(AUTOBYTEUS_PROVIDER !== null)(`AutoByteus (native, ${AUTOBYTEUS_PROVIDER}): raw records on disk at TURN_COMPLETED; journal current`, async (context) => {
+    if (AUTOBYTEUS_PROVIDER === "DEEPSEEK") await requireLiveCapability(context, "provider.deepseek.api-key");
     await graphql("mutation($providerId: String!, $runtimeKind: String) { ensureProviderModelCatalog(providerId: $providerId, runtimeKind: $runtimeKind) { llmModels { modelIdentifier } } }",
       { providerId: AUTOBYTEUS_PROVIDER, runtimeKind: "autobyteus" });
     const model = (await models("autobyteus")).find((id) => id.includes(AUTOBYTEUS_MODEL));

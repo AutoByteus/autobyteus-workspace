@@ -1,0 +1,58 @@
+# API-06 before pptx commit=dc530fdcb0 2026-10-20T08:48:13Z vars: 
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before/autobyteus-ts
+
+2026-10-20 10:48:30,626 - __main__ - INFO - AUTOBYTEUS_AGENT_WORKSPACE not set. Using default CWD.
+2026-10-20 10:48:30,630 - __main__ - INFO - Starting PPTX Image MCP server with stdio transport...
+2026-10-20 10:48:30,648 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+stdout | tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: pptx-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+[real-mcp-server] pptx-mcp: 4 tools: create_ppt_from_images, replace_slide_with_image, append_images_as_slides, combine_images
+
+ ✓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: pptx-mcp > lists the server tools from a temp copy, leaving the source folder unchanged 11925ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  10:48:15
+   Duration  15.12s (transform 138ms, setup 94ms, import 2.78s, tests 12.05s, environment 0ms)
+
+# API-06 before video-audio commit=dc530fdcb0 2026-10-20T08:48:31Z vars: REAL_MCP_SERVER_FOLDER=video-audio-mcp REAL_MCP_SERVER_COMMAND=uv run --frozen server.py REAL_MCP_SERVER_CALL={"tool":"get_media_duration","arguments":{"media_path":"/tmp/mcp182/servers/media/parity-sample.mp4"}}
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before/autobyteus-ts
+
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/real-mcp-server-juQVRv/venv/lib/python3.14/site-packages/anyio/from_thread.py:119: SyntaxWarning: 'return' in a 'finally' block
+  return result
+[10/20/26 10:48:37] INFO     Processing request of type            server.py:733
+                             ListToolsRequest                                   
+stdout | tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: video-audio-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+[real-mcp-server] video-audio-mcp: 32 tools: get_media_duration, convert_audio_properties, convert_video_properties, change_aspect_ratio, convert_audio_format, set_audio_bitrate, set_audio_sample_rate, set_audio_channels, convert_video_format, set_video_resolution, set_video_codec, set_video_bitrate, set_video_frame_rate, set_video_audio_track_codec, set_video_audio_track_bitrate, set_video_audio_track_sample_rate, set_video_audio_track_channels, trim_video, concatenate_videos, concatenate_audios, change_video_speed, remove_silence, extract_audio_from_video, replace_audio_track, add_subtitles, add_text_overlay, add_image_overlay, create_video_from_image_and_audio, extract_frame_from_video, add_b_roll, add_basic_transitions, health_check
+
+                    INFO     Processing request of type            server.py:733
+                             CallToolRequest                                    
+stdout | tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: video-audio-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+[real-mcp-server] video-audio-mcp: called get_media_duration: isError=false
+
+ ✓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: video-audio-mcp > lists the server tools from a temp copy, leaving the source folder unchanged 3004ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  10:48:32
+   Duration  5.98s (transform 67ms, setup 44ms, import 2.58s, tests 3.25s, environment 0ms)
+
+# API-06 before ssh commit=dc530fdcb0 2026-10-20T08:48:39Z vars: REAL_MCP_SERVER_FOLDER=ssh-mcp REAL_MCP_SERVER_COMMAND=uv run --frozen python -m ssh_mcp.server
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before/autobyteus-ts
+
+Processing request of type ListToolsRequest
+stdout | tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: ssh-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+[real-mcp-server] ssh-mcp: 4 tools: ssh_health_check, ssh_open_session, ssh_session_exec, ssh_close_session
+
+ ✓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: ssh-mcp > lists the server tools from a temp copy, leaving the source folder unchanged 2386ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  10:48:40
+   Duration  4.33s (transform 55ms, setup 42ms, import 1.72s, tests 2.49s, environment 0ms)
+

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import { GeminiLLM } from '../../../../src/llm/api/gemini-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -9,11 +9,13 @@ import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registr
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
 import { GeminiJsonSchemaFormatter } from '../../../../src/tools/usage/formatters/gemini-json-schema-formatter.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
+import type { GeminiRuntimeResolver } from '../../../../src/utils/gemini-runtime.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const hasVertexApiKey = Boolean(process.env.VERTEX_AI_API_KEY);
-const hasVertex = hasVertexApiKey || Boolean(process.env.VERTEX_AI_PROJECT && process.env.VERTEX_AI_LOCATION);
-const hasApiKey = Boolean(process.env.GEMINI_API_KEY);
-const runIntegration = hasVertex || hasApiKey ? describe : describe.skip;
+const live = liveProviderTest('Gemini');
+// Gemini takes its mode explicitly (a mode, not a key): AI Studio, keyed from the test vault.
+const aiStudioMode: GeminiRuntimeResolver = async () => ({ kind: 'aiStudio' });
 
 const TURN_ID = 'turn_test';
 
@@ -30,8 +32,8 @@ const resetRegistry = () => {
   registerWriteFileTool();
 };
 
-runIntegration('LlmStreamingResponseHandler (Gemini live)', () => {
-  it('processes tool call stream into invocations', async () => {
+live.describe('LlmStreamingResponseHandler (Gemini live)', () => {
+  live.it('processes tool call stream into invocations', async () => {
     resetRegistry();
     const toolDef = defaultToolRegistry.getToolDefinition('write_file');
     expect(toolDef).toBeDefined();
@@ -39,7 +41,7 @@ runIntegration('LlmStreamingResponseHandler (Gemini live)', () => {
     const formatter = new GeminiJsonSchemaFormatter();
     const toolsSchema = [formatter.provide(toolDef!)];
 
-    const llm = new GeminiLLM(buildGeminiModel());
+    const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig(), undefined, aiStudioMode);
     const events: any[] = [];
     const handler = new LlmStreamingResponseHandler({
       turnId: TURN_ID,
@@ -58,12 +60,6 @@ runIntegration('LlmStreamingResponseHandler (Gemini live)', () => {
         handler.feed(chunk);
       }
       handler.finalize();
-    } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('model') || message.includes('not_found')) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }

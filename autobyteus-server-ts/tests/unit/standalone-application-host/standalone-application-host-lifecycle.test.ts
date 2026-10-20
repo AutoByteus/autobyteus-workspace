@@ -22,6 +22,7 @@ const mocks = vi.hoisted(() => {
     getLogsDir: () => "/tmp/standalone-lifecycle/logs",
     getMemoryDir: () => "/tmp/standalone-lifecycle/memory",
     getAppDataDir: () => "/tmp/standalone-lifecycle",
+    get: () => undefined,
     getBaseUrl: () => "http://localhost:8000",
     getAppRootDir: () => "/tmp/standalone-lifecycle",
     getOperationalDatabaseUrl: () => "file:/tmp/standalone-lifecycle/operational.db",
@@ -90,6 +91,7 @@ const mocks = vi.hoisted(() => {
       bundleService: {},
     })),
     initializePrisma: vi.fn(async () => undefined),
+    disableEnvironmentKeySource: vi.fn(),
     shutdownPrisma: vi.fn(async () => undefined),
     runDatabaseMigrations: vi.fn(),
     assertTokenUsageCurrentSchema: vi.fn(async () => undefined),
@@ -111,6 +113,10 @@ const mocks = vi.hoisted(() => {
   };
 });
 
+vi.mock("autobyteus-ts/secrets/provider-api-key-resolver.js", async (importOriginal) => ({
+  ...await importOriginal<typeof import("autobyteus-ts/secrets/provider-api-key-resolver.js")>(),
+  disableEnvironmentProviderApiKeySource: mocks.disableEnvironmentKeySource,
+}));
 vi.mock("repository_prisma", async (importOriginal) => ({
   ...await importOriginal<typeof import("repository_prisma")>(),
   initializePrisma: mocks.initializePrisma,
@@ -276,6 +282,10 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
     expect(mocks.assertTokenUsageCurrentSchema.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.initializeSecretVault.mock.invocationCallOrder[0]!);
+    // AC-018: the host owns its vault; the autobyteus-ts environment default is off first.
+    expect(mocks.disableEnvironmentKeySource).toHaveBeenCalledTimes(1);
+    expect(mocks.disableEnvironmentKeySource.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.runDatabaseMigrations.mock.invocationCallOrder[0]!);
     expect(mocks.initializeSecretVault.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.runPending.mock.invocationCallOrder[0]!);
     expect(mocks.runPending.mock.invocationCallOrder[0])

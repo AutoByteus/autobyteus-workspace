@@ -1,0 +1,11 @@
+# IMP-06 — negotiated protocol version against the REAL /mcp/gateway route: v1 1.32.1 vs v2 default vs v2 auto
+# Command: cp evidence/IMP-06-route-version-parity-probe.test.ts.txt autobyteus-server-ts/tests/.tmp/route-version-parity.test.ts (rewrite the V1 absolute import path for your checkout); pnpm -C autobyteus-server-ts exec vitest run tests/.tmp/route-version-parity.test.ts --no-watch
+# Commit: base dc530fdcb0 + uncommitted implementation edits (route source unchanged); v1 client loaded from node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_zod@4.3.6 (the Claude Agent SDK peer copy)
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-20T08:12:16Z
+# requestHeaders = the mcp-protocol-version header of each HTTP request in order ('-' = none)
+
+{"client":"v1 1.32.1","negotiated":"2025-03-26","era":"n/a (v1)","requestHeaders":["-","2025-03-26","2025-03-26","2025-03-26"]}
+{"client":"v2 default","negotiated":"2025-03-26","era":"legacy","requestHeaders":["-","2025-03-26","2025-03-26","2025-03-26"]}
+{"client":"v2 auto","negotiated":"2025-03-26","era":"legacy","requestHeaders":["2026-07-28","-","2025-03-26","2025-03-26","2025-03-26"]}
+      Tests  1 passed (1)

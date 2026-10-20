@@ -19,6 +19,7 @@ import packageMigrationSettingsMessages from './package-migration-settings';
 import tokenUsageSettingsMessages from './token-usage-settings';
 import memorySyncSettingsMessages from './memorySyncSettings';
 import embeddingSettingsMessages from './embeddingSettings';
+import agentRuntimesSettingsMessages from './agentRuntimesSettings';
 import projectMessages from './projects';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
@@ -54,6 +55,7 @@ const zhCnMessages: TranslationCatalog = {
   ...tokenUsageSettingsMessages,
   ...memorySyncSettingsMessages,
   ...embeddingSettingsMessages,
+  ...agentRuntimesSettingsMessages,
   ...projectMessages,
   ...generatedShellMessages,
   ...shellMessages,

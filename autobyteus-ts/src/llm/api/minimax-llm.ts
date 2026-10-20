@@ -5,7 +5,7 @@ import { LLMProvider } from '../providers.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 export class MinimaxLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     super(model, 'https://api.minimax.io/v1', config, apiKeyResolver, LLMProvider.MINIMAX);
   }
 }

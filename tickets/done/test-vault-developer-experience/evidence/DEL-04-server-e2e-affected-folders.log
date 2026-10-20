@@ -1,0 +1,4 @@
+# DEL-04 | server E2E on the built server: vitest tests/e2e/secret-management tests/e2e/llm-management tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts (as IMP-20), *_API_KEY removed | HEAD ee78ab81a1 | 2026-10-20T05:08:33Z
+ Test Files  13 passed | 2 skipped (15)
+      Tests  43 passed (43)
+exit=0

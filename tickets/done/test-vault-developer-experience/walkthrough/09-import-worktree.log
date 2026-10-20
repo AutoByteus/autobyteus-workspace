@@ -1,0 +1,31 @@
+(node:69589) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TARGET /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/db/test.db
+TARGET_STATUS READY
+provider.deepseek.api-key MISSING CREATE
+provider.openai.api-key MISSING CREATE
+CREATE 2
+SKIP_CONFIGURED 0
+REPLACE 0
+BLOCKED 0
+INSTRUCTION NONE
+[1G[0JTarget /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/db/test.db (READY). Type IMPORT to continue: [155GIMPORT
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/db/test.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+TARGET /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-server-ts/db/test.db
+TARGET_STATUS READY
+SECRET provider.deepseek.api-key
+SECRET provider.openai.api-key
+CONFIGURED 2
+SKIPPED 0
+REPLACED 0
+INSTRUCTION NONE

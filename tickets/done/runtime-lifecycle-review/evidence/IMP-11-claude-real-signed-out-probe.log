@@ -1,0 +1,11 @@
+# IMP-11-claude-real-signed-out-probe
+# Command: FAKE_CLAUDE_REAL_PATH=/Users/normy/.local/bin/claude pnpm -C autobyteus-server-ts exec vitest run tests/unit/tmp-probe/claude-real-signed-out.probe.test.ts (temporary, uncommitted probe file; HOME stubbed to an empty temp folder inside the test; no account)
+# Claude version: 2.1.302 (Claude Code)
+# Commit: working tree on 8eebc698ae + IR-002 fix
+# Date: 2026-10-20T09:27:35Z
+
+[22m[39mRAW exitCode=1 stdout={
+[22m[39mREADING {"state":"signedOut","detail":""}
+ [32m✓[39m tests/unit/tmp-probe/claude-real-signed-out.probe.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 340[2mms[22m[39m
+   [33m[2m✓[22m[39m real Claude in an empty home reads as signed out [33m 340[2mms[22m[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m

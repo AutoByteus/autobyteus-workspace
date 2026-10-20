@@ -11,10 +11,8 @@ const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
 };
 
-type ApplyResult = {
-  summary: { total_processed: number; successful: number; failed: number };
-  results: Record<string, { status: string; message: string; registered_tools?: ToolDefinition[] }>;
-};
+export type McpConfigImportFailure = { server_id: string; reason: string };
+export type McpConfigImportResult = { imported_count: number; failed_count: number; failures: McpConfigImportFailure[] };
 
 export class McpConfigService {
   private static instance: McpConfigService | null = null;
@@ -135,7 +133,11 @@ export class McpConfigService {
     return success;
   }
 
-  async importConfigsFromJson(jsonString: string): Promise<{ imported_count: number; failed_count: number }> {
+  /**
+   * Imports every entry of an `mcpServers` object on its own; a failed entry is reported with its server id and the
+   * error message (config errors name fields, never values) and the rest still import.
+   */
+  async importConfigsFromJson(jsonString: string): Promise<McpConfigImportResult> {
     logger.info("Starting bulk import of MCP server configurations from JSON.");
     const data = JSON.parse(jsonString) as Record<string, unknown>;
 
@@ -145,82 +147,26 @@ export class McpConfigService {
     }
 
     let importedCount = 0;
-    let failedCount = 0;
+    const failures: McpConfigImportFailure[] = [];
 
     for (const [serverId, configDetails] of Object.entries(configs as Record<string, unknown>)) {
       try {
-        const fullConfigDict = { server_id: serverId, ...(configDetails as Record<string, unknown>) };
-        const configObj = CoreMcpConfigService.parseMcpConfigDict({
-          [serverId]: fullConfigDict,
-        });
+        // A non-object entry goes to the parser as-is, which reports that it must be a dictionary.
+        const entry = configDetails && typeof configDetails === "object" && !Array.isArray(configDetails)
+          ? { server_id: serverId, ...(configDetails as Record<string, unknown>) }
+          : configDetails;
+        const configObj = CoreMcpConfigService.parseMcpConfigDict({ [serverId]: entry });
         await this.configureMcpServer(configObj);
         importedCount += 1;
       } catch (error) {
-        logger.error(`Failed to import configuration for server '${serverId}': ${String(error)}`);
-        failedCount += 1;
+        const reason = error instanceof Error ? error.message : String(error);
+        logger.error(`Failed to import configuration for server '${serverId}': ${reason}`);
+        failures.push({ server_id: serverId, reason });
       }
     }
 
-    logger.info(`Bulk import complete. Imported: ${importedCount}, Failed: ${failedCount}`);
-    return { imported_count: importedCount, failed_count: failedCount };
-  }
-
-  async applyAndRegisterConfigsFromJson(jsonString: string): Promise<ApplyResult> {
-    logger.info("Starting async bulk apply-and-register of MCP server configurations from JSON.");
-    const data = JSON.parse(jsonString) as Record<string, unknown>;
-
-    const configs = data?.mcpServers;
-    if (!configs || typeof configs !== "object" || Array.isArray(configs)) {
-      throw new Error("JSON must contain a top-level 'mcpServers' object.");
-    }
-
-    const results: ApplyResult["results"] = {};
-    let successCount = 0;
-    let failCount = 0;
-
-    for (const [serverId, configDetails] of Object.entries(configs as Record<string, unknown>)) {
-      try {
-        const fullConfigDict = { server_id: serverId, ...(configDetails as Record<string, unknown>) };
-        const configObj = CoreMcpConfigService.parseMcpConfigDict({
-          [serverId]: fullConfigDict,
-        });
-
-        const savedConfig = await this.configureMcpServer(configObj);
-
-        if (savedConfig.enabled) {
-          const discoveredTools = await this.discoverAndRegisterToolsForServer(serverId);
-          results[serverId] = {
-            status: "success",
-            message: `Configuration saved and ${discoveredTools.length} tools registered.`,
-            registered_tools: discoveredTools,
-          };
-        } else {
-          results[serverId] = {
-            status: "success",
-            message: "Configuration saved. Server is disabled, tool registration skipped.",
-            registered_tools: [],
-          };
-        }
-        successCount += 1;
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        logger.error(`Failed to apply and register configuration for server '${serverId}': ${errorMessage}`);
-        results[serverId] = {
-          status: "error",
-          message: errorMessage,
-        };
-        failCount += 1;
-      }
-    }
-
-    const summary = {
-      total_processed: Object.keys(configs).length,
-      successful: successCount,
-      failed: failCount,
-    };
-
-    logger.info(`Bulk apply-and-register complete. Summary: ${JSON.stringify(summary)}`);
-    return { summary, results };
+    logger.info(`Bulk import complete. Imported: ${importedCount}, Failed: ${failures.length}`);
+    return { imported_count: importedCount, failed_count: failures.length, failures };
   }
 }
 

@@ -19,6 +19,8 @@ import type {
   PreviewMcpServerToolsQueryVariables,
   ReloadToolSchemaMutation,
   ReloadToolSchemaMutationVariables,
+  ImportMcpServerConfigsMutation,
+  ImportMcpServerConfigsMutationVariables,
 } from '~/generated/graphql';
 
 // --- Interfaces ---
@@ -348,7 +350,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
       this.error = null;
       try {
         const client = getApolloClient()
-        const { data, errors } = await client.mutate({
+        const { data, errors } = await client.mutate<ImportMcpServerConfigsMutation, ImportMcpServerConfigsMutationVariables>({
           mutation: IMPORT_MCP_SERVER_CONFIGS,
           variables: { jsonString },
         });
@@ -357,7 +359,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
         }
         if (data?.importMcpServerConfigs) {
           // Refresh the list of servers if at least one was successfully imported.
-          if (data.importMcpServerConfigs.imported_count > 0) {
+          if (data.importMcpServerConfigs.importedCount > 0) {
             await this.fetchMcpServers();
           }
           return data.importMcpServerConfigs;

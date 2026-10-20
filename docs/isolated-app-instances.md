@@ -279,20 +279,19 @@ An isolated instance starts empty.
 
 - **Agent packages and demo data:** create them through the instance UI, like a user would, for
   example with the helper in a scripted scene. There is no lifecycle import command.
-- **Provider keys:** credentials are stored in the instance's own encrypted vault. With a key
-  source file the user gave you, run the unchanged importer against the reported `databaseUrl`,
-  then restart the instance:
+- **Provider keys:** start (and `restart`) the instance with `AUTOBYTEUS_TEST_VAULT` set. Its
+  server then reads the standing test vault read-only; nothing is imported into the instance:
 
   ```bash
-  # macOS (script provides the terminal the importer requires; answer IMPORT when asked)
-  script -q /dev/null pnpm --dir <repo> secrets:import -- --source /absolute/path/to/keys.env --database-url "<databaseUrl>"
-  # Linux
-  script -qc "pnpm --dir <repo> secrets:import -- --source /absolute/path/to/keys.env --database-url '<databaseUrl>'" /dev/null
-  pnpm --dir <repo> isolated-app restart <instanceId>
+  AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm --silent isolated-app start --build
   ```
 
-  `--dry-run` previews the import first. The lifecycle command never imports keys and never reads
-  your production vault. See [secret management](../autobyteus-server-ts/docs/modules/secret_management.md).
+  The instance's Settings show the vault's providers as configured; a Settings save is refused
+  with `SECRET_VAULT_READ_ONLY`. If no vault is there, the instance's server stops with
+  `TEST_VAULT_NOT_FOUND` (the user creates it once with `pnpm test-vault setup`). Use a worktree
+  build (`--build`/`--from-worktree`): only builds with this support forward the variable. The
+  lifecycle command never reads your production vault. See
+  [TESTING.md](../TESTING.md#test-vault).
 
 ## Troubleshooting
 
@@ -506,6 +505,6 @@ virtual display/socket gone. Existing displays/processes/data stay unchanged.
 - [TESTING.md](../TESTING.md): the workspace testing guideline
 - [Electron packaging, `e2e` launch profile and server environment](../autobyteus-web/docs/electron_packaging.md#packaged-e2e-launch-profile)
 - [Packaged Electron E2E test launcher](../autobyteus-web/README.md#packaged-electron-e2e-launches)
-- [Secret management and `secrets:import`](../autobyteus-server-ts/docs/modules/secret_management.md)
+- [Secret management and the test vault](../autobyteus-server-ts/docs/modules/secret_management.md#test-vault)
 - [Isolated-app agent skill](../skills/autobyteus-isolated-app/SKILL.md)
 - browser-automation `SKILL.md` and `README.md` in the `autobyteus-mcps` repository

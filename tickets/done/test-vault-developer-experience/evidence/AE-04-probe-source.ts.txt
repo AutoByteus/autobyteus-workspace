@@ -1,0 +1,96 @@
+// TEMPORARY API/E2E probe (AE-04 / AE-12, ticket test-vault-developer-experience). Not durable coverage.
+// Run with AUTOBYTEUS_TEST_VAULT=<vault> RUN_LIVE_PROVIDER_TESTS=1 and credential env canaries set.
+// AE-04 (default): fetch is stubbed; asserts which bearer the DeepSeek client sends (by SHA-256 only).
+// AE-12 (AE_PROBE_LIVE=1): no stub; one real completion through LLMFactory.createLLM with no resolver.
+import { createHash } from 'node:crypto';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { LLMFactory } from '../../../src/llm/llm-factory.js';
+import { DeepSeekLLM } from '../../../src/llm/api/deepseek-llm.js';
+import { LLMModel } from '../../../src/llm/models.js';
+import { LLMProvider } from '../../../src/llm/providers.js';
+import { LLMUserMessage } from '../../../src/llm/user-message.js';
+import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
+import { GrokLLM } from '../../../src/llm/api/grok-llm.js';
+
+const sha = (value: string): string => createHash('sha256').update(value).digest('hex');
+const live = process.env.AE_PROBE_LIVE === '1';
+const observedBearers: string[] = [];
+
+const stubDeepSeek = () => {
+  const realFetch = globalThis.fetch;
+  vi.stubGlobal('fetch', async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    if (!url.startsWith('https://api.deepseek.com')) return realFetch(input, init);
+    const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined));
+    observedBearers.push((headers.get('authorization') ?? '').replace(/^Bearer\s+/i, ''));
+    return new Response(JSON.stringify({
+      id: 'probe', object: 'chat.completion', created: 0, model: 'deepseek-v4-flash',
+      choices: [{ index: 0, message: { role: 'assistant', content: 'probe-ok' }, finish_reason: 'stop' }],
+      usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+    }), { status: 200, headers: { 'content-type': 'application/json' } });
+  });
+};
+
+describe('AE probe: key identity through the test-vault default resolver', () => {
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  it('no credential variable is visible to the test process', () => {
+    expect(Object.keys(process.env).filter((name) => /_API_KEY$/i.test(name))).toEqual([]);
+    console.log(`[AE probe] AUTOBYTEUS_TEST_VAULT visible=${Boolean(process.env.AUTOBYTEUS_TEST_VAULT)} RUN_LIVE_PROVIDER_TESTS=${process.env.RUN_LIVE_PROVIDER_TESTS}`);
+  });
+
+  it('LLMFactory.createLLM(id) with no resolver uses the vault key', async () => {
+    if (!live) stubDeepSeek();
+    observedBearers.length = 0;
+    const llm = await LLMFactory.createLLM('deepseek-v4-flash');
+    try {
+      const response = await llm.sendUserMessage(new LLMUserMessage({ content: 'Reply with the single word: ok' }));
+      expect(typeof response.content).toBe('string');
+      expect(response.content.length).toBeGreaterThan(0);
+      console.log(`[AE probe] createLLM response length=${response.content.length} live=${live}`);
+    } finally {
+      await llm.cleanup();
+    }
+    if (!live) {
+      expect(observedBearers).toHaveLength(1);
+      expect(sha(observedBearers[0]!)).toBe(process.env.AE_EXPECT_VAULT_DEEPSEEK_SHA256);
+      expect(sha(observedBearers[0]!)).not.toBe(process.env.AE_ENV_CANARY_DEEPSEEK_SHA256);
+      console.log(`[AE probe] createLLM bearer sha256 matches vault canary; differs from env canary`);
+    }
+  }, 120_000);
+
+  it.skipIf(live)('new DeepSeekLLM(model, config) with no resolver uses the vault key', async () => {
+    stubDeepSeek();
+    observedBearers.length = 0;
+    const model = new LLMModel({
+      name: 'deepseek-v4-flash', value: 'deepseek-v4-flash', canonicalName: 'deepseek-v4-flash', provider: LLMProvider.DEEPSEEK,
+    });
+    const llm = new DeepSeekLLM(model, new LLMConfig());
+    try {
+      await llm.sendUserMessage(new LLMUserMessage({ content: 'hi' }));
+    } finally {
+      await llm.cleanup();
+    }
+    expect(observedBearers).toHaveLength(1);
+    expect(sha(observedBearers[0]!)).toBe(process.env.AE_EXPECT_VAULT_DEEPSEEK_SHA256);
+    console.log(`[AE probe] DeepSeekLLM bearer sha256 matches vault canary`);
+  });
+
+  it.skipIf(live)('a provider missing from the vault gives the missing-capability error', async () => {
+    const model = new LLMModel({ name: 'grok-4', value: 'grok-4', canonicalName: 'grok-4', provider: LLMProvider.GROK });
+    const llm = new GrokLLM(model, new LLMConfig());
+    let message = '';
+    try {
+      await llm.sendUserMessage(new LLMUserMessage({ content: 'hi' }));
+    } catch (error) {
+      message = error instanceof Error ? error.message : String(error);
+      expect((error as { kind?: string }).kind).toBe('missing_api_key');
+    } finally {
+      await llm.cleanup();
+    }
+    console.log(`[AE probe] missing provider error: ${message}`);
+    expect(message).toContain('missing capability provider.grok.api-key');
+    expect(message).toContain('GROK');
+    expect(message).toContain('pnpm test-vault setup');
+  });
+});

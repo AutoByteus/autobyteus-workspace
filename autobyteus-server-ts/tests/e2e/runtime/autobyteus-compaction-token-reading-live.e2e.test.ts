@@ -13,22 +13,22 @@
  *     run after it; only the run's next live model call clears the note (D-13, SR-014);
  *   - the agent's next call reports a smaller reading.
  *
- * Gate: RUN_NATIVE_COMPACTION_METER_E2E=1. Provider: NATIVE_COMPACTION_METER_E2E_PROVIDER = DEEPSEEK (default; needs
- * DEEPSEEK_API_KEY, saved into the test-owned vault as a credential alias) or LMSTUDIO (a reachable LM Studio server).
- * Run from `autobyteus-server-ts` with a clean environment so only the chosen key reaches the test vault:
- *   env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" RUN_NATIVE_COMPACTION_METER_E2E=1 DEEPSEEK_API_KEY=<key> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts --no-watch
+ * Gate: RUN_NATIVE_COMPACTION_METER_E2E=1. Provider: NATIVE_COMPACTION_METER_E2E_PROVIDER = DEEPSEEK (default; its key
+ * comes from the test vault, AUTOBYTEUS_TEST_VAULT, see TESTING.md#test-vault; a missing key is reported as a skip) or
+ * LMSTUDIO (a reachable LM Studio server). Run from `autobyteus-server-ts` with a clean environment:
+ *   env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_NATIVE_COMPACTION_METER_E2E=1 ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts --no-watch
  * Optional: NATIVE_COMPACTION_METER_E2E_MODEL (default deepseek-v4-flash, or qwen/qwen3.8-27b for LMSTUDIO),
  * NATIVE_COMPACTION_METER_E2E_STEP_TIMEOUT_MS (default 900000), NATIVE_COMPACTION_METER_E2E_EVIDENCE_DIR.
  */
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { NativeRuntimeLiveHarness, type WsMessage } from "../helpers/native-runtime-live-harness.js";
+import { requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 
 const PROVIDER = process.env.NATIVE_COMPACTION_METER_E2E_PROVIDER?.trim().toUpperCase() || "DEEPSEEK";
 const MODEL = process.env.NATIVE_COMPACTION_METER_E2E_MODEL?.trim()
   || (PROVIDER === "LMSTUDIO" ? "qwen/qwen3.8-27b" : "deepseek-v4-flash");
 const STEP_TIMEOUT_MS = Number(process.env.NATIVE_COMPACTION_METER_E2E_STEP_TIMEOUT_MS || 900_000);
-const ENABLED = process.env.RUN_NATIVE_COMPACTION_METER_E2E === "1"
-  && (PROVIDER !== "DEEPSEEK" || Boolean(process.env.DEEPSEEK_API_KEY?.trim()));
+const ENABLED = process.env.RUN_NATIVE_COMPACTION_METER_E2E === "1";
 const describeLive = ENABLED ? describe : describe.skip;
 
 const dataTurn = (label: string) => `Data dump ${label}. Do not analyze it. Reply with exactly: OK ${label}\n` +
@@ -50,7 +50,8 @@ describeLive(`Native compaction keeps the Token Meter reading until the next cal
     await harness.stop();
   }, 180_000);
 
-  it("counts the compaction summary call, keeps the reading through it and shows a smaller one on the next call", async () => {
+  it("counts the compaction summary call, keeps the reading through it and shows a smaller one on the next call", async (context) => {
+    if (PROVIDER === "DEEPSEEK") await requireLiveCapability(context, "provider.deepseek.api-key");
     const model = await harness.catalogModel(PROVIDER, MODEL);
     const maxOutput = model.maxOutputTokens ?? 8192;
     await setSetting("AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE", String(maxOutput + 256 + 800_000));

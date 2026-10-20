@@ -1,0 +1,14 @@
+# Case: API-01 GraphQL e2e: bulk import (new), 181 redirect/transport (websocket import, WebSocket-era mcps.json entries), 179 auth (headers/token import, conflict)
+# Command: pnpm -C autobyteus-ts build; pnpm -C autobyteus-server-ts build; env -i PATH HOME=<resolved temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts --no-watch
+# Commit: d0cbafdb46 (code df15c4385d + c5161eddc8; later commits are ticket files only)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; <L> = test-owned scratch $TMPDIR/mcp190-api (removed after the round)
+# Date: 2026-10-20
+
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts (2 tests) 4706ms
+     ✓ re-registers saved credentials at startup after a restart and keeps sending them  1955ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts (2 tests) 3870ms
+     ✓ refuses a cross-origin redirect, follows a same-origin one, and rejects a websocket import  1991ms
+     ✓ starts with WebSocket-era entries in mcps.json and registers the valid entry next to them  1862ms
+ ✓ tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts (2 tests) 378ms
+ Test Files  3 passed (3)
+      Tests  6 passed (6)

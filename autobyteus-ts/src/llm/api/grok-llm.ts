@@ -86,7 +86,7 @@ export function normalizeGrokInvocationKwargs(
 }
 
 export class GrokLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     super(model, 'https://api.x.ai/v1', config, apiKeyResolver, LLMProvider.GROK);
   }
 

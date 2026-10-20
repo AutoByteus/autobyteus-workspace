@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   BaseMcpConfig,
   McpTransportType,
@@ -7,6 +7,7 @@ import {
 } from '../../../../src/tools/mcp/types.js';
 import { McpConfigService } from '../../../../src/tools/mcp/config-service.js';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 const USER_EXAMPLE_1_DICT_OF_DICTS = {
@@ -59,9 +60,19 @@ function createConfigService(): McpConfigService {
 
 describe('McpConfigService', () => {
   let service: McpConfigService;
+  const tempDirs: string[] = [];
+  const makeTempDir = (): string => {
+    const dir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-config-')));
+    tempDirs.push(dir);
+    return dir;
+  };
 
   beforeEach(() => {
     service = createConfigService();
+  });
+
+  afterEach(() => {
+    for (const dir of tempDirs.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
   });
 
   it('loads a single config from dict', () => {
@@ -107,7 +118,7 @@ describe('McpConfigService', () => {
       VALID_HTTP_CONFIG_LIST_ITEM
     ];
 
-    const tempDir = fs.mkdtempSync(path.join(process.cwd(), 'mcp-config-'));
+    const tempDir = makeTempDir();
     const configFile = path.join(tempDir, 'mcp_config_list.json');
     fs.writeFileSync(configFile, JSON.stringify(fileContent), 'utf-8');
 
@@ -124,7 +135,7 @@ describe('McpConfigService', () => {
   });
 
   it('loads configs from file with dict', () => {
-    const tempDir = fs.mkdtempSync(path.join(process.cwd(), 'mcp-config-'));
+    const tempDir = makeTempDir();
     const configFile = path.join(tempDir, 'mcp_config_dict.json');
     fs.writeFileSync(configFile, JSON.stringify(USER_EXAMPLE_1_DICT_OF_DICTS), 'utf-8');
 
@@ -137,7 +148,7 @@ describe('McpConfigService', () => {
   });
 
   it('rejects invalid config data', () => {
-    const tempDir = fs.mkdtempSync(path.join(process.cwd(), 'mcp-config-'));
+    const tempDir = makeTempDir();
     const invalidFile = path.join(tempDir, 'invalid.json');
     fs.writeFileSync(invalidFile, JSON.stringify([{ transport_type: 'stdio' }]), 'utf-8');
 
@@ -226,6 +237,45 @@ describe('McpConfigService', () => {
     });
     expect(parsed).toBeInstanceOf(BaseMcpConfig);
     expect(parsed.server_id).toBe('server_one');
+  });
+
+  describe('transport inference without transport_type', () => {
+    it('treats a non-empty url as streamable HTTP, and prefers it over a command', () => {
+      const http = McpConfigService.parseMcpConfigDict({ remote: { url: 'http://127.0.0.1:9000/mcp' } });
+      expect(http).toBeInstanceOf(StreamableHttpMcpServerConfig);
+      const both = McpConfigService.parseMcpConfigDict({ both: { url: 'http://127.0.0.1:9000/mcp', command: 'node' } });
+      expect(both.transport_type).toBe(McpTransportType.STREAMABLE_HTTP);
+    });
+
+    it('treats a non-empty command as stdio', () => {
+      const stdio = McpConfigService.parseMcpConfigDict({ local: { command: 'node', args: ['server.js'] } });
+      expect(stdio).toBeInstanceOf(StdioMcpServerConfig);
+      expect((stdio as StdioMcpServerConfig).args).toEqual(['server.js']);
+    });
+
+    it.each([{}, { url: '  ', command: '' }, { transport_type: '' }])('names both options when neither is given (%j)', (entry) => {
+      expect(() => McpConfigService.parseMcpConfigDict({ empty: entry })).toThrowError(
+        "Config for server 'empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'."
+      );
+    });
+
+    it('uses an explicit transport_type or transportType as given', () => {
+      expect(() =>
+        McpConfigService.parseMcpConfigDict({ explicit: { transport_type: 'stdio', url: 'http://127.0.0.1:9000/mcp' } })
+      ).toThrowError("StdioMcpServerConfig 'explicit' 'command' must be a non-empty string.");
+      const alias = McpConfigService.parseMcpConfigDict({
+        alias: { transportType: 'streamable_http', url: 'http://127.0.0.1:9000/mcp', command: 'node' }
+      });
+      expect(alias).toBeInstanceOf(StreamableHttpMcpServerConfig);
+      expect(() => McpConfigService.parseMcpConfigDict({ ws: { transport_type: 'websocket', url: 'ws://127.0.0.1/mcp' } }))
+        .toThrowError("Invalid 'transport_type' string 'websocket' for server 'ws'. Valid types are: stdio, streamable_http.");
+    });
+
+    it('rejects a transport_type that is not a string', () => {
+      expect(() => McpConfigService.parseMcpConfigDict({ odd: { transport_type: 3, command: 'node' } })).toThrowError(
+        "'transport_type' for server 'odd' must be a string."
+      );
+    });
   });
 
   it('rejects an imported HTTP server that sets both a token and an Authorization header', () => {

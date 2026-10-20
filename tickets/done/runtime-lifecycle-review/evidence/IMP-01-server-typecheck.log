@@ -1,0 +1,7 @@
+# IMP-01-server-typecheck
+# Command: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit (the typecheck script without its prepare:shared hook; shared packages were built by the earlier `pnpm -C autobyteus-server-ts typecheck` run and by pnpm dev)
+# Commit: 8a2db203dc
+# Environment: macOS darwin arm64, node v22.23.1
+# Date: 2026-10-20T09:07:45Z
+
+EXIT 0

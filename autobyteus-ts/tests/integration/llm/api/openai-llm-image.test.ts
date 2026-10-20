@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -6,11 +6,12 @@ import { fileURLToPath } from 'node:url';
 import { OpenAILLM } from '../../../../src/llm/api/openai-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.OPENAI_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('OpenAI');
 
 const buildModel = () =>
   new LLMModel({
@@ -32,13 +33,13 @@ const writeTempImage = (fileName: string, base64Png: string): string => {
   return filePath;
 };
 
-runIntegration('OpenAILLM Image Integration', () => {
-  it('should send a single local image file', async () => {
+live.describe('OpenAILLM Image Integration', () => {
+  live.it('should send a single local image file', async () => {
     if (!fs.existsSync(sampleImagePath)) {
       return;
     }
 
-    const llm = new OpenAILLM(buildModel());
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'What color is in this image?',
       image_urls: [sampleImagePath]
@@ -54,13 +55,13 @@ runIntegration('OpenAILLM Image Integration', () => {
     }
   }, 120000);
 
-  it('should send a single image via base64', async () => {
+  live.it('should send a single image via base64', async () => {
     if (!fs.existsSync(sampleImagePath)) {
       return;
     }
 
     const imageB64 = fs.readFileSync(sampleImagePath).toString('base64');
-    const llm = new OpenAILLM(buildModel());
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'What color is in this image?',
       image_urls: [imageB64]
@@ -75,7 +76,7 @@ runIntegration('OpenAILLM Image Integration', () => {
     }
   }, 120000);
 
-  it('should send multiple local images', async () => {
+  live.it('should send multiple local images', async () => {
     const redPixel =
       'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAIAAAACUFjqAAAAEklEQVR4nGP8z4APMOGVHbHSAEEsAROxCnMTAAAAAElFTkSuQmCC';
     const greenPixel =
@@ -84,7 +85,7 @@ runIntegration('OpenAILLM Image Integration', () => {
     const img1 = writeTempImage('test_image_1.png', redPixel);
     const img2 = writeTempImage('test_image_2.png', greenPixel);
 
-    const llm = new OpenAILLM(buildModel());
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'What colors are in these images?',
       image_urls: [img1, img2]
@@ -101,12 +102,12 @@ runIntegration('OpenAILLM Image Integration', () => {
     }
   }, 120000);
 
-  it('should stream with a single local image file', async () => {
+  live.it('should stream with a single local image file', async () => {
     if (!fs.existsSync(sampleImagePath)) {
       return;
     }
 
-    const llm = new OpenAILLM(buildModel());
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'What color is this image?',
       image_urls: [sampleImagePath]
@@ -127,8 +128,8 @@ runIntegration('OpenAILLM Image Integration', () => {
     }
   }, 120000);
 
-  it('should handle invalid image paths gracefully', async () => {
-    const llm = new OpenAILLM(buildModel());
+  live.it('should handle invalid image paths gracefully', async () => {
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const invalidPath = 'nonexistent/image/path.jpg';
     const userMessage = new LLMUserMessage({
       content: 'What is in this image?',
@@ -145,12 +146,12 @@ runIntegration('OpenAILLM Image Integration', () => {
     }
   }, 120000);
 
-  it('should allow cleanup after a multimodal request', async () => {
+  live.it('should allow cleanup after a multimodal request', async () => {
     if (!fs.existsSync(sampleImagePath)) {
       return;
     }
 
-    const llm = new OpenAILLM(buildModel());
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'Test cleanup',
       image_urls: [sampleImagePath]

@@ -695,9 +695,10 @@ created before this policy keep any earlier agent-type listing in their
 persisted transcript history. On resume, the tool list itself is still
 restricted and native multi-agent calls still fail.
 
-Claude Agent SDK `0.3.280` is used with exact direct peers
-`@anthropic-ai/sdk@0.128.0` and `@modelcontextprotocol/sdk@1.30.0` in SDK
-streaming input mode. Each Claude AgentRun keeps one Claude CLI process for its
+Claude Agent SDK `0.3.280` is used with the exact direct peer
+`@anthropic-ai/sdk@0.132.1` in SDK streaming input mode. Its
+`@modelcontextprotocol/sdk` peer (v1) is installed by the package manager and
+used for types only; AutoByteus does not depend on it directly. Each Claude AgentRun keeps one Claude CLI process for its
 whole life: `ClaudeSdkClient.openStreamingSession` opens one
 `query({ prompt: AsyncIterable, options })` lazily on the first input (new or
 restored run), and `ClaudeSessionProcess` owns that process, its single frame

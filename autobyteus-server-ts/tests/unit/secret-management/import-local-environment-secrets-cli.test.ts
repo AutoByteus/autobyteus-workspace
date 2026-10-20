@@ -6,7 +6,7 @@ import {
   ApplicationDatabaseLocation,
   toPrismaSqliteUrl,
 } from '../../../src/config/application-database-location.js';
-import { secretId } from '../../../src/secret-management/domain/secret-id.js';
+import { secretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
 import {
   createImportRequest,
   formatLocalImportFailure,

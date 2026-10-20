@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ToolSchema } from "@modelcontextprotocol/sdk/types.js";
+import { ToolSchema } from "@modelcontextprotocol/core";
 import Ajv2020 from "ajv/dist/2020.js";
 import {
   SendMessageToResultSchema,

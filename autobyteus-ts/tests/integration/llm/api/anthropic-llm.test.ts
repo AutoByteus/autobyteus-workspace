@@ -1,15 +1,15 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
-import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.ANTHROPIC_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('Anthropic');
 
-runIntegration('AnthropicLLM Integration', () => {
+live.describe('AnthropicLLM Integration', () => {
   const buildModel = () =>
     new LLMModel({
       name: 'claude-opus-4.7',
@@ -18,26 +18,21 @@ runIntegration('AnthropicLLM Integration', () => {
       provider: LLMProvider.ANTHROPIC
     });
 
-  it('should successfully make a simple completion call', async () => {
-    const llm = new AnthropicLLM(buildModel());
+  live.it('should successfully make a simple completion call', async () => {
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Hello, Claude LLM!' });
     try {
       const response = await (llm as any)._sendUserMessageToLLM(userMessage, {});
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should stream response incrementally', async () => {
-    const llm = new AnthropicLLM(buildModel());
+  live.it('should stream response incrementally', async () => {
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Please write a short greeting.' });
     const receivedTokens: string[] = [];
     let completeResponse = '';
@@ -53,18 +48,13 @@ runIntegration('AnthropicLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public sendUserMessage', async () => {
-    const llm = new AnthropicLLM(buildModel());
+  live.it('should support public sendUserMessage', async () => {
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Can you summarize the following text: The sun always shines in California.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
 
@@ -73,18 +63,13 @@ runIntegration('AnthropicLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public streamUserMessage', async () => {
-    const llm = new AnthropicLLM(buildModel());
+  live.it('should support public streamUserMessage', async () => {
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Please list three benefits of using Python.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
     const receivedTokens: string[] = [];
@@ -101,18 +86,13 @@ runIntegration('AnthropicLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should filter logicalConversationId from public streamUserMessage provider requests', async () => {
-    const llm = new AnthropicLLM(buildModel());
+  live.it('should filter logicalConversationId from public streamUserMessage provider requests', async () => {
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Reply with exactly: OK' });
     const receivedTokens: string[] = [];
 
@@ -127,11 +107,6 @@ runIntegration('AnthropicLLM Integration', () => {
       }
 
       expect(receivedTokens.join('').length).toBeGreaterThan(0);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }

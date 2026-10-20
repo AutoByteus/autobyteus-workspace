@@ -1,0 +1,25 @@
+# API-02 references to the deleted files and to a direct autobyteus-ts hono, over every tracked file except tickets/ (git grep, commit 0438027348); 2026-10-20T10:42:07Z
+== git grep -n -E 'autobyteus-ts/pnpm-lock' -- . ':!tickets'
+exit=1 (1 = no match)
+== git grep -n -E 'trigger-server-docker-rebuild' -- . ':!tickets'
+exit=1 (1 = no match)
+== git grep -n -E 'autobyteus-ts/\.github' -- . ':!tickets'
+exit=1 (1 = no match)
+== git grep -n -E 'ignore-workspace' -- . ':!tickets'
+autobyteus-message-gateway/docker/Dockerfile.wechaty-sidecar:11:RUN pnpm install --frozen-lockfile --ignore-workspace --dir /app/wechaty-sidecar
+autobyteus-message-gateway/tools/wechaty-sidecar/scripts/setup.sh:48:pnpm install --dir "${ROOT_DIR}" --ignore-workspace
+exit=0 (1 = no match)
+== pnpm-lock.yaml mentions inside autobyteus-ts (scripts, docs)
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts:552:COPY package.json pnpm-lock.yaml ./
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts:569:COPY package.json pnpm-lock.yaml ./
+exit=0
+== imports of hono anywhere in autobyteus-ts (src, scripts, tests, examples)
+exit=1
+== workflow and Dockerfile install commands (they read the root lockfile)
+.github/workflows/release-desktop.yml:139:        run: pnpm install --no-frozen-lockfile
+.github/workflows/release-desktop.yml:269:        run: pnpm install --no-frozen-lockfile
+.github/workflows/release-desktop.yml:404:        run: pnpm install --no-frozen-lockfile
+.github/workflows/release-desktop.yml:488:        run: pnpm install --no-frozen-lockfile
+.github/workflows/release-desktop.yml:564:        run: pnpm install --no-frozen-lockfile
+autobyteus-server-ts/docker/Dockerfile.monorepo:15:COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+autobyteus-server-ts/docker/Dockerfile.monorepo:26:RUN pnpm install --no-frozen-lockfile

@@ -1,0 +1,108 @@
+# API-04 Docker image of the branch (commit 0438027348): fresh Linux pnpm install from the root lockfile, server start, MCP through the container; image autobyteus-server:hyg224 built with Dockerfile.monorepo as build.sh does (linux/arm64, --load); container hyg224 on 127.0.0.1:48190, no user volumes, dummy AUTOBYTEUS_MCP_GATEWAY_TOKEN, the repo's Node fixture mounted read-only; 2026-10-20T10:46:01Z
+== build
+# API-04 docker build commit=0438027348 2026-10-20T10:39:41Z
+build exit=0 2026-10-20T10:45:06Z
+== container: autobyteus-ts manifest and node_modules, hono for the packages that need it, eventsource-parser for the v1 SDK
+v22.23.3
+autobyteus-ts manifest names hono: 0
+ls: cannot access 'autobyteus-ts/node_modules/hono': No such file or directory
+@modelcontextprotocol+sdk@1.32.1_zod@4.3.6 -> hono 4.12.0
+@hono+node-server@1.19.9_hono@4.12.0 -> hono 4.12.0
+@modelcontextprotocol+node@2.1.1_@modelcontextprotocol+server@2.3.1 -> hono 4.12.0
+import(hono) from @modelcontextprotocol/node: OK, Hono: function
+v1 SDK eventsource-parser -> ../../eventsource-parser@3.1.1/node_modules/eventsource-parser
+eventsource-parser@3.1.1
+hono@4.12.0
+== MCP journey (mcp-journey.mjs <container backend> node /app/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs http://host.docker.internal:47512/mcp <out> test-dummy-gateway)
+{
+  "backend": "http://127.0.0.1:48190",
+  "at": "2026-10-20T10:45:46.418Z",
+  "health": 200,
+  "hyg_stdio": {
+    "preview": {
+      "ms": 475,
+      "tools": [
+        "hyg_stdio_echo",
+        "hyg_stdio_add",
+        "hyg_stdio_fail",
+        "hyg_stdio_slow",
+        "hyg_stdio_report_env_and_cwd"
+      ],
+      "error": null
+    },
+    "configured": true,
+    "discover": {
+      "ms": 215,
+      "success": true,
+      "message": "Successfully discovered and registered 5 tools."
+    }
+  },
+  "hyg_http": {
+    "preview": {
+      "ms": 80,
+      "tools": [
+        "hyg_http_echo",
+        "hyg_http_add",
+        "hyg_http_fail",
+        "hyg_http_slow",
+        "hyg_http_report_env_and_cwd"
+      ],
+      "error": null
+    },
+    "configured": true,
+    "discover": {
+      "ms": 26,
+      "success": true,
+      "message": "Successfully discovered and registered 5 tools."
+    }
+  },
+  "gateway": {
+    "toolCount": 10,
+    "hygTools": [
+      "hyg_http_add",
+      "hyg_http_echo",
+      "hyg_http_fail",
+      "hyg_http_report_env_and_cwd",
+      "hyg_http_slow",
+      "hyg_stdio_add",
+      "hyg_stdio_echo",
+      "hyg_stdio_fail",
+      "hyg_stdio_report_env_and_cwd",
+      "hyg_stdio_slow"
+    ],
+    "calls": {
+      "hyg_stdio_report_env_and_cwd": {
+        "ms": 174,
+        "isError": false,
+        "text": "{\"value\":\"hyg-env-dummy\",\"cwd\":\"/tmp\"}",
+        "structured": null
+      },
+      "hyg_stdio_add": {
+        "ms": 6,
+        "isError": false,
+        "text": "{\"sum\":5}",
+        "structured": {
+          "sum": 5
+        }
+      },
+      "hyg_stdio_fail": {
+        "ms": 6,
+        "isError": true,
+        "text": "hyg-tool-error",
+        "structured": null
+      },
+      "hyg_http_echo": {
+        "ms": 21,
+        "isError": false,
+        "text": "hyg-http-echo",
+        "structured": null
+      }
+    }
+  }
+}
+== HTTP fixture request log: auth=ok 12, auth=missing|wrong 0
+== container log: lines mentioning hono / cannot find module / ERR_MODULE_NOT_FOUND: 0; dummy token occurrences: 0
+== cleanup
+hyg224
+Untagged: autobyteus-server:hyg224
+containers named hyg224: 0; images: 0; fixture processes: 0; the user's autobyteus-server-* containers running: 3

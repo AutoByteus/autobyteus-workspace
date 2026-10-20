@@ -77,17 +77,10 @@ const normalizeFile = async (): Promise<McpConfigFile> => {
   return { mcpServers: servers };
 };
 
+/** The core parser decides the transport (stored entries have none: `url` means HTTP, `command` stdio). */
 const parseEntry = (serverId: string, entry: McpConfigEntry): BaseMcpConfig => {
-  const hasUrl = typeof entry.url === "string" && entry.url.trim().length > 0;
-  const transportType = typeof entry.transport_type === "string"
-    ? entry.transport_type
-    : hasUrl
-      ? "streamable_http"
-      : "stdio";
-
   const fullConfig = {
     server_id: serverId,
-    transport_type: transportType,
     enabled: typeof entry.enabled === "boolean" ? entry.enabled : true,
     ...entry,
   };

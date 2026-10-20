@@ -1,0 +1,50 @@
+# IMP-01 — v1 three-argument callTool shape against @modelcontextprotocol/client 2.3.1 (expected FAIL)
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts
+# Commit: base dc530fdcb0 + uncommitted step-1/2 edits (imports switched to v2, callTool still callTool(params, undefined, { timeout, signal }))
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T08:07:13Z
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-ts
+
+ ❯ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts (4 tests | 1 failed) 10710ms
+     ✓ starts the server with the configured env and cwd, lists its tools and calls one  389ms
+     ✓ fails to connect when the command does not exist 3ms
+     ✓ starts the server process exactly once for connect, list and call 154ms
+     × aborts a running tool call when the signal is aborted 10163ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with a real stdio MCP server > aborts a running tool call when the signal is aborted
+AssertionError: promise resolved "{ content: [ { type: 'text', …(1) } ] }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "content": [
++     {
++       "text": "slept 10000 ms",
++       "type": "text",
++     },
++   ],
+  }
+
+ ❯ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts:104:22
+    102|     setTimeout(() => controller.abort(new Error('run cancelled')), 200…
+    103| 
+    104|     await expect(call).rejects.toThrow();
+       |                      ^
+    105|     expect(Date.now() - startedAt).toBeLessThan(5_000);
+    106|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  10:07:13
+   Duration  10.93s (transform 85ms, setup 57ms, import 47ms, tests 10.71s, environment 0ms)
+

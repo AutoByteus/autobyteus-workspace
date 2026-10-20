@@ -1,0 +1,56 @@
+# IMP-08 — server unit suite (excerpt)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: tree content of bc8c1d72f3 (run just before that commit; ae7e907bf2 changes only an e2e file this suite does not run)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20 (run 10:13-10:24 local)
+# Full log (1197349 bytes, not committed): /tmp/mcpv2-server-unit.log
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thread-1","sameTurn":"owned-thread-1-turn","facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}]}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  752 passed | 4 skipped (756)
+      Tests  6201 passed | 7 skipped (6208)
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts (14 tests) 10ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (18 tests) 90ms
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts (8 tests) 9ms
+ ✓ tests/unit/token-usage/projections/claude-sdk-call-usage-fold.test.ts (9 tests) 18ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts (7 tests) 128ms
+ ✓ tests/unit/token-usage/projections/claude-sdk-model-usage-reconciler.test.ts (6 tests) 14ms
+ ✓ tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts (6 tests) 8ms
+ ✓ tests/unit/mcp-server-management/services/mcp-config-service.test.ts (10 tests) 7ms
+ ✓ tests/unit/agent-tools/team-communication/collaboration-result-contracts.test.ts (5 tests) 54ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts (6 tests) 4ms
+ ✓ tests/unit/token-usage/projections/claude-sdk-usage-series-restart.test.ts (4 tests) 11ms
+ ↓ tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts (2 tests | 2 skipped)
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts (4 tests) 112ms
+ ✓ tests/unit/mcp-server-management/cached-provider.test.ts (6 tests) 5ms
+ ✓ tests/unit/agent-tools/mcp/mcp-effective-tool-result-projector.test.ts (10 tests) 7ms
+ ✓ tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts (2 tests) 43ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts (4 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-mcp-tool-call.test.ts (21 tests) 9ms
+ ✓ tests/unit/agent-tools/browser/browser-mcp-result-normalizer.test.ts (7 tests) 5ms
+ ✓ tests/unit/mcp-gateway/mcp-gateway-tool-catalog.test.ts (2 tests) 10ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts (5 tests) 3ms
+ ✓ tests/unit/mcp-server-management/file-provider.http-auth.test.ts (3 tests) 33ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts (1 test) 14133ms
+ ✓ tests/unit/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.test.ts (2 tests) 2ms
+ ✓ tests/unit/mcp-server-management/file-provider.transport-rule.test.ts (1 test) 6ms
+ ✓ tests/unit/agent-tools/mcp/agent-tools-mcp-local-access.test.ts (16 tests) 8ms
+ ✓ tests/unit/mcp-server-management/persistence-provider.test.ts (2 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-run-session-id.test.ts (4 tests) 3ms
+ ✓ tests/unit/mcp-server-management/file-provider.import.test.ts (1 test) 9ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts (3 tests) 2ms

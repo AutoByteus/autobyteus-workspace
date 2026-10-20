@@ -3,7 +3,7 @@ import { initializePrisma, shutdownPrisma } from "repository_prisma";
 import { ApplicationDatabaseLocation } from "../../../../dist/config/application-database-location.js";
 import { SecretVaultBootstrap } from "../../../../dist/secret-management/bootstrap/secret-vault-bootstrap.js";
 import { SecretVaultRepository } from "../../../../dist/secret-management/persistence/secret-vault-repository.js";
-import { SecretRootKeyFile } from "../../../../dist/secret-management/root-key/secret-root-key-file.js";
+import { SecretRootKeyFile } from "autobyteus-ts/secrets/vault/secret-root-key-file.js";
 
 const EVENT_PREFIX = "SECRET_VAULT_WORKER_EVENT ";
 const [mode, databaseUrl] = process.argv.slice(2);

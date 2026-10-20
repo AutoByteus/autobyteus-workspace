@@ -1,0 +1,55 @@
+// API-02 probe source (throwaway; ran as autobyteus-ts/tests/integration/tools/mcp/zz-api02-probe.test.ts at 7c9cadba2f, then deleted)
+// API-02 throwaway probe (AC-001, AC-002); not committed. Deleted after the run; a copy is kept in evidence.
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { it, expect } from 'vitest';
+import { prepareMcpTestServers, stdioServerConfig } from './mcp-test-server-launcher.js';
+
+const fixtureDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../fixtures/mcp-test-server');
+const LOCATION_VARS = ['UV_PROJECT_ENVIRONMENT', 'UV_CACHE_DIR', 'PYTHONDONTWRITEBYTECODE'];
+
+it('API-02: location variables are on the command line, not in the config env, and hold with a minimal child env', () => {
+  const before = fs.readdirSync(fixtureDir).sort();
+  const py = prepareMcpTestServers().find((p) => p.impl === 'python')!;
+  console.log('API02 prepared=' + JSON.stringify(py));
+  expect(py.available).toBe(true);
+
+  const config = stdioServerConfig('python', { serverId: 'api02', env: { MCP_TEST_DUMMY_VALUE: 'v' }, pidFile: '/tmp/api02.pid' });
+  console.log('API02 command=' + config.command);
+  console.log('API02 args=' + JSON.stringify(config.args));
+  console.log('API02 env=' + JSON.stringify(config.env));
+  expect(config.command).toBe('/usr/bin/env');
+  for (const name of LOCATION_VARS) {
+    expect(Object.keys(config.env ?? {})).not.toContain(name);
+    expect(config.args.some((a) => a.startsWith(name + '='))).toBe(true);
+  }
+  const venvArg = config.args.find((a) => a.startsWith('UV_PROJECT_ENVIRONMENT='))!.split('=').slice(1).join('=');
+
+  // Node config for comparison: also env-free of location variables.
+  const nodeConfig = stdioServerConfig('node', { serverId: 'api02n' });
+  console.log('API02 node command=' + nodeConfig.command + ' env=' + JSON.stringify(nodeConfig.env));
+
+  // Launch the exact command/args with a child env that has no location variables (env delivery "lost"),
+  // replacing the server script with a print of what Python sees.
+  const at = config.args.lastIndexOf('python');
+  const script = 'import sys, os, json; print("PY=" + json.dumps({"prefix": sys.prefix, "dont_write_bytecode": sys.dont_write_bytecode, ' +
+    '"UV_PROJECT_ENVIRONMENT": os.environ.get("UV_PROJECT_ENVIRONMENT"), "UV_CACHE_DIR": os.environ.get("UV_CACHE_DIR"), ' +
+    '"PYTHONDONTWRITEBYTECODE": os.environ.get("PYTHONDONTWRITEBYTECODE")}))';
+  const args = [...config.args.slice(0, at + 1), '-c', script];
+  const childEnv = { PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '' };
+  console.log('API02 child env keys=' + Object.keys(childEnv).join(','));
+  const r = spawnSync(config.command, args, { env: childEnv, encoding: 'utf8', cwd: '/' });
+  console.log('API02 status=' + r.status);
+  console.log(r.stdout.trim());
+  if (r.stderr.trim()) console.log('API02 stderr=' + r.stderr.trim());
+  expect(r.status).toBe(0);
+  const seen = JSON.parse(r.stdout.trim().split('\n').find((l) => l.startsWith('PY='))!.slice(3));
+  expect(fs.realpathSync(seen.prefix)).toBe(fs.realpathSync(venvArg));
+  expect(seen.dont_write_bytecode).toBe(true);
+
+  const after = fs.readdirSync(fixtureDir).sort();
+  console.log('API02 fixture before=' + JSON.stringify(before) + ' after=' + JSON.stringify(after));
+  expect(after).toEqual(before);
+});

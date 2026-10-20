@@ -1,0 +1,303 @@
+# Case: API-04 + API-05 desktop journey: two isolated instances of this worktree's packaged build; install A writes a realistic mcps.json through GraphQL (as the form does); its content is pasted into install B's Bulk Import in B's own window (CDP attach via the control port); mixed, none-imported and whole-input cases; B restarted
+# Commands: pnpm --silent isolated-app start --build (A iso-57326-0a8e); pnpm --silent isolated-app start --from-worktree (B iso-57434-3c52); node seed-a.mjs <A backend>; node journey-b.mjs <webDir> http://127.0.0.1:<B controlPort> <A mcps.json> <out>; pnpm --silent isolated-app restart iso-57434-3c52; isolated-app stop (both)
+# Commit: d0cbafdb46 (code df15c4385d + c5161eddc8; later commits are ticket files only)
+# Environment: macOS 26 arm64; packaged app electron-dist/mac-arm64 (renderer file://…/index.html#/…); playwright-core 1.58.2 connectOverCDP (attach only); dummy values only; server shapes synthesized from the user's kinds of servers
+# Date: 2026-10-20
+
+== A: mcps.json written by the app (the app's own format; no transport_type) ==
+{
+  "mcpServers": {
+    "VideoAudioServer": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/opt/example/autobyteus_mcps/video-audio-mcp",
+        "run",
+        "server.py"
+      ],
+      "tool_name_prefix": "video_editing"
+    },
+    "tts": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/opt/example/autobyteus_mcps/tts-mcp",
+        "run",
+        "start-tts-mcp"
+      ],
+      "env": {
+        "TTS_BACKEND_DUMMY": "test-dummy-backend"
+      }
+    },
+    "image-audio": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/opt/example/autobyteus_mcps/autobyteus-image-audio",
+        "run",
+        "python",
+        "-m",
+        "image_audio.server"
+      ],
+      "env": {
+        "DUMMY_API_KEY": "test-dummy-key",
+        "DUMMY_MODEL": "test-dummy-model"
+      }
+    },
+    "ssh_remote": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/opt/example/autobyteus_mcps/ssh-mcp",
+        "run",
+        "ssh-mcp"
+      ],
+      "env": {
+        "SSH_HOST_DUMMY": "test-dummy-host",
+        "SSH_KEY_FILE_DUMMY": "/tmp/test-dummy-key-file"
+      }
+    },
+    "media-downloader": {
+      "command": "/opt/homebrew/bin/uv",
+      "args": [
+        "--directory",
+        "/opt/example/autobyteus_private_mcps/yt-dlp-mcp",
+        "run",
+        "python",
+        "-m",
+        "ytdlp_mcp.server"
+      ]
+    },
+    "disabled-tool": {
+      "command": "node",
+      "args": [
+        "server.js"
+      ],
+      "enabled": false
+    },
+    "remote_headers": {
+      "url": "http://127.0.0.1:9/mcp",
+      "headers": {
+        "Authorization": "Basic test-dummy-basic"
+      },
+      "tool_name_prefix": "remote_h"
+    },
+    "remote_token": {
+      "url": "http://127.0.0.1:9/token-mcp",
+      "token": "test-dummy-token"
+    }
+  }
+}
+
+== B: journey result (value-free DOM facts; toast lines; screenshots API-05-*.png) ==
+{
+  "steps": {
+    "full-import-of-a-mcps-json": {
+      "stillOnView": false,
+      "failureList": null,
+      "failureItems": [],
+      "listInViewport": null,
+      "toast": [
+        "MCP server configurations imported: 8.",
+        "remote_token",
+        "http://127.0.0.1:9/token-mcp",
+        "MCP server configurations imported: 8."
+      ],
+      "dummyInDom": false,
+      "listShowsAll": true
+    },
+    "mixed-partial": {
+      "stillOnView": true,
+      "failureList": "These entries were not imported:\n\nmixed_ws: Invalid 'transport_type' string 'websocket' for server 'mixed_ws'. Valid types are: stdio, streamable_http.\nmixed_empty: Config for server 'mixed_empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'.\nmixed_string: Configuration for server 'mixed_string' must be a dictionary.\nmixed_conflict: Failed to create config for server 'mixed_conflict' due to incompatible parameters for STREAMABLE_HTTP config: Streamable HTTP MCP server 'mixed_conflict' sets both 'token' and an 'Authorization' header; use one of them.",
+      "failureItems": [
+        "mixed_ws: Invalid 'transport_type' string 'websocket' for server 'mixed_ws'. Valid types are: stdio, streamable_http.",
+        "mixed_empty: Config for server 'mixed_empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'.",
+        "mixed_string: Configuration for server 'mixed_string' must be a dictionary.",
+        "mixed_conflict: Failed to create config for server 'mixed_conflict' due to incompatible parameters for STREAMABLE_HTTP config: Streamable HTTP MCP server 'mixed_conflict' sets both 'token' and an 'Authorization' header; use one of them."
+      ],
+      "listInViewport": true,
+      "toast": [
+        "Imported 1; 4 failed. See the entries below.",
+        "These entries were not imported:",
+        "mixed_conflict: Failed to create config for server 'mixed_conflict' due to incompatible parameters for STREAMABLE_HTTP config: Streamable HTTP MCP server 'mixed_conflict' sets both 'token' and an 'Authorization' header; use one of them.",
+        "Imported 1; 4 failed. See the entries below."
+      ],
+      "dummyInDom": false,
+      "listRefreshedShowsMixedOk2": true
+    },
+    "none-imported": {
+      "stillOnView": true,
+      "failureList": "These entries were not imported:\n\nnone_ws: Invalid 'transport_type' string 'websocket' for server 'none_ws'. Valid types are: stdio, streamable_http.\nnone_empty: Config for server 'none_empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'.",
+      "failureItems": [
+        "none_ws: Invalid 'transport_type' string 'websocket' for server 'none_ws'. Valid types are: stdio, streamable_http.",
+        "none_empty: Config for server 'none_empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'."
+      ],
+      "listInViewport": true,
+      "toast": [
+        "No servers were imported; 2 failed. See the entries below.",
+        "These entries were not imported:",
+        "No servers were imported; 2 failed. See the entries below."
+      ],
+      "dummyInDom": false
+    },
+    "whole-input-invalid-json": {
+      "stillOnView": true,
+      "failureList": null,
+      "failureItems": [],
+      "listInViewport": null,
+      "toast": [
+        "SyntaxError: Unexpected end of JSON input",
+        "SyntaxError: Unexpected end of JSON input"
+      ],
+      "dummyInDom": false
+    },
+    "whole-input-no-mcpServers": {
+      "stillOnView": true,
+      "failureList": null,
+      "failureItems": [],
+      "listInViewport": null,
+      "toast": [
+        "Error: JSON must contain a top-level 'mcpServers' object.",
+        "Error: JSON must contain a top-level 'mcpServers' object."
+      ],
+      "dummyInDom": false
+    }
+  },
+  "pageErrors": []
+}
+== AC-002 in the product: B's saved entries vs A's ==
+A entries 8 | identical in B 8 | differing [] | B extra [mixed_ok, mixed_ok2] (from the mixed pastes)
+
+== AC-006: B restarted; servers loaded at startup through the same rule ==
+servers before restart 10 | after restart 10 | identical True (GraphQL mcpServers incl. transportType, command/args/env, url/token/headers, enabled, toolNamePrefix)
+B mcps.json byte-identical before and after the restart
+
+== Logs ==
+A: instance log test-dummy=n/a, data-root logs test-dummy=0
+B: instance log test-dummy=n/a, data-root logs test-dummy=0
+B server log lines for the failed entries (value-free), e.g.:
+Failed to import configuration for server 'mixed_ws': Invalid 'transport_type' string 'websocket' for server 'mixed_ws'. Valid types are: stdio, streamable_http.
+Failed to import configuration for server 'mixed_empty': Config for server 'mixed_empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'.
+
+== Stop ==
+{  "schemaVersion": 1,  "ok": true,  "command": "stop",  "result": {    "instanceId": "iso-57326-0a8e",    "wasRunning": true,    "forced": false,    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-dYja5T",    "dataRootRemoved": true,    "controlPortReleased": true,    "serverPortReleased": true,    "logPath": null  }}
+{  "schemaVersion": 1,  "ok": true,  "command": "stop",  "result": {    "instanceId": "iso-57434-3c52",    "wasRunning": true,    "forced": false,    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-0i62o1",    "dataRootRemoved": true,    "controlPortReleased": true,    "serverPortReleased": true,    "logPath": null  }}
+ps afterwards: no app process of this worktree
+
+== Driver sources ==
+--- seed-a.mjs
+// Writes a realistic server set into instance A through its GraphQL (as the form does). Dummy values only;
+// shapes follow the user's kind of servers (uv --directory … run …, env keys, a prefix) plus HTTP header/token entries.
+const [backend] = process.argv.slice(2);
+const gql = async (query, variables) => (await (await fetch(`${backend}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json());
+const stdio = (serverId, command, args, env, toolNamePrefix, enabled = true) => ({ serverId, transportType: 'STDIO', enabled, toolNamePrefix, stdioConfig: { command, args, env, cwd: null } });
+const http = (serverId, url, token, headers, toolNamePrefix) => ({ serverId, transportType: 'STREAMABLE_HTTP', enabled: true, toolNamePrefix, streamableHttpConfig: { url, token, headers } });
+const root = '/opt/example/autobyteus_mcps';
+const inputs = [
+  stdio('VideoAudioServer', 'uv', ['--directory', `${root}/video-audio-mcp`, 'run', 'server.py'], null, 'video_editing'),
+  stdio('tts', 'uv', ['--directory', `${root}/tts-mcp`, 'run', 'start-tts-mcp'], { TTS_BACKEND_DUMMY: 'test-dummy-backend' }, null),
+  stdio('image-audio', 'uv', ['--directory', `${root}/autobyteus-image-audio`, 'run', 'python', '-m', 'image_audio.server'], { DUMMY_API_KEY: 'test-dummy-key', DUMMY_MODEL: 'test-dummy-model' }, null),
+  stdio('ssh_remote', 'uv', ['--directory', `${root}/ssh-mcp`, 'run', 'ssh-mcp'], { SSH_HOST_DUMMY: 'test-dummy-host', SSH_KEY_FILE_DUMMY: '/tmp/test-dummy-key-file' }, null),
+  stdio('media-downloader', '/opt/homebrew/bin/uv', ['--directory', '/opt/example/autobyteus_private_mcps/yt-dlp-mcp', 'run', 'python', '-m', 'ytdlp_mcp.server'], null, null),
+  stdio('disabled-tool', 'node', ['server.js'], null, null, false),
+  http('remote_headers', 'http://127.0.0.1:9/mcp', null, { Authorization: 'Basic test-dummy-basic' }, 'remote_h'),
+  http('remote_token', 'http://127.0.0.1:9/token-mcp', 'test-dummy-token', null, null),
+];
+const errors = [];
+for (const input of inputs) {
+  const r = await gql('mutation($input: McpServerInput!) { configureMcpServer(input: $input) { savedConfig { __typename } } }', { input });
+  if (r.errors) errors.push(`${input.serverId}: ${r.errors[0].message}`);
+}
+console.log(JSON.stringify({ saved: inputs.length - errors.length, errors }));
+--- journey-b.mjs
+// Temporary API/E2E journey (ticket mcp-bulk-import-errors, API-04/API-05). Attaches to isolated instance B's own
+// window over CDP (never launches or closes the app) and drives Settings → MCP Servers → Bulk Import.
+// Usage: node journey-b.mjs <webDir> <cdpUrl> <a-mcps.json> <outDir>
+import fs from 'node:fs';
+import { createRequire } from 'node:module';
+
+const [webDir, cdp, aFile, outDir] = process.argv.slice(2);
+const { chromium } = createRequire(`${webDir}/package.json`)('playwright-core');
+const browser = await chromium.connectOverCDP(cdp);
+const page = browser.contexts()[0].pages().find((p) => p.url().startsWith('file:'));
+const errors = [];
+page.on('pageerror', (e) => errors.push(String(e)));
+const result = { steps: {} };
+const wait = (ms) => page.waitForTimeout(ms);
+const bodyText = () => page.evaluate(() => document.body.innerText);
+
+const backToList = async () => {
+  // The settings page keeps the MCP panel's sub-view; leave Bulk Import with its own exact "Back" button.
+  if (await page.locator('#bulk-json-input').count()) {
+    await page.getByRole('button', { name: 'Back', exact: true }).click();
+    await wait(800);
+  }
+};
+const openBulkImport = async () => {
+  await page.evaluate(() => { location.hash = '#/settings'; });
+  await wait(1200);
+  await page.getByRole('button', { name: 'MCP Servers', exact: true }).click();
+  await wait(500);
+  await backToList();
+  await wait(800);
+  await page.getByRole('button', { name: 'Bulk Import', exact: true }).click();
+  await page.waitForSelector('#bulk-json-input');
+};
+const runImport = async (json, label) => {
+  await openBulkImport();
+  await page.fill('#bulk-json-input', typeof json === 'string' ? json : JSON.stringify(json, null, 2));
+  const before = await bodyText();
+  await page.getByRole('button', { name: 'Import Configurations' }).click();
+  await wait(2500);
+  const facts = await page.evaluate(() => {
+    const list = document.querySelector('#bulk-import-failures');
+    const r = list?.getBoundingClientRect();
+    return {
+      stillOnView: Boolean(document.querySelector('#bulk-json-input')),
+      failureList: list ? list.innerText : null,
+      failureItems: list ? [...list.querySelectorAll('li')].map((li) => li.innerText) : [],
+      listInViewport: r ? r.top >= 0 && r.bottom <= window.innerHeight : null,
+    };
+  });
+  const after = await bodyText();
+  // Toast lines: text that appeared after the click and matches a known toast phrasing.
+  facts.toast = after.split('\n').map((s) => s.trim()).filter((s) => s && !before.includes(s))
+    .filter((s) => /imported|failed|JSON|mcpServers|导入|Unexpected|Expected|token/i.test(s)).slice(0, 4);
+  facts.dummyInDom = /test-dummy/.test(after.replace(await page.inputValue('#bulk-json-input').catch(() => ''), ''));
+  await page.screenshot({ path: `${outDir}/API-05-${label}.png` });
+  result.steps[label] = facts;
+  return facts;
+};
+
+try {
+  // API-04: paste install A's own mcps.json (the app's format, no transport_type).
+  const aContent = fs.readFileSync(aFile, 'utf8');
+  const full = await runImport(aContent, 'full-import-of-a-mcps-json');
+  full.listShowsAll = Object.keys(JSON.parse(aContent).mcpServers).every((id) => full.toast !== null) &&
+    await page.evaluate((ids) => ids.every((id) => document.body.innerText.includes(id)), Object.keys(JSON.parse(aContent).mcpServers));
+  // API-05: a mixed paste.
+  await runImport({ mcpServers: {
+    mixed_ok2: { command: 'node', args: ['server.js'] },
+    mixed_ws: { transport_type: 'websocket', url: 'ws://127.0.0.1:9/mcp' },
+    mixed_empty: {},
+    mixed_string: 'not-an-object',
+    mixed_conflict: { url: 'http://127.0.0.1:9/mcp', token: 'test-dummy-token', headers: { Authorization: 'Basic test-dummy-basic' }, env: { X: 'test-dummy-env' } },
+  } }, 'mixed-partial');
+  await backToList();
+  result.steps['mixed-partial'].listRefreshedShowsMixedOk2 = (await bodyText()).includes('mixed_ok2');
+  await page.screenshot({ path: `${outDir}/API-05-list-after-partial.png` });
+  // None imported.
+  await runImport({ mcpServers: { none_ws: { transport_type: 'websocket', url: 'ws://127.0.0.1:9/mcp' }, none_empty: {} } }, 'none-imported');
+  // Whole-input errors.
+  await runImport('{ "mcpServers": { "broken": ', 'whole-input-invalid-json');
+  await runImport({ servers: { x: { command: 'node' } } }, 'whole-input-no-mcpServers');
+} catch (e) {
+  result.error = String(e);
+} finally {
+  result.pageErrors = errors;
+  fs.writeFileSync(`${outDir}/journey-b.json`, JSON.stringify(result, null, 2));
+  console.log(JSON.stringify(result, null, 2));
+  await browser.close(); // disconnects the CDP session only
+}
+
+Note: a first journey run had two driver faults (an inexact "Back" locator matched "Back to Workspace"; the next step expected the Bulk Import button while the view correctly stayed open). The driver was fixed; the run above is the complete rerun with fresh ids.

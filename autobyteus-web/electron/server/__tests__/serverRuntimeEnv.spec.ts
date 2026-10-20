@@ -141,6 +141,23 @@ describe('buildServerProcessEnv — isolated-baseline (e2e)', () => {
     expect(env.AUTOBYTEUS_DATA_DIR).toBe('/tmp/isolated-root/server-data')
   })
 
+  it('forwards the test-vault selector so an isolated instance uses the test vault', () => {
+    const env = buildServerProcessEnv(input({
+      policy: 'isolated-baseline',
+      callerEnv: { ...productionLikeCallerEnv, AUTOBYTEUS_TEST_VAULT: '/Users/tester/.autobyteus-test/vault' },
+    }))
+    expect(env.AUTOBYTEUS_TEST_VAULT).toBe('/Users/tester/.autobyteus-test/vault')
+    expect(env).not.toHaveProperty('OPENAI_API_KEY')
+  })
+
+  it('does not forward a blank test-vault selector', () => {
+    const env = buildServerProcessEnv(input({
+      policy: 'isolated-baseline',
+      callerEnv: { ...productionLikeCallerEnv, AUTOBYTEUS_TEST_VAULT: '  ' },
+    }))
+    expect(env).not.toHaveProperty('AUTOBYTEUS_TEST_VAULT')
+  })
+
   it('forces sqlite even when the caller sets another DB_TYPE', () => {
     const env = buildServerProcessEnv(input({
       policy: 'isolated-baseline',

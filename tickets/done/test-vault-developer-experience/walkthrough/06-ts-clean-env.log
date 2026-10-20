@@ -1,0 +1,14 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+stdout | tests/integration/llm/api/openai-llm.test.ts
+Integration Test Key Status: Missing 
+
+ ↓ tests/integration/llm/api/openai-llm.test.ts (7 tests | 7 skipped)
+ ✓ tests/integration/llm/api/deepseek-llm.test.ts (6 tests | 5 skipped) 11ms
+
+ Test Files  1 passed | 1 skipped (2)
+      Tests  1 passed | 12 skipped (13)
+   Start at  05:08:37
+   Duration  1.03s (transform 880ms, setup 52ms, import 1.44s, tests 11ms, environment 0ms)
+

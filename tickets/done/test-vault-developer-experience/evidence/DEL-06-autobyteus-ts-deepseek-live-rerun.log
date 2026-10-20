@@ -1,0 +1,14 @@
+# DEL-06 | live rerun of AE-11 on the integrated state: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/deepseek-llm.test.ts tests/unit/test-setup-credential-isolation.test.ts | agent shell carrying 13 inherited *_API_KEY | HEAD ee78ab81a1 | 2026-10-20T05:10:10Z
+vault files digest before: 8d1e7f6afce470ff
+ ✓ tests/unit/test-setup-credential-isolation.test.ts (2 tests | 1 skipped) 2ms
+ ✓ tests/integration/llm/api/deepseek-llm.test.ts (6 tests) 6964ms
+     ✓ should successfully make a simple completion call  1936ms
+     ✓ should stream response incrementally  1068ms
+     ✓ should support public sendUserMessage  1300ms
+     ✓ should support public streamUserMessage  1219ms
+     ✓ should accept tools without forced tool_choice and continue if the model chooses a tool call  1431ms
+ Test Files  2 passed (2)
+      Tests  7 passed | 1 skipped (8)
+exit=0
+vault files digest after: 8d1e7f6afce470ff
+vault unchanged after DEL-06

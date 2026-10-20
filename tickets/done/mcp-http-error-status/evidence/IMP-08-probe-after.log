@@ -1,0 +1,14 @@
+# IMP-08 reproduction probe after the fix
+# Command: pnpm -C autobyteus-ts exec vitest run --root ../tickets/in-progress/mcp-http-error-status/probes --no-watch --silent=false
+# Commit: bb1d3cd28c
+# Env: macOS (Darwin 25.5.0), node v22.23.1
+# Date: 2026-10-20
+
+{"label":"401","name":"Error","graphqlMessage":"Failed to preview tools for MCP server: Error: HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized"}
+{"label":"403","name":"Error","graphqlMessage":"Failed to preview tools for MCP server: Error: HTTP 403 Forbidden: Error POSTing to endpoint: forbidden"}
+{"label":"404","name":"Error","graphqlMessage":"Failed to preview tools for MCP server: Error: HTTP 404 Not Found: Error POSTing to endpoint: Not Found"}
+{"label":"404-empty","name":"Error","graphqlMessage":"Failed to preview tools for MCP server: Error: HTTP 404 Not Found: Error POSTing to endpoint: "}
+{"label":"500","name":"Error","graphqlMessage":"Failed to preview tools for MCP server: Error: HTTP 500 Internal Server Error: Error POSTing to endpoint: Internal Server Error"}
+{"label":"307-xorigin","name":"Error","graphqlMessage":"Failed to preview tools for MCP server: Error: HTTP 307 Temporary Redirect: Error POSTing to endpoint: Redirect to http://localhost:9/mcp not followed; use that URL as the endpoint if it is the intended server (redirectPolicy: 'same-origin')"}
+{"label":"refused","graphqlMessage":"Failed to preview tools for MCP server: TypeError: fetch failed"}
+      Tests  1 passed (1)

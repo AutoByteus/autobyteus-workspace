@@ -1,0 +1,55 @@
+# API-18 Docker image, after, commit 9715f94db0; image autobyteus-server:mcp182-after built with Dockerfile.monorepo as build.sh does (linux/arm64, --load, CLI_INSTALL_CACHE_BUSTER=mcp182); container mcp182-after on 127.0.0.1:48180, no user volumes, dummy AUTOBYTEUS_MCP_GATEWAY_TOKEN, server-filesystem folders mounted read-only; 2026-10-20T09:23:18Z
+== build
+#71 DONE 0.1s
+#73 DONE 0.0s
+#72 DONE 100.5s
+build exit=0 2026-10-20T09:18:41Z
+== container: node and MCP packages (fresh pnpm install in the builder stage)
+v22.23.3
+resolves @modelcontextprotocol/client -> /app/node_modules/.pnpm/@modelcontextprotocol+client@2.3.1/node_modules/@modelcontextprotocol/client/dist/index.mjs
+resolves @modelcontextprotocol/client/stdio -> /app/node_modules/.pnpm/@modelcontextprotocol+client@2.3.1/node_modules/@modelcontextprotocol/client/dist/stdio.mjs
+does not resolve @modelcontextprotocol/sdk/client/index.js ERR_MODULE_NOT_FOUND
+eventsource@3.0.7
+eventsource-parser@3.1.1
+jose@5.10.0
+jose@6.1.3
+@modelcontextprotocol+client@2.3.1
+@modelcontextprotocol+core@2.3.1
+@modelcontextprotocol+node@2.1.1_@modelcontextprotocol+server@2.3.1
+@modelcontextprotocol+sdk@1.32.1_zod@4.3.6
+@modelcontextprotocol+server@2.3.1
+pkce-challenge@5.0.1
+(dist files naming the v1 package listed above; none = empty)
+== harness (Docker profile) console
+09:19:17 preview fs_v1: 14 tools in 458 ms
+09:19:17 preview fs_v2: 14 tools in 240 ms
+09:19:17 preview token_http: 2 tools in 74 ms
+09:19:17 preview same_origin_redirect_http: 2 tools in 37 ms
+09:19:17 preview paging_http: 4 tools in 27 ms
+09:19:17 preview unauthorized_http: error Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: unauthorized-parity in 9 ms
+09:19:17 preview cross_origin_redirect_http: error Failed to preview tools for MCP server: SdkHttpError: Error POSTing to endpoint: Redirect to http://host.docker.internal:47413/mcp not followed; use that URL as the endpoint if it is the intended serv in 10 ms
+09:19:17 preview exit_at_start: error Failed to preview tools for MCP server: SdkError: Connection closed in 23 ms
+09:19:17 import {"success":true,"message":"Import complete. Imported: 8, Failed: 0","importedCount":8,"failedCount":0}
+09:19:18 discover fs_v1: {"ms":259,"success":true,"toolCount":14,"tools":["fsv1_read_file","fsv1_read_text_file","fsv1_read_media_file","fsv1_read_multiple_files","fsv1_write_file","fsv1_edit_file","fsv1_create_directory","fsv1_list_directory","
+09:19:18 discover fs_v2: {"ms":173,"success":true,"toolCount":14,"tools":["fsv2_read_file","fsv2_read_text_file","fsv2_read_media_file","fsv2_read_multiple_files","fsv2_write_file","fsv2_edit_file","fsv2_create_directory","fsv2_list_directory","
+09:19:18 discover token_http: {"ms":17,"success":true,"toolCount":2,"tools":["parity_http_auth_probe","parity_http_slow_probe"],"message":"Successfully discovered and registered 2 tools.","httpRequests":["token POST initialize pv=- auth=expected path
+09:19:18 discover same_origin_redirect_http: {"ms":25,"success":true,"toolCount":2,"tools":["moved_http_auth_probe","moved_http_slow_probe"],"message":"Successfully discovered and registered 2 tools.","httpRequests":["token POST initialize pv=- auth=expected path=/
+09:19:18 discover paging_http: {"ms":15,"success":true,"toolCount":4,"tools":["paging_page_one_a","paging_page_one_b","paging_page_two_a","paging_page_two_b"],"message":"Successfully discovered and registered 4 tools.","httpRequests":["paging POST ini
+09:19:18 discover unauthorized_http: {"ms":6,"success":false,"toolCount":0,"tools":[],"message":"SdkHttpError: Error POSTing to endpoint: unauthorized-parity","httpRequests":["unauth POST initialize pv=- auth=expected path=/mcp"]}
+09:19:18 discover cross_origin_redirect_http: {"ms":6,"success":false,"toolCount":0,"tools":[],"message":"SdkHttpError: Error POSTing to endpoint: Redirect to http://host.docker.internal:47413/mcp not followed; use that URL as the endpoint if it is the intended serv
+09:19:18 discover exit_at_start: {"ms":21,"success":false,"toolCount":0,"tools":[],"message":"SdkError: Connection closed"}
+09:19:18 gateway v1_1_32_1: tools 36 negotiated null 
+09:19:18 gateway v2_default: tools 36 negotiated 2025-03-26 
+09:19:18 gateway v2_auto: tools 36 negotiated 2025-03-26 
+09:19:18 done /tmp/mcp182/results/docker/after-servers+gateway.json
+== container log scan
+occurrences of the dummy token test-dummy in container logs: 0
+== cleanup 2026-10-20T09:23:31Z
+mcp182-before
+mcp182-after
+Untagged: autobyteus-server:mcp182-before
+Untagged: autobyteus-server:mcp182-after
+0
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+0
+(0 containers and 0 images named mcp182 left; the user's autobyteus-server-0/1/2 containers untouched: 3 running)

@@ -947,8 +947,10 @@ and the browser-bridge runtime overrides. In `e2e` mode, production
 `AUTOBYTEUS_*`, `DB_NAME`, provider keys and runtime settings that a caller
 inherited (for example an agent shell inside AutoByteus) therefore never reach
 the isolated server. Its settings come from its own data root's `.env`.
-Credentials for an isolated instance are provisioned with
-`pnpm secrets:import` against its database. If a server feature needs another
+The one forwarded AutoByteus variable is `AUTOBYTEUS_TEST_VAULT` (a location,
+never a key): an isolated instance started with it reads the test vault
+read-only for provider keys (see [TESTING.md](../../TESTING.md#test-vault)).
+If a server feature needs another
 system variable in isolated mode, add it to the baseline list; never spread
 `process.env` in a platform manager.
 

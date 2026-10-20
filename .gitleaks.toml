@@ -1,0 +1,133 @@
+# gitleaks config for the secret gate (RELEASE.md, "Secret Gate").
+# It holds no secret values.
+#
+# Usage: scripts/check_secrets.sh [<git-range>]
+#
+# - gitleaks' default rules, plus two rules for what the defaults miss.
+# - Allowlists for false-positive classes confirmed by the
+#   repository-secret-scan ticket (2026-10-20, tickets/done/repository-secret-scan).
+#   Shape-based allowlists apply only to gitleaks' broad `generic-api-key`
+#   rule, so they can never hide a provider-specific match or the
+#   `env-style-secret` rule below.
+# - Add an allowlist entry only after checking the value by shape and context
+#   (never by testing it at a provider). Never allowlist a value because it is
+#   inconvenient.
+
+title = "autobyteus-workspace secret gate"
+
+[extend]
+useDefault = true
+
+# A provider key assigned to an env-style name, such as SERPER_API_KEY=<40 hex>
+# or MISTRAL_API_KEY="<32 chars>". It is not subject to the generic shape
+# allowlists below, because some provider keys are plain hex.
+[[rules]]
+id = "env-style-secret"
+description = "Key-like value assigned to an *_API_KEY / *_TOKEN / *_SECRET / *_PASSWORD name"
+regex = '''\b[A-Z][A-Z0-9_]*(?:API_KEY|APIKEY|ACCESS_KEY|SECRET_KEY|_SECRET|_TOKEN|_PASSWORD)\b["']?\s*[:=]\s*["'`]?([A-Za-z0-9_\-+/]{20,})["'`]?(?:\s|$|[,;})\]])'''
+secretGroup = 1
+entropy = 3.2
+[[rules.allowlists]]
+regexTarget = "secret"
+regexes = [
+  '''(?i)(synthetic|canary|placeholder|replace|example|dummy|fake|redacted|your_|your-|changeme|sample|mock|test)''',
+  '''^[a-z]+(?:[-_][a-z]+)+$''',
+]
+
+# A password inside a connection string or URL (postgres://user:password@host).
+# The defaults miss this.
+[[rules]]
+id = "password-in-url"
+description = "Password inside a connection string or URL"
+regex = '''\b[a-z][a-z0-9+.-]{1,15}://[^\s:@/'"`]{1,64}:([^\s@/'"`]{6,})@[^\s'"`]+'''
+secretGroup = 1
+entropy = 2.5
+[[rules.allowlists]]
+regexTarget = "secret"
+regexes = [
+  '''^\$\{?[A-Za-z_][A-Za-z0-9_]*\}?$''',
+  '''(?i)^(password|passwd|pass|secret|changeme|example|placeholder|redacted|xxx+|\*+|<[^>]*>|your[-_]?password)$''',
+]
+
+# --- Allowlists for the broad generic-api-key rule only ---------------------
+
+# Hashes, git SHAs and ranges, UUIDs, and markers built on a UUID: file pins,
+# run/agent IDs and test markers in ticket evidence.
+[[allowlists]]
+description = "Digests, SHAs, UUIDs and UUID-based markers (generic rule only)"
+targetRules = ["generic-api-key"]
+regexTarget = "secret"
+regexes = [
+  '''^[0-9a-f]{7,64}$''',
+  '''^[0-9a-f]{7,40}\.\.\.?[0-9a-f]{7,40}$''',
+  '''^([A-Za-z0-9]+[_-])*[0-9a-fA-F]{8}[-_][0-9a-fA-F]{4}[-_][0-9a-fA-F]{4}[-_][0-9a-fA-F]{4}[-_][0-9a-fA-F]{12}$''',
+]
+
+# Words, slugs, file names and ticket case IDs that follow words like "api" or
+# "token" in prose and logs.
+[[allowlists]]
+description = "Slugs, file names, word paths and ticket case IDs (generic rule only)"
+targetRules = ["generic-api-key"]
+regexTarget = "secret"
+regexes = [
+  '''^[a-z][a-z0-9]*(?:-[a-z0-9]+){2,}$''',
+  '''^[A-Za-z0-9_.-]+\.(?:log|json|jsonl|md|txt|py|ts|js|mjs|sh|yaml|yml|png|patch)$''',
+  '''^[A-Za-z]+(?:/[A-Za-z]+)+$''',
+  '''^(?:API|IR|SR|DR|CR|CRR|AR|FU|AC|LIVE|UC|REV)-[A-Za-z0-9.-]+$''',
+  '''^[a-z]+(?:[A-Z][a-z]+)+[0-9]{0,4}$''',
+]
+
+# File-pin maps in ticket evidence: "path/file.ts": "<sha256>". Scoped to the
+# two rules that match a bare 64-hex value.
+[[allowlists]]
+description = "sha256 file-pin entries (generic and discord rules only)"
+targetRules = ["generic-api-key", "discord-api-token"]
+regexTarget = "line"
+regexes = [
+  '''"[^"]+\.[A-Za-z0-9]{1,8}"\s*:\s*"[0-9a-f]{64}"''',
+]
+
+# Context-only false positives: the local dev server's websocket token
+# (localhost only), websocket handshake keys, LLM response signatures, task keys,
+# and code references to key variables (not their values).
+[[allowlists]]
+description = "Localhost dev-server tokens, handshake keys, signatures, task keys, env references (generic rule only)"
+targetRules = ["generic-api-key"]
+regexTarget = "line"
+regexes = [
+  '''wss?://(?:127\.0\.0\.1|localhost)(?::\d+)?[^\s"'`]*[?&]token=''',
+  '''(?i)"sec-websocket-(?:key|accept)"\s*:''',
+  '''"signature"\s*:''',
+  '''"taskKey"\s*:''',
+  '''process\.env\.[A-Z0-9_]+''',
+]
+
+# --- Allowlists for every rule ------------------------------------------------
+
+# Obvious test values used by fixtures and canary scans.
+[[allowlists]]
+description = "Synthetic fixture and canary values"
+regexTarget = "secret"
+regexes = [
+  '''(?i)(synthetic|canary|placeholder|replace_with|dummy|fake)''',
+  '''^(sk-)?1234567890abcdefghijklmnop$''',
+]
+
+# Vendored third-party bundles.
+[[allowlists]]
+description = "Vendored Monaco editor assets"
+paths = [
+  '''autobyteus-web-prototype/public/prototype-assets/monaco/''',
+]
+
+# SF-001: Telegram bot token in a generated messaging-gateway config, committed
+# in c798a7e70c and removed in 46b172d0dd. The user revoked the token on
+# 2026-10-20 and chose not to rewrite history (published tags). Only these two
+# files in that one commit are allowlisted.
+[[allowlists]]
+description = "SF-001 revoked Telegram bot token (history only)"
+condition = "AND"
+commits = ["c798a7e70c3bc467346710f522c3b4cd289cbb59"]
+paths = [
+  '''^autobyteus-server-ts/extensions/messaging-gateway/config/(gateway\.env|provider-config\.json)$''',
+]

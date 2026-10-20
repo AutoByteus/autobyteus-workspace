@@ -1,0 +1,7 @@
+# IMP-11-electron-main Electron main-process tests (after nuxt prepare)
+# commit 855842b8f1 (baseline fix 6f38cd51e6 below it) | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-19
+# command: pnpm -C autobyteus-web exec nuxt prepare && pnpm -C autobyteus-web test:electron --run
+
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (12 tests) 5ms
+ Test Files  36 passed | 1 skipped (37)
+      Tests  193 passed | 1 skipped (194)

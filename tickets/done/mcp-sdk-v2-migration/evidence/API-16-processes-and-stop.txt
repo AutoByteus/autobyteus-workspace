@@ -1,0 +1,51 @@
+# API-16 stop both isolated instances and check for orphan MCP server processes; 2026-10-20T09:06:18Z
+== processes started from test-owned folders (/tmp/mcp182) or parity commands, before stop
+15814 59004 55513 uv --directory /tmp/mcp182/servers/before/video-audio-mcp run server.py
+15883 15814 55513 /private/tmp/mcp182/servers/before/video-audio-mcp/.venv/bin/python3 server.py
+16894 59004 55513 node /tmp/mcp182/servers/fs-v1/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js /tmp/mcp182/servers/fsroot
+17091 59004 55513 node /tmp/mcp182/servers/fs-v2/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js /tmp/mcp182/servers/fsroot
+17231 59004 55513 uv --directory /tmp/mcp182/servers/before/autobyteus-ts/tests/fixtures/mcp-test-server run python server.py
+17266 17231 55513 /private/tmp/mcp182/servers/before/autobyteus-ts/tests/fixtures/mcp-test-server/.venv/bin/python3 server.py
+68450 62864 60032 uv --directory /tmp/mcp182/servers/after/video-audio-mcp run server.py
+68516 68450 60032 /private/tmp/mcp182/servers/after/video-audio-mcp/.venv/bin/python3 server.py
+69529 62864 60032 node /tmp/mcp182/servers/fs-v1/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js /tmp/mcp182/servers/fsroot
+69714 62864 60032 node /tmp/mcp182/servers/fs-v2/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js /tmp/mcp182/servers/fsroot
+69845 62864 60032 uv --directory /tmp/mcp182/servers/after/autobyteus-ts/tests/fixtures/mcp-test-server run python server.py
+69862 69845 60032 /private/tmp/mcp182/servers/after/autobyteus-ts/tests/fixtures/mcp-test-server/.venv/bin/python3 server.py
+== stop before (iso-63196-c9c1)
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-63196-c9c1",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vlnPS8",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+== stop after (iso-63262-88ed)
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-63262-88ed",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-uPL01O",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+== after stop
+(end of list)
+== isolated-app list (this machine)
+iso-64524-eb3f true /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+iso-64603-c761 true /Applications/AutoByteus.app/Contents/MacOS/AutoByteus

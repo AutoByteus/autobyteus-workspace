@@ -502,10 +502,13 @@ const createDummyConfig = () => {
 
 // Bootstrap records the system instruction, which needs a store that supports that capture.
 const memoryDirs: string[] = [];
-const attachMemory = (state: AgentRuntimeState) => {
+const makeMemoryDir = (): string => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-runtime-memory-'));
   memoryDirs.push(dir);
-  state.memoryManager = new MemoryManager({ store: new FileMemoryStore(dir, state.agentId) });
+  return dir;
+};
+const attachMemory = (state: AgentRuntimeState) => {
+  state.memoryManager = new MemoryManager({ store: new FileMemoryStore(makeMemoryDir(), state.agentId) });
 };
 
 describe('Agent runtime integration', () => {
@@ -563,6 +566,7 @@ describe('Agent runtime integration', () => {
 
   it('Agent facade delegates start/stop to runtime', async () => {
     const config = createDummyConfig();
+    config.memoryDir = makeMemoryDir();
     const factory = new AgentFactory();
     const agent = factory.createAgent(config);
 

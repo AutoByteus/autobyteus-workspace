@@ -171,6 +171,7 @@ export class McpServerResolver {
         message: `Import complete. Imported: ${result.imported_count}, Failed: ${result.failed_count}`,
         importedCount: result.imported_count,
         failedCount: result.failed_count,
+        failures: result.failures.map((failure) => ({ serverId: failure.server_id, reason: failure.reason })),
       };
     } catch (error) {
       logger.error(`Error during bulk import of MCP servers: ${String(error)}`);
@@ -179,6 +180,7 @@ export class McpServerResolver {
         message: String(error),
         importedCount: 0,
         failedCount: 0,
+        failures: [],
       };
     }
   }

@@ -1,9 +1,11 @@
+import "reflect-metadata";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   StdioMcpServerConfig,
   StreamableHttpMcpServerConfig,
 } from "autobyteus-ts/tools/mcp/types.js";
 import { McpConfigService } from "../../../../src/mcp-server-management/services/mcp-config-service.js";
+import { McpServerResolver } from "../../../../src/api/graphql/types/mcp-server.js";
 
 const VALID_JSON_IMPORT_STRING = JSON.stringify({
   mcpServers: {
@@ -71,7 +73,7 @@ describe("McpConfigService import", () => {
 
     const result = await service.importConfigsFromJson(VALID_JSON_IMPORT_STRING);
 
-    expect(result).toEqual({ imported_count: 2, failed_count: 0 });
+    expect(result).toEqual({ imported_count: 2, failed_count: 0, failures: [] });
     expect(configureSpy).toHaveBeenCalledTimes(2);
 
     const stdioCall = configureSpy.mock.calls[0]?.[0];
@@ -96,7 +98,8 @@ describe("McpConfigService import", () => {
 
     const result = await service.importConfigsFromJson(PARTIAL_FAILURE_JSON_IMPORT_STRING);
 
-    expect(result).toEqual({ imported_count: 1, failed_count: 1 });
+    expect(result).toMatchObject({ imported_count: 1, failed_count: 1 });
+    expect(result.failures).toEqual([{ server_id: "invalid-server-no-command", reason: expect.stringContaining("'command' must be a non-empty string") }]);
     expect(configureSpy).toHaveBeenCalledTimes(1);
 
     const validCall = configureSpy.mock.calls[0]?.[0];
@@ -124,7 +127,7 @@ describe("McpConfigService import", () => {
 
     const result = await service.importConfigsFromJson('{"mcpServers": {}}');
 
-    expect(result).toEqual({ imported_count: 0, failed_count: 0 });
+    expect(result).toEqual({ imported_count: 0, failed_count: 0, failures: [] });
     expect(configureSpy).not.toHaveBeenCalled();
   });
 
@@ -136,7 +139,7 @@ describe("McpConfigService import", () => {
 
     const result = await service.importConfigsFromJson(CAMEL_CASE_JSON_IMPORT_STRING);
 
-    expect(result).toEqual({ imported_count: 1, failed_count: 0 });
+    expect(result).toEqual({ imported_count: 1, failed_count: 0, failures: [] });
     expect(configureSpy).toHaveBeenCalledTimes(1);
 
     const call = configureSpy.mock.calls[0]?.[0];
@@ -144,5 +147,62 @@ describe("McpConfigService import", () => {
     expect(call.server_id).toBe("camel-server");
     expect(call.command).toBe("node");
     expect(call.tool_name_prefix).toBe("camel");
+  });
+
+  it("reports each failed entry with its server id and a reason that carries no secret values", async () => {
+    const service = new McpConfigService();
+    const configureSpy = vi.spyOn(service, "configureMcpServer").mockResolvedValue({} as any);
+    const json = JSON.stringify({
+      mcpServers: {
+        ok: { command: "node", args: ["server.js"], env: { API_KEY: "test-dummy-env-secret" } },
+        bad: { transport_type: "websocket", url: "ws://127.0.0.1:8765/mcp", headers: { Authorization: "Bearer test-dummy-header-secret" } },
+        empty: {},
+        both: { url: "http://127.0.0.1:9000/mcp", token: "test-dummy-token-secret", headers: { authorization: "Basic test-dummy-basic-secret" } },
+        notObject: "test-dummy-string-secret",
+      },
+    });
+
+    const result = await service.importConfigsFromJson(json);
+
+    expect(result.imported_count).toBe(1);
+    expect(result.failed_count).toBe(4);
+    expect(configureSpy).toHaveBeenCalledTimes(1);
+    expect(configureSpy.mock.calls[0]?.[0]).toBeInstanceOf(StdioMcpServerConfig);
+    expect(result.failures).toEqual([
+      { server_id: "bad", reason: "Invalid 'transport_type' string 'websocket' for server 'bad'. Valid types are: stdio, streamable_http." },
+      { server_id: "empty", reason: "Config for server 'empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'." },
+      { server_id: "both", reason: expect.stringContaining("sets both 'token' and an 'Authorization' header") },
+      { server_id: "notObject", reason: "Configuration for server 'notObject' must be a dictionary." },
+    ]);
+    expect(JSON.stringify(result)).not.toMatch(/test-dummy-[a-z]+-secret/);
+  });
+});
+
+describe("McpServerResolver.importMcpServerConfigs", () => {
+  beforeEach(() => {
+    McpConfigService.resetInstance();
+  });
+
+  it("maps the failed entries into the GraphQL result", async () => {
+    vi.spyOn(McpConfigService.prototype, "configureMcpServer").mockResolvedValue({} as any);
+    const result = await new McpServerResolver().importMcpServerConfigs(
+      JSON.stringify({ mcpServers: { ok: { command: "node" }, empty: {} } }),
+    );
+    expect(result).toEqual({
+      success: false,
+      message: "Import complete. Imported: 1, Failed: 1",
+      importedCount: 1,
+      failedCount: 1,
+      failures: [{ serverId: "empty", reason: expect.stringContaining("needs 'command' (stdio) or 'url'") }],
+    });
+  });
+
+  it.each([
+    ["malformed JSON", '{"mcpServers": {"key": "value",}}'],
+    ["a missing mcpServers object", '{"servers": {}}'],
+  ])("reports %s as before, with an empty failure list", async (_label, json) => {
+    const result = await new McpServerResolver().importMcpServerConfigs(json);
+    expect(result).toMatchObject({ success: false, importedCount: 0, failedCount: 0, failures: [] });
+    expect(result.message).toBeTruthy();
   });
 });

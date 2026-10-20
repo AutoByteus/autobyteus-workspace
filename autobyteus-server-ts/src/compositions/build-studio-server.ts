@@ -71,6 +71,7 @@ import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResour
 import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
 import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
 import { composeUpdateNotifications, type UpdateNotifications } from "./update-notifications-composition.js";
+import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -91,12 +92,19 @@ const closeStudioProcessResources = async (input: {
   updateNotifications: UpdateNotifications | null;
   taskExecutionResources: TaskExecutionResourcePort | null;
   studioApiHandle: StudioApiHandle | null;
+  agentRuntimeStatus: AgentRuntimeStatusHandle | null;
 }): Promise<void> => {
   stopMemorySyncWorker();
   try {
     input.updateNotifications?.close();
   } catch (error) {
     console.warn("UPDATE_NOTIFICATIONS_CLOSE_FAILED", error);
+  }
+  try {
+    // Vendor update/sign-in processes started from Settings → Agent Runtimes end with the server (QR-003).
+    await input.agentRuntimeStatus?.close();
+  } catch (error) {
+    console.warn("AGENT_RUNTIME_STATUS_CLOSE_FAILED", error);
   }
   try {
     // Skill notices stop first (watcher, then service), so none go out while runs stop.
@@ -225,6 +233,7 @@ export const buildStudioServer = async (input: {
   let updateNotifications: UpdateNotifications | null = null;
   let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let studioApiHandle: StudioApiHandle | null = null;
+  let agentRuntimeStatus: AgentRuntimeStatusHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
   let processResourcesClosed = false;
   const closeProcessResources = async (): Promise<void> => {
@@ -240,6 +249,7 @@ export const buildStudioServer = async (input: {
       updateNotifications,
       taskExecutionResources,
       studioApiHandle,
+      agentRuntimeStatus,
     });
   };
 
@@ -326,6 +336,10 @@ export const buildStudioServer = async (input: {
       collaborationRootHistoryService: generalProcessRunSupervisor.collaborationRootHistoryService,
       runModelConfigService,
       delegatedLaunchSelectionService: generalProcessRunSupervisor.delegatedLaunchSelectionService,
+    });
+    agentRuntimeStatus = composeAgentRuntimeStatus({
+      codexClientManager: getCodexAppServerClientManager(),
+      applicationActiveAgentRuns: currentApplicationRuntime.hostManagement.activeAgentRuns,
     });
 
     const app = fastify({

@@ -4,13 +4,13 @@ import path from 'node:path';
 import { TextDecoder } from 'node:util';
 import type { Stats } from 'node:fs';
 import type { FileHandle } from 'node:fs/promises';
-import type { SecretId } from '../domain/secret-id.js';
+import type { SecretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
 import { localImportSecretIdForAlias } from './local-import-credential-alias-registry.js';
 import { LocalEnvironmentSecretImportError } from './local-environment-secret-import.js';
 import {
   assertWindowsExclusiveAcl,
   type WindowsAclCommandRunner,
-} from '../windows-exclusive-acl.js';
+} from 'autobyteus-ts/secrets/vault/windows-exclusive-acl.js';
 
 const MAX_SOURCE_BYTES = 1024 * 1024;
 

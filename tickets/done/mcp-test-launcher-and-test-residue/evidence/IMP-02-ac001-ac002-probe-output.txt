@@ -1,0 +1,17 @@
+# IMP-02
+# Command: throwaway vitest probe (source: IMP-02-ac001-ac002-probe.test.ts.txt, placed temporarily at autobyteus-ts/tests/integration/tools/mcp/zz-ac-probe.test.ts, then deleted), run with env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run <probe>
+# Commit: 33fc5f4e16
+# Env: macOS, node v22.23.1, uv 0.10.2
+# Date: 2026-10-20
+# Output copied from the console:
+
+AC001 command=/usr/bin/env
+AC001 args=["UV_PROJECT_ENVIRONMENT=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e","UV_CACHE_DIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-uv-cache","PYTHONDONTWRITEBYTECODE=1","/opt/homebrew/bin/uv","run","--frozen","--project","/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts/tests/fixtures/mcp-test-server","python","/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/autobyteus-ts/tests/fixtures/mcp-test-server/server.py","--mode","normal"]
+AC001 env={"MCP_TEST_DUMMY_VALUE":"x","MCP_TEST_SERVER_PID_FILE":"/tmp/p.pid"}
+AC002 child env keys=PATH,HOME
+AC002 status=0
+PREFIX=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e
+PYTHONDONTWRITEBYTECODE=1
+AC002 fixture entries=["pyproject.toml","server.py","uv.lock"]
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

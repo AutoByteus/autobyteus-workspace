@@ -15,11 +15,10 @@ import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/respo
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../../src/llm/utils/messages.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
-import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
 import { providerApiKeyResolver } from '../../../unit/provider-api-key-resolver-test-helpers.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.DEEPSEEK_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('DeepSeek');
 
 const TURN_ID = 'turn_test';
 
@@ -126,8 +125,6 @@ const runOptionalToolCallContinuation = async (llm: DeepSeekLLM): Promise<void> 
 
 describe('DeepSeekLLM reasoning continuation payloads', () => {
   it('sends memory-preserved reasoning_content on assistant tool-call messages through the configured DeepSeekLLM path', async () => {
-    const originalApiKey = process.env.DEEPSEEK_API_KEY;
-    process.env.DEEPSEEK_API_KEY = 'sk-test-deepseek';
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'deepseek-reasoning-continuation-'));
     const createMock = vi.fn().mockResolvedValue({
       choices: [
@@ -233,20 +230,15 @@ describe('DeepSeekLLM reasoning continuation payloads', () => {
         content: JSON.stringify({ location: 'Hangzhou', date: 'tomorrow', forecast: 'sunny' })
       });
     } finally {
-      if (originalApiKey === undefined) {
-        delete process.env.DEEPSEEK_API_KEY;
-      } else {
-        process.env.DEEPSEEK_API_KEY = originalApiKey;
-      }
       await llm?.cleanup();
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
 });
 
-runIntegration('DeepSeekLLM Integration', () => {
-  it('should successfully make a simple completion call', async () => {
-    const llm = new DeepSeekLLM(buildModel());
+live.describe('DeepSeekLLM Integration', () => {
+  live.it('should successfully make a simple completion call', async () => {
+    const llm = new DeepSeekLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Hello, DeepSeek LLM!' });
 
     try {
@@ -254,18 +246,13 @@ runIntegration('DeepSeekLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should stream response incrementally', async () => {
-    const llm = new DeepSeekLLM(buildModel());
+  live.it('should stream response incrementally', async () => {
+    const llm = new DeepSeekLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Please write a short greeting.' });
     const receivedTokens: string[] = [];
     let completeResponse = '';
@@ -281,18 +268,13 @@ runIntegration('DeepSeekLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public sendUserMessage', async () => {
-    const llm = new DeepSeekLLM(buildModel());
+  live.it('should support public sendUserMessage', async () => {
+    const llm = new DeepSeekLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Can you summarize the following text: The quick brown fox jumps over the lazy dog.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
 
@@ -301,18 +283,13 @@ runIntegration('DeepSeekLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public streamUserMessage', async () => {
-    const llm = new DeepSeekLLM(buildModel());
+  live.it('should support public streamUserMessage', async () => {
+    const llm = new DeepSeekLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Please list three benefits of using Python.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
     const receivedTokens: string[] = [];
@@ -329,25 +306,15 @@ runIntegration('DeepSeekLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should accept tools without forced tool_choice and continue if the model chooses a tool call', async () => {
-    const llm = new DeepSeekLLM(buildModel());
+  live.it('should accept tools without forced tool_choice and continue if the model chooses a tool call', async () => {
+    const llm = new DeepSeekLLM(buildModel(), new LLMConfig());
     try {
       await runOptionalToolCallContinuation(llm);
-    } catch (error) {
-      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }

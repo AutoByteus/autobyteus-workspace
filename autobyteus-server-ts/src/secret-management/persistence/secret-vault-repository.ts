@@ -2,7 +2,7 @@ import {
   runInTransaction,
   type RunInTransactionOptions,
 } from "repository_prisma";
-import type { SecretId } from "../domain/secret-id.js";
+import type { SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
 import { SecretEncryptionMetadataRepository } from "./secret-encryption-metadata-repository.js";
 import { SecretEntryRepository } from "./secret-entry-repository.js";
 import type {
@@ -10,7 +10,8 @@ import type {
   SecretVaultBatchResult,
   SecretVaultDomainIdentity,
   SecretVaultMetadataRecord,
-} from "./secret-vault-persistence-types.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-records.js";
+import type { SecretVaultStore } from "autobyteus-ts/secrets/vault/secret-vault-store.js";
 
 const INITIALIZATION_TRANSACTION_OPTIONS = {
   maxWait: 2_000,
@@ -22,35 +23,13 @@ const MUTATION_TRANSACTION_OPTIONS = {
   timeout: 5_000,
 } satisfies RunInTransactionOptions;
 
-export class CustomProviderMigrationBatchReceipt {
-  readonly #opaque = true;
-
-  release(): void {
-    const state = migrationReceiptRecords.get(this);
-    if (!state) return;
-    migrationReceiptRecords.delete(this);
-    for (const record of state.records) {
-      record.nonce.fill(0);
-      record.ciphertext.fill(0);
-      record.authenticationTag.fill(0);
-    }
-  }
-}
-
-const migrationReceiptRecords = new WeakMap<
-  CustomProviderMigrationBatchReceipt,
-  {
-    owner: object;
-    records: EncryptedSecretEntryRecord[];
-  }
->();
-
 export type SecretVaultInitializationRepository = Pick<
   SecretVaultRepository,
   "readMetadata" | "countEntries" | "createMetadata"
 >;
 
-export class SecretVaultRepository {
+/** The application vault: the two secret tables inside the server's own Prisma database. */
+export class SecretVaultRepository implements SecretVaultStore {
   private readonly entryRepository = new SecretEntryRepository();
   private readonly metadataRepository = new SecretEncryptionMetadataRepository();
 
@@ -122,51 +101,6 @@ export class SecretVaultRepository {
     }, MUTATION_TRANSACTION_OPTIONS);
   }
 
-  async createMissingBatchForCustomProviderMigration(
-    records: ReadonlyArray<EncryptedSecretEntryRecord>,
-    expectedMetadata: SecretVaultDomainIdentity,
-  ): Promise<CustomProviderMigrationBatchReceipt> {
-    await runInTransaction(async () => {
-      await this.assertDomain(expectedMetadata);
-      for (const record of records) {
-        if (await this.entryRepository.hasEntry(record.secretId)) {
-          throw new Error("CUSTOM_PROVIDER_MIGRATION_TARGET_NOT_MISSING");
-        }
-      }
-      for (const record of records) {
-        await this.entryRepository.createEntry(record);
-      }
-    }, MUTATION_TRANSACTION_OPTIONS);
-
-    const receipt = new CustomProviderMigrationBatchReceipt();
-    migrationReceiptRecords.set(receipt, {
-      owner: this,
-      records: records.map(cloneEncryptedRecord),
-    });
-    return receipt;
-  }
-
-  async compensateUnpublishedCustomProviderBatch(
-    receipt: CustomProviderMigrationBatchReceipt,
-  ): Promise<void> {
-    const state = migrationReceiptRecords.get(receipt);
-    if (!state || state.owner !== this) {
-      throw new Error("CUSTOM_PROVIDER_MIGRATION_RECEIPT_INVALID");
-    }
-
-    await runInTransaction(async () => {
-      for (const expected of state.records) {
-        const current = await this.entryRepository.readEntry(expected.secretId);
-        if (!current || !encryptedRecordMatches(current, expected)) {
-          continue;
-        }
-        await this.entryRepository.deleteEntry(expected.secretId);
-      }
-    }, MUTATION_TRANSACTION_OPTIONS);
-
-    receipt.release();
-  }
-
   private async assertDomain(expected: SecretVaultDomainIdentity): Promise<void> {
     const metadata = await this.metadataRepository.readDomainIdentity();
     if (
@@ -178,19 +112,3 @@ export class SecretVaultRepository {
     }
   }
 }
-
-const cloneEncryptedRecord = (
-  record: EncryptedSecretEntryRecord,
-): EncryptedSecretEntryRecord => ({
-  secretId: record.secretId,
-  nonce: Buffer.from(record.nonce),
-  ciphertext: Buffer.from(record.ciphertext),
-  authenticationTag: Buffer.from(record.authenticationTag),
-});
-
-const encryptedRecordMatches = (
-  current: EncryptedSecretEntryRecord,
-  expected: EncryptedSecretEntryRecord,
-): boolean => current.nonce.equals(expected.nonce)
-  && current.ciphertext.equals(expected.ciphertext)
-  && current.authenticationTag.equals(expected.authenticationTag);

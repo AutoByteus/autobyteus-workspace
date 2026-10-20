@@ -20,10 +20,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT } from "../helpers/team-run-graphql-documents.js";
-import {
-  closeLiveRuntimeSecretVault,
-  initializeLiveRuntimeSecretVaultFromEnvironment,
-} from "../helpers/live-runtime-secret-vault-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
 
 /**
  * Live delegated-child resource lifecycle across AutoByteus, Codex and Claude:
@@ -207,7 +204,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "delegated-child-lifecycle-e2e-appdata-"));
     await writeFile(path.join(testDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
-    await initializeLiveRuntimeSecretVaultFromEnvironment();
+    await initializeLiveServerVault();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
     graphql = (await import(require.resolve("graphql", { paths: [typeGraphqlRoot] }))).graphql as typeof graphqlFn;
@@ -234,7 +231,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     else delete process.env[TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY];
     if (runtimeServerApp) await runtimeServerApp.close();
     runtimeServerApp = null;
-    await closeLiveRuntimeSecretVault();
+    await closeLiveServerVault();
     for (const root of createdWorkspaceRoots) await rm(root, { recursive: true, force: true });
     if (testDataDir) await rm(testDataDir, { recursive: true, force: true });
   }, 180_000);

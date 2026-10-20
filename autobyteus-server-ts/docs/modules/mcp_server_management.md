@@ -57,28 +57,45 @@ currently stored in plain text, like stdio `env` values.
 ### Redirects
 
 Remote requests follow redirects only within the configured URL's origin. This
-is the default `redirectPolicy: 'same-origin'` of `@modelcontextprotocol/sdk`
-1.32.x, and AutoByteus does not override it. So a credential never leaves the
+is the default `redirectPolicy: 'same-origin'` of `@modelcontextprotocol/client`
+2.x, and AutoByteus does not override it. So a credential never leaves the
 configured origin:
 
 - A same-origin redirect (for example 307/308 from `/mcp` to `/mcp-new`) is
   followed, and the credentials are sent to the new path.
 - A redirect to another origin is not followed. Preview, connect or the tool
-  call fails with `Redirect to <url> not followed (redirectPolicy:
-  'same-origin')`, and the other origin receives no request. Configure the
-  final URL instead.
+  call fails with `HTTP 307 Temporary Redirect: Redirect to <url> not followed;
+  use that URL as the endpoint if it is the intended server (redirectPolicy:
+  'same-origin')` (the redirect's own status first), and the other origin
+  receives no request. Configure the final URL instead.
 - 301/302 on a POST are not followed even within the origin; this is the
   SDK's contract.
 
 ## Supported Transports
 
 External MCP servers use `stdio` or `streamable_http` (GraphQL offers only
-`STDIO` and `STREAMABLE_HTTP`). Any other `transport_type` in MCP JSON, such as
-`websocket`, is rejected when the core config parser reads it, as in bulk
-import, with `… Valid types are: stdio, streamable_http.`. A bulk import reports such
-entries in its failed count, and the per-entry reason is in the server log. At
-startup, a stored entry that does not parse as one of these transports is
-skipped, and the other entries still register.
+`STDIO` and `STREAMABLE_HTTP`). The core config parser
+(`McpConfigService` in `autobyteus-ts`) decides an entry's transport with one
+rule, for bulk import and for loading `mcps.json` alike:
+
+- an explicit `transport_type` (or the `transportType` alias) is used as given;
+- otherwise a non-empty `url` means `streamable_http`, and a non-empty
+  `command` means `stdio`. This is the shape the app writes to `mcps.json`, so
+  that file's content can be bulk-imported into another install;
+- otherwise the entry fails with "needs 'command' (stdio) or 'url'
+  (streamable_http), or an explicit 'transport_type'".
+
+Any other `transport_type`, such as `websocket`, is rejected with
+`… Valid types are: stdio, streamable_http.`.
+
+Bulk import (`importMcpServerConfigs`) imports each entry on its own. The
+result keeps `success`, `message`, `importedCount` and `failedCount`, and adds
+`failures`: one `{ serverId, reason }` per entry that was not imported.
+Reasons name fields and never contain env, header or token values. A
+whole-input error (invalid JSON, no top-level `mcpServers`) returns
+`success: false` with its message and an empty `failures` list. At startup, a
+stored entry that does not parse is skipped, and the other entries still
+register.
 
 ## Server Instance Lifetime
 
@@ -97,14 +114,52 @@ Preview and tool discovery open their own short-lived sessions.
 
 ## Verifying An MCP SDK Upgrade
 
-In AutoByteus code, only `autobyteus-ts/src/tools/mcp/server/` imports
-`@modelcontextprotocol/sdk`. `autobyteus-server-ts/src` does not: the Agent
-Tools MCP server and `/mcp/gateway` are hand-written JSON-RPC, and they reach
-the SDK only when the called tool is an external MCP-origin tool. The Claude
-Agent SDK and Google GenAI packages also resolve the same SDK copy as a peer
-dependency; keep a single copy in `pnpm-lock.yaml`. An SDK upgrade therefore
-changes the external-server client path for every runtime. Rerun these with
-the new SDK:
+The MCP client is `@modelcontextprotocol/client` (2.x, pinned exactly in
+`autobyteus-ts/package.json`). In AutoByteus code, only
+`autobyteus-ts/src/tools/mcp/server/` imports it, lazily on first connect.
+`autobyteus-server-ts/src` imports no MCP SDK: the Agent Tools MCP server and
+`/mcp/gateway` are hand-written JSON-RPC, and they reach the SDK only when the
+called tool is an external MCP-origin tool. The client keeps the SDK's default
+`legacy` protocol negotiation: `connect()` runs the 2025 `initialize`
+handshake (2025-11-25) and starts a stdio server once; AutoByteus sets no
+`versionNegotiation`. Tool listing walks every page of a paginating server.
+
+Preview, discovery and tool calls show the SDK's error text, and no AutoByteus
+code parses it. The one addition is the HTTP status of a failed remote connect:
+
+- When a remote server answers the connect with an HTTP error, the SDK keeps
+  the status on its `SdkHttpError`, not in the message. `HttpManagedMcpServer`
+  in `autobyteus-ts` therefore puts it first, followed by the SDK's text:
+  `Error: HTTP 401 Unauthorized: Error POSTing to endpoint: <response body>`.
+  The reason phrase is left out when the response has none (`HTTP 401: …`). A
+  404 with an empty body reads `HTTP 404 Not Found: Error POSTing to endpoint: `.
+  The text carries no header or token value. Preview prefixes it with `Failed to
+  preview tools for MCP server: `; discovery returns it as the `message` of a
+  `success: false` result; a native agent's tool call that has to connect
+  reports it inside `Error executing tool '<name>' (ID: …): …`. Agents on the
+  other runtimes reach the tool through the Agent Tools MCP endpoint, which
+  currently answers any external tool failure with JSON-RPC `Internal error`,
+  so they do not see this text.
+- A failure without an HTTP answer keeps the SDK's or Node's text with no
+  status, for example `TypeError: fetch failed` when nothing listens.
+- An HTTP error on a session that is already connected (listing tools, a tool
+  call) keeps the SDK's text unchanged.
+- A stdio server that exits at start fails with `SdkError: Connection closed`.
+- A stdio server that does not answer `initialize` fails after 60 seconds (the
+  SDK's default request timeout) with `SdkError: Request timed out`.
+
+The v1 SDK worded these as `Streamable HTTP error: Error POSTing to endpoint:
+…`, `McpError: MCP error -32000: Connection closed` and `McpError: MCP error
+-32001: Request timed out`.
+
+Tests use the v2 packages as devDependencies: `@modelcontextprotocol/server`
+and `@modelcontextprotocol/node` for the test servers, `@modelcontextprotocol/client`
+for test clients of our own endpoints, and `@modelcontextprotocol/core` for the
+spec schemas. The v1 package `@modelcontextprotocol/sdk` stays in
+`pnpm-lock.yaml` only as the peer the Claude Agent SDK (and, optionally, Google
+GenAI) requires; that peer is used for types only, and AutoByteus does not
+depend on it. An SDK upgrade changes the external-server client path for every
+runtime. Rerun these with the new SDK:
 
 - `autobyteus-ts/tests/integration/tools/mcp` (ungated; the command is the
   "Core library MCP integration" row of `TESTING.md`). These tests run the
@@ -112,11 +167,18 @@ the new SDK:
   (`autobyteus-ts/tests/fixtures/mcp-test-server/`, Python via `uv run`, and
   `mcp-stdio-fixture-server.mjs`, Node) over stdio and streamable HTTP. They
   cover tools, structured content, tool errors, slow calls, env and cwd, exit
-  and hang at start, closing, and the auth header. Without `uv`, or when `uv`
+  and hang at start, closing, and the auth header. The unit tests in
+  `autobyteus-ts/tests/unit/tools/mcp` add the 2025 handshake (one stdio start,
+  `initialize` first), cancellation, the timeout options and paged tool
+  listing. Without `uv`, or when `uv`
   cannot prepare the fixture, the Python cases skip with the reason and the
   Node cases still run. The opt-in `real-user-kind-mcp-server.test.ts`
   (`RUN_REAL_MCP_SERVER_E2E=1`, `AUTOBYTEUS_MCPS_DIR`) also lists the tools of a
   real `uv` server folder from a temp copy.
+- `tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts`
+  and `tests/integration/mcp-gateway/mcp-gateway-routes.integration.test.ts`:
+  SDK clients, in default and in `auto` negotiation mode, against our own
+  endpoints.
 - `tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts` and
   `mcp-http-redirect-and-transport.e2e.test.ts` (ungated; need a current
   server build): credentials on every request, the redirect rule and the

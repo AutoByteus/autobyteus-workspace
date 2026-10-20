@@ -14,8 +14,11 @@ Supported Codex paths:
 Codex App Server keeps its established Codex-owned external account,
 configuration, `HOME`/`CODEX_HOME`, and launch-environment behavior. AutoByteus
 does not add a Codex secret definition, Store lookup, managed authentication
-mode, login/status API, rotation lifecycle, or synthetic account root. This is
-an explicit exclusion from Secret Management credential-vault governance.
+mode, rotation lifecycle, or synthetic account root. This is an explicit
+exclusion from Secret Management credential-vault governance. The one sign-in
+surface is Settings -> Agent Runtimes ([Agent Runtimes](./agent_runtimes.md)):
+it reads the account state through app-server `account/read` and can start
+Codex's own `codex login`; it never sees or stores the credential.
 `LOCAL_HARDENED` is limited to vault/file-root/value-safe custody and does not
 claim child-process environment isolation for Codex, Claude, terminal, or
 Electron. Operator-supplied ambient state inherited by Codex is runtime

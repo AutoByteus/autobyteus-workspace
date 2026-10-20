@@ -12,7 +12,13 @@ import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "./app-data-migrations/m
 import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "./app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import { scheduleStudioBackgroundTasks } from "./startup/background-runner.js";
 import type { ServerOptions } from "./app.js";
+import { disableEnvironmentProviderApiKeySource } from "autobyteus-ts/secrets/provider-api-key-resolver.js";
 import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.js";
+import {
+  selectedTestVaultPaths,
+  selectSecretVaultSource,
+} from "./secret-management/secret-vault-source.js";
+import { TEST_VAULT_SETTING_NAME } from "autobyteus-ts/secrets/test-vault-setting.js";
 import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
 import { RootRunPackageReadinessIndex } from "./run-history/services/root-run-package-readiness-index.js";
 import { exitWithEmbeddedServerPlatformFatal } from "./startup/embedded-server-platform-fatal.js";
@@ -55,6 +61,8 @@ const fatal = (input: {
 };
 
 export async function startConfiguredServer(options: ServerOptions): Promise<void> {
+  // The server owns its vault: autobyteus-ts must never read AUTOBYTEUS_TEST_VAULT itself here.
+  disableEnvironmentProviderApiKeySource();
   let loggingConfig: LoggingConfig = getLoggingConfigFromEnv(process.env);
   let serverLogPath: string | null = null;
   let prismaInitializationStarted = false;
@@ -127,12 +135,18 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   const databaseLocation = config.getOperationalDatabaseLocation();
+  const vaultSource = selectSecretVaultSource({
+    testVaultSetting: config.get(TEST_VAULT_SETTING_NAME),
+    appDataDir: config.getAppDataDir(),
+    databaseLocation,
+  });
   configureFileToolDeniedPaths([
     databaseLocation.databasePath,
     databaseLocation.rootKeyPath,
     `${databaseLocation.databasePath}-wal`,
     `${databaseLocation.databasePath}-shm`,
     `${databaseLocation.databasePath}-journal`,
+    ...selectedTestVaultPaths(vaultSource),
   ]);
   prismaInitializationStarted = true;
   try {
@@ -166,7 +180,7 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
 
   vaultInitializationStarted = true;
   try {
-    await getSecretVaultRuntime().initialize(databaseLocation);
+    await getSecretVaultRuntime().initialize(vaultSource);
   } catch (error) {
     await fatalAfterPrerequisiteUnwind({
       code: "SECRET_VAULT_INITIALIZATION_FAILED",

@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'fs/promises';
+import os from 'os';
 import path from 'path';
 import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
@@ -11,6 +12,17 @@ const TOOL_NAME_WRITE_FILE = 'write_file';
 type MockContext = { agentId: string; workspaceRootPath: string | null };
 
 describe('write_file tool (integration)', () => {
+  const tempDirs: string[] = [];
+  const makeTempDir = async (): Promise<string> => {
+    const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'tmp-write-file-')));
+    tempDirs.push(dir);
+    return dir;
+  };
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
+  });
+
   beforeEach(() => {
     defaultToolRegistry.clear();
     registerWriteFileTool();
@@ -22,7 +34,7 @@ describe('write_file tool (integration)', () => {
   };
 
   it('creates a file at an absolute path', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'test_writer1.txt');
     const content = 'Functional Test Content 1 with Ümlauts';
     const expectedMessage = `File created/updated at ${filePath}`;
@@ -37,7 +49,7 @@ describe('write_file tool (integration)', () => {
   });
 
   it('creates a file in a new directory', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'new_subdir', 'test_writer2.txt');
     const content = 'Content in new subdir';
     const expectedMessage = `File created/updated at ${filePath}`;
@@ -63,7 +75,7 @@ describe('write_file tool (integration)', () => {
   });
 
   it('writes empty content', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'empty_writer_file.txt');
     const content = '';
     const expectedMessage = `File created/updated at ${filePath}`;
@@ -78,7 +90,7 @@ describe('write_file tool (integration)', () => {
   });
 
   it('overwrites existing file', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'existing_writer_file.txt');
     await fs.writeFile(filePath, 'Initial', 'utf-8');
 
@@ -92,7 +104,7 @@ describe('write_file tool (integration)', () => {
   });
 
   it('resolves relative paths from an explicit absolute base directory', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
+    const tmpDir = await makeTempDir();
     const relPath = path.join('subdir', 'relative.txt');
     const fullPath = path.join(tmpDir, relPath);
     const content = 'Relative content';
@@ -115,7 +127,7 @@ describe('write_file tool (integration)', () => {
   });
 
   it('allows absolute paths outside the workspace root', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
+    const tmpDir = await makeTempDir();
     const workspaceDir = path.join(tmpDir, 'workspace');
     const outsidePath = path.join(tmpDir, 'escaped.txt');
     await fs.mkdir(workspaceDir, { recursive: true });
@@ -131,7 +143,7 @@ describe('write_file tool (integration)', () => {
   });
 
   it('wraps IO errors', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'writer_io_error.txt');
     const spy = vi.spyOn(fs, 'writeFile').mockRejectedValue(new Error('Simulated write permission denied'));
 

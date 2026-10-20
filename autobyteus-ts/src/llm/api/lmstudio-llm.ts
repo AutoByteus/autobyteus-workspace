@@ -10,7 +10,7 @@ import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-reso
 import { LLMProvider } from '../providers.js';
 
 export class LMStudioLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     if (!model.hostUrl) {
       throw new Error('LMStudioLLM requires a hostUrl to be set on the LLMModel.');
     }

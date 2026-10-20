@@ -34,7 +34,6 @@
     "@fastify/multipart": "^8.3.1",
     "@fastify/websocket": "^10.0.1",
     "@huggingface/tokenizers": "0.2.0",
-    "@modelcontextprotocol/sdk": "1.32.1",
     "@prisma/client": "^5.22.0",
     "autobyteus-ts": "workspace:*",
     "chokidar": "^4.0.3",
@@ -55,6 +54,10 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@modelcontextprotocol/client": "2.3.1",
+    "@modelcontextprotocol/core": "2.3.1",
+    "@modelcontextprotocol/node": "2.1.1",
+    "@modelcontextprotocol/server": "2.3.1",
     "@types/mime-types": "^3.0.1",
     "@types/node": "^25.0.10",
     "@types/ws": "8.18.1",

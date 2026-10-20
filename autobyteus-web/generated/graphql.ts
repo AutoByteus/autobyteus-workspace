@@ -1372,9 +1372,16 @@ export type MemoryAvailabilitySummary = {
   hasWorkingContext: Scalars['Boolean']['output'];
   latestMemoryAt?: Maybe<Scalars['String']['output']>;
 };
+export type ImportMcpServerConfigFailure = {
+  __typename?: 'ImportMcpServerConfigFailure';
+  reason: Scalars['String']['output'];
+  serverId: Scalars['String']['output'];
+};
+
 
 export type MemoryExplorerSourceInput = {
   sourceNodeId?: InputMaybe<Scalars['String']['input']>;
+  failures: Array<ImportMcpServerConfigFailure>;
   type: MemoryExplorerSourceType;
 };
 
@@ -4373,7 +4380,7 @@ export type ImportMcpServerConfigsMutationVariables = Exact<{
 }>;
 
 
-export type ImportMcpServerConfigsMutation = { __typename?: 'Mutation', importMcpServerConfigs: { __typename: 'ImportMcpServerConfigsResult', success: boolean, message: string, importedCount: number, failedCount: number } };
+export type ImportMcpServerConfigsMutation = { __typename?: 'Mutation', importMcpServerConfigs: { __typename: 'ImportMcpServerConfigsResult', success: boolean, message: string, importedCount: number, failedCount: number, failures: Array<{ __typename: 'ImportMcpServerConfigFailure', serverId: string, reason: string }> } };
 
 export type MemorySyncStatusFieldsFragment = { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, sourceNodeId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', sourceNodeId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> };
 
@@ -8458,6 +8465,11 @@ export const AddProjectWorkspaceDocument = gql`
   addProjectWorkspace(input: $input) {
     ...ProjectFields
   }
+    failures {
+      __typename
+      serverId
+      reason
+    }
 }
     ${ProjectFieldsFragmentDoc}`;
 

@@ -21,6 +21,7 @@ export const testDatabaseRoot: string;
 export const testRuntimeRoot: string;
 export const persistentTestRuntimeRoot: string;
 export const builtServerEntry: string;
+export const testVaultSettingName: 'AUTOBYTEUS_TEST_VAULT';
 export function parseTrackedTestEnvironmentSource(
   source: string,
 ): Readonly<Record<'APP_ENV' | 'DB_TYPE' | 'DATABASE_URL' | 'AUTOBYTEUS_SERVER_HOST', string>>;
@@ -45,6 +46,8 @@ export function startBuiltTestServer(options?: {
   port?: number;
   timeoutMs?: number;
   environment?: Record<string, string | undefined>;
+  /** Live opt-in only: the `AUTOBYTEUS_TEST_VAULT` the server should use. */
+  testVaultSetting?: string;
 }): Promise<MaterializedTestRuntime & {
   host: string;
   port: number;

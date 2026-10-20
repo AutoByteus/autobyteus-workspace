@@ -1,0 +1,12 @@
+# IMP-27 gated live files against a synthetic vault after CR-001 (as IMP-22)
+# IR-003 | commit 469de3d47e | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# command: AUTOBYTEUS_TEST_VAULT=<tmp>/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/{openai-compatible-llm,grok-llm,deepseek-llm}.test.ts tests/unit/test-setup-credential-isolation.test.ts
+
+   1       Tests  3 passed | 8 skipped (11)
+   1  Test Files  4 passed (4)
+   1  ✓ tests/integration/llm/api/deepseek-llm.test.ts (6 tests | 5 skipped) 1523ms
+   1  ✓ tests/integration/llm/api/grok-llm.test.ts (2 tests | 2 skipped) 62ms
+   1  ✓ tests/integration/llm/api/openai-compatible-llm.test.ts (1 test) 61ms
+   1  ✓ tests/unit/test-setup-credential-isolation.test.ts (2 tests | 1 skipped) 2ms
+   2 [live provider skip] missing capability provider.grok.api-key for GROK (test vault <tmp>/vault); add it with pnpm test-vault setup
+   5 [live provider skip] provider refused DeepSeek: invalid_or_missing_credentials

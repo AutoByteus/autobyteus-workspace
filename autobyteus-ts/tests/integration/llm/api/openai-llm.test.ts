@@ -1,24 +1,22 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { OpenAILLM } from '../../../../src/llm/api/openai-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { OpenAiJsonSchemaFormatter } from '../../../../src/tools/usage/formatters/openai-json-schema-formatter.js';
 import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
-import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
+import { classifyProviderAccessError, liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-// Skip if no API key (integration test pattern)
-const apiKey = process.env.OPENAI_API_KEY;
-console.log('Integration Test Key Status:', apiKey ? 'Present' : 'Missing', apiKey ? `(Length: ${apiKey.length})` : '');
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('OpenAI');
 
-runIntegration('OpenAILLM Integration', () => {
+live.describe('OpenAILLM Integration', () => {
   const buildModel = () =>
     new LLMModel({
       name: 'gpt-5.5',
@@ -38,30 +36,25 @@ runIntegration('OpenAILLM Integration', () => {
   const imagePath = path.resolve(repoRoot, 'tests/assets/sample_image.png');
   const audioPath = path.resolve(repoRoot, 'tests/data/test_audio.mp3');
 
-  it('should successfully make a simple completion call', async function () {
-    const llm = new OpenAILLM(buildModel());
+  live.it('should successfully make a simple completion call', async function () {
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: "Hello, OpenAI LLM!" });
     try {
       const response = await (llm as any)._sendUserMessageToLLM(userMessage, {});
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should handle a multimodal image response', async () => {
+  live.it('should handle a multimodal image response', async () => {
     if (!fs.existsSync(imagePath)) {
       return;
     }
 
-    const llm = new OpenAILLM(buildModel());
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'What is in this image? Respond with a single word.',
       image_urls: [imagePath]
@@ -73,22 +66,17 @@ runIntegration('OpenAILLM Integration', () => {
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
       expect(response.content.split(/\s+/).length).toBeLessThan(5);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should attempt multimodal audio input when fixture is available', async () => {
+  live.it('should attempt multimodal audio input when fixture is available', async (context) => {
     if (!fs.existsSync(audioPath)) {
       return;
     }
 
-    const llm = new OpenAILLM(buildModel());
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'Describe this audio briefly.',
       audio_urls: [audioPath]
@@ -101,14 +89,13 @@ runIntegration('OpenAILLM Integration', () => {
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
       const message = String(error?.message || error).toLowerCase();
-      // Some OpenAI models in this repo's defaults may not support audio input.
+      // Some OpenAI models in this repo's defaults may not support audio input:
+      // report it as a skip with its reason, never as a pass.
       if (
-        skipIfProviderAccessError('OpenAI', 'gpt-5.5', error) ||
-        message.includes('audio') ||
-        message.includes('unsupported') ||
-        message.includes('invalid')
+        !classifyProviderAccessError(error)
+        && (message.includes('audio') || message.includes('unsupported') || message.includes('invalid'))
       ) {
-        return;
+        context.skip('gpt-5.5 does not accept this audio input');
       }
       throw error;
     } finally {
@@ -116,8 +103,8 @@ runIntegration('OpenAILLM Integration', () => {
     }
   }, 120000);
 
-  it('should stream response incrementally', async function () {
-    const llm = new OpenAILLM(buildModel());
+  live.it('should stream response incrementally', async function () {
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: "Please write a short greeting." });
     const receivedTokens: string[] = [];
     let completeResponse = "";
@@ -136,18 +123,13 @@ runIntegration('OpenAILLM Integration', () => {
       
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public sendUserMessage', async () => {
-    const llm = new OpenAILLM(buildModel());
+  live.it('should support public sendUserMessage', async () => {
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessageText = 'Can you summarize the following text: The quick brown fox jumps over the lazy dog.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
 
@@ -156,18 +138,13 @@ runIntegration('OpenAILLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public streamUserMessage', async () => {
-    const llm = new OpenAILLM(buildModel());
+  live.it('should support public streamUserMessage', async () => {
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessageText = 'Please list three benefits of using Python.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
     const receivedTokens: string[] = [];
@@ -184,17 +161,12 @@ runIntegration('OpenAILLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
-    } catch (error: any) {
-      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should handle tool calls streaming', async function () {
+  live.it('should handle tool calls streaming', async function () {
     // Equivalent to test_openai_tool_calls
     resetRegistry();
     const toolDef = defaultToolRegistry.getToolDefinition('write_file');
@@ -203,7 +175,7 @@ runIntegration('OpenAILLM Integration', () => {
     const formatter = new OpenAiJsonSchemaFormatter();
     const openAITools = [formatter.provide(toolDef!)];
 
-    const llm = new OpenAILLM(buildModel());
+    const llm = new OpenAILLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: "Write a file named 'hello.txt' with content 'Hello World'" });
 
     const toolCallsReceived: any[] = [];
@@ -226,11 +198,6 @@ runIntegration('OpenAILLM Integration', () => {
       // Check if it's ToolCallDelta
       expect(firstCall).toHaveProperty('index');
       // Name might be in first or later chunk
-    } catch (error: any) {
-      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }

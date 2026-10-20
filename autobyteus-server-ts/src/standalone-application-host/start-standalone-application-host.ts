@@ -12,7 +12,13 @@ import {
   initializeServerAppLogger,
 } from "../logging/server-app-logger.js";
 import { runMigrations } from "../startup/migrations.js";
+import { disableEnvironmentProviderApiKeySource } from "autobyteus-ts/secrets/provider-api-key-resolver.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
+import {
+  selectedTestVaultPaths,
+  selectSecretVaultSource,
+} from "../secret-management/secret-vault-source.js";
+import { TEST_VAULT_SETTING_NAME } from "autobyteus-ts/secrets/test-vault-setting.js";
 import { getAppDataMigrationRunner } from "../app-data-migrations/app-data-migration-runner.js";
 import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
 import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "../app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
@@ -101,6 +107,8 @@ const closeRepositoryResources = async (input: {
 const initializeStandaloneProcessResources = async (
   config: StandaloneApplicationHostConfig,
 ): Promise<StandaloneProcessResources> => {
+  // The host owns its vault: autobyteus-ts must never read AUTOBYTEUS_TEST_VAULT itself here.
+  disableEnvironmentProviderApiKeySource();
   let prismaInitializationStarted = false;
   let vaultInitializationStarted = false;
   try {
@@ -118,12 +126,18 @@ const initializeStandaloneProcessResources = async (
       databaseUrl: appConfig.getOperationalDatabaseUrl(),
     });
     const databaseLocation = appConfig.getOperationalDatabaseLocation();
+    const vaultSource = selectSecretVaultSource({
+      testVaultSetting: appConfig.get(TEST_VAULT_SETTING_NAME),
+      appDataDir: appConfig.getAppDataDir(),
+      databaseLocation,
+    });
     configureFileToolDeniedPaths([
       databaseLocation.databasePath,
       databaseLocation.rootKeyPath,
       `${databaseLocation.databasePath}-wal`,
       `${databaseLocation.databasePath}-shm`,
       `${databaseLocation.databasePath}-journal`,
+      ...selectedTestVaultPaths(vaultSource),
     ]);
     prismaInitializationStarted = true;
     await initializePrisma({ datasourceUrl: databaseLocation.databaseUrl });
@@ -143,7 +157,7 @@ const initializeStandaloneProcessResources = async (
       throw new Error(reason, { cause: error });
     }
     vaultInitializationStarted = true;
-    await getSecretVaultRuntime().initialize(databaseLocation);
+    await getSecretVaultRuntime().initialize(vaultSource);
     const statuses = await getAppDataMigrationRunner().runPending();
     for (const migration of statuses) {
       if (migration.status === "FAILED" || migration.status === "RUNNING") {

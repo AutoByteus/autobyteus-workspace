@@ -292,7 +292,7 @@ const seedLegacySecret = async (input: {
     appConfigProvider.initialize({ appDataDir: parsed.runtimeRoot }).initialize();
     await initializePrisma({ datasourceUrl: parsed.databaseUrl });
     const runtime = getSecretVaultRuntime();
-    await runtime.initialize(appConfigProvider.config.getOperationalDatabaseLocation());
+    await runtime.initialize({ kind: 'application', location: appConfigProvider.config.getOperationalDatabaseLocation() });
     await runtime.requireService().saveForConsumer({
       consumer: { kind: 'llm', providerId: parsed.providerId, credentialSlot: 'apiKey' },
       value: SecretValue.fromString(parsed.secret),
