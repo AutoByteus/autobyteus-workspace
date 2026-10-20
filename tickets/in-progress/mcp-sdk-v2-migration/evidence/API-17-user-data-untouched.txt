@@ -1,0 +1,29 @@
+# API-17 REQ-010: the user's MCP repos, mcps.json and app data untouched; 2026-10-20T09:17:31Z
+== /Users/normy/autobyteus_org/autobyteus_mcps: HEAD aa09165; git status --short (untracked entries listed; same as at the start of the run):
+?? .codex/
+?? .codex_artifacts/
+?? autobyteus-image-audio/
+?? chatterbox/
+?? parler-tts-demo/
+?? qwen-image-cli/
+?? task-plans/
+?? vibevoice-official/
+?? z-image/
+== /Users/normy/autobyteus_org/autobyteus_private_mcps: HEAD 02df7a2; git status --short (untracked entries listed; same as at the start of the run):
+?? .codex/
+== ~/.autobyteus/server-data/mcps.json mtime (read once, read-only, values redacted at 08:4xZ): 2026-09-16T09:24:43+0200
+== all servers were run from test-owned copies under /tmp/mcp182/servers and /tmp/mcp182/mcps-src (git archive), never from the user's folders
+== isolated instances used their own auto-created data roots (removed on stop, API-16); the user's running AutoByteus (/Applications) and other agents' instances were not touched
+== no tts, download (media-downloader download_*), SSH (ssh_*) or paid media tool was called (servers listed only); the exact call list follows
+== tools called through the gateway (every call this run made directly); download_*, ssh_*, tts and media-generation tools appear only in tool lists, never called:
+after parity_http_auth_probe, moved_http_auth_probe, video_editing_get_media_duration, fsv1_read_text_file, fsv2_read_text_file, fsv2_list_allowed_directories, pyfix_echo, pyfix_add, pyfix_fail, pyfix_report_env_and_cwd
+before parity_http_auth_probe, moved_http_auth_probe, video_editing_get_media_duration, fsv1_read_text_file, fsv2_read_text_file, fsv2_list_allowed_directories, pyfix_echo, pyfix_add, pyfix_fail, pyfix_report_env_and_cwd
+== tools the agents were given (API-12/13):
+TOOLS = ['create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe', 'fsv2_read_text_file']
+startRun('native', ['parity_http_slow_probe']
+
+== credential-pattern scan of every API-* evidence file (2026-10-20T09:24:04Z); pattern: sk-…, xai-…, AIza…, JWT, Bearer <8+ chars> other than the dummy, api_key=…, ghp_…, refresh_token, access_token
+API-01-mcp-unit-after.log:84: test name "sends the token as a Bearer Authorization header" (no value)
+API-01-mcp-unit-before.log:85: test name "sends the token as a Bearer Authorization header" (no value)
+API-17-user-data-untouched.txt:25:== credential-pattern scan of every API-* evidence file (2026-10-20T09:24:04Z); pattern: sk-…, xai-…, AIza…, JWT, Bearer <8+ chars> other than the dummy, api_key=…, ghp_…, refresh_token, access_token
+Result: only test names match; the only credential values in the evidence are the dummies test-dummy and test-dummy-gateway.
