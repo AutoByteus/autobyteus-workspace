@@ -29,6 +29,22 @@ export type AppUpdateOperation =
 /** Desktop update channel: `beta` also receives pre-releases (vX.Y.Z-beta.N). */
 export type AppUpdateChannel = 'stable' | 'beta';
 
+/**
+ * The app's update notification, kept by the desktop shell. `waiting` until the app runs the
+ * found version (or a later one); then `handled` until the user clears it or a newer version
+ * replaces it.
+ */
+export interface AppUpdateNotification {
+  version: string;
+  fromVersion: string;
+  foundAt: string;
+  read: boolean;
+  state: 'waiting' | 'handled';
+  handledVersion: string | null;
+  /** GitHub release page of `version`; null when the release feed is not GitHub (the e2e test feed). */
+  releasePageUrl: string | null;
+}
+
 export interface AppUpdateState {
   status: AppUpdateStatus;
   currentVersion: string;
@@ -50,6 +66,7 @@ export interface AppUpdateState {
   errorKind: AppUpdateErrorKind | null;
   errorOperation: AppUpdateOperation | null;
   checkedAt: string | null;
+  notification: AppUpdateNotification | null;
 }
 
 /**

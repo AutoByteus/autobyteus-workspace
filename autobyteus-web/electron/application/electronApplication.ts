@@ -67,7 +67,11 @@ export class ElectronApplication {
       environmentPolicy: profile.name === 'e2e' ? 'isolated-baseline' : 'inherit-caller',
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
-    this.appUpdateController = profile.updaterEnabled ? new AppUpdater() : new DisabledAppUpdater()
+    this.appUpdateController = profile.updaterEnabled
+      ? new AppUpdater()
+      : profile.testUpdateFeedUrl
+        ? new AppUpdater({ testFeedUrl: profile.testUpdateFeedUrl })
+        : new DisabledAppUpdater()
   }
 
   private get activeEmbeddedBaseUrl(): string {
@@ -378,6 +382,8 @@ export class ElectronApplication {
     if (this.profile.name === 'e2e') {
       await this.serverStatusManager.initializeServer()
       this.openNodeWindow(EMBEDDED_NODE_ID)
+      // Only with an explicit test update feed; the disabled updater schedules nothing.
+      this.appUpdateController.startAutoCheck()
       return
     }
 
