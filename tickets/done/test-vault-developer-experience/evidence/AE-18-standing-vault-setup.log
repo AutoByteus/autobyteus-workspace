@@ -1,0 +1,52 @@
+# AE-18 | standing test vault created by the user's choice of source (user message 2026-10-20: 'here is the api keys file you can use to setup for once /Users/normy/.autobyteus/server-data/.env') | env <real *_API_KEY removed> -u AUTOBYTEUS_TEST_VAULT pnpm test-vault setup --source /Users/normy/.autobyteus/server-data/.env </dev/null | commit 3ae0b40f91 | 2026-10-20T04:51:27Z
+## source file before/after: -rw------- 3672 bytes, mtime Oct 14 13:33 (unchanged; read once by setup only)
+TEST_VAULT /Users/normy/.autobyteus-test/vault
+SECRET provider.anthropic.api-key
+SECRET provider.deepseek.api-key
+SECRET provider.glm.api-key
+SECRET provider.google.ai-studio.api-key
+SECRET provider.google.vertex-express.api-key
+SECRET provider.grok.api-key
+SECRET provider.kimi.api-key
+SECRET provider.openai.api-key
+SECRET search.serpapi.api-key
+CONFIGURED 9
+SKIPPED 0
+REPLACED 0
+SETTING AUTOBYTEUS_TEST_VAULT=/Users/normy/.autobyteus-test/vault
+exit=0
+## vault files
+~/.autobyteus-test: 
+total 
+drwx------@ .
+drwxr-x---+ ..
+drwx------@ vault
+ 
+~/.autobyteus-test/vault: 
+total 
+drwx------@ .
+drwx------@ ..
+-rw-------@ test-vault.db
+-rw-------@ test-vault.db.secret.key
+## sha256 (baseline for every later hash check)
+b9a638234e8a5c949679aefb508d2a9260febb1c490bc3642588535628ea9929  ~/.autobyteus-test/vault/test-vault.db
+7ebe87b21eb5f3c5aa2ad24b80044fddd52236d070e85516a746738149b1baae  ~/.autobyteus-test/vault/test-vault.db.secret.key
+## status
+TEST_VAULT ~/.autobyteus-test/vault
+STATE READY
+CONFIGURED provider.anthropic.api-key
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.glm.api-key
+CONFIGURED provider.google.ai-studio.api-key
+CONFIGURED provider.google.vertex-express.api-key
+CONFIGURED provider.grok.api-key
+CONFIGURED provider.kimi.api-key
+CONFIGURED provider.openai.api-key
+CONFIGURED search.serpapi.api-key
+MISSING provider.lmstudio.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.qwen.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set

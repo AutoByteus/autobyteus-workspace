@@ -6,7 +6,7 @@ import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-reso
 import { resolveQwenBaseUrl } from '../qwen-provider-config.js';
 
 export class QwenLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     super(model, resolveQwenBaseUrl(), config, apiKeyResolver, LLMProvider.QWEN);
   }
 }

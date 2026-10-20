@@ -1,0 +1,388 @@
+# AE-01 | built CLI (node autobyteus-server-ts/dist/secret-management/cli/test-vault-cli.js; root script's build step deferred to avoid rebuilding dist during AE-02) | commit 12a23e7b8a | 2026-10-19T19:17:06Z | stdin </dev/null (no TTY)
+## setup v-full
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test-vault.db" at "file:/private/tmp/tv-apie2e/v-full/test-vault.db"
+
+SQLite database test-vault.db created at file:/private/tmp/tv-apie2e/v-full/test-vault.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+TEST_VAULT /private/tmp/tv-apie2e/v-full
+SECRET provider.anthropic.api-key
+SECRET provider.deepseek.api-key
+SECRET provider.lmstudio.api-key
+SECRET provider.openai.api-key
+CONFIGURED 4
+SKIPPED 0
+REPLACED 0
+SETTING AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-full
+exit=0
+## status v-full
+TEST_VAULT /private/tmp/tv-apie2e/v-full
+STATE READY
+CONFIGURED provider.anthropic.api-key
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.lmstudio.api-key
+CONFIGURED provider.openai.api-key
+MISSING provider.glm.api-key
+MISSING provider.google.ai-studio.api-key
+MISSING provider.google.vertex-express.api-key
+MISSING provider.grok.api-key
+MISSING provider.kimi.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.qwen.api-key
+MISSING search.serpapi.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+exit=0
+  total 520
+  drwx------@ 4 normy  wheel     128 Oct 19 21:17 .
+  drwxr-xr-x  9 normy  wheel     288 Oct 19 21:17 ..
+  -rw-------@ 1 normy  wheel  262144 Oct 19 21:17 test-vault.db
+  -rw-------@ 1 normy  wheel      32 Oct 19 21:17 test-vault.db.secret.key
+## setup v-nods
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test-vault.db" at "file:/private/tmp/tv-apie2e/v-nods/test-vault.db"
+
+SQLite database test-vault.db created at file:/private/tmp/tv-apie2e/v-nods/test-vault.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+TEST_VAULT /private/tmp/tv-apie2e/v-nods
+SECRET provider.kimi.api-key
+CONFIGURED 1
+SKIPPED 0
+REPLACED 0
+SETTING AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-nods
+exit=0
+## status v-nods
+TEST_VAULT /private/tmp/tv-apie2e/v-nods
+STATE READY
+CONFIGURED provider.kimi.api-key
+MISSING provider.anthropic.api-key
+MISSING provider.deepseek.api-key
+MISSING provider.glm.api-key
+MISSING provider.google.ai-studio.api-key
+MISSING provider.google.vertex-express.api-key
+MISSING provider.grok.api-key
+MISSING provider.lmstudio.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.openai.api-key
+MISSING provider.qwen.api-key
+MISSING search.serpapi.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+exit=0
+  total 520
+  drwx------@  4 normy  wheel     128 Oct 19 21:17 .
+  drwxr-xr-x  10 normy  wheel     320 Oct 19 21:17 ..
+  -rw-------@  1 normy  wheel  262144 Oct 19 21:17 test-vault.db
+  -rw-------@  1 normy  wheel      32 Oct 19 21:17 test-vault.db.secret.key
+## root script (deferred from the AE-01 run): AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-apie2e/v-full pnpm test-vault status </dev/null | 2026-10-19T19:46:38Z
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+TEST_VAULT /private/tmp/tv-apie2e/v-full
+STATE READY
+CONFIGURED provider.anthropic.api-key
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.lmstudio.api-key
+CONFIGURED provider.openai.api-key
+MISSING provider.glm.api-key
+MISSING provider.google.ai-studio.api-key
+MISSING provider.google.vertex-express.api-key
+MISSING provider.grok.api-key
+MISSING provider.kimi.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.qwen.api-key
+MISSING search.serpapi.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+exit=0
+## cleanup: built CLI remove for v-full and v-nods | 2026-10-19T19:47:30Z
+TEST_VAULT /private/tmp/tv-apie2e/v-full
+REMOVED /private/tmp/tv-apie2e/v-full/test-vault.db
+REMOVED /private/tmp/tv-apie2e/v-full/test-vault.db.secret.key
+exit=0
+TEST_VAULT /private/tmp/tv-apie2e/v-nods
+REMOVED /private/tmp/tv-apie2e/v-nods/test-vault.db
+REMOVED /private/tmp/tv-apie2e/v-nods/test-vault.db.secret.key
+exit=0
+
+# ===== ROUND 2 (API-REV-002) | AE-01 | built CLI | commit a525ca02ac | 2026-10-20T04:03:37Z | stdin </dev/null (no TTY) | root /private/tmp/tv-r2
+## setup v-full
+TEST_VAULT /private/tmp/tv-r2/v-full
+SECRET provider.anthropic.api-key
+SECRET provider.deepseek.api-key
+SECRET provider.lmstudio.api-key
+SECRET provider.openai.api-key
+CONFIGURED 4
+SKIPPED 0
+REPLACED 0
+SETTING AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-full
+exit=0
+## status v-full
+TEST_VAULT /private/tmp/tv-r2/v-full
+STATE READY
+CONFIGURED provider.anthropic.api-key
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.lmstudio.api-key
+CONFIGURED provider.openai.api-key
+MISSING provider.glm.api-key
+MISSING provider.google.ai-studio.api-key
+MISSING provider.google.vertex-express.api-key
+MISSING provider.grok.api-key
+MISSING provider.kimi.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.qwen.api-key
+MISSING search.serpapi.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+exit=0
+  total 520
+  drwx------@  4 normy  wheel     128 Oct 20 06:03 .
+  drwxr-xr-x  11 normy  wheel     352 Oct 20 06:03 ..
+  -rw-------@  1 normy  wheel  262144 Oct 20 06:03 test-vault.db
+  -rw-------@  1 normy  wheel      32 Oct 20 06:03 test-vault.db.secret.key
+## setup v-nods
+TEST_VAULT /private/tmp/tv-r2/v-nods
+SECRET provider.kimi.api-key
+CONFIGURED 1
+SKIPPED 0
+REPLACED 0
+SETTING AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-nods
+exit=0
+## status v-nods
+TEST_VAULT /private/tmp/tv-r2/v-nods
+STATE READY
+CONFIGURED provider.kimi.api-key
+MISSING provider.anthropic.api-key
+MISSING provider.deepseek.api-key
+MISSING provider.glm.api-key
+MISSING provider.google.ai-studio.api-key
+MISSING provider.google.vertex-express.api-key
+MISSING provider.grok.api-key
+MISSING provider.lmstudio.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.openai.api-key
+MISSING provider.qwen.api-key
+MISSING search.serpapi.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+exit=0
+  total 520
+  drwx------@  4 normy  wheel     128 Oct 20 06:03 .
+  drwxr-xr-x  12 normy  wheel     384 Oct 20 06:03 ..
+  -rw-------@  1 normy  wheel  262144 Oct 20 06:03 test-vault.db
+  -rw-------@  1 normy  wheel      32 Oct 20 06:03 test-vault.db.secret.key
+## root script
+TEST_VAULT /private/tmp/tv-r2/v-full
+STATE READY
+CONFIGURED provider.anthropic.api-key
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.lmstudio.api-key
+CONFIGURED provider.openai.api-key
+SELECTED AUTOBYTEUS_TEST_VAULT is set
+exit=0
+## ROUND 2 cleanup: built CLI remove for v-full and v-nods | 2026-10-20T04:37:39Z
+TEST_VAULT /private/tmp/tv-r2/v-full
+REMOVED /private/tmp/tv-r2/v-full/test-vault.db
+REMOVED /private/tmp/tv-r2/v-full/test-vault.db.secret.key
+exit=0
+TEST_VAULT /private/tmp/tv-r2/v-nods
+REMOVED /private/tmp/tv-r2/v-nods/test-vault.db
+REMOVED /private/tmp/tv-r2/v-nods/test-vault.db.secret.key
+exit=0

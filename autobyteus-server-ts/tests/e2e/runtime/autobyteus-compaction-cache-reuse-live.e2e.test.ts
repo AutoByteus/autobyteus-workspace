@@ -31,17 +31,17 @@
  *                still reads the conversation from the prompt cache (>= 90 %) and is accepted; the agent's own requests
  *                keep max_tokens 4096 (AC-011 on Anthropic)
  *
- * Gate and environment: RUN_COMPACTION_CACHE_E2E=1 plus provider keys as credential aliases (ANTHROPIC_API_KEY,
- * VERTEX_AI_API_KEY), saved into the test-owned vault; run with a clean `env -i` so no live-app variable leaks in.
- * A case whose key is missing is skipped. From `autobyteus-server-ts`:
- *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_COMPACTION_CACHE_E2E=1 ANTHROPIC_API_KEY=<key> VERTEX_AI_API_KEY=<key> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts --no-watch
+ * Gate and environment: RUN_COMPACTION_CACHE_E2E=1, with the Anthropic and Vertex Express keys in the test vault
+ * (AUTOBYTEUS_TEST_VAULT, see TESTING.md#test-vault); run with a clean `env -i` so no live-app variable leaks in.
+ * A case whose key is missing is reported as a skip. From `autobyteus-server-ts`:
+ *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_COMPACTION_CACHE_E2E=1 ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts --no-watch
  * Optional: COMPACTION_CACHE_E2E_ANTHROPIC_MODEL (default claude-opus-5-5; any cached-mode Anthropic catalog model),
  * COMPACTION_CACHE_E2E_GEMINI_MODEL (default gemini-3.8-flash), COMPACTION_CACHE_E2E_STEP_TIMEOUT_MS (default 600000).
  * COMPACTION_CACHE_E2E_EVIDENCE_DIR keeps case results, call summaries and full request bodies. The compaction settings
  * are predefined and cannot be deleted, so every case sets its own trigger at its start instead of relying on cleanup.
  * Cost: small (about 30 short Opus calls, mostly cache reads; a few Gemini calls).
  */
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, type TestContext } from "vitest";
 import {
   NativeRuntimeLiveHarness,
   isRecord,
@@ -52,13 +52,17 @@ import {
   type RunSession,
   type WsMessage,
 } from "../helpers/native-runtime-live-harness.js";
+import { localImportSecretIdForAlias } from "../../../src/secret-management/provisioning/local-import-credential-alias-registry.js";
+import { requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 import { COMPACTION_SUMMARY_HEADINGS } from "autobyteus-ts/memory/compaction/compaction-summary-parser.js";
 import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from "autobyteus-ts/memory/compaction/compaction-summary-prompt.js";
 import { DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY } from "../../../src/config/media-default-model-settings.js";
 
 const ENABLED = process.env.RUN_COMPACTION_CACHE_E2E === "1";
 const describeLive = ENABLED ? describe : describe.skip;
-const hasKey = (alias: string) => Boolean(process.env[alias]?.trim());
+/** Skips the case with its reason when the live vault lacks the key the importer alias names (never a pass). */
+const requireKey = (context: TestContext, alias: string) =>
+  requireLiveCapability(context, String(localImportSecretIdForAlias(alias)));
 const STEP_TIMEOUT_MS = Number(process.env.COMPACTION_CACHE_E2E_STEP_TIMEOUT_MS || 600_000);
 /** A case runs several turns; each turn step is bounded by STEP_TIMEOUT_MS so a stall reports its recent frames. */
 const CASE_TIMEOUT_MS = 4 * STEP_TIMEOUT_MS;
@@ -224,7 +228,8 @@ describeLive("AutoByteus native compaction on the agent's own model with a cache
     return { summaryCalls, first, lastBefore, after };
   };
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("CCR-E2E-001: the cached-mode Anthropic model (default Opus 5.5; COMPACTION_CACHE_E2E_ANTHROPIC_MODEL) compacts with a cached summary request (>= 90 % cache read), continues, and meters the call", async () => {
+  it("CCR-E2E-001: the cached-mode Anthropic model (default Opus 5.5; COMPACTION_CACHE_E2E_ANTHROPIC_MODEL) compacts with a cached summary request (>= 90 % cache read), continues, and meters the call", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const session = await runToPendingCompaction("CCR1");
     const t3Summaries = harness.callsOf("CCR1-T3").filter((call) => summaryRequestMode(call.body) !== null);
     const t4 = await runTurn(session, "CCR1-T4", T4_MESSAGE);
@@ -278,7 +283,8 @@ describeLive("AutoByteus native compaction on the agent's own model with a cache
     await harness.stopRun(session);
   }, CASE_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("CCR-E2E-002: tools changed in Settings before the compaction turn: the summary request carries no thinking and is accepted (strict)", async () => {
+  it("CCR-E2E-002: tools changed in Settings before the compaction turn: the summary request carries no thinking and is accepted (strict)", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const session = await runToPendingCompaction("CCR2");
     const t3Summaries = harness.callsOf("CCR2-T3").filter((call) => summaryRequestMode(call.body) !== null);
     const lastT3 = harness.callsOf("CCR2-T3").at(-1)!;
@@ -312,7 +318,8 @@ describeLive("AutoByteus native compaction on the agent's own model with a cache
     await harness.stopRun(session);
   }, CASE_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("VERTEX_AI_API_KEY"))("CCR-E2E-003: Gemini (transcript summary mode) compacts on its own model, continues, and meters the call", async () => {
+  it("CCR-E2E-003: Gemini (transcript summary mode) compacts on its own model, continues, and meters the call", async (testContext) => {
+    await requireKey(testContext, "VERTEX_AI_API_KEY");
     await harness.gql("mutation($mode: GeminiSetupMode!) { useGeminiMode(mode: $mode) { setup { activeMode } } }", { mode: "VERTEX_EXPRESS" });
     const model = await harness.catalogModel("GEMINI", GEMINI_MODEL);
     for (const [key, value] of Object.entries(highTrigger(model.maxOutputTokens))) await setSetting(key, value);
@@ -365,7 +372,8 @@ describeLive("AutoByteus native compaction on the agent's own model with a cache
     await harness.stopRun(session);
   }, CASE_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("CCR-E2E-004: a small configured output limit: the cached summary request carries the fitted raised limit and still reads from the cache (strict)", async () => {
+  it("CCR-E2E-004: a small configured output limit: the cached summary request carries the fitted raised limit and still reads from the cache (strict)", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const R = 4096;
     const session = await runToPendingCompaction("CCR4", R);
     const t4 = await runTurn(session, "CCR4-T4", T4_MESSAGE);

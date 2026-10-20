@@ -25,7 +25,7 @@ import WebSocket from "ws";
 import { expect } from "vitest";
 import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from "autobyteus-ts/memory/compaction/compaction-summary-prompt.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnvironment } from "./live-runtime-secret-vault-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "./studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "./websocket-command-helpers.js";
 
@@ -240,7 +240,7 @@ export class NativeRuntimeLiveHarness {
     this.tempDirs.add(dataDir);
     await writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(dataDir);
-    await initializeLiveRuntimeSecretVaultFromEnvironment();
+    await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     this.app = started.fastify;
     this.mainUrl = started.mainUrl;
@@ -260,7 +260,7 @@ export class NativeRuntimeLiveHarness {
     }
     await this.app?.close();
     this.app = null;
-    await closeLiveRuntimeSecretVault();
+    await closeLiveServerVault();
     globalThis.fetch = this.originalFetch;
     for (const dir of this.tempDirs) await rm(dir, { recursive: true, force: true });
     // Run memory persistence (e.g. file_changes.json) can flush once more after the runs stop; remove it again.

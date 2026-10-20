@@ -12,20 +12,27 @@ import {
   readTrackedTestEnvironment,
   serverRoot,
   startBuiltTestServer,
+  testVaultSettingName,
 } from './test-runtime-bootstrap.mjs';
 
 const preflightOnly = process.argv.includes('--preflight');
 const scenariosArgument = process.argv.find((argument) => argument.startsWith('--scenarios='));
 const selectedScenarios = scenariosArgument?.slice('--scenarios='.length).trim();
+// The run's vault: the test vault when the caller sets AUTOBYTEUS_TEST_VAULT, else the run database's own.
+const testVaultSetting = process.env[testVaultSettingName]?.trim() || undefined;
 const before = readTrackedTestEnvironment();
 const evidenceDirectory = await fs.mkdtemp(path.join(os.tmpdir(), 'live-e2e-evidence-'));
 const scanner = new LiveE2eEvidenceScanner(LIVE_E2E_RUNNER_CANARIES);
 let server;
 
 try {
+  process.stdout.write(testVaultSetting
+    ? `Vault: test vault ${testVaultSetting}\n`
+    : `Vault: run database (set ${testVaultSettingName} to use the test vault)\n`);
   server = await startBuiltTestServer({
     runtimeRoot: persistentTestRuntimeRoot,
     timeoutMs: 120_000,
+    testVaultSetting,
   });
   const result = await runCapturedLiveE2eProcess({
     command: 'pnpm',
@@ -47,6 +54,7 @@ try {
       AUTOBYTEUS_LIVE_E2E_EVIDENCE_DIR: evidenceDirectory,
       ...(preflightOnly ? { AUTOBYTEUS_LIVE_E2E_PREFLIGHT_ONLY: '1' } : {}),
       ...(selectedScenarios ? { AUTOBYTEUS_LIVE_E2E_SCENARIOS: selectedScenarios } : {}),
+      [testVaultSettingName]: testVaultSetting,
     }),
   });
   await server.stop();

@@ -11,7 +11,10 @@ import { downloadFileFromUrl } from '../../../utils/download-utils.js';
 import type { MediaOperationOptions } from '../../utils/operation-options.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
-import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import {
+  resolveProviderApiKeyResolver,
+  type ProviderApiKeyResolver,
+} from '../../../secrets/provider-api-key-resolver.js';
 import { MultimediaProvider } from '../../providers.js';
 
 function mimeTypeFromFormat(outputFormat: string | null | undefined): string {
@@ -61,9 +64,9 @@ export class OpenAIImageClient extends BaseImageClient {
   private clientPromise: Promise<OpenAI> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
 
-  constructor(model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: ImageModel, config: MultimediaConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     super(model, config);
-    this.apiKeyResolver = apiKeyResolver;
+    this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
   }
 
   private async initializeClient(): Promise<OpenAI> {

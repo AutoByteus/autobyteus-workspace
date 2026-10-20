@@ -121,6 +121,8 @@ try {
     AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
     DISABLE_HTTP_REQUEST_LOGS: 'false',
   };
+  // This probe saves keys: its backend always uses its own database vault, never a selected test vault.
+  delete backendEnv.AUTOBYTEUS_TEST_VAULT;
   for (const folder of ['logs', 'memory', 'temp_workspace']) await fs.mkdir(path.join(dataRoot, folder), { recursive: true });
   await fs.writeFile(path.join(dataRoot, '.env'), [
     'APP_ENV=development', 'DB_TYPE=sqlite', `DATABASE_URL=${databaseUrl}`,

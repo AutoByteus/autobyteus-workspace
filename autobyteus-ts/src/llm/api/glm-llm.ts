@@ -39,7 +39,7 @@ export class GlmLLM extends OpenAICompatibleLLM {
     model_context_window_exceeded: 'context_window_exceeded',
   };
 
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     super(model, 'https://open.bigmodel.cn/api/coding/paas/v4/', config, apiKeyResolver, LLMProvider.GLM);
 
     if (this.config?.extraParams && typeof this.config.extraParams === 'object') {

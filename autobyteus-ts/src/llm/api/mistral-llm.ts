@@ -12,7 +12,10 @@ import { LLMProvider } from '../providers.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { MistralPromptRenderer } from '../prompt-renderers/mistral-prompt-renderer.js';
 import { applySafeProviderRequestKwargs } from './provider-request-kwargs.js';
-import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import {
+  resolveProviderApiKeyResolver,
+  type ProviderApiKeyResolver,
+} from '../../secrets/provider-api-key-resolver.js';
 
 const MISTRAL_CONTROLLED_KWARG_KEYS = new Set(['stream']);
 
@@ -29,9 +32,9 @@ export class MistralLLM extends BaseLLM {
   private readonly apiKeyResolver: ProviderApiKeyResolver;
   protected _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     super(model, config);
-    this.apiKeyResolver = apiKeyResolver;
+    this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
     this._renderer = new MistralPromptRenderer();
   }
 

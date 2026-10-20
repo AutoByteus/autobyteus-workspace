@@ -1,0 +1,11 @@
+# IMP-05-e2e-test-vault-selection test-vault selection E2E (AC-016, AC-017)
+# commit 855842b8f1 (baseline fix 6f38cd51e6 below it) | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-19
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/secret-management/test-vault-selection.e2e.test.ts --no-watch
+
+ ✓ tests/e2e/secret-management/test-vault-selection.e2e.test.ts (5 tests) 14103ms
+     ✓ a built test server started with the live opt-in reads the test vault read-only  1997ms
+     ✓ a selected vault that is missing stops the server with TEST_VAULT_NOT_FOUND; no fallback  1362ms
+     ✓ a built test server without the live opt-in keeps its own vault even with the selector exported  1717ms
+     ✓ the secret-lifecycle suites give the same results with the selector exported (AC-017)  8570ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)

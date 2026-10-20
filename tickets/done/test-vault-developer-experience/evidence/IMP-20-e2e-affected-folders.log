@@ -1,0 +1,35 @@
+# IMP-20-e2e-affected-folders server E2E folders incl. test-vault-selection and environment-key-source
+# IR-002 | commit 9498de5f8b | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/secret-management tests/e2e/llm-management tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts --no-watch
+
+ ✓ tests/e2e/secret-management/environment-key-source.e2e.test.ts (3 tests) 2424ms
+     ✓ the server turns the default off: a client without a resolver fails, the server resolvers follow its source (AC-018)  2107ms
+ ↓ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (0 test)
+ ✓ tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts (4 tests) 14730ms
+     ✓ takes V1 through secretless staging and exact selector transition to empty V3 across restart  3355ms
+     ✓ orders the real multiversion transition, preserves token identity, and restores selectors through same-name recreation  4634ms
+     ✓ keeps collision selectors unchanged while removing both trusted old secrets after empty V3  3248ms
+     ✓ blocks a fresh recent RUNNING record, then converges through the ordinary stale retry  3492ms
+ ✓ tests/e2e/secret-management/test-vault-selection.e2e.test.ts (5 tests) 14693ms
+     ✓ a built test server started with the live opt-in reads the test vault read-only  1845ms
+     ✓ a selected vault that is missing stops the server with TEST_VAULT_NOT_FOUND; no fallback  1507ms
+     ✓ a built test server without the live opt-in keeps its own vault even with the selector exported  1767ms
+     ✓ the secret-lifecycle suites give the same results with the selector exported (AC-017)  9119ms
+ ✓ tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts (1 test) 6046ms
+     ✓ commits one probed pair durably, compensates failures, restarts, and routes every exact Qwen model  6045ms
+ ✓ tests/e2e/secret-management/removed-remote-provider-leftover-startup.e2e.test.ts (1 test) 5177ms
+     ✓ starts normally, keeps other providers working, lists the host key as deletable custom data, and leaves the vault row inert  5176ms
+ ✓ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts (1 test) 3469ms
+     ✓ materializes the immutable template, migrates, initializes one adjacent key, and reopens value-free  3468ms
+ ✓ tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts (1 test) 2724ms
+     ✓ ignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database  2724ms
+ ✓ tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts (3 tests) 1930ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (6 tests) 1972ms
+ ✓ tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts (3 tests) 2579ms
+ ✓ tests/e2e/llm-management/gemini-3-8-catalog-http.e2e.test.ts (1 test) 1841ms
+ ✓ tests/e2e/secret-management/secret-vault-independent-process-initialization.e2e.test.ts (1 test) 523ms
+     ✓ serializes two package compositions on one SQLite target and publishes one key/domain  523ms
+ ✓ tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts (13 tests) 38ms
+ ↓ tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts (0 test)
+ Test Files  13 passed | 2 skipped (15)
+      Tests  43 passed (43)

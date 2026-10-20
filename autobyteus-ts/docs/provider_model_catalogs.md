@@ -727,12 +727,13 @@ billable processing mode.
 
 - Unit tests should cover catalog membership, metadata resolution, provider
   request payloads, and runtime mappings for newly added models.
-- Credential-gated integration tests should use `.env.test` without printing
-  secret values. Missing, invalid, quota-blocked, or model-access-blocked
-  credentials should be recorded as provider-access skips rather than catalog
-  failures.
-- `.env.test` is intentionally ignored/untracked and must not be committed or
-  copied into artifacts.
+- Credential-gated integration tests use `liveProviderTest` from
+  `test-support/test-vault`: keys come from the test vault
+  (`AUTOBYTEUS_TEST_VAULT` with `RUN_LIVE_PROVIDER_TESTS=1`, see
+  [TESTING.md](../../TESTING.md#test-vault)), never from `.env` files or the
+  environment. Missing, invalid, quota-blocked, or model-access-blocked
+  credentials are reported as skips with their reason rather than catalog
+  failures, never as passes.
 - GPT-6 Astra and Claude Fable 5.1 support was validated with deterministic
   catalog, synthetic pricing, and mocked request coverage. No paid inference
   request to either target was run or is required for this catalog change.

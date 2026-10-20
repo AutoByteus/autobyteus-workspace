@@ -107,7 +107,7 @@ describe('local Gemini model metadata GraphQL E2E', () => {
     const config = appConfigProvider.initialize({ appDataDir: tempDirectory });
     config.initialize();
     await resetSecretVaultRuntimeForTests();
-    await getSecretVaultRuntime().initialize(config.getOperationalDatabaseLocation());
+    await getSecretVaultRuntime().initialize({ kind: "application", location: config.getOperationalDatabaseLocation() });
     const management = getSecretVaultRuntime().requireService();
     await management.saveForConsumer({
       consumer: {

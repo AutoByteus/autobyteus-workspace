@@ -1,0 +1,6 @@
+
+> autobyteus-ts@1.0.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+> echo "Error: no test specified" && exit 1
+
+Error: no test specified
+ ELIFECYCLE  Test failed. See above for more details.

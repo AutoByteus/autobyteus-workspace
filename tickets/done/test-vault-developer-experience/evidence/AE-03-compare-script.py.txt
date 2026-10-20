@@ -1,0 +1,24 @@
+import re, sys
+pat = re.compile(r'^ (✓|×|↓|❯) (tests/\S+\.test\.ts) \(([^)]*)\)')
+def parse(path):
+    out = {}
+    for line in open(path, encoding='utf-8', errors='replace'):
+        line = re.sub(r'\x1b\[[0-9;]*m', '', line)
+        m = pat.match(line)
+        if m:
+            mark, f, counts = m.groups()
+            counts = re.sub(r'\s+\d+ms$', '', counts)
+            out[f] = (mark, counts)
+    return out
+a, b = parse(sys.argv[1]), parse(sys.argv[2])
+excl = set(sys.argv[3:])
+files = sorted((set(a) | set(b)) - excl)
+diff = [(f, a.get(f), b.get(f)) for f in files if a.get(f) != b.get(f)]
+print(f"files compared: {len(files)} (excluded: {sorted(excl)})")
+for name, d in (("base", a), ("sel", b)):
+    marks = {}
+    for f in files:
+        if f in d: marks[d[f][0]] = marks.get(d[f][0], 0) + 1
+    print(f"{name}: {marks}")
+print(f"files whose status or test counts differ: {len(diff)}")
+for f, x, y in diff: print(f"  {f}: base={x} sel={y}")

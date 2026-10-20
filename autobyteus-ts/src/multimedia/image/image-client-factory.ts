@@ -265,8 +265,8 @@ export class ImageClientFactory extends Singleton {
 
   static createImageClient(
     modelIdentifier: string,
-    configOverride: MultimediaConfig | null | undefined,
-    apiKeyResolver: ProviderApiKeyResolver,
+    configOverride?: MultimediaConfig | null,
+    apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseImageClient {
     return ImageClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver, geminiRuntimeResolver);

@@ -1,0 +1,8 @@
+# IMP-03-server-integration-excerpt server integration baseline (excerpt)
+# commit 855842b8f1 (baseline fix 6f38cd51e6 below it) | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-19
+# command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+ Test Files  78 passed | 20 skipped (98)
+      Tests  419 passed | 71 skipped (490)
+   Duration  212.94s (transform 7.26s, setup 924ms, import 73.66s, tests 129.24s, environment 7ms)

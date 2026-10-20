@@ -31,7 +31,7 @@ vi.mock('../../../src/llm-management/services/model-availability-service.js', ()
 vi.mock('../../../src/llm-management/services/gemini-runtime-resolver-adapter.js', () => ({
   createGeminiRuntimeResolver: () => bindings.resolveRuntime,
 }));
-vi.mock('../../../src/secret-management/resolution/secret-management-provider-api-key-resolver.js', () => ({
+vi.mock('../../../src/secret-management/resolution/runtime-provider-api-key-resolvers.js', () => ({
   createMediaProviderApiKeyResolver: () => ({ resolve: bindings.resolveKey }),
 }));
 

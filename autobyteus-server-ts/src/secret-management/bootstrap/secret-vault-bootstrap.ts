@@ -1,78 +1,36 @@
-import fsp from "node:fs/promises";
 import { randomBytes } from "node:crypto";
 import type { ApplicationDatabaseLocation } from "../../config/application-database-location.js";
 import {
   createVaultVerifier,
   SECRET_VAULT_DOMAIN_ID_BYTES,
   SECRET_VAULT_ENCRYPTION_FORMAT_VERSION,
-  SECRET_VAULT_NONCE_BYTES,
-  SECRET_VAULT_TAG_BYTES,
-  verifyVaultVerifier,
-} from "../crypto/secret-vault-crypto.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-crypto.js";
+import { SecretRootKeyFile } from "autobyteus-ts/secrets/vault/secret-root-key-file.js";
+import type { SecretVaultMetadataRecord } from "autobyteus-ts/secrets/vault/secret-vault-records.js";
 import {
   READY_SECRET_VAULT_HEALTH,
   SecretVaultError,
-  type SecretVaultHealth,
   vaultHealthFromError,
-} from "../domain/secret-vault-types.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-types.js";
+import {
+  assertRootKeyOpensDomain,
+  validateVaultDatabaseIdentity,
+  vaultCorrupt,
+  vaultUnavailable,
+  type VaultVerificationResult,
+} from "autobyteus-ts/secrets/vault/verify-established-vault.js";
 import type {
   SecretVaultInitializationRepository,
   SecretVaultRepository,
 } from "../persistence/secret-vault-repository.js";
-import type { SecretVaultMetadataRecord } from "../persistence/secret-vault-persistence-types.js";
-import { SecretRootKeyFile } from "../root-key/secret-root-key-file.js";
 
-export type SecretVaultBootstrapResult = {
-  health: SecretVaultHealth;
-  rootKey: Buffer | null;
-  metadata: SecretVaultMetadataRecord | null;
-};
+export type SecretVaultBootstrapResult = VaultVerificationResult;
 
-const corrupt = (cause?: unknown): SecretVaultError =>
-  new SecretVaultError("CORRUPT_VAULT", false, "SECRET_VAULT_CORRUPT", { cause });
-
-const unavailable = (cause?: unknown): SecretVaultError =>
-  new SecretVaultError("VAULT_UNAVAILABLE", true, "SECRET_VAULT_UNAVAILABLE", { cause });
-
-const validateDatabaseIdentity = async (
-  location: ApplicationDatabaseLocation,
-): Promise<void> => {
-  try {
-    const stat = await fsp.lstat(location.databasePath);
-    if (stat.isSymbolicLink() || !stat.isFile()) throw unavailable();
-    if (
-      process.platform !== "win32"
-      && (
-        (typeof process.getuid === "function" && Number(stat.uid) !== process.getuid())
-        || (Number(stat.mode) & 0o022) !== 0
-      )
-    ) {
-      throw unavailable();
-    }
-  } catch (cause) {
-    if (cause instanceof SecretVaultError) throw cause;
-    throw unavailable(cause);
-  }
-};
-
-const validateMetadata = (metadata: SecretVaultMetadataRecord): void => {
-  if (
-    metadata.encryptionDomainId.length !== SECRET_VAULT_DOMAIN_ID_BYTES
-    || metadata.verifierNonce.length !== SECRET_VAULT_NONCE_BYTES
-    || metadata.verifierAuthenticationTag.length !== SECRET_VAULT_TAG_BYTES
-    || metadata.verifierCiphertext.length === 0
-  ) {
-    throw corrupt();
-  }
-  if (metadata.encryptionFormatVersion !== SECRET_VAULT_ENCRYPTION_FORMAT_VERSION) {
-    throw new SecretVaultError(
-      "INCOMPATIBLE_FORMAT",
-      false,
-      "SECRET_VAULT_INCOMPATIBLE",
-    );
-  }
-};
-
+/**
+ * Initializes a new application vault, or verifies the established one, under
+ * the database lock. Verification of an already established vault without a
+ * lock (the read-only test vault) is `verifyEstablishedVault` in autobyteus-ts.
+ */
 export class SecretVaultBootstrap {
   constructor(
     private readonly location: ApplicationDatabaseLocation,
@@ -82,7 +40,7 @@ export class SecretVaultBootstrap {
 
   async initializeOrVerify(): Promise<SecretVaultBootstrapResult> {
     try {
-      await validateDatabaseIdentity(this.location);
+      await validateVaultDatabaseIdentity(this.location);
       const result = await this.repository.withInitializationLock(
         (repository) => this.initializeOrVerifyUnderLock(repository),
       );
@@ -126,10 +84,10 @@ export class SecretVaultBootstrap {
         repository.countEntries(),
       ]);
     } catch (cause) {
-      throw unavailable(cause);
+      throw vaultUnavailable(cause);
     }
 
-    if (!metadata && entryCount > 0) throw corrupt();
+    if (!metadata && entryCount > 0) throw vaultCorrupt();
     let rootKey: Buffer;
     if (!metadata) {
       rootKey = inspectedKey.state === "VALID"
@@ -148,7 +106,7 @@ export class SecretVaultBootstrap {
         await repository.createMetadata(metadata);
       } catch (cause) {
         rootKey.fill(0);
-        throw unavailable(cause);
+        throw vaultUnavailable(cause);
       }
     } else {
       if (inspectedKey.state !== "VALID") {
@@ -158,18 +116,7 @@ export class SecretVaultBootstrap {
     }
 
     try {
-      validateMetadata(metadata);
-      const verified = verifyVaultVerifier(
-        rootKey,
-        metadata.encryptionDomainId,
-        metadata.encryptionFormatVersion,
-        {
-          nonce: metadata.verifierNonce,
-          ciphertext: metadata.verifierCiphertext,
-          authenticationTag: metadata.verifierAuthenticationTag,
-        },
-      );
-      if (!verified) throw corrupt();
+      assertRootKeyOpensDomain(rootKey, metadata);
       return { rootKey, metadata };
     } catch (error) {
       rootKey.fill(0);

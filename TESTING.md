@@ -39,7 +39,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Server typecheck | Production `src` under the build type policy | `pnpm -C autobyteus-server-ts typecheck` |
 | Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`) | `pnpm test:e2e`, or one file with `vitest run` as above |
 | Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
-| Core library tests | `autobyteus-ts` runtime, tools, LLM layer | `pnpm -C autobyteus-ts exec vitest run tests/unit` |
+| Core library tests | `autobyteus-ts` runtime, tools, LLM layer (credential-free; live provider tests stay skipped without their gate) | `pnpm -C autobyteus-ts test`; one folder: `pnpm -C autobyteus-ts exec vitest run tests/unit` |
 | Core library MCP integration | The MCP client against the repository's tiny real MCP servers (Python via `uv`, else Node), stdio and HTTP; an opt-in check against a real `uv` server folder | `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp`; the opt-in gate is in the file header |
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` |
 | Browser probes | Renderer journeys in headless Chrome, against fixture pages or a probe-owned real stack | `pnpm -C autobyteus-web test:e2e:<name>` (sources in `autobyteus-web/tests/e2e/`) |
@@ -59,7 +59,7 @@ closes the remaining confidence gap.
 | Renderer UI, stores, client–server behavior that also runs in a browser | Web unit tests + a browser probe |
 | Desktop-shell behavior: Electron main, preload/IPC, updater, windows, lifecycle, embedded server startup, packaging | Electron main-process tests + an isolated desktop instance |
 | A full real-product journey a user would perform | An isolated desktop instance of a worktree build |
-| Behavior against real model or search providers | A gated live suite, or an isolated instance with keys imported |
+| Behavior against real model or search providers | A gated live suite, or an isolated instance, with the [test vault](#test-vault) |
 | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
 
 These are separate evidence layers; none substitutes for another. A browser probe proves
@@ -101,7 +101,8 @@ The plan, with the validated commit and the diff, goes in the validation report.
   `ANTIGRAVITY_CLI_COMMAND`), so results never depend on the shell or `~/.autobyteus`. A new
   opt-in gate variable for those folders goes into `TEST_ENVIRONMENT_ALLOWLIST`.
 - **Clean environment elsewhere.** E2E folders, `autobyteus-ts` integration tests and live
-  suites inherit the shell, which carries the live app's variables and provider keys. Run
+  suites inherit the shell, which carries the live app's variables (their setups delete
+  inherited `*_API_KEY` variables, see [Test vault](#test-vault)). Run
   them with a clean environment, e.g. `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" …`,
   or unset the inherited `AUTOBYTEUS_*` roots, as the test file states. Give the temp `HOME`
   its resolved path (`HOME="$(cd "$(mktemp -d)" && pwd -P)"`): on macOS `/var` is a symlink to
@@ -112,12 +113,8 @@ The plan, with the validated commit and the diff, goes in the validation report.
 - **Gates.** Live and costly tests stay skipped unless their gate is set. A skip is not a
   pass. Real-provider runs spend the user's credits: run them only when the change needs
   real-provider proof.
-- **Real-provider credentials** live in the encrypted vault of the target database. Import
-  them with `pnpm secrets:import -- --source <file> --database-url file:<absolute db path>`
-  (wrap in `script -q /dev/null …` on macOS without a terminal), never by editing `.env`.
-  `pnpm test:e2e:real:preflight` reports what is configured; missing capabilities are
-  reported, never counted as passed. See
-  [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md).
+- **Real-provider credentials** come from the test vault: set `AUTOBYTEUS_TEST_VAULT` (see
+  [Test vault](#test-vault)).
 - **Local model servers share limited compute.** LM Studio and Ollama run on this machine. Run at
   most one agent run or suite that uses a local model at a time, never in parallel, and prefer a
   small, fast model (for example `qwen/qwen3.6-35b-a3b`, the gated LM Studio suite's default via
@@ -182,6 +179,47 @@ The plan, with the validated commit and the diff, goes in the validation report.
   their `dist/`, which their consumers import. After changing their source, rebuild with
   `pnpm -C <package> build` and commit the `dist/` changes too.
 
+## Test vault
+
+Set `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault` for any test that needs real provider
+keys, together with the test's live gate. Keys are never taken from `.env` files or
+environment variables: test setups delete inherited `*_API_KEY` variables.
+
+- **Setup, once per machine (the user).** `pnpm test-vault setup --source <absolute path>`
+  reads an owner-private secrets file the user chooses (`OPENAI_API_KEY=…` lines; agents
+  never pick it) and prints the setting to use. Configured keys are skipped; `--replace`
+  replaces them. `pnpm test-vault status` shows the location and the configured and missing
+  secret IDs (never values); `pnpm test-vault remove` deletes the vault files.
+- **Read-only, like a test database.** A server started with the variable reads the test vault
+  instead of its own: `pnpm test:e2e:real` (its preflight prints `Vault: test vault …`), an
+  isolated instance, a server you start yourself. Settings saves fail with
+  `SECRET_VAULT_READ_ONLY`. A selected vault that is missing or unusable stops the server
+  (`TEST_VAULT_NOT_FOUND`, `TEST_VAULT_UNAVAILABLE`); a server on the real
+  `~/.autobyteus/server-data` ignores the variable.
+- **Scripts need only the variable.** autobyteus-ts reads it itself: in a script run with
+  `node` or `tsx`, `new XLLM(model, config)` and `LLMFactory.createLLM(id)` get keys without a
+  resolver or setup code (Gemini still takes its mode explicitly).
+- **Live test runs opt in; deterministic runs ignore it.** `autobyteus-ts` Vitest live tests
+  also need `RUN_LIVE_PROVIDER_TESTS=1` (without it the setup removes the variable). Server
+  live suites use their `RUN_*` gate. `pnpm test:e2e`, server unit/integration and the default
+  `pnpm -C autobyteus-ts test` keep their own vaults even with the variable exported.
+- **A missing key is never a pass.** It is reported as a skip with its reason
+  (`missing capability <secret id> (test vault <dir>)`), as is a classified provider refusal;
+  `AUTOBYTEUS_LIVE_STRICT=1` turns them into failures.
+- **Set it on the command or in a live-testing shell, not in your shell profile.** Other tools
+  started from that shell (web probes, manual servers) would read the test vault too.
+
+```bash
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/deepseek-llm.test.ts
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real:preflight
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real -- --scenarios=deepseek.llm
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts --no-watch
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm --silent isolated-app start --build
+```
+
+Gated suites name their keys and gate in the file header. See
+[Secret Management](autobyteus-server-ts/docs/modules/secret_management.md#test-vault).
+
 ## Environment-specific setup: headless Linux and containers
 
 The virtual-display and root-container recipes below apply **only when those
@@ -238,8 +276,9 @@ ticket-owned automation does not require a new global package command.
 3. **Use the ports `start` reports** and keep the `instanceId` and `controlPort` for
    browser automation (`CHROME_REMOTE_DEBUGGING_PORT=<controlPort>`,
    `BROWSER_AUTOMATION_ATTACH_ONLY=1`), `restart` and `stop`.
-4. **Credentials go through the importer** into the target database, then
-   `pnpm --silent isolated-app restart <instanceId>` for an isolated instance.
+4. **Real provider keys come from the test vault.** Set `AUTOBYTEUS_TEST_VAULT` with the
+   test's live gate ([Test vault](#test-vault)). Never read keys from `.env` files or
+   environment variables, and never import them into test databases or instances.
 5. **Stop what you started**: `pnpm --silent isolated-app stop <instanceId>`, `Ctrl+C` for
    `pnpm dev`. Leave other processes and data alone. `pnpm --silent isolated-app list` should
    show no instance of yours afterwards.

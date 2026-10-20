@@ -8,7 +8,7 @@ import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
-import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnvironment } from "../helpers/live-runtime-secret-vault-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
@@ -18,9 +18,10 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 // Improvement must render the journal, hand the built-in Retrospective Skill Improver a trigger that lists
 // the journal manifest, root and files, and the improver (same runtime and model as the target, since the
 // built-in has no launch config) must read a listed journal file.
-// Gate: RUN_DEEPSEEK_E2E=1 with DEEPSEEK_API_KEY (saved into the test-owned vault; DEEPSEEK_E2E_MODEL, default
-// deepseek-v4-flash), or RUN_LMSTUDIO_E2E=1 (local model; LMSTUDIO_TARGET_TEXT_MODEL, default qwen3.6-35b-a3b).
-const PROVIDER = process.env.RUN_DEEPSEEK_E2E === "1" && process.env.DEEPSEEK_API_KEY?.trim() ? "DEEPSEEK"
+// Gate: RUN_DEEPSEEK_E2E=1 (key from the test vault, AUTOBYTEUS_TEST_VAULT, see TESTING.md#test-vault;
+// DEEPSEEK_E2E_MODEL, default deepseek-v4-flash), or RUN_LMSTUDIO_E2E=1 (local model; LMSTUDIO_TARGET_TEXT_MODEL,
+// default qwen3.6-35b-a3b).
+const PROVIDER = process.env.RUN_DEEPSEEK_E2E === "1" ? "DEEPSEEK"
   : process.env.RUN_LMSTUDIO_E2E === "1" ? "LMSTUDIO" : null;
 const MODEL = PROVIDER === "DEEPSEEK" ? process.env.DEEPSEEK_E2E_MODEL?.trim() || "deepseek-v4-flash"
   : process.env.LMSTUDIO_TARGET_TEXT_MODEL?.trim() || "qwen3.6-35b-a3b";
@@ -65,7 +66,7 @@ suite(`Skill Improvement uses the Work Journal (live, ${PROVIDER})`, () => {
     await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     process.env.LMSTUDIO_HOSTS ??= "http://127.0.0.1:1234";
     appConfigProvider.config.setCustomAppDataDir(dataDir);
-    await initializeLiveRuntimeSecretVaultFromEnvironment();
+    await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
     url = started.mainUrl;
@@ -78,12 +79,13 @@ suite(`Skill Improvement uses the Work Journal (live, ${PROVIDER})`, () => {
         { agentRunId: runId }).catch(() => undefined);
       await app.close();
     }
-    await closeLiveRuntimeSecretVault();
+    await closeLiveServerVault();
     if (previousLmStudioHosts === undefined) delete process.env.LMSTUDIO_HOSTS; else process.env.LMSTUDIO_HOSTS = previousLmStudioHosts;
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
   }, 120_000);
 
-  it("renders the journal at start, lists it in the improver's trigger, and the improver reads it", async () => {
+  it("renders the journal at start, lists it in the improver's trigger, and the improver reads it", async (context) => {
+    if (PROVIDER === "DEEPSEEK") await requireLiveCapability(context, "provider.deepseek.api-key");
     await graphql("mutation($providerId: String!, $runtimeKind: String) { ensureProviderModelCatalog(providerId: $providerId, runtimeKind: $runtimeKind) { llmModels { modelIdentifier } } }",
       { providerId: PROVIDER, runtimeKind: "autobyteus" });
     const available = (await graphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(

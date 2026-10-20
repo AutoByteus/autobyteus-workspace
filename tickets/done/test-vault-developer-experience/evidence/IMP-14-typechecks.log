@@ -1,0 +1,7 @@
+# IMP-14 typechecks
+# IR-002 | commit 9498de5f8b | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# command: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit; pnpm -C autobyteus-ts build (incl. verify:runtime-deps)
+
+server typecheck exit=0 (no output)
+autobyteus-ts typecheck exit=0 (no output)
+[verify:runtime-deps] OK

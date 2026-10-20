@@ -1,5 +1,5 @@
-import type { SecretId } from '../domain/secret-id.js';
-import { secretId } from '../domain/secret-id.js';
+import type { SecretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
+import { secretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
 
 const localImportCredentialAliases = Object.freeze({
   OPENAI_API_KEY: secretId('provider.openai.api-key'),

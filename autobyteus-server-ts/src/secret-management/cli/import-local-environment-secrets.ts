@@ -6,7 +6,10 @@ import {
   ApplicationDatabaseLocation,
   ApplicationDatabaseLocationError,
 } from '../../config/application-database-location.js';
-import { LocalEnvironmentSecretImportService } from '../provisioning/local-environment-secret-import-service.js';
+import {
+  LocalEnvironmentSecretImportService,
+  type LocalImportDecisionPort,
+} from '../provisioning/local-environment-secret-import-service.js';
 import {
   LocalEnvironmentSecretImportError,
   type ImportRequest,
@@ -104,7 +107,35 @@ export const formatLocalImportFailure = (error: unknown): string => {
   return `LOCAL_SECRET_IMPORT_FAILED ${projected.code}\n`;
 };
 
-const createConfirmationPort = () => ({
+export type TerminalChallenge = Readonly<{
+  isDirectTty(): boolean;
+  readChallenge(
+    expectedPhrase: string,
+    targetLocation: ApplicationDatabaseLocation,
+    plan: LocalEnvironmentSecretImportPlan,
+  ): Promise<string | null>;
+}>;
+
+/**
+ * The `secrets:import` decision: only a direct terminal may confirm, by typing
+ * `IMPORT` after seeing the plan.
+ */
+export const createTerminalImportDecision = (terminal: TerminalChallenge): LocalImportDecisionPort => ({
+  confirm: async (targetLocation, plan) => {
+    if (!terminal.isDirectTty()) {
+      throw new LocalEnvironmentSecretImportError('IMPORT_CONFIRMATION_REQUIRED');
+    }
+    let response: string | null;
+    try {
+      response = await terminal.readChallenge('IMPORT', targetLocation, plan);
+    } catch {
+      throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED');
+    }
+    if (response !== 'IMPORT') throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED');
+  },
+});
+
+const processTerminal: TerminalChallenge = {
   isDirectTty: (): boolean => Boolean(stdin.isTTY && stderr.isTTY),
   readChallenge: async (
     expectedPhrase: string,
@@ -122,7 +153,7 @@ const createConfirmationPort = () => ({
       prompt.close();
     }
   },
-});
+};
 
 type CliExecution = { output: string; blocked: boolean };
 
@@ -134,7 +165,7 @@ const executeCli = async (args: readonly string[]): Promise<CliExecution> => {
     return { output: formatLocalImportPlan(plan), blocked: plan.counts.blocked > 0 };
   }
   return {
-    output: formatLocalImportResult(await service.execute(request, createConfirmationPort())),
+    output: formatLocalImportResult(await service.execute(request, createTerminalImportDecision(processTerminal))),
     blocked: false,
   };
 };

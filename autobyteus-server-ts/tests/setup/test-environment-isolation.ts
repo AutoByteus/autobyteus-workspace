@@ -1,6 +1,8 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { expect } from "vitest";
+import { stripCredentialEnvironment } from "../../../test-support/test-vault/credential-environment.js";
+import { captureTestVaultSelection } from "../../../test-support/test-vault/test-vault-selection.js";
 
 /**
  * Unit and integration test files run with a reduced environment.
@@ -19,8 +21,15 @@ import { expect } from "vitest";
  *
  * Tests that need an app variable (for example `AUTOBYTEUS_MEMORY_DIR` or
  * `DATABASE_URL`) set and restore it themselves. When a new opt-in gated test
- * reads its own variable, add that name here. E2E and other test folders are
- * not affected.
+ * reads its own variable, add that name here. E2E and other test folders keep
+ * the inherited environment, except for the two rules below.
+ *
+ * For every test file (all folders):
+ * - credential variables (`*_API_KEY`) are deleted: test keys come only from
+ *   the test vault, never from the environment;
+ * - the test-vault selector `AUTOBYTEUS_TEST_VAULT` is captured and deleted,
+ *   so deterministic code always uses its own vault. Only live opt-ins apply
+ *   it (`initializeLiveServerVault`, `startBuiltTestServer({ testVaultSetting })`).
  */
 export const TEST_ENVIRONMENT_ALLOWLIST: ReadonlyArray<string | RegExp> = [
   // System essentials.
@@ -111,6 +120,9 @@ const isIsolatedTestFile = (testPath: string | undefined): boolean => {
   const resolved = path.resolve(testPath);
   return ISOLATED_TEST_ROOTS.some((root) => resolved.startsWith(root));
 };
+
+captureTestVaultSelection();
+stripCredentialEnvironment();
 
 if (isIsolatedTestFile(expect.getState().testPath)) {
   for (const name of Object.keys(process.env)) {

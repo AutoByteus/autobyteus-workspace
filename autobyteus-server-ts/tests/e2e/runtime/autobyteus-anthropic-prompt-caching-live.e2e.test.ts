@@ -29,10 +29,11 @@
  *     idempotency keys collide with earlier ones and the run summary drops them. APC-E2E-007 therefore runs before
  *     the restore.
  *
- * Gate: RUN_ANTHROPIC_CACHE_E2E=1 and ANTHROPIC_API_KEY (saved into the test-owned database vault, never logged).
+ * Gate: RUN_ANTHROPIC_CACHE_E2E=1, with the Anthropic key in the test vault (AUTOBYTEUS_TEST_VAULT, see
+ * TESTING.md#test-vault; read-only, never logged; a missing key is reported as a skip).
  * Uses real Anthropic credits (about 40 Opus 5.5 calls; mostly cache reads). Run it with a clean environment so no
  * live-app variable (memory/data dirs, compaction knobs) leaks in. From `autobyteus-server-ts`:
- *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_ANTHROPIC_CACHE_E2E=1 ANTHROPIC_API_KEY=<key> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts --no-watch
+ *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_ANTHROPIC_CACHE_E2E=1 ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts --no-watch
  * (add ANTHROPIC_CACHE_E2E_MODEL=claude-sonnet-5-5 or claude-haiku-5-5 after the gate to run another model).
  * Optional: ANTHROPIC_CACHE_E2E_MODEL (default claude-opus-5-5), ANTHROPIC_CACHE_E2E_EVIDENCE_DIR (keeps the
  * per-call JSON, case results and frames), ANTHROPIC_CACHE_E2E_STEP_TIMEOUT_MS (default 600000).
@@ -47,18 +48,16 @@ import os from "node:os";
 import path from "node:path";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { rootPrismaClient } from "repository_prisma";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY } from "../../../src/config/media-default-model-settings.js";
-import {
-  closeLiveRuntimeSecretVault,
-  initializeLiveRuntimeSecretVaultFromEnvironment,
-} from "../helpers/live-runtime-secret-vault-helpers.js";
+import { createLlmProviderApiKeyResolver } from "../../../src/secret-management/resolution/runtime-provider-api-key-resolvers.js";
+import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
-const ENABLED = process.env.RUN_ANTHROPIC_CACHE_E2E === "1" && Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+const ENABLED = process.env.RUN_ANTHROPIC_CACHE_E2E === "1";
 const describeLive = ENABLED ? describe : describe.skip;
 const MODEL = process.env.ANTHROPIC_CACHE_E2E_MODEL?.trim() || "claude-opus-5-5";
 const STEP_TIMEOUT_MS = Number(process.env.ANTHROPIC_CACHE_E2E_STEP_TIMEOUT_MS || 600_000);
@@ -405,7 +404,7 @@ describeLive("AutoByteus native Anthropic prompt caching (live, strict preserved
     dataDir = await mkdtemp(path.join(os.tmpdir(), "anthropic-cache-e2e-appdata-"));
     await writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(dataDir);
-    await initializeLiveRuntimeSecretVaultFromEnvironment();
+    await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
     mainUrl = started.mainUrl;
@@ -455,6 +454,11 @@ describeLive("AutoByteus native Anthropic prompt caching (live, strict preserved
     await openSocket();
   }, 300_000);
 
+  // A missing key is reported as a skip with its reason, never a pass (TESTING.md#test-vault).
+  beforeEach(async (context) => {
+    await requireLiveCapability(context, "provider.anthropic.api-key");
+  });
+
   afterEach(async (context) => {
     const state = context.task.result?.state ?? "unknown";
     const errors = (context.task.result?.errors ?? []).map((error) => String(error.message ?? error).slice(0, 1500));
@@ -478,7 +482,7 @@ describeLive("AutoByteus native Anthropic prompt caching (live, strict preserved
     }
     await app?.close();
     app = null;
-    await closeLiveRuntimeSecretVault();
+    await closeLiveServerVault();
     globalThis.fetch = originalFetch;
     for (const workspace of workspaces) await rm(workspace, { recursive: true, force: true });
     if (dataDir) await rm(dataDir, { recursive: true, force: true });
@@ -711,7 +715,8 @@ describeLive("AutoByteus native Anthropic prompt caching (live, strict preserved
     await settleCalls();
     const source = [...calls].reverse().find((call) => call.status === 200 && thinkingBlockCount(call.body) > 0);
     expect(source, "a captured request with kept thinking").toBeDefined();
-    const apiKey = process.env.ANTHROPIC_API_KEY!.trim();
+    // The same key the product uses, through the product resolver (never from the environment).
+    const apiKey = (await createLlmProviderApiKeyResolver().resolve("ANTHROPIC")).revealToTrustedConsumer();
     const send = async (body: Json) => {
       const response = await globalThis.fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",

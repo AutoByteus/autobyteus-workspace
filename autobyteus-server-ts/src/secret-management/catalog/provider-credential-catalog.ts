@@ -1,22 +1,11 @@
-import type { SecretConsumerIdentity, SecretId } from "../domain/secret-id.js";
 import {
-  customProviderSecretId,
-  secretId,
-  serializeSecretConsumerIdentity,
-} from "../domain/secret-id.js";
-
-const API_KEY_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
-  OPENAI: "provider.openai.api-key",
-  ANTHROPIC: "provider.anthropic.api-key",
-  MISTRAL: "provider.mistral.api-key",
-  DEEPSEEK: "provider.deepseek.api-key",
-  GROK: "provider.grok.api-key",
-  KIMI: "provider.kimi.api-key",
-  QWEN: "provider.qwen.api-key",
-  GLM: "provider.glm.api-key",
-  MINIMAX: "provider.minimax.api-key",
-  LMSTUDIO: "provider.lmstudio.api-key",
-});
+  FIXED_PROVIDER_SECRET_IDS,
+  isCustomProviderSlot,
+  providerSecretId,
+} from "autobyteus-ts/secrets/vault/provider-secret-id.js";
+import { secretId, type SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
+import type { SecretConsumerIdentity } from "../domain/secret-id.js";
+import { serializeSecretConsumerIdentity } from "../domain/secret-id.js";
 
 const SEARCH_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
   serper: "search.serper.api-key",
@@ -24,54 +13,62 @@ const SEARCH_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
   vertex_ai_search: "search.vertex-ai.api-key",
 });
 
+const FIXED_SECRET_IDS: readonly string[] = Object.freeze([
+  ...FIXED_PROVIDER_SECRET_IDS,
+  ...Object.values(SEARCH_BINDINGS),
+]);
+
+const notAuthorized = (): Error => new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
+
+/**
+ * The server's consumer authorization: which consumer may read which vault
+ * entry. Entry names for provider keys come from autobyteus-ts
+ * `providerSecretId`; the rules about consumer kinds stay here.
+ */
 export class ProviderCredentialCatalog {
   resolve(consumer: SecretConsumerIdentity): SecretId {
     if (consumer.kind === "agentRuntime") {
       if (consumer.runtimeKind === "claude_agent_sdk" && consumer.credentialSlot === "apiKey") {
         return secretId("provider.anthropic.api-key");
       }
-      throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
+      throw notAuthorized();
     }
     if (consumer.kind === "search") {
       const mapped = SEARCH_BINDINGS[consumer.providerId.toLowerCase()];
-      if (!mapped) throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
+      if (!mapped) throw notAuthorized();
       return secretId(mapped);
     }
 
     const providerId = consumer.providerId.trim();
-    if (providerId.startsWith("provider_") && consumer.credentialSlot === "apiKey") {
-      if (consumer.kind !== "llm" && consumer.kind !== "llmMetadata") {
-        throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
-      }
-      return customProviderSecretId(providerId);
+    let id: SecretId;
+    try {
+      id = providerSecretId(providerId, consumer.credentialSlot);
+    } catch {
+      throw notAuthorized();
     }
-    if (providerId.toUpperCase() === "GEMINI") {
-      if (consumer.credentialSlot === "geminiAiStudioApiKey") {
-        return secretId("provider.google.ai-studio.api-key");
-      }
-      if (consumer.credentialSlot === "geminiVertexExpressApiKey") {
-        return secretId("provider.google.vertex-express.api-key");
-      }
-      throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
+    if (isCustomProviderSlot(providerId, consumer.credentialSlot)) {
+      if (consumer.kind !== "llm" && consumer.kind !== "llmMetadata") throw notAuthorized();
+      return id;
     }
-
-    const mapped = API_KEY_BINDINGS[providerId.toUpperCase()];
-    if (!mapped || consumer.credentialSlot !== "apiKey") {
-      throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
+    if (
+      consumer.kind === "media"
+      && providerId.toUpperCase() !== "GEMINI"
+      && providerId.toUpperCase() !== "OPENAI"
+    ) {
+      throw notAuthorized();
     }
-    if (consumer.kind === "media" && providerId.toUpperCase() !== "OPENAI") {
-      throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
-    }
-    return secretId(mapped);
+    return id;
   }
 
   isKnownSecretId(value: SecretId): boolean {
     const candidate = String(value);
-    return Object.values(API_KEY_BINDINGS).includes(candidate)
-      || Object.values(SEARCH_BINDINGS).includes(candidate)
-      || candidate === "provider.google.ai-studio.api-key"
-      || candidate === "provider.google.vertex-express.api-key"
+    return FIXED_SECRET_IDS.includes(candidate)
       || /^provider\.openai-compatible\.[a-z0-9_-]+\.api-key$/.test(candidate);
+  }
+
+  /** Every built-in secret ID, sorted (custom OpenAI-compatible provider IDs are open-ended). */
+  listFixedSecretIds(): SecretId[] {
+    return [...FIXED_SECRET_IDS].sort().map(secretId);
   }
 
   describeBinding(consumer: SecretConsumerIdentity): { key: string; secretId: SecretId } {

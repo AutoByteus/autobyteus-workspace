@@ -18,7 +18,8 @@ describe('Message (integration)', () => {
       image_urls: ['img.png'],
       audio_urls: ['audio.mp3'],
       video_urls: ['video.mp4'],
-      tool_payload: null
+      tool_payload: null,
+      metadata: null
     });
   });
 });

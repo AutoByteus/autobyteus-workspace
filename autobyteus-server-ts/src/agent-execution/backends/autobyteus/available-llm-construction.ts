@@ -5,7 +5,7 @@ import {
 } from 'autobyteus-ts';
 import { getModelAvailabilityService } from '../../../llm-management/services/model-availability-service.js';
 import { createGeminiRuntimeResolver } from '../../../llm-management/services/gemini-runtime-resolver-adapter.js';
-import { createLlmProviderApiKeyResolver } from '../../../secret-management/resolution/secret-management-provider-api-key-resolver.js';
+import { createLlmProviderApiKeyResolver } from '../../../secret-management/resolution/runtime-provider-api-key-resolvers.js';
 
 export const createAvailableLlm = async (
   modelIdentifier: string,

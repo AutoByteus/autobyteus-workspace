@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import { KimiLLM } from '../../../../src/llm/api/kimi-llm.js';
 import { LlmStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -7,10 +7,9 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../../src/llm/utils/messages.js';
-import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.KIMI_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('Kimi');
 
 const TURN_ID = 'turn_test';
 
@@ -146,9 +145,9 @@ const runK2_7CodeToolCallContinuation = async (llm: KimiLLM): Promise<void> => {
   expect((continuationResponse.content ?? '').trim().length).toBeGreaterThan(0);
 };
 
-runIntegration('KimiLLM Integration', () => {
-  it('should successfully make a simple completion call', async () => {
-    const llm = new KimiLLM(buildModel());
+live.describe('KimiLLM Integration', () => {
+  live.it('should successfully make a simple completion call', async () => {
+    const llm = new KimiLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: "Hello, Kimi LLM! Please respond with 'pong'." });
 
     try {
@@ -157,18 +156,13 @@ runIntegration('KimiLLM Integration', () => {
       expect(typeof response.content).toBe('string');
       expect(response.content.toLowerCase()).toContain('pong');
       expect(response.usage).toBeTruthy();
-    } catch (error) {
-      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should stream response incrementally', async () => {
-    const llm = new KimiLLM(buildModel());
+  live.it('should stream response incrementally', async () => {
+    const llm = new KimiLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Please write a short two-sentence greeting.' });
     const receivedTokens: string[] = [];
     let completeResponse = '';
@@ -188,18 +182,13 @@ runIntegration('KimiLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(1);
       expect(completeResponse.length).toBeGreaterThan(10);
-    } catch (error) {
-      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public sendUserMessage', async () => {
-    const llm = new KimiLLM(buildModel());
+  live.it('should support public sendUserMessage', async () => {
+    const llm = new KimiLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Who developed the programming language Python?';
     const userMessage = new LLMUserMessage({ content: userMessageText });
 
@@ -208,18 +197,13 @@ runIntegration('KimiLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.toLowerCase()).toContain('guido van rossum');
-    } catch (error) {
-      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public streamUserMessage', async () => {
-    const llm = new KimiLLM(buildModel());
+  live.it('should support public streamUserMessage', async () => {
+    const llm = new KimiLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Please list three popular web frameworks for Python.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
     const receivedTokens: string[] = [];
@@ -237,31 +221,21 @@ runIntegration('KimiLLM Integration', () => {
       expect(receivedTokens.length).toBeGreaterThan(1);
       expect(completeResponse.toLowerCase()).toContain('django');
       expect(completeResponse.toLowerCase()).toContain('flask');
-    } catch (error) {
-      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support tool-call continuation without strict ordering errors', async () => {
-    const llm = new KimiLLM(buildModel());
+  live.it('should support tool-call continuation without strict ordering errors', async () => {
+    const llm = new KimiLLM(buildModel(), new LLMConfig());
     try {
       await runToolCallContinuation(llm);
-    } catch (error) {
-      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('accepts kimi-k2.7-code simple requests with adapter-normalized parameters', async () => {
+  live.it('accepts kimi-k2.7-code simple requests with adapter-normalized parameters', async () => {
     const llm = new KimiLLM(
       buildModel('kimi-k2.7-code'),
       new LLMConfig({
@@ -287,25 +261,15 @@ runIntegration('KimiLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect((response.content ?? '').trim().length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfProviderAccessError('Kimi', 'kimi-k2.7-code', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('preserves streamed kimi-k2.7-code reasoning through tool-call continuation', async () => {
+  live.it('preserves streamed kimi-k2.7-code reasoning through tool-call continuation', async () => {
     const llm = new KimiLLM(buildModel('kimi-k2.7-code'));
     try {
       await runK2_7CodeToolCallContinuation(llm);
-    } catch (error) {
-      if (skipIfProviderAccessError('Kimi', 'kimi-k2.7-code', error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }

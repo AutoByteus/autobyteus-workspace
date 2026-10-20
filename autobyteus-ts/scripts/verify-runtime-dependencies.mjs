@@ -81,7 +81,9 @@ for (const filePath of collectJsFiles(distDir)) {
     if (rawSpecifier.startsWith(".") || rawSpecifier.startsWith("/") || rawSpecifier.startsWith("file:")) {
       continue;
     }
-    if (builtins.has(rawSpecifier)) continue;
+    // `node:`-prefixed specifiers are built-ins, including prefix-only ones (node:sqlite, node:test)
+    // that `builtinModules` does not list.
+    if (rawSpecifier.startsWith("node:") || builtins.has(rawSpecifier)) continue;
 
     const packageName = getPackageName(rawSpecifier);
     if (builtins.has(packageName)) continue;

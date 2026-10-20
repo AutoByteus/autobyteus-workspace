@@ -7,7 +7,7 @@ import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type VideoClientConstructor = new (model: VideoModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, geminiRuntimeResolver?: GeminiRuntimeResolver) => BaseVideoClient;
+type VideoClientConstructor = new (model: VideoModel, config: MultimediaConfig, apiKeyResolver?: ProviderApiKeyResolver, geminiRuntimeResolver?: GeminiRuntimeResolver) => BaseVideoClient;
 
 export interface VideoModelOptions {
   name: string;
@@ -58,7 +58,7 @@ export class VideoModel {
 
   createClient(
     configOverride: MultimediaConfig | null | undefined,
-    apiKeyResolver: ProviderApiKeyResolver,
+    apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseVideoClient {
     let configToUse = this.defaultConfig;

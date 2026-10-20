@@ -49,13 +49,13 @@
  * context-window stop (Anthropic `stop_reason`), a network cut before `message_stop`, and DeepSeek tool-call arguments
  * that are not JSON.
  *
- * Gate and environment: as `autobyteus-native-output-limit-live.e2e.test.ts` (RUN_NATIVE_OUTPUT_LIMIT_E2E=1, keys as
- * credential aliases, clean `env -i`). OLR-E2E-010 sets two server settings (context override, trigger ratio) through
+ * Gate and environment: as `autobyteus-native-output-limit-live.e2e.test.ts` (RUN_NATIVE_OUTPUT_LIMIT_E2E=1, keys in
+ * the test vault selected by AUTOBYTEUS_TEST_VAULT, clean `env -i`). OLR-E2E-010 sets two server settings (context override, trigger ratio) through
  * `updateServerSetting` and resets them to high values afterwards (predefined settings cannot be deleted). Cost: small (≤ ~25 short Opus calls, a few DeepSeek calls).
  */
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, type TestContext } from "vitest";
 import {
   MAX_OUTPUT_LIMIT_RECOVERIES,
   OUTPUT_LIMIT_DISCARDED_TOOL_CALL_ERROR,
@@ -69,10 +69,14 @@ import {
   type RunSession,
   type WsMessage,
 } from "../helpers/native-runtime-live-harness.js";
+import { localImportSecretIdForAlias } from "../../../src/secret-management/provisioning/local-import-credential-alias-registry.js";
+import { requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 
 const ENABLED = process.env.RUN_NATIVE_OUTPUT_LIMIT_E2E === "1";
 const describeLive = ENABLED ? describe : describe.skip;
-const hasKey = (alias: string) => Boolean(process.env[alias]?.trim());
+/** Skips the case with its reason when the live vault lacks the key the importer alias names (never a pass). */
+const requireKey = (context: TestContext, alias: string) =>
+  requireLiveCapability(context, String(localImportSecretIdForAlias(alias)));
 const STEP_TIMEOUT_MS = Number(process.env.OUTPUT_LIMIT_E2E_STEP_TIMEOUT_MS || 1_200_000);
 const EVIDENCE_DIR = process.env.OUTPUT_LIMIT_E2E_EVIDENCE_DIR?.trim() || null;
 const ANTHROPIC_MODEL = process.env.OUTPUT_LIMIT_E2E_ANTHROPIC_MODEL?.trim() || "claude-opus-5-5";
@@ -172,7 +176,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
   /** The first recovery request after `cut` in the same phase. */
   const nextCall = (phaseCalls: CapturedCall[], cut: CapturedCall) => phaseCalls.find((call) => call.index > cut.index);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note", async () => {
+  it("OLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const model = await anthropicModel();
     const session = await harness.startRun(writerDefinitionId, model.modelIdentifier, { max_tokens: RECOVERABLE_LIMIT });
     const { error, frames } = await harness.runTurn(session, "OLR-001", linesRequest(RECOVERABLE_LINES));
@@ -217,7 +222,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLR-E2E-011: an Anthropic write_file cut mid tool call is discarded: segment failed, never executed, not in the next request", async () => {
+  it("OLR-E2E-011: an Anthropic write_file cut mid tool call is discarded: segment failed, never executed, not in the next request", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const model = await anthropicModel();
     const session = await harness.startRun(writerDefinitionId, model.modelIdentifier, { max_tokens: 400 });
     const { error, frames } = await harness.runTurn(session, "OLR-011", linesRequest(40));
@@ -244,7 +250,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message", async () => {
+  it("OLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const model = await anthropicModel();
     const workspace = await harness.makeWorkspace({ "seed.txt": "Topic: the sea. Tone: calm. Each line names a different sea creature or coastal feature.\n" });
     const session = await harness.startRun(readerWriterDefinitionId, model.modelIdentifier, { max_tokens: RECOVERABLE_LIMIT }, workspace);
@@ -274,7 +281,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLR-E2E-003: a text-only cut keeps the partial text, resumes with the hidden note, and shows two assistant parts live and after reload", async () => {
+  it("OLR-E2E-003: a text-only cut keeps the partial text, resumes with the hidden note, and shows two assistant parts live and after reload", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const model = await anthropicModel();
     const session = await harness.startRun(chatDefinitionId, model.modelIdentifier, { max_tokens: 300 });
     const { error, frames } = await harness.runTurn(session, "OLR-003",
@@ -312,7 +320,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLR-E2E-004: four cut responses in a row end the turn with LLM_OUTPUT_LIMIT_EXHAUSTED after 3 recoveries; the next message is valid", async () => {
+  it("OLR-E2E-004: four cut responses in a row end the turn with LLM_OUTPUT_LIMIT_EXHAUSTED after 3 recoveries; the next message is valid", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const model = await anthropicModel();
     const session = await harness.startRun(chatDefinitionId, model.modelIdentifier, { max_tokens: 20 });
     const { error, frames } = await harness.runTurn(session, "OLR-004", "Write a 300-word paragraph about the history of lighthouses.");
@@ -340,7 +349,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("DEEPSEEK_API_KEY"))("OLR-E2E-005: DeepSeek finish_reason length mid tool call is discarded and recovered the same way", async () => {
+  it("OLR-E2E-005: DeepSeek finish_reason length mid tool call is discarded and recovered the same way", async (testContext) => {
+    await requireKey(testContext, "DEEPSEEK_API_KEY");
     const model = await harness.catalogModel("DEEPSEEK", DEEPSEEK_MODEL);
     const session = await harness.startRun(writerDefinitionId, model.modelIdentifier, { max_tokens: 150, extra_params: { thinking_type: "disabled" } });
     const { error, frames } = await harness.runTurn(session, "OLR-005", linesRequest(40));
@@ -371,7 +381,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
       return harness.catalogModel(provider.providerId, provider.model);
     };
 
-    it.skipIf(!hasKey(provider.keyAlias))(`OLR-E2E-012 (${provider.providerId}): an output-limited write_file response is recovered (or, after 3 attempts, exhausted) the same way (AC-011)`, async () => {
+    it(`OLR-E2E-012 (${provider.providerId}): an output-limited write_file response is recovered (or, after 3 attempts, exhausted) the same way (AC-011)`, async (testContext) => {
+      await requireKey(testContext, provider.keyAlias);
       const model = await popularModel();
       const casePhase = `OLR-012-${provider.providerId}`;
       const session = await harness.startRun(writerDefinitionId, model.modelIdentifier, { max_tokens: RECOVERABLE_LIMIT, extra_params: provider.extraParams });
@@ -407,7 +418,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
       await harness.stopRun(session);
     }, STEP_TIMEOUT_MS);
 
-    it.skipIf(!hasKey(provider.keyAlias))(`OLR-E2E-013 (${provider.providerId}): a text-only cut keeps the partial text and resumes; parts are consecutive after reload (AC-005, AC-011)`, async () => {
+    it(`OLR-E2E-013 (${provider.providerId}): a text-only cut keeps the partial text and resumes; parts are consecutive after reload (AC-005, AC-011)`, async (testContext) => {
+      await requireKey(testContext, provider.keyAlias);
       const model = await popularModel();
       const casePhase = `OLR-013-${provider.providerId}`;
       const session = await harness.startRun(chatDefinitionId, model.modelIdentifier, { max_tokens: 300, extra_params: provider.extraParams });
@@ -467,15 +479,18 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     await harness.stopRun(session);
   };
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLR-E2E-006: a refusal stop mid tool call fails clearly with no tool and no recovery; the next message is valid", async () => {
+  it("OLR-E2E-006: a refusal stop mid tool call fails clearly with no tool and no recovery; the next message is valid", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     await runRejectedStop("OLR-E2E-006", "refusal", "LLM_RESPONSE_REFUSED");
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLR-E2E-007: a model_context_window_exceeded stop fails clearly with no recovery; the next message is valid", async () => {
+  it("OLR-E2E-007: a model_context_window_exceeded stop fails clearly with no recovery; the next message is valid", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     await runRejectedStop("OLR-E2E-007", "model_context_window_exceeded", "LLM_CONTEXT_WINDOW_EXCEEDED");
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLR-E2E-008: a stream that ends without message_stop after a tool_use start fails and rolls back; the next message is valid", async () => {
+  it("OLR-E2E-008: a stream that ends without message_stop after a tool_use start fails and rolls back; the next message is valid", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const model = await anthropicModel();
     const session = await harness.startRun(writerDefinitionId, model.modelIdentifier, null);
     harness.rewriteNextResponse((text) => text.replace(/event: message_stop\r?\ndata: [^\n]*\r?\n(\r?\n)?/, ""));
@@ -499,7 +514,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("DEEPSEEK_API_KEY"))("OLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues", async () => {
+  it("OLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues", async (testContext) => {
+    await requireKey(testContext, "DEEPSEEK_API_KEY");
     const model = await harness.catalogModel("DEEPSEEK", DEEPSEEK_MODEL);
     const session = await harness.startRun(writerDefinitionId, model.modelIdentifier, { extra_params: { thinking_type: "disabled" } });
     harness.rewriteNextResponse((text) => text.replace('"arguments":"', '"arguments":"@@'));
@@ -524,7 +540,8 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("DEEPSEEK_API_KEY"))("OLR-E2E-010: a small run output limit does not cut the summary: summary requests carry the fitted raised limit and compaction completes", async () => {
+  it("OLR-E2E-010: a small run output limit does not cut the summary: summary requests carry the fitted raised limit and compaction completes", async (testContext) => {
+    await requireKey(testContext, "DEEPSEEK_API_KEY");
     const model = await harness.catalogModel("DEEPSEEK", DEEPSEEK_MODEL);
     const RUN_LIMIT = 96;
     const CONTEXT = 60_000;

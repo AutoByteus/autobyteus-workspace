@@ -43,7 +43,7 @@ export class OllamaLLM extends BaseLLM {
   private client: Ollama;
   private _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, config: LLMConfig, _apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, _apiKeyResolver?: ProviderApiKeyResolver) {
     if (!model.hostUrl) {
       throw new Error('OllamaLLM requires a hostUrl to be set on the LLMModel.');
     }

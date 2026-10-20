@@ -7,7 +7,7 @@ import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type AudioClientConstructor = new (model: AudioModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, geminiRuntimeResolver?: GeminiRuntimeResolver) => BaseAudioClient;
+type AudioClientConstructor = new (model: AudioModel, config: MultimediaConfig, apiKeyResolver?: ProviderApiKeyResolver, geminiRuntimeResolver?: GeminiRuntimeResolver) => BaseAudioClient;
 
 export interface AudioModelOptions {
   name: string;
@@ -55,7 +55,7 @@ export class AudioModel {
 
   createClient(
     configOverride: MultimediaConfig | null | undefined,
-    apiKeyResolver: ProviderApiKeyResolver,
+    apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseAudioClient {
     let configToUse = this.defaultConfig;

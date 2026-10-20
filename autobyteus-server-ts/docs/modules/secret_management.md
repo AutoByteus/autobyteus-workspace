@@ -10,7 +10,10 @@ aliases, database paths, encryption keys, or ciphertext records directly.
 
 This is one local, application-owned vault. It is not a second Store database,
 a selectable backend, an enterprise Vault/KMS adapter, or a distributed SQLite
-service.
+service. The one exception is for tests: `AUTOBYTEUS_TEST_VAULT` selects a
+standing test vault the way `DATABASE_URL` selects a test database (see
+[Test Vault](#test-vault)); unset, every server uses the vault in its own
+database.
 
 ## One Database And One Derived Key
 
@@ -43,9 +46,10 @@ The 32-byte root key remains outside SQLite at the deterministic sibling path:
 ```
 
 There is no `SECRET_STORE_DATABASE_URL`, `SECRET_STORE_KEY_PATH`, Store JSON,
-backend kind, access mode, Store target name, or default-versus-E2E Store.
-Different environments may still choose different physical application
-databases through their own `DATABASE_URL`.
+backend kind, access mode or Store target name. Different environments may
+still choose different physical application databases through their own
+`DATABASE_URL`, and tests may select the read-only test vault through
+`AUTOBYTEUS_TEST_VAULT`.
 
 On POSIX systems, newly created vault directories and the key file are limited
 to the owner (`0700` and `0600`, where supported). A database and its derived
@@ -58,7 +62,10 @@ Startup follows one ordered lifecycle:
 1. obtain and canonicalize `DATABASE_URL`;
 2. run ordinary application migrations;
 3. initialize `repository_prisma` for that exact URL without enabling WAL;
-4. initialize a new vault or verify the established database/key pair;
+4. choose the vault source once (`selectSecretVaultSource`): the application
+   vault, or the test vault when `AUTOBYTEUS_TEST_VAULT` is set; initialize a
+   new application vault or verify the established database/key pair, or open
+   the test vault read-only;
 5. run registered app-data migrations, including the bounded secretless V1
    staging and final readable-identity reset described below;
 6. expose runtime APIs with value-free vault health.
@@ -71,7 +78,8 @@ without rewriting the key, metadata, database, or SQLite sidecars.
 
 Vault health is one of `READY`, `LOCKED`, `UNAVAILABLE`, `CORRUPT`, or
 `INCOMPATIBLE`. Missing, unsafe, mismatched, malformed, or unsupported
-established components fail closed. Definition status is exposed only as
+established components fail closed. A selected test vault that cannot be used
+is not a health value: startup fails (see [Test Vault](#test-vault)). Definition status is exposed only as
 `MISSING`, `CONFIGURED`, or `UNAVAILABLE`; no API returns a credential value.
 
 ## Encryption And Assurance
@@ -105,8 +113,19 @@ governance and keeps its Codex-owned authentication behavior.
   settings. Callers do not receive raw Prisma clients or transaction delegates.
 - `SecretCatalog` maps semantic consumer identities to stable `SecretId`
   records and rejects unknown or mismatched consumers before vault access.
-- `ProviderApiKeyResolver` is storage-neutral. Concrete provider clients call it
-  lazily when constructing the SDK/client for an authorized operation.
+- Provider clients take a `ProviderApiKeyResolver` and call it lazily when
+  constructing the SDK/client for an authorized operation. The server always
+  passes its own resolver. autobyteus-ts owns the vault format's read side
+  (`autobyteus-ts/secrets/vault/`: crypto, root-key file, records, the store
+  interface, the read-only store, verification, `readSecretEntry`,
+  `providerSecretId` and the test-vault location policy); the server owns the
+  lifecycle (initialization, writes, the Prisma repository) and consumer
+  authorization (`ProviderCredentialCatalog`, built on `providerSecretId`).
+- For a client built without a resolver, autobyteus-ts reads
+  `AUTOBYTEUS_TEST_VAULT` itself (see [Test Vault](#test-vault)). The server
+  turns that environment default off at both startup sites
+  (`disableEnvironmentProviderApiKeySource()`), so it never reads the selector
+  through autobyteus-ts.
 - GraphQL and Settings expose only value-free configured state and vault
   failures through typed errors.
 
@@ -250,21 +269,15 @@ pnpm secrets:import -- \
 Review the value-free canonical target and plan, then rerun without `--dry-run`;
 add `--overwrite` only when replacing configured records intentionally.
 Execution requires the TTY confirmation shown by the command and writes one
-atomic batch to exactly the validated database. `secrets:import` is the sole
-import command. There is no local/test wrapper, `--target`, implicit current
-application target, key argument, backend, profile, or access-mode option.
+atomic batch to exactly the validated database. `secrets:import` imports into
+an application database; `pnpm test-vault setup` runs the same importer
+service for the test vault (see [Test Vault](#test-vault)). There is no
+`--target`, implicit current application target, key argument, backend,
+profile, or access-mode option.
 
 The importer is an explicit operator command, never a startup, UI, API, MCP,
-or test-runner fallback. An agent may run it as the operator when the user has
-given it a key source file. A typical case is provisioning model access into an
-isolated AutoByteus instance at the `databaseUrl` reported by
-`pnpm isolated-app start`. The agent runs the same command with the same TTY
-confirmation (`script` provides a terminal for agents that cannot type into
-prompts). When the agent shell's stdin is a socket, `script` can fail with
-`tcgetattr: Operation not supported on socket`; the agent then runs the same
-command under a small Python `pty.fork()` wrapper that types `IMPORT` at the
-prompt. Nothing runs it automatically, and no tool imports on an agent's
-behalf:
+or test-runner fallback, and nothing runs it automatically. Tests and isolated
+instances do not import keys: they select the test vault. The rules:
 
 - `--source` must be an explicit absolute path;
 - `--database-url` must appear exactly once and identify an absolute SQLite
@@ -326,15 +339,80 @@ are configured through Settings or the explicit importer target. Stop the
 development stack before removing `.autobyteus/development/` to reset only
 development state.
 
-To target the persistent test application database, an operator passes its
-canonical absolute SQLite URL to the same `pnpm secrets:import` command. There
-is no test-import wrapper, and the importer does not read `.env.test` or the
-runtime `.env`. Deterministic coverage uses temporary roots; intentionally
-provisioned real-provider tests may reuse the dedicated ignored test root.
+Real-provider runs do not import keys into the test database: with
+`AUTOBYTEUS_TEST_VAULT` set, `pnpm test:e2e:real` starts its server with the
+test vault (the preflight prints `Vault: test vault …`). Deterministic coverage
+uses temporary roots and its own vaults.
 Scenario/model/capability definitions live in test code/internal fixtures. The
 obsolete `test-config/live-e2e.json`,
 `test-support/live-e2e/live-e2e-manifest.ts`, and
 `test-support/live-e2e/run-test-import.mjs` no longer exist.
+
+## Test Vault
+
+Tests and investigation use one standing test vault, selected like a test
+database. `AUTOBYTEUS_TEST_VAULT` names its directory (a location, never a key);
+`AppConfig.get` reads it from the environment or the data directory's `.env`.
+The vault is an ordinary current-schema application database plus key:
+
+```text
+<AUTOBYTEUS_TEST_VAULT>/test-vault.db
+<AUTOBYTEUS_TEST_VAULT>/test-vault.db.secret.key
+```
+
+- **Commands.** `pnpm test-vault setup --source <absolute file> [--replace]`
+  creates or updates the vault in `$AUTOBYTEUS_TEST_VAULT`, or
+  `~/.autobyteus-test/vault` when unset, through the importer service (same
+  source validation and value-free output) without a database URL or prompt:
+  the decision confirms only that validated test-vault target. It sets
+  owner-only permissions and prints `SETTING AUTOBYTEUS_TEST_VAULT=<dir>`.
+  `pnpm test-vault status` reports the location and configured/missing
+  `SecretId`s; `pnpm test-vault remove` deletes exactly the database, key and
+  SQLite sidecars. These are the only writers of the test vault.
+- **Refused locations.** Every command and a selected vault refuse, before any
+  file is touched (`TEST_VAULT_LOCATION_FORBIDDEN`), a location inside the
+  user's app data: `~/.autobyteus/**` and the desktop app's OS data folders
+  (macOS `~/Library/Application Support/autobyteus/**`,
+  `~/Library/Logs/autobyteus/**`; Linux `${XDG_CONFIG_HOME:-~/.config}/autobyteus/**`;
+  Windows `%APPDATA%\autobyteus\**`), after resolving symlinks
+  (`isForbiddenTestVaultLocation`).
+- **Source selection.** `selectSecretVaultSource` decides once, at both startup
+  sites: unset (or blank) selects the application vault, as before; a server
+  whose data directory is the real `~/.autobyteus/server-data`
+  (`isRealAppServerDataDir`) ignores the selector and warns
+  `TEST_VAULT_IGNORED_ON_REAL_APP_DATA`; otherwise the test vault is selected.
+  The runtime logs `Secret vault: test vault <dir> (read-only)` or
+  `Secret vault: application database`.
+- **Read-only.** The runtime opens the test vault through
+  `openReadOnlyTestVault`: a `node:sqlite` read-only/query-only store over the
+  two secret tables, verified without a lock or write (autobyteus-ts
+  `openVerifiedTestVault` / `verifyEstablishedVault`). Consumers never migrate it, so
+  worktrees of different versions can share it. Product lookups go through the
+  same `SecretManagementService` and resolvers; saves fail with
+  `SECRET_VAULT_READ_ONLY`. Agent file tools are denied the selected vault
+  directory, as they are the server's own vault files.
+- **No fallback.** A selected vault that is invalid
+  (`TEST_VAULT_LOCATION_INVALID`), forbidden, missing (`TEST_VAULT_NOT_FOUND`,
+  naming `pnpm test-vault setup`) or not `READY` (`TEST_VAULT_UNAVAILABLE`)
+  stops startup with `SECRET_VAULT_INITIALIZATION_FAILED`.
+- **Test harnesses.** Server test setup deletes inherited `*_API_KEY`
+  variables and moves the selector out of the environment, so deterministic
+  code always uses its own vault. Live opt-ins apply it:
+  `initializeLiveServerVault()` for in-process live suites and the real-E2E
+  harness, `startBuiltTestServer({ testVaultSetting })` for built servers
+  (`test:e2e:real`); `initializeLiveServerVault()` also turns the
+  autobyteus-ts environment default off, as server startup does.
+- **autobyteus-ts and scripts.** Any process that uses autobyteus-ts (a script
+  run with `node` or `tsx`, a Vitest live run) gets keys for clients built
+  without a resolver from the vault `AUTOBYTEUS_TEST_VAULT` names: explicit
+  resolver first, then that environment default, else `MissingApiKeyError`.
+  The vault modules and `node:sqlite` load only when the variable is set and a
+  key is needed; each vault is opened once per process, read-only. A key the
+  vault lacks fails with a missing-capability error naming the secret, the
+  vault and `pnpm test-vault setup`; a provider without a vault entry fails with
+  `SECRET_PROVIDER_UNKNOWN`. autobyteus-ts Vitest setup removes the selector
+  unless `RUN_LIVE_PROVIDER_TESTS=1`. Usage is in
+  [TESTING.md](../../../TESTING.md#test-vault).
 
 ## Deployment, Reset, And Recovery
 

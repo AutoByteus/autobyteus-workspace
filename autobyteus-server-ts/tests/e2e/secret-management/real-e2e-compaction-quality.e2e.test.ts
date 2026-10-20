@@ -62,7 +62,8 @@ const assertEssentialRetention = (summary: string) => {
   expect(summary).toMatch(/duplicate.key/i);
 };
 
-(enabled ? describe : describe.skip)('first and repeated live compaction semantic retention', () => {
+// Only when a compaction scenario is selected: an enabled suite with no test fails the run (F-08).
+(selected.length > 0 ? describe : describe.skip)('first and repeated live compaction semantic retention', () => {
   let harness: LiveE2eHarness;
   beforeAll(async () => { harness = await LiveE2eHarness.open(); });
   afterAll(async () => { await harness?.close(); });

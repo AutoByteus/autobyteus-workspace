@@ -1,0 +1,19 @@
+# AE-17 | AC-009 | pnpm -C autobyteus-ts test without (base) and with (sel) AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-full exported, RUN_LIVE_PROVIDER_TESTS unset, agent shell with 13 inherited *_API_KEY | commit a525ca02ac | 2026-10-20T04:06:42Z
+## base
+ Test Files  392 passed | 21 skipped (413)
+      Tests  2354 passed | 73 skipped (2427)
+# exit=0
+## sel
+ Test Files  392 passed | 21 skipped (413)
+      Tests  2354 passed | 73 skipped (2427)
+# exit=0
+## per-file comparison (AE-03-compare-script.py.txt)
+files compared: 413 (excluded: [])
+base: {'✓': 392, '↓': 21}
+sel: {'✓': 392, '↓': 21}
+files whose status or test counts differ: 0
+## v-full sha256 after both runs (unchanged vs AE-01)
+0d0765a1390ee006b422eb73534ec32c8ac9fdd576f5b96ea794f60b00359513  v-full/test-vault.db
+8fd93f5d00944ac71707167d4ae653670225056208493e44318dbcbf9bdd01b4  v-full/test-vault.db.secret.key
+test-vault.db
+test-vault.db.secret.key

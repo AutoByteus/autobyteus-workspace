@@ -370,8 +370,9 @@ CLIs receive their options directly. The launcher removes an inherited
 desktop process and overlays the three documented isolation variables. The
 isolated app's embedded server receives only a system-baseline environment, so
 production AutoByteus, database and provider settings from the caller never
-reach it. Provision credentials into the isolated database with
-`pnpm secrets:import`.
+reach it. For model access, start it with `AUTOBYTEUS_TEST_VAULT` set: the
+embedded server receives that selector and reads the test vault read-only (see
+[TESTING.md](TESTING.md#test-vault)).
 
 See the frontend [packaged Electron E2E guide](autobyteus-web/README.md#packaged-electron-e2e-launches)
 and the [canonical launch/ownership contract](autobyteus-web/docs/electron_packaging.md#packaged-e2e-launch-profile)

@@ -1,0 +1,6 @@
+# DEL-05 | Electron main vitest (as IMP-11): nuxt prepare; vitest --config ./electron/vitest.config.ts | HEAD ee78ab81a1 | 2026-10-20T05:09:53Z
+nuxt prepare exit=0
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (12 tests) 5ms
+ Test Files  36 passed | 1 skipped (37)
+      Tests  193 passed | 1 skipped (194)
+exit=0
