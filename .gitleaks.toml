@@ -102,6 +102,17 @@ regexes = [
   '''process\.env\.[A-Z0-9_]+''',
 ]
 
+# remove-skill-improvement (autobyteus-205): the retired setting name ENABLE_SKILL_IMPROVEMENT after the word
+# "keys" in prose about a fixture's `.env` ("the three keys, `ENABLE_SKILL_IMPROVEMENT=true`"). It is a setting
+# name with a boolean, not a credential; checked by shape and context. Only that exact text, and only for the generic rule.
+[[allowlists]]
+description = "Retired setting ENABLE_SKILL_IMPROVEMENT=true in fixture prose (generic rule only)"
+targetRules = ["generic-api-key"]
+regexTarget = "secret"
+regexes = [
+  '''^ENABLE_SKILL_IMPROVEMENT=true$''',
+]
+
 # --- Allowlists for every rule ------------------------------------------------
 
 # Obvious test values used by fixtures and canary scans.
