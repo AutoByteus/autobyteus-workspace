@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: SR-003
+- Current solution revision ID: SR-004
 - Package identifier: `remove-skill-improvement`
 - Request / ticket: Project Task autobyteus-205
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's decision of 2026-10-20
@@ -73,7 +73,7 @@ None.
 
 | AC | REQ | Expected outcome | Verification |
 | --- | --- | --- | --- |
-| AC-001 | REQ-001, REQ-002 | A grep for the feature's names, `server_helper`, `launchPurpose` and direct-message grants in current server and web code finds nothing (released migrations and `tickets/` excepted). Typecheck and lint pass | grep, typecheck |
+| AC-001 | REQ-001, REQ-002 | A grep for the feature's names, `self_evolution`, `server_helper`, `launchPurpose`, direct-message grants and `ENABLE_SELF_EVOLUTION` in current server and web code and docs finds nothing outside the allowed locations: the new removal migration and its tests (frozen names), `retiredSettingNames` in `app-config-setting-policy.ts` and its tests, released migrations, and `tickets/`. Typecheck and lint pass | grep, typecheck |
 | AC-002 | REQ-003 | Server and web unit and integration suites pass, including Work Journal, memory, messaging and settings | test suites |
 | AC-003 | REQ-004 | On a synthesized data folder shaped like the user's (records, helper definition, 3 helper runs with and without `launchPurpose`, `.env` keys, plus unrelated runs and settings), the server starts and other runs list and open. Same on a fresh folder. A removal step that cannot finish does not block startup | startup test |
 | AC-004 | REQ-005 | After the first start the feature's records, the two settings keys, the improver's definition and its runs (folders and history entries) are gone; unrelated runs, agents, history entries and `.env` lines are byte-identical; a second start changes nothing | migration test on synthesized data; the user's check after backup |

@@ -2,10 +2,10 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-003
+- Current solution revision ID: SR-004
 - Approved requirements: SR-002, approved by the user for DEC-001 (2026-10-20: "let's just remove them"); the rest within the direction, user informed. SR-003 adds evidence-only scope inside DEC-001: the feature's earlier-name ("self evolution") leftovers and a third settings key. The user is informed in the same conversation.
 - Supplements: `release-notes.md` (SR-003)
-- Design status: `Ready`
+- Design status: `Ready` (SR-004: ARCH-REV-001 AR-001..AR-003 and R-1 applied)
 - Investigation notes: `tickets/in-progress/remove-skill-improvement/investigation-notes.md` (F-01..F-11, A-01..A-09)
 - Authorities read (2026-10-20): `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md` (rules 7 and 8), `autobyteus-server-ts/docs/design/data_migration_guideline.md`, `TESTING.md`
 - Conflicts or discrepancies: none
@@ -152,13 +152,13 @@ Remove Skill Improvement and everything only it uses, and delete its data once a
 | Step | Source | Target | Validation | Failure |
 | --- | --- | --- | --- | --- |
 | M1 collect helper run ids | `memory/skill_improvement/index.json` and `improvement_runs/*/` (`improverRunId`); `memory/self_evolution/index.json` and `evolution_runs/*/` (`evolverRunId`); every `memory/agents/<id>/run_metadata.json` with `agentDefinitionId == "autobyteus-retrospective-skill-improver"` or `launchPurpose == "server_helper"` | A set of run ids | A run id is used only if it is a canonical id and its folder is directly under `memory/agents/` | Unreadable JSON → that source is skipped and reported (`PRESERVED_UNREADABLE`); a referenced run without a folder is just a history-row candidate |
-| M2 remove history rows | `memory/run_history_index.json` | The same array without rows whose `runId` is in the set; one atomic write, only when something changes | Re-read and parse | Write failure → `FAILED` item; the next start retries (the rows are hidden anyway once their folders are gone, A-04) |
+| M2 remove history rows | `memory/run_history_index.json` | The same array without rows whose `runId` is in the set; one atomic write, only when something changes, serialized exactly as `AgentRunHistoryIndexStore.writeIndex` does (same indentation and trailing newline) so unchanged rows keep their bytes (R-1) | Re-read and parse | Write failure → `FAILED` item; the next start retries (the rows are hidden anyway once their folders are gone, A-04) |
 | M3 delete helper run folders | `memory/agents/<id>/` for each id | Removed | `lstat` is ENOENT afterwards | `FAILED` item; next start retries |
 | M4 delete per-run session folders | Walk `memory/` (excluding `imports/`, as A-07 does): a directory named `skill_improvement` holding `improver_session.json`, or `self_evolution` holding `evolver_session.json` | Removed | — | `FAILED` item; retry |
-| M5 delete root records | `memory/skill_improvement/` (holds `index.json` or `improvement_runs/`), `memory/self_evolution/` (holds `index.json` or `evolution_runs/`) | Removed | — | `FAILED` item; retry |
+| M5 delete root records | `memory/skill_improvement/` (holds `index.json` or `improvement_runs/`), `memory/self_evolution/` (holds `index.json` or `evolution_runs/`) | Removed, **only when** every source in that root was read in M1 and M2/M3 succeeded for every id it named. A root with any unreadable `index.json` or record is kept and reported `PRESERVED_UNREADABLE`, so a helper run named only there is never orphaned (AR-001) | — | `FAILED` item; retry |
 | M6 delete built-in folder | `agents/autobyteus-retrospective-skill-improver/` | Removed (`rm` never follows a symlink) | — | `FAILED` item; retry |
 
-- **Status:** `SUCCEEDED` (all done or nothing present); `SUCCEEDED_WITH_WARNINGS` (an unreadable source was left in place); `FAILED` (an item failed: non-terminal, the next start continues).
+- **Status:** `SUCCEEDED` (all done or nothing present); `SUCCEEDED_WITH_WARNINGS` (a root record folder was kept because a source in it was unreadable; that folder and any run only it names stay untouched); `FAILED` (an item failed: non-terminal, the next start continues). Startup never waits on it beyond the run, and nothing depends on its status (guideline §1, DESIGN rule 7).
 
   Startup never waits on it beyond the run, and nothing depends on its status (guideline §1, DESIGN rule 7).
 - **Idempotency:** each step recognizes what is already gone; a second start finds nothing and reports `SUCCEEDED` with 0 items. One exception: M1 runs before M5, so a retry after M5 succeeded but M3 failed would lose the record-sourced ids. Prevent it by running M5 only when M2 and M3 succeeded for every collected id. The definition-id and `server_helper` sources remain on retry anyway.
@@ -195,7 +195,7 @@ Remove Skill Improvement and everything only it uses, and delete its data once a
 | Helper run with `launchPurpose: "server_helper"` (written by builds since that field existed) | 0 | F-5b |
 | Built-in improver definition folder | 1 | F-6 |
 | `.env` with the 3 keys among other keys | 1 | F-7 (config test: the keys removed, other lines byte-identical) |
-| Unreadable `index.json`; record pointing at a missing run; unrelated runs, agents (incl. `autobyteus-skill-evolver`) and history rows | 0 / 3 / many | F-8 (untouched, byte-identical) |
+| Unreadable `index.json` or record (its root folder kept, `PRESERVED_UNREADABLE`, together with any run only it names); record pointing at a missing run; unrelated runs, agents (incl. `autobyteus-skill-evolver`) and history rows | 0 / 3 / many | F-8 (untouched, byte-identical) |
 | Memory Sync mirror containing the same shapes | 0 | F-8b (untouched) |
 
 ## Data-Flow Spine Inventory
@@ -372,7 +372,7 @@ N/A.
 3. Add the migration and register it, with unit tests and a startup e2e.
 4. Web: remove the components, stores, GraphQL documents and types; update surfaces, settings panel, built-in ids, i18n and specs; regenerate `generated/graphql.ts`; update e2e probes.
 5. Docs.
-6. Sweep: grep for `skill.?improv`, `retrospective`, `server_helper`, `launchPurpose`, `DirectAgentRunMessageGrant`, `ENABLE_SELF_EVOLUTION` in current code (migrations' frozen names and `tickets/` excepted); typecheck and lint.
+6. Sweep: grep for `skill.?improv`, `retrospective`, `self_evolution`, `server_helper`, `launchPurpose`, `DirectAgentRunMessageGrant`, `ENABLE_SELF_EVOLUTION` in current code and docs. Allowed hits (AR-002): the frozen names inside `src/app-data-migrations/migrations/remove-skill-improvement-data-migration.ts` and its tests; the three keys in `src/config/app-config-setting-policy.ts` `retiredSettingNames` and its tests; released migrations (F-11); `tickets/`. Typecheck and lint.
 
 ## Key Tradeoffs
 
@@ -386,7 +386,7 @@ N/A.
 
 ## Guidance For Implementation
 
-- Never run the migration or the app on the user's data or a copy of it (TESTING.md). Fixtures are synthesized with the exact shapes in the inventory.
+- Never run the migration or the app on the user's data or a copy of it (TESTING.md). The AC-001 sweep allows exactly the locations in Change Sequence step 6 (AR-002). Fixtures are synthesized with the exact shapes in the inventory.
 - Prove these facts:
   - a fresh data folder starts cleanly;
   - the old-data fixture starts cleanly, deletes exactly the feature data, and leaves unrelated runs, agents (`autobyteus-skill-evolver` included) and history rows byte-identical;

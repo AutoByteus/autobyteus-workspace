@@ -5,6 +5,7 @@
 | SR-001 | Requirements | Task autobyteus-205 (the user's decision 2026-10-20) | N/A | Ready for Approval | BEH-001..005, REQ-001..006, AC-001..005, DEC-001..004 | DEC-001 (old data) put to the user |
 | SR-002 | Requirements | The user's answer on DEC-001 and his Work Journal question | Ready for Approval | Approved | DEC-001, DEC-005, BEH-005, UC-003, REQ-004..006, AC-003, AC-004; release notes | Old data removed once (C); Work Journal kept |
 | SR-003 | Mixed (Evidence + Design) | Architecture investigation | Approved; no design | Approved; design Ready | REQ-005, AC-004, release notes | Self-evolution leftovers and a third key added within DEC-001; design Ready, Large / High |
+| SR-004 | Design (review response) | ARCH-REV-001 | AR-001, AR-002, AR-003, R-1 | Design Ready | Design Ready | REQ-005, REQ-006, AC-001, AC-004, AC-005 | M5 guard, sweep exceptions, release-notes clause, index serialization |
 
 ### SR-001: requirements baseline
 
@@ -42,3 +43,12 @@
   - guideline checklist and shape → fixture inventory.
 - Classification: Large / High (a deletion migration, GraphQL removal, the `send_message_to` path).
 - Next action: handoff per the rules.
+
+### SR-004: ARCH-REV-001 response
+
+- AR-001: the M5 guard keeps a root record folder that has any unreadable source and reports it, so no helper run is orphaned. The M5 row, the Status line and F-8 are aligned.
+- AR-002: the sweep's allowed locations (the new migration and its tests, `retiredSettingNames` and its tests, released migrations, `tickets/`) are named in step 6, the Guidance and AC-001. Wording only.
+- AR-003: deleting the runs the old self-evolution records name (runs of the kept Skill Self-Evolver) is intended. They are the feature's helper runs, and the user's DEC-001 removes the feature's old data. The release notes now say so. REQ-005 is unchanged.
+- R-1 adopted: M2 writes the history index exactly as the store serializes it.
+- Intended behavior changed: `No`. Approval impact: none.
+- Next action: re-review (scope as the reviewer named).

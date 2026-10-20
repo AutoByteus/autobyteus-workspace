@@ -40,3 +40,11 @@ FU-001 (`follow-ups.md`), not sent yet.
 ## Route
 
 `get_handoff_rules` → the Large/High rule → `/software_engineering_team/architecture_reviewer`.
+
+## SR-004: response to ARCH-REV-001 (re-review requested)
+
+- AR-001: M5 keeps a root with any unreadable source (`PRESERVED_UNREADABLE`); Status line and F-8 aligned.
+- AR-002: the allowed sweep locations are named in step 6, the Guidance and AC-001.
+- AR-003: the release notes now say the old self-evolution helper runs (of the kept Skill Self-Evolver) are deleted. This is intended under DEC-001; REQ-005 is unchanged.
+- R-1 adopted: M2 serializes the history index like `AgentRunHistoryIndexStore.writeIndex`.
+- Re-review scope: the M2 and M5 rows, the Status line, F-8, step 6, the Guidance, AC-001 and `release-notes.md`.
