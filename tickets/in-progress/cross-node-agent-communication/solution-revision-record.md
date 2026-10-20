@@ -184,3 +184,25 @@ See `history-sr-002/solution-revision-record.md` § SR-002.
 - `slice-plan.md`: "versioned" wording removed (cosmetic, from the report).
 - Intended behavior changed: `No`. The disk shape the user chose (SR-009) is unchanged.
 - Next action: send round 2 to the architecture reviewer.
+
+#### Review note — ARCH-REV-002 Pass (2026-10-20)
+
+- The architecture reviewer passed SR-013 (commit `910f024ec5`) as ARCH-REV-002. Large / High is confirmed; AR-001 … AR-004 and N-1 … N-5 are resolved. Six non-blocking implementation notes (N-6 … N-11) are in `design-review-report.md`.
+- The reviewer handed off to `/software_engineering_team/implementation_engineer`. Informational; there is no new SR round and no repeated handoff.
+
+### SR-014 — Remote activation order follows `dispatchTaskCopy` (DI-1, 2026-10-20)
+
+- Phase and classification: Design / `Design Impact` from implementation (`/software_engineering_team/implementation_engineer`, DI-1). Approved intent unchanged.
+- Finding: `dispatchTaskCopy` (`root-task-dispatch.ts`) plans the copy's identity, then links the Task with that run ID, then runs prepare/commit/acceptSeed. The design had both "prepare calls startDelegatedRun" and "linkedAt before the request to B", which cannot both hold. Verified by reading `root-task-dispatch.ts` (2026-10-20).
+- Decision: the engineer's recommended resolution.
+  - The remote placement's `planActivation` calls `startDelegatedRun`, and B's ID becomes the copy's identity.
+  - Then the Task link; then `RemoteTaskActivation`: prepare does nothing remote, commit writes the link with `nodeId`, acceptSeed sends the packet.
+  - The lifecycle and dispatch are unchanged, and the contract is unchanged (B assigns the ID).
+  - Rejected alternative: A assigns the ID, which would mean a contract change and an externally supplied identity on B.
+- Consequences:
+  - A refusal by B leaves nothing on A (matches AC-104 literally).
+  - A failure after B prepared leaves a prepared run on B that expires after 24 h (RSK-106).
+  - The peer call now runs before the root's task queue, not in it (it no longer holds the queue).
+- Implementation details accepted within the design (the engineer records them in the handoff): (a) `RootCommunicationAdapter.assertDeliveryAllowed` takes run IDs; (b) on B, the stored message view counts `delegatedFrom.delegatorAgentRunId` as loaded; (c) on B, the first message creates the remote run's `collaboration/` package.
+- Sections changed: data model item 5, lifecycle table, DS-001, ownership (`RemoteTaskActivation`), tradeoffs, classification rationale.
+- Review impact: a local correction aligning the design with the existing dispatch, within the reviewed boundaries (ARCH-REV-002). No re-review requested; the code review checks it against SR-014.

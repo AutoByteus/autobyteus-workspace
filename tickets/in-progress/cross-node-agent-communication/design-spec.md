@@ -2,10 +2,10 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-013`
+- Current solution revision ID: `SR-014`
 - Approved requirements baseline: `requirements-doc.md` at SR-007 (approved by the User 2026-10-19: SR-004 for the slice, SR-005 for no version check, SR-007 for `node` on `delegate_task` only)
 - Behavior-defining supplements: `slice-plan.md` (approved 2026-10-19)
-- Design status: `Ready` (SR-013, revised for ARCH-REV-001 AR-001 … AR-004 and N-1 … N-5; was `Ready` at SR-011). The architecture was discussed with the user 2026-10-19/20 (SR-005 … SR-011): tool shape, contract, on-disk data model and back-link. Classified below.
+- Design status: `Ready` (SR-014: activation order per DI-1. SR-013, revised for ARCH-REV-001 AR-001 … AR-004 and N-1 … N-5; was `Ready` at SR-011). The architecture was discussed with the user 2026-10-19/20 (SR-005 … SR-011): tool shape, contract, on-disk data model and back-link. Classified below.
 - Canonical investigation notes: `investigation-notes.md` (S-01 … S-15; architecture evidence A-01 … A-10 below are added there)
 - Authorities read (2026-10-19; re-read after the skill update 2026-10-20: `SKILL.md`, `references/design-principles.md`, `references/handoff.md`, `references/ticket-scope.md`, `templates/design-spec-template.md`): `references/architecture-design.md`, `references/design-principles.md`, `/DESIGN.md` (rules 1–9, project documents), `autobyteus-server-ts/docs/design/collaboration_model.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` (§1–§3). `design-examples.md`: not used.
 - Project design-principle conflicts: one, found and resolved. DESIGN.md rule 9 (no version checks between nodes) conflicted with REQ-114's version check. The user removed the check (SR-005).
@@ -215,7 +215,9 @@ The same message `collabmsg_X` appears in A's log for `agent_a1` and in B's log 
 
 **5. Task ownership: `agent_run_resources.json` of the Task. Shape unchanged.** The remote run is recorded like any copy:
 `{"role":"delegated"|"assigned", "hostRoot":{"kind":"agent","runId":"agent_a1…"}, "agentRun":{"kind":"agent","agentRunId":"publisher_7f3c…"}, "linkedAt", "start", "closedAt"}`.
-- `linkedAt` is written before the request to B, as for local copies. `start` becomes `started` after the link commit, or `failed` with `startError` (the refusal code) when B refused.
+- **Order (DI-1, SR-014).** The existing `dispatchTaskCopy` (`root-task-dispatch.ts`) plans the copy's identity first and links the Task with that run ID. For a remote placement the planning step is `startDelegatedRun`: B gives the run ID, and then `linkedAt` is written, as for local copies after their own identity planning.
+  - A refusal by B happens before the Task link, so it leaves **nothing on A**: no Task link and no ad-hoc Task (AC-104).
+  - After linking, `start` becomes `started` once the link commit and the packet succeed, or `failed` with `startError` when a later step fails, as for local copies.
 - Whether a Task copy is remote is read from the root tree, never stored twice.
 
 **6. Messages on A: the delegator's existing log. Format unchanged.** Location by the delegator's placement, as today:
@@ -290,8 +292,9 @@ Each field has a reader on B:
 | --- | --- | --- |
 | Peer added / renamed / removed | `peers.json` | — |
 | Agent published / unpublished | — | `published-agents.json` |
-| `delegate_task({node})` | Task `linkedAt` → (B creates) → tree `taskExecutions` += link with `nodeId` → Task `start: started` | `agents/<id>/run_metadata.json` with `delegatedFrom` |
-| Delegation refused by B | Task `start: failed` + `startError`; no tree entry | nothing written |
+| `delegate_task({node})` | (B prepares, returns the ID) → Task `linkedAt` → tree `taskExecutions` += link with `nodeId` → packet → Task `start: started` | `agents/<id>/run_metadata.json` (prepared) with `delegatedFrom` |
+| Delegation refused by B | nothing written (refused before the Task link) | nothing written |
+| Failure after B prepared (Task closed in between, link commit or packet failure) | Task `start: failed` + `startError` when already linked; no tree entry unless committed | the prepared run, never activated, removed after 24 h (RSK-106) |
 | Message A→B | (B accepts) → delegator's log += line | remote run's log += line |
 | Message B→A | delegator's log += line | (A accepts) → remote run's log += line |
 | A's or B's history deleted | tree / Task records as today | run folder as today; A's later messages refused "not found" |
@@ -424,10 +427,10 @@ Every answer names the responder (`nodeId`). `PeerClient` refuses an answer whos
 ```text
 DS-001  Agent tool call → delegate_task parser (node) → A root.delegateToNewCopy
         → resolveDelegationPlacement (remote placement: peer + published address)
-        → RootTaskExecutionLifecycle (Task link written, serialized)
-        → RemoteTaskActivation.prepare → PeerClient.startDelegatedRun → B PeerGateway
+        → dispatchTaskCopy: planActivation of the remote placement → PeerClient.startDelegatedRun → B PeerGateway
         → RemoteDelegationReceiver → B prepares a standalone run (published launch settings, delegatedFrom)
-        ← remote run id → A commit: tree write (`taskExecutions` link with `nodeId`)
+        ← remote run id = the copy's identity → A Task link (linkedAt)
+        → RemoteTaskActivation: prepare (nothing remote) → commit: tree write (`taskExecutions` link with `nodeId`)
         → acceptSeed: work packet sent as the first deliverMessage → B admits → tool result {node, run id}
 
 DS-002  Delegator send_message_to(remote id) → GlobalAgentRunMessageRouter (sender root hasAgentExecution: yes, remote endpoint)
@@ -476,7 +479,11 @@ Delegate tool parser · root (`StandaloneAgentRunRoot` / `RootTeamRun` / `AgentO
 
   It reaches messages only through `RootCommunicationEngine.sendToRemote` / `acceptFromRemote` (AR-002), and it is the only reader of `remoteTaskExecutions` outside the store (AR-001).
 - **`RootCommunicationEngine`** (extended): the only owner of message state and commit, including the two remote entry points (§ Remote Delivery In The Engine).
-- **`RemoteTaskActivation`** (shared): the remote variant of `TaskExecutionActivationOperation`. `prepare` calls `startDelegatedRun`; `commit` writes the tree entry; `acceptSeed` sends the work packet. The root's lifecycle is unchanged.
+- **Remote placement planning + `RemoteTaskActivation`** (shared; DI-1, SR-014):
+  - each root adapter's `planActivation` for a remote placement calls `startDelegatedRun`, and B's run ID becomes `target.execution` (the step that allocates a local copy's run ID today);
+  - `RemoteTaskActivation` is the remote variant of `TaskExecutionActivationOperation`: `prepare` does nothing remote, `commit` writes the tree link with `nodeId`, and `acceptSeed` sends the work packet.
+
+  `RootTaskExecutionLifecycle` and `dispatchTaskCopy` are unchanged.
 - **Roots**: own their tree (including links with `nodeId`) and their gate. The standalone root also owns its back-link endpoint and host idle schedule.
 
 ## Thin Entry Facades / Public Wrappers
@@ -683,8 +690,8 @@ Naming rule (the user, SR-012):
 
 - **Request/response HTTP vs. a persistent connection:** simpler, stateless, works over every VPN; cost: one TCP/HTTP setup per message (negligible at agent speeds).
 - **One list on disk, two lists in memory:** the disk keeps the model the user chose (a delegated run with a location, SR-009). Memory keeps remote links out of the 170 existing link checks by construction, instead of changing each check. The cost is that the few including categories must read the second list explicitly, which the AR-001 table lists and a test per root kind guards.
-- **Waiting for B's acceptance:** keeps today's tool-result meaning. The remote HTTP call runs inside the root's serialized task queue, so a slow peer holds that root's queue for at most the timeout.
-- **Decided (SR-011, Solution Designer within the design; the user informed):** points 2–4 as proposed. No automatic transport retries; the call to the peer runs inside the root's serialized task queue (bounded by the ≤ 20 s timeout); standalone delegators first, then Team and Org (Change Sequence steps 5–6).
+- **Waiting for B's acceptance:** keeps today's tool-result meaning. `startDelegatedRun` runs in `planActivation`, which `dispatchTaskCopy` calls before it submits to the root's task queue. So a slow peer delays only its own `delegate_task` call (bounded by the timeout), not the root's queue (SR-014). The work packet is sent in `acceptSeed`, outside the queue head as today.
+- **Decided (SR-011, Solution Designer within the design; the user informed):** points 2–4 as proposed. No automatic transport retries; the call to the peer is bounded by the ≤ 20 s timeout and, since SR-014, runs before the root's task queue, not in it; standalone delegators first, then Team and Org (Change Sequence steps 5–6).
 - **No automatic transport retries:** QR-101 holds because nothing retries. A timeout after B accepted leaves the outcome unknown to A (RSK-106).
 
 ## Risks
@@ -712,7 +719,7 @@ Naming rule (the user, SR-012):
   - **Contract:** a new inter-node contract, an agent-facing tool parameter, and the collaboration model (CM-10 … CM-12).
   - **Persistence:** new optional fields in three tree kinds whose writers are exact (RSK-108); a new run-metadata section; new settings files.
   - **Security:** a new inbound surface on the trusted network (RSK-101; no authentication by design until S6).
-  - **Concurrency and lifecycle:** remote activation inside the serialized task queue; inbound wake and root restore across processes; timeout ambiguity (RSK-106).
+  - **Concurrency and lifecycle:** remote activation around the root's task queue (planning before it, commit at its head); inbound wake and root restore across processes; timeout ambiguity (RSK-106).
   - **Ownership boundary:** the run delivery path gains remote endpoints.
 - Escalation trigger: implementation finds a walker of `taskExecutions` that must see remote links and is not in the AR-001 table, or a writer of `taskExecutions` that bypasses the shared split. Either is a Design Impact back to the Solution Designer.
 
